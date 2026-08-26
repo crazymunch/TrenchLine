@@ -5,6 +5,7 @@ import { useStore, AppView } from '../../store/useStore';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
+import { AuthModal } from '../auth/AuthModal';
 import { 
   Shield, 
   Swords, 
@@ -37,6 +38,7 @@ export const Navbar: React.FC = () => {
   const { data: session } = useSession();
   const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const activeWarband = getActiveWarband();
   const currentFaction = factions.find(f => f.id === activeWarband?.factionId);
@@ -194,7 +196,7 @@ export const Navbar: React.FC = () => {
                   </button>
                 ) : (
                   <button
-                    onClick={() => signIn()}
+                    onClick={() => setIsAuthModalOpen(true)}
                     className="flex items-center space-x-1 px-2.5 py-1.5 text-black font-mono text-xs font-bold uppercase rounded shadow transition-colors"
                     style={{ backgroundColor: activeThemeObj.primaryColor }}
                   >
@@ -225,6 +227,12 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
 
       {/* Theme Switcher Modal */}
       <ThemeSwitcherModal 
