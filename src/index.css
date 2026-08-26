@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-gothic: 'Cinzel', serif;
+    --font-heading: 'Oswald', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #0C0E12;
+    color: #ECEFF4;
+    overflow-x: hidden;
+  }
+}
+
+.font-gothic {
+  font-family: var(--font-gothic);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Grimdark Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0C0E12;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3342;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #454D63;
+}
+
+/* Grimdark Borders & Accents */
+.border-iron {
+  border-color: #323846;
+}
+
+.border-rust {
+  border-color: #5A3E31;
+}
+
+.border-sacred {
+  border-color: #D4AF37;
+}
+
+.border-blood {
+  border-color: #8B0000;
+}
+
+.bg-trench-dark {
+  background-color: #0C0E12;
+}
+
+.bg-trench-surface {
+  background-color: #161920;
+}
+
+.bg-trench-elevated {
+  background-color: #20242E;
+}
+
+.text-sacred {
+  color: #E5C158;
+}
+
+.text-blood {
+  color: #E53935;
+}
+
+.text-trench-muted {
+  color: #8E95A5;
+}

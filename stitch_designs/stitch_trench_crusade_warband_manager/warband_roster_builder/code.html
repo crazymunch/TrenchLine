@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Warband Roster Builder - Trench Crusade</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e0e2ec",
+                        "on-secondary-container": "#ff9a8a",
+                        "surface-container-lowest": "#0b0e15",
+                        "surface": "#10131a",
+                        "surface-tint": "#e9c349",
+                        "on-background": "#e0e2ec",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "surface-bright": "#363941",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-secondary-fixed": "#410000",
+                        "surface-dim": "#10131a",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-tertiary-fixed-variant": "#005230",
+                        "background": "#10131a",
+                        "surface-container-low": "#191c23",
+                        "inverse-surface": "#e0e2ec",
+                        "inverse-primary": "#735c00",
+                        "on-primary-fixed": "#241a00",
+                        "on-primary-container": "#554300",
+                        "secondary": "#ffb4a8",
+                        "on-tertiary-fixed": "#002110",
+                        "secondary-container": "#920703",
+                        "tertiary-fixed-dim": "#89d7a6",
+                        "secondary-fixed": "#ffdad4",
+                        "tertiary-fixed": "#a5f4c1",
+                        "primary-container": "#d4af37",
+                        "surface-variant": "#32353c",
+                        "inverse-on-surface": "#2d3038",
+                        "surface-container-high": "#272a31",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#920703",
+                        "surface-container": "#1d2027",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#3c2f00",
+                        "primary": "#f2ca50",
+                        "outline": "#99907c",
+                        "primary-fixed": "#ffe088",
+                        "on-tertiary": "#00391f",
+                        "on-tertiary-container": "#00502f",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#690000",
+                        "outline-variant": "#4d4635",
+                        "tertiary": "#91dfae",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d0c5af",
+                        "tertiary-container": "#76c394",
+                        "surface-container-highest": "#32353c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "48px",
+                        "stack-md": "16px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "stats-lg": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-md": ["Oswald"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Oswald"],
+                        "headline-xl": ["Oswald"],
+                        "stats-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "stats-lg": ["20px", { "lineHeight": "1.0", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "stats-sm": ["14px", { "lineHeight": "1.0", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .bevel-container {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+            border-right: 1px solid rgba(0, 0, 0, 0.8);
+        }
+        .rivet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #191c23;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2), inset -1px -1px 2px rgba(0,0,0,0.8);
+            position: absolute;
+        }
+        .rivet-tl { top: 6px; left: 6px; }
+        .rivet-tr { top: 6px; right: 6px; }
+        .rivet-bl { bottom: 6px; left: 6px; }
+        .rivet-br { bottom: 6px; right: 6px; }
+        
+        .btn-industrial {
+            background-color: #161920;
+            border: 2px solid #323846;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-industrial:hover {
+            border-color: #d4af37; /* Sacred Gold */
+            color: #d4af37;
+        }
+        .btn-combat:active {
+            background-color: #920703; /* Blood Crimson */
+            border-color: #920703;
+            color: #ffdad4;
+        }
+
+        /* Scanline effect for input-like areas if needed */
+        .scanline {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen flex overflow-hidden">
+<!-- Side Navigation (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen fixed left-0 top-0 z-40 w-64 border-r-4 border-outline-variant bg-surface-container dark:bg-surface-container">
+<div class="p-gutter border-b-2 border-outline-variant">
+<h1 class="font-headline-md text-headline-md text-primary mb-2">IRON PSALM</h1>
+<p class="font-stats-sm text-stats-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">toll</span> 1,250 Ducats
+            </p>
+<p class="font-stats-sm text-stats-sm text-on-surface-variant flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[16px]">military_tech</span> 42 Glory
+            </p>
+<button class="mt-4 w-full bg-primary text-on-primary font-headline-md text-[18px] py-2 uppercase tracking-wide border-2 border-primary hover:bg-transparent hover:text-primary transition-colors">
+                DEPLOY WARBAND
+            </button>
+</div>
+<ul class="flex-grow flex flex-col py-4 gap-2">
+<li>
+<a class="flex items-center gap-4 bg-secondary-container text-on-secondary-container border-l-4 border-primary px-4 py-3 font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                    Roster
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">swords</span>
+                    Play Mode
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">map</span>
+                    Campaign
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto border-t-2 border-outline-variant p-4">
+<ul class="flex flex-col gap-2">
+<li>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-2 opacity-80 hover:text-on-surface font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span> Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-2 opacity-80 hover:text-on-surface font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined text-[18px]">description</span> Intel
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow md:ml-64 relative flex flex-col h-full bg-surface overflow-y-auto">
+<!-- Top App Bar (Mobile & Contextual Desktop) -->
+<header class="flex justify-between items-center w-full px-gutter h-16 border-b-2 border-outline-variant bg-surface-container-low dark:bg-surface-container-low sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<span class="md:hidden material-symbols-outlined text-primary cursor-pointer">menu</span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary tracking-widest uppercase">TRENCH CRUSADE</span>
+</div>
+<div class="flex items-center gap-4 text-primary dark:text-primary">
+<span class="material-symbols-outlined cursor-pointer hover:text-on-surface transition-colors">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-on-surface transition-colors">shield</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-on-surface transition-colors">security</span>
+</div>
+</header>
+<!-- Builder Content -->
+<div class="p-margin-mobile md:p-margin-desktop flex-grow flex flex-col gap-8 max-w-7xl mx-auto w-full">
+<!-- Dashboard Header -->
+<section class="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 bg-surface-container-high p-6 border-4 border-outline-variant bevel-container relative">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<div class="flex items-center gap-6">
+<div class="w-24 h-24 border-2 border-outline rounded-full overflow-hidden bg-surface-dim shrink-0">
+<img alt="Faction Badge" class="w-full h-full object-cover" data-alt="A highly detailed, weathered metallic faction badge with a central sword, mechanical gears, and golden angel wings. The badge has text reading 'NEW ANTIOCH' on a bronze rim. Gritty dieselpunk WWI aesthetic with rust and heavy shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBynFOWKjST8YP6K2bfYxbBg_WQxfGqIiFNSvRlkTWnNDcDnkX39JX6-D_v0IEhI7YjwD_vQ3W846iA1AIVcPhWTBsLxFEN6CT0GmGloOjGpd5ERB7liIEdv1cv5Ul4T_1UyfHOAnaDyUVNMGfvrs9JKxPzzU5Z9IskSjkjl7pLVDv8xjAFgkFgxk-CSz6_w6N6i-kYobKuEvbQy_GVh796Kc8fY1Lp9D_WyxzrjR1vmtd8ZCA3O9x2"/>
+</div>
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-wide uppercase mb-1">3rd Holy Trench Lancers</h2>
+<div class="flex items-center gap-4 mt-2">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 font-stats-lg text-stats-lg rounded flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">military_tech</span> Glory (12)
+                            </span>
+</div>
+</div>
+</div>
+<div class="w-full xl:w-auto flex flex-col gap-4">
+<div class="bg-surface p-3 border-2 border-outline-variant">
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant mb-1">
+<span>Ducat Budget</span>
+<span class="text-primary-fixed">495 / 700</span>
+</div>
+<div class="w-full h-4 bg-surface-container-lowest border border-outline-variant">
+<div class="h-full bg-primary-fixed-dim" style="width: 70%;"></div>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="btn-industrial px-4 py-2 font-label-caps text-label-caps uppercase flex items-center gap-2 hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[16px]">download</span> Export Dossier
+                        </button>
+<button class="btn-industrial px-4 py-2 font-label-caps text-label-caps uppercase flex items-center gap-2 hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[16px]">edit_note</span> Campaign Notes
+                        </button>
+</div>
+</div>
+</section>
+<!-- Action Bar & Filters -->
+<section class="flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex flex-wrap gap-2">
+<button class="bg-error-container text-on-error-container font-headline-md text-[18px] px-6 py-2 uppercase border-2 border-error-container hover:bg-transparent hover:text-error transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(147,0,10,0.3)]">
+<span class="material-symbols-outlined">swords</span> Enter Play Mode
+                    </button>
+<button class="bg-primary text-on-primary font-headline-md text-[18px] px-6 py-2 uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">person_add</span> Recruit Warrior
+                    </button>
+</div>
+<div class="flex flex-wrap gap-2 bg-surface-container p-2 border-2 border-outline-variant rounded-sm">
+<button class="px-3 py-1 font-label-caps text-label-caps text-on-surface bg-surface-variant border border-outline">All</button>
+<button class="px-3 py-1 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Leader (1/1)</button>
+<button class="px-3 py-1 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Elites (2/3)</button>
+<button class="px-3 py-1 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Troopers (4)</button>
+<button class="px-3 py-1 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface opacity-50">Mercenaries (0)</button>
+</div>
+</section>
+<!-- Gothic Separator -->
+<div class="flex items-center justify-center py-4 opacity-50">
+<div class="h-[2px] w-full bg-outline-variant"></div>
+<span class="material-symbols-outlined px-4 text-outline-variant text-[32px]">cruelty_free</span>
+<div class="h-[2px] w-full bg-outline-variant"></div>
+</div>
+<!-- Roster Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Unit Card: Leader -->
+<article class="bg-[#20242E] border-4 border-outline-variant bevel-container p-5 relative flex flex-col gap-4">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<header class="flex justify-between items-start border-b-2 border-outline-variant pb-3">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-primary uppercase leading-none">Lieutenant Valerius</h3>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1 inline-block">Leader • Trench Raider</span>
+</div>
+<div class="bg-surface-container-lowest px-3 py-1 border border-outline font-stats-lg text-stats-lg text-primary-fixed">
+                            120D
+                        </div>
+</header>
+<!-- Stat Table -->
+<div class="grid grid-cols-4 gap-2 bg-[#0C0E12] p-2 border border-surface-bright">
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">MOV</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">5"</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">RNG</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">4+</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">MELEE</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">3+</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">ARMOUR</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">9</span>
+</div>
+</div>
+<!-- Armament -->
+<div class="flex flex-col gap-2 flex-grow">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant border-b border-surface-bright pb-1 uppercase">Armament &amp; Gear</h4>
+<ul class="font-stats-sm text-stats-sm text-on-surface space-y-1">
+<li class="flex justify-between"><span>Trench Club</span> <span class="text-on-surface-variant">Melee</span></li>
+<li class="flex justify-between"><span>Heavy Revolver</span> <span class="text-on-surface-variant">Rng 12"</span></li>
+<li class="flex justify-between"><span>Trench Armour</span> <span class="text-on-surface-variant">Arm +2</span></li>
+</ul>
+<button class="mt-2 text-primary font-label-caps text-label-caps hover:text-primary-fixed transition-colors flex items-center gap-1 self-start">
+<span class="material-symbols-outlined text-[14px]">add</span> Equip Gear
+                        </button>
+</div>
+<!-- Injuries/Status -->
+<div class="mt-2 border-2 border-error-container bg-error-container/10 p-2 relative scanline">
+<span class="absolute -top-2 left-2 bg-background px-1 font-label-caps text-[10px] text-error uppercase">Injuries</span>
+<p class="font-stats-sm text-stats-sm text-error pt-1 uppercase">Lost Eye (-1 RNG)</p>
+</div>
+</article>
+<!-- Unit Card: Elite -->
+<article class="bg-[#20242E] border-4 border-outline-variant bevel-container p-5 relative flex flex-col gap-4">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<header class="flex justify-between items-start border-b-2 border-outline-variant pb-3">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface uppercase leading-none">Brother Ignis</h3>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1 inline-block">Elite • Flamer Specialist</span>
+</div>
+<div class="bg-surface-container-lowest px-3 py-1 border border-outline font-stats-lg text-stats-lg text-primary-fixed">
+                            85D
+                        </div>
+</header>
+<div class="grid grid-cols-4 gap-2 bg-[#0C0E12] p-2 border border-surface-bright">
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">MOV</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">4"</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">RNG</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">4+</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">MELEE</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">4+</span>
+</div>
+<div class="flex flex-col items-center border-l border-surface-bright">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">ARMOUR</span>
+<span class="font-stats-lg text-stats-lg text-on-surface mt-1">8</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant border-b border-surface-bright pb-1 uppercase">Armament &amp; Gear</h4>
+<ul class="font-stats-sm text-stats-sm text-on-surface space-y-1">
+<li class="flex justify-between"><span>Holy Flamer</span> <span class="text-on-surface-variant">Rng 8" (Template)</span></li>
+<li class="flex justify-between"><span>Trench Knife</span> <span class="text-on-surface-variant">Melee</span></li>
+</ul>
+<button class="mt-2 text-primary font-label-caps text-label-caps hover:text-primary-fixed transition-colors flex items-center gap-1 self-start">
+<span class="material-symbols-outlined text-[14px]">add</span> Equip Gear
+                        </button>
+</div>
+</article>
+<!-- Unit Card: Trooper (Example to fill grid) -->
+<article class="bg-[#20242E] border-4 border-outline-variant bevel-container p-5 relative flex flex-col gap-4 opacity-80">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<header class="flex justify-between items-start border-b-2 border-outline-variant pb-3">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface uppercase leading-none">Rifleman #4</h3>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1 inline-block">Trooper • Infantry</span>
+</div>
+<div class="bg-surface-container-lowest px-3 py-1 border border-outline font-stats-lg text-stats-lg text-primary-fixed">
+                            45D
+                        </div>
+</header>
+<div class="flex-grow flex items-center justify-center border-2 border-dashed border-outline-variant mt-4 hover:border-primary transition-colors cursor-pointer group">
+<div class="flex flex-col items-center gap-2 text-on-surface-variant group-hover:text-primary">
+<span class="material-symbols-outlined text-[32px]">edit</span>
+<span class="font-label-caps text-label-caps uppercase">Configure Unit</span>
+</div>
+</div>
+</article>
+</section>
+</div>
+</main>
+<!-- Bottom Nav Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-highest dark:bg-surface-container-highest border-t-4 border-outline-variant rounded-t-lg shadow-2xl">
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl p-2 scale-110 font-label-caps text-label-caps transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+            Roster
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">skull</span>
+            Play
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+            World
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary font-label-caps text-label-caps transition-colors" href="#">
+<span class="material-symbols-outlined">menu</span>
+            Menu
+        </a>
+</nav>
+</body></html>

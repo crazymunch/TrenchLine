@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Siege of Antioch Sector IV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e0e2ec",
+                        "on-secondary-container": "#ff9a8a",
+                        "surface-container-lowest": "#0b0e15",
+                        "surface": "#10131a",
+                        "surface-tint": "#e9c349",
+                        "on-background": "#e0e2ec",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "surface-bright": "#363941",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-secondary-fixed": "#410000",
+                        "surface-dim": "#10131a",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-tertiary-fixed-variant": "#005230",
+                        "background": "#10131a",
+                        "surface-container-low": "#191c23",
+                        "inverse-surface": "#e0e2ec",
+                        "inverse-primary": "#735c00",
+                        "on-primary-fixed": "#241a00",
+                        "on-primary-container": "#554300",
+                        "secondary": "#ffb4a8",
+                        "on-tertiary-fixed": "#002110",
+                        "secondary-container": "#920703",
+                        "tertiary-fixed-dim": "#89d7a6",
+                        "secondary-fixed": "#ffdad4",
+                        "tertiary-fixed": "#a5f4c1",
+                        "primary-container": "#d4af37",
+                        "surface-variant": "#32353c",
+                        "inverse-on-surface": "#2d3038",
+                        "surface-container-high": "#272a31",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#920703",
+                        "surface-container": "#1d2027",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#3c2f00",
+                        "primary": "#f2ca50",
+                        "outline": "#99907c",
+                        "primary-fixed": "#ffe088",
+                        "on-tertiary": "#00391f",
+                        "on-tertiary-container": "#00502f",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#690000",
+                        "outline-variant": "#4d4635",
+                        "tertiary": "#91dfae",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d0c5af",
+                        "tertiary-container": "#76c394",
+                        "surface-container-highest": "#32353c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "48px",
+                        "stack-md": "16px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "stats-lg": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-md": ["Oswald"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Oswald"],
+                        "headline-xl": ["Oswald"],
+                        "stats-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "stats-lg": ["20px", { "lineHeight": "1.0", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "stats-sm": ["14px", { "lineHeight": "1.0", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #10131a; /* bg-background */
+            color: #e0e2ec; /* text-on-background */
+        }
+        
+        .riveted-container {
+            position: relative;
+            background-color: #20242E;
+            border: 1px solid #32353c; /* surface-variant */
+            box-shadow: inset 1px 1px 0px rgba(255,255,255,0.05), inset -1px -1px 0px rgba(0,0,0,0.5);
+        }
+        
+        .rivet {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #4d4635; /* outline-variant */
+            border-radius: 50%;
+            box-shadow: inset 1px 1px 1px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        .rivet-tl { top: 4px; left: 4px; }
+        .rivet-tr { top: 4px; right: 4px; }
+        .rivet-bl { bottom: 4px; left: 4px; }
+        .rivet-br { bottom: 4px; right: 4px; }
+        
+        .sacred-glow {
+            box-shadow: 0 0 15px rgba(242, 202, 80, 0.2); /* primary glow */
+        }
+        
+        .gothic-crest {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .gothic-crest::before, .gothic-crest::after {
+            content: "";
+            flex-grow: 1;
+            height: 2px;
+            background-color: #4d4635; /* outline-variant */
+        }
+        
+        .tactical-counter {
+            background-color: #0C0E12;
+            border: 1px solid #191c23; /* surface-container-low */
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+        }
+        
+        /* Custom scrollbar for tactical feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0e15; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #32353c; 
+            border: 1px solid #191c23;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4d4635; 
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen fixed left-0 top-0 z-40 docked h-full w-64 border-r-4 border-outline-variant bg-surface-container dark:bg-surface-container">
+<div class="p-6 border-b-2 border-outline-variant bg-surface-container-high flex flex-col items-center">
+<div class="w-24 h-24 rounded-full border-4 border-outline-variant mb-4 relative overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover grayscale opacity-80 mix-blend-luminosity" data-alt="A grimdark, weathered metal warband emblem depicting a skull crowned with barbed wire, set against an industrial, rusted iron background. Deep shadows and high contrast, evoking a trench warfare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCog-8jsHme9P5PYJBAs3AndaQmTvIGUyqQ-kSUtTjRJ5Grfyz1VBohhMRqhHjeZBVIZUXpQXd2jBOJYvv6n7c3MMehodDhyv5BvQG9rySTdOrl5O3Gy0Ox2c0Yl9Hwe75Pj2QXcmkQI050xNzz3LRV97JakyBO9lErISPAg9n18yy_-mrgIPNCINcMVBaMq2-mjrqpaU5zTJ3Vd2ki80DZ8cji-5aQ3Kwi5wKbWK4486n4tSfHUlUL"/>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold tracking-wider uppercase">IRON PSALM</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">1,250 Ducats | 42 Glory</p>
+<button class="mt-6 w-full py-2 bg-surface text-on-surface border border-surface-variant hover:border-primary hover:text-primary transition-colors duration-200 font-label-caps text-label-caps uppercase flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-sm group-hover:text-secondary-container transition-colors">swords</span>
+                DEPLOY WARBAND
+            </button>
+</div>
+<div class="flex-1 py-6 flex flex-col gap-2">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps uppercase" href="#">
+<span class="material-symbols-outlined">groups</span> Roster
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps uppercase" href="#">
+<span class="material-symbols-outlined">swords</span> Play Mode
+            </a>
+<a class="flex items-center gap-4 bg-secondary-container text-on-secondary-container border-l-4 border-primary px-4 py-3 translate-x-1 transition-all font-label-caps text-label-caps uppercase shadow-lg shadow-black/50" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span> Campaign
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 opacity-80 hover:bg-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps uppercase mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</div>
+<div class="border-t-2 border-outline-variant bg-surface-container-high p-4 flex justify-between">
+<a class="flex items-center gap-2 text-on-surface-variant opacity-80 hover:text-on-surface font-label-caps text-label-caps" href="#"><span class="material-symbols-outlined text-sm">help</span> Support</a>
+<a class="flex items-center gap-2 text-on-surface-variant opacity-80 hover:text-on-surface font-label-caps text-label-caps" href="#"><span class="material-symbols-outlined text-sm">description</span> Intel</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-gutter h-16 bg-surface-container-low dark:bg-surface-container-low border-b-2 border-outline-variant bg-surface-dim sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">shield</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary tracking-widest uppercase">TRENCH CRUSADE</h1>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">shield</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">security</span></button>
+</div>
+</header>
+<!-- Page Header -->
+<div class="px-gutter pt-8 pb-4">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-outline-variant pb-4">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface uppercase text-shadow">The Siege of Antioch Sector IV</h2>
+<div class="flex items-center gap-4 mt-2 font-label-caps text-label-caps text-on-surface-variant">
+<span class="tactical-counter px-2 py-1 text-primary border-outline-variant">TURN 3</span>
+<span>•</span>
+<span class="flex items-center gap-2">INVITE CODE: <span class="tactical-counter px-2 py-1 text-tertiary-fixed font-stats-sm">TRENCH-7749</span> <button class="hover:text-primary"><span class="material-symbols-outlined text-sm">content_copy</span></button></span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface text-on-surface border border-surface-variant hover:border-primary font-label-caps text-label-caps uppercase transition-colors">Abandon Campaign</button>
+</div>
+</div>
+</div>
+<!-- Campaign Tabs -->
+<div class="px-gutter pb-6">
+<div class="flex gap-1 overflow-x-auto border-b border-surface-variant pb-px">
+<button class="px-6 py-3 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-surface-variant whitespace-nowrap">Crusade Standings</button>
+<button class="px-6 py-3 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-surface-variant whitespace-nowrap">Narrative Chronicle</button>
+<button class="px-6 py-3 font-label-caps text-label-caps uppercase text-primary border-b-2 border-primary bg-surface-container-highest whitespace-nowrap sacred-glow">Trench Map</button>
+<button class="px-6 py-3 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-surface-variant whitespace-nowrap">Battle Records</button>
+</div>
+</div>
+<!-- Dashboard Canvas -->
+<div class="px-gutter pb-margin-desktop flex-1 grid grid-cols-1 xl:grid-cols-12 gap-gutter">
+<!-- Left Column: Leaderboard (Bento Item 1) -->
+<div class="xl:col-span-4 flex flex-col gap-6">
+<div class="riveted-container p-6 flex flex-col flex-1 min-h-[500px]">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<div class="gothic-crest mb-6">
+<span class="material-symbols-outlined text-outline-variant">military_tech</span>
+<h3 class="font-headline-md text-headline-md text-on-surface uppercase tracking-wide">Crusade Leaders</h3>
+<span class="material-symbols-outlined text-outline-variant">military_tech</span>
+</div>
+<div class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3">
+<!-- Leaderboard Entry 1 (Active Player) -->
+<div class="bg-surface-container p-3 border-l-4 border-primary flex items-center gap-4 relative scanline">
+<div class="w-10 h-10 bg-surface border border-outline-variant rounded flex items-center justify-center shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A stylized, low-resolution crest of a burning sword crossing a cogwheel, rendered in muted gold and deep crimson against a black background, industrial grimdark style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1fqzszP6rUb5CJ9G_pFBUs7ks3IPiXiLv1ES-UPVs5-braIhBcopnMmVdy4o2lVNVESq7l2w-nMkxwkl5LtyygoiK0B6fOXenoB-nKHgj15aqptOTiRJYw49L5-9HrRFLoYGBU8T5l5mlxNFi7oWgG3Pj7uN8puDEw16hegBgeeUbP_JRT9E90ZfM1yXSXDGsJUsHhcJ8PhiHjdu8eEOsX_LcLb9q62hIJrVkkN5uN3Hg37RKFBMG"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-label-caps text-label-caps text-primary truncate uppercase">Iron Psalm (You)</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs truncate">Heretic Legion</p>
+</div>
+<div class="text-right shrink-0">
+<div class="font-stats-lg text-stats-lg text-on-surface">42 <span class="text-xs text-primary">GLRY</span></div>
+<div class="font-stats-sm text-stats-sm text-tertiary-fixed">2-0-1</div>
+</div>
+</div>
+<!-- Leaderboard Entry 2 -->
+<div class="bg-surface-container-low p-3 border-l-4 border-surface-variant flex items-center gap-4 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-10 h-10 bg-surface border border-outline-variant rounded flex items-center justify-center shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A gritty icon of a weeping angel made of rusted iron, shedding drops of blood, set against a dark grey stone texture, gothic horror wargaming aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQk_L8Y0wK_-4LmtAwYyF9eJFAXOyClPBdYdRQB3lrJRhd1ZE1kvsVoVgXHdTV7bAQLAhqM9UvECrtNWHtcNTQEd05WskF1xwBmLUXA8GTMMp8EurW7cMRmmxC034yVo1W4YkHvaT1c7MPTG01Hzv36hi10h7chWOPsIPdlB12f0FslIwzrhS9MU-koUfGh_MFuU8OhQQLqY_ll3lpdzxwcvCTmqnVV75-5eV_mOL0KI8VZwO6-_Cm"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-label-caps text-label-caps text-on-surface truncate uppercase">Tears of Antioch</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs truncate">Principality</p>
+</div>
+<div class="text-right shrink-0">
+<div class="font-stats-lg text-stats-lg text-on-surface">38 <span class="text-xs text-primary">GLRY</span></div>
+<div class="font-stats-sm text-stats-sm text-on-surface-variant">1-1-1</div>
+</div>
+</div>
+<!-- Leaderboard Entry 3 -->
+<div class="bg-surface-container-low p-3 border-l-4 border-surface-variant flex items-center gap-4 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-10 h-10 bg-surface border border-outline-variant rounded flex items-center justify-center shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A brutalist emblem featuring a heavy trench mace smashing a skull, rendered in gunmetal grey and sickly green, industrial trench warfare vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC02-KlG_TEMOowYEDYOklFKrOBBc4X1lpZ9jcaAXUOvQWVxBLG6r7mmPCzLfNzMUQyoh8MJVvJwcVhRH2K9KBW4jPZzbz6YoldU5soueJ8ywaLZLhHoecJ9vXdFn1-_HIWu8rP4lVZaX-plwPk8ltZJzqRA--HQPg3LI4ZQ8ROavzWpkYOWHH8x4VqTsN3CWO6GJaCDNi1Nxkz-2nlQmtTiLKWtUSookfowgKgOEKjbDM0jX0Ll06W"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-label-caps text-label-caps text-on-surface truncate uppercase">Trench Rots</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs truncate">Trench Pilgrims</p>
+</div>
+<div class="text-right shrink-0">
+<div class="font-stats-lg text-stats-lg text-on-surface">25 <span class="text-xs text-primary">GLRY</span></div>
+<div class="font-stats-sm text-stats-sm text-error">0-2-1</div>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border border-surface-variant text-on-surface-variant font-label-caps text-label-caps uppercase hover:bg-surface-variant hover:text-on-surface transition-colors">View Full Standings</button>
+</div>
+</div>
+<!-- Right Column: Trench Map (Bento Item 2) -->
+<div class="xl:col-span-8 flex flex-col">
+<div class="riveted-container p-2 flex-1 relative min-h-[500px] lg:min-h-[600px] flex flex-col">
+<div class="rivet rivet-tl"></div><div class="rivet rivet-tr"></div><div class="rivet rivet-bl"></div><div class="rivet rivet-br"></div>
+<!-- Map Controls Header -->
+<div class="bg-surface-container-low p-3 mb-2 border border-outline-variant flex justify-between items-center z-10 relative">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">radar</span>
+<h3 class="font-headline-md text-headline-md text-on-surface uppercase">Sector IV Cartography</h3>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center bg-surface border border-outline-variant hover:border-primary text-on-surface transition-colors"><span class="material-symbols-outlined text-sm">zoom_in</span></button>
+<button class="w-8 h-8 flex items-center justify-center bg-surface border border-outline-variant hover:border-primary text-on-surface transition-colors"><span class="material-symbols-outlined text-sm">zoom_out</span></button>
+</div>
+</div>
+<!-- Interactive Map Canvas Area -->
+<div class="flex-1 relative bg-surface-container-lowest border border-outline-variant overflow-hidden">
+<!-- Abstract Grid Background -->
+<div class="absolute inset-0 scanline opacity-50 z-0"></div>
+<div class="absolute inset-0 z-0" style="background-image: radial-gradient(#32353c 1px, transparent 1px); background-size: 32px 32px; opacity: 0.3;"></div>
+<!-- Map Visual Anchor (Simulated Image/Texture) -->
+<div class="absolute inset-0 z-0 opacity-40 mix-blend-overlay flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A grim, top-down tactical map of a muddy, cratered WWI-style trench network. Drawn on aged parchment with faded ink, showing defensive lines, pillboxes, and artillery impact zones in a dark, desaturated palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC5mPcQ3uG5ICeJs1OcMNK_ybSrlOMaLXPqyvpCmwIuS-avEHOFvP52aqTnEXiBUSqDo3aSfFvg5Mv0R0xb1fp4F_exin4FpgZb_0qyzxDLAxmsZvZNBY_TKDK2visFa0DmQENkBdJnecbbPd5L_Qx4VCQSDT8nHVw4KJL5AfkHlvxz5IKkqQG6vvfEiHuqMVKyK_39qrNz70bpyVc1gw9gTrnS0NrQIYaCTGIIHJge4kjAywtlZqo"/>
+</div>
+<!-- Tactical Node: Sector A-1 (Controlled by Player) -->
+<div class="absolute top-[20%] left-[30%] z-10 group cursor-pointer">
+<!-- Node Connector Line (Simulated) -->
+<div class="absolute top-1/2 left-full w-32 h-1 bg-primary/50 -z-10 transform origin-left rotate-12"></div>
+<div class="bg-surface border-2 border-primary p-3 w-48 shadow-lg transform transition-transform group-hover:scale-105 group-hover:shadow-primary/20 relative">
+<div class="absolute -top-2 -left-2 w-4 h-4 bg-primary border border-surface rotate-45"></div>
+<h4 class="font-label-caps text-label-caps text-primary uppercase border-b border-surface-variant pb-1 mb-2">North Trench A-1</h4>
+<div class="flex items-center justify-between mb-2">
+<span class="font-body-md text-body-md text-xs text-on-surface-variant">Control:</span>
+<span class="font-label-caps text-label-caps text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[10px] text-primary" style="font-variation-settings: 'FILL' 1;">flag</span> Iron Psalm</span>
+</div>
+<div class="bg-surface-container p-2 border border-outline-variant">
+<span class="font-body-md text-body-md text-[10px] text-tertiary uppercase tracking-wider block mb-1">Perk Active</span>
+<span class="font-stats-sm text-stats-sm text-on-surface">+1 Supply / Turn</span>
+</div>
+</div>
+</div>
+<!-- Tactical Node: Sector B-2 (Contested) -->
+<div class="absolute top-[40%] left-[55%] z-10 group cursor-pointer">
+<!-- Node Connector Line (Simulated) -->
+<div class="absolute top-1/2 right-full w-24 h-1 bg-surface-variant -z-10 transform origin-right -rotate-12"></div>
+<div class="bg-surface border border-outline-variant p-3 w-48 shadow-lg transform transition-transform group-hover:scale-105 opacity-90 relative">
+<div class="absolute -top-2 -right-2 w-4 h-4 bg-secondary-container border border-surface rotate-45 animate-pulse"></div>
+<h4 class="font-label-caps text-label-caps text-on-surface uppercase border-b border-surface-variant pb-1 mb-2">No Man's Land B-2</h4>
+<div class="flex items-center justify-between mb-2">
+<span class="font-body-md text-body-md text-xs text-on-surface-variant">Control:</span>
+<span class="font-label-caps text-label-caps text-error flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">warning</span> Contested</span>
+</div>
+<div class="bg-surface-container p-2 border border-outline-variant flex justify-between items-center">
+<span class="font-body-md text-body-md text-[10px] text-on-surface-variant uppercase tracking-wider">Strategic Value</span>
+<span class="font-stats-sm text-stats-sm text-on-surface">High</span>
+</div>
+<button class="mt-2 w-full bg-secondary-container/20 border border-secondary-container text-on-secondary-container font-label-caps text-label-caps text-[10px] py-1 hover:bg-secondary-container transition-colors uppercase">Issue Challenge</button>
+</div>
+</div>
+<!-- Tactical Node: Sector C-3 (Enemy) -->
+<div class="absolute bottom-[25%] left-[20%] z-10 group cursor-pointer">
+<div class="bg-surface border border-outline-variant p-3 w-48 shadow-lg transform transition-transform group-hover:scale-105 opacity-80 relative">
+<div class="absolute -bottom-2 -left-2 w-4 h-4 bg-surface-variant border border-surface rotate-45"></div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-surface-variant pb-1 mb-2">Artillery Redoubt</h4>
+<div class="flex items-center justify-between mb-2">
+<span class="font-body-md text-body-md text-xs text-on-surface-variant">Control:</span>
+<span class="font-label-caps text-label-caps text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">shield</span> Tears of Antioch</span>
+</div>
+<div class="bg-surface-container-low p-2 border border-outline-variant opacity-75">
+<span class="font-body-md text-body-md text-[10px] text-on-surface-variant uppercase tracking-wider block mb-1">Perk (Hostile)</span>
+<span class="font-stats-sm text-stats-sm text-on-surface-variant">Mortar Support</span>
+</div>
+</div>
+</div>
+<!-- Decorative Map Elements -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 bg-surface/80 p-2 border border-outline-variant backdrop-blur-sm z-20">
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-primary border border-surface-variant"></div><span class="font-label-caps text-label-caps text-xs text-on-surface">Controlled</span></div>
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-secondary-container border border-surface-variant"></div><span class="font-label-caps text-label-caps text-xs text-on-surface">Contested</span></div>
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-surface-variant border border-surface-variant"></div><span class="font-label-caps text-label-caps text-xs text-on-surface-variant">Hostile/Neutral</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 docked bottom-0 rounded-t-lg border-t-4 border-outline-variant bg-surface-container-highest dark:bg-surface-container-highest shadow-2xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Roster</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">skull</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Play</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl p-2 scale-110 shadow-lg sacred-glow transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+<span class="font-label-caps text-label-caps uppercase mt-1 font-bold">World</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Menu</span>
+</a>
+</nav>
+</body></html>

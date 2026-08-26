@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Warband Roster - Iron Harbingers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Courier+Prime&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#ffb5a0",
+                        "on-secondary-container": "#ff9a8a",
+                        "surface-bright": "#3a3939",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-primary-fixed-variant": "#872000",
+                        "surface-tint": "#ffb5a0",
+                        "primary-fixed": "#ffdbd1",
+                        "on-primary-container": "#541100",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "on-primary-fixed": "#3b0900",
+                        "on-secondary-fixed": "#410000",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary": "#690000",
+                        "primary-container": "#ff5625",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#2e1414",
+                        "background": "#131313",
+                        "surface-variant": "#353534",
+                        "tertiary": "#e9bbbb",
+                        "inverse-primary": "#b12d00",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#920703",
+                        "inverse-on-surface": "#313030",
+                        "outline-variant": "#5d4038",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-container": "#3e2222",
+                        "inverse-surface": "#e5e2e1",
+                        "on-surface-variant": "#e7bdb2",
+                        "surface-container-highest": "#353534",
+                        "on-background": "#e5e2e1",
+                        "surface-container": "#201f1f",
+                        "surface-dim": "#131313",
+                        "outline": "#ad887e",
+                        "primary": "#ffb5a0",
+                        "secondary-fixed": "#ffdad4",
+                        "error": "#ffb4ab",
+                        "on-surface": "#e5e2e1",
+                        "on-error": "#690005",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary-fixed-variant": "#5f3e3e",
+                        "tertiary-fixed-dim": "#e9bbbb",
+                        "on-primary": "#601400",
+                        "tertiary-container": "#b08786",
+                        "secondary-container": "#920703",
+                        "on-tertiary": "#462828",
+                        "secondary": "#ffb4a8",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "48px",
+                        "margin": "24px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "stack-sm": "8px",
+                        "stack-md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Bricolage Grotesque"],
+                        "stats-lg": ["Space Mono"],
+                        "label-sm": ["Space Mono"],
+                        "body-md": ["Courier Prime"],
+                        "headline-xl": ["Bricolage Grotesque"],
+                        "headline-lg": ["Bricolage Grotesque"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "stats-lg": ["20px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e2e1;
+            position: relative;
+        }
+        
+        /* Soot Texture Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Ember Glow Animation */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: inset 0 0 10px rgba(255, 69, 0, 0.2); }
+            50% { box-shadow: inset 0 0 20px rgba(255, 69, 0, 0.4); }
+        }
+
+        .ember-flicker {
+            animation: flicker 2s infinite ease-in-out;
+        }
+
+        /* Spiked Card Corners */
+        .spiked-card {
+            position: relative;
+            background: #1a1512;
+            border: 2px solid #4a2c2c;
+            border-radius: 0;
+            clip-path: polygon(
+                8px 0, 100% 0,
+                100% calc(100% - 8px), calc(100% - 8px) 100%,
+                0 100%, 0 8px
+            );
+        }
+
+        .spiked-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 12px; height: 12px;
+            background: #4a2c2c;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+        
+        .spiked-card::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; right: -2px;
+            width: 12px; height: 12px;
+            background: #4a2c2c;
+            clip-path: polygon(100% 100%, 100% 0, 0 100%);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; border-left: 2px solid #4a2c2c; }
+        ::-webkit-scrollbar-thumb { background: #4a2c2c; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff4500; }
+
+        /* Rust Lines */
+        .rust-border-b { border-bottom: 2px solid #4a2c2c; }
+        .rust-border-r { border-right: 2px solid #4a2c2c; }
+        .rust-border-l { border-left: 2px solid #4a2c2c; }
+
+        /* Sigil Background */
+        .sigil-bg {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 200px;
+            color: #8b0000;
+            animation: spin 60s linear infinite;
+        }
+        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- Mobile Top App Bar -->
+<header class="md:hidden flex justify-between items-center w-full px-margin py-stack-sm bg-background dark:bg-background border-b-2 border-secondary-container sticky top-0 z-40">
+<div class="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-tighter text-primary dark:text-primary ember-flicker">
+            HERETIC LEGION
+        </div>
+<div class="flex gap-gutter">
+<span class="material-symbols-outlined text-primary dark:text-primary hover:text-primary-container transition-opacity duration-75 cursor-pointer">skull</span>
+<span class="material-symbols-outlined text-primary dark:text-primary hover:text-primary-container transition-opacity duration-75 cursor-pointer">bloodtype</span>
+<span class="material-symbols-outlined text-primary dark:text-primary hover:text-primary-container transition-opacity duration-75 cursor-pointer">payments</span>
+</div>
+</header>
+<!-- Side Nav (Desktop) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-screen flex-col z-50 overflow-y-auto bg-surface-container-lowest dark:bg-surface-container-lowest border-r-2 border-secondary-container w-64 pt-margin">
+<div class="px-margin mb-stack-lg">
+<div class="font-headline-lg text-headline-lg text-primary ember-flicker mb-stack-sm">
+                IRON HARBINGERS
+            </div>
+<div class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">
+                Rank: Desecrator
+            </div>
+</div>
+<div class="flex-1 flex flex-col gap-base">
+<a class="flex items-center gap-gutter bg-secondary-container text-on-secondary-container py-stack-sm px-gutter border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest font-bold">Warband</span>
+</a>
+<a class="flex items-center gap-gutter text-on-surface-variant py-stack-sm px-gutter hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">pentagon</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Rituals</span>
+</a>
+<a class="flex items-center gap-gutter text-on-surface-variant py-stack-sm px-gutter hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">swords</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Armory</span>
+</a>
+<a class="flex items-center gap-gutter text-on-surface-variant py-stack-sm px-gutter hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">castle</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Territory</span>
+</a>
+<a class="flex items-center gap-gutter text-on-surface-variant py-stack-sm px-gutter hover:bg-surface-container-low hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Log</span>
+</a>
+</div>
+<div class="px-margin py-stack-md mt-auto rust-border-t border-[#4a2c2c] border-t-2">
+<button class="w-full bg-[#ff4500] text-[#0a0a0a] font-label-sm text-label-sm uppercase tracking-widest py-stack-sm px-gutter flex items-center justify-center gap-base transition-all hover:opacity-80 hover:scale-95 border-2 border-transparent hover:border-[#ff4500] relative overflow-hidden group">
+<span class="relative z-10 font-bold">SUMMON REINFORCEMENTS</span>
+<span class="material-symbols-outlined relative z-10 text-[16px]">swords</span>
+<div class="absolute inset-0 bg-[#ff4500] opacity-50 group-hover:animate-pulse"></div>
+</button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-margin md:p-stack-lg relative z-10 flex flex-col gap-stack-lg">
+<span class="material-symbols-outlined sigil-bg">next_plan</span>
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-stack-md rust-border-b pb-stack-sm">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-primary ember-flicker uppercase tracking-tighter">
+                    Iron Harbingers
+                </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-base max-w-2xl">
+                    Forged in the soot of shattered worlds, this warband seeks only destruction. Manage your forces, assign dark rituals, and prepare for the slaughter.
+                </p>
+</div>
+<div class="spiked-card p-stack-sm flex flex-col items-end min-w-[200px]">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Treasury</span>
+<div class="font-stats-lg text-stats-lg text-[#ff4500] flex items-center gap-base mt-base">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+                    1,250 Ducats
+                </div>
+</div>
+</header>
+<!-- Roster Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-margin">
+<!-- Leader Profile (Bento Span) -->
+<section class="lg:col-span-8 spiked-card p-margin flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-[url('placeholder')] opacity-20 object-cover rounded-bl-full blur-sm group-hover:opacity-30 transition-opacity" data-alt="A grimdark portrait of a monstrous heavily armored warlord engulfed in subtle smoke and embers, dark atmospheric lighting, crimson and rusted iron palette."></div>
+<div class="flex justify-between items-start relative z-10 mb-stack-md">
+<div>
+<div class="inline-block bg-[#1a1512] border border-[#8b0000] px-2 py-1 mb-base">
+<span class="font-label-sm text-label-sm text-[#8b0000] uppercase tracking-widest">WARLORD</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface uppercase">Desecrator Leader</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Kargos the Blood-Soaked</p>
+</div>
+<div class="text-right">
+<span class="font-stats-lg text-stats-lg text-[#ff4500]">350 Pts</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-base mb-stack-md relative z-10">
+<div class="bg-[#0a0a0a] p-stack-sm border border-[#4a2c2c] text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Mv</span>
+<span class="font-stats-lg text-stats-lg text-primary">6"</span>
+</div>
+<div class="bg-[#0a0a0a] p-stack-sm border border-[#4a2c2c] text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">WS</span>
+<span class="font-stats-lg text-stats-lg text-primary">2+</span>
+</div>
+<div class="bg-[#0a0a0a] p-stack-sm border border-[#4a2c2c] text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">S</span>
+<span class="font-stats-lg text-stats-lg text-primary">5</span>
+</div>
+<div class="bg-[#0a0a0a] p-stack-sm border border-[#4a2c2c] text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">W</span>
+<span class="font-stats-lg text-stats-lg text-primary">6</span>
+</div>
+</div>
+<div class="mt-auto relative z-10">
+<h3 class="font-label-sm text-label-sm text-[#ff4500] uppercase tracking-widest mb-base rust-border-b pb-1 inline-block">Wargear &amp; Relics</h3>
+<ul class="font-body-md text-body-md text-on-surface-variant space-y-2 mt-2">
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-[#4a2c2c] transform rotate-45"></span> Hell-forged Greataxe</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-[#4a2c2c] transform rotate-45"></span> Mantle of Flayed Skin</li>
+</ul>
+</div>
+</section>
+<!-- Actions Panel -->
+<section class="lg:col-span-4 flex flex-col gap-margin">
+<div class="spiked-card p-margin flex-1 flex flex-col justify-center items-center text-center group cursor-pointer hover:bg-[#1a1512] transition-colors relative">
+<span class="material-symbols-outlined text-[48px] text-[#4a2c2c] group-hover:text-[#ff4500] transition-colors mb-stack-sm">add_circle</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase">Recruit Unit</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Spend Ducats to expand the warband.</p>
+<div class="absolute inset-0 bg-[#ff4500] opacity-0 group-hover:opacity-5 transition-opacity"></div>
+</div>
+</section>
+<!-- Unit List -->
+<section class="lg:col-span-12">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase mb-stack-sm rust-border-b pb-base flex items-center gap-gutter">
+<span class="material-symbols-outlined text-[#ff4500]">group</span>
+                    Vanguard Elements
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-margin mt-stack-md">
+<!-- Unit Card 1 -->
+<div class="spiked-card p-margin flex flex-col relative group">
+<div class="flex justify-between items-start mb-stack-sm">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase text-lg">Cultist Troopers</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Infantry x10</span>
+</div>
+<span class="font-stats-lg text-stats-lg text-[#ff4500] text-sm">120 Pts</span>
+</div>
+<div class="grid grid-cols-4 gap-1 mb-stack-sm opacity-80">
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">M:6"</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">WS:4+</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">S:3</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">W:1</div>
+</div>
+<div class="mt-auto">
+<button class="w-full border-2 border-[#4a2c2c] text-[#ff4500] font-label-sm text-label-sm uppercase tracking-widest py-2 hover:bg-[#ff4500] hover:text-[#0a0a0a] transition-all">
+                                Edit Loadout
+                            </button>
+</div>
+</div>
+<!-- Unit Card 2 -->
+<div class="spiked-card p-margin flex flex-col relative group">
+<div class="flex justify-between items-start mb-stack-sm">
+<div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase text-lg">Flesh Hounds</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Beast x5</span>
+</div>
+<span class="font-stats-lg text-stats-lg text-[#ff4500] text-sm">85 Pts</span>
+</div>
+<div class="grid grid-cols-4 gap-1 mb-stack-sm opacity-80">
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">M:10"</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">WS:3+</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">S:4</div>
+<div class="bg-[#0a0a0a] py-1 border border-[#4a2c2c] text-center text-xs font-stats-lg text-on-surface">W:2</div>
+</div>
+<div class="mt-auto">
+<button class="w-full border-2 border-[#4a2c2c] text-[#ff4500] font-label-sm text-label-sm uppercase tracking-widest py-2 hover:bg-[#ff4500] hover:text-[#0a0a0a] transition-all">
+                                Edit Loadout
+                            </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

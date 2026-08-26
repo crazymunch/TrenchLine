@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Warband Roster</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#ffffff",
+                      "outline": "#929187",
+                      "inverse-on-surface": "#33302d",
+                      "surface-container-high": "#2c2927",
+                      "primary-fixed-dim": "#c8c8b0",
+                      "on-primary-container": "#646652",
+                      "on-surface-variant": "#c8c7bc",
+                      "secondary": "#ffb3ad",
+                      "primary-container": "#e4e4cc",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-low": "#1d1b19",
+                      "surface-container-highest": "#373432",
+                      "surface-tint": "#c8c8b0",
+                      "primary-fixed": "#e4e4cc",
+                      "secondary-fixed-dim": "#ffb3ad",
+                      "on-secondary": "#68000a",
+                      "surface": "#151311",
+                      "on-tertiary-fixed": "#201b16",
+                      "error": "#ffb4ab",
+                      "on-secondary-fixed": "#410004",
+                      "on-tertiary-fixed-variant": "#4c463f",
+                      "on-error": "#690005",
+                      "background": "#151311",
+                      "secondary-fixed": "#ffdad7",
+                      "on-tertiary-container": "#6a635c",
+                      "surface-container-lowest": "#100e0c",
+                      "surface-variant": "#373432",
+                      "surface-container": "#211f1d",
+                      "secondary-container": "#8f191d",
+                      "inverse-primary": "#5e604d",
+                      "outline-variant": "#47473f",
+                      "on-primary-fixed": "#1b1d0e",
+                      "tertiary-fixed-dim": "#cfc5bc",
+                      "surface-dim": "#151311",
+                      "tertiary-container": "#ebe1d8",
+                      "inverse-surface": "#e8e1dd",
+                      "on-secondary-container": "#ff9e97",
+                      "on-primary": "#303221",
+                      "tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#8c171b",
+                      "on-tertiary": "#352f2a",
+                      "tertiary-fixed": "#ebe1d8",
+                      "on-primary-fixed-variant": "#474836",
+                      "on-background": "#e8e1dd",
+                      "surface-bright": "#3c3936",
+                      "error-container": "#93000a",
+                      "on-surface": "#e8e1dd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "margin-desktop": "64px",
+                      "lg": "24px",
+                      "unit": "4px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "xl": "40px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": [
+                              "Courier Prime"
+                      ],
+                      "headline-lg-mobile": [
+                              "EB Garamond"
+                      ],
+                      "headline-sm": [
+                              "EB Garamond"
+                      ],
+                      "body-md": [
+                              "Libre Caslon Text"
+                      ],
+                      "label-sm": [
+                              "Courier Prime"
+                      ],
+                      "body-lg": [
+                              "Libre Caslon Text"
+                      ],
+                      "headline-lg": [
+                              "EB Garamond"
+                      ],
+                      "headline-md": [
+                              "EB Garamond"
+                      ]
+              },
+              "fontSize": {
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .texture-mud {
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.1"/></svg>');
+        }
+        .texture-wood {
+            background-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.1) 100%), url('data:image/svg+xml;utf8,<svg width="10" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="10" height="100" fill="%2325221e"/><path d="M5 0 Q2 50 5 100" stroke="%231a1815" fill="none" opacity="0.3"/></svg>');
+            background-size: auto 100%;
+        }
+        .texture-parchment {
+            background-color: rgba(245, 245, 220, 0.9);
+            mask-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="black" opacity="0.9"/><path d="M0,0 Q10,10 20,0 Q30,20 40,0 Q60,15 80,0 Q90,5 100,0 L100,100 L0,100 Z" fill="black"/></svg>');
+            mask-size: 100% 100%;
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="black" opacity="0.9"/><path d="M0,0 Q10,10 20,0 Q30,20 40,0 Q60,15 80,0 Q90,5 100,0 L100,100 L0,100 Z" fill="black"/></svg>');
+            -webkit-mask-size: 100% 100%;
+        }
+        .stamped-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen texture-mud pb-24 md:pb-0 md:pl-64">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen fixed left-0 top-0 z-40 w-64 border-r-2 border-outline-variant bg-surface-container dark:bg-surface-container">
+<div class="p-lg border-b border-outline-variant flex flex-col items-center justify-center">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-widest text-center mt-md">PILGRIM 724</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-sm">Sector: No Man's Land</p>
+</div>
+<ul class="flex-1 overflow-y-auto py-md space-y-sm">
+<li>
+<a class="flex items-center gap-md bg-secondary-container text-on-secondary-container rounded-none border-y border-outline-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg transition-all duration-150 transform scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<span>Warband</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-surface-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span>Reliquary</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-surface-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined">group_add</span>
+<span>Mercenaries</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-surface-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span>Directives</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-surface-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+<div class="p-md border-t border-outline-variant mt-auto">
+<a class="flex items-center gap-md text-on-surface-variant p-md hover:bg-surface-container-highest dark:hover:bg-surface-container-highest font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 z-50 docked full-width top-0 border-b-2 border-outline-variant dark:border-outline-variant bg-surface shadow-[0_2px_0_0_rgba(0,0,0,0.8)]">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-tighter text-on-surface dark:text-on-surface">TRENCH CHRONICLE</h1>
+<div class="flex gap-md">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-surface-container-highest p-sm rounded-none">
+<span class="material-symbols-outlined">history_edu</span>
+</button>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-surface-container-highest p-sm rounded-none">
+<span class="material-symbols-outlined">shield</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="p-margin-mobile md:p-margin-desktop max-w-[1280px] mx-auto grid grid-cols-4 md:grid-cols-12 gap-gutter">
+<!-- Header Section -->
+<div class="col-span-4 md:col-span-12 mb-lg">
+<div class="texture-wood p-md border-2 border-outline-variant relative">
+<div class="absolute top-sm left-sm w-sm h-sm rounded-full bg-outline-variant shadow-sm"></div>
+<div class="absolute top-sm right-sm w-sm h-sm rounded-full bg-outline-variant shadow-sm"></div>
+<div class="texture-parchment p-lg relative overflow-hidden">
+<h2 class="font-headline-lg text-headline-lg text-surface-dim font-bold tracking-tighter border-b-2 border-outline-variant pb-xs mb-sm">The Penitent Host</h2>
+<div class="flex justify-between items-end">
+<p class="font-body-md text-body-md text-on-tertiary-fixed-variant max-w-2xl">A zealous band of martyrs, marching endlessly towards redemption through suffering.</p>
+<div class="flex items-center gap-sm font-label-lg text-label-lg text-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">toll</span>
+<span>1,250 Ducats</span>
+</div>
+</div>
+<div class="absolute bottom-md right-md w-12 h-12 rounded-full bg-secondary-container shadow-md flex items-center justify-center border-2 border-[#410004]">
+<span class="material-symbols-outlined text-tertiary">church</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Roster Grid -->
+<div class="col-span-4 md:col-span-8 flex flex-col gap-lg">
+<!-- Unit Card: Leader -->
+<div class="texture-wood p-xs border-2 border-outline-variant relative">
+<div class="texture-parchment p-md min-h-[160px] flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-sm border-b border-outline-variant pb-xs">
+<h3 class="font-headline-md text-headline-md text-on-tertiary-fixed-variant font-bold">Martyred Preacher</h3>
+<span class="bg-[#a52a2a] text-[#f5f5dc] font-label-sm text-label-sm px-2 py-1 rounded-sm shadow-[1px_1px_0_0_#403a34]">LEADER</span>
+</div>
+<ul class="font-body-md text-body-md text-on-tertiary-fixed-variant space-y-xs ml-4">
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-sm">remove</span> <span>Relic Flail (Melee, Heavy)</span></li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-sm">remove</span> <span>Tattered Robes (Light Armor)</span></li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-sm">remove</span> <span>Book of Litanies</span></li>
+</ul>
+</div>
+<div class="mt-md flex justify-end">
+<span class="font-label-lg text-label-lg text-secondary-container">350 Ducats</span>
+</div>
+</div>
+</div>
+<!-- Unit Card: Troop -->
+<div class="texture-wood p-xs border-2 border-outline-variant relative">
+<div class="texture-parchment p-md min-h-[160px] flex flex-col justify-between opacity-90">
+<div>
+<div class="flex justify-between items-start mb-sm border-b border-outline-variant pb-xs border-dashed">
+<h3 class="font-headline-sm text-headline-sm text-on-tertiary-fixed-variant font-bold">Rabble of the Mud</h3>
+<span class="text-on-tertiary-fixed-variant font-label-sm text-label-sm px-2 py-1 border border-outline-variant">TROOP (x5)</span>
+</div>
+<ul class="font-body-md text-body-md text-on-tertiary-fixed-variant space-y-xs ml-4">
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-sm">close</span> <span>Makeshift Spears</span></li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-sm">close</span> <span>Trench Rations</span></li>
+</ul>
+</div>
+<div class="mt-md flex justify-end">
+<span class="font-label-lg text-label-lg text-on-tertiary-fixed-variant">150 Ducats (Total)</span>
+</div>
+</div>
+</div>
+<button class="mt-sm bg-[#a52a2a] text-[#f5f5dc] font-label-lg text-label-lg py-3 px-6 border border-[#403a34] shadow-[2px_2px_0_0_#151311] stamped-button w-full flex items-center justify-center gap-sm hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined">add</span> ADD RECRUIT
+            </button>
+</div>
+<!-- Sidebar / Actions -->
+<div class="col-span-4 md:col-span-4 flex flex-col gap-lg">
+<div class="texture-wood p-md border-2 border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md pb-xs border-b border-outline-variant">Warband Assets</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-sm border border-outline-variant bg-surface-container-highest">
+<span class="font-body-md text-body-md">Holy Water Flasks</span>
+<span class="font-label-lg text-label-lg">x3</span>
+</div>
+<div class="flex items-center justify-between p-sm border border-outline-variant bg-surface-container-highest">
+<span class="font-body-md text-body-md">Bloodstained Banners</span>
+<span class="font-label-lg text-label-lg">x1</span>
+</div>
+</div>
+</div>
+<div class="texture-parchment p-md border border-[#403a34] transform rotate-1">
+<p class="font-label-sm text-label-sm text-[#410004] italic">"Let the mud claim our flesh, so long as the soul remains untarnished by heresy."</p>
+<div class="flex justify-end mt-sm">
+<div class="w-8 h-8 rounded-full bg-[#a52a2a] flex items-center justify-center border border-[#403a34]">
+<span class="material-symbols-outlined text-xs text-primary">edit</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe border-t-2 border-outline-variant bg-surface-container-low shadow-[0_-4px_10px_rgba(0,0,0,0.5)]">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-none p-2 mt-[-4px] border-t-2 border-primary font-label-sm text-label-sm w-1/4 h-full" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_filled</span>
+<span class="mt-xs">Roster</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-highest font-label-sm text-label-sm w-1/4 h-full" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="mt-xs">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-highest font-label-sm text-label-sm w-1/4 h-full" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="mt-xs">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-highest font-label-sm text-label-sm w-1/4 h-full" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="mt-xs">Map</span>
+</a>
+</nav>
+</body></html>
