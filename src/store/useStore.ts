@@ -284,9 +284,29 @@ const defaultFreshCampaign: Campaign = {
   chronicleLogs: []
 };
 
+const defaultSultanateWarband: Warband = {
+  id: 'wb-al-qarn-rihla',
+  name: 'Al-Qarn Rihla',
+  factionId: 'iron-sultanate',
+  ducatLimit: 1220,
+  treasuryDucats: 220,
+  gloryPoints: 4,
+  lore: SULTANATE_WARBAND_LORE.lore,
+  motto: SULTANATE_WARBAND_LORE.motto,
+  patron: SULTANATE_WARBAND_LORE.patron,
+  chronicleLog: SULTANATE_WARBAND_LORE.chronicleLog,
+  snapshots: SULTANATE_WARBAND_SNAPSHOTS,
+  units: SULTANATE_WARBAND_SNAPSHOTS[2].units,
+  armoryStash: [],
+  createdAt: '2026-06-01T10:00:00Z',
+  updatedAt: new Date().toISOString()
+};
+
 export const useStore = create<AppState>((set, get) => {
   const storedWarbands = storage.getWarbands();
-  const warbands = storedWarbands.map((wb) => {
+  const rawList = storedWarbands.length > 0 ? storedWarbands : [defaultSultanateWarband];
+
+  const warbands = rawList.map((wb) => {
     const isSultanate = wb.factionId === 'iron-sultanate' || wb.name.toLowerCase().includes('qarn') || wb.name.toLowerCase().includes('sultanate');
     return {
       ...wb,
@@ -294,7 +314,7 @@ export const useStore = create<AppState>((set, get) => {
       motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
       patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
       chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : []),
-      snapshots: (wb.snapshots && wb.snapshots.length > 0) ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : []),
+      snapshots: (isSultanate && (!wb.snapshots || wb.snapshots.length < 3)) ? SULTANATE_WARBAND_SNAPSHOTS : (wb.snapshots && wb.snapshots.length > 0 ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : [])),
       units: wb.units.map(enrichUnitWithLore)
     };
   });
@@ -682,7 +702,7 @@ export const useStore = create<AppState>((set, get) => {
         defaultWeapons.reduce((sum, w) => sum + w.cost, 0) +
         defaultArmour.reduce((sum, a) => sum + a.cost, 0);
 
-      const maxHp = profile.stats.keywords.some(k => k.toLowerCase().includes('tough')) ? 2 : 1;
+      const maxHp = profile.stats.keywords?.some(k => k.toLowerCase().includes('tough')) ? 2 : 1;
 
       const newUnit: ActiveUnit = {
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,

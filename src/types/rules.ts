@@ -3,7 +3,8 @@ export interface Statline {
   ranged: string;   // e.g. "+1" or "-"
   melee: string;    // e.g. "+2"
   armour: string;   // e.g. "+1" or "0"
-  keywords: string[];
+  keywords?: string[];
+  baseSize?: string;
 }
 
 export type UnitCategory = 'Leader' | 'Elite' | 'Trooper' | 'Mercenary';
@@ -20,9 +21,10 @@ export interface WeaponProfile {
   type: 'Melee' | 'Ranged' | 'Both';
   range: string; // e.g. "Melee" or "24\""
   modifiers: string; // e.g. "+1 Melee" or "-"
-  damage: string; // e.g. "Standard" or "D3"
+  damage?: string; // e.g. "Standard" or "D3"
   keywords: string[];
   cost: number; // in Ducats
+  category?: string;
   description?: string;
   hands?: 1 | 2;
   factionId?: string;
@@ -34,7 +36,9 @@ export interface WeaponProfile {
 export interface ArmourProfile {
   id: string;
   name: string;
-  armourModifier: string; // e.g. "-1 Injury Modifier"
+  armourModifier?: string; // e.g. "-1 Injury Modifier"
+  modifier?: string;
+  category?: string;
   cost: number;
   keywords?: string[];
   description?: string;

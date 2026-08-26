@@ -38,7 +38,7 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
 
     const totalCost = wb.units.reduce((s, u) => s + u.totalCost, 0);
     const warriorCount = wb.units.length;
-    const toughCount = wb.units.filter((u) => u.profileSnapshot.stats.keywords.some(k => k.toLowerCase().includes('tough'))).length;
+    const toughCount = wb.units.filter((u) => u.profileSnapshot.stats.keywords?.some(k => k.toLowerCase().includes('tough'))).length;
     
     let rangedWeapons = 0;
     let meleeWeapons = 0;

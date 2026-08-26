@@ -1,5 +1,6 @@
-import { ActiveUnit, Warband } from '../types/warband';
+import { ActiveUnit, Warband, WarbandSnapshot, StashedItem } from '../types/warband';
 import { MatchRecord } from '../types/campaign';
+import { BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from './defaultRules';
 
 export interface KnownUnitLore {
   matchPatterns: string[];
@@ -110,15 +111,6 @@ Equipped with a Titan Zulfiqar, Great Sword, Fire Shield, and Siege Jezzail, Al-
     ]
   },
   {
-    matchPatterns: ['mudawwan', 'inscribed', 'homunculus'],
-    titles: ['The Inscribed', 'The Living Slate'],
-    quote: '[Silently follows the alchemical runes traced upon its skin]',
-    biography: `Constructed with human hands, unnatural strength, and an extra arm, inscribed with sacred script to protect the warband's rear guard and carry alchemical supplies.`,
-    deeds: [
-      'Carried wounded retainers and secured heavy alchemical alembics through enemy mortar fire.'
-    ]
-  },
-  {
     matchPatterns: ['jawhar', 'mamluk faris'],
     titles: ['The Gilded Blade', 'Janissary Champion'],
     quote: 'My blade belongs to the highest cause—and the richest treasury.',
@@ -132,7 +124,7 @@ Equipped with a Titan Zulfiqar, Great Sword, Fire Shield, and Siege Jezzail, Al-
 
 export const SULTANATE_WARBAND_LORE = {
   name: 'Al-Qarn Rihla',
-  patron: 'House of Wisdom • Bayt al-Nahas al-Hamra (House of the Red Copper)',
+  patron: 'House of Wisdom • Sublime Gate (House of the Red Copper)',
   motto: 'The Wall may forget, but the Copper remembers!',
   lore: `# The Al-Qarn Rihla (The Journey of the Century)
 **House of the Red Copper (Bayt al-Nahas al-Hamra)**
@@ -143,9 +135,9 @@ Every hundred years, the house mounts the **Al-Qarn Rihla**: an all-out, heavily
 
 Led by the brilliant and ruthless alchemist **Kasim bin Malik, the Living Engineer**, the warband blends advanced Sultanate ballistics with forbidden biological artifice, fielding clockwork war-beasts and flesh-grafted Takwin horrors bound in copper runes.`,
   chronicleLog: [
-    'Turn 2: Discovered the ancient leather-bound "Book of Golems" in the salt wastes; Kasim unlocks the secrets of clay golem craft.',
-    'Turn 1: Decisive 13-4 Victory against Sorcerer Zortan and the Court of the Seven-Headed Serpent at the Laboratory of the Gilded Rose.',
-    'Expedition Departure: The Al-Qarn Rihla departs the Great Iron Wall into the Al-Nafud Marches under the banner of Bayt al-Nahas al-Hamra.'
+    'July 2026 Gator: Kasim deciphers the ancient Book of Golems; Al-Masyukh ascends to Favoured Elite with Siege Jezzail & Fire Shield.',
+    '10 June 2026: 3-Force Skirmish Victory; Al-Masyukh undergoes massive Takwin synthesis into a 60mm Regenerative Behemoth.',
+    'June 2026: Expedition Departure: The Al-Qarn Rihla musters 9 warriors at the Great Iron Wall under the banner of Bayt al-Nahas al-Hamra.'
   ]
 };
 
@@ -153,9 +145,9 @@ export const SULTANATE_MATCH_HISTORY: MatchRecord[] = [
   {
     id: 'match-hist-1',
     campaignId: 'camp-default',
-    date: 'August 2026',
+    date: '10 June 2026',
     scenarioId: 'scen-relic-hunt',
-    scenarioName: 'The Siege of the Sun-Drenched Laboratory',
+    scenarioName: '3 Force Match: Siege of the Sun-Drenched Laboratory',
     participants: [
       {
         warbandId: 'wb-al-qarn',
@@ -221,23 +213,16 @@ On the final turn, Kavass Idris executed a daring sprint under the shadow of Sor
 
 #### Post-Battle Expedition Rewards
 - **Promotions:** Al-Qahhar and Idris both achieved Elite Promotions.
-- **Relic Mantle:** Idris awarded the Relic Golden Mantle.
-- **Takwin Harvest:** Demonic corpses harvested to birth the three-armed behemoth *Al-Masyukh*.
-- **Exploration:** Rolled 18 (+180 Ducats) and memorialized a fallen knight (+2 Glory Points).`,
+- **Takwin Harvest:** Demonic corpses harvested to synthesize the gargantuan behemoth *Al-Masyukh*.`,
     mvpUnitName: 'Al-Qahhar, the Crippled & Idris the Relic Hound',
-    opponentWarbandName: 'Court of the Seven-Headed Serpent (Sorcerer Zortan)',
-    notableMoments: [
-      'Kasim snipes Hell Knight Mephistolon in Turn 1 with alchemical gas bullets',
-      'Brazen Bull protects wounded Kasim and wipes 3 demonic fiends',
-      'Idris snatches the objective from Sorcerer Zortan on the final turn'
-    ]
+    opponentWarbandName: 'Court of the Seven-Headed Serpent (Sorcerer Zortan)'
   },
   {
     id: 'match-hist-2',
     campaignId: 'camp-default',
-    date: 'August 2026',
+    date: 'July 2026',
     scenarioId: 'scen-trench-raid',
-    scenarioName: 'The Chronicle of the Fractured Treaty & The Book of Golems',
+    scenarioName: 'July 2026 Gator: The Chronicle of the Book of Golems',
     participants: [
       {
         warbandId: 'wb-al-qarn',
@@ -250,7 +235,7 @@ On the final turn, Kavass Idris executed a daring sprint under the shadow of Sor
       }
     ],
     narrativeLog: 'Exploration in the salt wastes uncloaked the legendary Book of Golems. Al-Qahhar lost an arm in combat but all warriors made full recoveries.',
-    narrativeReport: `### Battle Report: The Chronicle of the Fractured Treaty
+    narrativeReport: `### Battle Report: July 2026 Gator Engagement
 **Location:** Mist-Shrouded Wastes of the Al-Nafud
 **Result:** Tactical Sultanate Victory & Artifact Recovery
 
@@ -262,78 +247,589 @@ During the post-battle exploration of the sunken conduit chambers, Kasim's schol
 
 This discovery marks a turning point for Bayt al-Nahas al-Hamra. Kasim is no longer merely an alchemist—he is now a true **Master of Construction**, synthesizing clay golem rites with Sultanate mechanical artifice.`,
     mvpUnitName: 'Al-Masyukh, Hunter of Hunters',
-    opponentWarbandName: 'Iron Crusade & Heretic Skirmishers',
-    notableMoments: [
-      'Al-Masyukh sweeps the battlefield center with twin Titan blades',
-      'Unearthing the sacred Book of Golems during post-game exploration'
-    ]
+    opponentWarbandName: 'Iron Crusade & Heretic Skirmishers'
   }
 ];
 
-export const SULTANATE_WARBAND_SNAPSHOTS: any[] = [
+// ----------------------------------------------------------------------------
+// 1. SNAPSHOT 1: FOUNDING CAMPAIGN MUSTER (799 Ducats | 4 Glory)
+// ----------------------------------------------------------------------------
+const SNAPSHOT_1_UNITS: ActiveUnit[] = [
   {
-    id: 'snap-founding',
-    timestamp: '2026-08-01T10:00:00Z',
-    label: '1. Founding Muster (1320 👑)',
-    type: 'founding',
-    ducatCost: 1320,
-    treasuryDucats: 0,
-    gloryPoints: 0,
-    unitCount: 11,
-    units: [],
-    armoryStash: [],
-    changesSummary: [
-      'Mustered the initial 11-member scientific expedition under Master Kasim bin Malik at the Great Iron Wall',
-      'Commissioned the Brazen Bull (Al-Qahhar) and Lion of Jabir (Dhi’b) from the House of Wisdom',
-      'Enlisted 4 veteran Kavass line riflemen and 2 alchemical apprentices'
+    id: 'snap1-u-kasim',
+    customName: 'Kasim bin Malik',
+    baseProfileId: 'unit-jabirean-alchemist',
+    profileSnapshot: {
+      id: 'unit-jabirean-alchemist',
+      name: 'Jabirean Alchemist',
+      factionId: 'iron-sultanate',
+      category: 'Leader',
+      baseCost: 55,
+      stats: { movement: '6"', ranged: '+2 DICE', melee: '+1 DICE', armour: '-2', baseSize: '32mm' },
+      innateAbilities: [
+        { id: 'ab-mastery', name: 'Mastery of the Elements', description: 'Deploy with FIRE, GAS, or SHRAPNEL on all weapons.' },
+        { id: 'ab-elem-change', name: 'Elemental Change', description: 'ACTION: Change elemental keyword on all weapons.' },
+        { id: 'ab-medicine', name: 'School of Medicine', description: 'ACTION: +1 DICE to heal 2 Blood Markers or stand up Downed friendly model.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-auto-rifle-1', id: 'wep-automatic-rifle', name: 'Automatic Rifle', factionId: 'iron-sultanate', type: 'Ranged', range: '24"', modifiers: '+0 DICE', cost: 40, keywords: ['ASSAULT', 'AUTOMATIC 2'], description: 'Focused Fire' },
+      { instanceId: 'w-sword-1', id: 'wep-sword-axe', name: 'Sword/Axe', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 4, keywords: ['CRITICAL'] }
     ],
-    notes: 'Initial expeditionary charter into the Al-Nafud Marches.'
+    equippedArmour: [
+      { instanceId: 'a-alch-armour-1', id: 'arm-alchemist', name: 'Alchemist Armour', factionId: 'iron-sultanate', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 50, keywords: ['NEGATE FIRE', 'NEGATE GAS'], description: 'Protection From Harm' }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-gasmask-1', id: 'eq-gas-mask', name: 'Gas Mask', cost: 5, effect: 'NEGATE GAS', keywords: ['NEGATE GAS'] },
+      { instanceId: 'eq-elixir-1', id: 'eq-elixir-al-khidr', name: 'Elixir of Al-Khidr', cost: 10, effect: 'TOUGH for rest of game', keywords: ['CONSUMABLE', 'TOUGH'] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: ['Leg Wound [31] (-2" Move, -1 DICE to Dash)'],
+    isDead: false,
+    totalCost: 179,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
   },
   {
-    id: 'snap-match-1',
-    timestamp: '2026-08-15T14:30:00Z',
-    label: '2. Siege of the Sun-Drenched Laboratory',
+    id: 'snap1-u-bull',
+    customName: 'Al-Qahhar',
+    baseProfileId: 'unit-brazen-bull',
+    profileSnapshot: {
+      id: 'unit-brazen-bull',
+      name: 'Favoured Brazen Bull',
+      factionId: 'iron-sultanate',
+      category: 'Elite',
+      baseCost: 100,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+2 DICE', armour: '-3', baseSize: '60mm' },
+      innateAbilities: [
+        { id: 'ab-art-life', name: 'Artificial Life', description: '-1 INJURY DICE to Injury Rolls for a Brazen Bull.' },
+        { id: 'ab-trample', name: 'Trample', description: 'ACTION: Melee Attack vs Downed model ignoring armour.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-flame-cannon-1', id: 'wep-flame-cannon', name: 'Flame Cannon', factionId: 'iron-sultanate', type: 'Ranged', range: '12"', modifiers: '+0 DICE', cost: 60, keywords: ['FIRE', 'HEAVY', 'IGNORE ARMOUR'], description: 'Greek Fire 12" line attack' },
+      { instanceId: 'w-titan-zulfiqar-1', id: 'wep-titan-zulfiqar', name: 'Titan Zulfiqar', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+2 INJURY MODIFIER', cost: 30, keywords: ['CRITICAL', 'HEAVY'] },
+      { instanceId: 'w-shield-bull-1', id: 'arm-trench-shield', name: 'Trench Shield', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '-1 INJURY MODIFIER', cost: 10, keywords: ['SHIELD'] }
+    ],
+    equippedArmour: [
+      { instanceId: 'a-reinf-bull-1', id: 'arm-reinforced', name: 'Reinforced Armour', factionId: 'iron-sultanate', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 40, keywords: [] }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-wind-bull-1', id: 'eq-wind-amulet', name: 'Wind Amulet', cost: 10, effect: '+3" Movement on activation', keywords: [] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 250,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-idris',
+    customName: 'Idris the Relic Hound',
+    baseProfileId: 'unit-azeb',
+    profileSnapshot: {
+      id: 'unit-azeb',
+      name: 'Favoured Kavass',
+      factionId: 'iron-sultanate',
+      category: 'Elite',
+      baseCost: 25,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '-1 DICE', armour: '-1', baseSize: '25mm' },
+      innateAbilities: [
+        { id: 'ab-fireteam-idris', name: 'Fireteam: Mamluk-Guarded', description: 'Coordinated Engagement simultaneous activation with Mamluk Faris.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-jezzail-idris-1', id: 'wep-jezzail', name: 'Jezzail', factionId: 'iron-sultanate', type: 'Ranged', range: '18"', modifiers: '+1 DICE', cost: 7, keywords: [] },
+      { instanceId: 'w-club-idris-1', id: 'wep-trench-club', name: 'Trench Club', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 3, keywords: [] }
+    ],
+    equippedArmour: [
+      { instanceId: 'a-std-idris-1', id: 'arm-standard', name: 'Standard Armour', factionId: 'iron-sultanate', category: 'Medium', modifier: '-1 INJURY MODIFIER', cost: 15, keywords: [] }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-alch-ammo-idris-1', id: 'eq-alchemical-ammo', name: 'Alchemical Ammunition', cost: 3, effect: '+1 DICE to Jezzail', keywords: ['AMMUNITION (+1 DICE)'] },
+      { instanceId: 'eq-alch-ammo-idris-loaded-1', id: 'eq-alchemical-ammo-loaded', name: 'Alchemical Ammunition (Loaded)', cost: 3, effect: 'Loaded into Jezzail', keywords: ['AMMUNITION (+1 DICE)'] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 56,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-nasir',
+    customName: 'Nasir',
+    baseProfileId: 'unit-azeb',
+    profileSnapshot: {
+      id: 'unit-azeb',
+      name: 'Kavass',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 25,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '-1 DICE', armour: '0', baseSize: '25mm' },
+      innateAbilities: []
+    },
+    equippedWeapons: [
+      { instanceId: 'w-jezzail-nasir-1', id: 'wep-jezzail', name: 'Jezzail', factionId: 'iron-sultanate', type: 'Ranged', range: '18"', modifiers: '+1 DICE', cost: 7, keywords: [] },
+      { instanceId: 'w-club-nasir-1', id: 'wep-trench-club', name: 'Trench Club', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 3, keywords: [] }
+    ],
+    equippedArmour: [],
+    equippedEquipment: [
+      { instanceId: 'eq-alch-ammo-nasir-1', id: 'eq-alchemical-ammo', name: 'Alchemical Ammunition', cost: 3, effect: '+1 DICE to Jezzail', keywords: ['AMMUNITION (+1 DICE)'] },
+      { instanceId: 'eq-alch-ammo-nasir-loaded-1', id: 'eq-alchemical-ammo-loaded', name: 'Alchemical Ammunition (Loaded)', cost: 3, effect: 'Loaded into Jezzail', keywords: ['AMMUNITION (+1 DICE)'] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 41,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-rafiq',
+    customName: 'Rafiq the Incinerator',
+    baseProfileId: 'unit-azeb',
+    profileSnapshot: {
+      id: 'unit-azeb',
+      name: 'Kavass',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 25,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '-1 DICE', armour: '-1', baseSize: '25mm' },
+      innateAbilities: []
+    },
+    equippedWeapons: [
+      { instanceId: 'w-flame-rafiq-1', id: 'wep-flamethrower', name: 'Flamethrower', factionId: 'iron-sultanate', type: 'Ranged', range: '8"', modifiers: '-1 INJURY DICE', cost: 30, keywords: ['FIRE', 'FLAMETHROWER', 'IGNORE ARMOUR'] },
+      { instanceId: 'w-club-rafiq-1', id: 'wep-trench-club', name: 'Trench Club', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 3, keywords: [] }
+    ],
+    equippedArmour: [
+      { instanceId: 'a-std-rafiq-1', id: 'arm-standard', name: 'Standard Armour', factionId: 'iron-sultanate', category: 'Medium', modifier: '-1 INJURY MODIFIER', cost: 15, keywords: [] }
+    ],
+    equippedEquipment: [],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 73,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-dhib',
+    customName: 'Dhi’b al-Nafud',
+    baseProfileId: 'unit-lion-jabir',
+    profileSnapshot: {
+      id: 'unit-lion-jabir',
+      name: 'Lion of Jabir',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 60,
+      stats: { movement: '8"', ranged: 'N/A', melee: '+1 DICE', armour: '-1', baseSize: '50mm' },
+      innateAbilities: [
+        { id: 'ab-art-life-lion', name: 'Artificial Life', description: '-1 INJURY DICE to Injury Rolls for Lion of Jabir.' },
+        { id: 'ab-agile', name: 'Agile', description: '+1 DICE to Risky Success Rolls for Climbing/Jumping/Dashing.' },
+        { id: 'ab-pin', name: 'Pin', description: 'Enemy Downed models <=40mm base cannot stand up within 1".' },
+        { id: 'ab-teeth', name: 'Teeth and Claws', description: 'Natural melee attack.' },
+        { id: 'ab-fierce-lion', name: 'Fierce Lion', description: 'Gains the FEAR keyword.' }
+      ]
+    },
+    equippedWeapons: [],
+    equippedArmour: [
+      { instanceId: 'a-std-dhib-1', id: 'arm-standard', name: 'Standard Armour', factionId: 'iron-sultanate', category: 'Medium', modifier: '-1 INJURY MODIFIER', cost: 15, keywords: [] }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-wind-dhib-1', id: 'eq-wind-amulet', name: 'Wind Amulet', cost: 10, effect: '+3" Movement on activation', keywords: [] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 90,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-needle',
+    customName: 'The Iron Needle',
+    baseProfileId: 'unit-sultanate-sapper',
+    profileSnapshot: {
+      id: 'unit-sultanate-sapper',
+      name: 'Sultanate Sapper',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 50,
+      stats: { movement: '6"', ranged: '+1 DICE', melee: '0', armour: '0', baseSize: '25mm' },
+      innateAbilities: [
+        { id: 'ab-set-mine', name: 'Set Mine', description: 'ACTION: +2 DICE Success Roll to mine a terrain piece.' },
+        { id: 'ab-fortify', name: 'Fortify', description: 'ACTION: Risky Success Roll to gain COVER.' },
+        { id: 'ab-defuse-mine', name: 'Defuse Mine', description: 'Risky Success Roll to defuse a mined terrain piece.' },
+        { id: 'ab-fwd-pos', name: 'Forward Positions', description: 'Deploy up to 6" forward in contact with terrain.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-siege-needle-1', id: 'wep-siege-jezzail', name: 'Siege Jezzail', factionId: 'iron-sultanate', type: 'Ranged', range: '30"', modifiers: '+1 DICE, +1 INJURY DICE', cost: 30, keywords: ['HEAVY'] },
+      { instanceId: 'w-knife-needle-1', id: 'wep-trench-knife', name: 'Trench Knife', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '-1 DICE', cost: 1, keywords: [] }
+    ],
+    equippedArmour: [
+      { instanceId: 'a-std-needle-1', id: 'arm-standard', name: 'Standard Armour', factionId: 'iron-sultanate', category: 'Medium', modifier: '-1 INJURY MODIFIER', cost: 15, keywords: [] }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-alch-ammo-needle-1', id: 'eq-alchemical-ammo', name: 'Alchemical Ammunition', cost: 3, effect: '+1 DICE to Siege Jezzail', keywords: ['AMMUNITION (+1 DICE)'] },
+      { instanceId: 'eq-shovel-needle-1', id: 'eq-shovel', name: 'Shovel', cost: 0, effect: 'Dug In: COVER on Open terrain', keywords: [] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 99,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-homunculus',
+    customName: 'Al-Masyukh',
+    baseProfileId: 'unit-takwin-homunculus',
+    profileSnapshot: {
+      id: 'unit-takwin-homunculus',
+      name: 'Takwin Homunculus',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 40,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+0 DICE', armour: '0', baseSize: '25mm' },
+      innateAbilities: [
+        { id: 'ab-art-life-hom', name: 'Artificial Life', description: '-1 DICE to Injury Rolls for a Takwin Homunculus.' },
+        { id: 'ab-pummel', name: 'Pummeling Blows', description: 'Can make melee attacks without weapons.' },
+        { id: 'ab-human-hands', name: 'Human Hands', description: 'Equip weapons and shields from the Iron Sultanate Armoury.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-pistol-hom-1', id: 'wep-pistol', name: 'Pistol', factionId: 'iron-sultanate', type: 'Ranged', range: '12"/Melee', modifiers: '+0 DICE', cost: 6, keywords: ['PISTOL'] }
+    ],
+    equippedArmour: [],
+    equippedEquipment: [],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 56,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  },
+  {
+    id: 'snap1-u-mamluk',
+    customName: 'Jawhar al-Sari',
+    baseProfileId: 'unit-mamluk-faris',
+    profileSnapshot: {
+      id: 'unit-mamluk-faris',
+      name: 'Mamluk Faris',
+      factionId: 'mercenaries',
+      category: 'Mercenary',
+      baseCost: 0,
+      stats: { movement: '6"', ranged: '+1 DICE', melee: '+1 DICE', armour: '-3', baseSize: '32mm' },
+      innateAbilities: [
+        { id: 'ab-sworn-brethren', name: 'Sworn Brethren', description: 'Forms a FIRETEAM with Idris the Relic Hound.' },
+        { id: 'ab-martial-prowess', name: 'Martial Prowess', description: 'Greatsword is not Heavy; Jezzail has Assault & Shield Combo.' },
+        { id: 'ab-automaton-destrier', name: 'Automaton Destrier', description: 'Deploy within 1" of board edge and >8" from enemies.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-polearm-mamluk-1', id: 'wep-polearm-shield', name: 'Polearm and Shield', factionId: 'mercenaries', type: 'Melee', range: 'Melee', modifiers: '-1 INJURY MODIFIER', cost: 0, keywords: ['BLOCK', 'CUMBERSOME'] },
+      { instanceId: 'w-jezzail-mamluk-1', id: 'wep-alchemical-jezzail', name: 'Alchemical Jezzail', factionId: 'mercenaries', type: 'Ranged', range: '18"', modifiers: '+1 DICE', cost: 0, keywords: ['ASSAULT'] }
+    ],
+    equippedArmour: [
+      { instanceId: 'a-reinf-mamluk-1', id: 'arm-reinforced', name: 'Reinforced Armour', factionId: 'mercenaries', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 0, keywords: [] }
+    ],
+    equippedEquipment: [
+      { instanceId: 'eq-helmet-mamluk-1', id: 'eq-combat-helmet', name: 'Combat Helmet', cost: 0, effect: 'NEGATE SHRAPNEL', keywords: ['NEGATE SHRAPNEL'] }
+    ],
+    xp: 0,
+    advancements: [],
+    injuries: [],
+    isDead: false,
+    totalCost: 0,
+    currentWounds: 1,
+    maxWounds: 1,
+    bloodMarkers: 0,
+    status: 'Active',
+    hasActedThisTurn: false
+  }
+];
+
+// ----------------------------------------------------------------------------
+// 2. SNAPSHOT 2: 3-FORCE MATCH 10.06.26 (983 Ducats | 4 Glory)
+// ----------------------------------------------------------------------------
+const SNAPSHOT_2_UNITS: ActiveUnit[] = [
+  {
+    ...SNAPSHOT_1_UNITS[0],
+    id: 'snap2-u-kasim',
+    xp: 4,
+    advancements: ['Assassinate [4] (+1 DICE vs unactivated targets)', 'Secrets of Takwin (Damage redirect to Homunculus)'],
+    totalCost: 179
+  },
+  {
+    ...SNAPSHOT_1_UNITS[1],
+    id: 'snap2-u-bull',
+    xp: 2,
+    advancements: ['Strength of Samson [8] (+1 INJURY DICE to Melee, STRONG)'],
+    injuries: ['Lost Arm [26] (Severed mechanical arm in ferocious close quarters)'],
+    equippedArmour: [
+      { instanceId: 'a-alch-bull-2', id: 'arm-alchemist', name: 'Alchemist Armour', factionId: 'iron-sultanate', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 50, keywords: ['NEGATE FIRE', 'NEGATE GAS'] }
+    ],
+    totalCost: 270
+  },
+  {
+    ...SNAPSHOT_1_UNITS[2],
+    id: 'snap2-u-idris',
+    xp: 2,
+    advancements: ['Elite Promotion (Favoured Kavass)', 'Skill & Expertise [7]', 'Studied Blade (+1 DICE Melee)'],
+    profileSnapshot: {
+      ...SNAPSHOT_1_UNITS[2].profileSnapshot,
+      category: 'Elite',
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+0 DICE', armour: '-2', baseSize: '25mm' }
+    },
+    equippedArmour: [
+      { instanceId: 'a-reinf-idris-2', id: 'arm-reinforced', name: 'Reinforced Armour', factionId: 'iron-sultanate', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 40, keywords: [] }
+    ],
+    totalCost: 120
+  },
+  {
+    ...SNAPSHOT_1_UNITS[3],
+    id: 'snap2-u-nasir',
+    totalCost: 41
+  },
+  {
+    ...SNAPSHOT_1_UNITS[4],
+    id: 'snap2-u-rafiq',
+    totalCost: 73
+  },
+  {
+    ...SNAPSHOT_1_UNITS[5],
+    id: 'snap2-u-dhib',
+    totalCost: 90
+  },
+  {
+    ...SNAPSHOT_1_UNITS[6],
+    id: 'snap2-u-needle',
+    totalCost: 99
+  },
+  {
+    ...SNAPSHOT_1_UNITS[7],
+    id: 'snap2-u-homunculus',
+    profileSnapshot: {
+      id: 'unit-takwin-homunculus',
+      name: 'Takwin Homunculus',
+      factionId: 'iron-sultanate',
+      category: 'Trooper',
+      baseCost: 40,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+1 DICE', armour: '-1', baseSize: '60mm' },
+      innateAbilities: [
+        { id: 'ab-massive-size', name: 'Massive Size', description: 'Base size 50mm, gains TOUGH.' },
+        { id: 'ab-inhuman-strength', name: 'Inhuman Strength', description: 'Gains STRONG, +1 DICE Melee, 32mm.' },
+        { id: 'ab-additional-arm', name: 'Additional Arm', description: 'Adds CLEAVE 2 to Pummeling Blows.' },
+        { id: 'ab-gargantuan-size', name: 'Gargantuan Size', description: 'Base size 60mm, can wield Brazen Bull weapons.' },
+        { id: 'ab-regenerative', name: 'Regenerative Tissue', description: 'Gains REGENERATE 1 (remove 1 Blood Marker per turn).' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-greatsword-hom-2', id: 'wep-great-sword', name: 'Great Sword/Axe', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+1 INJURY DICE', cost: 12, keywords: ['CRITICAL', 'HEAVY'] },
+      { instanceId: 'w-sword-hom-2', id: 'wep-sword-axe', name: 'Sword/Axe', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 4, keywords: ['CRITICAL'] },
+      { instanceId: 'w-shield-hom-2', id: 'arm-trench-shield', name: 'Trench Shield', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '-1 INJURY MODIFIER', cost: 10, keywords: ['SHIELD'] }
+    ],
+    totalCost: 171
+  },
+  {
+    ...SNAPSHOT_1_UNITS[8],
+    id: 'snap2-u-mamluk'
+  }
+];
+
+// ----------------------------------------------------------------------------
+// 3. SNAPSHOT 3: JULY 2026 GATOR & BOOK OF GOLEMS (1000 Ducats | 4 Glory)
+// ----------------------------------------------------------------------------
+const SNAPSHOT_3_UNITS: ActiveUnit[] = [
+  {
+    ...SNAPSHOT_2_UNITS[0],
+    id: 'snap3-u-kasim',
+    xp: 4,
+    advancements: [
+      'Ranged Proficiency [7] (+1 DICE Ranged, total +3 DICE)',
+      'Assassinate [4] (+1 DICE vs unactivated targets)',
+      'Secrets of Takwin (Harm redirection)'
+    ],
+    profileSnapshot: {
+      ...SNAPSHOT_2_UNITS[0].profileSnapshot,
+      stats: { movement: '4"', ranged: '+3 DICE', melee: '+1 DICE', armour: '-2', baseSize: '32mm' }
+    },
+    totalCost: 179
+  },
+  {
+    ...SNAPSHOT_2_UNITS[1],
+    id: 'snap3-u-bull',
+    xp: 3,
+    equippedArmour: [
+      { instanceId: 'a-reinf-bull-3', id: 'arm-reinforced', name: 'Reinforced Armour', factionId: 'iron-sultanate', category: 'Heavy', modifier: '-2 INJURY MODIFIER', cost: 40, keywords: [] }
+    ],
+    totalCost: 280
+  },
+  {
+    ...SNAPSHOT_2_UNITS[2],
+    id: 'snap3-u-idris',
+    xp: 3,
+    totalCost: 120
+  },
+  {
+    ...SNAPSHOT_2_UNITS[3],
+    id: 'snap3-u-nasir',
+    equippedArmour: [
+      { instanceId: 'a-std-nasir-3', id: 'arm-standard', name: 'Standard Armour', factionId: 'iron-sultanate', category: 'Medium', modifier: '-1 INJURY MODIFIER', cost: 15, keywords: [] }
+    ],
+    totalCost: 56
+  },
+  {
+    ...SNAPSHOT_2_UNITS[4],
+    id: 'snap3-u-rafiq',
+    totalCost: 73
+  },
+  {
+    ...SNAPSHOT_2_UNITS[5],
+    id: 'snap3-u-dhib',
+    totalCost: 90
+  },
+  {
+    ...SNAPSHOT_2_UNITS[6],
+    id: 'snap3-u-needle',
+    equippedWeapons: [
+      { instanceId: 'w-siege-needle-3', id: 'wep-siege-jezzail', name: 'Siege Jezzail', factionId: 'iron-sultanate', type: 'Ranged', range: '30"', modifiers: '+1 DICE, +1 INJURY DICE', cost: 30, keywords: ['HEAVY'] },
+      { instanceId: 'w-club-needle-3', id: 'wep-trench-club', name: 'Trench Club', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 3, keywords: [] }
+    ],
+    totalCost: 101
+  },
+  {
+    ...SNAPSHOT_2_UNITS[7],
+    id: 'snap3-u-homunculus',
+    xp: 3,
+    advancements: ['Elite Promotion (Favoured Takwin Homunculus)'],
+    profileSnapshot: {
+      id: 'unit-takwin-homunculus',
+      name: 'Favoured Takwin Homunculus',
+      factionId: 'iron-sultanate',
+      category: 'Elite',
+      baseCost: 40,
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+1 DICE', armour: '-1', baseSize: '50mm' },
+      innateAbilities: [
+        { id: 'ab-massive-size', name: 'Massive Size', description: 'Base size 50mm, gains TOUGH.' },
+        { id: 'ab-human-hands', name: 'Human Hands', description: 'Can wield weapons and shields.' },
+        { id: 'ab-inhuman-strength', name: 'Inhuman Strength', description: 'Gains STRONG, +1 DICE Melee, 32mm.' },
+        { id: 'ab-additional-arm', name: 'Additional Arm', description: 'CLEAVE 2 on Pummeling Blows.' }
+      ]
+    },
+    equippedWeapons: [
+      { instanceId: 'w-siege-hom-3', id: 'wep-siege-jezzail', name: 'Siege Jezzail', factionId: 'iron-sultanate', type: 'Ranged', range: '30"', modifiers: '+1 DICE, +1 INJURY DICE', cost: 30, keywords: ['HEAVY'] },
+      { instanceId: 'w-greatsword-hom-3', id: 'wep-great-sword', name: 'Great Sword/Axe', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+1 INJURY DICE', cost: 12, keywords: ['CRITICAL', 'HEAVY'] },
+      { instanceId: 'w-sword-hom-3', id: 'wep-sword-axe', name: 'Sword/Axe', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '+0 DICE', cost: 4, keywords: ['CRITICAL'] },
+      { instanceId: 'w-fireshield-hom-3', id: 'arm-fire-shield', name: 'Fire Shield', factionId: 'iron-sultanate', type: 'Melee', range: 'Melee', modifiers: '-1 INJURY MODIFIER', cost: 20, keywords: ['NEGATE FIRE'] }
+    ],
+    totalCost: 146
+  },
+  {
+    ...SNAPSHOT_2_UNITS[8],
+    id: 'snap3-u-mamluk'
+  }
+];
+
+export const SULTANATE_WARBAND_SNAPSHOTS: WarbandSnapshot[] = [
+  {
+    id: 'snap-founding-charter',
+    timestamp: '2026-06-01T10:00:00Z',
+    label: '1. Founding Expeditionary Muster (799 👑 | 4 ☼)',
+    type: 'founding',
+    ducatCost: 799,
+    treasuryDucats: 81,
+    gloryPoints: 4,
+    unitCount: 9,
+    units: SNAPSHOT_1_UNITS.map(enrichUnitWithLore),
+    armoryStash: [],
+    changesSummary: [
+      'Mustered the initial 9-warrior scientific expedition under Master Alchemist Kasim bin Malik at the Great Iron Wall',
+      'Commissioned Favoured Brazen Bull (Al-Qahhar) with Flame Cannon & Titan Zulfiqar, and Lion of Jabir (Dhi’b) with Wind Amulet',
+      'Synthesized initial Takwin Homunculus (Al-Masyukh) with Human Hands and Pistol',
+      'Recruited veteran Mamluk Faris (Jawhar al-Sari) for 4 Glory Points as sworn fireteam guardian for Idris',
+      'Enlisted Kavass line riflemen (Idris, Nasir, Rafiq the Incinerator) and Sultanate Sapper crew (The Iron Needle)'
+    ],
+    notes: 'Initial expeditionary charter into the Al-Nafud Marches under Bayt al-Nahas al-Hamra.'
+  },
+  {
+    id: 'snap-3force-match',
+    timestamp: '2026-06-10T16:45:00Z',
+    label: '2. 3-Force Skirmish & Takwin Metamorphosis (983 👑 | 4 ☼)',
     type: 'post_battle',
     matchId: 'match-hist-1',
-    scenarioName: 'Relic Hunt (Sun-Drenched Laboratory)',
+    scenarioName: '3 Force Match: Siege of the Sun-Drenched Laboratory',
     outcome: 'Victory',
-    ducatCost: 1320,
-    treasuryDucats: 180,
-    gloryPoints: 2,
-    unitCount: 11,
-    units: [],
+    ducatCost: 983,
+    treasuryDucats: 67,
+    gloryPoints: 4,
+    unitCount: 9,
+    units: SNAPSHOT_2_UNITS.map(enrichUnitWithLore),
     armoryStash: [],
     changesSummary: [
-      'Decisive 13-4 Victory over Court of the Seven-Headed Serpent (Sorcerer Zortan)',
-      'Kasim bin Malik sniped Hell Knight Mephistolon in Turn 1; suffered Leg Wound (-2" Movement) and forged custom brace armor',
-      'Al-Qahhar (Brazen Bull) promoted to Elite status and awarded the legendary Wind Amulet emerald',
-      'Idris promoted to Elite Lieutenant and awarded the Relic Golden Mantle after snatching the sacred reliquary',
-      'Harvested demonic tissue from slain yoke fiends in preparation for Takwin synthesis'
+      'Kasim bin Malik accumulated 4 XP, mastered Assassinate [4] (+1 DICE vs unactivated targets), and forged Secrets of Takwin harm link',
+      'Al-Qahhar gained Strength of Samson [8] (+1 INJURY DICE to Melee, STRONG); sustained Lost Arm [26] in close defense and adapted to single-handed Titan Blade',
+      'Idris the Relic Hound achieved Elite Promotion, mastered Skill & Expertise [7], and equipped heavy Reinforced Armour (-2 Injury Modifier)',
+      'Al-Masyukh underwent colossal genetic synthesis: grew to Gargantuan Size (60mm) with Regenerative Tissue and twin master blades (171 Ducats)'
     ],
-    notes: 'Epic showdown against Sorcerer Zortan.'
+    notes: 'Epic showdown against Court of the Seven-Headed Serpent (Sorcerer Zortan).'
   },
   {
-    id: 'snap-match-2',
-    timestamp: '2026-08-25T18:00:00Z',
-    label: '3. Discovery of the Book of Golems',
+    id: 'snap-july-gator',
+    timestamp: '2026-07-28T19:20:00Z',
+    label: '3. July 2026 Gator & Book of Golems (1000 👑 | 4 ☼)',
     type: 'post_battle',
     matchId: 'match-hist-2',
-    scenarioName: 'The Chronicle of the Fractured Treaty',
+    scenarioName: 'July 2026 Gator Tournament Match',
     outcome: 'Victory',
-    ducatCost: 1320,
-    treasuryDucats: 320,
+    ducatCost: 1000,
+    treasuryDucats: 220,
     gloryPoints: 4,
-    unitCount: 11,
-    units: [],
+    unitCount: 9,
+    units: SNAPSHOT_3_UNITS.map(enrichUnitWithLore),
     armoryStash: [],
     changesSummary: [
-      'Tactical Victory in the Salt Wastes; defeated Heretic Shocktroopers',
-      'Synthesized and deployed Al-Masyukh (Three-Armed Homunculus Behemoth with Titan Zulfiqar)',
-      'Al-Qahhar sustained a severed arm in close melee—adapted into "The Crippled" wielding single Titan Blade & Flame Cannon',
-      'Post-battle exploration unearthed the sacred Book of Golems in sunken conduit chambers',
-      'Master Kasim bin Malik recognized as "The Living Engineer" & Master of Construction'
+      'Exploration in the salt wastes unearthed the legendary "Book of Golems" (Rabbinic manual unlocking clay golem artifice)',
+      'Master Kasim bin Malik mastered Ranged Proficiency [7], reaching +3 DICE on long-range sniper volleys',
+      'Al-Masyukh achieved Elite Promotion (Favoured Takwin) with 3 XP, equipped with a long-range Siege Jezzail and Fire Shield',
+      'The Iron Needle sapper battery upgraded with specialized Alchemical Siege ammunition and Nasir reinforced with Standard Armour'
     ],
-    notes: 'The warband ascends into biological artifice and golem rites.'
+    notes: 'Tournament victory; the warband ascends into biological artifice and golem rites.'
   }
 ];
 
@@ -353,4 +849,3 @@ export function enrichUnitWithLore(unit: ActiveUnit): ActiveUnit {
     deeds: (unit.deeds && unit.deeds.length > 0) ? unit.deeds : matched.deeds
   };
 }
-
