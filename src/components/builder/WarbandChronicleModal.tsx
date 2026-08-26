@@ -14,7 +14,9 @@ import {
   Trash2, 
   Check, 
   Sparkles,
-  ShieldAlert
+  Edit2,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 
 interface WarbandChronicleModalProps {
@@ -23,24 +25,60 @@ interface WarbandChronicleModalProps {
 }
 
 export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ warband, onClose }) => {
-  const { updateWarbandLore, addWarbandChronicleEntry } = useStore();
+  const { updateWarbandLore, updateWarbandChronicleLog } = useStore();
 
   const [loreText, setLoreText] = useState(warband.lore || '');
   const [mottoText, setMottoText] = useState(warband.motto || '');
   const [patronText, setPatronText] = useState(warband.patron || '');
+  const [chronicleItems, setChronicleItems] = useState<string[]>(warband.chronicleLog || []);
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
   const [newLogEntry, setNewLogEntry] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
   const handleSave = () => {
     updateWarbandLore(warband.id, loreText, mottoText, patronText);
+    updateWarbandChronicleLog(warband.id, chronicleItems);
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
 
   const handleAddMilestone = () => {
     if (!newLogEntry.trim()) return;
-    addWarbandChronicleEntry(warband.id, newLogEntry.trim());
+    const updated = [newLogEntry.trim(), ...chronicleItems];
+    setChronicleItems(updated);
     setNewLogEntry('');
+  };
+
+  const handleDeleteMilestone = (idx: number) => {
+    const updated = chronicleItems.filter((_, i) => i !== idx);
+    setChronicleItems(updated);
+    if (editingIdx === idx) {
+      setEditingIdx(null);
+    }
+  };
+
+  const startEditMilestone = (idx: number) => {
+    setEditingIdx(idx);
+    setEditText(chronicleItems[idx]);
+  };
+
+  const saveEditMilestone = (idx: number) => {
+    if (!editText.trim()) return;
+    const updated = [...chronicleItems];
+    updated[idx] = editText.trim();
+    setChronicleItems(updated);
+    setEditingIdx(null);
+  };
+
+  const moveMilestone = (idx: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= chronicleItems.length) return;
+    const updated = [...chronicleItems];
+    const temp = updated[idx];
+    updated[idx] = updated[targetIdx];
+    updated[targetIdx] = temp;
+    setChronicleItems(updated);
   };
 
   return (
@@ -135,6 +173,9 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                 <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Expedition Milestones & Campaign Chronicle Timeline</span>
               </span>
+              <span className="text-[10px] text-[#8E95A5]">
+                {chronicleItems.length} Events Logged (Click pencil to edit wording)
+              </span>
             </div>
 
             {/* Add Milestone */}
@@ -149,7 +190,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
               />
               <button
                 onClick={handleAddMilestone}
-                className="px-3 py-2 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-bold uppercase rounded flex items-center space-x-1"
+                className="px-3 py-2 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-bold uppercase rounded flex items-center space-x-1 flex-shrink-0 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Log Event</span>
@@ -157,19 +198,81 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
             </div>
 
             {/* Timeline List */}
-            {(!warband.chronicleLog || warband.chronicleLog.length === 0) ? (
+            {chronicleItems.length === 0 ? (
               <p className="text-[11px] text-[#8E95A5] italic py-2">
                 No expedition milestones recorded yet. Add major campaign discoveries, treaty signatures, or historic victories above.
               </p>
             ) : (
               <div className="space-y-2 pt-1">
-                {warband.chronicleLog.map((log, idx) => (
+                {chronicleItems.map((log, idx) => (
                   <div 
                     key={idx}
-                    className="flex items-start space-x-2.5 p-2.5 bg-[#161920] border border-[#323846] rounded text-[11px] leading-relaxed"
+                    className="p-3 bg-[#161920] border border-[#323846] rounded text-[11px] leading-relaxed transition-all hover:border-[#8E95A5]"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                    <span className="text-[#ECEFF4] flex-1">{log}</span>
+                    {editingIdx === idx ? (
+                      <div className="space-y-2">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          rows={2}
+                          className="w-full bg-[#0C0E12] border border-[#D4AF37] rounded p-2 text-xs text-white focus:outline-none"
+                        />
+                        <div className="flex items-center justify-end space-x-2">
+                          <button
+                            onClick={() => setEditingIdx(null)}
+                            className="px-2 py-1 rounded bg-[#20242E] hover:bg-[#323846] text-[#8E95A5]"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => saveEditMilestone(idx)}
+                            className="px-2.5 py-1 rounded bg-[#D4AF37] hover:bg-[#C49F27] text-black font-bold flex items-center space-x-1"
+                          >
+                            <Check className="w-3 h-3" />
+                            <span>Save Event</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start space-x-2.5 flex-1">
+                          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                          <span className="text-[#ECEFF4] whitespace-pre-wrap">{log}</span>
+                        </div>
+                        <div className="flex items-center space-x-1 opacity-80 hover:opacity-100 flex-shrink-0">
+                          <button
+                            onClick={() => moveMilestone(idx, 'up')}
+                            disabled={idx === 0}
+                            className="p-1 text-[#8E95A5] hover:text-white disabled:opacity-30"
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => moveMilestone(idx, 'down')}
+                            disabled={idx === chronicleItems.length - 1}
+                            className="p-1 text-[#8E95A5] hover:text-white disabled:opacity-30"
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => startEditMilestone(idx)}
+                            className="p-1 text-[#D4AF37] hover:text-white"
+                            title="Edit Milestone Wording"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteMilestone(idx)}
+                            className="p-1 text-[#E53935] hover:text-red-400"
+                            title="Delete Milestone"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -179,28 +282,29 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3.5 bg-[#20242E] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-xs font-mono text-[#4E9A6E] flex items-center space-x-1">
-            {isSaved && (
-              <>
+        <div className="p-4 bg-[#20242E] border-t border-[#323846] flex items-center justify-between">
+          <span className="text-xs text-[#8E95A5] font-mono">
+            {isSaved ? (
+              <span className="text-[#4CAF50] font-bold flex items-center space-x-1">
                 <Check className="w-3.5 h-3.5" />
-                <span>Warband chronicle updated successfully</span>
-              </>
+                <span>House chronicle and lineage successfully preserved in the archives!</span>
+              </span>
+            ) : (
+              <span>All changes will be updated across your warband dossier.</span>
             )}
           </span>
-
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] text-[#8E95A5] hover:text-white rounded text-xs font-mono uppercase"
+              className="px-4 py-2 rounded bg-[#161920] hover:bg-[#323846] text-[#8E95A5] hover:text-white font-mono text-xs font-bold uppercase transition-colors"
             >
               Close
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-mono font-bold text-xs uppercase rounded flex items-center space-x-1 shadow"
+              className="px-5 py-2 rounded bg-[#4CAF50] hover:bg-[#43A047] text-black font-mono text-xs font-bold uppercase flex items-center space-x-1.5 transition-colors shadow"
             >
-              <Check className="w-3.5 h-3.5" />
+              <Check className="w-4 h-4" />
               <span>Save Chronicle</span>
             </button>
           </div>

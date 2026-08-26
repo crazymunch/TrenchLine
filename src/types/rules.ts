@@ -116,6 +116,25 @@ export interface ExplorationResult {
   description: string;
 }
 
+export interface TraumaTableEntry {
+  roll: string;
+  title: string;
+  description: string;
+  isDead: boolean;
+}
+
+export interface ExplorationTableEntry {
+  roll: string;
+  title: string;
+  description: string;
+  reward?: string;
+}
+
+export interface SkillEntry {
+  name: string;
+  description: string;
+}
+
 export interface Scenario {
   id: string;
   name: string;

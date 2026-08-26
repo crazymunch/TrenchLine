@@ -40,7 +40,7 @@ export interface MatchRecord {
   narrativeLog: string;
   
   // Rich Narrative & Battle Report Fields
-  narrativeReport?: string; // White Dwarf-style comprehensive battle report
+  narrativeReport?: string; // Comprehensive narrative battle report
   mvpUnitId?: string;
   mvpUnitName?: string;
   opponentWarbandName?: string;

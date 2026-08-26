@@ -386,7 +386,7 @@ export const CampaignHubView: React.FC = () => {
                     >
                       <span className="flex items-center space-x-2">
                         <Scroll className="w-4 h-4 text-[#D4AF37]" />
-                        <span>White Dwarf Battle Chronicle & Tactical After-Action Report</span>
+                        <span>Battle Chronicle & Tactical After-Action Report</span>
                       </span>
                       <span>{isExpanded ? 'Hide Report ▲' : 'Read Full Battle Report ▼'}</span>
                     </button>

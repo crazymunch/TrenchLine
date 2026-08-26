@@ -482,7 +482,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   <textarea
                     value={battleReportText}
                     onChange={(e) => setBattleReportText(e.target.value)}
-                    placeholder="Write a White Dwarf-style battle report: key charges, heroic saves, objective snatches, and tactical reflections..."
+                    placeholder="Write a comprehensive tactical battle report: key charges, heroic saves, objective snatches, and narrative turning points..."
                     rows={4}
                     className="w-full bg-[#0C0E12] border border-[#323846] rounded px-2.5 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
                   />

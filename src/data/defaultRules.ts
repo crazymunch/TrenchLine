@@ -1190,9 +1190,9 @@ export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
   name: k.name,
   type: k.type,
   category: k.type || 'Rule Keyword',
-  summary: k.description.length > 100 ? `${k.description.slice(0, 97)}...` : k.description,
-  description: k.description,
-  fullText: k.description
+  summary: k.description && k.description.length > 100 ? `${k.description.slice(0, 97)}...` : (k.description || ''),
+  description: k.description || '',
+  fullText: k.description || ''
 }));
 
 export const SCENARIOS: Scenario[] = OFFICIAL_SCENARIOS;

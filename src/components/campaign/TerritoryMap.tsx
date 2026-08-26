@@ -175,13 +175,12 @@ export const TerritoryMap: React.FC = () => {
           {/* Map Viewer Viewport */}
           <div 
             ref={mapContainerRef}
-            className="w-full h-[650px] bg-[#0C0E12] border-2 border-[#D4AF37]/60 rounded-md overflow-auto relative select-none scrollbar-thin shadow-2xl"
+            className="w-full max-h-[75vh] bg-[#0C0E12] border-2 border-[#D4AF37]/60 rounded-md overflow-auto relative select-none shadow-2xl flex items-center justify-center"
           >
             <div 
-              className="relative transition-transform duration-200 origin-top-left"
+              className="relative transition-transform duration-200 origin-center max-w-full"
               style={{
                 width: zoomLevel > 1 ? `${zoomLevel * 100}%` : '100%',
-                minWidth: '1000px',
                 height: 'auto'
               }}
             >
@@ -189,7 +188,7 @@ export const TerritoryMap: React.FC = () => {
               <img
                 src="/maps/trench_crusade_world_map.webp"
                 alt="The Lands of the Great Powers World Map"
-                className="w-full h-auto block rounded"
+                className="w-full max-h-[72vh] object-contain block mx-auto rounded"
                 draggable={false}
               />
 

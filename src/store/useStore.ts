@@ -39,6 +39,7 @@ interface AppState {
   setActiveWarbandId: (id: string | null) => void;
   updateWarbandNotes: (warbandId: string, notes: string) => void;
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
+  updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
   saveWarbandSnapshot: (
     warbandId: string, 
@@ -603,6 +604,60 @@ export const useStore = create<AppState>((set, get) => {
       });
     },
 
+    updateWarbandLore: (warbandId, lore, motto, patron) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            lore,
+            motto: motto !== undefined ? motto : w.motto,
+            patron: patron !== undefined ? patron : w.patron,
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandChronicleLog: (warbandId, chronicleLog) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            chronicleLog,
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addWarbandChronicleEntry: (warbandId, entry) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const existing = w.chronicleLog || [];
+          const updatedWb: Warband = {
+            ...w,
+            chronicleLog: [entry, ...existing],
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
     // Units
     addUnitToWarband: (warbandId, baseProfileId, customName) => {
       const state = get();
@@ -800,43 +855,6 @@ export const useStore = create<AppState>((set, get) => {
                 deeds: deeds !== undefined ? deeds : u.deeds
               };
             }),
-            updatedAt: new Date().toISOString()
-          };
-          storage.syncWarbandToCloud(updatedWb);
-          return updatedWb;
-        });
-        storage.saveWarbands(updated);
-        return { warbands: updated };
-      });
-    },
-
-    updateWarbandLore: (warbandId, lore, motto, patron) => {
-      set((state) => {
-        const updated = state.warbands.map((w) => {
-          if (w.id !== warbandId) return w;
-          const updatedWb = {
-            ...w,
-            lore,
-            motto: motto !== undefined ? motto : w.motto,
-            patron: patron !== undefined ? patron : w.patron,
-            updatedAt: new Date().toISOString()
-          };
-          storage.syncWarbandToCloud(updatedWb);
-          return updatedWb;
-        });
-        storage.saveWarbands(updated);
-        return { warbands: updated };
-      });
-    },
-
-    addWarbandChronicleEntry: (warbandId, entry) => {
-      set((state) => {
-        const updated = state.warbands.map((w) => {
-          if (w.id !== warbandId) return w;
-          const currentLogs = w.chronicleLog || [];
-          const updatedWb = {
-            ...w,
-            chronicleLog: [entry, ...currentLogs],
             updatedAt: new Date().toISOString()
           };
           storage.syncWarbandToCloud(updatedWb);
