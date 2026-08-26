@@ -39,7 +39,7 @@ export const CodexView: React.FC = () => {
   );
 
   const filteredScenarios = scenarios.filter(
-    (s) => s.name.toLowerCase().includes(filterText) || s.flavor.toLowerCase().includes(filterText)
+    (s) => s.name.toLowerCase().includes(filterText) || (s.flavor || s.objective || '').toLowerCase().includes(filterText)
   );
 
   return (
@@ -60,31 +60,29 @@ export const CodexView: React.FC = () => {
             </p>
           </div>
 
-          {/* Search Bar & Probability Odds Button */}
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setIsProbabilityOpen(true)}
-              className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>2D6 Odds Matrix</span>
-            </button>
+          <button
+            onClick={() => setIsProbabilityOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-[#20242E] hover:bg-[#323846] border border-[#D4AF37]/50 text-[#D4AF37] rounded font-mono text-xs font-bold uppercase transition-all shadow"
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span>2D6 Probability Odds</span>
+          </button>
+        </div>
 
-            <div className="relative min-w-[240px]">
-              <Search className="w-4 h-4 text-[#D4AF37] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Filter rules, weapons, charts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
-              />
-            </div>
-          </div>
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-[#8E95A5] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search keywords, weapon traits, scenarios, rules..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-4 py-2 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+          />
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center space-x-2 border-t border-[#323846] pt-3 overflow-x-auto">
+        <div className="flex space-x-2 overflow-x-auto pb-1">
           {[
             { id: 'keywords', label: 'Rule Keywords', icon: <Tag className="w-4 h-4" /> },
             { id: 'weapons', label: 'Armory / Weapons', icon: <Swords className="w-4 h-4" /> },
@@ -122,7 +120,7 @@ export const CodexView: React.FC = () => {
               </div>
               <p className="text-xs text-[#8E95A5] italic">{kw.summary}</p>
               <div className="text-xs font-mono text-[#ECEFF4] bg-[#0C0E12] p-2.5 rounded border border-[#323846]">
-                {kw.fullText}
+                {kw.fullText || kw.description}
               </div>
             </div>
           ))}
@@ -139,28 +137,27 @@ export const CodexView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{w.name}</h3>
                   <span className="text-[10px] font-mono text-[#8E95A5]">{w.type} ({w.hands} Handed)</span>
                 </div>
-                <span className="text-xs font-mono font-bold text-[#D4AF37] bg-[#0C0E12] px-2 py-1 rounded border border-[#323846]">
+                <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#0C0E12] px-2.5 py-1 rounded border border-[#323846]">
                   {w.cost} Ducats
-                </span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono bg-[#0C0E12] p-2 rounded border border-[#323846]">
-                <div><span className="text-[9px] text-[#8E95A5] block">RANGE</span><strong className="text-[#ECEFF4]">{w.range}</strong></div>
-                <div><span className="text-[9px] text-[#8E95A5] block">MODIFIER</span><strong className="text-[#ECEFF4]">{w.modifiers}</strong></div>
-                <div><span className="text-[9px] text-[#8E95A5] block">DAMAGE</span><strong className="text-[#ECEFF4]">{w.damage}</strong></div>
+              <div className="grid grid-cols-3 gap-2 text-xs font-mono bg-[#0C0E12] p-2 rounded border border-[#323846]">
+                <div><span className="text-[#8E95A5] block text-[10px]">Range:</span>{w.range}</div>
+                <div><span className="text-[#8E95A5] block text-[10px]">Modifiers:</span>{w.modifiers}</div>
+                <div><span className="text-[#8E95A5] block text-[10px]">Damage:</span>{w.damage}</div>
               </div>
-
-              <p className="text-xs text-[#8E95A5] leading-relaxed">{w.description}</p>
 
               {w.keywords.length > 0 && (
-                <div className="flex flex-wrap gap-1 pt-1">
-                  {w.keywords.map((k) => (
-                    <span key={k} className="text-[9px] font-mono bg-[#20242E] text-[#D4AF37] px-2 py-0.5 rounded border border-[#323846]">
-                      {k}
+                <div className="flex flex-wrap gap-1">
+                  {w.keywords.map((kw) => (
+                    <span key={kw} className="text-[10px] font-mono bg-[#20242E] text-[#D4AF37] px-2 py-0.5 rounded border border-[#323846]">
+                      {kw}
                     </span>
                   ))}
                 </div>
               )}
+              {w.description && <p className="text-xs text-[#8E95A5]">{w.description}</p>}
             </div>
           ))}
         </div>
@@ -173,7 +170,7 @@ export const CodexView: React.FC = () => {
             <div key={a.id} className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container">
               <div className="flex items-center justify-between border-b border-[#323846] pb-2">
                 <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{a.name}</h3>
-                <span className="text-xs font-mono font-bold text-[#D4AF37] bg-[#0C0E12] px-2 py-1 rounded border border-[#323846]">
+                <span className="text-xs font-mono font-bold text-[#D4AF37] bg-[#0C0E12] px-2.5 py-1 rounded border border-[#323846]">
                   {a.cost} Ducats
                 </span>
               </div>
@@ -193,27 +190,25 @@ export const CodexView: React.FC = () => {
                 <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">{s.name}</h3>
                 <span className="text-xs font-mono text-[#D4AF37] uppercase font-bold">Official Scenario</span>
               </div>
-              <p className="text-xs text-[#8E95A5] italic">{s.flavor}</p>
+              <p className="text-xs text-[#8E95A5] italic">{s.flavor || s.objective}</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 text-xs font-mono">
                 <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
                   <strong className="text-[#D4AF37] block">Deployment:</strong>
-                  <p className="text-[#ECEFF4]">{s.deployment}</p>
+                  <p className="text-[#ECEFF4]">{s.deployment || 'Standard Opposing Deployment'}</p>
                 </div>
                 <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
-                  <strong className="text-[#4E9A6E] block">Victory Conditions:</strong>
-                  <p className="text-[#ECEFF4]">{s.victoryConditions}</p>
+                  <strong className="text-[#4E9A6E] block">Special Rules:</strong>
+                  <p className="text-[#ECEFF4]">{(s.specialRules || []).join(', ') || 'Standard Battlefield'}</p>
                 </div>
               </div>
 
-              <div className="space-y-1 pt-2">
-                <strong className="text-xs font-mono text-[#8E95A5] uppercase">Primary Objectives:</strong>
-                <ul className="list-disc list-inside text-xs text-[#ECEFF4] space-y-0.5">
-                  {s.objectives.map((obj, idx) => (
-                    <li key={idx}>{obj}</li>
-                  ))}
-                </ul>
-              </div>
+              {s.objective && (
+                <div className="space-y-1 pt-2">
+                  <strong className="text-xs font-mono text-[#8E95A5] uppercase">Objective:</strong>
+                  <p className="text-xs text-[#ECEFF4]">{s.objective}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>

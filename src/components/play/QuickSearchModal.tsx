@@ -25,15 +25,15 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
   const term = searchTerm.toLowerCase().trim();
 
   const filteredKeywords = keywords.filter(
-    (k) => k.name.toLowerCase().includes(term) || k.summary.toLowerCase().includes(term) || k.fullText.toLowerCase().includes(term)
+    (k) => k.name.toLowerCase().includes(term) || k.summary.toLowerCase().includes(term) || (k.fullText || k.description || '').toLowerCase().includes(term)
   );
 
   const filteredScenarios = scenarios.filter(
-    (s) => s.name.toLowerCase().includes(term) || s.flavor.toLowerCase().includes(term)
+    (s) => s.name.toLowerCase().includes(term) || (s.flavor || s.objective || '').toLowerCase().includes(term)
   );
 
   const filteredInjuries = INJURY_TABLE_D66.filter(
-    (i) => i.title.toLowerCase().includes(term) || i.effect.toLowerCase().includes(term) || i.roll.includes(term)
+    (i) => (i.title || i.name || '').toLowerCase().includes(term) || (i.effect || i.description || '').toLowerCase().includes(term) || i.roll.includes(term)
   );
 
   return (

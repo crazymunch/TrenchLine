@@ -199,7 +199,7 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
                 {faction1?.name} Special Rules:
               </span>
               <div className="space-y-1.5">
-                {faction1?.specialRules.map((r, i) => (
+                {(faction1?.specialRules || faction1?.rules || []).map((r, i) => (
                   <div key={i} className="text-xs bg-[#161920] p-2 rounded border border-[#323846]">
                     <strong className="text-[#D4AF37] block">{r.name}</strong>
                     <span className="text-[#8E95A5] text-[11px]">{r.description}</span>
@@ -213,7 +213,7 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
                 {faction2?.name} Special Rules:
               </span>
               <div className="space-y-1.5">
-                {faction2?.specialRules.map((r, i) => (
+                {(faction2?.specialRules || faction2?.rules || []).map((r, i) => (
                   <div key={i} className="text-xs bg-[#161920] p-2 rounded border border-[#323846]">
                     <strong className="text-[#E53935] block">{r.name}</strong>
                     <span className="text-[#8E95A5] text-[11px]">{r.description}</span>

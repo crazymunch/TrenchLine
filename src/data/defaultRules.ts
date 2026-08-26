@@ -1,1645 +1,1289 @@
-import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, RuleKeyword, InjuryResult, Scenario } from '../types/rules';
+import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, RuleKeyword, Scenario } from '../types/rules';
 
 export const FACTIONS: Faction[] = [
   {
-    "id": "new-antioch",
-    "name": "The Principality of New Antioch",
-    "tagline": "Disciplined Christian crusaders, shock troops, and mechanized iron knights.",
-    "description": "For three hundred years, the Principality of New Antioch has stood defiantly as the focal point of the Faithful at the very edge of the shadow cast by the Gate of Hell. It is the Home of All Our Hopes, the bulwark against Heretic forces, and the first line of defence against the Devil's might.",
-    "icon": "Cross",
-    "color": "#D4AF37",
-    "specialRules": [
+    id: 'new-antioch',
+    name: 'The Principality of New Antioch',
+    theme: 'Dieselpunk Holy Crusaders',
+    description: 'The bastion of Christendom in the Levant. Armoured in heavy iron and utilizing heavy machine guns, sniper priests, and mechanized assault infantry.',
+    color: '#D4AF37',
+    icon: 'Shield',
+    rules: [
       {
-        "name": "New Antioch Fireteams",
-        "description": "A New Antioch Warband can include up to 2 Fireteams. Each Fireteam consists of any two models from the Warband. Both models gain the FIRETEAM Keyword at no additional cost."
+        name: 'Voice of Command',
+        description: 'New Antioch officers and leaders can give orders to nearby units within 6", granting +1 DICE on their next activation.'
       },
       {
-        "name": "Concentrated Attack",
-        "description": "If a model from a Fireteam hits a target that had been hit by an attack made by the other member of their Fireteam earlier in the same joint Activation, then you can spend 3 BLOOD MARKERS to convert the Injury Roll for the second attack to a Bloodbath Roll, even if the target is not Down."
+        name: 'Hold Your Fire!',
+        description: 'ACTION: Order friendly models within 6" to hold fire until enemies enter optimal range for concentrated volleys.'
       }
     ]
   },
   {
-    "id": "trench-pilgrims",
-    "name": "Trench Pilgrims",
-    "tagline": "Zealots, martyrs, flagellants, and the holy Ecclesiarchy.",
-    "description": "A ragged, fanatical tide of pilgrims, flagellants, and penitents who march into the warzones singing hymns of bloody martyrdom, led by Castigators and the terrifying living reliquaries known as Anchorites.",
-    "icon": "Flame",
-    "color": "#F5F5DC",
-    "specialRules": [
+    id: 'trench-pilgrims',
+    name: 'Trench Pilgrims',
+    theme: 'Religious Fanatics & Flagellants',
+    description: 'Zealots and martyrs who believe the end of days is nigh. Driven by holy fury, carrying sacred relics and mobile Anchorite shrines into the trenches.',
+    color: '#8B0000',
+    icon: 'Flame',
+    rules: [
       {
-        "name": "Ecstatic Martyrdom",
-        "description": "Trench Pilgrims embrace suffering. When a friendly model is taken Out of Action within 6 inches, nearby Pilgrim models gain +1 Melee DICE on their next Melee Attack."
+        name: 'Ecstatic Zeal',
+        description: 'Pilgrim units add +1 DICE on charge rolls and ignore the first Blood Marker suffered in each engagement.'
       },
       {
-        "name": "Holy Zeal",
-        "description": "Trench Pilgrim models possess the NEGATE FEAR Keyword when facing Demonic and Heretic models."
+        name: 'Prophetic Vision',
+        description: 'The War Prophet allows rerolls of one failed Action or Morale roll per game round.'
       }
     ]
   },
   {
-    "id": "iron-sultanate",
-    "name": "The Sultanate of the Iron Wall",
-    "tagline": "Alchemical marksmen, Brazen Bulls, and Janissaries defending the Great Wall.",
-    "description": "Defenders of the Levant utilizing advanced alchemy, Greek fire, and bio-alchemical constructs to defend the Dar al-Islam against hellish hordes.",
-    "icon": "Shield",
-    "color": "#008080",
-    "specialRules": [
+    id: 'iron-sultanate',
+    name: 'The Sultanate of the Iron Wall',
+    theme: 'Ottoman Alchemists & Janissaries',
+    description: 'Guardians of the Great Iron Wall. Masters of Greek fire, alchemical hazard engineering, Takwin homunculi, and elite Janissary firing lines.',
+    color: '#008080',
+    icon: 'Building2',
+    rules: [
       {
-        "name": "Alchemical Mastery",
-        "description": "Weapons with the FIRE or GAS keyword gain +1 to their effective blast radius or +2 inches range."
+        name: 'Mastery of the Elements',
+        description: 'Jabirean Alchemists can grant Fire, Gas, or Shrapnel keywords to all weapons at the start of a match and change elements mid-battle.'
       },
       {
-        "name": "Brazen Fortitude",
-        "description": "Janissary heavy units reduce all received Injury rolls by 1 (to a minimum of 1)."
+        name: 'Takwin Alchemy',
+        description: 'Can breed and customize bio-engineered Takwin Homunculi and Brazen Bulls with specialized alchemical formulae.'
       }
     ]
   },
   {
-    "id": "heretic-legions",
-    "name": "Heretic Legions",
-    "tagline": "Damned renegades, Hell-knights, and blood sacrifices.",
-    "description": "Traitorous soldiers who have embraced the powers of Hell, wielding demonic weaponry, corrupted icons, and dark sorceries.",
-    "icon": "Skull",
-    "color": "#FF4500",
-    "specialRules": [
+    id: 'heretic-legions',
+    name: 'The Heretic Legions',
+    theme: 'Damned Traitors & Chaos Cultists',
+    description: 'Legionnaires who renounced their faith and embraced the infernal powers of Hell, wielding blasphemous sorcery and machine armour.',
+    color: '#4B0082',
+    icon: 'Skull',
+    rules: [
       {
-        "name": "Blood for the Pit",
-        "description": "Each enemy taken Out of Action adds 1 Blood Token directly to the Warband Pool for summoning rituals or dark boons."
+        name: 'Blasphemous Litany',
+        description: 'Heretic Priests chant unholy verses that force enemies within 8" to make Risky tests for every action.'
       },
       {
-        "name": "Infernal Terror",
-        "description": "Charging Heretic Elites cause Fear checks on enemy defenders."
+        name: 'Infernal Blood Tithe',
+        description: 'Heretics can sacrifice friendly Blood Markers to bolster melee attacks with +1 Injury Dice.'
       }
     ]
   },
   {
-    "id": "black-grail",
-    "name": "The Cult of the Black Grail (The Order of the Fly)",
-    "tagline": "Plague heralds, rotting abominations, and filth chanters.",
-    "description": "Vessels of the Lord of Pestilence, covered in weeping sores and carrying the diseased ichor of the Black Grail.",
-    "icon": "Biohazard",
-    "color": "#33691E",
-    "specialRules": [
+    id: 'black-grail',
+    name: 'The Cult of the Black Grail',
+    theme: 'Plague & Putrefaction',
+    description: 'Worshippers of the Lord of Flies and disease. Their corrupted bodies heal from putrid ichor and spread virulent contagion.',
+    color: '#2E8B57',
+    icon: 'Biohazard',
+    rules: [
       {
-        "name": "Black Grail Contagion",
-        "description": "Any model striking a Black Grail unit in melee and rolling a failure suffers 1 automatic Infection Marker."
+        name: 'Lord of Flies',
+        description: 'Plague Knights and Grail Thralls inflict infection markers on hit and cause Fear to all unblessed models.'
       }
     ]
   },
   {
-    "id": "court-seven-serpents",
-    "name": "The Court of the Seven-Headed Serpent",
-    "tagline": "Aristocratic infernal diplomats, sorcerers, and flesh-sculptors.",
-    "description": "Decadent diabolists bargaining with serpentine arch-devils for psychic potency, unnatural mutations, and immortal splendor.",
-    "icon": "Crown",
-    "color": "#9C27B0",
-    "specialRules": [
+    id: 'court-seven-serpents',
+    name: 'The Court of the Seven-Headed Serpent',
+    theme: 'Aristocratic Devils & Hell Knights',
+    description: 'The ancient demonic aristocracy of the Pit, armed with sulfur weaponry, serpent rifles, and pit beasts.',
+    color: '#800020',
+    icon: 'Crown',
+    rules: [
       {
-        "name": "Glamour of the Pit",
-        "description": "Enemies shooting at Nobles of the Court beyond 12 inches suffer a -1 DICE penalty to Ranged Attack rolls."
+        name: 'Hellish Splendor',
+        description: 'Aristocrats of the Court impose -1 DICE to all enemy ranged attacks targeting them due to sulfur smoke and sinister majesty.'
       }
     ]
-  },
-  {
-    "id": "mercenaries",
-    "name": "Mercenaries & Free Companies",
-    "tagline": "Guns-for-hire, sellswords, penal legions, and deserters.",
-    "description": "Battle-hardened veterans fighting strictly for gold, archeotech salvage, and cold survival in the trenches.",
-    "icon": "Swords",
-    "color": "#78909C",
-    "specialRules": [
-      {
-        "name": "Cutthroat Grit",
-        "description": "Mercenary units can take equipment from any faction armory list with a +5 Ducat surcharge."
-      }
-    ]
-  }
-];
-
-export const BASE_UNITS: UnitProfile[] = [
-  {
-    "id": "na-lieutenant",
-    "name": "Lieutenant",
-    "factionId": "new-antioch",
-    "category": "Leader",
-    "baseCost": 70,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+1 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "ELITE",
-        "LEADER",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "hold-your-fire",
-        "name": "Hold Your Fire!",
-        "description": "A Lieutenant can take a Hold Your Fire! ACTION. Pick 1 enemy model in Line of Sight; the opponent must activate that model next."
-      },
-      {
-        "id": "voice-command",
-        "name": "Voice of Command",
-        "description": "Once per activation, grant a friendly Trooper within 8 inches a free Dash or Aim action."
-      }
-    ],
-    "defaultWeapons": [
-      "service-rifle",
-      "trench-knife"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Field commander of the Antioch Trench Line, hardened by years of chemical warfare and demon breaches."
-  },
-  {
-    "id": "na-sniper-priest",
-    "name": "0-2 Sniper Priest",
-    "factionId": "new-antioch",
-    "category": "Elite",
-    "baseCost": 50,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+2 DICE",
-      "melee": "+0 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "ELITE"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "blessed-aim",
-        "name": "Blessed Sight",
-        "description": "If stationary, add +2 DICE to Success Rolls for Ranged Attacks."
-      }
-    ],
-    "defaultWeapons": [
-      "sniper-rifle",
-      "trench-knife"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Ordained marksmen delivering holy scripture via high-velocity armor-piercing rounds."
-  },
-  {
-    "id": "na-trench-cleric",
-    "name": "0-1 Trench Cleric",
-    "factionId": "new-antioch",
-    "category": "Elite",
-    "baseCost": 60,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "ELITE",
-        "NEGATE FEAR"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "onward-christian-soldiers",
-        "name": "Onward Christian Soldiers!",
-        "description": "Friendly NEW ANTIOCH models within 8 inches of a Trench Cleric have the NEGATE FEAR Keyword."
-      }
-    ],
-    "defaultWeapons": [
-      "trench-club"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Carries heavy consecrated maces, holy scriptures, and battle banners to steady the faith of the line."
-  },
-  {
-    "id": "na-combat-medic",
-    "name": "0-1 Combat Medic",
-    "factionId": "new-antioch",
-    "category": "Elite",
-    "baseCost": 65,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+0 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "NEGATE FEAR",
-        "ELITE"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "expert-medic",
-        "name": "Expert Medic",
-        "description": "Add +2 DICE to the Risky Success Roll when carrying out a Treat ACTION with their Medi-kit."
-      },
-      {
-        "id": "finish-the-fallen",
-        "name": "Finish the Fallen",
-        "description": "Add +1 INJURY DICE to Melee Attacks if the target is Down and not BLACK GRAIL or DEMONIC."
-      }
-    ],
-    "defaultWeapons": [
-      "trench-knife"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Battlefield surgeons equipped with morphine, field kits, and merciful misericordia blades."
-  },
-  {
-    "id": "na-combat-engineer",
-    "name": "0-2 Combat Engineer",
-    "factionId": "new-antioch",
-    "category": "Elite",
-    "baseCost": 80,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "NEGATE MINED",
-        "ELITE"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "fortify-action",
-        "name": "Fortify ACTION",
-        "description": "Take a Risky Success Roll; on Success or Critical Success, gains the COVER Keyword until they move."
-      }
-    ],
-    "defaultWeapons": [
-      "trench-shotgun",
-      "trench-club"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Sappers trained in trench construction, demolition charges, and barbed wire clearing."
-  },
-  {
-    "id": "na-mechanized-heavy-infantry",
-    "name": "Mechanized Heavy Infantry",
-    "factionId": "new-antioch",
-    "category": "Elite",
-    "baseCost": 95,
-    "stats": {
-      "movement": "5\"",
-      "ranged": "+1 DICE",
-      "melee": "+1 DICE",
-      "armour": "-3",
-      "keywords": [
-        "NEW ANTIOCH",
-        "STRONG",
-        "ELITE",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "standfast",
-        "name": "Standfast",
-        "description": "When suffering a Down result on the Injury Table, it is treated as a Minor Hit result instead."
-      }
-    ],
-    "defaultWeapons": [
-      "heavy-shotgun"
-    ],
-    "defaultArmour": [
-      "machine-armour"
-    ],
-    "lore": "Ironclad juggernauts encased in motorized pneumatic plate armour."
-  },
-  {
-    "id": "na-shocktrooper",
-    "name": "0-5 Shock Troopers",
-    "factionId": "new-antioch",
-    "category": "Trooper",
-    "baseCost": 45,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "shock-charge",
-        "name": "Shock Charge",
-        "description": "When rolling the Charge Bonus, roll 1 extra D6 and use the single highest die to determine the bonus."
-      }
-    ],
-    "defaultWeapons": [
-      "bolt-action-rifle",
-      "bayonet"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Assault infantry armed with bayonets, grenades, and trench bludgeons."
-  },
-  {
-    "id": "na-yeoman",
-    "name": "Yeomen",
-    "factionId": "new-antioch",
-    "category": "Trooper",
-    "baseCost": 30,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+0 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "bolt-action-rifle"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Standard frontline conscripts and volunteers defending the firing step."
-  },
-  {
-    "id": "na-trench-mole",
-    "name": "Trench Mole (Upgraded Yeoman)",
-    "factionId": "new-antioch",
-    "category": "Trooper",
-    "baseCost": 40,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+0 DICE",
-      "armour": "-1",
-      "keywords": [
-        "NEW ANTIOCH",
-        "INFILTRATOR"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "bolt-action-rifle",
-      "trench-knife"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Infiltrators who crawl through collapsed saps and drainage tunnels behind enemy lines."
-  },
-  {
-    "id": "tp-war-prophet",
-    "name": "War Prophet",
-    "factionId": "trench-pilgrims",
-    "category": "Leader",
-    "baseCost": 80,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+2 DICE",
-      "armour": "-1",
-      "keywords": [
-        "TRENCH PILGRIMS",
-        "LEADER",
-        "ZEALOT",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "prophetic-vision",
-        "name": "Prophetic Vision",
-        "description": "Friendly Pilgrim models within 8 inches may reroll 1 failed Success Roll per round."
-      }
-    ],
-    "defaultWeapons": [
-      "great-sword"
-    ],
-    "defaultArmour": [
-      "penitent-rags"
-    ],
-    "lore": "Holy mystic possessed by apocalyptic visions of the Archangels, guiding the faithful into the abyss."
-  },
-  {
-    "id": "tp-castigator",
-    "name": "Castigator",
-    "factionId": "trench-pilgrims",
-    "category": "Elite",
-    "baseCost": 75,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+2 DICE",
-      "armour": "-1",
-      "keywords": [
-        "TRENCH PILGRIMS",
-        "ELITE",
-        "ZEALOT"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "fury-of-penance",
-        "name": "Fury of Penance",
-        "description": "Gains +1 Melee DICE for every Blood Marker currently on this model."
-      }
-    ],
-    "defaultWeapons": [
-      "heavy-flail"
-    ],
-    "defaultArmour": [
-      "penitent-rags"
-    ],
-    "lore": "Disciplinarian whipping both themselves and their flock into a fever pitch of violence."
-  },
-  {
-    "id": "tp-communicant",
-    "name": "Communicant",
-    "factionId": "trench-pilgrims",
-    "category": "Elite",
-    "baseCost": 90,
-    "stats": {
-      "movement": "5\"",
-      "ranged": "-1 DICE",
-      "melee": "+3 DICE",
-      "armour": "-2",
-      "keywords": [
-        "TRENCH PILGRIMS",
-        "ELITE",
-        "STRONG",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "great-hammer"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Giant mutated penitent fed holy transubstantiations, wielding church pillars and railway ties."
-  },
-  {
-    "id": "tp-anchorite",
-    "name": "Anchorite Shrine",
-    "factionId": "trench-pilgrims",
-    "category": "Elite",
-    "baseCost": 120,
-    "stats": {
-      "movement": "4\"",
-      "ranged": "+0 DICE",
-      "melee": "+2 DICE",
-      "armour": "-3",
-      "keywords": [
-        "TRENCH PILGRIMS",
-        "ELITE",
-        "CONSTRUCT",
-        "TOUGH",
-        "MACHINE ARMOUR"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "walking-shrine",
-        "name": "Walking Shrine",
-        "description": "Allies within 3 inches gain the COVER Keyword and the NEGATE FEAR Keyword."
-      }
-    ],
-    "defaultWeapons": [
-      "heavy-flamethrower"
-    ],
-    "defaultArmour": [
-      "machine-armour"
-    ],
-    "lore": "A penitent hermit permanently entombed in an armored cast-iron cathedral chassis."
-  },
-  {
-    "id": "tp-penitent-trooper",
-    "name": "Trench Pilgrims / The Faithful",
-    "factionId": "trench-pilgrims",
-    "category": "Trooper",
-    "baseCost": 25,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "-1 DICE",
-      "melee": "+1 DICE",
-      "armour": "+0",
-      "keywords": [
-        "TRENCH PILGRIMS",
-        "ZEALOT"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "trench-club"
-    ],
-    "defaultArmour": [
-      "penitent-rags"
-    ],
-    "lore": "Devout zealots armed with agricultural tools, iron crosses, and stolen rifles."
-  },
-  {
-    "id": "is-jabirean-alchemist",
-    "name": "Jabirean Alchemist / Yüzbaşı",
-    "factionId": "iron-sultanate",
-    "category": "Leader",
-    "baseCost": 85,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+2 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "IRON SULTANATE",
-        "LEADER",
-        "ALCHEMIST",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "greek-fire-formula",
-        "name": "Greek Fire Mastery",
-        "description": "Once per round, adds the FIRE keyword to a ranged attack made by a friendly model within 6 inches."
-      }
-    ],
-    "defaultWeapons": [
-      "alchemical-pistol",
-      "sword-axe"
-    ],
-    "defaultArmour": [
-      "alchemist-armour"
-    ],
-    "lore": "Scholars of the House of Wisdom wielding volatile mercury, distilled sulfur, and alchemical flame."
-  },
-  {
-    "id": "is-brazen-bull",
-    "name": "Brazen Bull",
-    "factionId": "iron-sultanate",
-    "category": "Elite",
-    "baseCost": 115,
-    "stats": {
-      "movement": "5\"",
-      "ranged": "+0 DICE",
-      "melee": "+3 DICE",
-      "armour": "-3",
-      "keywords": [
-        "IRON SULTANATE",
-        "ELITE",
-        "CONSTRUCT",
-        "TOUGH",
-        "MACHINE ARMOUR"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "furnace-charge",
-        "name": "Furnace Trample",
-        "description": "Inflicts 1 automatic FIRE wound on any model contacted during a charge."
-      }
-    ],
-    "defaultWeapons": [
-      "heavy-flamethrower"
-    ],
-    "defaultArmour": [
-      "machine-armour"
-    ],
-    "lore": "Bronze mechanical behemoth powered by molten alchemical slag."
-  },
-  {
-    "id": "is-janissary",
-    "name": "Janissary",
-    "factionId": "iron-sultanate",
-    "category": "Trooper",
-    "baseCost": 45,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+1 DICE",
-      "melee": "+1 DICE",
-      "armour": "-2",
-      "keywords": [
-        "IRON SULTANATE",
-        "DISCIPLINED"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "bolt-action-rifle",
-      "sword-axe"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Elite marksmen of the Sultan equipped with composite armor and precision rifles."
-  },
-  {
-    "id": "is-azab",
-    "name": "Azab",
-    "factionId": "iron-sultanate",
-    "category": "Trooper",
-    "baseCost": 30,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+0 DICE",
-      "armour": "-1",
-      "keywords": [
-        "IRON SULTANATE"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "bolt-action-rifle"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Levy infantry holding the battlements of the Iron Wall."
-  },
-  {
-    "id": "hl-heretic-priest",
-    "name": "Heretic Priest / Centurion",
-    "factionId": "heretic-legions",
-    "category": "Leader",
-    "baseCost": 85,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+1 DICE",
-      "melee": "+2 DICE",
-      "armour": "-1",
-      "keywords": [
-        "HERETIC LEGIONS",
-        "LEADER",
-        "INFERNAL",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "dark-prayer",
-        "name": "Blasphemous Litany",
-        "description": "Spend 1 Blood Marker from your pool to give 1 friendly model +1 DICE to all rolls for 1 round."
-      }
-    ],
-    "defaultWeapons": [
-      "demonic-blade",
-      "submachine-gun"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "An apostate officer bearing unholy glyphs etched directly into his armor and flesh."
-  },
-  {
-    "id": "hl-anointed",
-    "name": "Anointed Heavy Infantry",
-    "factionId": "heretic-legions",
-    "category": "Elite",
-    "baseCost": 95,
-    "stats": {
-      "movement": "5\"",
-      "ranged": "+1 DICE",
-      "melee": "+2 DICE",
-      "armour": "-3",
-      "keywords": [
-        "HERETIC LEGIONS",
-        "ELITE",
-        "STRONG",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "great-sword"
-    ],
-    "defaultArmour": [
-      "machine-armour"
-    ],
-    "lore": "Demonic heavy shock troops encased in spiked iron plate and consecrated in brimstone."
-  },
-  {
-    "id": "hl-trooper",
-    "name": "Heretic Legionnaire",
-    "factionId": "heretic-legions",
-    "category": "Trooper",
-    "baseCost": 35,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+1 DICE",
-      "armour": "-1",
-      "keywords": [
-        "HERETIC LEGIONS"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "bolt-action-rifle",
-      "bayonet"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "Traitor legionnaires equipped with scavenged military gear and hell-forged munitions."
-  },
-  {
-    "id": "hl-wretched",
-    "name": "Wretched",
-    "factionId": "heretic-legions",
-    "category": "Trooper",
-    "baseCost": 20,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "-1 DICE",
-      "melee": "+0 DICE",
-      "armour": "+0",
-      "keywords": [
-        "HERETIC LEGIONS",
-        "FODDER"
-      ]
-    },
-    "innateAbilities": [],
-    "defaultWeapons": [
-      "trench-knife"
-    ],
-    "defaultArmour": [
-      "penitent-rags"
-    ],
-    "lore": "Mutated sacrificial thralls thrown forward to trigger enemy mines and absorb machine gun fire."
-  },
-  {
-    "id": "merc-trench-dog",
-    "name": "Trench Dog",
-    "factionId": "mercenaries",
-    "category": "Mercenary",
-    "baseCost": 20,
-    "stats": {
-      "movement": "8\"",
-      "ranged": "- DICE",
-      "melee": "+1 DICE",
-      "armour": "+0",
-      "keywords": [
-        "MERCENARY",
-        "BEAST",
-        "FAST"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "ferocious-bite",
-        "name": "Barbed Wire Runner",
-        "description": "Ignores movement penalties from Barbed Wire and Dangerous Terrain."
-      }
-    ],
-    "defaultWeapons": [
-      "combat-knife"
-    ],
-    "defaultArmour": [
-      "penitent-rags"
-    ],
-    "lore": "Armoured war hound trained to run through gas clouds and take down snipers in the mud."
-  },
-  {
-    "id": "merc-sin-eater",
-    "name": "Sin Eater",
-    "factionId": "mercenaries",
-    "category": "Mercenary",
-    "baseCost": 75,
-    "stats": {
-      "movement": "6\"",
-      "ranged": "+0 DICE",
-      "melee": "+2 DICE",
-      "armour": "-1",
-      "keywords": [
-        "MERCENARY",
-        "ELITE",
-        "TOUGH"
-      ]
-    },
-    "innateAbilities": [
-      {
-        "id": "absorb-sin",
-        "name": "Absorb Suffering",
-        "description": "Can absorb Blood Markers from adjacent friendly models to heal itself."
-      }
-    ],
-    "defaultWeapons": [
-      "great-sword"
-    ],
-    "defaultArmour": [
-      "standard-trench-armour"
-    ],
-    "lore": "A wanderer who consumes the spiritual corruption and physical agony of dying soldiers."
   }
 ];
 
 export const BASE_WEAPONS: WeaponProfile[] = [
+  // MELEE WEAPONS
   {
-    "id": "trench-knife",
-    "name": "Trench Knife",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+0 DICE",
-    "damage": "Standard",
-    "cost": 1,
-    "keywords": [
-      "Fast Strike"
-    ],
-    "description": "Standard issue steel dagger for trench raids and close-quarters fighting."
+    id: 'w-knife',
+    name: 'Trench Knife',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Fast Strike'],
+    cost: 1,
+    description: 'Standard trench warfare combat blade.'
   },
   {
-    "id": "bayonet",
-    "name": "Bayonet",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+0 DICE (+1 on Charge)",
-    "damage": "Standard",
-    "cost": 2,
-    "keywords": [
-      "Bayonet",
-      "Shield Combo"
-    ],
-    "description": "Affixed steel spearhead turning standard bolt-action rifles into lethal thrusting pikes."
+    id: 'w-bayonet',
+    name: 'Bayonet',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['+1 on Charge', 'Shield Combo'],
+    cost: 2,
+    description: 'Fixed bayonet providing reach and charge impalement.'
   },
   {
-    "id": "trench-club",
-    "name": "Trench Club",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+0 DICE",
-    "damage": "Heavy",
-    "cost": 3,
-    "keywords": [
-      "Concussive"
-    ],
-    "description": "Lead-weighted bludgeon with barbed wire wrapped around the head."
+    id: 'w-club',
+    name: 'Trench Club',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+0 DICE',
+    damage: 'Concussive',
+    keywords: ['Concussive'],
+    cost: 3,
+    description: 'Weighted spiked club designed to crack trench helmets.'
   },
   {
-    "id": "sword-axe",
-    "name": "Sword / Axe",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+1 DICE",
-    "damage": "Standard",
-    "cost": 4,
-    "keywords": [
-      "Slashing"
-    ],
-    "description": "Reliable steel blade or hatchet."
+    id: 'w-sword',
+    name: 'Sword/Axe',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+1 DICE',
+    damage: 'Slashing',
+    keywords: ['+1 DICE', 'Slashing'],
+    cost: 4,
+    description: 'Single-edged trench sword or hand axe.'
   },
   {
-    "id": "polearm",
-    "name": "Polearm",
-    "type": "Melee",
-    "hands": 2,
-    "range": "Melee (2\")",
-    "modifiers": "+1 DICE",
-    "damage": "Standard",
-    "cost": 7,
-    "keywords": [
-      "Reach (2\")",
-      "Shield Combo"
-    ],
-    "description": "Halberd or billhook allowing melee attacks from behind the front rank."
+    id: 'w-flail',
+    name: 'Flail/Scourge',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: '2"',
+    modifiers: '+0 DICE',
+    damage: 'Concussive',
+    keywords: ['Reach (2")', 'Concussive', 'Ignore Shield Cover'],
+    cost: 5,
+    description: 'Spiked chain flail that wraps around trench shields.'
   },
   {
-    "id": "great-hammer",
-    "name": "Great Hammer / Maul",
-    "type": "Melee",
-    "hands": 2,
-    "range": "Melee (1\")",
-    "modifiers": "+1 DICE",
-    "damage": "Severe (D3)",
-    "cost": 10,
-    "keywords": [
-      "Heavy",
-      "Concussive",
-      "Armour Piercing (1)"
-    ],
-    "description": "Two-handed sledgehammer that crushes plate armour."
+    id: 'w-polearm',
+    name: 'Polearm',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 2,
+    range: '2"',
+    modifiers: '+1 DICE',
+    damage: 'Standard',
+    keywords: ['Reach (2")', 'Shield Combo'],
+    cost: 7,
+    description: 'Long spear, halberd, or billhook providing standoff capability.'
   },
   {
-    "id": "great-sword",
-    "name": "Great Sword / Great Axe",
-    "type": "Melee",
-    "hands": 2,
-    "range": "Melee (1\")",
-    "modifiers": "+2 DICE",
-    "damage": "Severe (D3)",
-    "cost": 12,
-    "keywords": [
-      "Heavy",
-      "Slashing"
-    ],
-    "description": "Zweihander or executioner axe swung with two hands."
+    id: 'w-great-hammer',
+    name: 'Great Hammer/Maul',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 2,
+    range: '1"',
+    modifiers: '+1 DICE',
+    damage: 'Severe (D3)',
+    keywords: ['Heavy', 'Concussive', 'Armour Piercing 1'],
+    cost: 10,
+    description: 'Two-handed sledge designed to crush Machine Armour.'
   },
   {
-    "id": "heavy-flail",
-    "name": "Flagellant Iron Flail",
-    "type": "Melee",
-    "hands": 2,
-    "range": "Melee (2\")",
-    "modifiers": "+2 DICE",
-    "damage": "Heavy",
-    "cost": 15,
-    "keywords": [
-      "Concussive",
-      "Heavy"
-    ],
-    "description": "Heavy spiked iron chains swung with religious ecstasy."
+    id: 'w-great-sword',
+    name: 'Great Sword/Axe',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 2,
+    range: '1"',
+    modifiers: '+2 DICE',
+    damage: 'Severe (D3)',
+    keywords: ['+2 DICE', 'Heavy', 'Slashing'],
+    cost: 12,
+    description: 'Massive executioner greatsword or battle axe.'
   },
   {
-    "id": "misericordia",
-    "name": "Misericordia",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+1 DICE",
-    "damage": "Lethal",
-    "cost": 15,
-    "keywords": [
-      "Combat Medic Only",
-      "Finish the Fallen"
-    ],
-    "description": "Slender stiletto designed to slide through visor slits of downed opponents."
+    id: 'w-misericordia',
+    name: 'Misericordia',
+    factionId: 'new-antioch',
+    allowedUnits: ['Combat Medic', 'Sister of Saint Cosmas'],
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+1 DICE',
+    damage: 'Lethal',
+    keywords: ['Combat Medic Only', 'Finish the Fallen'],
+    cost: 15,
+    description: 'Narrow mercy blade used by Combat Medics to deliver the Emperor\'s peace.'
   },
   {
-    "id": "demonic-blade",
-    "name": "Hell-Forged Falchion",
-    "type": "Melee",
-    "hands": 1,
-    "range": "Melee (1\")",
-    "modifiers": "+2 DICE",
-    "damage": "Lethal",
-    "cost": 25,
-    "keywords": [
-      "Armour Piercing (1)",
-      "Fire"
-    ],
-    "description": "Obsidian blade burning with sulfur that cuts through reinforced steel breastplates."
+    id: 'w-anti-tank-hammer',
+    name: 'Anti-Tank Hammer',
+    factionId: 'trench-pilgrims',
+    allowedFactions: ['trench-pilgrims', 'iron-sultanate'],
+    type: 'Melee',
+    hands: 2,
+    range: '1"',
+    modifiers: '+1 DICE',
+    damage: 'Severe (D3+1)',
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'IGNORE ARMOUR', 'RISKY'],
+    cost: 25,
+    description: 'Hollow-charge impact hammer capable of breaching tank armor.'
   },
   {
-    "id": "pistol",
-    "name": "Pistol / Revolver",
-    "type": "Ranged",
-    "hands": 1,
-    "range": "12\"",
-    "modifiers": "+0 DICE",
-    "damage": "Standard",
-    "cost": 6,
-    "keywords": [
-      "Assault",
-      "Sidearm"
-    ],
-    "description": "Standard military revolver."
+    id: 'w-titan-zulfiqar',
+    name: 'Titan Zulfiqar',
+    factionId: 'iron-sultanate',
+    allowedUnits: ['Brazen Bull', 'Favoured Brazen Bull', 'Takwin Homunculus', 'Favoured Takwin Homunculus'],
+    type: 'Melee',
+    hands: 1,
+    range: '1"',
+    modifiers: '+2 INJURY MODIFIER',
+    damage: 'Severe (D3)',
+    keywords: ['+2 INJURY MODIFIER', 'CRITICAL', 'HEAVY', 'Bull Only'],
+    cost: 30,
+    description: 'Massive dual-bladed alchemical scimitar forged for siege beasts.'
+  },
+
+  // RANGED WEAPONS
+  {
+    id: 'w-pistol',
+    name: 'Pistol / Revolver',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '12"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Assault', 'Sidearm'],
+    cost: 6,
+    description: 'Reliable service revolver or semi-auto sidearm.'
   },
   {
-    "id": "automatic-pistol",
-    "name": "Automatic Pistol",
-    "type": "Ranged",
-    "hands": 1,
-    "range": "12\"",
-    "modifiers": "+1 DICE",
-    "damage": "Standard",
-    "cost": 20,
-    "keywords": [
-      "Assault",
-      "Rapid Fire",
-      "Elite Only"
-    ],
-    "description": "High rate of fire automatic sidearm."
+    id: 'w-auto-pistol',
+    name: 'Automatic Pistol',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '12"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Assault', 'Automatic 2', 'Sidearm'],
+    cost: 10,
+    description: 'High-rate-of-fire machine pistol.'
   },
   {
-    "id": "bolt-action-rifle",
-    "name": "Bolt-Action Service Rifle",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "24\"",
-    "modifiers": "+0 DICE",
-    "damage": "Standard",
-    "cost": 10,
-    "keywords": [
-      "Bayonet Lug"
-    ],
-    "description": "Standard infantry bolt-action service rifle."
+    id: 'w-rifle',
+    name: 'Bolt-Action Service Rifle',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Bayonet Lug'],
+    cost: 10,
+    description: 'Standard issue military bolt-action rifle.'
   },
   {
-    "id": "shotgun",
-    "name": "Shotgun",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "12\"",
-    "modifiers": "+1 Hit at Point-Blank (<=6\")",
-    "damage": "Standard",
-    "cost": 10,
-    "keywords": [
-      "Bayonet Lug",
-      "Shield Combo"
-    ],
-    "description": "Trench shotgun loaded with lead buckshot."
+    id: 'w-shotgun',
+    name: 'Shotgun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '12"',
+    modifiers: '+1 Hit Point-Blank',
+    damage: 'Standard',
+    keywords: ['+1 Hit Point-Blank (≤6")', 'Bayonet Lug', 'Shield Combo'],
+    cost: 10,
+    description: '12-gauge trench sweeper shotgun.'
   },
   {
-    "id": "semi-automatic-rifle",
-    "name": "Semi-Automatic Rifle",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "24\"",
-    "modifiers": "+0 DICE",
-    "damage": "Standard",
-    "cost": 15,
-    "keywords": [
-      "Bayonet Lug",
-      "Assault"
-    ],
-    "description": "Gas-operated self-loading rifle."
+    id: 'w-semi-rifle',
+    name: 'Semi-Automatic Rifle',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Bayonet Lug', 'Assault'],
+    cost: 15,
+    description: 'Gas-operated self-loading infantry rifle.'
   },
   {
-    "id": "automatic-shotgun",
-    "name": "Automatic Shotgun",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "12\"",
-    "modifiers": "+1 DICE at Point-Blank (<=6\")",
-    "damage": "Heavy",
-    "cost": 15,
-    "keywords": [
-      "Bayonet Lug",
-      "Shield Combo",
-      "Assault"
-    ],
-    "description": "Drum-fed automatic shotgun."
+    id: 'w-auto-shotgun',
+    name: 'Automatic Shotgun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '12"',
+    modifiers: '+1 DICE Point-Blank',
+    damage: 'Standard',
+    keywords: ['+1 DICE Point-Blank', 'Bayonet Lug', 'Shield Combo', 'Assault'],
+    cost: 15,
+    description: 'Drum-fed automatic trench shotgun.'
   },
   {
-    "id": "heavy-shotgun",
-    "name": "Heavy Shotgun",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "12\"",
-    "modifiers": "+1 DICE",
-    "damage": "Heavy (D3)",
-    "cost": 20,
-    "keywords": [
-      "Shield Combo",
-      "Shrapnel"
-    ],
-    "description": "Large-bore shotgun firing explosive slugs."
+    id: 'w-jezzail',
+    name: 'Jezzail',
+    factionId: 'iron-sultanate',
+    type: 'Ranged',
+    hands: 2,
+    range: '18"',
+    modifiers: '+1 DICE',
+    damage: 'Standard',
+    keywords: ['+1 DICE', 'Alchemical Lock'],
+    cost: 7,
+    description: 'Long-barrelled rifled musket favored by Sultanate marksmen.'
   },
   {
-    "id": "submachine-gun",
-    "name": "Submachine Gun",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "12\"",
-    "modifiers": "+0 DICE",
-    "damage": "Standard",
-    "cost": 30,
-    "keywords": [
-      "Assault",
-      "Bayonet Lug",
-      "Shield Combo",
-      "Limit: 2"
-    ],
-    "description": "High rate-of-fire submachine gun for close quarters."
+    id: 'w-siege-jezzail',
+    name: 'Siege Jezzail',
+    factionId: 'iron-sultanate',
+    allowedFactions: ['iron-sultanate'],
+    type: 'Ranged',
+    hands: 2,
+    range: '30"',
+    modifiers: '+1 DICE, +1 INJURY DICE',
+    damage: 'Heavy',
+    keywords: ['+1 DICE', '+1 INJURY DICE', 'Heavy'],
+    cost: 30,
+    description: 'High-caliber wall rifle designed to breach fortifications.'
   },
   {
-    "id": "flamethrower",
-    "name": "Flamethrower",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "8\" (Template)",
-    "modifiers": "+0 DICE (Hits All in Path)",
-    "damage": "Fire",
-    "cost": 30,
-    "keywords": [
-      "Fire",
-      "Blast (2\")",
-      "Limit: 3"
-    ],
-    "description": "Liquid fuel flamethrower igniting trenches in fire."
+    id: 'w-smg',
+    name: 'Submachine Gun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '12"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Assault', 'Bayonet Lug', 'Limit 2'],
+    cost: 30,
+    description: 'Rapid-firing 9mm trench submachine gun.'
   },
   {
-    "id": "heavy-flamethrower",
-    "name": "Heavy Flamethrower",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "10\" (Template)",
-    "modifiers": "+0 DICE",
-    "damage": "Fire (D3)",
-    "cost": 55,
-    "keywords": [
-      "Fire",
-      "Blast (3\")",
-      "Heavy",
-      "Limit: 1"
-    ],
-    "description": "Backpack fuel tank spewing relentless streams of Greek fire."
+    id: 'w-sniper',
+    name: 'Sniper Rifle',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '36"',
+    modifiers: '+1 DICE (+2 stationary)',
+    damage: 'Lethal',
+    keywords: ['Precision', 'Heavy', 'Armour Piercing 1', 'Limit 3'],
+    cost: 35,
+    description: 'Precision match-grade rifle fitted with high-power telescopic optics.'
   },
   {
-    "id": "sniper-rifle",
-    "name": "Sniper Rifle",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "36\"",
-    "modifiers": "+1 DICE (+2 if stationary)",
-    "damage": "Lethal",
-    "cost": 35,
-    "keywords": [
-      "Precision",
-      "Heavy",
-      "Armour Piercing (1)",
-      "Limit: 3"
-    ],
-    "description": "Long-range match rifle with optical scope."
+    id: 'w-auto-rifle',
+    name: 'Automatic Rifle',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['Assault', 'Automatic 2', 'Focused Fire'],
+    cost: 40,
+    description: 'Heavy magazine-fed automatic combat rifle.'
   },
   {
-    "id": "automatic-rifle",
-    "name": "Automatic Rifle",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "24\"",
-    "modifiers": "+1 DICE",
-    "damage": "Standard",
-    "cost": 40,
-    "keywords": [
-      "Bayonet Lug",
-      "Limit: 1",
-      "Assault"
-    ],
-    "description": "Magazine-fed squad automatic rifle."
+    id: 'w-mg',
+    name: 'Machine Gun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '36"',
+    modifiers: '+1 DICE',
+    damage: 'Heavy',
+    keywords: ['Heavy', 'Suppressive Fire', 'Limit 2'],
+    cost: 50,
+    description: 'Belt-fed air-cooled heavy machine gun.'
   },
   {
-    "id": "machine-gun",
-    "name": "Machine Gun",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "36\"",
-    "modifiers": "+1 DICE",
-    "damage": "Heavy",
-    "cost": 50,
-    "keywords": [
-      "Heavy",
-      "Suppressive Fire",
-      "Limit: 2"
-    ],
-    "description": "Belt-fed heavy machine gun deployed on a bipod or tripod."
+    id: 'w-flamethrower',
+    name: 'Flamethrower',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '8" Template',
+    modifiers: 'Automatic Hit',
+    damage: 'Area',
+    keywords: ['Fire', 'Blast (2")', 'Ignore Armour', 'Limit 3'],
+    cost: 30,
+    description: 'Pressurized chemical projector firing streams of liquid fire.'
   },
   {
-    "id": "grenade-launcher",
-    "name": "Grenade Launcher",
-    "type": "Ranged",
-    "hands": 2,
-    "range": "24\"",
-    "modifiers": "+0 DICE",
-    "damage": "Blast",
-    "cost": 30,
-    "keywords": [
-      "Blast (2\")",
-      "Heavy",
-      "Limit: 2"
-    ],
-    "description": "Cup launcher lobbing explosive canisters."
+    id: 'w-heavy-flamethrower',
+    name: 'Heavy Flamethrower',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '10" Template',
+    modifiers: 'Severe D3',
+    damage: 'Severe (D3)',
+    keywords: ['Fire D3', 'Blast (3")', 'Heavy', 'Limit 1'],
+    cost: 55,
+    description: 'Massive dual-tank chemical projector incinerating whole bunker sectors.'
   },
   {
-    "id": "frag-grenade",
-    "name": "Frag Grenades",
-    "type": "Ranged",
-    "hands": 1,
-    "range": "8\"",
-    "modifiers": "+0 DICE",
-    "damage": "Blast",
-    "cost": 7,
-    "keywords": [
-      "Blast (2\")",
-      "Shrapnel"
-    ],
-    "description": "Cast iron fragmentation stick grenades."
+    id: 'w-flame-cannon',
+    name: 'Flame Cannon',
+    factionId: 'iron-sultanate',
+    allowedUnits: ['Brazen Bull', 'Favoured Brazen Bull'],
+    type: 'Ranged',
+    hands: 1,
+    range: '12"',
+    modifiers: 'Greek Fire',
+    damage: 'Severe (D3)',
+    keywords: ['FIRE', 'HEAVY', 'IGNORE ARMOUR', 'Greek Fire (Line 12")'],
+    cost: 60,
+    description: 'Mounted Greek fire cannon firing continuous streams across a 12" line.'
+  },
+
+  // GRENADES
+  {
+    id: 'w-frag-grenades',
+    name: 'Frag Grenades',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '8"',
+    modifiers: 'Blast',
+    damage: 'Blast',
+    keywords: ['Blast (2")', 'Shrapnel'],
+    cost: 7,
+    description: 'Cast iron fragmentation grenades throwing lethal jagged steel.'
   },
   {
-    "id": "incendiary-grenade",
-    "name": "Incendiary Grenades",
-    "type": "Ranged",
-    "hands": 1,
-    "range": "8\"",
-    "modifiers": "+0 DICE",
-    "damage": "Fire",
-    "cost": 15,
-    "keywords": [
-      "Blast (2\")",
-      "Fire",
-      "Limit: 2"
-    ],
-    "description": "Phosphorus and chemical firebombs."
+    id: 'w-incendiary-grenades',
+    name: 'Incendiary Grenades',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '8"',
+    modifiers: 'Fire',
+    damage: 'Fire',
+    keywords: ['Blast (2")', 'Fire', 'Limit 2'],
+    cost: 15,
+    description: 'White phosphorus grenades igniting everything within radius.'
   },
   {
-    "id": "satchel-charge",
-    "name": "Satchel Charge",
-    "type": "Ranged",
-    "hands": 1,
-    "range": "4\"",
-    "modifiers": "+0 DICE",
-    "damage": "Severe (D3+1)",
-    "cost": 15,
-    "keywords": [
-      "Blast (3\")",
-      "Consumable",
-      "Limit: 3 (1 per model)"
-    ],
-    "description": "Heavy bag of high explosives for breaching bunkers and fortifications."
+    id: 'w-satchel-charge',
+    name: 'Satchel Charge',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '4"',
+    modifiers: 'Severe (D3+1)',
+    damage: 'Severe (D3+1)',
+    keywords: ['Blast (3")', 'Consumable (Limit 3)', 'Ignore Armour'],
+    cost: 15,
+    description: 'Canvas bag packed with high explosives and timed fuse.'
   }
 ];
 
 export const BASE_ARMOUR: ArmourProfile[] = [
   {
-    "id": "standard-trench-armour",
-    "name": "Standard Armour",
-    "armourModifier": "-1 Injury Modifier",
-    "cost": 0,
-    "keywords": [
-      "Standard Protection"
-    ],
-    "description": "Steel cuirass and helmet reducing injury rolls by 1."
+    id: 'arm-standard',
+    name: 'Standard Armour',
+    factionId: 'universal',
+    armourModifier: '-1 Injury Modifier',
+    cost: 15,
+    description: 'Standard steel breastplate, padded gambeson, and iron gorget.'
   },
   {
-    "id": "reinforced-armour",
-    "name": "Reinforced Heavy Armour",
-    "armourModifier": "-2 Injury Modifier",
-    "cost": 20,
-    "keywords": [
-      "Heavy Armour"
-    ],
-    "description": "Heavy steel breastplate and limb guards reducing injury rolls by 2."
+    id: 'arm-reinforced',
+    name: 'Reinforced Armour',
+    factionId: 'universal',
+    armourModifier: '-2 Injury Modifier',
+    cost: 40,
+    description: 'Full-plate harness layered with hardened steel inserts and spall liners.'
   },
   {
-    "id": "machine-armour",
-    "name": "Machine Armour",
-    "armourModifier": "-3 Injury Modifier",
-    "cost": 95,
-    "keywords": [
-      "Machine Armour",
-      "Bulky (40mm Base)",
-      "Standfast"
-    ],
-    "description": "Pneumatically assisted armored exoskeleton with a -3 Injury Modifier. When suffering a Down result, it is treated as a Minor Hit instead."
+    id: 'arm-machine',
+    name: 'Machine Armour',
+    factionId: 'universal',
+    allowedUnits: ['Mechanized Heavy Infantry', 'Anointed Heavy Infantry', 'Brazen Bull', 'Favoured Brazen Bull'],
+    armourModifier: '-3 Injury Modifier',
+    cost: 50,
+    description: 'Powered pneumatic exoskeleton plate. Sets base size to 40mm, Standfast: treats Down as Minor Wound.'
   },
   {
-    "id": "alchemist-armour",
-    "name": "Alchemist Sealed Hazard Armour",
-    "armourModifier": "-1 Injury Modifier",
-    "cost": 25,
-    "keywords": [
-      "Negate Gas",
-      "Negate Fire"
-    ],
-    "description": "Hermetically sealed brass and vulcanized rubber suit immune to chemical gas and fire."
+    id: 'arm-alchemist',
+    name: 'Alchemist Armour',
+    factionId: 'iron-sultanate',
+    allowedUnits: ['Jabirean Alchemist', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas'],
+    armourModifier: '-2 Injury Modifier',
+    cost: 50,
+    description: 'Hermetically sealed alchemical hazard suit. -2 Injury Modifier, completely NEGATES FIRE and NEGATES GAS.'
   },
   {
-    "id": "trench-shield",
-    "name": "Trench Shield",
-    "armourModifier": "-1 Injury Modifier (Cover Bonus in Front Arc)",
-    "cost": 10,
-    "keywords": [
-      "Shield",
-      "Cover Bonus"
-    ],
-    "description": "Mobile steel ballistic shield providing frontal cover against ranged fire."
+    id: 'arm-trench-shield',
+    name: 'Trench Shield',
+    factionId: 'universal',
+    armourModifier: '-1 Injury Modifier (Frontal)',
+    cost: 10,
+    description: 'Heavy steel ballistic mantlet with firing viewport. Provides cover bonus from frontal arc.'
   },
   {
-    "id": "penitent-rags",
-    "name": "Penitent Rags / Unarmoured",
-    "armourModifier": "+0",
-    "cost": 0,
-    "keywords": [
-      "Unarmoured"
-    ],
-    "description": "Sackcloth and burlap offering zero ballistic protection."
+    id: 'arm-fire-shield',
+    name: 'Fire Shield',
+    factionId: 'iron-sultanate',
+    armourModifier: '-1 Injury Modifier',
+    cost: 20,
+    description: 'Alchemically treated shield negating fire damage and providing -1 Injury Modifier.'
   }
 ];
 
 export const BASE_EQUIPMENT: EquipmentItem[] = [
   {
-    "id": "gas-mask",
-    "name": "Gas Mask",
-    "cost": 5,
-    "effect": "Immunity to the GAS keyword and toxic smoke clouds.",
-    "keywords": [
-      "Gas Protection"
-    ],
-    "description": "Respirator mask with activated charcoal filter."
+    id: 'eq-gas-mask',
+    name: 'Gas Mask',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'NEGATE GAS: Wearer is completely immune to toxic gas effects and chemical hazard weapons.'
   },
   {
-    "id": "medi-kit",
-    "name": "Medi-kit",
-    "cost": 5,
-    "effect": "Allows a model to carry out Treat ACTION on Downed allies.",
-    "keywords": [
-      "Medical"
-    ],
-    "description": "Tourniquets, coagulant powders, and bone needles."
+    id: 'eq-combat-helmet',
+    name: 'Combat Helmet',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'NEGATE SHRAPNEL: Negates the bonus Injury dice from explosive shrapnel and blast weapons.'
   },
   {
-    "id": "combat-helmet",
-    "name": "Combat Helmet",
-    "cost": 5,
-    "effect": "Rerolls 1 failed Armour check against Shrapnel or Grenades per battle.",
-    "keywords": [
-      "Headgear"
-    ],
-    "description": "Hardened steel trench helmet."
+    id: 'eq-medikit',
+    name: 'Medikit',
+    cost: 15,
+    factionId: 'universal',
+    effect: 'ACTION: Treat a friendly model within 1" to remove 1 Blood Marker or attempt to revive a Downed model.'
   },
   {
-    "id": "shovel",
-    "name": "Trench Shovel / Entrenching Tool",
-    "cost": 5,
-    "effect": "Can be used to dig hasty foxholes or used as a melee weapon (+0 DICE).",
-    "keywords": [
-      "Utility",
-      "Melee"
-    ],
-    "description": "Sharpened folding entrenching spade."
+    id: 'eq-binoculars',
+    name: 'Binoculars',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'Spotter Action: Designate an enemy model in Line of Sight to grant friendly units +1 DICE Ranged attacks against it.'
   },
   {
-    "id": "mountaineer-kit",
-    "name": "Mountaineer Kit",
-    "cost": 3,
-    "effect": "Allows climbing vertical terrain without rolling difficult terrain tests. Limit: 4.",
-    "keywords": [
-      "Movement",
-      "Limit: 4"
-    ],
-    "description": "Ropes, pitons, and grappling iron."
+    id: 'eq-shovel',
+    name: 'Shovel',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'Dug In: Model starting on open ground has the COVER keyword until it moves. Can be used as a 2H melee weapon.'
   },
   {
-    "id": "binoculars",
-    "name": "Binoculars",
-    "cost": 10,
-    "effect": "Grants +2 inches maximum range to all friendly Ranged Attacks targeting models spotted by the user. ELITE only.",
-    "keywords": [
-      "Optics",
-      "ELITE only"
-    ],
-    "description": "High-magnification prismatic field glasses."
+    id: 'eq-cloak-alamut',
+    name: 'Cloak of Alamut',
+    cost: 25,
+    factionId: 'iron-sultanate',
+    effect: 'Blend In: Ranged attack modifier for Cover is -2 DICE instead of -1 DICE when wearing this cloak.'
   },
   {
-    "id": "musical-instrument",
-    "name": "Musical Instrument (War Horn / Bugle)",
-    "cost": 15,
-    "effect": "Once per round, allow 1 friendly unit within 12 inches to charge an additional +2 inches. Limit: 1.",
-    "keywords": [
-      "Morale",
-      "Limit: 1"
-    ],
-    "description": "Brass clarion or trench bugle rallying the assault."
+    id: 'eq-wind-amulet',
+    name: 'Wind Amulet',
+    cost: 10,
+    factionId: 'iron-sultanate',
+    effect: 'Gusts of Wind: Once per match, add +3" to Movement Characteristic for the activation.'
   },
   {
-    "id": "holy-relic",
-    "name": "Saint Bone Reliquary",
-    "cost": 20,
-    "effect": "Reroll 1 failed Success Roll per battle.",
-    "keywords": [
-      "Holy Relic",
-      "Faithful"
-    ],
-    "description": "A consecrated silver reliquary containing saintly relics."
+    id: 'eq-sniper-scope',
+    name: 'Sniper Scope',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'Enhanced Accuracy: One rifle gains the IGNORE LONG RANGE keyword.'
+  },
+  {
+    id: 'eq-alchemical-ammo',
+    name: 'Alchemical Ammunition',
+    cost: 3,
+    factionId: 'iron-sultanate',
+    effect: 'Adds +1 DICE to attacks with Jezzail, Siege Jezzail, or Halberd-Gun for one match.'
+  }
+];
+
+export const BASE_UNITS: UnitProfile[] = [
+  // 1. PRINCIPALITY OF NEW ANTIOCH
+  {
+    id: 'na-lieutenant',
+    name: 'Lieutenant',
+    factionId: 'new-antioch',
+    category: 'Leader',
+    baseCost: 70,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Leader', 'Infantry', 'Hold Your Fire!']
+    },
+    innateAbilities: [
+      {
+        id: 'voice-of-command',
+        name: 'Voice of Command',
+        description: 'Once per turn, issue an order to a friendly model within 6", giving +1 DICE to its next Action roll.'
+      },
+      {
+        id: 'hold-your-fire',
+        name: 'Hold Your Fire!',
+        description: 'ACTION: All friendly models in 6" gain +1 DICE on ranged attacks if they hold fire until enemy charges or moves.'
+      }
+    ]
+  },
+  {
+    id: 'na-sniper-priest',
+    name: 'Sniper Priest',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 50,
+    stats: {
+      movement: '6"',
+      ranged: '+2 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['Elite', 'Infantry', 'Blessed Sight']
+    },
+    innateAbilities: [
+      {
+        id: 'blessed-sight',
+        name: 'Blessed Sight',
+        description: 'Add +2 DICE to Ranged Attack rolls when firing a Sniper Rifle while stationary.'
+      }
+    ]
+  },
+  {
+    id: 'na-trench-cleric',
+    name: 'Trench Cleric',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 60,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Elite', 'Infantry', 'Negate Fear']
+    },
+    innateAbilities: [
+      {
+        id: 'onward-christian-soldiers',
+        name: 'Onward Christian Soldiers!',
+        description: 'Friendly models within 6" negate Fear and receive +1 DICE on Morale checks.'
+      }
+    ]
+  },
+  {
+    id: 'na-combat-medic',
+    name: 'Combat Medic',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 65,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Elite', 'Infantry', 'Medic']
+    },
+    innateAbilities: [
+      {
+        id: 'expert-medic',
+        name: 'Expert Medic',
+        description: 'Add +2 DICE to Treat actions with a Medikit. Can carry the Misericordia.'
+      }
+    ]
+  },
+  {
+    id: 'na-combat-engineer',
+    name: 'Combat Engineer',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 80,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Elite', 'Infantry', 'Fortify']
+    },
+    innateAbilities: [
+      {
+        id: 'fortify',
+        name: 'Fortify Position',
+        description: 'ACTION: Construct defensive breastworks giving permanent Cover to an adjacent sector.'
+      }
+    ]
+  },
+  {
+    id: 'na-mechanized-heavy',
+    name: 'Mechanized Heavy Infantry',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 95,
+    stats: {
+      movement: '5"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-3',
+      keywords: ['Elite', 'Infantry', 'Machine Armour', 'Standfast']
+    },
+    innateAbilities: [
+      {
+        id: 'pneumatic-reinforcement',
+        name: 'Pneumatic Reinforcement',
+        description: 'Treats Down results as Minor Wounds. Base size is 40mm.'
+      }
+    ]
+  },
+  {
+    id: 'na-shocktrooper',
+    name: 'Shocktroopers',
+    factionId: 'new-antioch',
+    category: 'Trooper',
+    baseCost: 45,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry', 'Shock Charge']
+    },
+    innateAbilities: [
+      {
+        id: 'shock-charge',
+        name: 'Shock Charge',
+        description: 'Add +1 DICE to hit on any turn in which the model successfully charges.'
+      }
+    ]
+  },
+  {
+    id: 'na-yeoman',
+    name: 'Yeomen',
+    factionId: 'new-antioch',
+    category: 'Trooper',
+    baseCost: 30,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry']
+    },
+    innateAbilities: []
+  },
+
+  // 2. TRENCH PILGRIMS
+  {
+    id: 'tp-war-prophet',
+    name: 'War Prophet',
+    factionId: 'trench-pilgrims',
+    category: 'Leader',
+    baseCost: 80,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+2 DICE',
+      armour: '-1',
+      keywords: ['Leader', 'Infantry', 'Prophetic Vision']
+    },
+    innateAbilities: [
+      {
+        id: 'prophetic-vision',
+        name: 'Prophetic Vision',
+        description: 'Grants 1 free reroll per turn to any friendly unit within 8".'
+      }
+    ]
+  },
+  {
+    id: 'tp-castigator',
+    name: 'Castigator',
+    factionId: 'trench-pilgrims',
+    category: 'Elite',
+    baseCost: 75,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+2 DICE',
+      armour: '-1',
+      keywords: ['Elite', 'Infantry', 'Fury of Penance']
+    },
+    innateAbilities: [
+      {
+        id: 'fury-of-penance',
+        name: 'Fury of Penance',
+        description: 'Gains +1 Melee DICE for each Blood Marker on this model.'
+      }
+    ]
+  },
+  {
+    id: 'tp-communicant',
+    name: 'Communicant',
+    factionId: 'trench-pilgrims',
+    category: 'Elite',
+    baseCost: 90,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+2 DICE',
+      armour: '-2',
+      keywords: ['Elite', 'Infantry', 'Strong', 'Tough']
+    },
+    innateAbilities: [
+      {
+        id: 'holy-monstrosity',
+        name: 'Holy Monstrosity',
+        description: 'Tough (2 Wounds). Can wield 2-handed weapons in one hand.'
+      }
+    ]
+  },
+  {
+    id: 'tp-anchorite',
+    name: 'Anchorite Shrine',
+    factionId: 'trench-pilgrims',
+    category: 'Elite',
+    baseCost: 120,
+    stats: {
+      movement: '4"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-3',
+      keywords: ['Elite', 'Vehicle', 'Heavy Armour', 'Walking Shrine']
+    },
+    innateAbilities: [
+      {
+        id: 'walking-shrine',
+        name: 'Walking Shrine',
+        description: 'Provides mobile hard cover to adjacent friendly infantry. Mounts heavy weapon platforms.'
+      }
+    ]
+  },
+  {
+    id: 'tp-faithful',
+    name: 'The Faithful',
+    factionId: 'trench-pilgrims',
+    category: 'Trooper',
+    baseCost: 25,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry', 'Zealot']
+    },
+    innateAbilities: []
+  },
+
+  // 3. IRON SULTANATE
+  {
+    id: 'is-alchemist',
+    name: 'Jabirean Alchemist',
+    factionId: 'iron-sultanate',
+    category: 'Elite',
+    baseCost: 55,
+    stats: {
+      movement: '6"',
+      ranged: '+2 DICE',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['Elite', 'Infantry', 'Mastery of the Elements']
+    },
+    innateAbilities: [
+      {
+        id: 'mastery-of-elements',
+        name: 'Mastery of the Elements',
+        description: 'Grant FIRE, GAS, or SHRAPNEL to all weapons at start of battle. Elemental Change Action allows switching elements.'
+      }
+    ]
+  },
+  {
+    id: 'is-brazen-bull',
+    name: 'Brazen Bull',
+    factionId: 'iron-sultanate',
+    category: 'Elite',
+    baseCost: 100,
+    stats: {
+      movement: '5"',
+      ranged: '+0 DICE',
+      melee: '+3 DICE',
+      armour: '-3',
+      keywords: ['Elite', 'Beast', 'Strong', 'Tough', 'Machine Armour']
+    },
+    innateAbilities: [
+      {
+        id: 'furnace-trample',
+        name: 'Trample',
+        description: 'Make a Melee Attack against a Down model with IGNORE ARMOUR. Causes Fear.'
+      }
+    ]
+  },
+  {
+    id: 'is-janissary',
+    name: 'Janissary',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 55,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['Trooper', 'Infantry', 'Disciplined']
+    },
+    innateAbilities: [
+      {
+        id: 'disciplined-volley',
+        name: 'Disciplined Volley',
+        description: 'Rerolls 1s on Ranged Attack rolls with rifles and jezzails.'
+      }
+    ]
+  },
+  {
+    id: 'is-sapper',
+    name: 'Sultanate Sapper',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 50,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry', 'Set Mine', 'Defuse Mine']
+    },
+    innateAbilities: [
+      {
+        id: 'mine-warfare',
+        name: 'Mine Warfare',
+        description: 'Can set and defuse explosive mines on terrain features.'
+      }
+    ]
+  },
+  {
+    id: 'is-lion-of-jabir',
+    name: 'Lion of Jabir',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 60,
+    stats: {
+      movement: '8"',
+      ranged: 'N/A',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Beast', 'Agile', 'Pin']
+    },
+    innateAbilities: [
+      {
+        id: 'pin',
+        name: 'Pin Down',
+        description: 'Downed enemy models cannot stand up while within 1" of the Lion.'
+      }
+    ]
+  },
+  {
+    id: 'is-homunculus',
+    name: 'Takwin Homunculus',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 40,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Artificial Life']
+    },
+    innateAbilities: [
+      {
+        id: 'pummeling-blows',
+        name: 'Pummeling Blows',
+        description: 'Can make melee attacks without equipped weapons. Can be customized with Alchemical Formulae.'
+      }
+    ]
+  },
+  {
+    id: 'is-azab',
+    name: 'Azab',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 25,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '-1 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry']
+    },
+    innateAbilities: []
+  },
+
+  // 4. HERETIC LEGIONS
+  {
+    id: 'hl-priest',
+    name: 'Heretic Priest',
+    factionId: 'heretic-legions',
+    category: 'Leader',
+    baseCost: 80,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['Leader', 'Infantry', 'Blasphemous Litany']
+    },
+    innateAbilities: [
+      {
+        id: 'unholy-litany',
+        name: 'Blasphemous Litany',
+        description: 'Chants infernal rites that sap enemy resolve and grant +1 DICE on unholy attack rolls.'
+      }
+    ]
+  },
+  {
+    id: 'hl-anointed',
+    name: 'Anointed Heavy Infantry',
+    factionId: 'heretic-legions',
+    category: 'Elite',
+    baseCost: 95,
+    stats: {
+      movement: '5"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-3',
+      keywords: ['Elite', 'Infantry', 'Machine Armour', 'Tough']
+    },
+    innateAbilities: [
+      {
+        id: 'infernal-plate',
+        name: 'Infernal Exoskeleton',
+        description: 'Machine Armour (-3). Standfast: treats Down as Minor Wound.'
+      }
+    ]
+  },
+  {
+    id: 'hl-trooper',
+    name: 'Heretic Trooper',
+    factionId: 'heretic-legions',
+    category: 'Trooper',
+    baseCost: 30,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['Trooper', 'Infantry']
+    },
+    innateAbilities: []
+  },
+  {
+    id: 'hl-wretched',
+    name: 'Wretched',
+    factionId: 'heretic-legions',
+    category: 'Trooper',
+    baseCost: 20,
+    stats: {
+      movement: '6"',
+      ranged: '-1 DICE',
+      melee: '-1 DICE',
+      armour: '0',
+      keywords: ['Trooper', 'Fodder']
+    },
+    innateAbilities: []
+  },
+
+  // 5. MERCENARIES
+  {
+    id: 'merc-mamluk-faris',
+    name: 'Mamluk Faris',
+    factionId: 'mercenaries',
+    category: 'Mercenary',
+    baseCost: 0,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-3',
+      keywords: ['Mercenary', 'Elite', 'Martial Prowess', 'Sworn Brethren']
+    },
+    innateAbilities: [
+      {
+        id: 'sworn-brethren',
+        name: 'Sworn Brethren',
+        description: 'Forms a Fireteam with any Elite model in the warband.'
+      },
+      {
+        id: 'martial-prowess',
+        name: 'Martial Prowess',
+        description: 'Greatsword loses Heavy keyword; Jezzail gains Assault and Shield Combo.'
+      }
+    ]
+  },
+  {
+    id: 'merc-trench-dog',
+    name: 'Trench Dog',
+    factionId: 'mercenaries',
+    category: 'Mercenary',
+    baseCost: 20,
+    stats: {
+      movement: '8"',
+      ranged: 'N/A',
+      melee: '+1 DICE',
+      armour: '0',
+      keywords: ['Mercenary', 'Beast', 'Barbed Wire Runner']
+    },
+    innateAbilities: [
+      {
+        id: 'wire-runner',
+        name: 'Barbed Wire Runner',
+        description: 'Ignores movement penalties from Difficult Terrain and Barbed Wire.'
+      }
+    ]
+  },
+  {
+    id: 'merc-sin-eater',
+    name: 'Sin Eater',
+    factionId: 'mercenaries',
+    category: 'Mercenary',
+    baseCost: 75,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+2 DICE',
+      armour: '-2',
+      keywords: ['Mercenary', 'Elite', 'Absorb Suffering']
+    },
+    innateAbilities: [
+      {
+        id: 'absorb-suffering',
+        name: 'Absorb Suffering',
+        description: 'Can take wounds inflicted on friendly models within 3" onto itself.'
+      }
+    ]
   }
 ];
 
 export const KEYWORDS: RuleKeyword[] = [
   {
-    "name": "Blood Markers",
-    "category": "Condition",
-    "summary": "Accumulated wounds and shock that enhance enemy Injury Rolls or fuel special abilities.",
-    "fullText": "A model can have up to 6 Blood Markers at any time. When making an Injury Roll against an enemy, the attacker may spend Blood Markers to add +1 Injury DICE (roll extra die and pick highest 2) per marker spent. An attacker can spend 6 Blood Markers (or 3 if target is Down) to trigger a Bloodbath Roll (roll 3D6 and sum all 3 dice together). A player may also spend their own model's Blood Markers to impose -1 DICE on enemy attacks against it."
+    id: 'kw-assault',
+    name: 'Assault',
+    category: 'Weapon Trait',
+    summary: 'Can shoot without penalty after moving, or shoot and charge in the same turn.',
+    description: 'Weapons with this keyword allow the model to move and shoot at no penalty, and make a melee attack or charge in the same activation.',
+    fullText: 'Weapons with this keyword allow the model to move and shoot at no penalty, and make a melee attack or charge in the same activation.'
   },
   {
-    "name": "Fire",
-    "category": "Weapon",
-    "summary": "Incendiary damage that inflicts extra Blood Markers after the attack.",
-    "fullText": "Weapons with the FIRE keyword inflict +1 additional Blood Marker on the target if the attack is a Success (7-11) or Critical Success (12), applied after the Injury Roll is resolved (regardless of whether the Injury Roll caused damage). Models with the Negate Fire trait ignore this effect."
+    id: 'kw-blast',
+    name: 'Blast',
+    category: 'Weapon Trait',
+    summary: 'Hits all models under the blast template radius.',
+    description: 'When attacking with a Blast weapon, place the template at the target point. All models touched by the template suffer an Injury Roll.',
+    fullText: 'When attacking with a Blast weapon, place the template at the target point. All models touched by the template suffer an Injury Roll.'
   },
   {
-    "name": "Gas",
-    "category": "Weapon",
-    "summary": "Corrosive chemical agents that bypass standard armour.",
-    "fullText": "Attacks with the GAS keyword bypass all non-alchemical Armour modifiers. A successful attack adds +1 Blood Marker on the target. Models wearing Gas Masks or sealed Alchemist Armour are immune."
+    id: 'kw-fire',
+    name: 'Fire',
+    category: 'Damage Effect',
+    summary: 'Inflicts +1 Blood Marker after the Injury Roll on Success/Critical.',
+    description: 'Flaming attacks ignite targets. If the attack roll succeeds, place +1 extra Blood Marker on the target model after resolving the Injury roll.',
+    fullText: 'Flaming attacks ignite targets. If the attack roll succeeds, place +1 extra Blood Marker on the target model after resolving the Injury roll.'
   },
   {
-    "name": "Shrapnel",
-    "category": "Weapon",
-    "summary": "Bursting steel fragments that punish models caught in the open.",
-    "fullText": "If the target of a SHRAPNEL attack is in Open Ground (not benefiting from Cover), the attack gains +1 Injury DICE (roll an extra die and pick the two highest)."
+    id: 'kw-gas',
+    name: 'Gas',
+    category: 'Hazard',
+    summary: 'Ignores non-alchemical armour and inflicts +1 Blood Marker.',
+    description: 'Gas clouds choke and corrode. Attacks ignore normal armour unless the model has a Gas Mask or Alchemist Hazard Armour.',
+    fullText: 'Gas clouds choke and corrode. Attacks ignore normal armour unless the model has a Gas Mask or Alchemist Hazard Armour.'
   },
   {
-    "name": "Assault",
-    "category": "Weapon",
-    "summary": "Allows shooting without preventing charges or close combat in the same turn.",
-    "fullText": "A model firing an ASSAULT weapon may still make a Charge or Melee Attack during the same activation."
+    id: 'kw-shrapnel',
+    name: 'Shrapnel',
+    category: 'Damage Effect',
+    summary: '+1 Injury DICE against targets in Open Ground.',
+    description: 'Explosive fragments shred exposed combatants. Add +1 Injury die if the target is not in Cover. Negated by Combat Helmets.',
+    fullText: 'Explosive fragments shred exposed combatants. Add +1 Injury die if the target is not in Cover. Negated by Combat Helmets.'
   },
   {
-    "name": "Heavy",
-    "category": "Weapon",
-    "summary": "Cumbersome weaponry that cannot be fired on the run.",
-    "fullText": "A model cannot fire a HEAVY weapon in the same activation that it performed a Dash action unless specifically braced or permitted by unit rules."
+    id: 'kw-machine-armour',
+    name: 'Machine Armour',
+    category: 'Armour Rule',
+    summary: '-3 Injury modifier, 40mm base, treats Down as Minor Wound.',
+    description: 'Heavy hydraulic powered suit. Provides -3 to enemy injury rolls, sets base size to 40mm, and treats Downed results as Minor Wounds.',
+    fullText: 'Heavy hydraulic powered suit. Provides -3 to enemy injury rolls, sets base size to 40mm, and treats Downed results as Minor Wounds.'
   },
   {
-    "name": "Blast (X\")",
-    "category": "Weapon",
-    "summary": "Area-of-effect explosion hitting all models within the radius.",
-    "fullText": "Place the template or measure X inches from the target point; all models within the blast radius are hit and must suffer individual Injury Rolls."
+    id: 'kw-negate-gas',
+    name: 'Negate Gas',
+    category: 'Protection',
+    summary: 'Model is immune to gas weapons and toxic terrain.',
+    description: 'Granted by Gas Masks and Alchemist Armour. Completely negates gas damage and markers.',
+    fullText: 'Granted by Gas Masks and Alchemist Armour. Completely negates gas damage and markers.'
   },
   {
-    "name": "Armour Piercing (X)",
-    "category": "Weapon",
-    "summary": "Reduces the target's Armour rating by X.",
-    "fullText": "Subtracts X from the target's Armour modifier when making the Injury Roll (e.g. Armour Piercing 1 reduces a -2 Armour modifier to -1)."
-  },
-  {
-    "name": "Tough",
-    "category": "General",
-    "summary": "Exceptional resilience against fatal strikes.",
-    "fullText": "The first time a model with Tough suffers an 'Out of Action' result on the Injury Table, it is treated as DOWN instead."
-  },
-  {
-    "name": "Down",
-    "category": "Condition",
-    "summary": "Knocked to the ground crawling; receives 1 Blood Marker.",
-    "fullText": "A DOWN model is laid on its side and receives 1 Blood Marker. It cannot shoot or charge, and can only crawl up to 2 inches per movement action. Enemies attacking a Down model in melee add +1 Injury DICE."
-  },
-  {
-    "name": "Out of Action",
-    "category": "Condition",
-    "summary": "The model has been killed or incapacitated and is removed from the battlefield.",
-    "fullText": "The model is removed from play. In campaign play, roll on the D66 Post-Battle Casualty Table after the game."
-  },
-  {
-    "name": "Success Roll (2D6)",
-    "category": "General",
-    "summary": "Standard 2D6 Action, Ranged, Melee, and Morale test mechanic.",
-    "fullText": "Roll 2D6 + Modifiers. 2-6 = Failure; 7-11 = Success; 12 = Critical Success; Natural 2 (Snake Eyes) = Critical Failure / Mishap."
-  },
-  {
-    "name": "Injury Table (2D6)",
-    "category": "General",
-    "summary": "Standard 2D6 table to resolve damage against wounded models.",
-    "fullText": "Roll 2D6 applying Injury Dice and Modifiers (max penalty -3). 1 or less = No Effect; 2-6 = Flesh Wound (+1 Blood Marker); 7-8 = 1 Blood Marker; 9-11 = DOWN (+1 Blood Marker); 12+ = OUT OF ACTION."
-  },
-  {
-    "name": "Machine Armour",
-    "category": "General",
-    "summary": "Motorized pneumatic plate with -3 modifier that ignores Down results.",
-    "fullText": "Provides a -3 Injury Modifier. A model with Machine Armour increases its base size to 40mm. When it suffers a Down result on the Injury Table, it is treated as a Minor Hit result instead."
-  },
-  {
-    "name": "Negate Fear",
-    "category": "General",
-    "summary": "Immunity to morale shock and demonic terror.",
-    "fullText": "The model automatically passes all Morale and Fear tests caused by enemy keywords or horrific encounters."
-  },
-  {
-    "name": "Infiltrator",
-    "category": "General",
-    "summary": "Can deploy forward in No Man's Land.",
-    "fullText": "May be set up anywhere on the battlefield that is more than 12 inches away from any enemy deployment zone and outside Line of Sight of enemy models."
-  }
-];
-
-export const INJURY_TABLE_D66: InjuryResult[] = [
-  {
-    "roll": "11-16",
-    "title": "Killed in Action (Dead)",
-    "effect": "The warrior succumbs to their wounds in No Man's Land. Remove model permanently from the warband roster.",
-    "isDead": true
-  },
-  {
-    "roll": "21-25",
-    "title": "Grievous Wound / Severed Limb",
-    "effect": "Permanent severe injury. Suffer -1\" Movement permanently, but gains +1 XP for surviving against all odds.",
-    "statModifier": {
-      "movement": "5\""
-    }
-  },
-  {
-    "roll": "26-32",
-    "title": "Lost Eye / Blasted Sight",
-    "effect": "One eye blinded by shrapnel. Suffer -1 Ranged permanently.",
-    "statModifier": {
-      "ranged": "-1"
-    }
-  },
-  {
-    "roll": "33-41",
-    "title": "Cracked Skull & Shellshock",
-    "effect": "Suffers recurring tremors. Must pass a Morale test at the start of every game or start with 1 Blood Marker."
-  },
-  {
-    "roll": "42-53",
-    "title": "Deep Scars & Hardened",
-    "effect": "Horrific scarring that intimidates foes. Gains the Fear special keyword in melee combat!"
-  },
-  {
-    "roll": "54-66",
-    "title": "Flesh Wound / Full Recovery",
-    "effect": "The warrior makes a full recovery with no lasting negative penalties and is ready for the next battle."
-  }
-];
-
-export const EXPLORATION_TABLE_D66 = [
-  {
-    "roll": "11-16",
-    "title": "Muddy Crater & Shell Hole",
-    "reward": "D6 Ducats",
-    "description": "Only rusted shell casings and scavenged scrap found in the crater."
-  },
-  {
-    "roll": "21-26",
-    "title": "Abandoned Trench Ammo Cache",
-    "reward": "2D6+10 Ducats + 1 Frag Grenade",
-    "description": "An unopened crate of munitions left behind by retreating shock troops."
-  },
-  {
-    "roll": "31-42",
-    "title": "Shattered Shrine Reliquary",
-    "reward": "3D6+15 Ducats + 1 Holy Relic (or Demonic Idol)",
-    "description": "Gold chalices and blessed icons salvaged from the rubbled chapel."
-  },
-  {
-    "roll": "43-54",
-    "title": "Dead Officer's Satchel",
-    "reward": "4D6+20 Ducats + Secret Trench Map (Reroll 1 scenario deployment in next match)",
-    "description": "Intelligence documents, gold signet rings, and tactical maps."
-  },
-  {
-    "roll": "55-66",
-    "title": "Archeotech Weapon Vault",
-    "reward": "50 Ducats + Choice of 1 Rare Heavy Weapon or Reinforced Armour",
-    "description": "An intact pre-apocalypse bunker sealed beneath the reinforced concrete."
+    id: 'kw-negate-shrapnel',
+    name: 'Negate Shrapnel',
+    category: 'Protection',
+    summary: 'Model ignores +1 Injury DICE from shrapnel weapons.',
+    description: 'Granted by Combat Helmets. Prevents attackers from gaining extra injury dice on exposed models.',
+    fullText: 'Granted by Combat Helmets. Prevents attackers from gaining extra injury dice on exposed models.'
   }
 ];
 
 export const SCENARIOS: Scenario[] = [
   {
-    "id": "trench-raid",
-    "name": "Scenario 1: Trench Night Raid",
-    "flavor": "Under cover of toxic fog and darkness, a strike team crosses No Man's Land to assault enemy command dugouts.",
-    "deployment": "Opposing edges, 18 inches apart with barbed wire and shell holes filling the center.",
-    "objectives": [
-      "Capture and hold the enemy communication bunker (3 Glory)",
-      "Assassinate the enemy Leader (2 Glory)",
-      "Inflict more casualties than sustained (1 Glory)"
-    ],
-    "specialRules": [
-      "Night Fighting: Maximum visibility is 16 inches unless flares are launched.",
-      "Toxic Fog: Units not wearing Gas Masks roll a D6 when entering craters."
-    ],
-    "victoryConditions": "Warband with the highest Glory points after 5 turns claims the trench section."
+    id: 'sc-trench-raid',
+    name: 'Trench Raid',
+    type: 'Assault',
+    objective: 'Infiltrate enemy trench lines, destroy munitions caches, and secure prisoners.',
+    flavor: 'Infiltrate enemy trench lines, destroy munitions caches, and secure prisoners.',
+    deployment: 'Opposing trenches 18" apart with No Man\'s Land in between.',
+    specialRules: ['Night Fighting (max 18" LoS)', 'Barbed Wire Fields']
   },
   {
-    "id": "sacred-relic",
-    "name": "Scenario 2: The Martyr's Relic",
-    "flavor": "A downed zeppelin carrying the mummified hand of a Saint has crashed in the center of the battlefield.",
-    "deployment": "Standard deployment 24 inches apart with the Relic Objective marker dead center.",
-    "objectives": [
-      "Extract the Relic off your home board edge (4 Glory + 30 Ducats)",
-      "Eliminate all opposing Elites (2 Glory)"
-    ],
-    "specialRules": [
-      "Heavy Relic: The carrier cannot run and has -2 inches movement while carrying the relic."
-    ],
-    "victoryConditions": "First player to extract the relic or hold it uncontested on turn 6."
+    id: 'sc-relic-hunt',
+    name: 'The Weeping Relic',
+    type: 'Objective',
+    objective: 'Extract the bleeding skull of Saint Jude from the central ruined cathedral.',
+    flavor: 'Extract the bleeding skull of Saint Jude from the central ruined cathedral.',
+    deployment: 'Corner deployment with central relic objective marker.',
+    specialRules: ['Holy Aura: Models within 3" of Relic gain +1 DICE on Morale.']
   },
   {
-    "id": "no-mans-land-clash",
-    "name": "Scenario 3: Blood in No Man's Land",
-    "flavor": "Two opposing patrols collide head-on amidst craters, barbed wire, and artillery craters.",
-    "deployment": "Diagonal corners, 12 inches deployment zones.",
-    "objectives": [
-      "Control 3 out of 5 neutral Crater Control Nodes (1 Glory per node held at game end)",
-      "First Blood: Score the first kill of the game (1 Glory)"
-    ],
-    "specialRules": [
-      "Artillery Barrage: At the end of each round, a random crater is struck by shellfire."
-    ],
-    "victoryConditions": "Most Victory Points at the end of Turn 4."
+    id: 'sc-iron-wall-breach',
+    name: 'Breach at Iron Gate',
+    type: 'Siege',
+    objective: 'Attacker must plant satchel charges on the fortified bunker doors while defender holds.',
+    flavor: 'Attacker must plant satchel charges on the fortified bunker doors while defender holds.',
+    deployment: 'Attacker on edge, Defender in fortified bunker perimeter.',
+    specialRules: ['Bunker Walls have -3 Injury modifier.', 'Artillery Bombardment']
   }
 ];
+
+export const INJURY_TABLE_D66 = [
+  { roll: '11-16', name: 'Dead', title: 'Dead', description: 'The warrior succumbs to mortal wounds. Remove from Warband roster permanently.', effect: 'The warrior succumbs to mortal wounds. Remove from Warband roster permanently.', isDead: true },
+  { roll: '21-25', name: 'Chest Wound', title: 'Chest Wound', description: 'Permanent -1" Movement penalty in future matches.', effect: 'Permanent -1" Movement penalty in future matches.', isDead: false },
+  { roll: '26-32', name: 'Lost Eye / Blinded', title: 'Lost Eye / Blinded', description: '-1 DICE on all Ranged Attack rolls.', effect: '-1 DICE on all Ranged Attack rolls.', isDead: false },
+  { roll: '33-41', name: 'Shellshock / Traumatized', title: 'Shellshock / Traumatized', description: 'Suffers -1 DICE on all Morale and Fear checks.', effect: 'Suffers -1 DICE on all Morale and Fear checks.', isDead: false },
+  { roll: '42-53', name: 'Deep Scar / Hardened', title: 'Deep Scar / Hardened', description: 'The warrior gains +1 XP from surviving harrowing agony.', effect: 'The warrior gains +1 XP from surviving harrowing agony.', isDead: false },
+  { roll: '54-66', name: 'Full Recovery', title: 'Full Recovery', description: 'The warrior emerges battered but unbroken with no lingering penalties.', effect: 'The warrior emerges battered but unbroken with no lingering penalties.', isDead: false }
+];
+
+export const EXPLORATION_TABLE_D66 = [
+  { roll: '11-16', title: 'Booby Trap / Gas Pocket', reward: '-5 Ducats (Repairs)', description: 'Exploration team triggers unexploded mustard gas shells in an abandoned dugout.' },
+  { roll: '21-26', title: 'Scattered Munitions Cache', reward: '+15 Ducats & Frag Grenades', description: 'Unopened ammo crates found buried in crater silt.' },
+  { roll: '31-42', title: 'Shattered Shrine', reward: '+1 Glory Point', description: 'A weeping icon or ancient reliquary recovered from cathedral rubble.' },
+  { roll: '43-52', title: 'Captured Armaments Depot', reward: '+30 Ducats', description: 'Substantial military stockpile recovered from fortified redoubt.' },
+  { roll: '53-62', title: 'Deserted Tank Hulk', reward: '+45 Ducats', description: 'Armor plate, scrap engine components, and heavy ordnance retrieved.' },
+  { roll: '63-66', title: 'Sacred / Unholy Relic', reward: '+2 Glory Points & +25 Ducats', description: 'A legendary artifact from the First Crusade recovered intact.' }
+];
+
+

@@ -25,16 +25,22 @@ export interface WeaponProfile {
   cost: number; // in Ducats
   description?: string;
   hands?: 1 | 2;
+  factionId?: string;
+  allowedUnits?: string[];
+  allowedFactions?: string[];
   isCustom?: boolean;
 }
 
 export interface ArmourProfile {
   id: string;
   name: string;
-  armourModifier: string; // e.g. "+1 Armour" or "+2 Armour"
+  armourModifier: string; // e.g. "-1 Injury Modifier"
   cost: number;
-  keywords: string[];
+  keywords?: string[];
   description?: string;
+  factionId?: string;
+  allowedUnits?: string[];
+  allowedFactions?: string[];
   isCustom?: boolean;
 }
 
@@ -43,8 +49,11 @@ export interface EquipmentItem {
   name: string;
   cost: number;
   effect: string;
-  keywords: string[];
+  keywords?: string[];
   description?: string;
+  factionId?: string;
+  allowedUnits?: string[];
+  allowedFactions?: string[];
   isCustom?: boolean;
 }
 
@@ -71,34 +80,50 @@ export interface FactionSpecialRule {
 export interface Faction {
   id: string;
   name: string;
-  tagline: string;
+  tagline?: string;
+  theme?: string;
   description: string;
   icon: string;
   color: string;
-  specialRules: FactionSpecialRule[];
+  specialRules?: FactionSpecialRule[];
+  rules?: FactionSpecialRule[];
 }
 
 export interface RuleKeyword {
+  id?: string;
   name: string;
-  category: 'Weapon' | 'Condition' | 'General' | 'Faction';
+  category: string;
   summary: string;
   fullText: string;
+  description?: string;
 }
 
 export interface InjuryResult {
   roll: string; // e.g. "11-16"
   title: string;
+  name?: string;
   effect: string;
+  description?: string;
   statModifier?: Partial<Statline>;
   isDead?: boolean;
+}
+
+export interface ExplorationResult {
+  roll: string;
+  title: string;
+  reward: string;
+  description: string;
 }
 
 export interface Scenario {
   id: string;
   name: string;
-  flavor: string;
-  deployment: string;
-  objectives: string[];
-  specialRules: string[];
-  victoryConditions: string;
+  type?: string;
+  flavor?: string;
+  objective?: string;
+  deployment?: string;
+  specialRules?: string[];
+  rewards?: string[];
+  victoryConditions?: string;
+  objectives?: string[];
 }
