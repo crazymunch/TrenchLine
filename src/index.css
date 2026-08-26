@@ -28,6 +28,23 @@
   font-family: var(--font-mono);
 }
 
+/* Faction-specific font helpers */
+.font-bricolage {
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-newsreader {
+  font-family: 'Newsreader', serif;
+}
+
+.font-garamond {
+  font-family: 'EB Garamond', serif;
+}
+
 /* Grimdark Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -44,27 +61,23 @@
   background: #454D63;
 }
 
-/* Grimdark Borders & Accents */
-.border-iron {
-  border-color: #323846;
+/* Bevels & Industrial Rivets */
+.bevel-container {
+  border-top: 1px solid #4D4635;
+  border-left: 1px solid #4D4635;
+  border-bottom: 1px solid #1D2027;
+  border-right: 1px solid #1D2027;
 }
 
-.border-rust {
-  border-color: #5A3E31;
+.rivet {
+  width: 4px;
+  height: 4px;
+  background-color: #4D4635;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px #000, 0 0 1px #000;
 }
 
-.border-sacred {
-  border-color: #D4AF37;
-}
-
-.border-blood {
-  border-color: #8B0000;
-}
-
-.bg-trench-dark {
-  background-color: #0C0E12;
-}
-
+/* Grimdark Surface Utilities */
 .bg-trench-surface {
   background-color: #161920;
 }
@@ -73,14 +86,16 @@
   background-color: #20242E;
 }
 
-.text-sacred {
-  color: #E5C158;
+.bg-trench-dark {
+  background-color: #0C0E12;
 }
 
-.text-blood {
-  color: #E53935;
+/* Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-.text-trench-muted {
-  color: #8E95A5;
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

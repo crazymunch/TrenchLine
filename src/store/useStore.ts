@@ -3,10 +3,10 @@ import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment 
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS, INJURY_TABLE_D66, EXPLORATION_TABLE_D66 } from '../data/defaultRules';
+import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
 import { storage } from '../services/storage';
 
-export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'sync';
+export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer';
 
 interface AppState {
   currentView: AppView;
@@ -35,6 +35,7 @@ interface AppState {
 
   // Active Warband Unit Management
   addUnitToWarband: (warbandId: string, baseProfileId: string, customName?: string) => void;
+  duplicateUnit: (warbandId: string, unitId: string) => void;
   removeUnitFromWarband: (warbandId: string, unitId: string) => void;
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
   equipWeapon: (warbandId: string, unitId: string, weaponId: string) => void;
@@ -73,6 +74,7 @@ interface AppState {
 
   // Multiplayer Campaign State
   campaign: Campaign;
+  createCampaign: (name: string, maxDucats: number, gloryThreshold: number) => void;
   claimTerritory: (territoryId: string, warbandId: string, playerName: string) => void;
 
   // Customizer & Overrides
@@ -109,7 +111,7 @@ const initialWarbands: Warband[] = [
         baseProfileId: 'na-lieutenant',
         profileSnapshot: BASE_UNITS[0],
         equippedWeapons: [
-          { ...BASE_WEAPONS[4], instanceId: 'w-1' }, // Service rifle
+          { ...BASE_WEAPONS[6], instanceId: 'w-1' }, // Service rifle
           { ...BASE_WEAPONS[0], instanceId: 'w-2' }  // Trench knife
         ],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-1' }],
@@ -150,7 +152,7 @@ const initialWarbands: Warband[] = [
         baseProfileId: 'na-shocktrooper',
         profileSnapshot: BASE_UNITS[2],
         equippedWeapons: [
-          { ...BASE_WEAPONS[4], instanceId: 'w-4' },
+          { ...BASE_WEAPONS[6], instanceId: 'w-4' },
           { ...BASE_WEAPONS[0], instanceId: 'w-5' }
         ],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-3' }],
@@ -172,7 +174,7 @@ const initialWarbands: Warband[] = [
         baseProfileId: 'na-shocktrooper',
         profileSnapshot: BASE_UNITS[2],
         equippedWeapons: [
-          { ...BASE_WEAPONS[5], instanceId: 'w-6' }, // Trench shotgun
+          { ...BASE_WEAPONS[7], instanceId: 'w-6' }, // Trench shotgun
           { ...BASE_WEAPONS[0], instanceId: 'w-7' }
         ],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-4' }],
@@ -445,7 +447,7 @@ export const useStore = create<AppState>((set, get) => {
         defaultWeapons.reduce((sum, w) => sum + w.cost, 0) +
         defaultArmour.reduce((sum, a) => sum + a.cost, 0);
 
-      const maxHp = profile.stats.keywords.includes('Tough') ? 2 : 1;
+      const maxHp = profile.stats.keywords.some(k => k.toLowerCase().includes('tough')) ? 2 : 1;
 
       const newUnit: ActiveUnit = {
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -473,6 +475,46 @@ export const useStore = create<AppState>((set, get) => {
           return {
             ...w,
             units: [...w.units, newUnit],
+            updatedAt: new Date().toISOString()
+          };
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    duplicateUnit: (warbandId, unitId) => {
+      const state = get();
+      const activeWb = state.warbands.find((w) => w.id === warbandId);
+      if (!activeWb) return;
+
+      const target = activeWb.units.find((u) => u.id === unitId);
+      if (!target) return;
+
+      const clonedUnit: ActiveUnit = {
+        ...target,
+        id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        customName: `${target.customName} (Copy)`,
+        equippedWeapons: target.equippedWeapons.map((w) => ({
+          ...w,
+          instanceId: `w-${Date.now()}-${Math.random()}`
+        })),
+        equippedArmour: target.equippedArmour.map((a) => ({
+          ...a,
+          instanceId: `a-${Date.now()}-${Math.random()}`
+        })),
+        equippedEquipment: target.equippedEquipment.map((e) => ({
+          ...e,
+          instanceId: `e-${Date.now()}-${Math.random()}`
+        }))
+      };
+
+      set((s) => {
+        const updated = s.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            units: [...w.units, clonedUnit],
             updatedAt: new Date().toISOString()
           };
         });
@@ -827,7 +869,6 @@ export const useStore = create<AppState>((set, get) => {
           isDead,
           advancements: newAdvancements,
           xp: newXp,
-          // Reset transient match state
           currentWounds: u.maxWounds,
           bloodMarkers: 0,
           status: isDead ? ('Out of Action' as const) : ('Active' as const),
@@ -857,7 +898,7 @@ export const useStore = create<AppState>((set, get) => {
           {
             warbandId: activeWb.id,
             warbandName: activeWb.name,
-            playerName: 'Nick',
+            playerName: 'Commander',
             result: outcome,
             gloryGained,
             ducatsGained,
@@ -906,8 +947,54 @@ export const useStore = create<AppState>((set, get) => {
       });
     },
 
-    // Campaign Territory Claim
+    // Campaign Management
     campaign: storedCampaign,
+    createCampaign: (name, maxDucats, gloryThreshold) => {
+      const state = get();
+      const activeWb = state.getActiveWarband();
+
+      const newCampaign: Campaign = {
+        id: `camp-${Date.now()}`,
+        name,
+        inviteCode: `TRENCH-${Math.floor(1000 + Math.random() * 9000)}`,
+        adminName: 'Commander',
+        status: 'active',
+        currentTurn: 1,
+        maxWarbandDucats: maxDucats,
+        gloryVictoryThreshold: gloryThreshold,
+        members: activeWb
+          ? [
+              {
+                userId: 'user-1',
+                playerName: 'Commander',
+                warbandId: activeWb.id,
+                warbandName: activeWb.name,
+                factionId: activeWb.factionId,
+                glory: activeWb.gloryPoints,
+                rating: activeWb.units.reduce((sum, u) => sum + u.totalCost, 0),
+                wins: 0,
+                losses: 0,
+                draws: 0,
+                treasury: activeWb.treasuryDucats
+              }
+            ]
+          : [],
+        territories: initialCampaign.territories,
+        matches: [],
+        chronicleLogs: [
+          {
+            id: `c-${Date.now()}`,
+            timestamp: 'Just now',
+            text: `Crusade campaign "${name}" established.`,
+            category: 'territory'
+          }
+        ]
+      };
+
+      storage.saveCampaign(newCampaign);
+      set({ campaign: newCampaign });
+    },
+
     claimTerritory: (territoryId, warbandId, playerName) => {
       set((state) => {
         const updatedTerritories = state.campaign.territories.map((t) =>
@@ -919,7 +1006,7 @@ export const useStore = create<AppState>((set, get) => {
         const newLog = {
           id: `c-${Date.now()}`,
           timestamp: 'Just now',
-          text: `${playerName} claimed territory: ${
+          text: `${playerName} captured territory: ${
             state.campaign.territories.find((t) => t.id === territoryId)?.name
           }`,
           category: 'territory' as const
@@ -975,7 +1062,7 @@ export const useStore = create<AppState>((set, get) => {
     // GitHub Diff & Sync
     pendingDiffs: [],
     setPendingDiffs: (diffs) => set({ pendingDiffs: diffs }),
-    resolveDiff: (diffId, resolution) => {
+    resolveDiff: (diffId) => {
       set((state) => {
         const updated = state.pendingDiffs.filter((d) => d.id !== diffId);
         return { pendingDiffs: updated };

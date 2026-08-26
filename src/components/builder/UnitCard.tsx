@@ -7,14 +7,12 @@ import {
   Plus, 
   Swords, 
   Shield, 
-  Package, 
   Sparkles, 
   AlertTriangle, 
   Edit3, 
   Check, 
   X,
-  Crosshair,
-  Coins
+  Copy
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -25,6 +23,7 @@ interface UnitCardProps {
 export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const { 
     removeUnitFromWarband, 
+    duplicateUnit,
     updateUnitName, 
     removeWeapon, 
     removeArmour, 
@@ -43,7 +42,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   };
 
   const handleKeywordClick = (kwName: string) => {
-    const found = keywords.find((k) => k.name.toLowerCase() === kwName.toLowerCase());
+    const clean = kwName.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    const found = keywords.find((k) => k.name.toLowerCase().includes(clean));
     if (found) {
       setActiveKeyword(found);
     }
@@ -51,7 +51,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
 
   return (
     <>
-      <div className="bg-[#161920] border border-[#323846] rounded-md overflow-hidden shadow-lg hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between">
+      <div className="bg-[#161920] border border-[#323846] rounded-md overflow-hidden shadow-lg hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between bevel-container">
         
         {/* Card Header */}
         <div className="p-3.5 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
@@ -96,10 +96,17 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             )}
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
             <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#161920] px-2 py-0.5 rounded border border-[#323846]">
               {unit.totalCost} D
             </div>
+            <button
+              onClick={() => duplicateUnit(warbandId, unit.id)}
+              className="text-[#8E95A5] hover:text-[#D4AF37] p-1 rounded transition-colors"
+              title="Duplicate Warrior"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
             <button
               onClick={() => removeUnitFromWarband(warbandId, unit.id)}
               className="text-[#8E95A5] hover:text-[#E53935] p-1 rounded transition-colors"
