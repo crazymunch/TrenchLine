@@ -6,6 +6,7 @@ import { UnitCard } from './UnitCard';
 import { AddUnitModal } from './AddUnitModal';
 import { ExportModal } from './ExportModal';
 import { ArmoryStashModal } from './ArmoryStashModal';
+import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { 
   UserPlus, 
   Coins, 
@@ -18,7 +19,9 @@ import {
   Archive,
   ChevronRight,
   Info,
-  Crown
+  Crown,
+  Scroll,
+  BookOpen
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -28,6 +31,7 @@ export const WarbandBuilder: React.FC = () => {
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isStashOpen, setIsStashOpen] = useState(false);
+  const [isChronicleOpen, setIsChronicleOpen] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
   const [isNotesOpen, setIsNotesOpen] = useState(false);
 
@@ -71,15 +75,42 @@ export const WarbandBuilder: React.FC = () => {
               <span className="text-xs font-mono uppercase font-bold text-[#D4AF37] tracking-wider">
                 {faction?.name}
               </span>
+              {warband.patron && (
+                <>
+                  <span className="text-[#8E95A5]">•</span>
+                  <span className="text-xs font-mono text-[#8E95A5] truncate max-w-sm">
+                    {warband.patron}
+                  </span>
+                </>
+              )}
             </div>
             <h1 className="font-gothic font-bold text-2xl sm:text-3xl text-[#ECEFF4] tracking-wide">
               {warband.name}
             </h1>
-            <p className="text-xs text-[#8E95A5] max-w-xl">{faction?.tagline}</p>
+            {warband.motto ? (
+              <div 
+                onClick={() => setIsChronicleOpen(true)}
+                className="inline-block p-1.5 bg-[#0C0E12] border-l-2 border-[#D4AF37] rounded-r text-xs italic text-[#ECEFF4] font-serif cursor-pointer hover:border-[#E5C158] transition-colors"
+                title="Click to view full Warband Chronicle & Lore Dossier"
+              >
+                "{warband.motto}"
+              </div>
+            ) : (
+              <p className="text-xs text-[#8E95A5] max-w-xl">{faction?.tagline}</p>
+            )}
           </div>
 
           {/* Builder Action Toolbar */}
           <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => setIsChronicleOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/40 rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Warband Narrative Chronicle, House Origins, Oaths & Timeline"
+            >
+              <Scroll className="w-4 h-4" />
+              <span>Chronicle & Lore</span>
+            </button>
+
             <button
               onClick={() => setIsStashOpen(true)}
               className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/40 rounded font-mono text-xs font-bold uppercase transition-colors"
@@ -319,6 +350,13 @@ export const WarbandBuilder: React.FC = () => {
         />
       )}
 
+      {/* Warband Chronicle & Lore Dossier Modal */}
+      {isChronicleOpen && (
+        <WarbandChronicleModal
+          warband={warband}
+          onClose={() => setIsChronicleOpen(false)}
+        />
+      )}
     </div>
   );
 };

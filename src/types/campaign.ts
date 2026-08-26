@@ -38,6 +38,14 @@ export interface MatchRecord {
   scenarioName: string;
   participants: MatchParticipantSummary[];
   narrativeLog: string;
+  
+  // Rich Narrative & Battle Report Fields
+  narrativeReport?: string; // White Dwarf-style comprehensive battle report
+  mvpUnitId?: string;
+  mvpUnitName?: string;
+  opponentWarbandName?: string;
+  notableMoments?: string[];
+  turningPoints?: string;
 }
 
 export interface TerritoryNode {

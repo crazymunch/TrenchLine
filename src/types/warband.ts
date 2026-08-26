@@ -28,6 +28,12 @@ export interface ActiveUnit {
   isDead: boolean;
   totalCost: number; // calculated ducats
 
+  // Narrative Lore & Chronicle
+  lore?: string;
+  titles?: string[];
+  deeds?: string[];
+  quote?: string;
+
   // Tabletop Play Mode transient state
   currentWounds: number;
   maxWounds: number;
@@ -57,7 +63,14 @@ export interface Warband {
   gloryPoints: number;
   units: ActiveUnit[];
   armoryStash: StashedItem[];
+  
+  // Narrative & House Lore
+  lore?: string;
+  motto?: string;
+  patron?: string;
+  chronicleLog?: string[];
   notes?: string;
+
   createdAt: string;
   updatedAt: string;
 }

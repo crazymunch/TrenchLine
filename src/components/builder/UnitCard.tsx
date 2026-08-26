@@ -3,6 +3,7 @@ import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { UnitCategory } from '../../types/rules';
 import { AddEquipmentModal } from './AddEquipmentModal';
+import { UnitLoreModal } from './UnitLoreModal';
 import { 
   Trash2, 
   Plus, 
@@ -15,7 +16,11 @@ import {
   X,
   Copy,
   Crown,
-  ChevronDown
+  ChevronDown,
+  Scroll,
+  Award,
+  BookOpen,
+  Quote
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -32,17 +37,17 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
     setUnitAsLeader,
     removeWeapon, 
     removeArmour, 
-    removeEquipment,
-    setActiveKeyword,
-    keywords
+    removeEquipment
   } = useStore();
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameVal, setNameVal] = useState(unit.customName);
   const [isEquipModalOpen, setIsEquipModalOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
+  const hasLore = !!(unit.lore || (unit.deeds && unit.deeds.length > 0) || (unit.titles && unit.titles.length > 0));
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);
@@ -147,7 +152,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           </div>
 
           {/* Quick Header Actions */}
-          <div className="flex items-center space-x-1.5 flex-shrink-0">
+          <div className="flex items-center space-x-1 flex-shrink-0">
             
             {/* Promote to Leader Quick Button (if not already leader) */}
             {!isLeader && (
@@ -159,6 +164,20 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                 <Crown className="w-3.5 h-3.5" />
               </button>
             )}
+
+            {/* Lore, Biography & Deeds Button */}
+            <button
+              onClick={() => setIsLoreModalOpen(true)}
+              className={`p-1 rounded hover:bg-[#161920] transition-colors relative ${
+                hasLore ? 'text-[#D4AF37]' : 'text-[#8E95A5] hover:text-[#D4AF37]'
+              }`}
+              title="Open Warrior Chronicle, Deeds & Lore Dossier"
+            >
+              <Scroll className="w-3.5 h-3.5" />
+              {hasLore && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute top-0.5 right-0.5 animate-pulse" />
+              )}
+            </button>
 
             {/* Cost Badge */}
             <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#161920] px-2 py-0.5 rounded border border-[#323846]">
@@ -183,9 +202,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
         </div>
 
         {/* Card Body */}
-        <div className="p-3.5 space-y-3 flex-1">
+        <div className="p-3.5 space-y-2.5 flex-1">
           
-          {/* Base Profile Subtitle */}
+          {/* Base Profile Subtitle & Titles */}
           <div className="text-[11px] font-mono text-[#8E95A5] flex items-center justify-between">
             <span>Base: {unit.profileSnapshot.name}</span>
             {unit.xp > 0 && (
@@ -195,6 +214,32 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               </span>
             )}
           </div>
+
+          {/* Honorific Titles Badges */}
+          {unit.titles && unit.titles.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {unit.titles.map((title, i) => (
+                <span
+                  key={i}
+                  className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30 flex items-center space-x-1"
+                >
+                  <Sparkles className="w-2.5 h-2.5 text-[#D4AF37]" />
+                  <span>{title}</span>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Battlefield Quote Snippet */}
+          {unit.quote && (
+            <div 
+              onClick={() => setIsLoreModalOpen(true)}
+              className="p-1.5 bg-[#0C0E12] border-l-2 border-[#D4AF37] rounded-r text-[10px] italic text-[#8E95A5] hover:text-[#ECEFF4] font-serif cursor-pointer transition-colors leading-tight"
+              title="Click to view warrior dossier & biography"
+            >
+              "{unit.quote}"
+            </div>
+          )}
 
           {/* Stat Block */}
           <div className="grid grid-cols-4 gap-1.5 font-mono text-center text-xs bg-[#0C0E12] p-1.5 rounded border border-[#323846]">
@@ -244,13 +289,13 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                     key={wep.instanceId}
                     className="flex items-center justify-between text-xs bg-[#0C0E12] px-2 py-1 rounded border border-[#323846]"
                   >
-                    <div className="flex-1 mr-2">
-                      <div className="font-semibold text-[#ECEFF4]">{wep.name}</div>
-                      <div className="text-[10px] font-mono text-[#8E95A5]">
+                    <div className="flex-1 mr-2 min-w-0">
+                      <div className="font-semibold text-[#ECEFF4] truncate">{wep.name}</div>
+                      <div className="text-[10px] font-mono text-[#8E95A5] truncate">
                         {wep.type === 'Melee' ? `Melee (${wep.range})` : wep.range} | Mod: {wep.modifiers} | {wep.damage}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       <span className="text-[10px] font-mono text-[#D4AF37]">{wep.cost} D</span>
                       <button
                         onClick={() => removeWeapon(warbandId, unit.id, wep.instanceId)}
@@ -306,6 +351,17 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           )}
 
+          {/* Heroic Deeds Quick Pill */}
+          {unit.deeds && unit.deeds.length > 0 && (
+            <div 
+              onClick={() => setIsLoreModalOpen(true)}
+              className="p-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded text-[10px] font-mono text-[#D4AF37] flex items-center space-x-1.5 cursor-pointer hover:bg-[#D4AF37]/20 transition-colors"
+            >
+              <Award className="w-3 h-3 flex-shrink-0" />
+              <span className="truncate"><strong>{unit.deeds.length} Heroic Feat{unit.deeds.length > 1 ? 's' : ''}:</strong> {unit.deeds[0]}</span>
+            </div>
+          )}
+
           {/* Injuries & Battle Scars */}
           {unit.injuries.length > 0 && (
             <div className="p-2 bg-[#8B0000]/10 border border-[#8B0000]/30 rounded text-xs">
@@ -324,13 +380,21 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
         </div>
 
         {/* Card Footer Actions */}
-        <div className="p-2.5 bg-[#20242E] border-t border-[#323846]">
+        <div className="p-2.5 bg-[#20242E] border-t border-[#323846] flex items-center space-x-2">
+          <button
+            onClick={() => setIsLoreModalOpen(true)}
+            className="flex-1 flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded text-xs font-mono font-bold text-[#8E95A5] hover:text-[#D4AF37] uppercase tracking-wider transition-colors"
+          >
+            <Scroll className="w-3.5 h-3.5" />
+            <span>Lore & Bio</span>
+          </button>
+
           <button
             onClick={() => setIsEquipModalOpen(true)}
-            className="w-full flex items-center justify-center space-x-1.5 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded text-xs font-mono font-bold text-[#D4AF37] uppercase tracking-wider transition-colors"
+            className="flex-1 flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded text-xs font-mono font-bold text-[#D4AF37] uppercase tracking-wider transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Equip Armory</span>
+            <span>Equip</span>
           </button>
         </div>
 
@@ -343,6 +407,15 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           unitId={unit.id}
           unitName={unit.customName}
           onClose={() => setIsEquipModalOpen(false)}
+        />
+      )}
+
+      {/* Unit Lore Dossier Modal */}
+      {isLoreModalOpen && (
+        <UnitLoreModal
+          warbandId={warbandId}
+          unit={unit}
+          onClose={() => setIsLoreModalOpen(false)}
         />
       )}
     </>

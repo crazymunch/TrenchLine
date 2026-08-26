@@ -2,6 +2,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../types/rules';
 import { BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from '../data/defaultRules';
+import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore';
 
 export function importNewRecruitRoster(rawInput: string, customUnits: UnitProfile[] = []): Warband {
   const trimmed = rawInput.trim();
@@ -292,6 +293,10 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
     });
   });
 
+  const enrichedUnits = units.map(enrichUnitWithLore);
+
+  const isSultanate = factionId === 'iron-sultanate' || warbandName.toLowerCase().includes('qarn') || warbandName.toLowerCase().includes('sultanate');
+
   return {
     id: `wb-${Date.now()}`,
     name: warbandName,
@@ -299,8 +304,12 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
     ducatLimit: ducatsLimit,
     treasuryDucats: 0,
     gloryPoints,
-    units,
+    units: enrichedUnits,
     armoryStash,
+    lore: isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined,
+    motto: isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined,
+    patron: isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined,
+    chronicleLog: isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };

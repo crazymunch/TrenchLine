@@ -32,6 +32,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
   const [narrativeLog, setNarrativeLog] = useState<string>('');
+  
+  // Narrative & Battle Report Fields
+  const [opponentWarbandName, setOpponentWarbandName] = useState<string>('');
+  const [mvpUnitName, setMvpUnitName] = useState<string>('');
+  const [battleReportText, setBattleReportText] = useState<string>('');
 
   // Casualties from match
   const ooaUnits = warband?.units.filter((u) => u.status === 'Out of Action') || [];
@@ -111,7 +116,10 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       ducatsGained,
       casualties,
       advancements,
-      narrativeLog
+      narrativeLog,
+      battleReportText.trim().length > 0 ? battleReportText : undefined,
+      mvpUnitName.trim().length > 0 ? mvpUnitName : undefined,
+      opponentWarbandName.trim().length > 0 ? opponentWarbandName : undefined
     );
   };
 
@@ -384,6 +392,54 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <div className="flex justify-between text-sm">
                   <span>Total Ducats Deposited into Treasury:</span>
                   <strong className="text-[#D4AF37]">+{ducatsGained} Ducats</strong>
+                </div>
+              </div>
+
+              {/* Narrative Battle Chronicle & MVP Section */}
+              <div className="p-4 bg-[#20242E] border border-[#323846] rounded-md space-y-3 font-mono text-xs">
+                <span className="text-[11px] uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Battlefield Chronicle & Narrative Report</span>
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase text-[#8E95A5] block">Opponent Warband / Commander:</label>
+                    <input
+                      type="text"
+                      value={opponentWarbandName}
+                      onChange={(e) => setOpponentWarbandName(e.target.value)}
+                      placeholder="e.g. Court of the Seven-Headed Serpent (Sorcerer Zortan)"
+                      className="w-full bg-[#0C0E12] border border-[#323846] rounded px-2.5 py-1.5 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase text-[#8E95A5] block">Match MVP (Awards Heroic Deed):</label>
+                    <select
+                      value={mvpUnitName}
+                      onChange={(e) => setMvpUnitName(e.target.value)}
+                      className="w-full bg-[#0C0E12] border border-[#323846] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    >
+                      <option value="">-- Select MVP Warrior --</option>
+                      {warband.units.map((u) => (
+                        <option key={u.id} value={u.customName}>
+                          {u.customName} ({u.profileSnapshot.name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase text-[#8E95A5] block">Battle Narrative / Turning Points (Markdown):</label>
+                  <textarea
+                    value={battleReportText}
+                    onChange={(e) => setBattleReportText(e.target.value)}
+                    placeholder="Write a White Dwarf-style battle report: key charges, heroic saves, objective snatches, and tactical reflections..."
+                    rows={4}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded px-2.5 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  />
                 </div>
               </div>
             </div>

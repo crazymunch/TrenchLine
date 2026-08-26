@@ -4,6 +4,7 @@ import { Campaign, MatchRecord, CasualtyRecord, CampaignMember } from '../types/
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
+import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY } from '../data/warbandLore';
 import { storage } from '../services/storage';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer';
@@ -32,6 +33,8 @@ interface AppState {
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
   updateWarbandNotes: (warbandId: string, notes: string) => void;
+  updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
+  addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
   importWarband: (warband: Warband) => void;
 
   // Active Warband Unit Management
@@ -41,6 +44,7 @@ interface AppState {
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
   updateUnitCategory: (warbandId: string, unitId: string, category: UnitCategory) => void;
   setUnitAsLeader: (warbandId: string, unitId: string) => void;
+  updateUnitLore: (warbandId: string, unitId: string, lore: string, quote?: string, titles?: string[], deeds?: string[]) => void;
   equipWeapon: (warbandId: string, unitId: string, weaponId: string) => void;
   removeWeapon: (warbandId: string, unitId: string, instanceId: string) => void;
   equipArmour: (warbandId: string, unitId: string, armourId: string) => void;
@@ -77,7 +81,11 @@ interface AppState {
     ducatsGained: number,
     casualties: CasualtyRecord[],
     advancements: { unitId: string; advancement: string }[],
-    narrative: string
+    narrative: string,
+    narrativeReport?: string,
+    mvpUnitName?: string,
+    opponentWarbandName?: string,
+    notableMoments?: string[]
   ) => void;
 
   // Multiplayer Campaign State
@@ -94,6 +102,14 @@ interface AppState {
     p2Glory: number,
     p2Ducats: number,
     narrative: string
+  ) => void;
+  updateMatchNarrative: (
+    campaignId: string, 
+    matchId: string, 
+    narrativeReport: string, 
+    mvpUnitName?: string, 
+    opponentName?: string, 
+    notableMoments?: string[]
   ) => void;
 
   // Customizer & Overrides
@@ -152,17 +168,31 @@ const defaultFreshCampaign: Campaign = {
       description: 'Contested central wasteland strewn with barbed wire and ruined tanks.'
     }
   ],
-  matches: [],
+  matches: SULTANATE_MATCH_HISTORY,
   chronicleLogs: []
 };
 
 export const useStore = create<AppState>((set, get) => {
   const storedWarbands = storage.getWarbands();
-  const warbands = storedWarbands;
+  const warbands = storedWarbands.map((wb) => {
+    const isSultanate = wb.factionId === 'iron-sultanate' || wb.name.toLowerCase().includes('qarn') || wb.name.toLowerCase().includes('sultanate');
+    return {
+      ...wb,
+      lore: wb.lore || (isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined),
+      motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
+      patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
+      chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : []),
+      units: wb.units.map(enrichUnitWithLore)
+    };
+  });
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();
-  const storedCampaign = storage.getCampaign() || defaultFreshCampaign;
+  const rawCampaign = storage.getCampaign() || defaultFreshCampaign;
+  const storedCampaign = {
+    ...rawCampaign,
+    matches: (rawCampaign.matches && rawCampaign.matches.length > 0) ? rawCampaign.matches : SULTANATE_MATCH_HISTORY
+  };
   const initialTheme = storage.getTheme();
 
   // Apply theme to document on init if browser
@@ -467,6 +497,69 @@ export const useStore = create<AppState>((set, get) => {
 
     setUnitAsLeader: (warbandId, unitId) => {
       get().updateUnitCategory(warbandId, unitId, 'Leader');
+    },
+
+    updateUnitLore: (warbandId, unitId, lore, quote, titles, deeds) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                lore,
+                quote: quote !== undefined ? quote : u.quote,
+                titles: titles !== undefined ? titles : u.titles,
+                deeds: deeds !== undefined ? deeds : u.deeds
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandLore: (warbandId, lore, motto, patron) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            lore,
+            motto: motto !== undefined ? motto : w.motto,
+            patron: patron !== undefined ? patron : w.patron,
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addWarbandChronicleEntry: (warbandId, entry) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const currentLogs = w.chronicleLog || [];
+          const updatedWb = {
+            ...w,
+            chronicleLog: [entry, ...currentLogs],
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
     },
 
     equipWeapon: (warbandId, unitId, weaponId) => {
@@ -855,7 +948,11 @@ export const useStore = create<AppState>((set, get) => {
       ducatsGained,
       casualties,
       advancements,
-      narrative
+      narrative,
+      narrativeReport,
+      mvpUnitName,
+      opponentWarbandName,
+      notableMoments
     ) => {
       const state = get();
       const activeWb = state.getActiveWarband();
@@ -878,11 +975,17 @@ export const useStore = create<AppState>((set, get) => {
           newAdvancements.push(adv.advancement);
         }
 
+        let newDeeds = u.deeds ? [...u.deeds] : [];
+        if (mvpUnitName && (u.customName.toLowerCase().includes(mvpUnitName.toLowerCase()) || mvpUnitName.toLowerCase().includes(u.customName.toLowerCase()))) {
+          newDeeds.unshift(`Match MVP: ${scenarioName} (${outcome})`);
+        }
+
         return {
           ...u,
           injuries: newInjuries,
           isDead,
           advancements: newAdvancements,
+          deeds: newDeeds,
           xp: newXp,
           currentWounds: u.maxWounds,
           bloodMarkers: 0,
@@ -910,6 +1013,10 @@ export const useStore = create<AppState>((set, get) => {
         scenarioId,
         scenarioName,
         narrativeLog: narrative || `Match completed with outcome: ${outcome}`,
+        narrativeReport,
+        mvpUnitName,
+        opponentWarbandName,
+        notableMoments,
         participants: [
           {
             warbandId: activeWb.id,
@@ -1122,6 +1229,30 @@ export const useStore = create<AppState>((set, get) => {
           members: updatedMembers,
           matches: [newMatch, ...state.campaign.matches],
           chronicleLogs: [newLog, ...state.campaign.chronicleLogs]
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        storage.syncCampaignToCloud(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+    },
+
+    updateMatchNarrative: (campaignId, matchId, narrativeReport, mvpUnitName, opponentName, notableMoments) => {
+      set((state) => {
+        const updatedMatches = state.campaign.matches.map((m) => {
+          if (m.id !== matchId) return m;
+          return {
+            ...m,
+            narrativeReport,
+            mvpUnitName: mvpUnitName !== undefined ? mvpUnitName : m.mvpUnitName,
+            opponentWarbandName: opponentName !== undefined ? opponentName : m.opponentWarbandName,
+            notableMoments: notableMoments !== undefined ? notableMoments : m.notableMoments
+          };
+        });
+
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          matches: updatedMatches
         };
 
         storage.saveCampaign(updatedCampaign);

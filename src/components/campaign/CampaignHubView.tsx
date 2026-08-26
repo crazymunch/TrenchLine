@@ -29,9 +29,16 @@ export const CampaignHubView: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [isNewCampaignModalOpen, setIsNewCampaignModalOpen] = useState(false);
   const [isLogMatchOpen, setIsLogMatchOpen] = useState(false);
+  const [expandedMatchIds, setExpandedMatchIds] = useState<string[]>(['match-hist-1']);
   const [newCampaignName, setNewCampaignName] = useState('');
   const [newMaxDucats, setNewMaxDucats] = useState(700);
   const [newGloryGoal, setNewGloryGoal] = useState(25);
+
+  const toggleMatchExpanded = (id: string) => {
+    setExpandedMatchIds((prev) => 
+      prev.includes(id) ? prev.filter((mId) => mId !== id) : [...prev, id]
+    );
+  };
 
   const handleCopyInvite = () => {
     navigator.clipboard.writeText(campaign.inviteCode);
@@ -261,69 +268,140 @@ export const CampaignHubView: React.FC = () => {
       {/* TAB 4: BATTLE RECORDS */}
       {activeTab === 'matches' && (
         <div className="space-y-4">
-          {campaign.matches.map((match) => (
-            <div
-              key={match.id}
-              className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl bevel-container"
-            >
-              <div className="flex items-center justify-between border-b border-[#323846] pb-3">
-                <div>
-                  <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
-                    {match.scenarioName}
-                  </h3>
-                  <span className="text-xs font-mono text-[#8E95A5]">Date: {match.date}</span>
-                </div>
-
-                <span className="text-xs font-mono bg-[#0C0E12] px-3 py-1 rounded text-[#D4AF37] border border-[#323846] uppercase font-bold">
-                  Resolved
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {match.participants.map((p) => (
-                  <div
-                    key={p.warbandId}
-                    className={`p-3.5 rounded border text-xs font-mono space-y-2 ${
-                      p.result === 'Victory'
-                        ? 'bg-[#161920] border-[#4E9A6E]'
-                        : p.result === 'Defeat'
-                        ? 'bg-[#161920] border-[#8B0000]'
-                        : 'bg-[#161920] border-[#323846]'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <strong className="font-gothic text-base text-[#ECEFF4]">{p.warbandName}</strong>
-                      <span
-                        className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
-                          p.result === 'Victory'
-                            ? 'bg-[#4E9A6E] text-white'
-                            : p.result === 'Defeat'
-                            ? 'bg-[#8B0000] text-white'
-                            : 'bg-[#20242E] text-[#8E95A5]'
-                        }`}
-                      >
-                        {p.result}
-                      </span>
+          {campaign.matches.map((match) => {
+            const isExpanded = expandedMatchIds.includes(match.id);
+            return (
+              <div
+                key={match.id}
+                className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl bevel-container hover:border-[#D4AF37]/40 transition-colors"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#323846] pb-3">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                        {match.scenarioName}
+                      </h3>
+                      {match.opponentWarbandName && (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30 font-bold">
+                          vs. {match.opponentWarbandName}
+                        </span>
+                      )}
                     </div>
-
-                    <div className="text-[11px] text-[#8E95A5]">Commander: {p.playerName}</div>
-
-                    <div className="flex justify-between border-t border-[#323846] pt-1.5 text-[11px]">
-                      <span>Glory: <strong className="text-[#D4AF37]">+{p.gloryGained}</strong></span>
-                      <span>Ducats: <strong className="text-[#D4AF37]">+{p.ducatsGained} D</strong></span>
-                      <span>Casualties: <strong className="text-[#E53935]">{p.casualties.length}</strong></span>
-                    </div>
+                    <span className="text-xs font-mono text-[#8E95A5]">Engagement Date: {match.date}</span>
                   </div>
-                ))}
-              </div>
 
-              {match.narrativeLog && (
-                <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] text-xs text-[#8E95A5] italic">
-                  &quot;{match.narrativeLog}&quot;
+                  <div className="flex items-center space-x-2">
+                    {match.mvpUnitName && (
+                      <span className="text-[11px] font-mono bg-[#D4AF37]/15 text-[#D4AF37] px-2.5 py-1 rounded border border-[#D4AF37]/40 font-bold flex items-center space-x-1">
+                        <Trophy className="w-3.5 h-3.5" />
+                        <span>MVP: {match.mvpUnitName}</span>
+                      </span>
+                    )}
+                    <span className="text-xs font-mono bg-[#0C0E12] px-3 py-1 rounded text-[#4E9A6E] border border-[#323846] uppercase font-bold">
+                      Resolved
+                    </span>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Participant Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {match.participants.map((p) => (
+                    <div
+                      key={p.warbandId}
+                      className={`p-3.5 rounded border text-xs font-mono space-y-2 ${
+                        p.result === 'Victory'
+                          ? 'bg-[#0C0E12] border-[#4E9A6E]/50'
+                          : p.result === 'Defeat'
+                          ? 'bg-[#0C0E12] border-[#8B0000]/50'
+                          : 'bg-[#0C0E12] border-[#323846]'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <strong className="font-gothic text-base text-[#ECEFF4]">{p.warbandName}</strong>
+                        <span
+                          className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
+                            p.result === 'Victory'
+                              ? 'bg-[#4E9A6E] text-white'
+                              : p.result === 'Defeat'
+                              ? 'bg-[#8B0000] text-white'
+                              : 'bg-[#20242E] text-[#8E95A5]'
+                          }`}
+                        >
+                          {p.result}
+                        </span>
+                      </div>
+
+                      <div className="text-[11px] text-[#8E95A5]">Commander: {p.playerName}</div>
+
+                      <div className="flex justify-between border-t border-[#323846] pt-1.5 text-[11px]">
+                        <span>Glory: <strong className="text-[#D4AF37]">+{p.gloryGained}</strong></span>
+                        <span>Ducats: <strong className="text-[#D4AF37]">+{p.ducatsGained} D</strong></span>
+                        <span>Casualties: <strong className={p.casualties.length > 0 ? 'text-[#E53935]' : 'text-[#4E9A6E]'}>{p.casualties.length}</strong></span>
+                      </div>
+
+                      {/* Casualty Breakdown */}
+                      {p.casualties.length > 0 && (
+                        <div className="border-t border-[#323846] pt-1.5 space-y-1">
+                          <span className="text-[10px] text-[#8E95A5] uppercase font-bold block">Casualty Roll Details:</span>
+                          {p.casualties.map((cas, cIdx) => (
+                            <div key={cIdx} className="text-[10px] text-[#E53935] flex items-center justify-between">
+                              <span>• {cas.unitName}:</span>
+                              <span className="italic">{cas.outcome}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Match Narrative Log */}
+                {match.narrativeLog && (
+                  <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] text-xs font-mono text-[#8E95A5] italic">
+                    &quot;{match.narrativeLog}&quot;
+                  </div>
+                )}
+
+                {/* Notable Moments Bullets */}
+                {match.notableMoments && match.notableMoments.length > 0 && (
+                  <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs font-mono space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase text-[#D4AF37] flex items-center space-x-1">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                      <span>Decisive Battlefield Moments:</span>
+                    </span>
+                    <ul className="list-disc list-inside space-y-1 text-[#ECEFF4] text-[11px]">
+                      {match.notableMoments.map((moment, mIdx) => (
+                        <li key={mIdx}>{moment}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Comprehensive Battle Report Accordion */}
+                {match.narrativeReport && (
+                  <div className="border border-[#D4AF37]/30 rounded bg-[#0C0E12] overflow-hidden">
+                    <button
+                      onClick={() => toggleMatchExpanded(match.id)}
+                      className="w-full p-3 bg-[#20242E] hover:bg-[#2A303D] flex items-center justify-between text-xs font-mono font-bold text-[#D4AF37] uppercase transition-colors"
+                    >
+                      <span className="flex items-center space-x-2">
+                        <Scroll className="w-4 h-4 text-[#D4AF37]" />
+                        <span>White Dwarf Battle Chronicle & Tactical After-Action Report</span>
+                      </span>
+                      <span>{isExpanded ? 'Hide Report ▲' : 'Read Full Battle Report ▼'}</span>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="p-4 text-xs font-mono text-[#ECEFF4] whitespace-pre-line leading-relaxed border-t border-[#323846]">
+                        {match.narrativeReport}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+              </div>
+            );
+          })}
         </div>
       )}
 
