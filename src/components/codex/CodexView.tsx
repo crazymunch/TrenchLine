@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { INJURY_TABLE_D66, EXPLORATION_TABLE_D66 } from '../../data/defaultRules';
 import { MissionGenerator } from './MissionGenerator';
+import { DiceProbabilityModal } from './DiceProbabilityModal';
 import { 
   BookOpen, 
   Search, 
@@ -13,13 +14,15 @@ import {
   Compass, 
   Shield, 
   Sparkles,
-  Dice6
+  Dice6,
+  BarChart3
 } from 'lucide-react';
 
 export const CodexView: React.FC = () => {
   const { keywords, scenarios, weapons, armour, equipment, setActiveKeyword } = useStore();
   const [activeTab, setActiveTab] = useState<'keywords' | 'weapons' | 'armour' | 'scenarios' | 'generator' | 'charts'>('keywords');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
 
   const filterText = searchQuery.toLowerCase().trim();
 
@@ -44,7 +47,7 @@ export const CodexView: React.FC = () => {
       
       {/* Header Banner */}
       <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl space-y-4 bevel-container">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
               <BookOpen className="w-6 h-6 text-[#D4AF37]" />
@@ -57,16 +60,26 @@ export const CodexView: React.FC = () => {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative min-w-[260px]">
-            <Search className="w-4 h-4 text-[#D4AF37] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Filter rules, weapons, charts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
-            />
+          {/* Search Bar & Probability Odds Button */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setIsProbabilityOpen(true)}
+              className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>2D6 Odds Matrix</span>
+            </button>
+
+            <div className="relative min-w-[240px]">
+              <Search className="w-4 h-4 text-[#D4AF37] absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Filter rules, weapons, charts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+              />
+            </div>
           </div>
         </div>
 
@@ -255,6 +268,11 @@ export const CodexView: React.FC = () => {
           </div>
 
         </div>
+      )}
+
+      {/* 2D6 Probability Odds Modal */}
+      {isProbabilityOpen && (
+        <DiceProbabilityModal onClose={() => setIsProbabilityOpen(false)} />
       )}
 
     </div>
