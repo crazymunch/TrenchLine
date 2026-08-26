@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashItem } from '../types/warband';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
@@ -30,8 +30,9 @@ interface AppState {
   createWarband: (name: string, factionId: string, ducatLimit?: number) => Warband;
   deleteWarband: (id: string) => void;
   cloneWarband: (id: string) => void;
-  setActiveWarbandId: (id: string) => void;
+  setActiveWarbandId: (id: string | null) => void;
   updateWarbandNotes: (warbandId: string, notes: string) => void;
+  importWarband: (warband: Warband) => void;
 
   // Active Warband Unit Management
   addUnitToWarband: (warbandId: string, baseProfileId: string, customName?: string) => void;
@@ -104,169 +105,22 @@ interface AppState {
   resolveDiff: (diffId: string, resolution: 'keep_user' | 'accept_upstream') => void;
 }
 
-// Initial Sample Warband
-const initialWarbands: Warband[] = [
-  {
-    id: 'wb-demo-1',
-    name: '3rd Holy Trench Lancers',
-    factionId: 'new-antioch',
-    ducatLimit: 700,
-    treasuryDucats: 45,
-    gloryPoints: 12,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    notes: 'Veteran trench vanguard of the Antioch Front.',
-    armoryStash: [
-      { id: 'frag-grenades', name: 'Stick Grenade Bundle', type: 'Equipment', cost: 10, quantity: 2 },
-      { id: 'gas-mask', name: 'Standard Issue Gas Mask', type: 'Equipment', cost: 5, quantity: 1 }
-    ],
-    units: [
-      {
-        id: 'u-1',
-        customName: 'Lieutenant Valerius',
-        baseProfileId: 'na-lieutenant',
-        profileSnapshot: BASE_UNITS[0],
-        equippedWeapons: [
-          { ...BASE_WEAPONS[6], instanceId: 'w-1' },
-          { ...BASE_WEAPONS[0], instanceId: 'w-2' }
-        ],
-        equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-1' }],
-        equippedEquipment: [{ ...BASE_EQUIPMENT[0], instanceId: 'e-1' }],
-        xp: 4,
-        advancements: ['+1 Melee'],
-        injuries: ['Lost Eye (-1 RNG)'],
-        isDead: false,
-        totalCost: 120,
-        currentWounds: 3,
-        maxWounds: 3,
-        bloodMarkers: 0,
-        status: 'Active',
-        hasActedThisTurn: false
-      },
-      {
-        id: 'u-2',
-        customName: 'Brother Gabriel',
-        baseProfileId: 'na-cleric',
-        profileSnapshot: BASE_UNITS[1],
-        equippedWeapons: [{ ...BASE_WEAPONS[2], instanceId: 'w-3' }],
-        equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-2' }],
-        equippedEquipment: [{ ...BASE_EQUIPMENT[1], instanceId: 'e-2' }],
-        xp: 2,
-        advancements: [],
-        injuries: [],
-        isDead: false,
-        totalCost: 100,
-        currentWounds: 2,
-        maxWounds: 2,
-        bloodMarkers: 0,
-        status: 'Active',
-        hasActedThisTurn: false
-      },
-      {
-        id: 'u-3',
-        customName: 'Trooper Klaus',
-        baseProfileId: 'na-shocktrooper',
-        profileSnapshot: BASE_UNITS[2],
-        equippedWeapons: [
-          { ...BASE_WEAPONS[6], instanceId: 'w-4' },
-          { ...BASE_WEAPONS[0], instanceId: 'w-5' }
-        ],
-        equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-3' }],
-        equippedEquipment: [],
-        xp: 1,
-        advancements: [],
-        injuries: [],
-        isDead: false,
-        totalCost: 55,
-        currentWounds: 1,
-        maxWounds: 1,
-        bloodMarkers: 0,
-        status: 'Active',
-        hasActedThisTurn: false
-      },
-      {
-        id: 'u-4',
-        customName: 'Trooper Meyer',
-        baseProfileId: 'na-shocktrooper',
-        profileSnapshot: BASE_UNITS[2],
-        equippedWeapons: [
-          { ...BASE_WEAPONS[7], instanceId: 'w-6' },
-          { ...BASE_WEAPONS[0], instanceId: 'w-7' }
-        ],
-        equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-4' }],
-        equippedEquipment: [],
-        xp: 0,
-        advancements: [],
-        injuries: [],
-        isDead: false,
-        totalCost: 60,
-        currentWounds: 1,
-        maxWounds: 1,
-        bloodMarkers: 0,
-        status: 'Active',
-        hasActedThisTurn: false
-      }
-    ]
-  }
-];
-
-const initialCampaign: Campaign = {
-  id: 'camp-101',
-  name: 'The Siege of Antioch Sector IV',
-  inviteCode: 'TRENCH-7749',
-  adminName: 'Nick (Commander)',
+// Clean Default Campaign (No hardcoded sample members or demo matches)
+const defaultFreshCampaign: Campaign = {
+  id: 'camp-default',
+  name: 'Sector IV Crusade',
+  inviteCode: 'TRENCH-1099',
+  adminName: 'Commander',
   status: 'active',
-  currentTurn: 3,
+  currentTurn: 1,
   maxWarbandDucats: 700,
   gloryVictoryThreshold: 25,
-  members: [
-    {
-      userId: 'user-1',
-      playerName: 'Nick',
-      warbandId: 'wb-demo-1',
-      warbandName: '3rd Holy Trench Lancers',
-      factionId: 'new-antioch',
-      glory: 12,
-      rating: 335,
-      wins: 2,
-      losses: 0,
-      draws: 1,
-      treasury: 45
-    },
-    {
-      userId: 'user-2',
-      playerName: 'Marcus',
-      warbandId: 'wb-demo-2',
-      warbandName: 'The Red Penance',
-      factionId: 'trench-pilgrims',
-      glory: 9,
-      rating: 290,
-      wins: 1,
-      losses: 1,
-      draws: 1,
-      treasury: 20
-    },
-    {
-      userId: 'user-3',
-      playerName: 'Dave',
-      warbandId: 'wb-demo-3',
-      warbandName: 'Lords of the Ashen Gate',
-      factionId: 'heretic-legion',
-      glory: 14,
-      rating: 360,
-      wins: 2,
-      losses: 1,
-      draws: 0,
-      treasury: 60
-    }
-  ],
+  members: [],
   territories: [
     {
       id: 't-1',
       name: 'North Trench Sector A-1',
       type: 'Trench Line',
-      controlledByWarbandId: 'wb-demo-1',
-      controlledByPlayerName: 'Nick',
       perk: '+5 Ducats supply bonus per round',
       description: 'Heavily fortified firing step overlooking the crater field.'
     },
@@ -274,8 +128,6 @@ const initialCampaign: Campaign = {
       id: 't-2',
       name: 'Shrine of the Weeping Martyr',
       type: 'Ruined Shrine',
-      controlledByWarbandId: 'wb-demo-2',
-      controlledByPlayerName: 'Marcus',
       perk: 'Reroll 1 failed Morale check per match',
       description: 'Shattered marble chapel providing divine reassurance.'
     },
@@ -283,8 +135,6 @@ const initialCampaign: Campaign = {
       id: 't-3',
       name: 'The Iron Foundry Bunker',
       type: 'Munitions Bunker',
-      controlledByWarbandId: 'wb-demo-3',
-      controlledByPlayerName: 'Dave',
       perk: 'Free Frag Grenade in Warband Stash after each game',
       description: 'Underground armory depot filled with unexploded ordinance.'
     },
@@ -296,59 +146,17 @@ const initialCampaign: Campaign = {
       description: 'Contested central wasteland strewn with barbed wire and ruined tanks.'
     }
   ],
-  matches: [
-    {
-      id: 'm-1',
-      campaignId: 'camp-101',
-      date: '2026-08-24',
-      scenarioId: 'trench-raid',
-      scenarioName: 'Scenario 1: Trench Night Raid',
-      narrativeLog: 'The 3rd Holy Trench Lancers held the north bunker against an assault by the Lords of the Ashen Gate.',
-      participants: [
-        {
-          warbandId: 'wb-demo-1',
-          warbandName: '3rd Holy Trench Lancers',
-          playerName: 'Nick',
-          result: 'Victory',
-          gloryGained: 4,
-          ducatsGained: 35,
-          casualties: []
-        },
-        {
-          warbandId: 'wb-demo-3',
-          warbandName: 'Lords of the Ashen Gate',
-          playerName: 'Dave',
-          result: 'Defeat',
-          gloryGained: 1,
-          ducatsGained: 15,
-          casualties: [{ unitId: 'hl-trooper-1', unitName: 'Heretic Soldier', outcome: 'D66: 33 - Cracked Skull', isDead: false }]
-        }
-      ]
-    }
-  ],
-  chronicleLogs: [
-    {
-      id: 'c-1',
-      timestamp: '2 days ago',
-      text: 'Campaign initiated with 3 warbands contesting Sector IV.',
-      category: 'territory'
-    },
-    {
-      id: 'c-2',
-      timestamp: 'Yesterday',
-      text: '3rd Holy Trench Lancers defeated Lords of the Ashen Gate in Scenario 1 (Trench Night Raid).',
-      category: 'battle'
-    }
-  ]
+  matches: [],
+  chronicleLogs: []
 };
 
 export const useStore = create<AppState>((set, get) => {
   const storedWarbands = storage.getWarbands();
-  const warbands = storedWarbands.length > 0 ? storedWarbands : initialWarbands;
+  const warbands = storedWarbands;
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();
-  const storedCampaign = storage.getCampaign() || initialCampaign;
+  const storedCampaign = storage.getCampaign() || defaultFreshCampaign;
 
   return {
     currentView: 'builder',
@@ -390,18 +198,30 @@ export const useStore = create<AppState>((set, get) => {
         const updated = [...state.warbands, newWarband];
         storage.saveWarbands(updated);
         storage.setActiveWarbandId(newWarband.id);
+        storage.syncWarbandToCloud(newWarband);
         return { warbands: updated, activeWarbandId: newWarband.id };
       });
 
       return newWarband;
     },
 
+    importWarband: (newWarband: Warband) => {
+      set((state) => {
+        const updated = [...state.warbands.filter(w => w.id !== newWarband.id), newWarband];
+        storage.saveWarbands(updated);
+        storage.setActiveWarbandId(newWarband.id);
+        storage.syncWarbandToCloud(newWarband);
+        return { warbands: updated, activeWarbandId: newWarband.id };
+      });
+    },
+
     deleteWarband: (id) => {
       set((state) => {
         const updated = state.warbands.filter((w) => w.id !== id);
         storage.saveWarbands(updated);
+        storage.deleteWarbandFromCloud(id);
         const nextActive = updated[0]?.id || null;
-        if (nextActive) storage.setActiveWarbandId(nextActive);
+        storage.setActiveWarbandId(nextActive);
         return { warbands: updated, activeWarbandId: nextActive };
       });
     },
@@ -422,6 +242,8 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = [...s.warbands, cloned];
         storage.saveWarbands(updated);
+        storage.setActiveWarbandId(cloned.id);
+        storage.syncWarbandToCloud(cloned);
         return { warbands: updated, activeWarbandId: cloned.id };
       });
     },
@@ -433,7 +255,12 @@ export const useStore = create<AppState>((set, get) => {
 
     updateWarbandNotes: (warbandId, notes) => {
       set((state) => {
-        const updated = state.warbands.map((w) => (w.id === warbandId ? { ...w, notes } : w));
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = { ...w, notes };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
         storage.saveWarbands(updated);
         return { warbands: updated };
       });
@@ -488,11 +315,13 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: [...w.units, newUnit],
             updatedAt: new Date().toISOString()
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -528,11 +357,13 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: [...w.units, clonedUnit],
             updatedAt: new Date().toISOString()
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -543,11 +374,13 @@ export const useStore = create<AppState>((set, get) => {
       set((state) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.filter((u) => u.id !== unitId),
             updatedAt: new Date().toISOString()
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -558,10 +391,12 @@ export const useStore = create<AppState>((set, get) => {
       set((state) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => (u.id === unitId ? { ...u, customName: name } : u))
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -581,7 +416,7 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -593,6 +428,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -603,7 +440,7 @@ export const useStore = create<AppState>((set, get) => {
       set((state) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -616,6 +453,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -635,7 +474,7 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -646,6 +485,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -656,7 +497,7 @@ export const useStore = create<AppState>((set, get) => {
       set((state) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -669,6 +510,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -688,7 +531,7 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -699,6 +542,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -709,7 +554,7 @@ export const useStore = create<AppState>((set, get) => {
       set((state) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          return {
+          const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
@@ -722,6 +567,8 @@ export const useStore = create<AppState>((set, get) => {
               };
             })
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -734,17 +581,19 @@ export const useStore = create<AppState>((set, get) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const existing = w.armoryStash.find((i) => i.id === item.id);
-          let newStash: StashItem[];
+          let newStash: StashedItem[];
           if (existing) {
             newStash = w.armoryStash.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
           } else {
             newStash = [...w.armoryStash, { id: item.id, name: item.name, type: item.type, cost: item.cost, quantity: 1 }];
           }
-          return {
+          const updatedWb = {
             ...w,
             armoryStash: newStash,
             treasuryDucats: Math.max(0, w.treasuryDucats - item.cost)
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -759,18 +608,20 @@ export const useStore = create<AppState>((set, get) => {
           if (!item) return w;
 
           const sellValue = Math.floor(item.cost / 2);
-          let newStash: StashItem[];
+          let newStash: StashedItem[];
           if (item.quantity > 1) {
             newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
           } else {
             newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
           }
 
-          return {
+          const updatedWb = {
             ...w,
             armoryStash: newStash,
             treasuryDucats: w.treasuryDucats + sellValue
           };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -796,13 +647,15 @@ export const useStore = create<AppState>((set, get) => {
       set((s) => {
         const updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          let newStash: StashItem[];
+          let newStash: StashedItem[];
           if (stashItem.quantity > 1) {
             newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
           } else {
             newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
           }
-          return { ...w, armoryStash: newStash };
+          const updatedWb = { ...w, armoryStash: newStash };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
         });
         storage.saveWarbands(updated);
         return { warbands: updated };
@@ -981,6 +834,7 @@ export const useStore = create<AppState>((set, get) => {
 
       const updatedWarbands = state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w));
       storage.saveWarbands(updatedWarbands);
+      storage.syncWarbandToCloud(updatedWarband);
 
       // Create Match Record
       const newMatch: MatchRecord = {
@@ -1034,6 +888,7 @@ export const useStore = create<AppState>((set, get) => {
       };
 
       storage.saveCampaign(updatedCampaign);
+      storage.syncCampaignToCloud(updatedCampaign);
 
       set({
         warbands: updatedWarbands,
@@ -1075,7 +930,7 @@ export const useStore = create<AppState>((set, get) => {
               }
             ]
           : [],
-        territories: initialCampaign.territories,
+        territories: defaultFreshCampaign.territories,
         matches: [],
         chronicleLogs: [
           {
@@ -1088,6 +943,7 @@ export const useStore = create<AppState>((set, get) => {
       };
 
       storage.saveCampaign(newCampaign);
+      storage.syncCampaignToCloud(newCampaign);
       set({ campaign: newCampaign });
     },
 
@@ -1203,6 +1059,7 @@ export const useStore = create<AppState>((set, get) => {
         };
 
         storage.saveCampaign(updatedCampaign);
+        storage.syncCampaignToCloud(updatedCampaign);
         return { campaign: updatedCampaign };
       });
     },

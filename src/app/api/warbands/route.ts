@@ -8,20 +8,15 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
-    if (!userId) {
-      // Return empty or demo warbands if not authenticated
-      return NextResponse.json({ warbands: [] });
-    }
-
     const warbands = await prisma.warband.findMany({
-      where: { userId },
+      where: userId ? { userId } : {},
       orderBy: { updatedAt: 'desc' },
     });
 
     return NextResponse.json({ warbands });
   } catch (err: any) {
     console.error('Error fetching warbands:', err);
-    return NextResponse.json({ error: 'Failed to fetch warbands' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch warbands', warbands: [] }, { status: 500 });
   }
 }
 
@@ -34,10 +29,9 @@ export async function POST(req: NextRequest) {
     const { id, name, factionId, ducatLimit, treasuryDucats, gloryPoints, units, armoryStash, notes } = body;
 
     if (!name || !factionId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields: name and factionId are required' }, { status: 400 });
     }
 
-    // Default guest user ID if running unauthenticated
     let effectiveUserId = userId;
     if (!effectiveUserId) {
       const defaultUser = await prisma.user.upsert({
@@ -51,36 +45,38 @@ export async function POST(req: NextRequest) {
       effectiveUserId = defaultUser.id;
     }
 
+    const warbandId = id || `wb-${Date.now()}`;
+
     const warband = await prisma.warband.upsert({
-      where: { id: id || 'temp-id' },
+      where: { id: warbandId },
       update: {
         name,
         factionId,
-        ducatLimit: ducatLimit || 700,
-        treasuryDucats: treasuryDucats || 0,
-        gloryPoints: gloryPoints || 0,
+        ducatLimit: Number(ducatLimit) || 700,
+        treasuryDucats: Number(treasuryDucats) || 0,
+        gloryPoints: Number(gloryPoints) || 0,
         units: units || [],
         armoryStash: armoryStash || [],
-        notes,
+        notes: notes || '',
       },
       create: {
-        ...(id ? { id } : {}),
+        id: warbandId,
         name,
         factionId,
-        ducatLimit: ducatLimit || 700,
-        treasuryDucats: treasuryDucats || 0,
-        gloryPoints: gloryPoints || 0,
+        ducatLimit: Number(ducatLimit) || 700,
+        treasuryDucats: Number(treasuryDucats) || 0,
+        gloryPoints: Number(gloryPoints) || 0,
         units: units || [],
         armoryStash: armoryStash || [],
-        notes,
+        notes: notes || '',
         userId: effectiveUserId,
       },
     });
 
     return NextResponse.json({ warband });
   } catch (err: any) {
-    console.error('Error saving warband:', err);
-    return NextResponse.json({ error: 'Failed to save warband' }, { status: 500 });
+    console.error('Error saving warband to PostgreSQL:', err);
+    return NextResponse.json({ error: 'Failed to save warband', details: err?.message }, { status: 500 });
   }
 }
 
@@ -90,14 +86,14 @@ export async function DELETE(req: NextRequest) {
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing warband id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing warband id parameter' }, { status: 400 });
     }
 
     await prisma.warband.deleteMany({
       where: { id },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, deletedId: id });
   } catch (err: any) {
     console.error('Error deleting warband:', err);
     return NextResponse.json({ error: 'Failed to delete warband' }, { status: 500 });

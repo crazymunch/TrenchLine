@@ -25,14 +25,48 @@ export const storage = {
     if (!isBrowser) return;
     try {
       localStorage.setItem(WARBANDS_KEY, JSON.stringify(warbands));
-      // Optional async cloud sync
-      fetch('/api/warbands', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(warbands[0] || {})
-      }).catch(() => {});
     } catch (e) {
       console.warn('Storage save failed:', e);
+    }
+  },
+
+  async syncWarbandToCloud(warband: Warband): Promise<void> {
+    if (!isBrowser) return;
+    try {
+      await fetch('/api/warbands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(warband),
+      });
+    } catch (e) {
+      console.warn('Cloud sync warband failed:', e);
+    }
+  },
+
+  async deleteWarbandFromCloud(id: string): Promise<void> {
+    if (!isBrowser) return;
+    try {
+      await fetch(`/api/warbands?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+    } catch (e) {
+      console.warn('Cloud delete warband failed:', e);
+    }
+  },
+
+  async fetchWarbandsFromCloud(): Promise<Warband[] | null> {
+    if (!isBrowser) return null;
+    try {
+      const res = await fetch('/api/warbands');
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (Array.isArray(data.warbands)) {
+        return data.warbands;
+      }
+      return null;
+    } catch (e) {
+      console.warn('Fetch warbands from cloud failed:', e);
+      return null;
     }
   },
 
@@ -45,10 +79,14 @@ export const storage = {
     }
   },
 
-  setActiveWarbandId(id: string): void {
+  setActiveWarbandId(id: string | null): void {
     if (!isBrowser) return;
     try {
-      localStorage.setItem(ACTIVE_WARBAND_KEY, id);
+      if (id) {
+        localStorage.setItem(ACTIVE_WARBAND_KEY, id);
+      } else {
+        localStorage.removeItem(ACTIVE_WARBAND_KEY);
+      }
     } catch (e) {
       console.warn('Set active warband failed:', e);
     }
@@ -70,6 +108,19 @@ export const storage = {
       localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(campaign));
     } catch (e) {
       console.warn('Campaign save failed:', e);
+    }
+  },
+
+  async syncCampaignToCloud(campaign: Campaign): Promise<void> {
+    if (!isBrowser) return;
+    try {
+      await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create', ...campaign }),
+      });
+    } catch (e) {
+      console.warn('Cloud sync campaign failed:', e);
     }
   },
 
@@ -108,6 +159,19 @@ export const storage = {
       localStorage.setItem(CUSTOM_WEAPONS_KEY, JSON.stringify(weapons));
     } catch (e) {
       console.warn('Custom weapons save failed:', e);
+    }
+  },
+
+  clearAllData(): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.removeItem(WARBANDS_KEY);
+      localStorage.removeItem(ACTIVE_WARBAND_KEY);
+      localStorage.removeItem(CAMPAIGN_KEY);
+      localStorage.removeItem(CUSTOM_UNITS_KEY);
+      localStorage.removeItem(CUSTOM_WEAPONS_KEY);
+    } catch (e) {
+      console.warn('Clear data failed:', e);
     }
   }
 };
