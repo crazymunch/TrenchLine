@@ -65,9 +65,10 @@ export interface UnitProfile {
   baseCost: number; // in Ducats
   stats: Statline;
   maxCount?: number;
-  innateAbilities: Ability[];
+  innateAbilities?: Ability[];
   defaultWeapons?: string[]; // weapon IDs
   defaultArmour?: string[]; // armour IDs
+  allowedFactions?: string[];
   lore?: string;
   isCustom?: boolean;
 }

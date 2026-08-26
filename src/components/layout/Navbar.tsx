@@ -65,10 +65,10 @@ export const Navbar: React.FC = () => {
               onClick={() => setCurrentView('builder')}
             >
               <div 
-                className="w-8 h-8 rounded bg-[#161920] border-2 flex items-center justify-center shadow-lg"
+                className="w-8 h-8 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-0.5"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
-                <Skull className="w-4 h-4" style={{ color: activeThemeObj.primaryColor }} />
+                <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
               </div>
               <span 
                 className="font-gothic font-bold text-base tracking-wider"

@@ -4,6 +4,7 @@ import { ActiveUnit } from '../../types/warband';
 import { UnitCategory } from '../../types/rules';
 import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
+import { ConfirmModal } from '../ui/ConfirmModal';
 import { 
   Trash2, 
   Plus, 
@@ -45,6 +46,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [isEquipModalOpen, setIsEquipModalOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
+  const [isConfirmDismissOpen, setIsConfirmDismissOpen] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
   const hasLore = !!(unit.lore || (unit.deeds && unit.deeds.length > 0) || (unit.titles && unit.titles.length > 0));
@@ -192,7 +194,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               <Copy className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => removeUnitFromWarband(warbandId, unit.id)}
+              onClick={() => setIsConfirmDismissOpen(true)}
               className="text-[#8E95A5] hover:text-[#E53935] p-1 rounded transition-colors"
               title="Dismiss Warrior"
             >
@@ -262,7 +264,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           </div>
 
           {/* Innate Abilities */}
-          {unit.profileSnapshot.innateAbilities.length > 0 && (
+          {unit.profileSnapshot.innateAbilities && unit.profileSnapshot.innateAbilities.length > 0 && (
             <div className="space-y-1">
               {unit.profileSnapshot.innateAbilities.map((ab) => (
                 <div key={ab.id} className="text-xs bg-[#20242E]/60 p-1.5 rounded border border-[#323846]/60">
@@ -418,6 +420,19 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           onClose={() => setIsLoreModalOpen(false)}
         />
       )}
+
+      {/* Dismiss Warrior Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={isConfirmDismissOpen}
+        title="DISMISS WARRIOR"
+        message={`Are you sure you want to dismiss "${unit.customName}" from the warband? All equipped weapons, armour, experience points, and heroic feats recorded on this warrior will be permanently removed.`}
+        confirmLabel="Dismiss Warrior"
+        onConfirm={() => {
+          removeUnitFromWarband(warbandId, unit.id);
+          setIsConfirmDismissOpen(false);
+        }}
+        onCancel={() => setIsConfirmDismissOpen(false)}
+      />
     </>
   );
 };

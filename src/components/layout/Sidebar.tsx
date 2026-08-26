@@ -93,10 +93,10 @@ export const Sidebar: React.FC = () => {
               className="flex items-center space-x-3 cursor-pointer overflow-hidden"
             >
               <div 
-                className="w-9 h-9 rounded bg-[#161920] border-2 flex items-center justify-center shadow-lg flex-shrink-0"
+                className="w-10 h-10 rounded bg-[#161920] border flex items-center justify-center shadow-lg flex-shrink-0 p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
-                <Skull className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
+                <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center space-x-1.5">
@@ -122,10 +122,10 @@ export const Sidebar: React.FC = () => {
               title="TrenchLine OS"
             >
               <div 
-                className="w-9 h-9 rounded bg-[#161920] border-2 flex items-center justify-center shadow-lg"
+                className="w-10 h-10 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
-                <Skull className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
+                <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
               </div>
             </div>
           )}

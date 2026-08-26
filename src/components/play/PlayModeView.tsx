@@ -8,6 +8,7 @@ import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
 import { RangeCalculatorModal } from './RangeCalculatorModal';
 import { QuickSearchModal } from './QuickSearchModal';
+import { ConfirmModal } from '../ui/ConfirmModal';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -21,11 +22,28 @@ import {
   Zap,
   Search,
   BookOpen,
-  Ruler
+  Ruler,
+  Compass,
+  Award,
+  Sparkles,
+  Users,
+  CheckSquare,
+  Square,
+  Plus,
+  Minus,
+  XCircle,
+  Shield,
+  Layers,
+  ChevronDown,
+  ChevronUp,
+  Settings
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
   const { 
+    warbands,
+    activeWarbandId,
+    setActiveWarbandId,
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
@@ -35,17 +53,41 @@ export const PlayModeView: React.FC = () => {
     toggleUnitActed,
     setActiveKeyword,
     keywords,
+    scenarios,
     isPostBattleOpen,
-    setIsPostBattleOpen
+    setIsPostBattleOpen,
+    setCurrentView
   } = useStore();
 
-  const warband = getActiveWarband();
+  const primaryWarband = getActiveWarband();
+
+  // Multi-Player / Multi-Warband State (2 to 4 Players)
+  const [matchWarbandIds, setMatchWarbandIds] = useState<string[]>(
+    primaryWarband ? [primaryWarband.id] : []
+  );
+  const [activePlayerIndex, setActivePlayerIndex] = useState<number>(0);
+
+  // Active viewing warband
+  const currentViewingWarbandId = matchWarbandIds[activePlayerIndex] || primaryWarband?.id || '';
+  const viewingWarband = warbands.find((w) => w.id === currentViewingWarbandId) || primaryWarband;
+
+  // Scenario & Scoring State
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('claim-no-mans-land');
+  const [warbandScores, setWarbandScores] = useState<Record<string, { vp: number; completedDeeds: Record<string, string> }>>({});
+  
+  // Squad / Sub-list Deployment Filter
+  const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
+  const [isSquadSelectOpen, setIsSquadSelectOpen] = useState(false);
+  const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
+
+  // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
   const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
+  const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
 
-  if (!warband) {
+  if (!viewingWarband) {
     return (
       <div className="p-8 text-center space-y-4 max-w-lg mx-auto">
         <Skull className="w-12 h-12 text-[#D4AF37] mx-auto opacity-75" />
@@ -55,22 +97,93 @@ export const PlayModeView: React.FC = () => {
     );
   }
 
-  const activeCount = warband.units.filter((u) => u.status === 'Active').length;
-  const downedCount = warband.units.filter((u) => u.status === 'Downed').length;
-  const ooaCount = warband.units.filter((u) => u.status === 'Out of Action').length;
-  const totalBlood = warband.units.reduce((sum, u) => sum + u.bloodMarkers, 0);
+  // Deployed units for current warband
+  const currentDeployedIds = deployedUnitIds[viewingWarband.id] || viewingWarband.units.map((u) => u.id);
+  const deployedUnits = viewingWarband.units.filter((u) => currentDeployedIds.includes(u.id));
+  const deployedCost = deployedUnits.reduce((sum, u) => sum + u.totalCost, 0);
 
-  const filteredUnits = warband.units.filter((u) => {
+  // Statistics
+  const activeCount = deployedUnits.filter((u) => u.status === 'Active').length;
+  const downedCount = deployedUnits.filter((u) => u.status === 'Downed').length;
+  const ooaCount = deployedUnits.filter((u) => u.status === 'Out of Action').length;
+  const totalBlood = deployedUnits.reduce((sum, u) => sum + u.bloodMarkers, 0);
+
+  const filteredUnits = deployedUnits.filter((u) => {
     if (filterStatus === 'All') return true;
     return u.status === filterStatus;
   });
 
-  const handleKeywordTap = (kwName: string) => {
-    const clean = kwName.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const found = keywords.find((k) => k.name.toLowerCase().includes(clean));
-    if (found) {
-      setActiveKeyword(found);
-    }
+  const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
+
+  // Score for current warband
+  const currentScoreObj = warbandScores[viewingWarband.id] || { vp: 0, completedDeeds: {} };
+
+  const handleAdjustVp = (delta: number) => {
+    setWarbandScores((prev) => {
+      const cur = prev[viewingWarband.id] || { vp: 0, completedDeeds: {} };
+      return {
+        ...prev,
+        [viewingWarband.id]: {
+          ...cur,
+          vp: Math.max(0, cur.vp + delta)
+        }
+      };
+    });
+  };
+
+  const handleToggleDeed = (deedName: string, unitName: string = '') => {
+    setWarbandScores((prev) => {
+      const cur = prev[viewingWarband.id] || { vp: 0, completedDeeds: {} };
+      const nextDeeds = { ...cur.completedDeeds };
+      if (nextDeeds[deedName]) {
+        delete nextDeeds[deedName];
+      } else {
+        nextDeeds[deedName] = unitName || 'Squad';
+      }
+      return {
+        ...prev,
+        [viewingWarband.id]: {
+          ...cur,
+          completedDeeds: nextDeeds
+        }
+      };
+    });
+  };
+
+  const handleToggleDeployUnit = (unitId: string) => {
+    setDeployedUnitIds((prev) => {
+      const currentList = prev[viewingWarband.id] || viewingWarband.units.map((u) => u.id);
+      const nextList = currentList.includes(unitId)
+        ? currentList.filter((id) => id !== unitId)
+        : [...currentList, unitId];
+      return {
+        ...prev,
+        [viewingWarband.id]: nextList
+      };
+    });
+  };
+
+  const handleSelectAllSquad = () => {
+    setDeployedUnitIds((prev) => ({
+      ...prev,
+      [viewingWarband.id]: viewingWarband.units.map((u) => u.id)
+    }));
+  };
+
+  const handleAddPlayerWarband = (wbId: string) => {
+    if (matchWarbandIds.length >= 4 || matchWarbandIds.includes(wbId)) return;
+    setMatchWarbandIds((prev) => [...prev, wbId]);
+  };
+
+  const handleRemovePlayerWarband = (wbId: string) => {
+    if (matchWarbandIds.length <= 1) return;
+    setMatchWarbandIds((prev) => prev.filter((id) => id !== wbId));
+    setActivePlayerIndex(0);
+  };
+
+  const handleAbortMatch = () => {
+    soundEffects.playGunfire();
+    setCurrentView('builder');
   };
 
   const handleNextTurnWithWhistle = () => {
@@ -78,12 +191,67 @@ export const PlayModeView: React.FC = () => {
     incrementTurn();
   };
 
+  // Parse Scenario Deeds into discrete list items
+  const parseDeedsList = (deedsText?: string) => {
+    if (!deedsText) return [];
+    return deedsText
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith('- **') || l.startsWith('* **') || l.includes(':'))
+      .map((l) => {
+        const cleaned = l.replace(/^[-*]\s*/, '');
+        const parts = cleaned.split(':');
+        const title = parts[0].replace(/\*\*/g, '').trim();
+        const desc = parts.slice(1).join(':').replace(/\*\*/g, '').trim();
+        return { title, desc };
+      });
+  };
+
+  const scenarioDeeds = parseDeedsList(selectedScenario?.gloriousDeeds);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
       
       {/* Top Tactical HUD (Sticky) */}
       <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-4 shadow-2xl sticky top-20 z-30 space-y-4 bevel-container">
         
+        {/* Multi-Player / Warband Bar (if multiple players) */}
+        {matchWarbandIds.length > 1 && (
+          <div className="flex items-center justify-between border-b border-[#323846] pb-3 bg-[#0C0E12] -mx-4 -mt-4 p-3 rounded-t">
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4 text-[#D4AF37]" />
+              <span className="text-xs font-mono font-bold uppercase text-[#ECEFF4]">
+                Linked Match Room ({matchWarbandIds.length} Warbands):
+              </span>
+            </div>
+            
+            <div className="flex space-x-2 font-mono text-xs">
+              {matchWarbandIds.map((id, idx) => {
+                const wb = warbands.find((w) => w.id === id);
+                const score = warbandScores[id]?.vp || 0;
+                const isSelected = idx === activePlayerIndex;
+
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setActivePlayerIndex(idx)}
+                    className={`px-3 py-1 rounded font-bold uppercase flex items-center space-x-2 transition-all ${
+                      isSelected
+                        ? 'bg-[#D4AF37] text-black shadow'
+                        : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                    }`}
+                  >
+                    <span>{wb?.name || `Player ${idx + 1}`}</span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-[#ECEFF4]">
+                      {score} VP
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
           {/* Left: Warband Identity & Turn info */}
@@ -95,12 +263,16 @@ export const PlayModeView: React.FC = () => {
 
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="font-gothic font-bold text-xl text-[#ECEFF4]">{warband.name}</h1>
+                <h1 className="font-gothic font-bold text-xl text-[#ECEFF4]">{viewingWarband.name}</h1>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#8B0000] text-white font-bold uppercase animate-pulse">
                   COMBAT ACTIVE
                 </span>
               </div>
-              <p className="text-xs font-mono text-[#8E95A5]">Tactical Tabletop Companion Sheet</p>
+              <div className="flex items-center space-x-2 text-xs font-mono text-[#8E95A5]">
+                <span>Deployed: {deployedUnits.length}/{viewingWarband.units.length} warriors</span>
+                <span>•</span>
+                <span className="text-[#D4AF37]">{deployedCost} Ducats</span>
+              </div>
             </div>
           </div>
 
@@ -130,15 +302,24 @@ export const PlayModeView: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: Actions */}
+          {/* Right: Actions Toolbar */}
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setIsSquadSelectOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Select which warriors are deployed in this match"
+            >
+              <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Squad ({deployedUnits.length})</span>
+            </button>
+
             <button
               onClick={() => setIsQuickSearchOpen(true)}
               className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Lookup rules and keywords"
             >
               <Search className="w-3.5 h-3.5" />
-              <span>Rules Lookup</span>
+              <span>Rules</span>
             </button>
 
             <button
@@ -157,6 +338,14 @@ export const PlayModeView: React.FC = () => {
               <Skull className="w-4 h-4" />
               <span>End Match</span>
               <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              onClick={() => setIsAbortConfirmOpen(true)}
+              className="p-2 text-[#8E95A5] hover:text-[#FF4D6D] bg-[#0C0E12] hover:bg-[#20242E] border border-[#323846] rounded transition-colors"
+              title="Cancel / Abort Match"
+            >
+              <XCircle className="w-4 h-4" />
             </button>
           </div>
 
@@ -181,7 +370,172 @@ export const PlayModeView: React.FC = () => {
 
       </div>
 
-      {/* Dice Roller Tool */}
+      {/* INTERACTIVE MISSION SCORING & GLORIOUS DEEDS CHECKLIST PANEL */}
+      <div className="bg-[#161920] border-2 border-[#323846] rounded-md overflow-hidden shadow-xl bevel-container">
+        
+        {/* Panel Header */}
+        <div 
+          className="p-4 bg-[#20242E] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none"
+          onClick={() => setIsObjectivesPanelOpen(!isObjectivesPanelOpen)}
+        >
+          <div className="flex items-center space-x-3">
+            <Compass className="w-5 h-5 text-[#D4AF37]" />
+            <div>
+              <div className="flex items-center space-x-2">
+                <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                  SCENARIO OBJECTIVES & GLORIOUS DEEDS TRACKER
+                </h3>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0C0E12] text-[#D4AF37] border border-[#323846] font-bold">
+                  {selectedScenario?.name}
+                </span>
+              </div>
+              <p className="text-xs font-mono text-[#8E95A5]">
+                Progressive victory points tally and warrior glorious feat checklist
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 font-mono text-xs">
+            {/* Live VP Meter */}
+            <div className="flex items-center space-x-2 bg-[#0C0E12] px-3 py-1.5 rounded border border-[#323846]" onClick={(e) => e.stopPropagation()}>
+              <span className="text-[#8E95A5] uppercase font-bold text-[11px]">Victory Points:</span>
+              <button
+                onClick={() => handleAdjustVp(-1)}
+                className="w-6 h-6 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] flex items-center justify-center font-bold"
+              >
+                <Minus className="w-3 h-3" />
+              </button>
+              <span className="text-sm font-bold text-[#D4AF37] px-1">{currentScoreObj.vp} VP</span>
+              <button
+                onClick={() => handleAdjustVp(1)}
+                className="w-6 h-6 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] flex items-center justify-center font-bold"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+
+            <button className="text-[#8E95A5] hover:text-white">
+              {isObjectivesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Panel Body */}
+        {isObjectivesPanelOpen && (
+          <div className="p-5 bg-[#0C0E12] space-y-4 font-mono text-xs animate-fade-in">
+            
+            {/* Scenario Selector & Victory Rules */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              {/* Scenario Picker */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  Select Active Scenario:
+                </label>
+                <select
+                  value={selectedScenarioId}
+                  onChange={(e) => setSelectedScenarioId(e.target.value)}
+                  className="w-full bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                >
+                  {scenarios.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+                {selectedScenario?.tagline && (
+                  <p className="text-[11px] text-[#8E95A5] italic pt-1">{selectedScenario.tagline}</p>
+                )}
+              </div>
+
+              {/* Victory Conditions Rules */}
+              <div className="md:col-span-2 p-3 bg-[#161920] border border-[#323846] rounded space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#4E9A6E] flex items-center space-x-1.5">
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Victory Conditions & Scoring Rules:</span>
+                </span>
+                <p className="text-[11px] text-[#ECEFF4] leading-relaxed whitespace-pre-line">
+                  {selectedScenario?.victoryConditions}
+                </p>
+              </div>
+
+            </div>
+
+            {/* Glorious Deeds Checklist */}
+            <div className="space-y-2 pt-2 border-t border-[#323846]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Glorious Deeds Checklist (Attach Performing Warrior):</span>
+                </span>
+                <span className="text-[10px] text-[#8E95A5]">
+                  {Object.keys(currentScoreObj.completedDeeds).length} Deeds Claimed
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {scenarioDeeds.map((deed, idx) => {
+                  const isChecked = !!currentScoreObj.completedDeeds[deed.title];
+                  const performer = currentScoreObj.completedDeeds[deed.title] || '';
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3 rounded border transition-all space-y-2 ${
+                        isChecked
+                          ? 'bg-[#161920] border-[#D4AF37] ring-1 ring-[#D4AF37]/30'
+                          : 'bg-[#161920]/60 border-[#323846]'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <label className="flex items-start space-x-2.5 cursor-pointer flex-1">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleToggleDeed(deed.title, deployedUnits[0]?.customName || 'Squad')}
+                            className="mt-0.5 rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                          />
+                          <div>
+                            <strong className={`block text-xs ${isChecked ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
+                              {deed.title}
+                            </strong>
+                            <p className="text-[11px] text-[#8E95A5] leading-relaxed pt-0.5">
+                              {deed.desc}
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+
+                      {/* Attaching warrior performer */}
+                      {isChecked && (
+                        <div className="pt-2 border-t border-[#323846]/60 flex items-center justify-between gap-2 text-[11px]">
+                          <span className="text-[#8E95A5]">Achieved by:</span>
+                          <select
+                            value={performer}
+                            onChange={(e) => handleToggleDeed(deed.title, e.target.value)}
+                            className="bg-[#0C0E12] border border-[#323846] rounded px-2 py-1 text-xs text-[#D4AF37] focus:outline-none focus:border-[#D4AF37]"
+                          >
+                            <option value="Squad">Entire Warband</option>
+                            {deployedUnits.map((u) => (
+                              <option key={u.id} value={u.customName}>
+                                {u.customName} ({u.profileSnapshot.name})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
+      {/* Combat Dice Engine */}
       <DiceRoller />
 
       {/* Tactical Unit Cards Grid */}
@@ -218,101 +572,94 @@ export const PlayModeView: React.FC = () => {
                     >
                       {unit.profileSnapshot.category}
                     </span>
-                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4] leading-tight">
-                      {unit.customName}
-                    </h3>
+                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{unit.customName}</h3>
                   </div>
-                  <span className="text-[11px] font-mono text-[#8E95A5] block">
-                    {unit.profileSnapshot.name}
+                  <span className="text-xs font-mono text-[#8E95A5] block">
+                    Base: {unit.profileSnapshot.name}
                   </span>
                 </div>
 
-                {/* Activation Pill Toggle */}
-                {!isOOA && (
-                  <button
-                    onClick={() => toggleUnitActed(warband.id, unit.id)}
-                    className={`px-2.5 py-1 rounded font-mono text-[10px] font-bold uppercase flex items-center space-x-1 transition-all ${
-                      hasActed
-                        ? 'bg-[#20242E] text-[#8E95A5] border border-[#323846]'
-                        : 'bg-[#4E9A6E] text-white shadow-md'
-                    }`}
-                  >
-                    <UserCheck className="w-3 h-3" />
-                    <span>{hasActed ? 'ACTED' : 'READY'}</span>
-                  </button>
-                )}
+                <button
+                  onClick={() => toggleUnitActed(viewingWarband.id, unit.id)}
+                  className={`px-3 py-1.5 rounded font-mono text-xs font-bold uppercase transition-all flex items-center space-x-1 ${
+                    hasActed
+                      ? 'bg-[#20242E] text-[#8E95A5] border border-[#323846]'
+                      : 'bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20 font-extrabold'
+                  }`}
+                  title={hasActed ? 'Reset Activation' : 'Mark as Activated'}
+                >
+                  <UserCheck className="w-3.5 h-3.5" />
+                  <span>{hasActed ? 'Acted' : 'Activate'}</span>
+                </button>
               </div>
 
-              {/* Combat Stat Block */}
-              <div className="grid grid-cols-4 gap-1.5 font-mono text-center text-xs bg-[#0C0E12] p-2 rounded border border-[#323846]">
+              {/* Statline Matrix */}
+              <div className="grid grid-cols-4 gap-1 p-2 bg-[#0C0E12] border border-[#323846] rounded text-center font-mono text-xs">
                 <div>
-                  <span className="text-[9px] text-[#8E95A5] block">MOV</span>
-                  <span className="font-bold text-[#ECEFF4]">{unit.profileSnapshot.stats.movement}</span>
+                  <span className="text-[9px] text-[#8E95A5] uppercase block">MOV</span>
+                  <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.movement}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] text-[#8E95A5] block">RNG</span>
-                  <span className="font-bold text-[#ECEFF4]">{unit.profileSnapshot.stats.ranged}</span>
+                  <span className="text-[9px] text-[#8E95A5] uppercase block">RNG</span>
+                  <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.ranged}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] text-[#8E95A5] block">MELEE</span>
-                  <span className="font-bold text-[#ECEFF4]">{unit.profileSnapshot.stats.melee}</span>
+                  <span className="text-[9px] text-[#8E95A5] uppercase block">MEL</span>
+                  <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.melee}</strong>
                 </div>
                 <div>
-                  <span className="text-[9px] text-[#8E95A5] block">ARMOUR</span>
-                  <span className="font-bold text-[#ECEFF4]">{unit.profileSnapshot.stats.armour}</span>
+                  <span className="text-[9px] text-[#8E95A5] uppercase block">ARM</span>
+                  <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.armour}</strong>
                 </div>
               </div>
 
-              {/* Large Tappable Wound & Blood Counters */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Interactive Wounds & Blood Marker Trackers */}
+              <div className="space-y-3 font-mono text-xs bg-[#20242E]/60 p-3 rounded border border-[#323846]/60">
                 
-                {/* Wounds Stepper */}
-                <div className="bg-[#0C0E12] p-2.5 rounded border border-[#323846] space-y-1 text-center">
-                  <span className="text-[10px] font-mono text-[#8E95A5] uppercase flex items-center justify-center space-x-1">
-                    <Heart className="w-3 h-3 text-[#E53935]" />
-                    <span>Wounds</span>
-                  </span>
-                  <div className="flex items-center justify-center space-x-3">
+                {/* Wounds / HP Counter */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5 text-[#ECEFF4]">
+                    <Heart className="w-4 h-4 text-[#E53935]" />
+                    <span className="font-bold">WOUNDS:</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => updateUnitWounds(warband.id, unit.id, -1)}
-                      disabled={unit.currentWounds <= 0}
-                      className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#8B0000] text-white font-mono font-bold text-base disabled:opacity-30 transition-colors"
+                      onClick={() => updateUnitWounds(viewingWarband.id, unit.id, unit.currentWounds - 1)}
+                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
                     >
                       -
                     </button>
-                    <span className="font-mono text-lg font-bold text-[#ECEFF4]">
-                      {unit.currentWounds} <span className="text-xs text-[#8E95A5]">/ {unit.maxWounds}</span>
+                    <span className="font-bold text-sm text-[#ECEFF4] min-w-[20px] text-center">
+                      {unit.currentWounds} / {unit.maxWounds}
                     </span>
                     <button
-                      onClick={() => updateUnitWounds(warband.id, unit.id, 1)}
-                      disabled={unit.currentWounds >= unit.maxWounds}
-                      className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#4E9A6E] text-white font-mono font-bold text-base disabled:opacity-30 transition-colors"
+                      onClick={() => updateUnitWounds(viewingWarband.id, unit.id, unit.currentWounds + 1)}
+                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
                     >
                       +
                     </button>
                   </div>
                 </div>
 
-                {/* Blood Markers Stepper */}
-                <div className="bg-[#0C0E12] p-2.5 rounded border border-[#323846] space-y-1 text-center">
-                  <span className="text-[10px] font-mono text-[#8E95A5] uppercase flex items-center justify-center space-x-1">
-                    <Droplet className="w-3 h-3 text-[#E53935] fill-[#E53935]" />
-                    <span>Blood Tokens</span>
-                  </span>
-                  <div className="flex items-center justify-center space-x-3">
+                {/* Blood Markers (Sacrificial / Lethal currency) */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5 text-[#ECEFF4]">
+                    <Droplet className="w-4 h-4 text-[#E53935] fill-[#E53935]" />
+                    <span className="font-bold">BLOOD MARKERS:</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => updateUnitBloodMarkers(warband.id, unit.id, -1)}
-                      disabled={unit.bloodMarkers <= 0}
-                      className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#323846] text-white font-mono font-bold text-base disabled:opacity-30 transition-colors"
+                      onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, unit.bloodMarkers - 1)}
+                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
                     >
                       -
                     </button>
-                    <span className={`font-mono text-lg font-bold ${unit.bloodMarkers > 0 ? 'text-[#E53935]' : 'text-[#8E95A5]'}`}>
+                    <span className="font-bold text-sm text-[#E53935] min-w-[20px] text-center">
                       {unit.bloodMarkers}
                     </span>
                     <button
-                      onClick={() => updateUnitBloodMarkers(warband.id, unit.id, 1)}
-                      className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#8B0000] text-white font-mono font-bold text-base transition-colors"
+                      onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, unit.bloodMarkers + 1)}
+                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
                     >
                       +
                     </button>
@@ -321,97 +668,64 @@ export const PlayModeView: React.FC = () => {
 
               </div>
 
-              {/* Status Chips */}
-              <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] font-bold uppercase">
-                <button
-                  onClick={() => setUnitStatus(warband.id, unit.id, 'Active')}
-                  className={`py-1.5 rounded transition-all ${
-                    unit.status === 'Active'
-                      ? 'bg-[#4E9A6E] text-white shadow'
-                      : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
-                  }`}
-                >
-                  Active
-                </button>
-                <button
-                  onClick={() => setUnitStatus(warband.id, unit.id, 'Downed')}
-                  className={`py-1.5 rounded transition-all ${
-                    unit.status === 'Downed'
-                      ? 'bg-[#FFB300] text-black shadow font-extrabold'
-                      : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
-                  }`}
-                >
-                  Downed
-                </button>
-                <button
-                  onClick={() => setUnitStatus(warband.id, unit.id, 'Out of Action')}
-                  className={`py-1.5 rounded transition-all ${
-                    unit.status === 'Out of Action'
-                      ? 'bg-[#8B0000] text-white shadow'
-                      : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
-                  }`}
-                >
-                  O.O.A.
-                </button>
+              {/* Status Quick Bar */}
+              <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px]">
+                {(['Active', 'Downed', 'Out of Action'] as const).map((st) => (
+                  <button
+                    key={st}
+                    onClick={() => setUnitStatus(viewingWarband.id, unit.id, st)}
+                    className={`py-1.5 rounded font-bold uppercase transition-all ${
+                      unit.status === st
+                        ? st === 'Active'
+                          ? 'bg-[#4E9A6E] text-white shadow'
+                          : st === 'Downed'
+                          ? 'bg-[#FFB300] text-black shadow'
+                          : 'bg-[#E53935] text-white shadow'
+                        : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
               </div>
 
-              {/* Weapons & Attacks Strip with Attack Calculator & Range Ruler Triggers */}
-              <div className="space-y-1.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-[#8E95A5] uppercase tracking-wider">
-                    Armaments & Attacks:
-                  </span>
-                  
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setRangingUnit(unit)}
-                      className="text-[10px] font-mono text-[#4E9A6E] hover:text-[#5BAE7E] flex items-center space-x-1 font-bold"
-                      title="Tactical Range & Charge Ruler"
-                    >
-                      <Ruler className="w-3 h-3" />
-                      <span>Ruler</span>
-                    </button>
-
-                    {unit.equippedWeapons.length > 0 && !isOOA && (
-                      <button
-                        onClick={() => setAttackingUnit(unit)}
-                        className="text-[10px] font-mono text-[#D4AF37] hover:text-[#E5C158] flex items-center space-x-1 font-bold"
+              {/* Equipped Weapons List */}
+              {unit.equippedWeapons.length > 0 && (
+                <div className="space-y-1 pt-1 border-t border-[#323846]">
+                  <span className="text-[9px] font-mono uppercase text-[#8E95A5] block">Weapons:</span>
+                  <div className="space-y-1">
+                    {unit.equippedWeapons.map((wep) => (
+                      <div
+                        key={wep.instanceId}
+                        className="p-1.5 bg-[#0C0E12] border border-[#323846] rounded flex items-center justify-between text-xs font-mono"
                       >
-                        <Crosshair className="w-3 h-3" />
-                        <span>Attack Calc</span>
-                      </button>
-                    )}
+                        <span className="font-bold text-[#ECEFF4]">{wep.name}</span>
+                        <div className="flex items-center space-x-2 text-[10px] text-[#D4AF37]">
+                          <span>RNG: {wep.range}</span>
+                          <span>MOD: {wep.modifiers}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              )}
 
-                {unit.equippedWeapons.map((wep) => (
-                  <div
-                    key={wep.instanceId}
-                    className="p-2 bg-[#0C0E12] rounded border border-[#323846] space-y-1"
-                  >
-                    <div className="flex items-center justify-between font-mono">
-                      <span className="font-bold text-[#ECEFF4]">{wep.name}</span>
-                      <span className="text-[10px] text-[#D4AF37]">{wep.range}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] font-mono text-[#8E95A5]">
-                      <span>Mod: <strong className="text-[#ECEFF4]">{wep.modifiers}</strong></span>
-                      <span>Dmg: <strong className="text-[#ECEFF4]">{wep.damage}</strong></span>
-                    </div>
-                    {wep.keywords.length > 0 && (
-                      <div className="flex flex-wrap gap-1 pt-1">
-                        {wep.keywords.map((kw) => (
-                          <button
-                            key={kw}
-                            onClick={() => handleKeywordTap(kw)}
-                            className="text-[9px] font-mono bg-[#20242E] hover:bg-[#D4AF37] hover:text-black px-1.5 py-0.2 rounded text-[#D4AF37] border border-[#323846] transition-colors"
-                          >
-                            {kw}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+              {/* Tactical Actions Footer */}
+              <div className="flex items-center space-x-2 pt-2 border-t border-[#323846]">
+                <button
+                  onClick={() => setAttackingUnit(unit)}
+                  className="flex-1 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#D4AF37] uppercase flex items-center justify-center space-x-1 transition-colors"
+                >
+                  <Crosshair className="w-3.5 h-3.5" />
+                  <span>Attack</span>
+                </button>
+                <button
+                  onClick={() => setRangingUnit(unit)}
+                  className="flex-1 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#8E95A5] hover:text-white uppercase flex items-center justify-center space-x-1 transition-colors"
+                >
+                  <Ruler className="w-3.5 h-3.5" />
+                  <span>Range</span>
+                </button>
               </div>
 
             </div>
@@ -419,20 +733,110 @@ export const PlayModeView: React.FC = () => {
         })}
       </div>
 
-      {/* Tooltip popover */}
-      <KeywordPopover />
+      {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
+      {isSquadSelectOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            
+            <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Users className="w-5 h-5 text-[#D4AF37]" />
+                <h3 className="font-gothic font-bold text-base text-white">
+                  SQUAD SELECTION & DEPLOYMENT LIST
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsSquadSelectOpen(false)}
+                className="text-[#8E95A5] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
 
-      {/* Quick Search Rules Modal */}
-      {isQuickSearchOpen && (
-        <QuickSearchModal onClose={() => setIsQuickSearchOpen(false)} />
-      )}
+            <div className="p-5 overflow-y-auto space-y-4 text-xs">
+              <div className="flex items-center justify-between bg-[#0C0E12] p-3 rounded border border-[#323846]">
+                <div>
+                  <span className="text-[10px] text-[#8E95A5] block">DEPLOYED STRENGTH</span>
+                  <strong className="text-[#D4AF37] text-sm">
+                    {deployedUnits.length} / {viewingWarband.units.length} Models ({deployedCost} D)
+                  </strong>
+                </div>
+                <button
+                  onClick={handleSelectAllSquad}
+                  className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase text-[10px] border border-[#323846]"
+                >
+                  Deploy All
+                </button>
+              </div>
 
-      {/* Range & Charge Ruler Modal */}
-      {rangingUnit && (
-        <RangeCalculatorModal
-          unit={rangingUnit}
-          onClose={() => setRangingUnit(null)}
-        />
+              <div className="space-y-2">
+                {viewingWarband.units.map((unit) => {
+                  const isDeployed = currentDeployedIds.includes(unit.id);
+                  return (
+                    <div
+                      key={unit.id}
+                      onClick={() => handleToggleDeployUnit(unit.id)}
+                      className={`p-3 rounded border cursor-pointer flex items-center justify-between transition-all ${
+                        isDeployed
+                          ? 'bg-[#20242E] border-[#D4AF37]'
+                          : 'bg-[#161920]/40 border-[#323846] opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <input
+                          type="checkbox"
+                          checked={isDeployed}
+                          onChange={() => {}}
+                          className="rounded border-[#323846] text-[#D4AF37]"
+                        />
+                        <div>
+                          <span className="font-gothic font-bold text-sm text-[#ECEFF4] block">
+                            {unit.customName}
+                          </span>
+                          <span className="text-[10px] text-[#8E95A5]">
+                            {unit.profileSnapshot.name} • {unit.profileSnapshot.category}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="font-bold text-[#D4AF37]">{unit.totalCost} D</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Linked Multiplayer Selector */}
+              <div className="pt-3 border-t border-[#323846] space-y-2">
+                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  Link Additional Warband to this Match (2-4 Players):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {warbands
+                    .filter((w) => !matchWarbandIds.includes(w.id))
+                    .map((wb) => (
+                      <button
+                        key={wb.id}
+                        onClick={() => handleAddPlayerWarband(wb.id)}
+                        className="px-2.5 py-1 bg-[#0C0E12] hover:bg-[#20242E] text-[#D4AF37] border border-[#323846] rounded text-[11px] flex items-center space-x-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>Add {wb.name}</span>
+                      </button>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#20242E] border-t border-[#323846] flex justify-end">
+              <button
+                onClick={() => setIsSquadSelectOpen(false)}
+                className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-bold uppercase rounded text-xs"
+              >
+                Confirm Deployment
+              </button>
+            </div>
+
+          </div>
+        </div>
       )}
 
       {/* Attack Calculator Modal */}
@@ -443,10 +847,35 @@ export const PlayModeView: React.FC = () => {
         />
       )}
 
-      {/* Post Battle Sequence Wizard */}
-      {isPostBattleOpen && (
-        <PostBattleWizardModal onClose={() => setIsPostBattleOpen(false)} />
+      {/* Range Calculator Modal */}
+      {rangingUnit && (
+        <RangeCalculatorModal
+          unit={rangingUnit}
+          onClose={() => setRangingUnit(null)}
+        />
       )}
+
+      {/* Quick Search Modal */}
+      {isQuickSearchOpen && (
+        <QuickSearchModal onClose={() => setIsQuickSearchOpen(false)} />
+      )}
+
+      {/* Post-Battle End Match Wizard */}
+      {isPostBattleOpen && (
+        <PostBattleWizardModal
+          onClose={() => setIsPostBattleOpen(false)}
+        />
+      )}
+
+      {/* Abort Match Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={isAbortConfirmOpen}
+        title="ABORT LIVE MATCH"
+        message="Are you sure you want to cancel and exit this live combat session? All temporary in-game wound and blood markers will be discarded and the warband will return to its standard roster."
+        confirmLabel="Abort Match"
+        onConfirm={handleAbortMatch}
+        onCancel={() => setIsAbortConfirmOpen(false)}
+      />
 
     </div>
   );

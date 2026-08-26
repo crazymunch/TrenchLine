@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { WarbandBuilder } from './WarbandBuilder';
 import { ImportWarbandModal } from './ImportWarbandModal';
 import { WarbandComparatorModal } from './WarbandComparatorModal';
+import { ConfirmModal } from '../ui/ConfirmModal';
 import { 
   Plus, 
   Copy, 
@@ -35,6 +36,7 @@ export const WarbandDashboard: React.FC = () => {
   const [newWarbandName, setNewWarbandName] = useState('');
   const [newFactionId, setNewFactionId] = useState(factions[0]?.id || 'new-antioch');
   const [newDucatLimit, setNewDucatLimit] = useState(700);
+  const [warbandToDelete, setWarbandToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,7 +177,7 @@ export const WarbandDashboard: React.FC = () => {
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => deleteWarband(wb.id)}
+                        onClick={() => setWarbandToDelete({ id: wb.id, name: wb.name })}
                         className="p-1 text-[#8E95A5] hover:text-[#E53935] rounded transition-colors"
                         title="Delete Warband"
                       >
@@ -291,6 +293,21 @@ export const WarbandDashboard: React.FC = () => {
       {isComparatorOpen && (
         <WarbandComparatorModal onClose={() => setIsComparatorOpen(false)} />
       )}
+
+      {/* Disband Warband Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={!!warbandToDelete}
+        title="DISBAND WARBAND"
+        message={`Are you sure you want to permanently disband "${warbandToDelete?.name}"? All rostered warriors, wargear, chronicle milestones, and growth records will be permanently erased.`}
+        confirmLabel="Disband Warband"
+        onConfirm={() => {
+          if (warbandToDelete) {
+            deleteWarband(warbandToDelete.id);
+            setWarbandToDelete(null);
+          }
+        }}
+        onCancel={() => setWarbandToDelete(null)}
+      />
 
     </div>
   );

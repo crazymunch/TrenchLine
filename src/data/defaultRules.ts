@@ -1,4 +1,17 @@
 import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, RuleKeyword, Scenario } from '../types/rules';
+import { 
+  OFFICIAL_SCENARIOS, 
+  OFFICIAL_KEYWORDS, 
+  OFFICIAL_TRAUMA_TABLE, 
+  OFFICIAL_COMMON_EXPLORATION, 
+  OFFICIAL_RARE_EXPLORATION, 
+  OFFICIAL_LEGENDARY_EXPLORATION,
+  OFFICIAL_MELEE_SKILLS,
+  OFFICIAL_RANGED_SKILLS,
+  OFFICIAL_STEALTH_SKILLS,
+  OFFICIAL_WILDCARD_SKILLS
+} from './officialRulesData';
+import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 
 export const FACTIONS: Faction[] = [
   {
@@ -613,7 +626,7 @@ export const BASE_EQUIPMENT: EquipmentItem[] = [
 ];
 
 export const BASE_UNITS: UnitProfile[] = [
-  // 1. PRINCIPALITY OF NEW ANTIOCH
+  // 1. THE PRINCIPALITY OF NEW ANTIOCH
   {
     id: 'na-lieutenant',
     name: 'Lieutenant',
@@ -625,18 +638,18 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+1 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Leader', 'Infantry', 'Hold Your Fire!']
+      keywords: ['LEADER', 'INFANTRY']
     },
     innateAbilities: [
       {
         id: 'voice-of-command',
         name: 'Voice of Command',
-        description: 'Once per turn, issue an order to a friendly model within 6", giving +1 DICE to its next Action roll.'
+        description: 'Once per turn, issue an order to a friendly model within 6", granting +1 DICE on its next Action roll.'
       },
       {
         id: 'hold-your-fire',
         name: 'Hold Your Fire!',
-        description: 'ACTION: All friendly models in 6" gain +1 DICE on ranged attacks if they hold fire until enemy charges or moves.'
+        description: 'ACTION: Order friendly models in 6" to hold fire for concentrated volleys.'
       }
     ]
   },
@@ -651,7 +664,7 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+2 DICE',
       melee: '+0 DICE',
       armour: '-1',
-      keywords: ['Elite', 'Infantry', 'Blessed Sight']
+      keywords: ['ELITE', 'INFANTRY']
     },
     innateAbilities: [
       {
@@ -672,7 +685,7 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+0 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Elite', 'Infantry', 'Negate Fear']
+      keywords: ['ELITE', 'INFANTRY', 'NEGATE FEAR']
     },
     innateAbilities: [
       {
@@ -693,13 +706,13 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+0 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Elite', 'Infantry', 'Medic']
+      keywords: ['ELITE', 'INFANTRY']
     },
     innateAbilities: [
       {
         id: 'expert-medic',
         name: 'Expert Medic',
-        description: 'Add +2 DICE to Treat actions with a Medikit. Can carry the Misericordia.'
+        description: 'Add +2 DICE to Treat actions with a Medikit.'
       }
     ]
   },
@@ -714,7 +727,7 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+1 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Elite', 'Infantry', 'Fortify']
+      keywords: ['ELITE', 'INFANTRY']
     },
     innateAbilities: [
       {
@@ -735,51 +748,64 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+1 DICE',
       melee: '+2 DICE',
       armour: '-3',
-      keywords: ['Elite', 'Infantry', 'Machine Armour', 'Standfast']
+      keywords: ['ELITE', 'INFANTRY', 'CUMBERSOME']
     },
     innateAbilities: [
       {
         id: 'pneumatic-reinforcement',
         name: 'Pneumatic Reinforcement',
-        description: 'Treats Down results as Minor Wounds. Base size is 40mm.'
+        description: 'Heavy armor harness absorbs concussive kinetic force. 40mm base.'
       }
     ]
   },
   {
     id: 'na-shocktrooper',
-    name: 'Shocktroopers',
+    name: 'Shocktrooper',
     factionId: 'new-antioch',
     category: 'Trooper',
-    baseCost: 45,
+    baseCost: 40,
     stats: {
       movement: '6"',
       ranged: '+1 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Trooper', 'Infantry', 'Shock Charge']
-    },
-    innateAbilities: [
-      {
-        id: 'shock-charge',
-        name: 'Shock Charge',
-        description: 'Add +1 DICE to hit on any turn in which the model successfully charges.'
-      }
-    ]
+      keywords: ['INFANTRY']
+    }
   },
   {
     id: 'na-yeoman',
-    name: 'Yeomen',
+    name: 'Yeoman',
     factionId: 'new-antioch',
     category: 'Trooper',
-    baseCost: 30,
+    baseCost: 25,
     stats: {
       movement: '6"',
       ranged: '+0 DICE',
       melee: '+0 DICE',
-      armour: '-1',
-      keywords: ['Trooper', 'Infantry']
+      armour: '0',
+      keywords: ['INFANTRY']
+    }
+  },
+  {
+    id: 'na-trench-dog',
+    name: 'Trench Dog / War Hound',
+    factionId: 'new-antioch',
+    category: 'Trooper',
+    baseCost: 20,
+    stats: {
+      movement: '8"',
+      ranged: '-',
+      melee: '+1 DICE',
+      armour: '0',
+      keywords: ['BEAST']
     },
-    innateAbilities: []
+    innateAbilities: [
+      {
+        id: 'bloodhound',
+        name: 'Bloodhound Senses',
+        description: 'Add +2 DICE to locate hidden infiltrators within 12".'
+      }
+    ]
   },
 
   // 2. TRENCH PILGRIMS
@@ -791,16 +817,16 @@ export const BASE_UNITS: UnitProfile[] = [
     baseCost: 80,
     stats: {
       movement: '6"',
-      ranged: '+0 DICE',
-      melee: '+2 DICE',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Leader', 'Infantry', 'Prophetic Vision']
+      keywords: ['LEADER', 'INFANTRY', 'NEGATE FEAR']
     },
     innateAbilities: [
       {
         id: 'prophetic-vision',
         name: 'Prophetic Vision',
-        description: 'Grants 1 free reroll per turn to any friendly unit within 8".'
+        description: 'Allows rerolls of one failed Action or Morale roll per game round.'
       }
     ]
   },
@@ -809,19 +835,19 @@ export const BASE_UNITS: UnitProfile[] = [
     name: 'Castigator',
     factionId: 'trench-pilgrims',
     category: 'Elite',
-    baseCost: 75,
+    baseCost: 65,
     stats: {
       movement: '6"',
       ranged: '+0 DICE',
       melee: '+2 DICE',
       armour: '-1',
-      keywords: ['Elite', 'Infantry', 'Fury of Penance']
+      keywords: ['ELITE', 'INFANTRY', 'NEGATE FEAR']
     },
     innateAbilities: [
       {
-        id: 'fury-of-penance',
-        name: 'Fury of Penance',
-        description: 'Gains +1 Melee DICE for each Blood Marker on this model.'
+        id: 'holy-wrath',
+        name: 'Righteous Castigation',
+        description: 'Melee attacks inflict +1 INJURY DICE against Demonic models.'
       }
     ]
   },
@@ -833,16 +859,16 @@ export const BASE_UNITS: UnitProfile[] = [
     baseCost: 90,
     stats: {
       movement: '6"',
-      ranged: '+0 DICE',
+      ranged: '+1 DICE',
       melee: '+2 DICE',
       armour: '-2',
-      keywords: ['Elite', 'Infantry', 'Strong', 'Tough']
+      keywords: ['ELITE', 'INFANTRY', 'REGENERATE 1', 'TOUGH']
     },
     innateAbilities: [
       {
-        id: 'holy-monstrosity',
-        name: 'Holy Monstrosity',
-        description: 'Tough (2 Wounds). Can wield 2-handed weapons in one hand.'
+        id: 'holy-flesh',
+        name: 'Communion of Flesh',
+        description: 'Bears blood harvested from Meta-Christ. Cannot carry light weapons.'
       }
     ]
   },
@@ -857,13 +883,34 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+1 DICE',
       melee: '+2 DICE',
       armour: '-3',
-      keywords: ['Elite', 'Vehicle', 'Heavy Armour', 'Walking Shrine']
+      keywords: ['ELITE', 'FEAR', 'ARTIFICIAL', 'TOUGH']
     },
     innateAbilities: [
       {
-        id: 'walking-shrine',
-        name: 'Walking Shrine',
-        description: 'Provides mobile hard cover to adjacent friendly infantry. Mounts heavy weapon platforms.'
+        id: 'iron-maiden',
+        name: 'Iron Reliquary',
+        description: 'Walking armored reliquary housing a penitent saint.'
+      }
+    ]
+  },
+  {
+    id: 'tp-stigmatic-nun',
+    name: 'Stigmatic Nun',
+    factionId: 'trench-pilgrims',
+    category: 'Elite',
+    baseCost: 45,
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
+      armour: '0',
+      keywords: ['ELITE', 'INFANTRY']
+    },
+    innateAbilities: [
+      {
+        id: 'holy-stigmata',
+        name: 'Miraculous Bleeding',
+        description: 'May suffer 1 Blood Marker to grant +1 DICE to all friendly models within 6".'
       }
     ]
   },
@@ -877,13 +924,47 @@ export const BASE_UNITS: UnitProfile[] = [
       movement: '6"',
       ranged: '+0 DICE',
       melee: '+0 DICE',
-      armour: '-1',
-      keywords: ['Trooper', 'Infantry', 'Zealot']
-    },
-    innateAbilities: []
+      armour: '0',
+      keywords: ['INFANTRY']
+    }
+  },
+  {
+    id: 'tp-martyr',
+    name: 'Martyr / Flagellant',
+    factionId: 'trench-pilgrims',
+    category: 'Trooper',
+    baseCost: 15,
+    stats: {
+      movement: '6"',
+      ranged: '-',
+      melee: '+1 DICE',
+      armour: '0',
+      keywords: ['INFANTRY', 'NEGATE FEAR']
+    }
   },
 
-  // 3. IRON SULTANATE
+  // 3. THE SULTANATE OF THE IRON WALL
+  {
+    id: 'is-yuzbasi',
+    name: 'Yüzbaşı',
+    factionId: 'iron-sultanate',
+    category: 'Leader',
+    baseCost: 70,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['LEADER', 'INFANTRY']
+    },
+    innateAbilities: [
+      {
+        id: 'sultanate-command',
+        name: 'Command of the Sublime Porte',
+        description: 'Allows one friendly Sultanate model within 8" to activate immediately following the Yüzbaşı.'
+      }
+    ]
+  },
   {
     id: 'is-alchemist',
     name: 'Jabirean Alchemist',
@@ -892,16 +973,37 @@ export const BASE_UNITS: UnitProfile[] = [
     baseCost: 55,
     stats: {
       movement: '6"',
-      ranged: '+2 DICE',
-      melee: '+1 DICE',
-      armour: '-2',
-      keywords: ['Elite', 'Infantry', 'Mastery of the Elements']
+      ranged: '+1 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['ELITE', 'INFANTRY']
     },
     innateAbilities: [
       {
-        id: 'mastery-of-elements',
-        name: 'Mastery of the Elements',
-        description: 'Grant FIRE, GAS, or SHRAPNEL to all weapons at start of battle. Elemental Change Action allows switching elements.'
+        id: 'mastery-elements',
+        name: 'Mastery of Elements',
+        description: 'ACTION: Infuse friendly weapons in 6" with Fire, Gas, or Shrapnel keywords.'
+      }
+    ]
+  },
+  {
+    id: 'is-assassin',
+    name: 'Sultanate Assassin',
+    factionId: 'iron-sultanate',
+    category: 'Elite',
+    baseCost: 85,
+    stats: {
+      movement: '7"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-1',
+      keywords: ['ELITE', 'INFANTRY', 'INFILTRATOR']
+    },
+    innateAbilities: [
+      {
+        id: 'shadow-blade',
+        name: 'Cabal of Assassins',
+        description: 'Melee attacks made from behind ignore armor and inflict Criticals on 5+.'
       }
     ]
   },
@@ -914,15 +1016,15 @@ export const BASE_UNITS: UnitProfile[] = [
     stats: {
       movement: '5"',
       ranged: '+0 DICE',
-      melee: '+3 DICE',
+      melee: '+2 DICE',
       armour: '-3',
-      keywords: ['Elite', 'Beast', 'Strong', 'Tough', 'Machine Armour']
+      keywords: ['ELITE', 'ARTIFICIAL', 'TOUGH', 'FEAR']
     },
     innateAbilities: [
       {
-        id: 'furnace-trample',
-        name: 'Trample',
-        description: 'Make a Melee Attack against a Down model with IGNORE ARMOUR. Causes Fear.'
+        id: 'alchemical-furnace',
+        name: 'Alchemical Furnace Core',
+        description: 'Mounts heavy flame cannons or siege rams. Completely immune to Fire.'
       }
     ]
   },
@@ -936,16 +1038,9 @@ export const BASE_UNITS: UnitProfile[] = [
       movement: '6"',
       ranged: '+1 DICE',
       melee: '+1 DICE',
-      armour: '-2',
-      keywords: ['Trooper', 'Infantry', 'Disciplined']
-    },
-    innateAbilities: [
-      {
-        id: 'disciplined-volley',
-        name: 'Disciplined Volley',
-        description: 'Rerolls 1s on Ranged Attack rolls with rifles and jezzails.'
-      }
-    ]
+      armour: '-1',
+      keywords: ['INFANTRY']
+    }
   },
   {
     id: 'is-sapper',
@@ -955,18 +1050,11 @@ export const BASE_UNITS: UnitProfile[] = [
     baseCost: 50,
     stats: {
       movement: '6"',
-      ranged: '+1 DICE',
-      melee: '+0 DICE',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Trooper', 'Infantry', 'Set Mine', 'Defuse Mine']
-    },
-    innateAbilities: [
-      {
-        id: 'mine-warfare',
-        name: 'Mine Warfare',
-        description: 'Can set and defuse explosive mines on terrain features.'
-      }
-    ]
+      keywords: ['INFANTRY']
+    }
   },
   {
     id: 'is-lion-of-jabir',
@@ -976,57 +1064,42 @@ export const BASE_UNITS: UnitProfile[] = [
     baseCost: 60,
     stats: {
       movement: '8"',
-      ranged: 'N/A',
-      melee: '+1 DICE',
+      ranged: '-',
+      melee: '+2 DICE',
       armour: '-1',
-      keywords: ['Trooper', 'Beast', 'Agile', 'Pin']
-    },
-    innateAbilities: [
-      {
-        id: 'pin',
-        name: 'Pin Down',
-        description: 'Downed enemy models cannot stand up while within 1" of the Lion.'
-      }
-    ]
+      keywords: ['BEAST', 'FEAR']
+    }
   },
   {
     id: 'is-homunculus',
     name: 'Takwin Homunculus',
     factionId: 'iron-sultanate',
     category: 'Trooper',
-    baseCost: 40,
+    baseCost: 35,
     stats: {
-      movement: '6"',
-      ranged: '+1 DICE',
+      movement: '5"',
+      ranged: '+0 DICE',
       melee: '+1 DICE',
-      armour: '-1',
-      keywords: ['Trooper', 'Artificial Life']
-    },
-    innateAbilities: [
-      {
-        id: 'pummeling-blows',
-        name: 'Pummeling Blows',
-        description: 'Can make melee attacks without equipped weapons. Can be customized with Alchemical Formulae.'
-      }
-    ]
+      armour: '0',
+      keywords: ['ARTIFICIAL']
+    }
   },
   {
     id: 'is-azab',
-    name: 'Azab',
+    name: 'Azeb',
     factionId: 'iron-sultanate',
     category: 'Trooper',
     baseCost: 25,
     stats: {
       movement: '6"',
       ranged: '+0 DICE',
-      melee: '-1 DICE',
-      armour: '-1',
-      keywords: ['Trooper', 'Infantry']
-    },
-    innateAbilities: []
+      melee: '+0 DICE',
+      armour: '0',
+      keywords: ['INFANTRY']
+    }
   },
 
-  // 4. HERETIC LEGIONS
+  // 4. THE HERETIC LEGIONS
   {
     id: 'hl-priest',
     name: 'Heretic Priest',
@@ -1038,36 +1111,71 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+1 DICE',
       melee: '+1 DICE',
       armour: '-1',
-      keywords: ['Leader', 'Infantry', 'Blasphemous Litany']
+      keywords: ['LEADER', 'INFANTRY', 'FEAR']
     },
     innateAbilities: [
       {
-        id: 'unholy-litany',
+        id: 'blasphemous-litany',
         name: 'Blasphemous Litany',
-        description: 'Chants infernal rites that sap enemy resolve and grant +1 DICE on unholy attack rolls.'
+        description: 'Chants unholy verses forcing enemies within 8" to make Risky tests for every action.'
       }
     ]
+  },
+  {
+    id: 'hl-death-commando',
+    name: 'Death Commando',
+    factionId: 'heretic-legions',
+    category: 'Elite',
+    baseCost: 90,
+    stats: {
+      movement: '7"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-1',
+      keywords: ['ELITE', 'INFANTRY', 'INFILTRATOR', 'FEAR']
+    }
+  },
+  {
+    id: 'hl-chorister',
+    name: 'Chorister',
+    factionId: 'heretic-legions',
+    category: 'Elite',
+    baseCost: 65,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['ELITE', 'INFANTRY', 'FEAR']
+    }
   },
   {
     id: 'hl-anointed',
     name: 'Anointed Heavy Infantry',
     factionId: 'heretic-legions',
-    category: 'Elite',
+    category: 'Trooper',
     baseCost: 95,
     stats: {
       movement: '5"',
       ranged: '+1 DICE',
       melee: '+2 DICE',
       armour: '-3',
-      keywords: ['Elite', 'Infantry', 'Machine Armour', 'Tough']
-    },
-    innateAbilities: [
-      {
-        id: 'infernal-plate',
-        name: 'Infernal Exoskeleton',
-        description: 'Machine Armour (-3). Standfast: treats Down as Minor Wound.'
-      }
-    ]
+      keywords: ['INFANTRY', 'TOUGH', 'FEAR']
+    }
+  },
+  {
+    id: 'hl-war-wolf',
+    name: 'War Wolf Assault Beast',
+    factionId: 'heretic-legions',
+    category: 'Trooper',
+    baseCost: 145,
+    stats: {
+      movement: '8"',
+      ranged: '-',
+      melee: '+3 DICE',
+      armour: '-2',
+      keywords: ['BEAST', 'TOUGH', 'FEAR']
+    }
   },
   {
     id: 'hl-trooper',
@@ -1080,71 +1188,198 @@ export const BASE_UNITS: UnitProfile[] = [
       ranged: '+0 DICE',
       melee: '+0 DICE',
       armour: '-1',
-      keywords: ['Trooper', 'Infantry']
-    },
-    innateAbilities: []
+      keywords: ['INFANTRY']
+    }
   },
   {
     id: 'hl-wretched',
     name: 'Wretched',
     factionId: 'heretic-legions',
     category: 'Trooper',
-    baseCost: 20,
+    baseCost: 25,
     stats: {
-      movement: '6"',
-      ranged: '-1 DICE',
-      melee: '-1 DICE',
+      movement: '5"',
+      ranged: '-',
+      melee: '+0 DICE',
       armour: '0',
-      keywords: ['Trooper', 'Fodder']
-    },
-    innateAbilities: []
+      keywords: ['INFANTRY']
+    }
   },
 
-  // 5. MERCENARIES
+  // 5. CULT OF THE BLACK GRAIL
   {
-    id: 'merc-mamluk-faris',
-    name: 'Mamluk Faris',
+    id: 'bg-lord-of-tumours',
+    name: 'Lord of Tumours',
+    factionId: 'black-grail',
+    category: 'Leader',
+    baseCost: 130,
+    stats: {
+      movement: '5"',
+      ranged: '+0 DICE',
+      melee: '+2 DICE',
+      armour: '-2',
+      keywords: ['LEADER', 'FEAR', 'TOUGH', 'BLACK GRAIL']
+    }
+  },
+  {
+    id: 'bg-plague-knight',
+    name: 'Plague Knight',
+    factionId: 'black-grail',
+    category: 'Elite',
+    baseCost: 60,
+    stats: {
+      movement: '5"',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['ELITE', 'FEAR', 'BLACK GRAIL']
+    }
+  },
+  {
+    id: 'bg-grail-thrall',
+    name: 'Grail Thrall / Fly Thrall',
+    factionId: 'black-grail',
+    category: 'Trooper',
+    baseCost: 25,
+    stats: {
+      movement: '5"',
+      ranged: '-',
+      melee: '+0 DICE',
+      armour: '0',
+      keywords: ['INFANTRY', 'BLACK GRAIL']
+    }
+  },
+
+  // 6. COURT OF THE SEVEN-HEADED SERPENT
+  {
+    id: 'cs-praetor',
+    name: 'Praetor',
+    factionId: 'court-seven-serpents',
+    category: 'Leader',
+    baseCost: 115,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-2',
+      keywords: ['LEADER', 'DEMONIC', 'FEAR']
+    }
+  },
+  {
+    id: 'cs-sorcerer',
+    name: 'Sorcerer of the Pit',
+    factionId: 'court-seven-serpents',
+    category: 'Elite',
+    baseCost: 75,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+0 DICE',
+      armour: '-1',
+      keywords: ['ELITE', 'DEMONIC', 'FEAR']
+    }
+  },
+  {
+    id: 'cs-hell-knight',
+    name: 'Hell Knight',
+    factionId: 'court-seven-serpents',
+    category: 'Elite',
+    baseCost: 100,
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-2',
+      keywords: ['ELITE', 'DEMONIC', 'FEAR']
+    }
+  },
+
+  // 7. MERCENARIES (HIRED WITH GLORY POINTS ☼ / RESTRICTED BY FACTION)
+  {
+    id: 'merc-combat-biologist',
+    name: 'Combat Biologist',
     factionId: 'mercenaries',
+    allowedFactions: ['new-antioch', 'iron-sultanate'],
     category: 'Mercenary',
-    baseCost: 0,
+    baseCost: 3, // 3 Glory Points
+    stats: {
+      movement: '6"',
+      ranged: '+0 DICE',
+      melee: '+1 DICE',
+      armour: '-1',
+      keywords: ['MERCENARY', 'NEGATE FEAR']
+    },
+    innateAbilities: [
+      {
+        id: 'vivisection',
+        name: 'Battlefield Vivisection',
+        description: 'Unlocks Gather Knowledge deed. Grants Blessing Marker when slaying Demonic or Black Grail enemies.'
+      }
+    ]
+  },
+  {
+    id: 'merc-anti-tank-communicant',
+    name: 'Communicant Anti-Tank Hunter',
+    factionId: 'mercenaries',
+    allowedFactions: ['new-antioch', 'trench-pilgrims'],
+    category: 'Mercenary',
+    baseCost: 5, // 5 Glory Points
     stats: {
       movement: '6"',
       ranged: '+1 DICE',
       melee: '+1 DICE',
-      armour: '-3',
-      keywords: ['Mercenary', 'Elite', 'Martial Prowess', 'Sworn Brethren']
+      armour: '-1',
+      keywords: ['MERCENARY', 'REGENERATE 1', 'STRONG', 'TOUGH']
+    },
+    innateAbilities: [
+      {
+        id: 'iron-fists',
+        name: 'Iron Fists',
+        description: 'Unarmed melee attacks have CLEAVE 2 keyword.'
+      }
+    ]
+  },
+  {
+    id: 'merc-goetic-warlock',
+    name: 'Goetic Warlock',
+    factionId: 'mercenaries',
+    allowedFactions: ['heretic-legions', 'court-seven-serpents', 'black-grail'],
+    category: 'Mercenary',
+    baseCost: 4, // 4 Glory Points
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['MERCENARY', 'ARTIFICIAL', 'DEMONIC', 'FEAR']
+    },
+    innateAbilities: [
+      {
+        id: 'goetic-portal',
+        name: 'Goetic Portal ACTION',
+        description: 'ACTION: Redeploy anywhere within 6", dragging an adjacent enemy with them.'
+      }
+    ]
+  },
+  {
+    id: 'merc-mamluk-faris',
+    name: 'Mamluk Faris',
+    factionId: 'mercenaries',
+    allowedFactions: ['new-antioch', 'iron-sultanate'],
+    category: 'Mercenary',
+    baseCost: 4, // 4 Glory Points
+    stats: {
+      movement: '6"',
+      ranged: '+1 DICE',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['MERCENARY', 'FIRETEAM']
     },
     innateAbilities: [
       {
         id: 'sworn-brethren',
         name: 'Sworn Brethren',
-        description: 'Forms a Fireteam with any Elite model in the warband.'
-      },
-      {
-        id: 'martial-prowess',
-        name: 'Martial Prowess',
-        description: 'Greatsword loses Heavy keyword; Jezzail gains Assault and Shield Combo.'
-      }
-    ]
-  },
-  {
-    id: 'merc-trench-dog',
-    name: 'Trench Dog',
-    factionId: 'mercenaries',
-    category: 'Mercenary',
-    baseCost: 20,
-    stats: {
-      movement: '8"',
-      ranged: 'N/A',
-      melee: '+1 DICE',
-      armour: '0',
-      keywords: ['Mercenary', 'Beast', 'Barbed Wire Runner']
-    },
-    innateAbilities: [
-      {
-        id: 'wire-runner',
-        name: 'Barbed Wire Runner',
-        description: 'Ignores movement penalties from Difficult Terrain and Barbed Wire.'
+        description: 'Can form a Fireteam with 1 Elite warrior in the warband.'
       }
     ]
   },
@@ -1152,38 +1387,55 @@ export const BASE_UNITS: UnitProfile[] = [
     id: 'merc-sin-eater',
     name: 'Sin Eater',
     factionId: 'mercenaries',
+    allowedFactions: ['heretic-legions', 'court-seven-serpents', 'black-grail'],
     category: 'Mercenary',
-    baseCost: 75,
+    baseCost: 6, // 6 Glory Points
     stats: {
       movement: '6"',
-      ranged: '+0 DICE',
+      ranged: '-',
       melee: '+2 DICE',
       armour: '-2',
-      keywords: ['Mercenary', 'Elite', 'Absorb Suffering']
+      keywords: ['MERCENARY', 'DEMONIC', 'FEAR', 'STRONG', 'TOUGH']
     },
     innateAbilities: [
       {
-        id: 'absorb-suffering',
-        name: 'Absorb Suffering',
-        description: 'Can take wounds inflicted on friendly models within 3" onto itself.'
+        id: 'devour-guilty',
+        name: 'Devour the Guilty ACTION',
+        description: 'ACTION: Devour an adjacent model into its bloated belly, digesting them until purged or killed.'
       }
     ]
+  },
+  {
+    id: 'merc-observer',
+    name: 'Observer',
+    factionId: 'mercenaries',
+    allowedFactions: ['new-antioch', 'trench-pilgrims'],
+    category: 'Mercenary',
+    baseCost: 3, // 3 Glory Points
+    stats: {
+      movement: '8"',
+      ranged: '+1 DICE',
+      melee: '+2 DICE',
+      armour: '-1',
+      keywords: ['MERCENARY']
+    }
+  },
+  {
+    id: 'merc-scripture-guardian',
+    name: 'Scripture Guardian',
+    factionId: 'mercenaries',
+    allowedFactions: ['new-antioch', 'trench-pilgrims', 'iron-sultanate', 'heretic-legions', 'black-grail', 'court-seven-serpents'],
+    category: 'Mercenary',
+    baseCost: 7, // 7 Glory Points
+    stats: {
+      movement: '6"',
+      ranged: '-',
+      melee: '+1 DICE',
+      armour: '-2',
+      keywords: ['MERCENARY', 'GOLEM']
+    }
   }
 ];
-
-import {
-  OFFICIAL_SCENARIOS,
-  OFFICIAL_KEYWORDS,
-  OFFICIAL_TRAUMA_TABLE,
-  OFFICIAL_COMMON_EXPLORATION,
-  OFFICIAL_RARE_EXPLORATION,
-  OFFICIAL_LEGENDARY_EXPLORATION,
-  OFFICIAL_MELEE_SKILLS,
-  OFFICIAL_RANGED_SKILLS,
-  OFFICIAL_STEALTH_SKILLS,
-  OFFICIAL_WILDCARD_SKILLS
-} from './officialRulesData';
-import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 
 export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
   id: `kw-${k.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,

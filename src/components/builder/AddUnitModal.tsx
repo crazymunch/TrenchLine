@@ -16,10 +16,14 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [customNameInput, setCustomNameInput] = useState<Record<string, string>>({});
 
-  // Filter units belonging to this faction or mercenaries
-  const availableUnits = units.filter(
-    (u) => u.factionId === factionId || u.factionId === 'mercenaries' || u.category === 'Mercenary'
-  );
+  // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
+  const availableUnits = units.filter((u) => {
+    if (u.factionId === factionId) return true;
+    if (u.category === 'Mercenary' || u.factionId === 'mercenaries') {
+      return Array.isArray(u.allowedFactions) && u.allowedFactions.includes(factionId);
+    }
+    return false;
+  });
 
   const categories = ['All', 'Leader', 'Elite', 'Trooper', 'Mercenary'];
 
@@ -128,7 +132,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                   </div>
 
                   {/* Abilities */}
-                  {unit.innateAbilities.length > 0 && (
+                  {unit.innateAbilities && unit.innateAbilities.length > 0 && (
                     <div className="space-y-1">
                       {unit.innateAbilities.map((ab) => (
                         <div key={ab.id} className="text-xs">
