@@ -44,6 +44,7 @@ export interface EquipmentItem {
   cost: number;
   effect: string;
   keywords: string[];
+  description?: string;
   isCustom?: boolean;
 }
 
@@ -58,11 +59,13 @@ export interface UnitProfile {
   innateAbilities: Ability[];
   defaultWeapons?: string[]; // weapon IDs
   defaultArmour?: string[]; // armour IDs
-  allowedWeaponIds?: string[];
-  allowedArmourIds?: string[];
-  allowedEquipmentIds?: string[];
   lore?: string;
   isCustom?: boolean;
+}
+
+export interface FactionSpecialRule {
+  name: string;
+  description: string;
 }
 
 export interface Faction {
@@ -72,18 +75,18 @@ export interface Faction {
   description: string;
   icon: string;
   color: string;
-  specialRules: { name: string; description: string }[];
+  specialRules: FactionSpecialRule[];
 }
 
 export interface RuleKeyword {
   name: string;
+  category: 'Weapon' | 'Condition' | 'General' | 'Faction';
   summary: string;
   fullText: string;
-  category: 'General' | 'Combat' | 'Weapon' | 'Condition';
 }
 
 export interface InjuryResult {
-  roll: string; // e.g. "11-16", "21-25", etc.
+  roll: string; // e.g. "11-16"
   title: string;
   effect: string;
   statModifier?: Partial<Statline>;
