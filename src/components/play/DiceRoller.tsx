@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Dices, Sparkles, Skull, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 

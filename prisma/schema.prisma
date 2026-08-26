@@ -1,0 +1,158 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// NextAuth Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id               String               @id @default(cuid())
+  name             String?
+  email            String?              @unique
+  emailVerified    DateTime?
+  password         String?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  warbands         Warband[]
+  campaignMembers  CampaignMember[]
+  createdCampaigns Campaign[]           @relation("CreatedCampaigns")
+  customRules      CustomRuleOverride[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Trench Crusade Application Models
+model Warband {
+  id              String           @id @default(cuid())
+  name            String
+  factionId       String
+  ducatLimit      Int              @default(700)
+  treasuryDucats  Int              @default(0)
+  gloryPoints     Int              @default(0)
+  units           Json             @default("[]")
+  armoryStash     Json             @default("[]")
+  notes           String?          @db.Text
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaignMembers CampaignMember[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Campaign {
+  id                    String           @id @default(cuid())
+  name                  String
+  inviteCode            String           @unique
+  adminId               String
+  admin                 User             @relation("CreatedCampaigns", fields: [adminId], references: [id], onDelete: Cascade)
+  status                String           @default("active")
+  currentTurn           Int              @default(1)
+  maxWarbandDucats      Int              @default(700)
+  gloryVictoryThreshold Int              @default(25)
+  chronicleLogs         Json             @default("[]")
+  members               CampaignMember[]
+  matches               MatchRecord[]
+  territories           TerritoryNode[]
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+}
+
+model CampaignMember {
+  id          String   @id @default(cuid())
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  warbandId   String
+  warband     Warband  @relation(fields: [warbandId], references: [id], onDelete: Cascade)
+  playerName  String
+  warbandName String
+  factionId   String
+  glory       Int      @default(0)
+  rating      Int      @default(0)
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  draws       Int      @default(0)
+  treasury    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([campaignId, warbandId])
+}
+
+model MatchRecord {
+  id           String   @id @default(cuid())
+  campaignId   String
+  campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  date         String
+  scenarioId   String
+  scenarioName String
+  narrativeLog String   @db.Text
+  participants Json     @default("[]")
+  createdAt    DateTime @default(now())
+}
+
+model TerritoryNode {
+  id                     String   @id @default(cuid())
+  campaignId             String
+  campaign               Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  name                   String
+  type                   String
+  controlledByWarbandId  String?
+  controlledByPlayerName String?
+  perk                   String
+  description            String   @db.Text
+}
+
+model CustomRuleOverride {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ruleType  String // 'unit' | 'weapon' | 'armour' | 'equipment'
+  ruleId    String
+  name      String
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, ruleType, ruleId])
+}

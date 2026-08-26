@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useStore } from '../../store/useStore';
 import { X, BookOpen, Tag } from 'lucide-react';

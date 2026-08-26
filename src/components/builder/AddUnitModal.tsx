@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { UnitProfile } from '../../types/rules';

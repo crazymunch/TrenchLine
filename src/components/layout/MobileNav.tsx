@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useStore, AppView } from '../../store/useStore';
 import { Shield, Swords, Flag, BookOpen, SlidersHorizontal } from 'lucide-react';

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { X, Shield, Swords, Package, Plus, Coins, Tag } from 'lucide-react';

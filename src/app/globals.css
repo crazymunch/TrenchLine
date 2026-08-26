@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-gothic: 'Cinzel', serif;
+    --font-heading: 'Oswald', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #0C0E12;
+    color: #ECEFF4;
+    overflow-x: hidden;
+  }
+}
+
+.font-gothic {
+  font-family: 'Cinzel', serif;
+}
+
+.font-heading {
+  font-family: 'Oswald', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-bricolage {
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-newsreader {
+  font-family: 'Newsreader', serif;
+}
+
+.font-garamond {
+  font-family: 'EB Garamond', serif;
+}
+
+/* Grimdark Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0C0E12;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3342;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #454D63;
+}
+
+/* Bevels & Industrial Rivets */
+.bevel-container {
+  border-top: 1px solid #4D4635;
+  border-left: 1px solid #4D4635;
+  border-bottom: 1px solid #1D2027;
+  border-right: 1px solid #1D2027;
+}
+
+.rivet {
+  width: 4px;
+  height: 4px;
+  background-color: #4D4635;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px #000, 0 0 1px #000;
+}
+
+/* Grimdark Surface Utilities */
+.bg-trench-surface {
+  background-color: #161920;
+}
+
+.bg-trench-elevated {
+  background-color: #20242E;
+}
+
+.bg-trench-dark {
+  background-color: #0C0E12;
+}
+
+/* Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
