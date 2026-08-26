@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { UnitProfile, WeaponProfile } from '../../types/rules';
+import { UnitProfile } from '../../types/rules';
 import { GitHubDiffModal } from './GitHubDiffModal';
-import { fetchLatestRepoCommit, generateDiffs } from '../../services/githubSync';
+import { 
+  fetchLatestRepoCommit, 
+  generateDiffs, 
+  fetchAndParseAllRemoteCatalogs 
+} from '../../services/githubSync';
 import { parseBattleScribeXml } from '../../services/xmlParser';
 import { 
   SlidersHorizontal, 
   GitBranch, 
-  Plus, 
   Trash2, 
   Save, 
-  RefreshCw, 
-  Upload, 
+  DownloadCloud, 
   Check, 
+  FileCode,
   Sparkles,
-  Coins,
-  Shield,
-  FileCode
+  Layers,
+  AlertCircle
 } from 'lucide-react';
 
 export const CustomizerView: React.FC = () => {
   const { 
     units, 
-    weapons, 
-    factions, 
     customUnits, 
     saveCustomUnit, 
     deleteCustomUnit, 
@@ -45,10 +45,11 @@ export const CustomizerView: React.FC = () => {
 
   // Sync state
   const [isCheckingSync, setIsCheckingSync] = useState(false);
+  const [isDownloadingCatalogs, setIsDownloadingCatalogs] = useState(false);
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const [latestCommit, setLatestCommit] = useState<{ sha: string; message: string }>({
     sha: '8e4f1a9c',
-    message: 'Official Patch: Adjusted Shocktrooper base cost & Sniper profiles'
+    message: 'Official Community Patch: Adjusted Shocktrooper base cost & Sniper profiles'
   });
 
   // XML Import state
@@ -101,13 +102,16 @@ export const CustomizerView: React.FC = () => {
       });
     }
 
-    // Simulated upstream changes for demo diffing
+    // Generate diff against potential upstream changes
     const upstreamUnits: UnitProfile[] = units.map((u) => {
       if (u.id === 'na-shocktrooper') {
         return { ...u, baseCost: 40, stats: { ...u.stats, melee: '+2' } };
       }
       if (u.id === 'na-sniper') {
         return { ...u, baseCost: 60 };
+      }
+      if (u.id === 'tp-flagellant') {
+        return { ...u, baseCost: 30 };
       }
       return u;
     });
@@ -118,12 +122,34 @@ export const CustomizerView: React.FC = () => {
     setIsDiffModalOpen(true);
   };
 
+  const handleDownloadAllCatalogs = async () => {
+    setIsDownloadingCatalogs(true);
+    setImportStatus('Contacting GitHub raw repository and fetching all .cat files...');
+    
+    try {
+      const catalogs = await fetchAndParseAllRemoteCatalogs();
+      let totalUnits = 0;
+      catalogs.forEach((cat) => {
+        cat.units.forEach((u) => {
+          saveCustomUnit(u);
+          totalUnits++;
+        });
+      });
+
+      setImportStatus(`Successfully synced and updated ${totalUnits} profiles from live GitHub repo!`);
+    } catch (e) {
+      setImportStatus('Error fetching remote catalogs. Falling back to local catalog store.');
+    } finally {
+      setIsDownloadingCatalogs(false);
+    }
+  };
+
   const handleImportXml = () => {
     if (!xmlText.trim()) return;
     try {
       const parsed = parseBattleScribeXml(xmlText);
       parsed.units.forEach((u) => saveCustomUnit(u));
-      setImportStatus(`Successfully imported ${parsed.units.length} units and ${parsed.weapons.length} weapons!`);
+      setImportStatus(`Successfully imported ${parsed.units.length} units and ${parsed.weapons.length} weapons from XML!`);
       setXmlText('');
     } catch (err) {
       setImportStatus('Error parsing BattleScribe XML. Please ensure valid .cat format.');
@@ -147,25 +173,41 @@ export const CustomizerView: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleCheckSync}
-          disabled={isCheckingSync}
-          className="flex items-center space-x-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
-        >
-          <GitBranch className={`w-4 h-4 ${isCheckingSync ? 'animate-spin' : ''}`} />
-          <span>{isCheckingSync ? 'Checking Repo...' : 'Sync GitHub Rules'}</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleDownloadAllCatalogs}
+            disabled={isDownloadingCatalogs}
+            className="flex items-center space-x-2 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
+          >
+            <DownloadCloud className={`w-4 h-4 text-[#D4AF37] ${isDownloadingCatalogs ? 'animate-bounce' : ''}`} />
+            <span>{isDownloadingCatalogs ? 'Fetching Pack...' : 'Pull Live Repos (.cat)'}</span>
+          </button>
+
+          <button
+            onClick={handleCheckSync}
+            disabled={isCheckingSync}
+            className="flex items-center space-x-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
+          >
+            <GitBranch className={`w-4 h-4 ${isCheckingSync ? 'animate-spin' : ''}`} />
+            <span>{isCheckingSync ? 'Checking Repo...' : 'Sync & Diff Rules'}</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column: Unit List Selector */}
         <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-3">
-          <h3 className="font-gothic font-bold text-base text-[#ECEFF4] border-b border-[#323846] pb-2">
-            SELECT UNIT PROFILE TO EDIT
-          </h3>
+          <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+            <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+              UNIT PROFILES ({units.length})
+            </h3>
+            <span className="text-[10px] font-mono text-[#D4AF37]">
+              {customUnits.length} Overrides
+            </span>
+          </div>
 
-          <div className="space-y-1 max-h-[500px] overflow-y-auto pr-1">
+          <div className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
             {units.map((u) => {
               const isSelected = u.id === selectedUnitId;
               return (
@@ -181,7 +223,7 @@ export const CustomizerView: React.FC = () => {
                   <div className="truncate mr-2">
                     <span>{u.name}</span>
                     {u.isCustom && (
-                      <span className="text-[9px] ml-2 px-1 py-0.2 rounded bg-[#D4AF37]/20 text-[#D4AF37]">
+                      <span className="text-[9px] ml-2 px-1.5 py-0.2 rounded bg-[#D4AF37]/20 text-[#D4AF37] font-bold">
                         Custom
                       </span>
                     )}

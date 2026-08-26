@@ -4,10 +4,10 @@ export const FACTIONS: Faction[] = [
   {
     id: 'new-antioch',
     name: 'Principality of New Antioch',
-    tagline: 'Disciplined Christian crusaders, shock troops, and motorized mechanized knights.',
-    description: 'The premier human bastion standing against the demonic breach, deploying disciplined fireteams, mechanized exoskeletons, and combat chaplains.',
+    tagline: 'Disciplined Christian crusaders, shock troops, and mechanized iron knights.',
+    description: 'The premier human bastion standing against the demonic breach, deploying disciplined fireteams, mechanized armor, and combat chaplains.',
     icon: 'Cross',
-    color: '#D4AF37',
+    color: '#D4AF37', // Sacred Gold
     specialRules: [
       {
         name: 'Strict Discipline',
@@ -25,7 +25,7 @@ export const FACTIONS: Faction[] = [
     tagline: 'Zealots, martyrs, flagellants, and the holy Ecclesiarchy.',
     description: 'Religious fanatics who throw themselves into the barbed wire singing hymns, led by Castigators and accompanied by Anchorites sealed in walking iron shrines.',
     icon: 'Flame',
-    color: '#E65100',
+    color: '#F5F5DC', // Parchment Bone
     specialRules: [
       {
         name: 'Martyr\'s Ecstasy',
@@ -39,11 +39,11 @@ export const FACTIONS: Faction[] = [
   },
   {
     id: 'iron-sultanate',
-    name: 'Iron Sultanate',
+    name: 'Sultanate of the Iron Wall',
     tagline: 'Alchemical marksmen, Brazen Bulls, and Janissaries defending the Great Wall.',
     description: 'Defenders of the Levant utilizing advanced alchemy, Greek fire, and bio-alchemical constructs to defend the Dar al-Islam against hellish hordes.',
     icon: 'Shield',
-    color: '#00897B',
+    color: '#008080', // Lapis Teal
     specialRules: [
       {
         name: 'Alchemical Munitions',
@@ -61,7 +61,7 @@ export const FACTIONS: Faction[] = [
     tagline: 'Damned renegades, Hell-knights, and blood sacrifices.',
     description: 'Traitorous soldiers who have embraced the powers of Hell, wielding demonic weaponry, corrupted icons, and dark sorceries.',
     icon: 'Skull',
-    color: '#B71C1C',
+    color: '#FF4500', // Ember Orange
     specialRules: [
       {
         name: 'Blood for the Pit',
@@ -79,7 +79,7 @@ export const FACTIONS: Faction[] = [
     tagline: 'Plague heralds, rotting abominations, and filth chanters.',
     description: 'Vessels of the Lord of Pestilence, covered in weeping sores and carrying the diseased ichor of the Black Grail.',
     icon: 'Biohazard',
-    color: '#33691E',
+    color: '#33691E', // Putrid Green
     specialRules: [
       {
         name: 'Foul Contagion',
@@ -89,11 +89,11 @@ export const FACTIONS: Faction[] = [
   },
   {
     id: 'court-seven-serpents',
-    name: 'Court of the Seven-Headed Serpent',
+    name: 'Principality of Hell (Court of the Seven-Headed Serpent)',
     tagline: 'Aristocratic infernal diplomats, sorcerers, and flesh-sculptors.',
     description: 'Decadent diabolists bargaining with serpentine arch-devils for psychic potency and immortal splendor.',
     icon: 'Crown',
-    color: '#4A148C',
+    color: '#FF0000', // Soul Red
     specialRules: [
       {
         name: 'Mesmerizing Glamour',
@@ -104,10 +104,10 @@ export const FACTIONS: Faction[] = [
   {
     id: 'mercenaries',
     name: 'Mercenaries & Freeblades',
-    tagline: 'Hired guns, assassins, witch hunters, and outlaws.',
+    tagline: 'Hired guns, witch hunters, trench ogres, and outlaws.',
     description: 'Independent guns-for-hire who will fight for whichever faction can pay their steep Ducat fees.',
     icon: 'Coins',
-    color: '#78909C',
+    color: '#78909C', // Lead Grey
     specialRules: [
       {
         name: 'Unsavory Loyalty',
@@ -133,14 +133,14 @@ export const BASE_WEAPONS: WeaponProfile[] = [
   },
   {
     id: 'trench-club',
-    name: 'Trench Mace / Club',
+    name: 'Trench Mace / Spiked Club',
     type: 'Melee',
     range: 'Melee',
     modifiers: '+1 Melee vs Armoured',
     damage: 'Standard (1 Wound)',
     keywords: ['Concussive', 'Blunt'],
     cost: 8,
-    description: 'Spiked lead-weighted club designed to crack open iron helmets.',
+    description: 'Lead-weighted club designed to crack open iron helmets and stun targets.',
     hands: 1
   },
   {
@@ -164,8 +164,32 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     damage: 'Standard (1 Wound)',
     keywords: ['Shield Bypass', 'Vicious'],
     cost: 15,
-    description: 'A barbed flail that hooks around trench shields and tearing flesh.',
+    description: 'A barbed flail that hooks around trench shields to tear flesh.',
     hands: 1
+  },
+  {
+    id: 'alchemical-scimitar',
+    name: 'Alchemical Scimitar of Damascus',
+    type: 'Melee',
+    range: 'Melee',
+    modifiers: '+2 Melee',
+    damage: 'Standard (1 Wound)',
+    keywords: ['Razor Sharp', 'Poison'],
+    cost: 20,
+    description: 'Forged with fold-hardened crucible steel and quenched in venomous alchemical acids.',
+    hands: 1
+  },
+  {
+    id: 'poleaxe-crusader',
+    name: 'Heavy Trench Poleaxe',
+    type: 'Melee',
+    range: 'Melee (Reach 2")',
+    modifiers: '+2 Melee',
+    damage: 'Heavy (D3 Wounds)',
+    keywords: ['Two-Handed', 'Reach', 'Armour Piercing -2'],
+    cost: 30,
+    description: 'Long-hafted poleaxe used by shock troops to cleave demonic exoskeletons.',
+    hands: 2
   },
 
   // Ranged Weapons
@@ -221,7 +245,7 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     id: 'holy-flamethrower',
     name: 'Holy Alchemical Flamethrower',
     type: 'Ranged',
-    range: '8" Cone / Template',
+    range: '8" Cone',
     modifiers: 'Auto-hit',
     damage: 'Fire (D3 + Continuous)',
     keywords: ['Fire', 'Template', 'Ignores Cover', 'Volatile'],
@@ -238,7 +262,19 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     damage: 'Fatal / Critical D3+1',
     keywords: ['Precision', 'Armour Piercing -2', 'Heavy'],
     cost: 40,
-    description: 'High-caliber rifle equipped with a telescopic optical sight for decapitating officers.',
+    description: 'High-caliber rifle equipped with an optical sight for decapitating officers.',
+    hands: 2
+  },
+  {
+    id: 'greek-fire-projector',
+    name: 'Naffatun Greek Fire Projector',
+    type: 'Ranged',
+    range: '18"',
+    modifiers: '+1 Ranged',
+    damage: 'Alchemical Blaze',
+    keywords: ['Fire', 'Blast (2")', 'Sticky Flames'],
+    cost: 40,
+    description: 'Launches earthen pots filled with unquenchable petroleum mixtures.',
     hands: 2
   }
 ];
@@ -267,6 +303,14 @@ export const BASE_ARMOUR: ArmourProfile[] = [
     cost: 15,
     keywords: ['Shield', 'Cover Provider'],
     description: 'A heavy metal tower shield with a viewing slit, deflects rifle rounds.'
+  },
+  {
+    id: 'brazen-carapace',
+    name: 'Brazen Carapace of the Sultanate',
+    armourModifier: '+2 Armour',
+    cost: 30,
+    keywords: ['Alchemical Ward', 'Heat Resistant'],
+    description: 'Gold-leafed brass armor treated with cooling salts to shrug off dragonfire.'
   }
 ];
 
@@ -298,6 +342,13 @@ export const BASE_EQUIPMENT: EquipmentItem[] = [
     cost: 20,
     effect: 'Action: Heal 1 Wound on an adjacent Downed or wounded friendly unit.',
     keywords: ['Medical']
+  },
+  {
+    id: 'exorcism-seal',
+    name: 'Wax Exorcism Seal of Antioch',
+    cost: 12,
+    effect: 'Bearer causes +1 damage in melee against Demons and Undead.',
+    keywords: ['Sacred']
   }
 ];
 
@@ -396,6 +447,31 @@ export const BASE_UNITS: UnitProfile[] = [
     defaultArmour: ['standard-trench-armour'],
     lore: 'Patient sharpshooters perched atop shattered church spires and fortified bunkers.'
   },
+  {
+    id: 'na-heavy-mechanized',
+    name: 'Heavy Mechanized Knight',
+    factionId: 'new-antioch',
+    category: 'Elite',
+    baseCost: 110,
+    stats: {
+      movement: '5"',
+      ranged: '+1',
+      melee: '+2',
+      armour: '+3',
+      keywords: ['Elite', 'Heavy Armour', 'Tough', 'Bulky']
+    },
+    maxCount: 1,
+    innateAbilities: [
+      {
+        id: 'servo-slam',
+        name: 'Hydraulic Breaker',
+        description: 'Destroys wooden barricades and ignores knockdown penalties in melee.'
+      }
+    ],
+    defaultWeapons: ['poleaxe-crusader', 'heavy-machine-gun'],
+    defaultArmour: ['heavy-crusader-plate'],
+    lore: 'Encased in steam-assisted armor plates, stepping over craters like walking iron fortresses.'
+  },
 
   // Trench Pilgrims
   {
@@ -424,6 +500,31 @@ export const BASE_UNITS: UnitProfile[] = [
     lore: 'A firebrand preacher clad in scorched garments, driven mad by divine visions.'
   },
   {
+    id: 'tp-anchorite',
+    name: 'Anchorite Shrine (Iron Walker)',
+    factionId: 'trench-pilgrims',
+    category: 'Elite',
+    baseCost: 125,
+    stats: {
+      movement: '5"',
+      ranged: '+0',
+      melee: '+3',
+      armour: '+3',
+      keywords: ['Elite', 'Relic Armor', 'Tough', 'Fearless']
+    },
+    maxCount: 1,
+    innateAbilities: [
+      {
+        id: 'bell-of-martyrs',
+        name: 'Toll of the Martyrs',
+        description: 'All enemy models within 8" must subtract 1 from Action tests due to the deafening iron bells.'
+      }
+    ],
+    defaultWeapons: ['holy-flamethrower', 'chainsword-crusader'],
+    defaultArmour: ['heavy-crusader-plate'],
+    lore: 'A living saint entombed within a mobile iron reliquary, burning demons with sacred pitch.'
+  },
+  {
     id: 'tp-flagellant',
     name: 'Penitent Flagellant',
     factionId: 'trench-pilgrims',
@@ -446,6 +547,76 @@ export const BASE_UNITS: UnitProfile[] = [
     defaultWeapons: ['trench-club'],
     defaultArmour: [],
     lore: 'Desperate souls seeking redemption through suicidal charges into barbed wire.'
+  },
+
+  // Iron Sultanate
+  {
+    id: 'is-captain',
+    name: 'Sultanate Janissary Captain',
+    factionId: 'iron-sultanate',
+    category: 'Leader',
+    baseCost: 95,
+    stats: {
+      movement: '6"',
+      ranged: '+2',
+      melee: '+2',
+      armour: '+2',
+      keywords: ['Leader', 'Tactician', 'Alchemist']
+    },
+    maxCount: 1,
+    innateAbilities: [
+      {
+        id: 'alchemical-salvo',
+        name: 'Perfect Volley',
+        description: 'Allows 2 friendly Janissary riflemen to fire twice in a single activation.'
+      }
+    ],
+    defaultWeapons: ['alchemical-scimitar', 'service-rifle'],
+    defaultArmour: ['brazen-carapace'],
+    lore: 'Master tactician defending the Golden Horn with ancient mathematical precision.'
+  },
+  {
+    id: 'is-brazen-bull',
+    name: 'Brazen Bull Shock Trooper',
+    factionId: 'iron-sultanate',
+    category: 'Elite',
+    baseCost: 80,
+    stats: {
+      movement: '6"',
+      ranged: '+1',
+      melee: '+2',
+      armour: '+2',
+      keywords: ['Elite', 'Tough', 'Brazen Armor']
+    },
+    maxCount: 2,
+    innateAbilities: [
+      {
+        id: 'greek-fire-dash',
+        name: 'Greek Fire Siphon',
+        description: 'Charges ignore defensive barbed wire and leave a burning trail.'
+      }
+    ],
+    defaultWeapons: ['greek-fire-projector', 'alchemical-scimitar'],
+    defaultArmour: ['brazen-carapace'],
+    lore: 'Heavy assault warriors wielding unquenchable Greek fire projectors.'
+  },
+  {
+    id: 'is-janissary',
+    name: 'Janissary Line Soldier',
+    factionId: 'iron-sultanate',
+    category: 'Trooper',
+    baseCost: 35,
+    stats: {
+      movement: '6"',
+      ranged: '+1',
+      melee: '+1',
+      armour: '+1',
+      keywords: ['Trooper', 'Disciplined', 'Marksman']
+    },
+    innateAbilities: [],
+    defaultWeapons: ['service-rifle', 'trench-knife'],
+    defaultArmour: ['standard-trench-armour'],
+    lore: 'Disciplined riflemen trained from childhood to hold the great desert fortifications.'
   },
 
   // Heretic Legion
@@ -517,6 +688,30 @@ export const BASE_UNITS: UnitProfile[] = [
     defaultWeapons: ['trench-shotgun', 'trench-knife'],
     defaultArmour: ['standard-trench-armour'],
     lore: 'Cynical sellswords fighting for cold hard Ducats amidst the apocalypse.'
+  },
+  {
+    id: 'merc-trench-ogre',
+    name: 'Mutated Trench Ogre',
+    factionId: 'mercenaries',
+    category: 'Mercenary',
+    baseCost: 85,
+    stats: {
+      movement: '5"',
+      ranged: '-1',
+      melee: '+3',
+      armour: '+2',
+      keywords: ['Mercenary', 'Brute', 'Tough (3 Wounds)', 'Frenzied']
+    },
+    innateAbilities: [
+      {
+        id: 'ogre-smash',
+        name: 'Crater Breaker',
+        description: 'Knocks down any infantry model hit in melee combat automatically.'
+      }
+    ],
+    defaultWeapons: ['trench-club'],
+    defaultArmour: ['heavy-crusader-plate'],
+    lore: 'A hulking mutated giant clad in scrap steel, swinging iron girders like twigs.'
   }
 ];
 
@@ -556,6 +751,18 @@ export const KEYWORDS: RuleKeyword[] = [
     category: 'Condition',
     summary: 'Model is knocked to the ground crawling and cannot shoot or charge.',
     fullText: 'A Downed model may only crawl up to 2" per turn. Enemies attacking a Downed model in melee gain +2 to hit and score immediate fatal injury tests.'
+  },
+  {
+    name: 'Shield',
+    category: 'General',
+    summary: 'Grants armor bonus against frontal attacks and ranged projectiles.',
+    fullText: 'Grants +1 Armour against all ranged attacks originating from the model’s front 180° arc.'
+  },
+  {
+    name: 'Assault',
+    category: 'Weapon',
+    summary: 'Weapon can be fired after running or charging.',
+    fullText: 'The weapon suffers no penalty when fired after a full Dash action.'
   }
 ];
 

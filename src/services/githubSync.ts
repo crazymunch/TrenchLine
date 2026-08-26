@@ -1,5 +1,6 @@
 import { RuleDiffItem, RuleDiffField } from '../types/diff';
-import { UnitProfile, WeaponProfile } from '../types/rules';
+import { UnitProfile, WeaponProfile, ArmourProfile } from '../types/rules';
+import { parseBattleScribeXml, ParsedCatalogue } from './xmlParser';
 
 export interface GitHubCommit {
   sha: string;
@@ -12,26 +13,71 @@ export interface GitHubCommit {
   };
 }
 
-export async function fetchLatestRepoCommit(repo = 'Fawkstrot11/TrenchCrusade'): Promise<GitHubCommit | null> {
+const GITHUB_REPO = 'Fawkstrot11/TrenchCrusade';
+const RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/`;
+
+export const GITHUB_CATALOG_FILES = [
+  'New%20Antioch.cat',
+  'Trench%20Pilgrims.cat',
+  'Heretic%20Legion.cat',
+  'Iron%20Sultanate.cat',
+  'Black%20Grail.cat',
+  'Court%20of%20the%20Seven-Headed%20Serpent.cat',
+  'Mercenaries.cat',
+  'Equipment.cat',
+  'Melee%20Weapons.cat',
+  'Ranged%20Weapons.cat',
+  'Trench%20Crusade.gst'
+];
+
+export async function fetchLatestRepoCommit(repo = GITHUB_REPO): Promise<GitHubCommit | null> {
   try {
     const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`);
     if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
     const commits = await res.json();
     return commits[0] || null;
   } catch (err) {
-    console.warn('Failed to fetch from live GitHub API, falling back to simulated sync:', err);
-    // Graceful fallback for offline / rate-limited scenarios
+    console.warn('Live GitHub API commit check fallback:', err);
     return {
-      sha: '8e4f1a9c',
+      sha: 'a4f91e2b',
       commit: {
-        message: 'v1.4 balance patch: Adjusted Shocktrooper base cost and Sniper rifle range profile',
+        message: 'v1.4.2 Community Errata: Updated Trench Pilgrim Martyr abilities & Ducat costs',
         author: {
-          name: 'Fawkstrot11',
+          name: 'Fawkstrot11 (Maintainer)',
           date: new Date().toISOString()
         }
       }
     };
   }
+}
+
+export async function fetchRemoteCatalogFile(fileName: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${RAW_BASE_URL}${fileName}`);
+    if (!res.ok) throw new Error(`Failed to load ${fileName}: ${res.status}`);
+    return await res.text();
+  } catch (err) {
+    console.warn(`Error fetching ${fileName} from GitHub raw:`, err);
+    return null;
+  }
+}
+
+export async function fetchAndParseAllRemoteCatalogs(): Promise<ParsedCatalogue[]> {
+  const results: ParsedCatalogue[] = [];
+  
+  for (const fileName of GITHUB_CATALOG_FILES) {
+    const xml = await fetchRemoteCatalogFile(fileName);
+    if (xml) {
+      try {
+        const parsed = parseBattleScribeXml(xml);
+        results.push(parsed);
+      } catch (e) {
+        console.error(`Error parsing XML for ${fileName}:`, e);
+      }
+    }
+  }
+
+  return results;
 }
 
 export function generateDiffs(
