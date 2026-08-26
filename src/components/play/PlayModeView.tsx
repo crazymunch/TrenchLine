@@ -1,10 +1,14 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { DiceRoller } from './DiceRoller';
 import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
+import { QuickSearchModal } from './QuickSearchModal';
 import { ActiveUnit } from '../../types/warband';
+import { soundEffects } from '../../services/soundEffects';
 import { 
   Heart, 
   Droplet, 
@@ -13,7 +17,9 @@ import {
   ArrowRight,
   Crosshair,
   UserCheck,
-  Zap
+  Zap,
+  Search,
+  BookOpen
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
@@ -34,6 +40,7 @@ export const PlayModeView: React.FC = () => {
   const warband = getActiveWarband();
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
+  const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
 
   if (!warband) {
     return (
@@ -61,6 +68,11 @@ export const PlayModeView: React.FC = () => {
     if (found) {
       setActiveKeyword(found);
     }
+  };
+
+  const handleNextTurnWithWhistle = () => {
+    soundEffects.playTrenchWhistle();
+    incrementTurn();
   };
 
   return (
@@ -115,12 +127,21 @@ export const PlayModeView: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: Round Advance & Post-Battle Actions */}
+          {/* Right: Actions */}
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={incrementTurn}
+              onClick={() => setIsQuickSearchOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Lookup rules and keywords"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Rules Lookup</span>
+            </button>
+
+            <button
+              onClick={handleNextTurnWithWhistle}
               className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Advance to next turn and refresh unit activations"
+              title="Advance to next turn (Sounds Trench Command Whistle)"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Next Turn</span>
@@ -131,7 +152,7 @@ export const PlayModeView: React.FC = () => {
               className="flex items-center space-x-2 px-4 py-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-[#8B0000]/40"
             >
               <Skull className="w-4 h-4" />
-              <span>End Match & Campaign Step</span>
+              <span>End Match</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -385,6 +406,11 @@ export const PlayModeView: React.FC = () => {
 
       {/* Tooltip popover */}
       <KeywordPopover />
+
+      {/* Quick Search Rules Modal */}
+      {isQuickSearchOpen && (
+        <QuickSearchModal onClose={() => setIsQuickSearchOpen(false)} />
+      )}
 
       {/* Attack Calculator Modal */}
       {attackingUnit && (
