@@ -308,19 +308,25 @@ export const useStore = create<AppState>((set, get) => {
 
   const warbands = rawList.map((wb) => {
     const isSultanate = wb.factionId === 'iron-sultanate' || wb.name.toLowerCase().includes('qarn') || wb.name.toLowerCase().includes('sultanate');
-    const hasOldDummySnapshots = isSultanate && wb.snapshots?.some(s => s.id === 'snap-founding' || s.id === 'snap-match-1' || s.ducatCost === 1320 || s.label.includes('1320') || s.units.length === 0);
+    const hasOldDummySnapshots = isSultanate && (wb.snapshots?.some(s => s.id === 'snap-founding' || s.id === 'snap-match-1' || s.ducatCost === 1320 || s.label.includes('1320') || s.units.length === 0) || wb.units.length === 11);
     const cleanSnapshots = (isSultanate && (!wb.snapshots || wb.snapshots.length < 3 || hasOldDummySnapshots))
       ? SULTANATE_WARBAND_SNAPSHOTS
       : (wb.snapshots && wb.snapshots.length > 0 ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : []));
 
+    const cleanUnits = (isSultanate && (hasOldDummySnapshots || wb.units.length === 11))
+      ? SULTANATE_WARBAND_SNAPSHOTS[2].units
+      : wb.units.map(enrichUnitWithLore);
+
     return {
       ...wb,
+      ducatLimit: isSultanate ? 1220 : wb.ducatLimit,
+      gloryPoints: (isSultanate && wb.gloryPoints < 4) ? 4 : wb.gloryPoints,
       lore: wb.lore || (isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined),
       motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
       patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
       chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : []),
       snapshots: cleanSnapshots,
-      units: wb.units.map(enrichUnitWithLore)
+      units: cleanUnits
     };
   });
 

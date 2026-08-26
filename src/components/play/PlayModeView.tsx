@@ -9,7 +9,7 @@ import { AttackCalculatorModal } from './AttackCalculatorModal';
 import { RangeCalculatorModal } from './RangeCalculatorModal';
 import { QuickSearchModal } from './QuickSearchModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
-import { ActiveUnit } from '../../types/warband';
+import { ActiveUnit, Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Heart, 
@@ -36,7 +36,13 @@ import {
   Layers,
   ChevronDown,
   ChevronUp,
-  Settings
+  Settings,
+  Swords,
+  MapPin,
+  Flame,
+  Check,
+  Sliders,
+  Play
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
@@ -47,6 +53,7 @@ export const PlayModeView: React.FC = () => {
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
+    resetMatchState,
     updateUnitWounds, 
     updateUnitBloodMarkers, 
     setUnitStatus, 
@@ -61,7 +68,10 @@ export const PlayModeView: React.FC = () => {
 
   const primaryWarband = getActiveWarband();
 
-  // Multi-Player / Multi-Warband State (2 to 4 Players)
+  // Match Lifecycle State: false = Setup/Lobby, true = Combat Active
+  const [isMatchActive, setIsMatchActive] = useState<boolean>(false);
+
+  // Multi-Player / Multi-Warband State (1 to 4 Players)
   const [matchWarbandIds, setMatchWarbandIds] = useState<string[]>(
     primaryWarband ? [primaryWarband.id] : []
   );
@@ -79,6 +89,9 @@ export const PlayModeView: React.FC = () => {
   const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
   const [isSquadSelectOpen, setIsSquadSelectOpen] = useState(false);
   const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
+
+  // Environmental Condition
+  const [environmentalHazard, setEnvironmentalHazard] = useState<string>('Standard (Clear)');
 
   // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
@@ -117,6 +130,18 @@ export const PlayModeView: React.FC = () => {
 
   // Score for current warband
   const currentScoreObj = warbandScores[viewingWarband.id] || { vp: 0, completedDeeds: {} };
+
+  const handleStartCombat = () => {
+    soundEffects.playTrenchWhistle();
+    setIsMatchActive(true);
+  };
+
+  const handleAbortMatch = () => {
+    soundEffects.playGunfire();
+    resetMatchState();
+    setIsMatchActive(false);
+    setIsAbortConfirmOpen(false);
+  };
 
   const handleAdjustVp = (delta: number) => {
     setWarbandScores((prev) => {
@@ -181,11 +206,6 @@ export const PlayModeView: React.FC = () => {
     setActivePlayerIndex(0);
   };
 
-  const handleAbortMatch = () => {
-    soundEffects.playGunfire();
-    setCurrentView('builder');
-  };
-
   const handleNextTurnWithWhistle = () => {
     soundEffects.playTrenchWhistle();
     incrementTurn();
@@ -209,6 +229,376 @@ export const PlayModeView: React.FC = () => {
 
   const scenarioDeeds = parseDeedsList(selectedScenario?.gloriousDeeds);
 
+  // ----------------------------------------------------------------------------
+  // VIEW A: MATCH DESIGNER & BATTLE LOBBY (BEFORE COMMENCING COMBAT)
+  // ----------------------------------------------------------------------------
+  if (!isMatchActive) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 font-mono">
+        
+        {/* Lobby Header */}
+        <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-6 shadow-2xl space-y-4 bevel-container">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center space-x-3">
+                <Swords className="w-7 h-7 text-[#D4AF37]" />
+                <h1 className="font-gothic font-bold text-2xl text-[#ECEFF4] tracking-wide">
+                  TACTICAL MATCH DESIGNER & CRUSADE LOBBY
+                </h1>
+              </div>
+              <p className="text-xs text-[#8E95A5] pt-1">
+                Configure scenario parameters, field strength, multiplayer participants (2 to 4 Players), and battle conditions before taking to the field.
+              </p>
+            </div>
+
+            <button
+              onClick={handleStartCombat}
+              className="flex items-center space-x-2 px-6 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
+            >
+              <Play className="w-4 h-4 fill-black" />
+              <span>Commence Tabletop Combat</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 1. Scenario Selection & Tactical Briefing */}
+        <div className="bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
+          <div className="flex items-center space-x-2 border-b border-[#323846] pb-3">
+            <Compass className="w-5 h-5 text-[#D4AF37]" />
+            <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+              1. OFFICIAL SCENARIO BRIEFING & TACTICAL MAP
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Scenario Picker */}
+            <div className="space-y-3">
+              <label className="text-[11px] uppercase font-bold text-[#8E95A5] block">
+                Select Scenario (12 Official Scenarios):
+              </label>
+              <select
+                value={selectedScenarioId}
+                onChange={(e) => setSelectedScenarioId(e.target.value)}
+                className="w-full bg-[#0C0E12] border-2 border-[#D4AF37] rounded p-2.5 text-xs text-[#ECEFF4] focus:outline-none"
+              >
+                {scenarios.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Map Preview */}
+              {selectedScenario?.mapImage && (
+                <div className="bg-[#0C0E12] border border-[#323846] rounded p-2 space-y-1 text-center">
+                  <img
+                    src={selectedScenario.mapImage}
+                    alt={selectedScenario.name}
+                    className="w-full h-48 object-contain rounded"
+                  />
+                  <span className="text-[10px] text-[#8E95A5] block">Official Deployment Diagram</span>
+                </div>
+              )}
+            </div>
+
+            {/* Scenario Details & Rules */}
+            <div className="lg:col-span-2 space-y-4 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+              <div>
+                <h3 className="font-gothic font-bold text-base text-[#D4AF37]">{selectedScenario?.name}</h3>
+                <p className="text-xs text-[#8E95A5] italic pt-0.5">{selectedScenario?.tagline || selectedScenario?.flavor}</p>
+                
+                <div className="flex flex-wrap items-center gap-4 text-xs text-[#ECEFF4] pt-2 border-b border-[#323846] pb-2">
+                  <span>Table: <strong>{selectedScenario?.tableSize || '48" x 48"'}</strong></span>
+                  <span>•</span>
+                  <span>Game Length: <strong>{selectedScenario?.gameLength || '4-5 Turns'}</strong></span>
+                  <span>•</span>
+                  <span>Deployment: <strong>{selectedScenario?.deployment || 'Standard'}</strong></span>
+                </div>
+              </div>
+
+              {/* Victory Conditions */}
+              <div className="space-y-1 text-xs">
+                <span className="text-[10px] uppercase font-bold text-[#4E9A6E] block flex items-center space-x-1">
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Victory Conditions:</span>
+                </span>
+                <p className="text-[#ECEFF4] text-[11px] leading-relaxed whitespace-pre-line bg-[#161920] p-2.5 rounded border border-[#323846]/60">
+                  {selectedScenario?.victoryConditions}
+                </p>
+              </div>
+
+              {/* Glorious Deeds Preview */}
+              {scenarioDeeds.length > 0 && (
+                <div className="space-y-1.5 text-xs">
+                  <span className="text-[10px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Glorious Deeds Available ({scenarioDeeds.length}):</span>
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {scenarioDeeds.map((deed, dIdx) => (
+                      <div key={dIdx} className="p-2 bg-[#161920] rounded border border-[#323846] text-[10px]">
+                        <strong className="text-[#D4AF37] block">{deed.title}</strong>
+                        <span className="text-[#8E95A5]">{deed.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Multiplayer Match Integration (2 to 4 Players) */}
+        <div className="bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
+          <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+            <div className="flex items-center space-x-2">
+              <Users className="w-5 h-5 text-[#D4AF37]" />
+              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                2. WARBAND INTEGRATION & SQUAD MUSTER (1 TO 4 PLAYERS)
+              </h2>
+            </div>
+            <span className="text-xs text-[#8E95A5]">
+              {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {matchWarbandIds.map((wbId, idx) => {
+              const wb = warbands.find((w) => w.id === wbId);
+              const depIds = deployedUnitIds[wbId] || wb?.units.map((u) => u.id) || [];
+              const depCost = wb?.units.filter((u) => depIds.includes(u.id)).reduce((s, u) => s + u.totalCost, 0) || 0;
+
+              return (
+                <div key={wbId} className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 relative">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold text-[#D4AF37]">
+                      PLAYER {idx + 1} {idx === 0 ? '(YOU)' : ''}
+                    </span>
+                    {idx > 0 && (
+                      <button
+                        onClick={() => handleRemovePlayerWarband(wbId)}
+                        className="text-[#8E95A5] hover:text-[#E53935] text-xs"
+                        title="Remove Player"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{wb?.name}</h3>
+                    <span className="text-[10px] text-[#8E95A5] block">
+                      Faction: {wb?.factionId}
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 bg-[#161920] rounded border border-[#323846] text-xs space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-[#8E95A5]">Deployed Models:</span>
+                      <strong className="text-[#ECEFF4]">{depIds.length} / {wb?.units.length}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#8E95A5]">Deployed Rating:</span>
+                      <strong className="text-[#D4AF37]">{depCost} D</strong>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setActivePlayerIndex(idx);
+                      setIsSquadSelectOpen(true);
+                    }}
+                    className="w-full py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] text-[#ECEFF4] text-xs font-bold uppercase rounded flex items-center justify-center space-x-1.5 transition-colors"
+                  >
+                    <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Select Squad ({depIds.length})</span>
+                  </button>
+                </div>
+              );
+            })}
+
+            {/* Add Player Slot Button (up to 4) */}
+            {matchWarbandIds.length < 4 && (
+              <div className="p-4 bg-[#0C0E12]/50 border-2 border-dashed border-[#323846] rounded-md flex flex-col items-center justify-center space-y-2 text-center">
+                <Users className="w-6 h-6 text-[#8E95A5]" />
+                <span className="text-xs text-[#8E95A5] font-bold uppercase">
+                  Add Opponent / Ally ({matchWarbandIds.length + 1} of 4)
+                </span>
+                
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleAddPlayerWarband(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                  defaultValue=""
+                  className="bg-[#161920] border border-[#323846] text-xs text-[#D4AF37] rounded p-1.5 w-full focus:outline-none"
+                >
+                  <option value="" disabled>-- Link Warband --</option>
+                  {warbands
+                    .filter((w) => !matchWarbandIds.includes(w.id))
+                    .map((w) => (
+                      <option key={w.id} value={w.id}>
+                        {w.name} ({w.factionId})
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 3. Match Parameters & Environmental Conditions */}
+        <div className="bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
+          <div className="flex items-center space-x-2 border-b border-[#323846] pb-3">
+            <Sliders className="w-5 h-5 text-[#D4AF37]" />
+            <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+              3. TACTICAL RULES & ENVIRONMENTAL HAZARDS
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                Environmental Condition / Battlefield Hazard:
+              </label>
+              <select
+                value={environmentalHazard}
+                onChange={(e) => setEnvironmentalHazard(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              >
+                <option value="Standard (Clear)">Standard (Clear Weather)</option>
+                <option value="Heavy Trench Fog">Heavy Trench Fog (Max 18" Ranged Sight)</option>
+                <option value="Chlorine Gas Pockets">Chlorine Gas Pockets (Dangerous Terrain)</option>
+                <option value="Mud-Choked Trenches">Mud-Choked Trenches (-1" Movement)</option>
+                <option value="Volcanic Ashfall">Volcanic Brimstone Ashfall (Risky Dash)</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                Deployment Rules:
+              </label>
+              <div className="p-2.5 bg-[#0C0E12] border border-[#323846] rounded text-[#8E95A5] text-[11px]">
+                Infiltrators & Forward Positions deploy per official scenario diagram.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA Bar */}
+        <div className="bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+              READY TO ENTER THE TRENCHES?
+            </h3>
+            <p className="text-xs text-[#8E95A5]">
+              Scenario: <strong>{selectedScenario?.name}</strong> • {deployedUnits.length} Models ({deployedCost} D)
+            </p>
+          </div>
+
+          <button
+            onClick={handleStartCombat}
+            className="flex items-center space-x-2 px-8 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
+          >
+            <Play className="w-4 h-4 fill-black" />
+            <span>⚔️ ENTER TABLETOP COMBAT</span>
+          </button>
+        </div>
+
+        {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
+        {isSquadSelectOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
+            <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+              
+              <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Users className="w-5 h-5 text-[#D4AF37]" />
+                  <h3 className="font-gothic font-bold text-base text-white">
+                    SQUAD SELECTION & FIELD STRENGTH
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setIsSquadSelectOpen(false)}
+                  className="text-[#8E95A5] hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-5 overflow-y-auto space-y-4 text-xs">
+                <div className="flex items-center justify-between bg-[#0C0E12] p-3 rounded border border-[#323846]">
+                  <div>
+                    <span className="text-[10px] text-[#8E95A5] block">DEPLOYED STRENGTH</span>
+                    <strong className="text-[#D4AF37] text-sm">
+                      {deployedUnits.length} / {viewingWarband.units.length} Models ({deployedCost} D)
+                    </strong>
+                  </div>
+                  <button
+                    onClick={handleSelectAllSquad}
+                    className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase text-[10px] border border-[#323846]"
+                  >
+                    Deploy All
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  {viewingWarband.units.map((unit) => {
+                    const isDeployed = currentDeployedIds.includes(unit.id);
+                    return (
+                      <div
+                        key={unit.id}
+                        onClick={() => handleToggleDeployUnit(unit.id)}
+                        className={`p-3 rounded border cursor-pointer flex items-center justify-between transition-all ${
+                          isDeployed
+                            ? 'bg-[#20242E] border-[#D4AF37]'
+                            : 'bg-[#161920]/40 border-[#323846] opacity-60'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={isDeployed}
+                            onChange={() => {}}
+                            className="rounded border-[#323846] text-[#D4AF37]"
+                          />
+                          <div>
+                            <span className="font-gothic font-bold text-sm text-[#ECEFF4] block">
+                              {unit.customName}
+                            </span>
+                            <span className="text-[10px] text-[#8E95A5]">
+                              {unit.profileSnapshot.name} • {unit.profileSnapshot.category}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="font-bold text-[#D4AF37]">{unit.totalCost} D</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#20242E] border-t border-[#323846] flex justify-end">
+                <button
+                  onClick={() => setIsSquadSelectOpen(false)}
+                  className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-bold uppercase rounded text-xs"
+                >
+                  Confirm Deployment
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------------------------------
+  // VIEW B: ACTIVE TABLETOP COMBAT (DURING LIVE MATCH)
+  // ----------------------------------------------------------------------------
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
       
@@ -430,7 +820,7 @@ export const PlayModeView: React.FC = () => {
               {/* Scenario Picker */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Select Active Scenario:
+                  Active Scenario:
                 </label>
                 <select
                   value={selectedScenarioId}
@@ -742,7 +1132,7 @@ export const PlayModeView: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-[#D4AF37]" />
                 <h3 className="font-gothic font-bold text-base text-white">
-                  SQUAD SELECTION & DEPLOYMENT LIST
+                  SQUAD SELECTION & FIELD STRENGTH
                 </h3>
               </div>
               <button
@@ -802,27 +1192,6 @@ export const PlayModeView: React.FC = () => {
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Linked Multiplayer Selector */}
-              <div className="pt-3 border-t border-[#323846] space-y-2">
-                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Link Additional Warband to this Match (2-4 Players):
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {warbands
-                    .filter((w) => !matchWarbandIds.includes(w.id))
-                    .map((wb) => (
-                      <button
-                        key={wb.id}
-                        onClick={() => handleAddPlayerWarband(wb.id)}
-                        className="px-2.5 py-1 bg-[#0C0E12] hover:bg-[#20242E] text-[#D4AF37] border border-[#323846] rounded text-[11px] flex items-center space-x-1"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span>Add {wb.name}</span>
-                      </button>
-                    ))}
-                </div>
               </div>
             </div>
 
