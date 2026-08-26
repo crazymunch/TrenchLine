@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember } from '../types/campaign';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario } from '../types/rules';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
 import { storage } from '../services/storage';
@@ -39,6 +39,8 @@ interface AppState {
   duplicateUnit: (warbandId: string, unitId: string) => void;
   removeUnitFromWarband: (warbandId: string, unitId: string) => void;
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
+  updateUnitCategory: (warbandId: string, unitId: string, category: UnitCategory) => void;
+  setUnitAsLeader: (warbandId: string, unitId: string) => void;
   equipWeapon: (warbandId: string, unitId: string, weaponId: string) => void;
   removeWeapon: (warbandId: string, unitId: string, instanceId: string) => void;
   equipArmour: (warbandId: string, unitId: string, armourId: string) => void;
@@ -413,7 +415,8 @@ export const useStore = create<AppState>((set, get) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
-            units: w.units.map((u) => (u.id === unitId ? { ...u, customName: name } : u))
+            units: w.units.map((u) => (u.id === unitId ? { ...u, customName: name } : u)),
+            updatedAt: new Date().toISOString()
           };
           storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
@@ -421,6 +424,49 @@ export const useStore = create<AppState>((set, get) => {
         storage.saveWarbands(updated);
         return { warbands: updated };
       });
+    },
+
+    updateUnitCategory: (warbandId, unitId, category) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedUnits = w.units.map((u) => {
+            if (u.id === unitId) {
+              return {
+                ...u,
+                profileSnapshot: {
+                  ...u.profileSnapshot,
+                  category
+                }
+              };
+            }
+            // If promoting this unit to Leader, demote any existing previous Leader to Elite
+            if (category === 'Leader' && u.profileSnapshot.category === 'Leader') {
+              return {
+                ...u,
+                profileSnapshot: {
+                  ...u.profileSnapshot,
+                  category: 'Elite' as any
+                }
+              };
+            }
+            return u;
+          });
+          const updatedWb = {
+            ...w,
+            units: updatedUnits,
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    setUnitAsLeader: (warbandId, unitId) => {
+      get().updateUnitCategory(warbandId, unitId, 'Leader');
     },
 
     equipWeapon: (warbandId, unitId, weaponId) => {

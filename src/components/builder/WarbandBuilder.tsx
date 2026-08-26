@@ -17,11 +17,12 @@ import {
   ShieldAlert,
   Archive,
   ChevronRight,
-  Info
+  Info,
+  Crown
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
-  const { getActiveWarband, factions, setCurrentView, updateWarbandNotes } = useStore();
+  const { getActiveWarband, factions, setCurrentView, updateWarbandNotes, setUnitAsLeader } = useStore();
   const warband = getActiveWarband();
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
@@ -182,12 +183,44 @@ export const WarbandBuilder: React.FC = () => {
 
         {/* Validation Warnings */}
         {(!hasLeader || isOverBudget) && (
-          <div className="mt-4 p-3 bg-[#8B0000]/20 border border-[#8B0000] rounded text-xs font-mono flex items-center space-x-2 text-[#E53935]">
-            <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-            <div>
-              {!hasLeader && <p>• Roster requires exactly 1 Leader warrior to be tournament & campaign legal.</p>}
-              {isOverBudget && <p>• Roster exceeds the {warband.ducatLimit} Ducat point limit by {totalCost - warband.ducatLimit} Ducats.</p>}
+          <div className="mt-4 p-3 bg-[#8B0000]/20 border border-[#8B0000] rounded text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[#E53935]">
+            <div className="flex items-center space-x-2">
+              <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+              <div>
+                {!hasLeader && (
+                  <p>
+                    • Roster requires exactly 1 Leader warrior. Appoint below or click the crown <Crown className="w-3 h-3 inline text-[#D4AF37]" /> on any warrior card.
+                  </p>
+                )}
+                {isOverBudget && (
+                  <p>
+                    • Roster exceeds the {warband.ducatLimit} Ducat point limit by {totalCost - warband.ducatLimit} Ducats.
+                  </p>
+                )}
+              </div>
             </div>
+
+            {!hasLeader && warband.units.length > 0 && (
+              <div className="flex items-center space-x-2 flex-shrink-0">
+                <span className="text-[#ECEFF4] text-[11px] font-bold">Appoint Leader:</span>
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setUnitAsLeader(warband.id, e.target.value);
+                    }
+                  }}
+                  defaultValue=""
+                  className="bg-[#161920] border border-[#D4AF37] text-[#D4AF37] text-xs font-bold rounded px-2.5 py-1 cursor-pointer focus:outline-none shadow"
+                >
+                  <option value="" disabled className="bg-[#161920] text-gray-400">Choose Warrior...</option>
+                  {warband.units.map((u) => (
+                    <option key={u.id} value={u.id} className="text-white bg-[#161920]">
+                      {u.customName} ({u.profileSnapshot.name})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         )}
 

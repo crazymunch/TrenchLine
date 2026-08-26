@@ -179,6 +179,95 @@
   box-shadow: 0 0 15px var(--color-primary-glow);
 }
 
+/* =========================================================================
+   DYNAMIC MULTI-FACTION THEME CLASS OVERRIDES
+   Ensures ALL application views, cards, panels, and text adopt the theme
+   ========================================================================= */
+
+/* Dynamic Backgrounds */
+[data-theme] {
+  background-color: var(--bg-base);
+  color: #ECEFF4;
+}
+
+[data-theme] .bg-\[\#0C0E12\],
+[data-theme] .bg-\[\#0c0e12\],
+[data-theme] .bg-\[\#0C0E12\]\/95,
+[data-theme] .bg-\[\#0C0E12\]\/90,
+[data-theme] .bg-\[\#0C0E12\]\/85,
+[data-theme] .bg-\[\#0C0E12\]\/80 {
+  background-color: var(--bg-base) !important;
+}
+
+[data-theme] .bg-\[\#161920\],
+[data-theme] .bg-\[\#161920\]\/95,
+[data-theme] .bg-\[\#161920\]\/90,
+[data-theme] .bg-\[\#161920\]\/80,
+[data-theme] .bg-\[\#161920\]\/60 {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme] .bg-\[\#20242E\],
+[data-theme] .bg-\[\#20242e\],
+[data-theme] .bg-\[\#20242E\]\/90,
+[data-theme] .bg-\[\#20242E\]\/80,
+[data-theme] .bg-\[\#20242E\]\/60 {
+  background-color: var(--bg-elevated) !important;
+}
+
+[data-theme] .hover\:bg-\[\#20242E\]:hover {
+  background-color: var(--bg-elevated) !important;
+}
+
+[data-theme] .hover\:bg-\[\#161920\]:hover {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme] .hover\:bg-\[\#323846\]:hover {
+  background-color: var(--color-border) !important;
+}
+
+/* Dynamic Borders */
+[data-theme] .border-\[\#323846\],
+[data-theme] .border-\[\#323846\]\/80,
+[data-theme] .border-\[\#323846\]\/60,
+[data-theme] .border-\[\#323846\]\/40 {
+  border-color: var(--color-border) !important;
+}
+
+/* Dynamic Primary Accent Color (Replacing hardcoded #D4AF37) */
+[data-theme] .text-\[\#D4AF37\],
+[data-theme] .text-\[\#d4af37\] {
+  color: var(--color-primary) !important;
+}
+
+[data-theme] .hover\:text-\[\#D4AF37\]:hover {
+  color: var(--color-primary) !important;
+}
+
+[data-theme] .border-\[\#D4AF37\],
+[data-theme] .border-\[\#d4af37\],
+[data-theme] .border-\[\#D4AF37\]\/80,
+[data-theme] .border-\[\#D4AF37\]\/50,
+[data-theme] .border-\[\#D4AF37\]\/40 {
+  border-color: var(--color-primary) !important;
+}
+
+[data-theme] .hover\:border-\[\#D4AF37\]\/50:hover,
+[data-theme] .hover\:border-\[\#D4AF37\]:hover {
+  border-color: var(--color-primary) !important;
+}
+
+[data-theme] .bg-\[\#D4AF37\],
+[data-theme] .bg-\[\#d4af37\] {
+  background-color: var(--color-primary) !important;
+}
+
+[data-theme] .hover\:bg-\[\#E5C158\]:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+
 /* Grimdark Surface Utilities */
 .bg-trench-surface {
   background-color: var(--bg-surface);

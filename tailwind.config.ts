@@ -10,8 +10,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--bg-base)",
+        foreground: "var(--color-primary)",
+        "theme-base": "var(--bg-base)",
+        "theme-surface": "var(--bg-surface)",
+        "theme-elevated": "var(--bg-elevated)",
+        "theme-card": "var(--bg-card)",
+        "theme-primary": "var(--color-primary)",
+        "theme-primary-hover": "var(--color-primary-hover)",
+        "theme-border": "var(--color-border)",
+        "theme-accent": "var(--color-accent)",
       },
     },
   },

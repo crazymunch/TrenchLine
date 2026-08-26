@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
+import { UnitCategory } from '../../types/rules';
 import { AddEquipmentModal } from './AddEquipmentModal';
 import { 
   Trash2, 
@@ -12,7 +13,9 @@ import {
   Edit3, 
   Check, 
   X,
-  Copy
+  Copy,
+  Crown,
+  ChevronDown
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -25,6 +28,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
     removeUnitFromWarband, 
     duplicateUnit,
     updateUnitName, 
+    updateUnitCategory,
+    setUnitAsLeader,
     removeWeapon, 
     removeArmour, 
     removeEquipment,
@@ -35,43 +40,82 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameVal, setNameVal] = useState(unit.customName);
   const [isEquipModalOpen, setIsEquipModalOpen] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+
+  const isLeader = unit.profileSnapshot.category === 'Leader';
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);
     setIsEditingName(false);
   };
 
-  const handleKeywordClick = (kwName: string) => {
-    const clean = kwName.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const found = keywords.find((k) => k.name.toLowerCase().includes(clean));
-    if (found) {
-      setActiveKeyword(found);
-    }
+  const handleCategorySelect = (category: UnitCategory) => {
+    updateUnitCategory(warbandId, unit.id, category);
+    setIsCategoryMenuOpen(false);
+  };
+
+  const handlePromoteToLeader = () => {
+    setUnitAsLeader(warbandId, unit.id);
   };
 
   return (
     <>
-      <div className="bg-[#161920] border border-[#323846] rounded-md overflow-hidden shadow-lg hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between bevel-container">
+      <div 
+        className={`bg-[#161920] border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${
+          isLeader 
+            ? 'border-[#D4AF37] shadow-[#D4AF37]/10 shadow-lg ring-1 ring-[#D4AF37]/30' 
+            : 'border-[#323846] hover:border-[#D4AF37]/50'
+        }`}
+      >
         
         {/* Card Header */}
-        <div className="p-3.5 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
-          <div className="flex items-center space-x-2 flex-1 mr-2">
-            <span
-              className={`text-[9px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
-                unit.profileSnapshot.category === 'Leader'
-                  ? 'bg-[#D4AF37] text-black'
-                  : unit.profileSnapshot.category === 'Elite'
-                  ? 'bg-[#7C4DFF] text-white'
-                  : unit.profileSnapshot.category === 'Mercenary'
-                  ? 'bg-[#00897B] text-white'
-                  : 'bg-[#323846] text-[#ECEFF4]'
-              }`}
-            >
-              {unit.profileSnapshot.category}
-            </span>
+        <div className={`p-3.5 border-b border-[#323846] flex items-center justify-between gap-2 ${
+          isLeader ? 'bg-[#20242E] border-b-[#D4AF37]/40' : 'bg-[#20242E]'
+        }`}>
+          <div className="flex items-center space-x-2 flex-1 min-w-0">
+            
+            {/* Interactive Category Badge / Dropdown */}
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+                className={`text-[9px] font-mono px-2 py-0.5 rounded font-bold uppercase flex items-center space-x-1 cursor-pointer transition-all ${
+                  isLeader
+                    ? 'bg-[#D4AF37] text-black shadow font-extrabold'
+                    : unit.profileSnapshot.category === 'Elite'
+                    ? 'bg-[#7C4DFF] text-white'
+                    : unit.profileSnapshot.category === 'Mercenary'
+                    ? 'bg-[#00897B] text-white'
+                    : 'bg-[#323846] text-[#ECEFF4]'
+                }`}
+                title="Click to change unit role"
+              >
+                {isLeader && <Crown className="w-2.5 h-2.5 fill-black" />}
+                <span>{unit.profileSnapshot.category}</span>
+                <ChevronDown className="w-2.5 h-2.5 opacity-70" />
+              </button>
 
+              {/* Role Dropdown Menu */}
+              {isCategoryMenuOpen && (
+                <div className="absolute left-0 top-full mt-1 w-36 bg-[#161920] border border-[#323846] rounded-md shadow-2xl z-30 py-1 font-mono text-xs">
+                  {(['Leader', 'Elite', 'Trooper', 'Mercenary'] as UnitCategory[]).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategorySelect(cat)}
+                      className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 hover:bg-[#20242E] transition-colors ${
+                        unit.profileSnapshot.category === cat ? 'text-[#D4AF37] font-bold' : 'text-[#ECEFF4]'
+                      }`}
+                    >
+                      {cat === 'Leader' && <Crown className="w-3 h-3 text-[#D4AF37]" />}
+                      <span>{cat}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Unit Name Edit */}
             {isEditingName ? (
-              <div className="flex items-center space-x-1 flex-1">
+              <div className="flex items-center space-x-1 flex-1 min-w-0">
                 <input
                   type="text"
                   value={nameVal}
@@ -79,27 +123,48 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                   className="bg-[#161920] border border-[#D4AF37] rounded px-1.5 py-0.5 text-xs text-white focus:outline-none w-full"
                   autoFocus
                 />
-                <button onClick={handleSaveName} className="text-[#4E9A6E] hover:text-white p-1">
+                <button onClick={handleSaveName} className="text-[#4E9A6E] hover:text-white p-1 flex-shrink-0">
                   <Check className="w-3.5 h-3.5" />
                 </button>
-                <button onClick={() => setIsEditingName(false)} className="text-[#E53935] hover:text-white p-1">
+                <button onClick={() => setIsEditingName(false)} className="text-[#E53935] hover:text-white p-1 flex-shrink-0">
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-1.5 group cursor-pointer" onClick={() => setIsEditingName(true)}>
-                <h3 className="font-gothic font-bold text-sm text-[#ECEFF4] group-hover:text-[#D4AF37] transition-colors">
+              <div 
+                className="flex items-center space-x-1.5 group cursor-pointer truncate" 
+                onClick={() => setIsEditingName(true)}
+                title="Click to rename"
+              >
+                <h3 className={`font-gothic font-bold text-sm truncate transition-colors ${
+                  isLeader ? 'text-[#D4AF37]' : 'text-[#ECEFF4] group-hover:text-[#D4AF37]'
+                }`}>
                   {unit.customName}
                 </h3>
-                <Edit3 className="w-3 h-3 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Edit3 className="w-3 h-3 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
               </div>
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
+          {/* Quick Header Actions */}
+          <div className="flex items-center space-x-1.5 flex-shrink-0">
+            
+            {/* Promote to Leader Quick Button (if not already leader) */}
+            {!isLeader && (
+              <button
+                onClick={handlePromoteToLeader}
+                className="text-[#8E95A5] hover:text-[#D4AF37] p-1 rounded hover:bg-[#161920] transition-colors"
+                title="Designate as Warband Leader"
+              >
+                <Crown className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {/* Cost Badge */}
             <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#161920] px-2 py-0.5 rounded border border-[#323846]">
               {unit.totalCost} D
             </div>
+
             <button
               onClick={() => duplicateUnit(warbandId, unit.id)}
               className="text-[#8E95A5] hover:text-[#D4AF37] p-1 rounded transition-colors"
@@ -182,7 +247,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                     <div className="flex-1 mr-2">
                       <div className="font-semibold text-[#ECEFF4]">{wep.name}</div>
                       <div className="text-[10px] font-mono text-[#8E95A5]">
-                        {wep.range} | Mod: {wep.modifiers} | {wep.damage}
+                        {wep.type === 'Melee' ? `Melee (${wep.range})` : wep.range} | Mod: {wep.modifiers} | {wep.damage}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
