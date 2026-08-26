@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { WarbandBuilder } from './WarbandBuilder';
 import { ImportWarbandModal } from './ImportWarbandModal';
+import { WarbandComparatorModal } from './WarbandComparatorModal';
 import { 
   Plus, 
   Copy, 
@@ -9,7 +12,8 @@ import {
   Sparkles, 
   Skull,
   X,
-  UploadCloud
+  UploadCloud,
+  Scale
 } from 'lucide-react';
 
 export const WarbandDashboard: React.FC = () => {
@@ -25,6 +29,7 @@ export const WarbandDashboard: React.FC = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isComparatorOpen, setIsComparatorOpen] = useState(false);
   const [newWarbandName, setNewWarbandName] = useState('');
   const [newFactionId, setNewFactionId] = useState(factions[0]?.id || 'new-antioch');
   const [newDucatLimit, setNewDucatLimit] = useState(700);
@@ -49,11 +54,19 @@ export const WarbandDashboard: React.FC = () => {
 
         <div className="flex flex-wrap items-center gap-3">
           <button
+            onClick={() => setIsComparatorOpen(true)}
+            className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
+          >
+            <Scale className="w-4 h-4 text-[#D4AF37]" />
+            <span>Compare Rosters</span>
+          </button>
+
+          <button
             onClick={() => setIsImportModalOpen(true)}
             className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
           >
             <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
-            <span>Import NewRecruit Roster</span>
+            <span>Import NewRecruit</span>
           </button>
 
           <button
@@ -61,7 +74,7 @@ export const WarbandDashboard: React.FC = () => {
             className="flex items-center space-x-1.5 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
           >
             <Plus className="w-4 h-4" />
-            <span>Create New Warband</span>
+            <span>New Warband</span>
           </button>
         </div>
       </div>
@@ -204,7 +217,7 @@ export const WarbandDashboard: React.FC = () => {
                   step="50"
                   value={newDucatLimit}
                   onChange={(e) => setNewDucatLimit(parseInt(e.target.value) || 700)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
                 />
                 <span className="text-[10px] font-mono text-[#8E95A5] mt-1 block">
                   Standard Trench Crusade skirmishes use 700 Ducats.
@@ -235,6 +248,11 @@ export const WarbandDashboard: React.FC = () => {
       {/* Import NewRecruit Modal */}
       {isImportModalOpen && (
         <ImportWarbandModal onClose={() => setIsImportModalOpen(false)} />
+      )}
+
+      {/* Matchup Comparator Modal */}
+      {isComparatorOpen && (
+        <WarbandComparatorModal onClose={() => setIsComparatorOpen(false)} />
       )}
 
     </div>
