@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { WarbandBuilder } from './WarbandBuilder';
+import { ImportWarbandModal } from './ImportWarbandModal';
 import { 
   Plus, 
   Copy, 
   Trash2, 
-  Shield, 
   Sparkles, 
-  Coins, 
-  ChevronRight, 
   Skull,
-  X
+  X,
+  UploadCloud
 } from 'lucide-react';
 
 export const WarbandDashboard: React.FC = () => {
@@ -25,6 +24,7 @@ export const WarbandDashboard: React.FC = () => {
   } = useStore();
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [newWarbandName, setNewWarbandName] = useState('');
   const [newFactionId, setNewFactionId] = useState(factions[0]?.id || 'new-antioch');
   const [newDucatLimit, setNewDucatLimit] = useState(700);
@@ -44,10 +44,18 @@ export const WarbandDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#323846] pb-4">
         <div>
           <h2 className="font-gothic font-bold text-xl text-[#ECEFF4] tracking-wide">WARBAND COMMAND</h2>
-          <p className="text-xs font-mono text-[#8E95A5]">Select, build, and equip your holy or damned strike forces</p>
+          <p className="text-xs font-mono text-[#8E95A5]">Select, build, import, and equip your holy or damned strike forces</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
+          >
+            <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+            <span>Import NewRecruit Roster</span>
+          </button>
+
           <button
             onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center space-x-1.5 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
@@ -69,7 +77,7 @@ export const WarbandDashboard: React.FC = () => {
             <div
               key={wb.id}
               onClick={() => setActiveWarbandId(wb.id)}
-              className={`p-4 rounded-md border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+              className={`p-4 rounded-md border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between bevel-container ${
                 isActive
                   ? 'bg-[#161920] border-[#D4AF37] shadow-lg shadow-black/60 ring-1 ring-[#D4AF37]'
                   : 'bg-[#161920]/60 border-[#323846] hover:border-[#8E95A5]/60 hover:bg-[#161920]'
@@ -138,7 +146,7 @@ export const WarbandDashboard: React.FC = () => {
       {/* Create Warband Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#323846] w-full max-w-lg rounded-md shadow-2xl overflow-hidden">
+          <div className="bg-[#161920] border-2 border-[#323846] w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container">
             
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
               <div className="flex items-center space-x-2">
@@ -222,6 +230,11 @@ export const WarbandDashboard: React.FC = () => {
 
           </div>
         </div>
+      )}
+
+      {/* Import NewRecruit Modal */}
+      {isImportModalOpen && (
+        <ImportWarbandModal onClose={() => setIsImportModalOpen(false)} />
       )}
 
     </div>

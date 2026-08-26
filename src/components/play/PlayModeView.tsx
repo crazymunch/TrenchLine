@@ -3,21 +3,17 @@ import { useStore } from '../../store/useStore';
 import { DiceRoller } from './DiceRoller';
 import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
+import { AttackCalculatorModal } from './AttackCalculatorModal';
+import { ActiveUnit } from '../../types/warband';
 import { 
-  Swords, 
   Heart, 
   Droplet, 
   RotateCcw, 
-  CheckCircle2, 
-  AlertOctagon, 
   Skull, 
-  HelpCircle, 
-  Sparkles, 
   ArrowRight,
-  Shield,
-  Tag,
   Crosshair,
-  UserCheck
+  UserCheck,
+  Zap
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
@@ -25,7 +21,6 @@ export const PlayModeView: React.FC = () => {
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
-    resetMatchState, 
     updateUnitWounds, 
     updateUnitBloodMarkers, 
     setUnitStatus, 
@@ -38,6 +33,7 @@ export const PlayModeView: React.FC = () => {
 
   const warband = getActiveWarband();
   const [filterStatus, setFilterStatus] = useState<string>('All');
+  const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
 
   if (!warband) {
     return (
@@ -71,7 +67,7 @@ export const PlayModeView: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
       
       {/* Top Tactical HUD (Sticky) */}
-      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-4 shadow-2xl sticky top-20 z-30 space-y-4">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-4 shadow-2xl sticky top-20 z-30 space-y-4 bevel-container">
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
@@ -174,7 +170,7 @@ export const PlayModeView: React.FC = () => {
           return (
             <div
               key={unit.id}
-              className={`rounded-md border-2 transition-all p-4 space-y-4 shadow-xl flex flex-col justify-between ${
+              className={`rounded-md border-2 transition-all p-4 space-y-4 shadow-xl flex flex-col justify-between bevel-container ${
                 isOOA
                   ? 'bg-[#161920]/40 border-[#323846] opacity-60 grayscale'
                   : isDowned
@@ -335,11 +331,23 @@ export const PlayModeView: React.FC = () => {
                 </button>
               </div>
 
-              {/* Weapons & Attacks Strip */}
+              {/* Weapons & Attacks Strip with Attack Calculator Trigger */}
               <div className="space-y-1.5 text-xs">
-                <span className="text-[10px] font-mono font-bold text-[#8E95A5] uppercase tracking-wider block">
-                  Armaments & Keywords:
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold text-[#8E95A5] uppercase tracking-wider">
+                    Armaments & Attacks:
+                  </span>
+                  {unit.equippedWeapons.length > 0 && !isOOA && (
+                    <button
+                      onClick={() => setAttackingUnit(unit)}
+                      className="text-[10px] font-mono text-[#D4AF37] hover:text-[#E5C158] flex items-center space-x-1 font-bold"
+                    >
+                      <Crosshair className="w-3 h-3" />
+                      <span>Attack Calc</span>
+                    </button>
+                  )}
+                </div>
+
                 {unit.equippedWeapons.map((wep) => (
                   <div
                     key={wep.instanceId}
@@ -377,6 +385,14 @@ export const PlayModeView: React.FC = () => {
 
       {/* Tooltip popover */}
       <KeywordPopover />
+
+      {/* Attack Calculator Modal */}
+      {attackingUnit && (
+        <AttackCalculatorModal
+          attacker={attackingUnit}
+          onClose={() => setAttackingUnit(null)}
+        />
+      )}
 
       {/* Post Battle Sequence Wizard */}
       {isPostBattleOpen && (
