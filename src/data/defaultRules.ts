@@ -117,19 +117,21 @@ export const FACTIONS: Faction[] = [
 ];
 
 export const BASE_WEAPONS: WeaponProfile[] = [
-  // MELEE WEAPONS
+  // ============================================================================
+  // UNIVERSAL MELEE WEAPONS
+  // ============================================================================
   {
     id: 'w-knife',
     name: 'Trench Knife',
     factionId: 'universal',
     type: 'Melee',
     hands: 1,
-    range: '1"',
-    modifiers: '+0 DICE',
+    range: 'Melee',
+    modifiers: '-1 DICE',
     damage: 'Standard',
     keywords: ['Fast Strike'],
     cost: 1,
-    description: 'Standard trench warfare combat blade.'
+    description: 'Double-edged combat blade carried by every trench raider.'
   },
   {
     id: 'w-bayonet',
@@ -137,12 +139,12 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Melee',
     hands: 1,
-    range: '1"',
+    range: 'Melee',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['+1 on Charge', 'Shield Combo'],
+    keywords: ['+1 on Charge', 'Shield Combo', 'Bayonet Lug'],
     cost: 2,
-    description: 'Fixed bayonet providing reach and charge impalement.'
+    description: 'Rifle-mounted spearhead providing reach and charge impalement.'
   },
   {
     id: 'w-club',
@@ -150,12 +152,12 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Melee',
     hands: 1,
-    range: '1"',
+    range: 'Melee',
     modifiers: '+0 DICE',
     damage: 'Concussive',
     keywords: ['Concussive'],
     cost: 3,
-    description: 'Weighted spiked club designed to crack trench helmets.'
+    description: 'Weighted spiked club designed to crack trench helmets in close quarters.'
   },
   {
     id: 'w-sword',
@@ -163,12 +165,12 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Melee',
     hands: 1,
-    range: '1"',
+    range: 'Melee',
     modifiers: '+1 DICE',
     damage: 'Slashing',
-    keywords: ['+1 DICE', 'Slashing'],
+    keywords: ['+1 DICE', 'CRITICAL', 'Slashing'],
     cost: 4,
-    description: 'Single-edged trench sword or hand axe.'
+    description: 'Single-edged trench sword, sabre, or broad hand axe.'
   },
   {
     id: 'w-flail',
@@ -176,98 +178,287 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Melee',
     hands: 1,
-    range: '2"',
+    range: 'Melee (2")',
     modifiers: '+0 DICE',
     damage: 'Concussive',
     keywords: ['Reach (2")', 'Concussive', 'Ignore Shield Cover'],
     cost: 5,
-    description: 'Spiked chain flail that wraps around trench shields.'
+    description: 'Spiked chain flail that wraps around trench shields and barricades.'
+  },
+  {
+    id: 'w-trench-pick',
+    name: 'Trench Pick / Mattock',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+0 DICE',
+    damage: 'Heavy',
+    keywords: ['ARMOUR PIERCING 1', 'CRITICAL'],
+    cost: 6,
+    description: 'Narrow hardened steel spike designed to punch through heavy cuirasses.'
   },
   {
     id: 'w-polearm',
-    name: 'Polearm',
+    name: 'Polearm / Spear',
     factionId: 'universal',
     type: 'Melee',
     hands: 2,
-    range: '2"',
+    range: 'Melee (2")',
     modifiers: '+1 DICE',
     damage: 'Standard',
-    keywords: ['Reach (2")', 'Shield Combo'],
+    keywords: ['BLOCK', 'CUMBERSOME', 'Reach (2")', 'Shield Combo'],
     cost: 7,
-    description: 'Long spear, halberd, or billhook providing standoff capability.'
+    description: 'Long spear, halberd, or billhook providing standoff reach.'
+  },
+  {
+    id: 'w-lance',
+    name: 'Lance / Cavalry Spear',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee (2")',
+    modifiers: '+2 DICE on Charge',
+    damage: 'Heavy',
+    keywords: ['Reach (2")', '+2 on Charge', 'CUMBERSOME'],
+    cost: 8,
+    description: 'Long couched lance delivering devastating kinetic energy on mounted or running charges.'
   },
   {
     id: 'w-great-hammer',
-    name: 'Great Hammer/Maul',
+    name: 'Great Hammer / Maul',
     factionId: 'universal',
     type: 'Melee',
     hands: 2,
-    range: '1"',
-    modifiers: '+1 DICE',
+    range: 'Melee',
+    modifiers: '+1 DICE, +1 INJURY DICE',
     damage: 'Severe (D3)',
-    keywords: ['Heavy', 'Concussive', 'Armour Piercing 1'],
+    keywords: ['+1 INJURY DICE', 'HEAVY', 'CONCUSSIVE', 'ARMOUR PIERCING 1'],
     cost: 10,
-    description: 'Two-handed sledge designed to crush Machine Armour.'
+    description: 'Two-handed sledgehammer designed to pulverize Machine Armour.'
   },
   {
     id: 'w-great-sword',
-    name: 'Great Sword/Axe',
+    name: 'Great Sword / Axe',
     factionId: 'universal',
     type: 'Melee',
     hands: 2,
-    range: '1"',
-    modifiers: '+2 DICE',
+    range: 'Melee',
+    modifiers: '+2 DICE, +1 INJURY DICE',
     damage: 'Severe (D3)',
-    keywords: ['+2 DICE', 'Heavy', 'Slashing'],
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'HEAVY'],
     cost: 12,
-    description: 'Massive executioner greatsword or battle axe.'
+    description: 'Massive executioner greatsword or battle axe cleaving through multiple foes.'
   },
   {
-    id: 'w-misericordia',
-    name: 'Misericordia',
-    factionId: 'new-antioch',
-    allowedUnits: ['Combat Medic', 'Sister of Saint Cosmas'],
+    id: 'w-executioner-blade',
+    name: 'Executioner Blade',
+    factionId: 'universal',
     type: 'Melee',
-    hands: 1,
-    range: '1"',
-    modifiers: '+1 DICE',
-    damage: 'Lethal',
-    keywords: ['Combat Medic Only', 'Finish the Fallen'],
+    hands: 2,
+    range: 'Melee',
+    modifiers: '+2 DICE, +1 INJURY DICE',
+    damage: 'Severe (D3+1)',
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'CUMBERSOME', 'DECAPITATE'],
     cost: 15,
-    description: 'Narrow mercy blade used by Combat Medics to deliver the Emperor\'s peace.'
+    description: 'Weighted square-tipped greatsword honed to sever demonic necks in a single swing.'
   },
   {
     id: 'w-anti-tank-hammer',
     name: 'Anti-Tank Hammer',
-    factionId: 'trench-pilgrims',
-    allowedFactions: ['trench-pilgrims', 'iron-sultanate'],
+    factionId: 'universal',
+    allowedFactions: ['trench-pilgrims', 'iron-sultanate', 'new-antioch', 'heretic-legions'],
     type: 'Melee',
     hands: 2,
-    range: '1"',
-    modifiers: '+1 DICE',
+    range: 'Melee',
+    modifiers: '+1 DICE, +1 INJURY DICE',
     damage: 'Severe (D3+1)',
-    keywords: ['+1 INJURY DICE', 'CRITICAL', 'IGNORE ARMOUR', 'RISKY'],
-    cost: 25,
-    description: 'Hollow-charge impact hammer capable of breaching tank armor.'
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'IGNORE ARMOUR', 'RISKY', 'DEMOLITION'],
+    cost: 35,
+    description: 'Hollow-charge impact hammer capable of breaching tank armor and crushing heavy constructs.'
   },
   {
-    id: 'w-titan-zulfiqar',
+    id: 'w-morningstar',
+    name: 'Two-Handed Morningstar',
+    factionId: 'universal',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee',
+    modifiers: '+1 DICE, +1 INJURY DICE',
+    damage: 'Severe (D3)',
+    keywords: ['+1 INJURY DICE', 'HEAVY', 'CONCUSSIVE'],
+    cost: 10,
+    description: 'Spiked iron ball on heavy staff delivering crushing bludgeoning blows.'
+  },
+
+  // ============================================================================
+  // FACTION-SPECIFIC MELEE WEAPONS
+  // ============================================================================
+  {
+    id: 'wep-titan-zulfiqar',
     name: 'Titan Zulfiqar',
     factionId: 'iron-sultanate',
     allowedUnits: ['Brazen Bull', 'Favoured Brazen Bull', 'Takwin Homunculus', 'Favoured Takwin Homunculus'],
     type: 'Melee',
     hands: 1,
-    range: '1"',
+    range: 'Melee',
     modifiers: '+2 INJURY MODIFIER',
     damage: 'Severe (D3)',
-    keywords: ['+2 INJURY MODIFIER', 'CRITICAL', 'HEAVY', 'Bull Only'],
+    keywords: ['+2 INJURY MODIFIER', 'CRITICAL', 'HEAVY'],
     cost: 30,
-    description: 'Massive dual-bladed alchemical scimitar forged for siege beasts.'
+    description: 'Massive twin-bladed alchemical scimitar forged for siege constructs.'
+  },
+  {
+    id: 'w-alchemical-scimitar',
+    name: 'Alchemical Scimitar',
+    factionId: 'iron-sultanate',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+1 DICE',
+    damage: 'Slashing',
+    keywords: ['+1 DICE', 'CRITICAL'],
+    cost: 15,
+    description: 'Damascene steel blade tempered in alchemical oils that slices cleanly through armour.'
+  },
+  {
+    id: 'w-misericordia',
+    name: 'Misericordia',
+    factionId: 'new-antioch',
+    allowedUnits: ['Combat Medic', 'Sister of Saint Cosmas', 'Lieutenant'],
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+1 DICE',
+    damage: 'Lethal',
+    keywords: ['FINISH THE FALLEN', 'CRITICAL'],
+    cost: 15,
+    description: 'Narrow mercy dagger used by medics and officers to deliver the Emperor\'s peace.'
+  },
+  {
+    id: 'w-blessed-halberd',
+    name: 'Blessed Halberd',
+    factionId: 'new-antioch',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee (2")',
+    modifiers: '+1 DICE',
+    damage: 'Heavy',
+    keywords: ['BLOCK', 'HOLY', 'Reach (2")'],
+    cost: 12,
+    description: 'Sanctified polearm inscribed with scripture and polished in holy water.'
+  },
+  {
+    id: 'w-holy-reliquary-mace',
+    name: 'Holy Reliquary Mace',
+    factionId: 'trench-pilgrims',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+1 DICE',
+    damage: 'Concussive',
+    keywords: ['CONCUSSIVE', 'NEGATE FEAR', 'HOLY'],
+    cost: 18,
+    description: 'Heavy gold-plated mace housing bone fragments of venerated trench martyrs.'
+  },
+  {
+    id: 'w-sacred-flail',
+    name: 'Sacred Flail of Flagellation',
+    factionId: 'trench-pilgrims',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee (2")',
+    modifiers: '+0 DICE',
+    damage: 'Slashing',
+    keywords: ['Reach (2")', 'BLEED', 'IGNORE SHIELD'],
+    cost: 8,
+    description: 'Barbed multi-tailed scourge used in ecstatic penitence and combat.'
+  },
+  {
+    id: 'w-cleansing-torch',
+    name: 'Cleansing Fire Torch',
+    factionId: 'trench-pilgrims',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+0 DICE',
+    damage: 'Fire',
+    keywords: ['FIRE', 'IGNITE'],
+    cost: 10,
+    description: 'Brimstone-soaked iron brazier torch used to set heretics ablaze.'
+  },
+  {
+    id: 'w-anchorite-piston',
+    name: 'Anchorite Pneumatic Piston',
+    factionId: 'trench-pilgrims',
+    allowedUnits: ['Anchorite Shrine', 'Combat Medic'],
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+1 DICE, +2 INJURY MODIFIER',
+    damage: 'Severe (D3+2)',
+    keywords: ['+2 INJURY MODIFIER', 'HEAVY', 'IGNORE ARMOUR'],
+    cost: 30,
+    description: 'Steam-driven pile-driver mounted on walking reliquary shrines.'
+  },
+  {
+    id: 'w-corrupted-chainblade',
+    name: 'Corrupted Chainblade',
+    factionId: 'heretic-legions',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: '+1 DICE',
+    damage: 'Slashing',
+    keywords: ['+1 DICE', 'CRITICAL', 'BLEED'],
+    cost: 15,
+    description: 'Motorized serrated saw blade screeching with trapped infernal spirits.'
+  },
+  {
+    id: 'w-daemonic-cleaver',
+    name: 'Daemonic Cleaver',
+    factionId: 'heretic-legions',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee',
+    modifiers: '+1 DICE, +1 INJURY DICE',
+    damage: 'Severe (D3)',
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'CORRUPTED'],
+    cost: 20,
+    description: 'Massive obsidian butcher knife forged in brimstone pits.'
+  },
+  {
+    id: 'w-rusted-scythe',
+    name: 'Rusted Scythe of Pestilence',
+    factionId: 'black-grail',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee (2")',
+    modifiers: '+1 DICE',
+    damage: 'Heavy',
+    keywords: ['INFECTION', 'Reach (2")', 'BLEED'],
+    cost: 12,
+    description: 'Filthy jagged scythe coated in necrotizing bacterial slurry.'
+  },
+  {
+    id: 'w-putrid-flail',
+    name: 'Putrid Great Flail',
+    factionId: 'black-grail',
+    type: 'Melee',
+    hands: 2,
+    range: 'Melee (2")',
+    modifiers: '+1 DICE',
+    damage: 'Concussive',
+    keywords: ['INFECTION', 'Reach (2")', 'IGNORE SHIELD'],
+    cost: 10,
+    description: 'Swinging censer vomiting clouds of flies and putrid ichor.'
   },
 
-  // RANGED WEAPONS
+  // ============================================================================
+  // UNIVERSAL RANGED WEAPONS
+  // ============================================================================
   {
-    id: 'w-pistol',
+    id: 'wep-pistol',
     name: 'Pistol / Revolver',
     factionId: 'universal',
     type: 'Ranged',
@@ -275,9 +466,22 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '12"',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['Assault', 'Sidearm'],
+    keywords: ['ASSAULT', 'PISTOL'],
     cost: 6,
-    description: 'Reliable service revolver or semi-auto sidearm.'
+    description: 'Reliable service revolver or semi-automatic sidearm.'
+  },
+  {
+    id: 'w-heavy-pistol',
+    name: 'Heavy Pistol / Hand Cannon',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '12"',
+    modifiers: '+0 DICE, +1 INJURY MODIFIER',
+    damage: 'Heavy',
+    keywords: ['ASSAULT', 'PISTOL', '+1 INJURY MODIFIER'],
+    cost: 10,
+    description: 'Large-calibre magnum sidearm delivering concussive stopping power.'
   },
   {
     id: 'w-auto-pistol',
@@ -285,12 +489,12 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Ranged',
     hands: 1,
-    range: '12"',
+    range: '8"',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['Assault', 'Automatic 2', 'Sidearm'],
+    keywords: ['ASSAULT', 'AUTOMATIC 2', 'PISTOL'],
     cost: 10,
-    description: 'High-rate-of-fire machine pistol.'
+    description: 'High-rate-of-fire machine pistol favored for storming trenches.'
   },
   {
     id: 'w-rifle',
@@ -301,22 +505,9 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '24"',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['Bayonet Lug'],
+    keywords: ['ASSAULT', 'BAYONET LUG'],
     cost: 10,
-    description: 'Standard issue military bolt-action rifle.'
-  },
-  {
-    id: 'w-shotgun',
-    name: 'Shotgun',
-    factionId: 'universal',
-    type: 'Ranged',
-    hands: 2,
-    range: '12"',
-    modifiers: '+1 Hit Point-Blank',
-    damage: 'Standard',
-    keywords: ['+1 Hit Point-Blank (≤6")', 'Bayonet Lug', 'Shield Combo'],
-    cost: 10,
-    description: '12-gauge trench sweeper shotgun.'
+    description: 'Standard military rifle issued to millions across all trench sectors.'
   },
   {
     id: 'w-semi-rifle',
@@ -327,9 +518,35 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '24"',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['Bayonet Lug', 'Assault'],
+    keywords: ['ASSAULT', 'AUTOMATIC 2', 'BAYONET LUG'],
     cost: 15,
-    description: 'Gas-operated self-loading infantry rifle.'
+    description: 'Gas-operated self-loading infantry rifle allowing rapid double taps.'
+  },
+  {
+    id: 'wep-automatic-rifle',
+    name: 'Automatic Rifle',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Standard',
+    keywords: ['ASSAULT', 'AUTOMATIC 2'],
+    cost: 40,
+    description: 'Heavy magazine-fed automatic combat rifle with Focused Fire.'
+  },
+  {
+    id: 'w-shotgun',
+    name: 'Shotgun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '12"',
+    modifiers: '+1 DICE Point-Blank',
+    damage: 'Standard',
+    keywords: ['+1 DICE Point-Blank (≤6")', 'BAYONET LUG', 'SHIELD COMBO'],
+    cost: 10,
+    description: '12-gauge trench sweeper pump shotgun.'
   },
   {
     id: 'w-auto-shotgun',
@@ -340,36 +557,22 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '12"',
     modifiers: '+1 DICE Point-Blank',
     damage: 'Standard',
-    keywords: ['+1 DICE Point-Blank', 'Bayonet Lug', 'Shield Combo', 'Assault'],
+    keywords: ['+1 DICE Point-Blank', 'ASSAULT', 'AUTOMATIC 2', 'SHIELD COMBO'],
     cost: 15,
-    description: 'Drum-fed automatic trench shotgun.'
+    description: 'Drum-fed automatic shotgun capable of clearing entire bunker rooms.'
   },
   {
-    id: 'w-jezzail',
-    name: 'Jezzail',
-    factionId: 'iron-sultanate',
+    id: 'w-trench-sweeper',
+    name: 'Sawed-Off Shotgun',
+    factionId: 'universal',
     type: 'Ranged',
-    hands: 2,
-    range: '18"',
-    modifiers: '+1 DICE',
+    hands: 1,
+    range: '8"',
+    modifiers: '+1 DICE Point-Blank',
     damage: 'Standard',
-    keywords: ['+1 DICE', 'Alchemical Lock'],
-    cost: 7,
-    description: 'Long-barrelled rifled musket favored by Sultanate marksmen.'
-  },
-  {
-    id: 'w-siege-jezzail',
-    name: 'Siege Jezzail',
-    factionId: 'iron-sultanate',
-    allowedFactions: ['iron-sultanate'],
-    type: 'Ranged',
-    hands: 2,
-    range: '30"',
-    modifiers: '+1 DICE, +1 INJURY DICE',
-    damage: 'Heavy',
-    keywords: ['+1 DICE', '+1 INJURY DICE', 'Heavy'],
-    cost: 30,
-    description: 'High-caliber wall rifle designed to breach fortifications.'
+    keywords: ['+1 DICE Point-Blank', 'ASSAULT', 'PISTOL'],
+    cost: 8,
+    description: 'Compact double-barrelled sawed-off shotgun fired one-handed.'
   },
   {
     id: 'w-smg',
@@ -380,9 +583,35 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '12"',
     modifiers: '+0 DICE',
     damage: 'Standard',
-    keywords: ['Assault', 'Bayonet Lug', 'Limit 2'],
+    keywords: ['ASSAULT', 'AUTOMATIC 2', 'LIMIT 2'],
     cost: 30,
     description: 'Rapid-firing 9mm trench submachine gun.'
+  },
+  {
+    id: 'w-mg',
+    name: 'Machine Gun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+1 DICE',
+    damage: 'Heavy',
+    keywords: ['AUTOMATIC 2', 'HEAVY', 'SUPPRESSIVE FIRE', 'LIMIT 2'],
+    cost: 50,
+    description: 'Belt-fed air-cooled squad automatic machine gun.'
+  },
+  {
+    id: 'w-heavy-mg',
+    name: 'Heavy Machine Gun',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '36"',
+    modifiers: '+1 DICE',
+    damage: 'Heavy',
+    keywords: ['AUTOMATIC 3', 'HEAVY', 'RELOAD', 'LIMIT 1'],
+    cost: 60,
+    description: 'Tripod-mounted heavy machine gun capable of pinning whole platoons.'
   },
   {
     id: 'w-sniper',
@@ -393,46 +622,33 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '36"',
     modifiers: '+1 DICE (+2 stationary)',
     damage: 'Lethal',
-    keywords: ['Precision', 'Heavy', 'Armour Piercing 1', 'Limit 3'],
+    keywords: ['PRECISION', 'HEAVY', 'CRITICAL', 'LIMIT 3'],
     cost: 35,
     description: 'Precision match-grade rifle fitted with high-power telescopic optics.'
   },
   {
-    id: 'w-auto-rifle',
-    name: 'Automatic Rifle',
-    factionId: 'universal',
-    type: 'Ranged',
-    hands: 2,
-    range: '24"',
-    modifiers: '+0 DICE',
-    damage: 'Standard',
-    keywords: ['Assault', 'Automatic 2', 'Focused Fire'],
-    cost: 40,
-    description: 'Heavy magazine-fed automatic combat rifle.'
-  },
-  {
-    id: 'w-mg',
-    name: 'Machine Gun',
+    id: 'w-anti-materiel',
+    name: 'Anti-Materiel Rifle',
     factionId: 'universal',
     type: 'Ranged',
     hands: 2,
     range: '36"',
-    modifiers: '+1 DICE',
-    damage: 'Heavy',
-    keywords: ['Heavy', 'Suppressive Fire', 'Limit 2'],
+    modifiers: '+0 DICE, +1 INJURY DICE',
+    damage: 'Severe (D3+1)',
+    keywords: ['+1 INJURY DICE', 'CRITICAL', 'HEAVY', 'IGNORE ARMOUR', 'LIMIT 1'],
     cost: 50,
-    description: 'Belt-fed air-cooled heavy machine gun.'
+    description: 'Massive long rifle designed to punch through engine blocks and Machine Armour.'
   },
   {
-    id: 'w-flamethrower',
+    id: 'wep-flamethrower',
     name: 'Flamethrower',
     factionId: 'universal',
     type: 'Ranged',
     hands: 2,
-    range: '8" Template',
-    modifiers: 'Automatic Hit',
+    range: '8"',
+    modifiers: '-1 INJURY DICE',
     damage: 'Area',
-    keywords: ['Fire', 'Blast (2")', 'Ignore Armour', 'Limit 3'],
+    keywords: ['-1 INJURY DICE', 'FIRE', 'FLAMETHROWER', 'IGNORE ARMOUR', 'LIMIT 3'],
     cost: 30,
     description: 'Pressurized chemical projector firing streams of liquid fire.'
   },
@@ -442,15 +658,72 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     factionId: 'universal',
     type: 'Ranged',
     hands: 2,
-    range: '10" Template',
+    range: '12"',
     modifiers: 'Severe D3',
     damage: 'Severe (D3)',
-    keywords: ['Fire D3', 'Blast (3")', 'Heavy', 'Limit 1'],
+    keywords: ['FIRE D3', 'FLAMETHROWER', 'HEAVY', 'IGNORE ARMOUR', 'IGNORE COVER', 'LIMIT 1'],
     cost: 55,
     description: 'Massive dual-tank chemical projector incinerating whole bunker sectors.'
   },
   {
-    id: 'w-flame-cannon',
+    id: 'w-grenade-launcher',
+    name: 'Grenade Launcher',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Blast',
+    keywords: ['BLAST 3"', 'SHRAPNEL', 'SCATTER'],
+    cost: 40,
+    description: 'Tubular launch system designed to lob explosive canisters into trench networks.'
+  },
+  {
+    id: 'w-trench-mortar',
+    name: 'Trench Mortar',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 2,
+    range: '48"',
+    modifiers: '+0 DICE',
+    damage: 'Heavy Blast',
+    keywords: ['INDIRECT', 'BLAST 3"', 'SHRAPNEL', 'HEAVY', 'LIMIT 1'],
+    cost: 45,
+    description: 'Indirect-fire high-angle mortar lobbing heavy shells over obstacles.'
+  },
+
+  // ============================================================================
+  // FACTION-SPECIFIC RANGED WEAPONS
+  // ============================================================================
+  {
+    id: 'wep-jezzail',
+    name: 'Jezzail',
+    factionId: 'iron-sultanate',
+    type: 'Ranged',
+    hands: 2,
+    range: '18"',
+    modifiers: '+1 DICE',
+    damage: 'Standard',
+    keywords: ['+1 DICE', 'ALCHEMICAL LOCK'],
+    cost: 7,
+    description: 'Long-barrelled rifled musket favored by Sultanate marksmen.'
+  },
+  {
+    id: 'wep-siege-jezzail',
+    name: 'Siege Jezzail',
+    factionId: 'iron-sultanate',
+    allowedFactions: ['iron-sultanate'],
+    type: 'Ranged',
+    hands: 2,
+    range: '30"',
+    modifiers: '+1 DICE, +1 INJURY DICE',
+    damage: 'Heavy',
+    keywords: ['+1 DICE', '+1 INJURY DICE', 'HEAVY'],
+    cost: 30,
+    description: 'High-caliber wall rifle designed to breach fortifications and heavy armour.'
+  },
+  {
+    id: 'wep-flame-cannon',
     name: 'Flame Cannon',
     factionId: 'iron-sultanate',
     allowedUnits: ['Brazen Bull', 'Favoured Brazen Bull'],
@@ -463,8 +736,88 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     cost: 60,
     description: 'Mounted Greek fire cannon firing continuous streams across a 12" line.'
   },
+  {
+    id: 'wep-alchemical-jezzail',
+    name: 'Alchemical Jezzail',
+    factionId: 'iron-sultanate',
+    type: 'Ranged',
+    hands: 2,
+    range: '18"',
+    modifiers: '+1 DICE',
+    damage: 'Standard',
+    keywords: ['+1 DICE', 'ASSAULT'],
+    cost: 25,
+    description: 'Fine Sultanate firearm tuned for high mobility and rapid alchemical discharge.'
+  },
+  {
+    id: 'w-halberd-gun',
+    name: 'Halberd-Gun',
+    factionId: 'iron-sultanate',
+    type: 'Both',
+    hands: 2,
+    range: '18" / Melee (2")',
+    modifiers: '+1 DICE',
+    damage: 'Standard',
+    keywords: ['+1 DICE', 'ASSAULT', 'Reach (2")', 'BLOCK'],
+    cost: 20,
+    description: 'Ingenious hybrid weapon combining an alchemical carbine with a heavy halberd head.'
+  },
+  {
+    id: 'w-hellgun',
+    name: 'Hellgun / Infernal Rifle',
+    factionId: 'heretic-legions',
+    type: 'Ranged',
+    hands: 2,
+    range: '24"',
+    modifiers: '+0 DICE',
+    damage: 'Fire',
+    keywords: ['FIRE', 'CORRUPTED', 'ASSAULT'],
+    cost: 25,
+    description: 'Rifle bound with demonic fire that chars the target\'s soul.'
+  },
+  {
+    id: 'w-ophidian-rifle',
+    name: 'Ophidian Rifle',
+    factionId: 'heretic-legions',
+    type: 'Ranged',
+    hands: 2,
+    range: '30"',
+    modifiers: '+1 DICE',
+    damage: 'Poison',
+    keywords: ['POISON', 'GAS', 'CRITICAL'],
+    cost: 40,
+    description: 'Serpentine rifle firing toxic venom darts that dissolve lung tissue.'
+  },
+  {
+    id: 'w-bile-spewer',
+    name: 'Bile Spewer',
+    factionId: 'black-grail',
+    type: 'Ranged',
+    hands: 2,
+    range: '12"',
+    modifiers: '+0 DICE',
+    damage: 'Acid',
+    keywords: ['ACID', 'IGNORE ARMOUR', 'ASSAULT'],
+    cost: 25,
+    description: 'Organic projectile organ spewing corrosive stomach acid that eats through armor.'
+  },
+  {
+    id: 'w-spore-projector',
+    name: 'Virulent Spore Projector',
+    factionId: 'black-grail',
+    type: 'Ranged',
+    hands: 2,
+    range: '8"',
+    modifiers: 'Infection',
+    damage: 'Area Gas',
+    keywords: ['GAS', 'INFECTION', 'IGNORE COVER'],
+    cost: 30,
+    description: 'Bellows firing swarms of flesh-eating spores into trench networks.'
+  },
 
-  // GRENADES
+  // ============================================================================
+  // GRENADES & EXPLOSIVES
+  // ============================================================================
   {
     id: 'w-frag-grenades',
     name: 'Frag Grenades',
@@ -474,7 +827,7 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '8"',
     modifiers: 'Blast',
     damage: 'Blast',
-    keywords: ['Blast (2")', 'Shrapnel'],
+    keywords: ['BLAST 2"', 'SHRAPNEL', 'IGNORE LONG RANGE'],
     cost: 7,
     description: 'Cast iron fragmentation grenades throwing lethal jagged steel.'
   },
@@ -487,22 +840,61 @@ export const BASE_WEAPONS: WeaponProfile[] = [
     range: '8"',
     modifiers: 'Fire',
     damage: 'Fire',
-    keywords: ['Blast (2")', 'Fire', 'Limit 2'],
+    keywords: ['BLAST 2"', 'FIRE', 'LIMIT 2', 'IGNORE LONG RANGE'],
     cost: 15,
     description: 'White phosphorus grenades igniting everything within radius.'
   },
   {
+    id: 'w-gas-grenades',
+    name: 'Gas Grenades',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '8"',
+    modifiers: 'Gas Cloud',
+    damage: 'Gas',
+    keywords: ['GAS', 'BLAST 2"', 'IGNORE ARMOUR', 'IGNORE COVER', 'IGNORE LONG RANGE'],
+    cost: 15,
+    description: 'Pressurized glass canisters containing chlorine or mustard gas agents.'
+  },
+  {
+    id: 'w-smoke-grenades',
+    name: 'Smoke Grenades',
+    factionId: 'universal',
+    type: 'Ranged',
+    hands: 1,
+    range: '8"',
+    modifiers: 'Smoke',
+    damage: 'None',
+    keywords: ['DEPLOYABLE', 'SMOKE 3"', 'IGNORE LONG RANGE'],
+    cost: 10,
+    description: 'Dense chemical smoke canisters creating a 3" sight-blocking cloud.'
+  },
+  {
     id: 'w-satchel-charge',
-    name: 'Satchel Charge',
+    name: 'Satchel Charge / Demolition Charge',
     factionId: 'universal',
     type: 'Ranged',
     hands: 1,
     range: '4"',
     modifiers: 'Severe (D3+1)',
     damage: 'Severe (D3+1)',
-    keywords: ['Blast (3")', 'Consumable (Limit 3)', 'Ignore Armour'],
+    keywords: ['+1 INJURY DICE', 'BLAST 3"', 'CONSUMABLE', 'IGNORE ARMOUR', 'SCATTER'],
     cost: 15,
-    description: 'Canvas bag packed with high explosives and timed fuse.'
+    description: 'Canvas bag packed with ammonal or blasting gelatin to demolish pillboxes.'
+  },
+  {
+    id: 'w-martyr-bomb',
+    name: 'Martyr\'s Bomb Harness',
+    factionId: 'trench-pilgrims',
+    type: 'Melee',
+    hands: 1,
+    range: 'Melee',
+    modifiers: 'Massive Explosion',
+    damage: 'Severe (D3+2)',
+    keywords: ['BLAST 3"', 'SACRIFICE', 'IGNORE ARMOUR', 'DEMOLITION'],
+    cost: 15,
+    description: 'Dynamite chest rig detonated in holy martyrdom to wipe out enemy shock troops.'
   }
 ];
 
@@ -512,14 +904,18 @@ export const BASE_ARMOUR: ArmourProfile[] = [
     name: 'Standard Armour',
     factionId: 'universal',
     armourModifier: '-1 Injury Modifier',
+    modifier: '-1 INJURY MODIFIER',
+    category: 'Medium',
     cost: 15,
-    description: 'Standard steel breastplate, padded gambeson, and iron gorget.'
+    description: 'Standard steel cuirass, padded gambeson, and iron gorget.'
   },
   {
     id: 'arm-reinforced',
     name: 'Reinforced Armour',
     factionId: 'universal',
     armourModifier: '-2 Injury Modifier',
+    modifier: '-2 INJURY MODIFIER',
+    category: 'Heavy',
     cost: 40,
     description: 'Full-plate harness layered with hardened steel inserts and spall liners.'
   },
@@ -529,8 +925,21 @@ export const BASE_ARMOUR: ArmourProfile[] = [
     factionId: 'universal',
     allowedUnits: ['Mechanized Heavy Infantry', 'Anointed Heavy Infantry', 'Brazen Bull', 'Favoured Brazen Bull'],
     armourModifier: '-3 Injury Modifier',
+    modifier: '-3 INJURY MODIFIER',
+    category: 'Powered',
     cost: 50,
     description: 'Powered pneumatic exoskeleton plate. Sets base size to 40mm, Standfast: treats Down as Minor Wound.'
+  },
+  {
+    id: 'arm-heavy-plate',
+    name: 'Heavy Plate / Power Harness',
+    factionId: 'new-antioch',
+    armourModifier: '-3 Injury Modifier',
+    modifier: '-3 INJURY MODIFIER',
+    category: 'Powered',
+    cost: 50,
+    keywords: ['-3 INJURY MODIFIER', 'CUMBERSOME'],
+    description: 'Full gothic plate offering extreme protection (-3 to Injury rolls) but limits mobility.'
   },
   {
     id: 'arm-alchemist',
@@ -538,15 +947,21 @@ export const BASE_ARMOUR: ArmourProfile[] = [
     factionId: 'iron-sultanate',
     allowedUnits: ['Jabirean Alchemist', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas'],
     armourModifier: '-2 Injury Modifier',
+    modifier: '-2 INJURY MODIFIER',
+    category: 'Heavy',
     cost: 50,
+    keywords: ['NEGATE FIRE', 'NEGATE GAS'],
     description: 'Hermetically sealed alchemical hazard suit. -2 Injury Modifier, completely NEGATES FIRE and NEGATES GAS.'
   },
   {
     id: 'arm-trench-shield',
     name: 'Trench Shield',
     factionId: 'universal',
-    armourModifier: '-1 Injury Modifier (Frontal)',
+    armourModifier: '-1 Injury Modifier',
+    modifier: '-1 INJURY MODIFIER',
+    category: 'Shield',
     cost: 10,
+    keywords: ['SHIELD', '-1 INJURY MODIFIER'],
     description: 'Heavy steel ballistic mantlet with firing viewport. Provides cover bonus from frontal arc.'
   },
   {
@@ -554,74 +969,245 @@ export const BASE_ARMOUR: ArmourProfile[] = [
     name: 'Fire Shield',
     factionId: 'iron-sultanate',
     armourModifier: '-1 Injury Modifier',
+    modifier: '-1 INJURY MODIFIER',
+    category: 'Shield',
     cost: 20,
+    keywords: ['SHIELD', 'NEGATE FIRE', '-1 INJURY MODIFIER'],
     description: 'Alchemically treated shield negating fire damage and providing -1 Injury Modifier.'
+  },
+  {
+    id: 'arm-pavise',
+    name: 'Pavise / Deployable Mantlet',
+    factionId: 'universal',
+    armourModifier: '-2 Cover Modifier',
+    modifier: '-2 COVER MODIFIER',
+    category: 'Shield',
+    cost: 15,
+    keywords: ['DEPLOYABLE', 'HEAVY COVER'],
+    description: 'Massive freestanding wooden and iron mantlet anchored into the mud.'
+  },
+  {
+    id: 'arm-spiked-shield',
+    name: 'Spiked Shield of the Damned',
+    factionId: 'heretic-legions',
+    armourModifier: '-1 Injury Modifier',
+    modifier: '-1 INJURY MODIFIER',
+    category: 'Shield',
+    cost: 15,
+    keywords: ['SHIELD', 'MELEE REFLECT'],
+    description: 'Barbed iron shield that inflicts Blood Markers on charging attackers.'
+  },
+  {
+    id: 'arm-hairshirt',
+    name: 'Martyr\'s Hairshirt / Zealot Rags',
+    factionId: 'trench-pilgrims',
+    armourModifier: '0',
+    modifier: '0',
+    category: 'Light',
+    cost: 5,
+    keywords: ['+1 COURAGE', 'NEGATE FEAR'],
+    description: 'Penitential rough horsehair garment granting divine fortitude against horror.'
+  },
+  {
+    id: 'arm-daemon-plate',
+    name: 'Daemon-Forged Plate',
+    factionId: 'heretic-legions',
+    armourModifier: '-2 Injury Modifier',
+    modifier: '-2 INJURY MODIFIER',
+    category: 'Heavy',
+    cost: 45,
+    keywords: ['-2 INJURY MODIFIER', 'DEMONIC RESISTANCE'],
+    description: 'Living armor forged with brimstone and hellfire, deflecting holy ammunition.'
+  },
+  {
+    id: 'arm-plague-carapace',
+    name: 'Plague-Hardened Carapace',
+    factionId: 'black-grail',
+    armourModifier: '-2 Injury Modifier',
+    modifier: '-2 INJURY MODIFIER',
+    category: 'Heavy',
+    cost: 35,
+    keywords: ['-2 INJURY MODIFIER', 'REGENERATE 1'],
+    description: 'Chitinous calcified boils that absorb projectile impacts and knit flesh.'
   }
 ];
 
 export const BASE_EQUIPMENT: EquipmentItem[] = [
   {
     id: 'eq-gas-mask',
-    name: 'Gas Mask',
+    name: 'Gas Mask / Filter Respirator',
     cost: 5,
     factionId: 'universal',
-    effect: 'NEGATE GAS: Wearer is completely immune to toxic gas effects and chemical hazard weapons.'
+    effect: 'NEGATE GAS: Wearer is completely immune to toxic gas effects and chemical hazard weapons.',
+    keywords: ['NEGATE GAS']
   },
   {
     id: 'eq-combat-helmet',
     name: 'Combat Helmet',
     cost: 10,
     factionId: 'universal',
-    effect: 'NEGATE SHRAPNEL: Negates the bonus Injury dice from explosive shrapnel and blast weapons.'
+    effect: 'NEGATE SHRAPNEL: Negates the bonus Injury dice from explosive shrapnel and blast weapons.',
+    keywords: ['NEGATE SHRAPNEL']
   },
   {
     id: 'eq-medikit',
     name: 'Medikit',
     cost: 15,
     factionId: 'universal',
-    effect: 'ACTION: Treat a friendly model within 1" to remove 1 Blood Marker or attempt to revive a Downed model.'
+    effect: 'ACTION: Treat a friendly model within 1" to remove 1 Blood Marker or attempt to revive a Downed model.',
+    keywords: ['TREAT ACTION']
+  },
+  {
+    id: 'eq-surgical-kit',
+    name: 'Field Surgical Kit',
+    cost: 20,
+    factionId: 'universal',
+    effect: 'ACTION: +1 DICE to Treat actions and revive Downed models on a 2+ on D6.',
+    keywords: ['ADVANCED TREAT']
   },
   {
     id: 'eq-binoculars',
-    name: 'Binoculars',
+    name: 'Binoculars / Rangefinder',
     cost: 5,
     factionId: 'universal',
-    effect: 'Spotter Action: Designate an enemy model in Line of Sight to grant friendly units +1 DICE Ranged attacks against it.'
-  },
-  {
-    id: 'eq-shovel',
-    name: 'Shovel',
-    cost: 5,
-    factionId: 'universal',
-    effect: 'Dug In: Model starting on open ground has the COVER keyword until it moves. Can be used as a 2H melee weapon.'
-  },
-  {
-    id: 'eq-cloak-alamut',
-    name: 'Cloak of Alamut',
-    cost: 25,
-    factionId: 'iron-sultanate',
-    effect: 'Blend In: Ranged attack modifier for Cover is -2 DICE instead of -1 DICE when wearing this cloak.'
-  },
-  {
-    id: 'eq-wind-amulet',
-    name: 'Wind Amulet',
-    cost: 10,
-    factionId: 'iron-sultanate',
-    effect: 'Gusts of Wind: Once per match, add +3" to Movement Characteristic for the activation.'
+    effect: 'Spotter Action: Designate an enemy model in Line of Sight to grant friendly units +1 DICE Ranged attacks against it.',
+    keywords: ['SPOTTER ACTION']
   },
   {
     id: 'eq-sniper-scope',
     name: 'Sniper Scope',
     cost: 10,
     factionId: 'universal',
-    effect: 'Enhanced Accuracy: One rifle gains the IGNORE LONG RANGE keyword.'
+    effect: 'Enhanced Accuracy: Attached rifle gains the IGNORE LONG RANGE keyword.',
+    keywords: ['IGNORE LONG RANGE']
+  },
+  {
+    id: 'eq-shovel',
+    name: 'Entrenching Shovel',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'Dug In: Model starting on open ground has the COVER keyword until it moves. Can be used as a 2H melee weapon.',
+    keywords: ['DUG IN', 'MELEE WEAPON']
+  },
+  {
+    id: 'eq-mountaineer-kit',
+    name: 'Mountaineer Kit / Climbing Gear',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'Grants +1 DICE on Risky rolls when climbing vertical terrain pieces and scaling ruins.',
+    keywords: ['+1 DICE (CLIMBING)']
+  },
+  {
+    id: 'eq-wire-cutters',
+    name: 'Wire Cutters',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'Ignores movement penalties and hazards when traversing barbed wire or razorwire terrain.',
+    keywords: ['IGNORE WIRE']
+  },
+  {
+    id: 'eq-flare-gun',
+    name: 'Flare Gun / Star Shell',
+    cost: 8,
+    factionId: 'universal',
+    effect: 'Action: Illuminate an area within 18" to strip Cover and reveal Infiltrators.',
+    keywords: ['ILLUMINATE']
+  },
+  {
+    id: 'eq-cloak-alamut',
+    name: 'Cloak of Alamut',
+    cost: 25,
+    factionId: 'iron-sultanate',
+    effect: 'Blend In: Ranged attack modifier for Cover is -2 DICE instead of -1 DICE when wearing this cloak.',
+    keywords: ['CAMOUFLAGE']
+  },
+  {
+    id: 'eq-wind-amulet',
+    name: 'Wind Amulet',
+    cost: 10,
+    factionId: 'iron-sultanate',
+    effect: 'Gusts of Wind: Once per match, add +3" to Movement Characteristic for the activation.',
+    keywords: ['SPEED']
   },
   {
     id: 'eq-alchemical-ammo',
     name: 'Alchemical Ammunition',
     cost: 3,
     factionId: 'iron-sultanate',
-    effect: 'Adds +1 DICE to attacks with Jezzail, Siege Jezzail, or Halberd-Gun for one match.'
+    effect: 'Adds +1 DICE to attacks with Jezzail, Siege Jezzail, or Halberd-Gun for one match.',
+    keywords: ['AMMUNITION (+1 DICE)']
+  },
+  {
+    id: 'eq-ap-bullets',
+    name: 'Armour-Piercing Bullets',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'Consumable: Grants IGNORE ARMOUR on a single ranged shooting attack.',
+    keywords: ['AMMUNITION (ARMOUR-PIERCING)', 'CONSUMABLE']
+  },
+  {
+    id: 'eq-holy-water-bullets',
+    name: 'Holy Water / Blessed Ammunition',
+    cost: 10,
+    factionId: 'trench-pilgrims',
+    effect: 'Consumable: Grants +1 INJURY DICE against Demonic and Heretical targets.',
+    keywords: ['AMMUNITION (BLESSED 1)', 'CONSUMABLE']
+  },
+  {
+    id: 'eq-elixir-al-khidr',
+    name: 'Elixir of Al-Khidr',
+    cost: 10,
+    factionId: 'iron-sultanate',
+    effect: 'Consumable: Warrior gains the TOUGH keyword for the rest of the game.',
+    keywords: ['CONSUMABLE', 'TOUGH']
+  },
+  {
+    id: 'eq-holy-water-phial',
+    name: 'Holy Water Phial',
+    cost: 5,
+    factionId: 'universal',
+    effect: 'Consumable: Throw at an enemy in 6" to inflict D3 Blood Markers on Demonic/Heretic models.',
+    keywords: ['CONSUMABLE', 'HOLY']
+  },
+  {
+    id: 'eq-blessed-rosary',
+    name: 'Blessed Rosary / Crucifix',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'Wearer negates FEAR and gains +1 DICE on all Courage and Morale tests.',
+    keywords: ['NEGATE FEAR', '+1 COURAGE']
+  },
+  {
+    id: 'eq-true-cross-relic',
+    name: 'Relic of the True Cross',
+    cost: 25,
+    factionId: 'universal',
+    effect: 'Once per match, reroll one failed Armour Save or Action Test.',
+    keywords: ['RELIC', 'REROLL']
+  },
+  {
+    id: 'eq-horn-gabriel',
+    name: 'Horn of Gabriel',
+    cost: 15,
+    factionId: 'new-antioch',
+    effect: 'Action: Blow horn to immediately rally all friendly Downed or shaken models within 8".',
+    keywords: ['RALLY ACTION']
+  },
+  {
+    id: 'eq-unholy-idol',
+    name: 'Unholy Idol / Blasphemous Talisman',
+    cost: 15,
+    factionId: 'heretic-legions',
+    effect: 'Enemies within 6" must pass a Risky Test before declaring charges against the bearer.',
+    keywords: ['RISKY CHARGE']
+  },
+  {
+    id: 'eq-ammo-satchel',
+    name: 'Munitions Satchel / Ammo Stash',
+    cost: 10,
+    factionId: 'universal',
+    effect: 'Ignore the first Fumble / Jam (natural roll of 1) during shooting attacks.',
+    keywords: ['IGNORE FUMBLE']
   }
 ];
 
