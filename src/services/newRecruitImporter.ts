@@ -238,10 +238,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
       return sum;
     }
 
-    let totalUnitCost = getSelectionCost(sel);
-    if (totalUnitCost === 0) {
-      totalUnitCost = 35 + equippedWeapons.reduce((s, w) => s + w.cost, 0) + equippedArmour.reduce((s, a) => s + a.cost, 0);
-    }
+    const totalUnitCost = getSelectionCost(sel);
 
     const isTough = catNames.includes('Tough') || 
                     unitProfile?.characteristics?.some((c: any) => c.$text?.toLowerCase().includes('tough')) ||
