@@ -8,13 +8,97 @@
     --font-heading: 'Oswald', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Inter', sans-serif;
+
+    /* Default Theme: Iron Sanctum */
+    --bg-base: #0C0E12;
+    --bg-surface: #161920;
+    --bg-elevated: #20242E;
+    --bg-card: #20242E;
+    --color-primary: #D4AF37;
+    --color-primary-hover: #E5C158;
+    --color-primary-glow: rgba(212, 175, 55, 0.25);
+    --color-border: #323846;
+    --color-accent: #8B0000;
+  }
+
+  [data-theme="iron-sanctum"] {
+    --bg-base: #0C0E12;
+    --bg-surface: #161920;
+    --bg-elevated: #20242E;
+    --bg-card: #20242E;
+    --color-primary: #D4AF37;
+    --color-primary-hover: #E5C158;
+    --color-primary-glow: rgba(212, 175, 55, 0.25);
+    --color-border: #323846;
+    --color-accent: #8B0000;
+  }
+
+  [data-theme="heretic-legion"] {
+    --bg-base: #131313;
+    --bg-surface: #1C1B1B;
+    --bg-elevated: #262220;
+    --bg-card: #262220;
+    --color-primary: #FF5625;
+    --color-primary-hover: #FF764D;
+    --color-primary-glow: rgba(255, 86, 37, 0.3);
+    --color-border: #5D4038;
+    --color-accent: #920703;
+  }
+
+  [data-theme="iron-wall-sultanate"] {
+    --bg-base: #0A0F14;
+    --bg-surface: #111820;
+    --bg-elevated: #19232D;
+    --bg-card: #19232D;
+    --color-primary: #76D6D5;
+    --color-primary-hover: #A0F0EF;
+    --color-primary-glow: rgba(118, 214, 213, 0.25);
+    --color-border: #2E3F4E;
+    --color-accent: #E9C349;
+  }
+
+  [data-theme="penitent-trench"] {
+    --bg-base: #100E0C;
+    --bg-surface: #1A1714;
+    --bg-elevated: #24201C;
+    --bg-card: #24201C;
+    --color-primary: #E4E4CC;
+    --color-primary-hover: #FFFFF0;
+    --color-primary-glow: rgba(228, 228, 204, 0.25);
+    --color-border: #47473F;
+    --color-accent: #8F191D;
+  }
+
+  [data-theme="principality-of-hell"] {
+    --bg-base: #170908;
+    --bg-surface: #221210;
+    --bg-elevated: #2E1815;
+    --bg-card: #2E1815;
+    --color-primary: #FF5540;
+    --color-primary-hover: #FF7E6E;
+    --color-primary-glow: rgba(255, 85, 64, 0.3);
+    --color-border: #603E39;
+    --color-accent: #DDB7FF;
+  }
+
+  [data-theme="black-grail"] {
+    --bg-base: #0C120B;
+    --bg-surface: #141C13;
+    --bg-elevated: #1D261C;
+    --bg-card: #1D261C;
+    --color-primary: #8BC34A;
+    --color-primary-hover: #9CCC65;
+    --color-primary-glow: rgba(139, 195, 74, 0.25);
+    --color-border: #334531;
+    --color-accent: #795548;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #0C0E12;
+    background-color: var(--bg-base);
     color: #ECEFF4;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 }
 
@@ -52,43 +136,64 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0C0E12;
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2D3342;
+  background: var(--color-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #454D63;
+  background: var(--color-primary);
 }
 
 /* Bevels & Industrial Rivets */
 .bevel-container {
-  border-top: 1px solid #4D4635;
-  border-left: 1px solid #4D4635;
-  border-bottom: 1px solid #1D2027;
-  border-right: 1px solid #1D2027;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--bg-base);
+  border-right: 1px solid var(--bg-base);
 }
 
 .rivet {
   width: 4px;
   height: 4px;
-  background-color: #4D4635;
+  background-color: var(--color-border);
   border-radius: 50%;
   box-shadow: inset 1px 1px 1px #000, 0 0 1px #000;
 }
 
+/* Dynamic Theme Helpers */
+.theme-primary-text {
+  color: var(--color-primary);
+}
+
+.theme-primary-border {
+  border-color: var(--color-primary);
+}
+
+.theme-primary-bg {
+  background-color: var(--color-primary);
+}
+
+.theme-glow {
+  box-shadow: 0 0 15px var(--color-primary-glow);
+}
+
 /* Grimdark Surface Utilities */
 .bg-trench-surface {
-  background-color: #161920;
+  background-color: var(--bg-surface);
 }
 
 .bg-trench-elevated {
-  background-color: #20242E;
+  background-color: var(--bg-elevated);
 }
 
 .bg-trench-dark {
-  background-color: #0C0E12;
+  background-color: var(--bg-base);
+}
+
+.border-trench-line {
+  border-color: var(--color-border);
 }
 
 /* Animations */

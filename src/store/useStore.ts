@@ -103,6 +103,10 @@ interface AppState {
   pendingDiffs: RuleDiffItem[];
   setPendingDiffs: (diffs: RuleDiffItem[]) => void;
   resolveDiff: (diffId: string, resolution: 'keep_user' | 'accept_upstream') => void;
+
+  // Theme & Visual System
+  currentTheme: string;
+  setTheme: (themeId: string) => void;
 }
 
 // Clean Default Campaign (No hardcoded sample members or demo matches)
@@ -157,10 +161,25 @@ export const useStore = create<AppState>((set, get) => {
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();
   const storedCampaign = storage.getCampaign() || defaultFreshCampaign;
+  const initialTheme = storage.getTheme();
+
+  // Apply theme to document on init if browser
+  if (typeof window !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }
 
   return {
     currentView: 'builder',
     setCurrentView: (view) => set({ currentView: view }),
+
+    currentTheme: initialTheme,
+    setTheme: (themeId: string) => {
+      set({ currentTheme: themeId });
+      storage.saveTheme(themeId);
+      if (typeof window !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', themeId);
+      }
+    },
 
     factions: FACTIONS,
     units: [...BASE_UNITS, ...customUnits],
@@ -178,6 +197,7 @@ export const useStore = create<AppState>((set, get) => {
     getActiveWarband: () => {
       const state = get();
       return state.warbands.find((w) => w.id === state.activeWarbandId) || null;
+
     },
 
     createWarband: (name, factionId, ducatLimit = 700) => {

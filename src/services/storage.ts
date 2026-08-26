@@ -170,8 +170,28 @@ export const storage = {
       localStorage.removeItem(CAMPAIGN_KEY);
       localStorage.removeItem(CUSTOM_UNITS_KEY);
       localStorage.removeItem(CUSTOM_WEAPONS_KEY);
+      localStorage.removeItem('tc_theme_id');
     } catch (e) {
       console.warn('Clear data failed:', e);
     }
+  },
+
+  getTheme(): string {
+    if (!isBrowser) return 'iron-sanctum';
+    try {
+      return localStorage.getItem('tc_theme_id') || 'iron-sanctum';
+    } catch {
+      return 'iron-sanctum';
+    }
+  },
+
+  saveTheme(themeId: string): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem('tc_theme_id', themeId);
+    } catch (e) {
+      console.warn('Theme save failed:', e);
+    }
   }
 };
+
