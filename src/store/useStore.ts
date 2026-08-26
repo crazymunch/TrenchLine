@@ -27,6 +27,7 @@ interface AppState {
   // Global Warband Directory & Cloud
   allCloudWarbands: Warband[];
   fetchAllCloudWarbands: () => Promise<void>;
+  syncUserWarbandsWithCloud: (userEmail?: string, userName?: string) => Promise<void>;
 
   // Warband Management
   warbands: Warband[];
@@ -344,6 +345,53 @@ export const useStore = create<AppState>((set, get) => {
       const cloudWbs = await storage.fetchAllWarbandsFromCloud();
       if (cloudWbs) {
         set({ allCloudWarbands: cloudWbs });
+      }
+    },
+
+    syncUserWarbandsWithCloud: async (userEmail?: string, userName?: string) => {
+      try {
+        const cloudWbs = await storage.fetchWarbandsFromCloud();
+        const state = get();
+        
+        let mergedMap = new Map<string, Warband>();
+        // 1. Put current local state
+        state.warbands.forEach(w => mergedMap.set(w.id, w));
+
+        // 2. Merge cloud warbands (cloud takes precedence if present)
+        if (cloudWbs && cloudWbs.length > 0) {
+          cloudWbs.forEach(cw => {
+            const local = mergedMap.get(cw.id);
+            if (!local || new Date(cw.updatedAt) >= new Date(local.updatedAt)) {
+              mergedMap.set(cw.id, {
+                ...cw,
+                creatorName: cw.creatorName || userName || 'Crusade Commander',
+                units: cw.units.map(enrichUnitWithLore)
+              });
+            }
+          });
+        }
+
+        const mergedList = Array.from(mergedMap.values());
+        storage.saveWarbands(mergedList);
+
+        // 3. Sync any local warbands that aren't yet in the cloud database
+        mergedList.forEach(w => {
+          storage.syncWarbandToCloud({
+            ...w,
+            creatorName: w.creatorName || userName || 'Crusade Commander'
+          });
+        });
+
+        const activeId = state.activeWarbandId && mergedMap.has(state.activeWarbandId)
+          ? state.activeWarbandId
+          : mergedList[0]?.id || null;
+
+        set({
+          warbands: mergedList,
+          activeWarbandId: activeId
+        });
+      } catch (e) {
+        console.warn('Cloud sync on auth failed:', e);
       }
     },
 

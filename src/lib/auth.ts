@@ -5,6 +5,13 @@ import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from './prisma';
 import bcrypt from 'bcryptjs';
 
+export const ADMIN_EMAILS = ['crazymunch@gmail.com', 'commander@trenchline.org'];
+
+export function isUserAdmin(email?: string | null): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -73,12 +80,20 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         (session.user as any).id = token.sub;
+        (session.user as any).isAdmin = Boolean(token.isAdmin);
+        (session.user as any).role = token.role || (isUserAdmin(session.user.email) ? 'ADMIN' : 'USER');
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.isAdmin = isUserAdmin(user.email);
+        token.role = isUserAdmin(user.email) ? 'ADMIN' : 'USER';
+      }
+      if (token.email) {
+        token.isAdmin = isUserAdmin(token.email as string);
+        token.role = isUserAdmin(token.email as string) ? 'ADMIN' : 'USER';
       }
       return token;
     },

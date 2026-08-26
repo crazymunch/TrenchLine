@@ -20,7 +20,8 @@ import {
   LogIn,
   Palette,
   ChevronDown,
-  Users
+  Users,
+  Crown
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -189,10 +190,19 @@ export const Navbar: React.FC = () => {
                     onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
                     className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-[#20242E] hover:bg-[#323846] rounded border border-[#323846] text-xs font-mono transition-colors"
                   >
-                    <User className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
+                    {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
+                      <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    ) : (
+                      <User className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
+                    )}
                     <span className="max-w-[80px] lg:max-w-[110px] truncate text-[#ECEFF4] font-bold">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
+                    {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold font-mono">
+                        ADMIN
+                      </span>
+                    )}
                   </button>
                 ) : (
                   <button

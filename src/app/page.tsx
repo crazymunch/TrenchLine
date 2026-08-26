@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useStore } from '@/store/useStore';
 import { Navbar } from '@/components/layout/Navbar';
 import { MobileNav } from '@/components/layout/MobileNav';
@@ -12,7 +13,12 @@ import { CustomizerView } from '@/components/customizer/CustomizerView';
 import { RosterDirectoryView } from '@/components/admin/RosterDirectoryView';
 
 export default function Home() {
-  const { currentView, currentTheme } = useStore();
+  const { data: session } = useSession();
+  const { currentView, currentTheme, syncUserWarbandsWithCloud } = useStore();
+
+  useEffect(() => {
+    syncUserWarbandsWithCloud(session?.user?.email || undefined, session?.user?.name || undefined);
+  }, [session, syncUserWarbandsWithCloud]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && currentTheme) {
