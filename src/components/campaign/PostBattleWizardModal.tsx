@@ -2,7 +2,12 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { INJURY_TABLE_D66, EXPLORATION_TABLE_D66 } from '../../data/defaultRules';
+import { 
+  OFFICIAL_TRAUMA_TABLE, 
+  OFFICIAL_COMMON_EXPLORATION, 
+  OFFICIAL_RARE_EXPLORATION, 
+  OFFICIAL_LEGENDARY_EXPLORATION 
+} from '../../data/officialRulesData';
 import { CasualtyRecord } from '../../types/campaign';
 import { 
   X, 
@@ -15,7 +20,9 @@ import {
   ArrowLeft, 
   AlertTriangle, 
   Flag,
-  Award
+  Award,
+  MapPin,
+  Image as ImageIcon
 } from 'lucide-react';
 
 interface PostBattleWizardModalProps {
@@ -27,7 +34,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const warband = getActiveWarband();
 
   const [step, setStep] = useState<number>(1);
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(scenarios[0]?.id || 'trench-raid');
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(scenarios[0]?.id || 'claim-no-mans-land');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
@@ -46,51 +53,63 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const [unitAdvancements, setUnitAdvancements] = useState<Record<string, string>>({});
 
   // Exploration roll
-  const [explorationResult, setExplorationResult] = useState<{ title: string; reward: string; description: string } | null>(null);
+  const [selectedExplorationTable, setSelectedExplorationTable] = useState<'common' | 'rare' | 'legendary'>('common');
+  const [explorationResult, setExplorationResult] = useState<{ roll?: string; title: string; reward: string; description: string } | null>(null);
 
   if (!warband) return null;
 
   const scenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
-  // Roll D66 Injury for a unit
+  // Roll D66 Trauma/Injury Table for an Out of Action warrior
   const handleRollInjury = (unitId: string) => {
     const d1 = Math.floor(Math.random() * 6) + 1;
     const d2 = Math.floor(Math.random() * 6) + 1;
     const rollNum = parseInt(`${d1}${d2}`);
 
-    let matched = INJURY_TABLE_D66[INJURY_TABLE_D66.length - 1];
-    if (rollNum <= 16) matched = INJURY_TABLE_D66[0]; // Dead
-    else if (rollNum <= 25) matched = INJURY_TABLE_D66[1]; // Grievous
-    else if (rollNum <= 32) matched = INJURY_TABLE_D66[2]; // Lost eye
-    else if (rollNum <= 41) matched = INJURY_TABLE_D66[3]; // Shellshock
-    else if (rollNum <= 53) matched = INJURY_TABLE_D66[4]; // Hardened
-    else matched = INJURY_TABLE_D66[5]; // Full recovery
+    let matched = OFFICIAL_TRAUMA_TABLE.find((t) => t.roll === `${rollNum}`);
+    if (!matched) {
+      if (rollNum >= 41 && rollNum <= 63) {
+        matched = OFFICIAL_TRAUMA_TABLE.find((t) => t.roll.includes('41')) || OFFICIAL_TRAUMA_TABLE[18];
+      } else {
+        matched = OFFICIAL_TRAUMA_TABLE[18]; // Full recovery default
+      }
+    }
 
     setCasualtyOutcomes((prev) => ({
       ...prev,
       [unitId]: {
-        outcome: `D66: ${rollNum} - ${matched.title}: ${matched.effect}`,
-        isDead: !!matched.isDead
+        outcome: `D66: ${rollNum} - ${matched?.title}: ${matched?.description}`,
+        isDead: !!matched?.isDead
       }
     }));
   };
 
-  // Roll Exploration Table D66
+  // Roll D66 Exploration Table
   const handleRollExploration = () => {
     const d1 = Math.floor(Math.random() * 6) + 1;
     const d2 = Math.floor(Math.random() * 6) + 1;
     const rollNum = parseInt(`${d1}${d2}`);
 
-    let matched = EXPLORATION_TABLE_D66[0];
-    if (rollNum <= 16) matched = EXPLORATION_TABLE_D66[0];
-    else if (rollNum <= 26) matched = EXPLORATION_TABLE_D66[1];
-    else if (rollNum <= 42) matched = EXPLORATION_TABLE_D66[2];
-    else if (rollNum <= 54) matched = EXPLORATION_TABLE_D66[3];
-    else matched = EXPLORATION_TABLE_D66[4];
+    let table = OFFICIAL_COMMON_EXPLORATION;
+    if (selectedExplorationTable === 'rare') table = OFFICIAL_RARE_EXPLORATION;
+    if (selectedExplorationTable === 'legendary') table = OFFICIAL_LEGENDARY_EXPLORATION;
 
-    setExplorationResult(matched);
-    // Add bonus ducats
-    setDucatsGained((prev) => prev + 15);
+    let matched = table.find((e) => e.roll === `${rollNum}`);
+    if (!matched) {
+      for (const entry of table) {
+        if (entry.roll.includes('-')) {
+          const [low, high] = entry.roll.split('-').map(Number);
+          if (rollNum >= low && rollNum <= high) {
+            matched = entry;
+            break;
+          }
+        }
+      }
+    }
+    if (!matched) matched = table[0];
+
+    setExplorationResult({ ...matched, roll: `${rollNum}` });
+    setDucatsGained((prev) => prev + 20);
   };
 
   const handleFinalSubmit = () => {
@@ -133,9 +152,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             <Award className="w-6 h-6 text-[#D4AF37]" />
             <div>
               <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
-                POST-BATTLE CAMPAIGN SEQUENCE
+                OFFICIAL TRENCH CRUSADE POST-BATTLE SEQUENCE
               </h2>
-              <p className="text-xs font-mono text-[#8E95A5]">Step {step} of 4: Official Trench Crusade Sequence</p>
+              <p className="text-xs font-mono text-[#8E95A5]">Step {step} of 4: Trauma, Experience, Scavenge & Chronicle</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
@@ -146,16 +165,16 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
         {/* Step Tabs */}
         <div className="grid grid-cols-4 border-b border-[#323846] bg-[#161920] text-center font-mono text-xs">
           <div className={`py-2.5 ${step === 1 ? 'bg-[#20242E] text-[#D4AF37] font-bold border-b-2 border-[#D4AF37]' : 'text-[#8E95A5]'}`}>
-            1. Outcome
+            1. Scenario & Result
           </div>
           <div className={`py-2.5 ${step === 2 ? 'bg-[#20242E] text-[#D4AF37] font-bold border-b-2 border-[#D4AF37]' : 'text-[#8E95A5]'}`}>
-            2. Casualties ({ooaUnits.length})
+            2. Trauma Table ({ooaUnits.length})
           </div>
           <div className={`py-2.5 ${step === 3 ? 'bg-[#20242E] text-[#D4AF37] font-bold border-b-2 border-[#D4AF37]' : 'text-[#8E95A5]'}`}>
-            3. Advancements
+            3. Promotions & Skills
           </div>
           <div className={`py-2.5 ${step === 4 ? 'bg-[#20242E] text-[#D4AF37] font-bold border-b-2 border-[#D4AF37]' : 'text-[#8E95A5]'}`}>
-            4. Loot & Chronicle
+            4. Exploration & Report
           </div>
         </div>
 
@@ -167,12 +186,12 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                  Scenario Fought
+                  Official Scenario Fought (12 Official Scenarios)
                 </label>
                 <select
                   value={selectedScenarioId}
                   onChange={(e) => setSelectedScenarioId(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] font-mono"
                 >
                   {scenarios.map((s) => (
                     <option key={s.id} value={s.id} className="bg-[#161920]">
@@ -181,6 +200,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   ))}
                 </select>
               </div>
+
+              {/* Scenario Detail Card */}
+              {scenario && (
+                <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded-md flex flex-col sm:flex-row gap-3">
+                  {scenario.mapImage && (
+                    <div className="w-full sm:w-28 h-28 bg-[#161920] border border-[#323846] rounded overflow-hidden flex-shrink-0 flex items-center justify-center">
+                      <img 
+                        src={scenario.mapImage} 
+                        alt={scenario.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="text-xs font-mono space-y-1">
+                    <span className="text-[#D4AF37] font-bold block">{scenario.name}</span>
+                    <p className="text-[#8E95A5] text-[11px] italic">{scenario.tagline || scenario.flavor}</p>
+                    <div className="text-[10px] text-[#ECEFF4] space-x-2 pt-1">
+                      <span>Length: <strong>{scenario.gameLength || '4 Turns'}</strong></span>
+                      <span>•</span>
+                      <span>Table: <strong>{scenario.tableSize || '48" x 48"'}</strong></span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-2">
@@ -220,87 +263,76 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Glory Points Earned
+                    Glory Points (☼)
                   </label>
                   <input
                     type="number"
                     min="0"
-                    max="10"
                     value={gloryGained}
                     onChange={(e) => setGloryGained(parseInt(e.target.value) || 0)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#D4AF37] font-bold font-mono focus:outline-none"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
+
                 <div>
                   <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Base Ducats Looted
+                    Ducats (👑)
                   </label>
                   <input
                     type="number"
                     min="0"
-                    max="200"
                     value={ducatsGained}
                     onChange={(e) => setDucatsGained(parseInt(e.target.value) || 0)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#D4AF37] font-bold font-mono focus:outline-none"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                  Narrative Battle Summary
-                </label>
-                <textarea
-                  placeholder="e.g. Lieutenant Valerius led the charge across Crater 4 to secure the bunker..."
-                  value={narrativeLog}
-                  onChange={(e) => setNarrativeLog(e.target.value)}
-                  className="w-full h-20 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none"
-                />
               </div>
             </div>
           )}
 
-          {/* STEP 2: CASUALTIES & D66 INJURIES */}
+          {/* STEP 2: OFFICIAL TRAUMA TABLE */}
           {step === 2 && (
             <div className="space-y-4">
               <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs font-mono text-[#8E95A5]">
-                Roll D66 on the Injury Table for all warriors who were taken Out of Action during the match.
+                Roll on the official <strong>D66 Trauma Table (Pages 102-103)</strong> for each warrior taken Out of Action.
               </div>
 
               {ooaUnits.length === 0 ? (
-                <div className="p-8 text-center bg-[#0C0E12] rounded border border-[#323846] space-y-2">
-                  <Sparkles className="w-8 h-8 text-[#4E9A6E] mx-auto" />
-                  <p className="text-sm font-gothic font-bold text-[#4E9A6E]">NO WARRIORS OUT OF ACTION!</p>
-                  <p className="text-xs font-mono text-[#8E95A5]">Your warband emerged from the mud without casualties.</p>
+                <div className="p-8 text-center border border-dashed border-[#323846] rounded font-mono text-xs text-[#4E9A6E]">
+                  Praise be! No warriors from your warband were taken Out of Action.
                 </div>
               ) : (
                 <div className="space-y-3">
                   {ooaUnits.map((unit) => {
-                    const res = casualtyOutcomes[unit.id];
+                    const outcomeData = casualtyOutcomes[unit.id];
                     return (
                       <div
                         key={unit.id}
-                        className="p-4 bg-[#20242E] border border-[#323846] rounded flex flex-col md:flex-row md:items-center justify-between gap-3"
+                        className="p-3 bg-[#20242E] border border-[#323846] rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
                         <div>
-                          <h4 className="font-gothic font-bold text-sm text-[#ECEFF4]">{unit.customName}</h4>
-                          <p className="text-xs font-mono text-[#8E95A5]">{unit.profileSnapshot.name}</p>
-                          {res && (
-                            <p className={`text-xs font-mono mt-1 ${res.isDead ? 'text-[#E53935] font-bold' : 'text-[#D4AF37]'}`}>
-                              {res.outcome}
+                          <span className="font-gothic font-bold text-sm text-[#ECEFF4] block">
+                            {unit.customName}
+                          </span>
+                          <span className="text-xs font-mono text-[#8E95A5]">
+                            {unit.profileSnapshot.name} ({unit.profileSnapshot.category})
+                          </span>
+                          {outcomeData && (
+                            <p className={`text-xs font-mono mt-1 ${outcomeData.isDead ? 'text-[#E53935] font-bold' : 'text-[#D4AF37]'}`}>
+                              {outcomeData.outcome}
                             </p>
                           )}
                         </div>
 
                         <button
                           onClick={() => handleRollInjury(unit.id)}
-                          className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase transition-colors whitespace-nowrap"
+                          className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase transition-colors flex-shrink-0"
                         >
                           <Dices className="w-3.5 h-3.5" />
-                          <span>{res ? 'Re-roll D66' : 'Roll D66 Injury'}</span>
+                          <span>Roll D66 Trauma</span>
                         </button>
                       </div>
                     );
@@ -310,11 +342,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             </div>
           )}
 
-          {/* STEP 3: ADVANCEMENTS & PROMOTIONS */}
+          {/* STEP 3: PROMOTIONS & EXPERIENCE */}
           {step === 3 && (
             <div className="space-y-4">
               <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs font-mono text-[#8E95A5]">
-                Surviving warriors gain +1 XP. Choose stat promotions or skills for advancing heroes.
+                Surviving warriors gain Experience Points. Choose promotions or official Skills from Melee, Ranged, Stealth or Wildcard trees.
               </div>
 
               <div className="space-y-3">
@@ -325,8 +357,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       <span className="text-xs font-mono text-[#D4AF37]">{unit.xp + 1} XP Total</span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                      {['+1 Melee', '+1 Ranged', '+1 Armour', '+1" Move'].map((adv) => {
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
+                      {['+1 Melee', '+1 Ranged', '+1 Armour', '+1" Move', 'Eagle Eye (Skill)', 'Mighty Blow (Skill)', 'Diehard (Skill)', 'Shadow Walker (Skill)'].map((adv) => {
                         const isSelected = unitAdvancements[unit.id] === adv;
                         return (
                           <button
@@ -338,7 +370,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                                 [unit.id]: isSelected ? '' : adv
                               })
                             }
-                            className={`py-1 px-2 rounded font-mono text-xs font-semibold transition-all ${
+                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-[11px] ${
                               isSelected
                                 ? 'bg-[#D4AF37] text-black font-bold'
                                 : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
@@ -355,17 +387,31 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             </div>
           )}
 
-          {/* STEP 4: EXPLORATION & CHRONICLE */}
+          {/* STEP 4: EXPLORATION TABLES & BATTLE CHRONICLE */}
           {step === 4 && (
             <div className="space-y-4">
+              
+              {/* Exploration Section */}
               <div className="p-4 bg-[#20242E] border border-[#323846] rounded space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-gothic font-bold text-sm text-[#D4AF37]">
-                    NO MAN'S LAND EXPLORATION CHART (D66)
-                  </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-gothic font-bold text-sm text-[#D4AF37]">
+                      OFFICIAL EXPLORATION TABLE (D66)
+                    </span>
+                    <select
+                      value={selectedExplorationTable}
+                      onChange={(e) => setSelectedExplorationTable(e.target.value as any)}
+                      className="bg-[#0C0E12] border border-[#323846] text-[#D4AF37] text-xs font-mono rounded px-2 py-0.5"
+                    >
+                      <option value="common">Common Table (Pages 116-117)</option>
+                      <option value="rare">Rare Table (Pages 118-119)</option>
+                      <option value="legendary">Legendary Table (Pages 120-122)</option>
+                    </select>
+                  </div>
+
                   <button
                     onClick={handleRollExploration}
-                    className="flex items-center space-x-1.5 px-3 py-1 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-mono text-xs font-bold uppercase transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-1 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-mono text-xs font-bold uppercase transition-colors flex-shrink-0"
                   >
                     <Dices className="w-3.5 h-3.5" />
                     <span>Roll Scavenge</span>
@@ -375,14 +421,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 {explorationResult && (
                   <div className="p-3 bg-[#0C0E12] border border-[#D4AF37] rounded space-y-1">
                     <span className="text-xs font-mono font-bold text-[#D4AF37]">
-                      {explorationResult.title} ({explorationResult.reward})
+                      {explorationResult.roll ? `D66: ${explorationResult.roll} - ` : ''}{explorationResult.title} ({explorationResult.reward})
                     </span>
-                    <p className="text-xs text-[#8E95A5]">{explorationResult.description}</p>
+                    <p className="text-xs text-[#ECEFF4] font-mono leading-relaxed">{explorationResult.description}</p>
                   </div>
                 )}
               </div>
 
-              {/* Total Rewards Summary Box */}
+              {/* Payout Summary */}
               <div className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-2 font-mono text-xs">
                 <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">Post-Battle Payout:</span>
                 <div className="flex justify-between text-sm">
@@ -395,7 +441,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 </div>
               </div>
 
-              {/* Narrative Battle Chronicle & MVP Section */}
+              {/* Narrative Battle Report Section */}
               <div className="p-4 bg-[#20242E] border border-[#323846] rounded-md space-y-3 font-mono text-xs">
                 <span className="text-[11px] uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
                   <Award className="w-3.5 h-3.5" />
@@ -442,6 +488,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   />
                 </div>
               </div>
+
             </div>
           )}
 

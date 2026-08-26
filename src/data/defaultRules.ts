@@ -1171,119 +1171,58 @@ export const BASE_UNITS: UnitProfile[] = [
   }
 ];
 
-export const KEYWORDS: RuleKeyword[] = [
-  {
-    id: 'kw-assault',
-    name: 'Assault',
-    category: 'Weapon Trait',
-    summary: 'Can shoot without penalty after moving, or shoot and charge in the same turn.',
-    description: 'Weapons with this keyword allow the model to move and shoot at no penalty, and make a melee attack or charge in the same activation.',
-    fullText: 'Weapons with this keyword allow the model to move and shoot at no penalty, and make a melee attack or charge in the same activation.'
-  },
-  {
-    id: 'kw-blast',
-    name: 'Blast',
-    category: 'Weapon Trait',
-    summary: 'Hits all models under the blast template radius.',
-    description: 'When attacking with a Blast weapon, place the template at the target point. All models touched by the template suffer an Injury Roll.',
-    fullText: 'When attacking with a Blast weapon, place the template at the target point. All models touched by the template suffer an Injury Roll.'
-  },
-  {
-    id: 'kw-fire',
-    name: 'Fire',
-    category: 'Damage Effect',
-    summary: 'Inflicts +1 Blood Marker after the Injury Roll on Success/Critical.',
-    description: 'Flaming attacks ignite targets. If the attack roll succeeds, place +1 extra Blood Marker on the target model after resolving the Injury roll.',
-    fullText: 'Flaming attacks ignite targets. If the attack roll succeeds, place +1 extra Blood Marker on the target model after resolving the Injury roll.'
-  },
-  {
-    id: 'kw-gas',
-    name: 'Gas',
-    category: 'Hazard',
-    summary: 'Ignores non-alchemical armour and inflicts +1 Blood Marker.',
-    description: 'Gas clouds choke and corrode. Attacks ignore normal armour unless the model has a Gas Mask or Alchemist Hazard Armour.',
-    fullText: 'Gas clouds choke and corrode. Attacks ignore normal armour unless the model has a Gas Mask or Alchemist Hazard Armour.'
-  },
-  {
-    id: 'kw-shrapnel',
-    name: 'Shrapnel',
-    category: 'Damage Effect',
-    summary: '+1 Injury DICE against targets in Open Ground.',
-    description: 'Explosive fragments shred exposed combatants. Add +1 Injury die if the target is not in Cover. Negated by Combat Helmets.',
-    fullText: 'Explosive fragments shred exposed combatants. Add +1 Injury die if the target is not in Cover. Negated by Combat Helmets.'
-  },
-  {
-    id: 'kw-machine-armour',
-    name: 'Machine Armour',
-    category: 'Armour Rule',
-    summary: '-3 Injury modifier, 40mm base, treats Down as Minor Wound.',
-    description: 'Heavy hydraulic powered suit. Provides -3 to enemy injury rolls, sets base size to 40mm, and treats Downed results as Minor Wounds.',
-    fullText: 'Heavy hydraulic powered suit. Provides -3 to enemy injury rolls, sets base size to 40mm, and treats Downed results as Minor Wounds.'
-  },
-  {
-    id: 'kw-negate-gas',
-    name: 'Negate Gas',
-    category: 'Protection',
-    summary: 'Model is immune to gas weapons and toxic terrain.',
-    description: 'Granted by Gas Masks and Alchemist Armour. Completely negates gas damage and markers.',
-    fullText: 'Granted by Gas Masks and Alchemist Armour. Completely negates gas damage and markers.'
-  },
-  {
-    id: 'kw-negate-shrapnel',
-    name: 'Negate Shrapnel',
-    category: 'Protection',
-    summary: 'Model ignores +1 Injury DICE from shrapnel weapons.',
-    description: 'Granted by Combat Helmets. Prevents attackers from gaining extra injury dice on exposed models.',
-    fullText: 'Granted by Combat Helmets. Prevents attackers from gaining extra injury dice on exposed models.'
-  }
-];
+import {
+  OFFICIAL_SCENARIOS,
+  OFFICIAL_KEYWORDS,
+  OFFICIAL_TRAUMA_TABLE,
+  OFFICIAL_COMMON_EXPLORATION,
+  OFFICIAL_RARE_EXPLORATION,
+  OFFICIAL_LEGENDARY_EXPLORATION,
+  OFFICIAL_MELEE_SKILLS,
+  OFFICIAL_RANGED_SKILLS,
+  OFFICIAL_STEALTH_SKILLS,
+  OFFICIAL_WILDCARD_SKILLS
+} from './officialRulesData';
+import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 
-export const SCENARIOS: Scenario[] = [
-  {
-    id: 'sc-trench-raid',
-    name: 'Trench Raid',
-    type: 'Assault',
-    objective: 'Infiltrate enemy trench lines, destroy munitions caches, and secure prisoners.',
-    flavor: 'Infiltrate enemy trench lines, destroy munitions caches, and secure prisoners.',
-    deployment: 'Opposing trenches 18" apart with No Man\'s Land in between.',
-    specialRules: ['Night Fighting (max 18" LoS)', 'Barbed Wire Fields']
-  },
-  {
-    id: 'sc-relic-hunt',
-    name: 'The Weeping Relic',
-    type: 'Objective',
-    objective: 'Extract the bleeding skull of Saint Jude from the central ruined cathedral.',
-    flavor: 'Extract the bleeding skull of Saint Jude from the central ruined cathedral.',
-    deployment: 'Corner deployment with central relic objective marker.',
-    specialRules: ['Holy Aura: Models within 3" of Relic gain +1 DICE on Morale.']
-  },
-  {
-    id: 'sc-iron-wall-breach',
-    name: 'Breach at Iron Gate',
-    type: 'Siege',
-    objective: 'Attacker must plant satchel charges on the fortified bunker doors while defender holds.',
-    flavor: 'Attacker must plant satchel charges on the fortified bunker doors while defender holds.',
-    deployment: 'Attacker on edge, Defender in fortified bunker perimeter.',
-    specialRules: ['Bunker Walls have -3 Injury modifier.', 'Artillery Bombardment']
-  }
-];
+export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
+  id: `kw-${k.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+  name: k.name,
+  type: k.type,
+  category: k.type || 'Rule Keyword',
+  summary: k.description.length > 100 ? `${k.description.slice(0, 97)}...` : k.description,
+  description: k.description,
+  fullText: k.description
+}));
 
-export const INJURY_TABLE_D66 = [
-  { roll: '11-16', name: 'Dead', title: 'Dead', description: 'The warrior succumbs to mortal wounds. Remove from Warband roster permanently.', effect: 'The warrior succumbs to mortal wounds. Remove from Warband roster permanently.', isDead: true },
-  { roll: '21-25', name: 'Chest Wound', title: 'Chest Wound', description: 'Permanent -1" Movement penalty in future matches.', effect: 'Permanent -1" Movement penalty in future matches.', isDead: false },
-  { roll: '26-32', name: 'Lost Eye / Blinded', title: 'Lost Eye / Blinded', description: '-1 DICE on all Ranged Attack rolls.', effect: '-1 DICE on all Ranged Attack rolls.', isDead: false },
-  { roll: '33-41', name: 'Shellshock / Traumatized', title: 'Shellshock / Traumatized', description: 'Suffers -1 DICE on all Morale and Fear checks.', effect: 'Suffers -1 DICE on all Morale and Fear checks.', isDead: false },
-  { roll: '42-53', name: 'Deep Scar / Hardened', title: 'Deep Scar / Hardened', description: 'The warrior gains +1 XP from surviving harrowing agony.', effect: 'The warrior gains +1 XP from surviving harrowing agony.', isDead: false },
-  { roll: '54-66', name: 'Full Recovery', title: 'Full Recovery', description: 'The warrior emerges battered but unbroken with no lingering penalties.', effect: 'The warrior emerges battered but unbroken with no lingering penalties.', isDead: false }
-];
+export const SCENARIOS: Scenario[] = OFFICIAL_SCENARIOS;
 
-export const EXPLORATION_TABLE_D66 = [
-  { roll: '11-16', title: 'Booby Trap / Gas Pocket', reward: '-5 Ducats (Repairs)', description: 'Exploration team triggers unexploded mustard gas shells in an abandoned dugout.' },
-  { roll: '21-26', title: 'Scattered Munitions Cache', reward: '+15 Ducats & Frag Grenades', description: 'Unopened ammo crates found buried in crater silt.' },
-  { roll: '31-42', title: 'Shattered Shrine', reward: '+1 Glory Point', description: 'A weeping icon or ancient reliquary recovered from cathedral rubble.' },
-  { roll: '43-52', title: 'Captured Armaments Depot', reward: '+30 Ducats', description: 'Substantial military stockpile recovered from fortified redoubt.' },
-  { roll: '53-62', title: 'Deserted Tank Hulk', reward: '+45 Ducats', description: 'Armor plate, scrap engine components, and heavy ordnance retrieved.' },
-  { roll: '63-66', title: 'Sacred / Unholy Relic', reward: '+2 Glory Points & +25 Ducats', description: 'A legendary artifact from the First Crusade recovered intact.' }
-];
+export const INJURY_TABLE_D66 = OFFICIAL_TRAUMA_TABLE.map((t) => ({
+  roll: t.roll,
+  title: t.title,
+  name: t.title,
+  effect: t.description,
+  description: t.description,
+  isDead: t.isDead
+}));
 
+export const EXPLORATION_TABLE_D66 = OFFICIAL_COMMON_EXPLORATION.map((e) => ({
+  roll: e.roll,
+  title: e.title,
+  reward: e.reward,
+  description: e.description
+}));
 
+export {
+  OFFICIAL_SCENARIOS,
+  OFFICIAL_KEYWORDS,
+  OFFICIAL_TRAUMA_TABLE,
+  OFFICIAL_COMMON_EXPLORATION,
+  OFFICIAL_RARE_EXPLORATION,
+  OFFICIAL_LEGENDARY_EXPLORATION,
+  OFFICIAL_MELEE_SKILLS,
+  OFFICIAL_RANGED_SKILLS,
+  OFFICIAL_STEALTH_SKILLS,
+  OFFICIAL_WILDCARD_SKILLS,
+  OFFICIAL_CORE_RULES
+};

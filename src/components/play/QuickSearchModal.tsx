@@ -25,7 +25,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
   const term = searchTerm.toLowerCase().trim();
 
   const filteredKeywords = keywords.filter(
-    (k) => k.name.toLowerCase().includes(term) || k.summary.toLowerCase().includes(term) || (k.fullText || k.description || '').toLowerCase().includes(term)
+    (k) => k.name.toLowerCase().includes(term) || (k.summary || '').toLowerCase().includes(term) || (k.fullText || k.description || '').toLowerCase().includes(term)
   );
 
   const filteredScenarios = scenarios.filter(

@@ -92,17 +92,18 @@ export interface Faction {
 export interface RuleKeyword {
   id?: string;
   name: string;
-  category: string;
-  summary: string;
-  fullText: string;
+  type?: string;
+  category?: string;
+  summary?: string;
+  fullText?: string;
   description?: string;
 }
 
 export interface InjuryResult {
-  roll: string; // e.g. "11-16"
+  roll: string; // e.g. "11", "26", "41-63"
   title: string;
   name?: string;
-  effect: string;
+  effect?: string;
   description?: string;
   statModifier?: Partial<Statline>;
   isDead?: boolean;
@@ -118,12 +119,25 @@ export interface ExplorationResult {
 export interface Scenario {
   id: string;
   name: string;
+  number?: number;
+  roman?: string;
+  slug?: string;
+  tagline?: string;
+  mapImage?: string;
+  tableSize?: string;
+  forces?: string;
+  battlefield?: string;
+  deployment?: string;
+  gameLength?: string;
+  victoryConditions?: string;
+  gloriousDeeds?: string;
+  fullRulesMarkdown?: string;
+  
+  // Legacy / convenience fields
   type?: string;
   flavor?: string;
   objective?: string;
-  deployment?: string;
   specialRules?: string[];
   rewards?: string[];
-  victoryConditions?: string;
   objectives?: string[];
 }
