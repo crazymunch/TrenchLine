@@ -6,6 +6,7 @@ import { DiceRoller } from './DiceRoller';
 import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
+import { RangeCalculatorModal } from './RangeCalculatorModal';
 import { QuickSearchModal } from './QuickSearchModal';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -19,7 +20,8 @@ import {
   UserCheck,
   Zap,
   Search,
-  BookOpen
+  BookOpen,
+  Ruler
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
@@ -40,6 +42,7 @@ export const PlayModeView: React.FC = () => {
   const warband = getActiveWarband();
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
+  const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
 
   if (!warband) {
@@ -352,21 +355,33 @@ export const PlayModeView: React.FC = () => {
                 </button>
               </div>
 
-              {/* Weapons & Attacks Strip with Attack Calculator Trigger */}
+              {/* Weapons & Attacks Strip with Attack Calculator & Range Ruler Triggers */}
               <div className="space-y-1.5 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold text-[#8E95A5] uppercase tracking-wider">
                     Armaments & Attacks:
                   </span>
-                  {unit.equippedWeapons.length > 0 && !isOOA && (
+                  
+                  <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => setAttackingUnit(unit)}
-                      className="text-[10px] font-mono text-[#D4AF37] hover:text-[#E5C158] flex items-center space-x-1 font-bold"
+                      onClick={() => setRangingUnit(unit)}
+                      className="text-[10px] font-mono text-[#4E9A6E] hover:text-[#5BAE7E] flex items-center space-x-1 font-bold"
+                      title="Tactical Range & Charge Ruler"
                     >
-                      <Crosshair className="w-3 h-3" />
-                      <span>Attack Calc</span>
+                      <Ruler className="w-3 h-3" />
+                      <span>Ruler</span>
                     </button>
-                  )}
+
+                    {unit.equippedWeapons.length > 0 && !isOOA && (
+                      <button
+                        onClick={() => setAttackingUnit(unit)}
+                        className="text-[10px] font-mono text-[#D4AF37] hover:text-[#E5C158] flex items-center space-x-1 font-bold"
+                      >
+                        <Crosshair className="w-3 h-3" />
+                        <span>Attack Calc</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {unit.equippedWeapons.map((wep) => (
@@ -410,6 +425,14 @@ export const PlayModeView: React.FC = () => {
       {/* Quick Search Rules Modal */}
       {isQuickSearchOpen && (
         <QuickSearchModal onClose={() => setIsQuickSearchOpen(false)} />
+      )}
+
+      {/* Range & Charge Ruler Modal */}
+      {rangingUnit && (
+        <RangeCalculatorModal
+          unit={rangingUnit}
+          onClose={() => setRangingUnit(null)}
+        />
       )}
 
       {/* Attack Calculator Modal */}
