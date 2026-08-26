@@ -308,16 +308,24 @@ export const useStore = create<AppState>((set, get) => {
 
   const warbands = rawList.map((wb) => {
     const isSultanate = wb.factionId === 'iron-sultanate' || wb.name.toLowerCase().includes('qarn') || wb.name.toLowerCase().includes('sultanate');
+    const hasOldDummySnapshots = isSultanate && wb.snapshots?.some(s => s.id === 'snap-founding' || s.id === 'snap-match-1' || s.ducatCost === 1320 || s.label.includes('1320') || s.units.length === 0);
+    const cleanSnapshots = (isSultanate && (!wb.snapshots || wb.snapshots.length < 3 || hasOldDummySnapshots))
+      ? SULTANATE_WARBAND_SNAPSHOTS
+      : (wb.snapshots && wb.snapshots.length > 0 ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : []));
+
     return {
       ...wb,
       lore: wb.lore || (isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined),
       motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
       patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
       chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : []),
-      snapshots: (isSultanate && (!wb.snapshots || wb.snapshots.length < 3)) ? SULTANATE_WARBAND_SNAPSHOTS : (wb.snapshots && wb.snapshots.length > 0 ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : [])),
+      snapshots: cleanSnapshots,
       units: wb.units.map(enrichUnitWithLore)
     };
   });
+
+  // Ensure cleaned warbands with authentic snapshots are persisted to localStorage
+  storage.saveWarbands(warbands);
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();

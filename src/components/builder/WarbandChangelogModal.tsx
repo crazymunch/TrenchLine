@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { Warband, WarbandSnapshot } from '../../types/warband';
+import { Warband, WarbandSnapshot, ActiveUnit } from '../../types/warband';
+import { SULTANATE_WARBAND_SNAPSHOTS } from '../../data/warbandLore';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   X, 
@@ -17,9 +18,13 @@ import {
   Calendar, 
   CheckCircle, 
   ChevronRight, 
+  ChevronDown,
+  ChevronUp,
   Eye, 
   FileText,
-  Clock
+  Clock,
+  RotateCcw,
+  Zap
 } from 'lucide-react';
 
 interface WarbandChangelogModalProps {
@@ -29,28 +34,43 @@ interface WarbandChangelogModalProps {
 
 export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ warband, onClose }) => {
   const { saveWarbandSnapshot } = useStore();
-  const [selectedSnapshot, setSelectedSnapshot] = useState<WarbandSnapshot | null>(
-    warband.snapshots && warband.snapshots.length > 0 ? warband.snapshots[warband.snapshots.length - 1] : null
+  
+  // Snapshots list: check if sultanate and needs canonical
+  const isSultanate = warband.factionId === 'iron-sultanate' || warband.name.toLowerCase().includes('qarn') || warband.name.toLowerCase().includes('sultanate');
+  const rawSnapshots = (warband.snapshots && warband.snapshots.length >= 3 && !warband.snapshots.some(s => s.id === 'snap-founding' || s.ducatCost === 1320)) 
+    ? warband.snapshots 
+    : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : (warband.snapshots || []));
+
+  const [snapshots, setSnapshots] = useState<WarbandSnapshot[]>(rawSnapshots);
+  const [selectedSnapshotId, setSelectedSnapshotId] = useState<string>(
+    rawSnapshots.length > 0 ? rawSnapshots[rawSnapshots.length - 1].id : ''
   );
   const [isCreatingSnapshot, setIsCreatingSnapshot] = useState(false);
   const [customLabel, setCustomLabel] = useState('');
   const [customNote, setCustomNote] = useState('');
 
-  const snapshots = warband.snapshots && warband.snapshots.length > 0 ? warband.snapshots : [
-    {
-      id: 'snap-default',
-      timestamp: warband.createdAt,
-      label: '1. Founding Muster',
-      type: 'founding' as const,
-      ducatCost: warband.units.reduce((s, u) => s + u.totalCost, 0),
-      treasuryDucats: warband.treasuryDucats,
-      gloryPoints: warband.gloryPoints,
-      unitCount: warband.units.length,
-      units: warband.units,
-      armoryStash: warband.armoryStash,
-      changesSummary: ['Initial expedition roster mustered for the Crusade.']
+  const selectedSnapshot = snapshots.find(s => s.id === selectedSnapshotId) || snapshots[snapshots.length - 1];
+
+  const handleResetToCanonical = () => {
+    if (isSultanate) {
+      setSnapshots(SULTANATE_WARBAND_SNAPSHOTS);
+      setSelectedSnapshotId(SULTANATE_WARBAND_SNAPSHOTS[2].id);
+      useStore.setState((state) => {
+        const updated = state.warbands.map((wb) => {
+          if (wb.id === warband.id) {
+            return {
+              ...wb,
+              snapshots: SULTANATE_WARBAND_SNAPSHOTS,
+              units: SULTANATE_WARBAND_SNAPSHOTS[2].units
+            };
+          }
+          return wb;
+        });
+        return { warbands: updated };
+      });
+      soundEffects.playCathedralBell();
     }
-  ];
+  };
 
   const handleCreateManualSnapshot = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,8 +90,8 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-5xl max-h-[90vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
@@ -81,16 +101,26 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
               <h2 className="font-gothic font-bold text-xl text-[#ECEFF4] tracking-wide">
                 WARBAND GROWTH CHRONICLE & HISTORY
               </h2>
-              <p className="text-xs font-mono text-[#8E95A5]">
-                {warband.name} • {snapshots.length} Milestones Recorded Since Founding
+              <p className="text-xs text-[#8E95A5]">
+                {warband.name} • {snapshots.length} Historical Milestones Recorded
               </p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
+            {isSultanate && (
+              <button
+                onClick={handleResetToCanonical}
+                className="px-3 py-1.5 bg-[#0C0E12] hover:bg-[#20242E] border border-[#323846] text-[#8E95A5] hover:text-[#D4AF37] text-xs font-bold uppercase rounded transition-colors flex items-center space-x-1.5"
+                title="Reload the 3 authentic historical iterations (799 D, 983 D, 1000 D)"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Sync Canonical History</span>
+              </button>
+            )}
             <button
               onClick={() => setIsCreatingSnapshot(!isCreatingSnapshot)}
-              className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#D4AF37]/50 text-[#D4AF37] font-mono text-xs font-bold uppercase rounded transition-colors flex items-center space-x-1.5"
+              className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#D4AF37]/50 text-[#D4AF37] text-xs font-bold uppercase rounded transition-colors flex items-center space-x-1.5"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>Save Checkpoint</span>
@@ -106,7 +136,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
           
           {/* Manual Checkpoint Form */}
           {isCreatingSnapshot && (
-            <form onSubmit={handleCreateManualSnapshot} className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 font-mono text-xs">
+            <form onSubmit={handleCreateManualSnapshot} className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 text-xs">
               <span className="font-gothic font-bold text-sm text-[#D4AF37] block">
                 CREATE MANUAL CAMPAIGN CHECKPOINT
               </span>
@@ -177,7 +207,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
 
                     {/* Snapshot Card */}
                     <div
-                      onClick={() => setSelectedSnapshot(snap)}
+                      onClick={() => setSelectedSnapshotId(snap.id)}
                       className={`p-4 rounded-md border-2 transition-all cursor-pointer space-y-3 bevel-container ${
                         isSelected
                           ? 'bg-[#20242E] border-[#D4AF37] shadow-xl'
@@ -191,7 +221,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                               {snap.label}
                             </h4>
                             {snap.outcome && (
-                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
+                              <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
                                 snap.outcome === 'Victory' 
                                   ? 'bg-[#4E9A6E]/30 text-[#4E9A6E] border border-[#4E9A6E]/50' 
                                   : 'bg-[#8B0000]/30 text-[#E53935] border border-[#8B0000]/50'
@@ -200,14 +230,14 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] font-mono text-[#8E95A5] flex items-center space-x-1 mt-0.5">
+                          <span className="text-[10px] text-[#8E95A5] flex items-center space-x-1 mt-0.5">
                             <Clock className="w-3 h-3 text-[#D4AF37]" />
                             <span>{new Date(snap.timestamp).toLocaleDateString()}</span>
                           </span>
                         </div>
 
                         {/* Financial / Strength Summary */}
-                        <div className="flex items-center space-x-3 text-xs font-mono">
+                        <div className="flex items-center space-x-3 text-xs">
                           <div className="text-right">
                             <span className="text-[9px] uppercase text-[#8E95A5] block">Rating</span>
                             <strong className="text-[#D4AF37]">{snap.ducatCost} D</strong>
@@ -225,7 +255,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
 
                       {/* Changes Summary Bullets */}
                       {snap.changesSummary && snap.changesSummary.length > 0 && (
-                        <div className="space-y-1 font-mono text-xs">
+                        <div className="space-y-1 text-xs">
                           <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
                             Milestone Advancements & Events:
                           </span>
@@ -242,8 +272,77 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
 
                       {/* Notes / Battle Report Snippet */}
                       {snap.notes && (
-                        <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs font-mono text-[#8E95A5] italic leading-relaxed">
+                        <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs text-[#8E95A5] italic leading-relaxed">
                           {snap.notes}
+                        </div>
+                      )}
+
+                      {/* DETAILED ROSTER BREAKDOWN FOR THIS MILESTONE */}
+                      {isSelected && snap.units && snap.units.length > 0 && (
+                        <div className="mt-4 pt-3 border-t border-[#323846] space-y-3 bg-[#0C0E12]/80 p-3 rounded">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
+                              <Shield className="w-3.5 h-3.5" />
+                              <span>Rostered Warriors at this Milestone ({snap.units.length} Models):</span>
+                            </span>
+                            <span className="text-[10px] text-[#8E95A5]">
+                              Total: {snap.ducatCost} Ducats
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                            {snap.units.map((unit: ActiveUnit) => (
+                              <div
+                                key={unit.id}
+                                className="p-2.5 bg-[#161920] border border-[#323846] rounded space-y-1.5 text-[11px]"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <strong className="text-[#ECEFF4] block font-gothic text-xs">{unit.customName}</strong>
+                                    <span className="text-[9px] text-[#8E95A5]">
+                                      {unit.profileSnapshot.name} • {unit.profileSnapshot.category}
+                                    </span>
+                                  </div>
+                                  <span className="font-bold text-[#D4AF37] text-xs">{unit.totalCost} D</span>
+                                </div>
+
+                                {/* Weapons */}
+                                {unit.equippedWeapons && unit.equippedWeapons.length > 0 && (
+                                  <div className="text-[10px] text-[#8E95A5] space-x-1">
+                                    <span className="text-[#ECEFF4]">⚔️</span>
+                                    <span>{unit.equippedWeapons.map(w => w.name).join(', ')}</span>
+                                  </div>
+                                )}
+
+                                {/* Armour */}
+                                {unit.equippedArmour && unit.equippedArmour.length > 0 && (
+                                  <div className="text-[10px] text-[#8E95A5] space-x-1">
+                                    <span className="text-[#ECEFF4]">🛡️</span>
+                                    <span>{unit.equippedArmour.map(a => a.name).join(', ')}</span>
+                                  </div>
+                                )}
+
+                                {/* Skills / Advancements / Injuries */}
+                                {(unit.advancements.length > 0 || unit.injuries.length > 0 || unit.xp > 0) && (
+                                  <div className="pt-1 border-t border-[#323846]/60 text-[10px] space-y-0.5">
+                                    {unit.xp > 0 && (
+                                      <span className="text-[#D4AF37] block font-bold">{unit.xp} XP</span>
+                                    )}
+                                    {unit.advancements.map((adv, aIdx) => (
+                                      <span key={aIdx} className="text-[#4E9A6E] block truncate">
+                                        ⭐ {adv}
+                                      </span>
+                                    ))}
+                                    {unit.injuries.map((inj, iIdx) => (
+                                      <span key={iIdx} className="text-[#E53935] block truncate">
+                                        💀 {inj}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
 
