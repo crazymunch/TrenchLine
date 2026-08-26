@@ -45,6 +45,8 @@ export interface StashedItem {
   quantity: number;
 }
 
+export type StashItem = StashedItem;
+
 export interface Warband {
   id: string;
   name: string;

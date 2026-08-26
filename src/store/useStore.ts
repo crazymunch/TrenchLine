@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../types/warband';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashItem } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
@@ -45,6 +45,11 @@ interface AppState {
   equipEquipment: (warbandId: string, unitId: string, equipmentId: string) => void;
   removeEquipment: (warbandId: string, unitId: string, instanceId: string) => void;
 
+  // Warband Stash Management
+  buyToStash: (warbandId: string, item: { id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment'; cost: number }) => void;
+  sellFromStash: (warbandId: string, stashItemId: string) => void;
+  assignStashToUnit: (warbandId: string, stashItemId: string, unitId: string) => void;
+
   // Tabletop Play Mode
   playTurn: number;
   incrementTurn: () => void;
@@ -76,6 +81,17 @@ interface AppState {
   campaign: Campaign;
   createCampaign: (name: string, maxDucats: number, gloryThreshold: number) => void;
   claimTerritory: (territoryId: string, warbandId: string, playerName: string) => void;
+  logCampaignMatch: (
+    p1WarbandId: string,
+    p2WarbandId: string,
+    scenarioName: string,
+    outcome: 'p1' | 'p2' | 'draw',
+    p1Glory: number,
+    p1Ducats: number,
+    p2Glory: number,
+    p2Ducats: number,
+    narrative: string
+  ) => void;
 
   // Customizer & Overrides
   saveCustomUnit: (unit: UnitProfile) => void;
@@ -111,8 +127,8 @@ const initialWarbands: Warband[] = [
         baseProfileId: 'na-lieutenant',
         profileSnapshot: BASE_UNITS[0],
         equippedWeapons: [
-          { ...BASE_WEAPONS[6], instanceId: 'w-1' }, // Service rifle
-          { ...BASE_WEAPONS[0], instanceId: 'w-2' }  // Trench knife
+          { ...BASE_WEAPONS[6], instanceId: 'w-1' },
+          { ...BASE_WEAPONS[0], instanceId: 'w-2' }
         ],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-1' }],
         equippedEquipment: [{ ...BASE_EQUIPMENT[0], instanceId: 'e-1' }],
@@ -132,7 +148,7 @@ const initialWarbands: Warband[] = [
         customName: 'Brother Gabriel',
         baseProfileId: 'na-cleric',
         profileSnapshot: BASE_UNITS[1],
-        equippedWeapons: [{ ...BASE_WEAPONS[2], instanceId: 'w-3' }], // Sanctified greatsword
+        equippedWeapons: [{ ...BASE_WEAPONS[2], instanceId: 'w-3' }],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-2' }],
         equippedEquipment: [{ ...BASE_EQUIPMENT[1], instanceId: 'e-2' }],
         xp: 2,
@@ -174,7 +190,7 @@ const initialWarbands: Warband[] = [
         baseProfileId: 'na-shocktrooper',
         profileSnapshot: BASE_UNITS[2],
         equippedWeapons: [
-          { ...BASE_WEAPONS[7], instanceId: 'w-6' }, // Trench shotgun
+          { ...BASE_WEAPONS[7], instanceId: 'w-6' },
           { ...BASE_WEAPONS[0], instanceId: 'w-7' }
         ],
         equippedArmour: [{ ...BASE_ARMOUR[0], instanceId: 'a-4' }],
@@ -274,8 +290,8 @@ const initialCampaign: Campaign = {
     },
     {
       id: 't-4',
-      name: 'Dead Man\'s Crater (Center)',
-      type: 'No Man\'s Land',
+      name: "Dead Man's Crater (Center)",
+      type: "No Man's Land",
       perk: '+2 Glory on Victory when defending',
       description: 'Contested central wasteland strewn with barbed wire and ruined tanks.'
     }
@@ -712,6 +728,87 @@ export const useStore = create<AppState>((set, get) => {
       });
     },
 
+    // Armory Stash Management
+    buyToStash: (warbandId, item) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const existing = w.armoryStash.find((i) => i.id === item.id);
+          let newStash: StashItem[];
+          if (existing) {
+            newStash = w.armoryStash.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+          } else {
+            newStash = [...w.armoryStash, { id: item.id, name: item.name, type: item.type, cost: item.cost, quantity: 1 }];
+          }
+          return {
+            ...w,
+            armoryStash: newStash,
+            treasuryDucats: Math.max(0, w.treasuryDucats - item.cost)
+          };
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    sellFromStash: (warbandId, stashItemId) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const item = w.armoryStash.find((i) => i.id === stashItemId);
+          if (!item) return w;
+
+          const sellValue = Math.floor(item.cost / 2);
+          let newStash: StashItem[];
+          if (item.quantity > 1) {
+            newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
+          } else {
+            newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
+          }
+
+          return {
+            ...w,
+            armoryStash: newStash,
+            treasuryDucats: w.treasuryDucats + sellValue
+          };
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    assignStashToUnit: (warbandId, stashItemId, unitId) => {
+      const state = get();
+      const wb = state.warbands.find((w) => w.id === warbandId);
+      if (!wb) return;
+      const stashItem = wb.armoryStash.find((i) => i.id === stashItemId);
+      if (!stashItem) return;
+
+      if (stashItem.type === 'Weapon') {
+        state.equipWeapon(warbandId, unitId, stashItem.id);
+      } else if (stashItem.type === 'Armour') {
+        state.equipArmour(warbandId, unitId, stashItem.id);
+      } else if (stashItem.type === 'Equipment') {
+        state.equipEquipment(warbandId, unitId, stashItem.id);
+      }
+
+      // Deduct from stash
+      set((s) => {
+        const updated = s.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          let newStash: StashItem[];
+          if (stashItem.quantity > 1) {
+            newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
+          } else {
+            newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
+          }
+          return { ...w, armoryStash: newStash };
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
     // Play Mode
     playTurn: 1,
     incrementTurn: () => {
@@ -845,7 +942,6 @@ export const useStore = create<AppState>((set, get) => {
       const activeWb = state.getActiveWarband();
       if (!activeWb) return;
 
-      // Update active warband units (injuries, xp, advancements)
       const updatedUnits = activeWb.units.map((u) => {
         const cas = casualties.find((c) => c.unitId === u.id);
         const adv = advancements.find((a) => a.unitId === u.id);
@@ -858,7 +954,7 @@ export const useStore = create<AppState>((set, get) => {
         }
 
         let newAdvancements = [...u.advancements];
-        let newXp = u.xp + 1; // standard battle survival XP
+        let newXp = u.xp + 1;
         if (adv) {
           newAdvancements.push(adv.advancement);
         }
@@ -1015,6 +1111,94 @@ export const useStore = create<AppState>((set, get) => {
         const updatedCampaign: Campaign = {
           ...state.campaign,
           territories: updatedTerritories,
+          chronicleLogs: [newLog, ...state.campaign.chronicleLogs]
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+    },
+
+    logCampaignMatch: (
+      p1WarbandId,
+      p2WarbandId,
+      scenarioName,
+      outcome,
+      p1Glory,
+      p1Ducats,
+      p2Glory,
+      p2Ducats,
+      narrative
+    ) => {
+      set((state) => {
+        const m1 = state.campaign.members.find((m) => m.warbandId === p1WarbandId);
+        const m2 = state.campaign.members.find((m) => m.warbandId === p2WarbandId);
+
+        const updatedMembers = state.campaign.members.map((m) => {
+          if (m.warbandId === p1WarbandId) {
+            return {
+              ...m,
+              glory: m.glory + p1Glory,
+              treasury: m.treasury + p1Ducats,
+              wins: outcome === 'p1' ? m.wins + 1 : m.wins,
+              losses: outcome === 'p2' ? m.losses + 1 : m.losses,
+              draws: outcome === 'draw' ? m.draws + 1 : m.draws
+            };
+          }
+          if (m.warbandId === p2WarbandId) {
+            return {
+              ...m,
+              glory: m.glory + p2Glory,
+              treasury: m.treasury + p2Ducats,
+              wins: outcome === 'p2' ? m.wins + 1 : m.wins,
+              losses: outcome === 'p1' ? m.losses + 1 : m.losses,
+              draws: outcome === 'draw' ? m.draws + 1 : m.draws
+            };
+          }
+          return m;
+        });
+
+        const newMatch: MatchRecord = {
+          id: `m-${Date.now()}`,
+          campaignId: state.campaign.id,
+          date: new Date().toISOString().split('T')[0],
+          scenarioId: 'custom-match',
+          scenarioName,
+          narrativeLog: narrative || `${m1?.warbandName || 'Warband 1'} vs ${m2?.warbandName || 'Warband 2'} in ${scenarioName}`,
+          participants: [
+            {
+              warbandId: p1WarbandId,
+              warbandName: m1?.warbandName || 'Warband 1',
+              playerName: m1?.playerName || 'Player 1',
+              result: outcome === 'p1' ? 'Victory' : outcome === 'p2' ? 'Defeat' : 'Draw',
+              gloryGained: p1Glory,
+              ducatsGained: p1Ducats,
+              casualties: []
+            },
+            {
+              warbandId: p2WarbandId,
+              warbandName: m2?.warbandName || 'Warband 2',
+              playerName: m2?.playerName || 'Player 2',
+              result: outcome === 'p2' ? 'Victory' : outcome === 'p1' ? 'Defeat' : 'Draw',
+              gloryGained: p2Glory,
+              ducatsGained: p2Ducats,
+              casualties: []
+            }
+          ]
+        };
+
+        const newLog = {
+          id: `c-${Date.now()}`,
+          timestamp: 'Just now',
+          text: `Match logged: ${m1?.warbandName || 'P1'} vs ${m2?.warbandName || 'P2'} (${scenarioName}).`,
+          category: 'battle' as const
+        };
+
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          currentTurn: state.campaign.currentTurn + 1,
+          members: updatedMembers,
+          matches: [newMatch, ...state.campaign.matches],
           chronicleLogs: [newLog, ...state.campaign.chronicleLogs]
         };
 

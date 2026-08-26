@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { TerritoryMap } from './TerritoryMap';
+import { LogMatchModal } from './LogMatchModal';
 import { 
   Sparkles, 
   Trophy, 
@@ -14,7 +17,8 @@ import {
   Flame,
   Shield,
   Coins,
-  MapPin
+  MapPin,
+  Swords
 } from 'lucide-react';
 
 export const CampaignHubView: React.FC = () => {
@@ -24,6 +28,7 @@ export const CampaignHubView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'chronicle' | 'territory' | 'matches'>('leaderboard');
   const [copied, setCopied] = useState(false);
   const [isNewCampaignModalOpen, setIsNewCampaignModalOpen] = useState(false);
+  const [isLogMatchOpen, setIsLogMatchOpen] = useState(false);
   const [newCampaignName, setNewCampaignName] = useState('');
   const [newMaxDucats, setNewMaxDucats] = useState(700);
   const [newGloryGoal, setNewGloryGoal] = useState(25);
@@ -85,6 +90,14 @@ export const CampaignHubView: React.FC = () => {
             </div>
 
             <button
+              onClick={() => setIsLogMatchOpen(true)}
+              className="flex items-center space-x-1.5 px-4 py-2.5 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow-lg shadow-[#8B0000]/30"
+            >
+              <Swords className="w-4 h-4" />
+              <span>Log Match Result</span>
+            </button>
+
+            <button
               onClick={() => setIsNewCampaignModalOpen(true)}
               className="flex items-center space-x-1.5 px-3.5 py-2.5 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
             >
@@ -143,65 +156,78 @@ export const CampaignHubView: React.FC = () => {
       {/* TAB 1: LEADERBOARD */}
       {activeTab === 'leaderboard' && (
         <div className="bg-[#161920] border-2 border-[#323846] rounded-md overflow-hidden shadow-xl bevel-container">
-          <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
-            <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">WARBAND LEADERBOARD & RATINGS</h3>
-            <span className="text-xs font-mono text-[#8E95A5]">{campaign.members.length} Active Crusaders</span>
-          </div>
+          <table className="w-full text-left text-xs font-mono">
+            <thead className="bg-[#0C0E12] text-[#8E95A5] uppercase text-[10px] border-b border-[#323846]">
+              <tr>
+                <th className="p-4">Rank</th>
+                <th className="p-4">Warband & Commander</th>
+                <th className="p-4">Faction</th>
+                <th className="p-4 text-center">Record (W-L-D)</th>
+                <th className="p-4 text-center">Warband Rating</th>
+                <th className="p-4 text-center">Treasury</th>
+                <th className="p-4 text-right">Glory Points</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#323846]/60">
+              {sortedMembers.map((member, idx) => {
+                const faction = factions.find((f) => f.id === member.factionId);
+                const isMe = activeWb && member.warbandId === activeWb.id;
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-[#0C0E12] text-[#8E95A5] uppercase text-[10px] border-b border-[#323846]">
-                <tr>
-                  <th className="p-3.5">Rank</th>
-                  <th className="p-3.5">Player & Warband</th>
-                  <th className="p-3.5">Faction</th>
-                  <th className="p-3.5 text-center">Glory</th>
-                  <th className="p-3.5 text-center">Record (W/L/D)</th>
-                  <th className="p-3.5 text-center">Rating</th>
-                  <th className="p-3.5 text-right">Treasury</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#323846]">
-                {sortedMembers.map((member, idx) => {
-                  const faction = factions.find((f) => f.id === member.factionId);
-                  return (
-                    <tr key={member.userId} className="hover:bg-[#20242E]/50 transition-colors">
-                      <td className="p-3.5 font-bold text-[#D4AF37]">
-                        #{idx + 1}
-                      </td>
-                      <td className="p-3.5">
-                        <div className="font-bold text-[#ECEFF4] text-sm font-gothic">{member.warbandName}</div>
-                        <div className="text-[10px] text-[#8E95A5]">Commander: {member.playerName}</div>
-                      </td>
-                      <td className="p-3.5">
-                        <span className="inline-flex items-center space-x-1 text-[#ECEFF4]">
-                          <span
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: faction?.color || '#D4AF37' }}
-                          />
-                          <span>{faction?.name || member.factionId}</span>
+                return (
+                  <tr
+                    key={member.warbandId}
+                    className={`hover:bg-[#20242E] transition-colors ${
+                      isMe ? 'bg-[#D4AF37]/10' : ''
+                    }`}
+                  >
+                    <td className="p-4 font-bold text-sm">
+                      {idx === 0 ? (
+                        <span className="text-[#D4AF37] flex items-center space-x-1">
+                          <Trophy className="w-4 h-4" />
+                          <span>1st</span>
                         </span>
-                      </td>
-                      <td className="p-3.5 text-center font-bold text-base text-[#D4AF37]">
-                        {member.glory}
-                      </td>
-                      <td className="p-3.5 text-center">
-                        <span className="text-[#4E9A6E] font-bold">{member.wins}W</span> -{' '}
-                        <span className="text-[#E53935] font-bold">{member.losses}L</span> -{' '}
-                        <span className="text-[#8E95A5] font-bold">{member.draws}D</span>
-                      </td>
-                      <td className="p-3.5 text-center font-bold text-[#ECEFF4]">
-                        {member.rating} pts
-                      </td>
-                      <td className="p-3.5 text-right text-[#D4AF37] font-bold">
-                        {member.treasury} Ducats
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      ) : (
+                        <span className="text-[#8E95A5]">#{idx + 1}</span>
+                      )}
+                    </td>
+
+                    <td className="p-4">
+                      <div className="font-gothic font-bold text-base text-[#ECEFF4]">
+                        {member.warbandName}
+                      </div>
+                      <div className="text-[11px] text-[#8E95A5]">{member.playerName}</div>
+                    </td>
+
+                    <td className="p-4">
+                      <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-[#0C0E12] text-[#D4AF37] border border-[#323846]">
+                        {faction?.name || member.factionId}
+                      </span>
+                    </td>
+
+                    <td className="p-4 text-center font-bold text-[#ECEFF4]">
+                      <span className="text-[#4E9A6E]">{member.wins}W</span> -{' '}
+                      <span className="text-[#E53935]">{member.losses}L</span> -{' '}
+                      <span className="text-[#8E95A5]">{member.draws}D</span>
+                    </td>
+
+                    <td className="p-4 text-center font-bold text-[#ECEFF4]">
+                      {member.rating} pts
+                    </td>
+
+                    <td className="p-4 text-center text-[#D4AF37] font-bold">
+                      {member.treasury} D
+                    </td>
+
+                    <td className="p-4 text-right">
+                      <span className="text-base font-bold text-[#D4AF37] bg-[#0C0E12] px-3 py-1 rounded border border-[#323846]">
+                        {member.glory} pts
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
@@ -209,74 +235,107 @@ export const CampaignHubView: React.FC = () => {
       {activeTab === 'chronicle' && (
         <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl bevel-container">
           <h3 className="font-gothic font-bold text-lg text-[#ECEFF4] border-b border-[#323846] pb-3">
-            CAMPAIGN ANNALS & CHRONICLE
+            SECTOR IV CRUSADE CHRONICLE
           </h3>
 
           <div className="space-y-3">
             {campaign.chronicleLogs.map((log) => (
               <div
                 key={log.id}
-                className="p-3.5 bg-[#20242E] border-l-4 border-[#D4AF37] rounded-r-md flex items-start justify-between gap-4"
+                className="p-3 bg-[#0C0E12] rounded border border-[#323846] flex items-start space-x-3 text-xs font-mono"
               >
-                <div className="space-y-0.5">
-                  <p className="text-xs text-[#ECEFF4] font-sans leading-relaxed">{log.text}</p>
-                </div>
-                <span className="text-[10px] font-mono text-[#8E95A5] whitespace-nowrap">{log.timestamp}</span>
+                <span className="text-[10px] text-[#8E95A5] min-w-[70px] uppercase block mt-0.5">
+                  {log.timestamp}
+                </span>
+                <div className="h-4 w-[1px] bg-[#323846]" />
+                <p className="text-[#ECEFF4] flex-1">{log.text}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* TAB 3: TERRITORY MAP */}
+      {/* TAB 3: SECTOR IV MAP */}
       {activeTab === 'territory' && <TerritoryMap />}
 
-      {/* TAB 4: MATCHES */}
+      {/* TAB 4: BATTLE RECORDS */}
       {activeTab === 'matches' && (
-        <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl bevel-container">
-          <h3 className="font-gothic font-bold text-lg text-[#ECEFF4] border-b border-[#323846] pb-3">
-            HISTORICAL MATCH RECORDS
-          </h3>
-
-          <div className="space-y-4">
-            {campaign.matches.map((m) => (
-              <div key={m.id} className="p-4 bg-[#20242E] border border-[#323846] rounded-md space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono text-[#8E95A5]">
-                  <span className="text-[#D4AF37] font-bold">{m.scenarioName}</span>
-                  <span>Date: {m.date}</span>
+        <div className="space-y-4">
+          {campaign.matches.map((match) => (
+            <div
+              key={match.id}
+              className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl bevel-container"
+            >
+              <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+                <div>
+                  <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                    {match.scenarioName}
+                  </h3>
+                  <span className="text-xs font-mono text-[#8E95A5]">Date: {match.date}</span>
                 </div>
 
-                <p className="text-xs text-[#ECEFF4] italic">{m.narrativeLog}</p>
+                <span className="text-xs font-mono bg-[#0C0E12] px-3 py-1 rounded text-[#D4AF37] border border-[#323846] uppercase font-bold">
+                  Resolved
+                </span>
+              </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-[#323846]/60">
-                  {m.participants.map((p, pIdx) => (
-                    <div key={pIdx} className="p-2 bg-[#161920] rounded border border-[#323846] text-xs font-mono flex justify-between items-center">
-                      <div>
-                        <strong className="text-[#ECEFF4]">{p.warbandName}</strong> ({p.playerName})
-                        <div className="text-[10px] text-[#8E95A5]">+{p.gloryGained} Glory | +{p.ducatsGained} D</div>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded font-bold uppercase text-[10px] ${
-                        p.result === 'Victory' ? 'bg-[#4E9A6E] text-white' : 'bg-[#8B0000] text-white'
-                      }`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {match.participants.map((p) => (
+                  <div
+                    key={p.warbandId}
+                    className={`p-3.5 rounded border text-xs font-mono space-y-2 ${
+                      p.result === 'Victory'
+                        ? 'bg-[#161920] border-[#4E9A6E]'
+                        : p.result === 'Defeat'
+                        ? 'bg-[#161920] border-[#8B0000]'
+                        : 'bg-[#161920] border-[#323846]'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <strong className="font-gothic text-base text-[#ECEFF4]">{p.warbandName}</strong>
+                      <span
+                        className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
+                          p.result === 'Victory'
+                            ? 'bg-[#4E9A6E] text-white'
+                            : p.result === 'Defeat'
+                            ? 'bg-[#8B0000] text-white'
+                            : 'bg-[#20242E] text-[#8E95A5]'
+                        }`}
+                      >
                         {p.result}
                       </span>
                     </div>
-                  ))}
-                </div>
+
+                    <div className="text-[11px] text-[#8E95A5]">Commander: {p.playerName}</div>
+
+                    <div className="flex justify-between border-t border-[#323846] pt-1.5 text-[11px]">
+                      <span>Glory: <strong className="text-[#D4AF37]">+{p.gloryGained}</strong></span>
+                      <span>Ducats: <strong className="text-[#D4AF37]">+{p.ducatsGained} D</strong></span>
+                      <span>Casualties: <strong className="text-[#E53935]">{p.casualties.length}</strong></span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {match.narrativeLog && (
+                <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] text-xs text-[#8E95A5] italic">
+                  &quot;{match.narrativeLog}&quot;
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
       {/* New Campaign Modal */}
       {isNewCampaignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#323846] w-full max-w-lg rounded-md shadow-2xl overflow-hidden">
+          <div className="bg-[#161920] border-2 border-[#323846] w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container">
+            
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
               <div className="flex items-center space-x-2">
-                <Flame className="w-5 h-5 text-[#D4AF37]" />
-                <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">LAUNCH NEW CRUSADE</h3>
+                <Trophy className="w-5 h-5 text-[#D4AF37]" />
+                <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">CREATE CRUSADE CAMPAIGN</h3>
               </div>
               <button
                 onClick={() => setIsNewCampaignModalOpen(false)}
@@ -294,48 +353,48 @@ export const CampaignHubView: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Battle for the Shattered Spire, Operation Golgotha"
+                  placeholder="e.g. Siege of the Iron Gates, The Golgotha Crusade"
                   value={newCampaignName}
                   onChange={(e) => setNewCampaignName(e.target.value)}
                   className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Warband Point Cap
-                  </label>
-                  <input
-                    type="number"
-                    min="400"
-                    max="2000"
-                    step="50"
-                    value={newMaxDucats}
-                    onChange={(e) => setNewMaxDucats(parseInt(e.target.value) || 700)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Glory Victory Goal
-                  </label>
-                  <input
-                    type="number"
-                    min="10"
-                    max="100"
-                    value={newGloryGoal}
-                    onChange={(e) => setNewGloryGoal(parseInt(e.target.value) || 25)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                  Max Warband Ducat Rating
+                </label>
+                <input
+                  type="number"
+                  min="500"
+                  max="2000"
+                  step="50"
+                  value={newMaxDucats}
+                  onChange={(e) => setNewMaxDucats(parseInt(e.target.value) || 700)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
+                />
               </div>
 
-              <div className="pt-4 border-t border-[#323846] flex justify-end space-x-3">
+              <div>
+                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                  Glory Points for Campaign Victory
+                </label>
+                <input
+                  type="number"
+                  min="10"
+                  max="100"
+                  step="5"
+                  value={newGloryGoal}
+                  onChange={(e) => setNewGloryGoal(parseInt(e.target.value) || 25)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-[#323846] flex items-center justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setIsNewCampaignModalOpen(false)}
-                  className="px-4 py-2 bg-[#20242E] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
+                  className="px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
                 >
                   Cancel
                 </button>
@@ -343,12 +402,18 @@ export const CampaignHubView: React.FC = () => {
                   type="submit"
                   className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow"
                 >
-                  Create Campaign
+                  Establish Crusade
                 </button>
               </div>
             </form>
+
           </div>
         </div>
+      )}
+
+      {/* Log Match Modal */}
+      {isLogMatchOpen && (
+        <LogMatchModal onClose={() => setIsLogMatchOpen(false)} />
       )}
 
     </div>

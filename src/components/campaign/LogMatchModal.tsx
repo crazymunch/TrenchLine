@@ -1,0 +1,269 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useStore } from '../../store/useStore';
+import { soundEffects } from '../../services/soundEffects';
+import { 
+  X, 
+  Swords, 
+  Trophy, 
+  Sparkles, 
+  Coins, 
+  FileText, 
+  CheckCircle,
+  Skull
+} from 'lucide-react';
+
+interface LogMatchModalProps {
+  onClose: () => void;
+}
+
+export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
+  const { campaign, scenarios, logCampaignMatch } = useStore();
+
+  const members = campaign.members;
+  const [p1WbId, setP1WbId] = useState<string>(members[0]?.warbandId || '');
+  const [p2WbId, setP2WbId] = useState<string>(members[1]?.warbandId || members[0]?.warbandId || '');
+  const [scenarioName, setScenarioName] = useState<string>(scenarios[0]?.name || 'Trench Night Raid');
+  const [outcome, setOutcome] = useState<'p1' | 'p2' | 'draw'>('p1');
+  const [p1Glory, setP1Glory] = useState<number>(3);
+  const [p1Ducats, setP1Ducats] = useState<number>(30);
+  const [p2Glory, setP2Glory] = useState<number>(1);
+  const [p2Ducats, setP2Ducats] = useState<number>(15);
+  const [narrative, setNarrative] = useState<string>('');
+
+  const p1Member = members.find((m) => m.warbandId === p1WbId) || members[0];
+  const p2Member = members.find((m) => m.warbandId === p2WbId) || members[1];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!p1WbId || !p2WbId) return;
+
+    logCampaignMatch(
+      p1WbId,
+      p2WbId,
+      scenarioName,
+      outcome,
+      p1Glory,
+      p1Ducats,
+      p2Glory,
+      p2Ducats,
+      narrative.trim()
+    );
+
+    soundEffects.playCathedralBell();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-2xl max-h-[90vh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+          <div className="flex items-center space-x-3">
+            <Swords className="w-6 h-6 text-[#D4AF37]" />
+            <div>
+              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                LOG CAMPAIGN BATTLE REPORT
+              </h2>
+              <p className="text-xs font-mono text-[#8E95A5]">
+                Record the outcome of a match between two crusade warbands
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-6 flex-1">
+          
+          {/* Participants */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            {/* Player 1 */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+              <label className="block text-xs font-mono uppercase text-[#D4AF37] font-bold">
+                Combatant 1:
+              </label>
+              <select
+                value={p1WbId}
+                onChange={(e) => setP1WbId(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-mono text-[#ECEFF4] focus:outline-none"
+              >
+                {members.map((m) => (
+                  <option key={m.warbandId} value={m.warbandId}>
+                    {m.warbandName} ({m.playerName})
+                  </option>
+                ))}
+              </select>
+
+              <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-xs">
+                <div>
+                  <span className="text-[10px] text-[#8E95A5] block">Glory Won</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={p1Glory}
+                    onChange={(e) => setP1Glory(parseInt(e.target.value) || 0)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-1.5 text-xs text-[#ECEFF4]"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#8E95A5] block">Ducats Looted</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="200"
+                    step="5"
+                    value={p1Ducats}
+                    onChange={(e) => setP1Ducats(parseInt(e.target.value) || 0)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-1.5 text-xs text-[#ECEFF4]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Player 2 */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+              <label className="block text-xs font-mono uppercase text-[#E53935] font-bold">
+                Combatant 2:
+              </label>
+              <select
+                value={p2WbId}
+                onChange={(e) => setP2WbId(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-mono text-[#ECEFF4] focus:outline-none"
+              >
+                {members.map((m) => (
+                  <option key={m.warbandId} value={m.warbandId}>
+                    {m.warbandName} ({m.playerName})
+                  </option>
+                ))}
+              </select>
+
+              <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-xs">
+                <div>
+                  <span className="text-[10px] text-[#8E95A5] block">Glory Won</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={p2Glory}
+                    onChange={(e) => setP2Glory(parseInt(e.target.value) || 0)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-1.5 text-xs text-[#ECEFF4]"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#8E95A5] block">Ducats Looted</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="200"
+                    step="5"
+                    value={p2Ducats}
+                    onChange={(e) => setP2Ducats(parseInt(e.target.value) || 0)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-1.5 text-xs text-[#ECEFF4]"
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Scenario & Match Outcome */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <div>
+              <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1 font-bold">
+                Scenario Played:
+              </label>
+              <select
+                value={scenarioName}
+                onChange={(e) => setScenarioName(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-mono text-[#ECEFF4] focus:outline-none"
+              >
+                {scenarios.map((s) => (
+                  <option key={s.id} value={s.name}>{s.name}</option>
+                ))}
+                <option value="Custom Scenario">Custom Scenario / Sector Assault</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1 font-bold">
+                Match Result:
+              </label>
+              <div className="grid grid-cols-3 gap-1.5 font-mono text-xs">
+                <button
+                  type="button"
+                  onClick={() => setOutcome('p1')}
+                  className={`py-2 rounded font-bold uppercase ${
+                    outcome === 'p1' ? 'bg-[#D4AF37] text-black shadow' : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846]'
+                  }`}
+                >
+                  P1 Won
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOutcome('p2')}
+                  className={`py-2 rounded font-bold uppercase ${
+                    outcome === 'p2' ? 'bg-[#E53935] text-white shadow' : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846]'
+                  }`}
+                >
+                  P2 Won
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOutcome('draw')}
+                  className={`py-2 rounded font-bold uppercase ${
+                    outcome === 'draw' ? 'bg-[#4E9A6E] text-white shadow' : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846]'
+                  }`}
+                >
+                  Draw
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Narrative Log */}
+          <div>
+            <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1 font-bold">
+              Battle Chronicle Summary:
+            </label>
+            <textarea
+              rows={3}
+              value={narrative}
+              onChange={(e) => setNarrative(e.target.value)}
+              placeholder="e.g. A ferocious assault across the barbed wire. Lieutenant Valerius secured the central bunker despite heavy sniper fire."
+              className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2.5 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="pt-4 border-t border-[#323846] flex items-center justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center space-x-2"
+            >
+              <CheckCircle className="w-4 h-4" />
+              <span>Record to Chronicle</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  );
+};
