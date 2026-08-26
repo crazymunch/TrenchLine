@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../types/warband';
-import { UnitProfile, WeaponProfile, ArmourProfile } from '../types/rules';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../types/rules';
 import { BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from '../data/defaultRules';
 
 export function importNewRecruitRoster(rawInput: string, customUnits: UnitProfile[] = []): Warband {
@@ -32,74 +32,261 @@ export function importNewRecruitRoster(rawInput: string, customUnits: UnitProfil
 
 function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
   const rosterData = data.roster || data;
-  const name = rosterData.name || rosterData.customName || 'Imported NewRecruit Warband';
-  
-  // Detect faction
+  const force = rosterData.forces?.[0] || rosterData;
+  const warbandName = force.customName || rosterData.customName || rosterData.name || 'Imported Warband';
+
+  // Faction detection
   let factionId = 'new-antioch';
-  const factionStr = (rosterData.faction || rosterData.forces?.[0]?.name || rosterData.system || '').toLowerCase();
-  if (factionStr.includes('pilgrim')) factionId = 'trench-pilgrims';
-  else if (factionStr.includes('sultan')) factionId = 'iron-sultanate';
-  else if (factionStr.includes('heretic')) factionId = 'heretic-legion';
-  else if (factionStr.includes('grail')) factionId = 'black-grail';
-  else if (factionStr.includes('serpent') || factionStr.includes('hell')) factionId = 'court-seven-serpents';
+  const factionSearchStr = `${rosterData.name || ''} ${force.catalogueName || ''} ${force.name || ''} ${rosterData.gameSystemName || ''}`.toLowerCase();
+  
+  if (factionSearchStr.includes('sultan')) factionId = 'iron-sultanate';
+  else if (factionSearchStr.includes('pilgrim')) factionId = 'trench-pilgrims';
+  else if (factionSearchStr.includes('heretic')) factionId = 'heretic-legions';
+  else if (factionSearchStr.includes('grail')) factionId = 'black-grail';
+  else if (factionSearchStr.includes('court') || factionSearchStr.includes('serpent') || factionSearchStr.includes('hell')) factionId = 'court-seven-serpents';
 
-  const ducatLimit = rosterData.pointsLimit || rosterData.costLimit || 700;
+  const ducatsLimit = rosterData.costLimits?.find((c: any) => c.name === 'Ducats')?.value || 
+                      rosterData.costs?.find((c: any) => c.name === 'Ducats')?.value || 700;
+  const gloryPoints = rosterData.costs?.find((c: any) => c.name === 'Glory Points')?.value || 0;
+
+  const rawSelections = force.selections || rosterData.selections || [];
   const units: ActiveUnit[] = [];
+  const armoryStash: StashedItem[] = [];
 
-  // Parse units from forces / selections
-  const rawUnits = rosterData.units || rosterData.selections || rosterData.forces?.[0]?.selections || [];
+  rawSelections.forEach((sel: any, idx: number) => {
+    const isConfig = (sel.categories || []).some((c: any) => c.name === 'Configuration');
+    const isPileOfStuff = sel.name === 'Pile of Stuff' || sel.customName === 'Pile of Stuff';
 
-  rawUnits.forEach((uItem: any, idx: number) => {
-    const uName = uItem.name || uItem.customName || `Warrior ${idx + 1}`;
+    // Parse unassigned storage items into Armory Stash
+    if (isPileOfStuff) {
+      (sel.selections || []).forEach((stashSel: any) => {
+        const wepProf = stashSel.profiles?.find((p: any) => p.typeName === 'Weapon');
+        const cost = stashSel.costs?.find((c: any) => c.name === 'Ducats')?.value || 0;
+        const group = stashSel.group || '';
+
+        if (wepProf || group.includes('Weapons')) {
+          armoryStash.push({
+            id: `stash-${Date.now()}-${Math.random()}`,
+            name: stashSel.name,
+            type: 'Weapon',
+            cost,
+            quantity: stashSel.number || 1
+          });
+        } else if (group.includes('Armour') || group.includes('Shield')) {
+          armoryStash.push({
+            id: `stash-${Date.now()}-${Math.random()}`,
+            name: stashSel.name,
+            type: 'Armour',
+            cost,
+            quantity: stashSel.number || 1
+          });
+        } else if (group.includes('Equipment')) {
+          armoryStash.push({
+            id: `stash-${Date.now()}-${Math.random()}`,
+            name: stashSel.name,
+            type: 'Equipment',
+            cost,
+            quantity: stashSel.number || 1
+          });
+        }
+      });
+      return;
+    }
+
+    // Skip Configuration nodes (Campaign Rules, Warband Variant, Patron Selection, etc.)
+    if (isConfig && !sel.profiles?.some((p: any) => p.typeName === 'Unit')) {
+      return;
+    }
+
+    // Only process real models / units
+    const isModelType = sel.type === 'model' || sel.type === 'unit' || sel.profiles?.some((p: any) => p.typeName === 'Unit');
+    if (!isModelType) {
+      return;
+    }
+
+    // Extract Unit Characteristic Profile
+    const unitProfile = sel.profiles?.find((p: any) => p.typeName === 'Unit');
+    const charMap: Record<string, string> = {};
+    if (unitProfile?.characteristics) {
+      unitProfile.characteristics.forEach((c: any) => {
+        charMap[c.name] = c.$text || c.name || '';
+      });
+    }
+
+    // Determine category (Leader, Elite, Trooper, Mercenary)
+    let category: 'Leader' | 'Elite' | 'Trooper' | 'Mercenary' = 'Trooper';
+    const catNames = (sel.categories || []).map((c: any) => c.name);
     
-    // Find matching base unit or create a fallback profile
-    const matchedProfile = allUnits.find(
-      (p) => p.name.toLowerCase() === uName.toLowerCase() || uName.toLowerCase().includes(p.name.toLowerCase())
-    ) || {
-      id: `custom-unit-${Date.now()}-${idx}`,
-      name: uName,
-      factionId,
-      category: (uItem.category || uItem.role || 'Trooper') as any,
-      baseCost: uItem.cost || uItem.points || 35,
-      stats: {
-        movement: uItem.stats?.movement || '6"',
-        ranged: uItem.stats?.ranged || '+0',
-        melee: uItem.stats?.melee || '+1',
-        armour: uItem.stats?.armour || '+1',
-        keywords: []
-      },
-      innateAbilities: []
-    };
+    if (catNames.includes('Leader') || sel.name.toLowerCase().includes('leader') || sel.name.toLowerCase().includes('lieutenant') || sel.name.toLowerCase().includes('prophet') || sel.name.toLowerCase().includes('alchemist')) {
+      category = catNames.includes('Elite') && !catNames.includes('Leader') ? 'Elite' : 'Leader';
+    }
+    if (catNames.includes('Elite') || sel.name.toLowerCase().startsWith('favoured')) {
+      category = 'Elite';
+    } else if (catNames.includes('Mercenary') || sel.name.toLowerCase().includes('mamluk') || sel.name.toLowerCase().includes('sin eater') || sel.name.toLowerCase().includes('trench dog')) {
+      category = 'Mercenary';
+    } else if (catNames.includes('Troop') || catNames.includes('Trooper')) {
+      category = 'Trooper';
+    }
 
-    // Extract weapons / items
+    // Extract gear, skills, injuries, xp
     const equippedWeapons: EquippedWeapon[] = [];
     const equippedArmour: EquippedArmour[] = [];
+    const equippedEquipment: EquippedEquipment[] = [];
+    const advancements: string[] = [];
+    const injuries: string[] = [];
+    let xp = 0;
 
-    const rawGear = uItem.weapons || uItem.equipment || uItem.selections || [];
-    rawGear.forEach((g: any, gIdx: number) => {
-      const gName = typeof g === 'string' ? g : g.name || '';
-      const matchedWep = BASE_WEAPONS.find(w => w.name.toLowerCase().includes(gName.toLowerCase()));
-      if (matchedWep) {
-        equippedWeapons.push({ ...matchedWep, instanceId: `w-imp-${Date.now()}-${idx}-${gIdx}` });
+    function parseSubSelections(subList: any[]) {
+      if (!Array.isArray(subList)) return;
+
+      subList.forEach((sub) => {
+        const subName = sub.name || '';
+        const subGroup = sub.group || '';
+
+        // Experience counter
+        if (subName === 'Experience') {
+          xp += (sub.number || 1);
+          return;
+        }
+
+        // Skills / Advancements / Injuries
+        if (subGroup.includes('Skills') || subGroup.includes('Advancement') || subName === 'Elite Promotion' || subGroup.includes('Upgrades')) {
+          if (subGroup.includes('Injuries')) {
+            injuries.push(subName);
+          } else {
+            advancements.push(subName);
+          }
+          return;
+        }
+
+        // Weapon profiles
+        const wepProf = sub.profiles?.find((p: any) => p.typeName === 'Weapon');
+        if (wepProf || subGroup.includes('Weapons')) {
+          const wChars: Record<string, string> = {};
+          (wepProf?.characteristics || []).forEach((c: any) => { wChars[c.name] = c.$text || ''; });
+          
+          const rawType = wChars['Type'] || '';
+          const is2Handed = rawType.toLowerCase().includes('2') || rawType.toLowerCase().includes('two');
+          const isMelee = rawType.toLowerCase().includes('melee') || (wChars['Range'] || '').toLowerCase().includes('melee');
+
+          equippedWeapons.push({
+            id: `w-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+            name: wepProf?.name || subName,
+            type: isMelee ? 'Melee' : 'Ranged',
+            hands: is2Handed ? 2 : 1,
+            range: wChars['Range'] || (isMelee ? 'Melee (1")' : '12"'),
+            modifiers: wChars['Keywords']?.includes('DICE') ? wChars['Keywords'] : '+0 DICE',
+            damage: 'Standard',
+            keywords: wChars['Keywords'] ? wChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
+            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            instanceId: `w-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
+          });
+          return;
+        }
+
+        // Armour / Shield profiles
+        const bKitProf = sub.profiles?.find((p: any) => p.typeName === 'Battlekit');
+        if (subGroup.includes('Armour') || subGroup.includes('Shields') || bKitProf?.name.toLowerCase().includes('armour') || bKitProf?.name.toLowerCase().includes('shield')) {
+          const bChars: Record<string, string> = {};
+          (bKitProf?.characteristics || []).forEach((c: any) => { bChars[c.name] = c.$text || ''; });
+
+          equippedArmour.push({
+            id: `a-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+            name: bKitProf?.name || subName,
+            armourModifier: bChars['Keywords']?.includes('INJURY MODIFIER') ? bChars['Keywords'] : '-1 Injury Modifier',
+            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
+            instanceId: `a-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
+          });
+          return;
+        }
+
+        // Equipment / Battlekit items / Alchemical Formulae
+        if (subGroup.includes('Equipment') || subGroup.includes('Alchemical Formulae') || bKitProf) {
+          const bChars: Record<string, string> = {};
+          (bKitProf?.characteristics || []).forEach((c: any) => { bChars[c.name] = c.$text || ''; });
+
+          equippedEquipment.push({
+            id: `e-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+            name: bKitProf?.name || subName,
+            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            effect: bChars['Rules'] || '',
+            keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
+            instanceId: `e-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
+          });
+        }
+
+        // Recurse into nested sub-selections
+        if (sub.selections) {
+          parseSubSelections(sub.selections);
+        }
+      });
+    }
+
+    parseSubSelections(sel.selections);
+
+    // Compute total cost recursively
+    function getSelectionCost(item: any): number {
+      let sum = 0;
+      if (Array.isArray(item.costs)) {
+        const dCost = item.costs.find((c: any) => c.name === 'Ducats');
+        if (dCost && typeof dCost.value === 'number') sum += dCost.value;
       }
-    });
+      if (Array.isArray(item.selections)) {
+        item.selections.forEach((sub: any) => { sum += getSelectionCost(sub); });
+      }
+      return sum;
+    }
 
-    const isTough = matchedProfile.stats.keywords.some(k => k.toLowerCase().includes('tough'));
+    let totalUnitCost = getSelectionCost(sel);
+    if (totalUnitCost === 0) {
+      totalUnitCost = 35 + equippedWeapons.reduce((s, w) => s + w.cost, 0) + equippedArmour.reduce((s, a) => s + a.cost, 0);
+    }
+
+    const isTough = catNames.includes('Tough') || 
+                    unitProfile?.characteristics?.some((c: any) => c.$text?.toLowerCase().includes('tough')) ||
+                    advancements.some(a => a.toLowerCase().includes('tough'));
     const maxHp = isTough ? 2 : 1;
+
+    // Find or create profile snapshot
+    const matchedProfile = allUnits.find(
+      (p) => p.name.toLowerCase() === sel.name.toLowerCase() || sel.name.toLowerCase().includes(p.name.toLowerCase())
+    );
+
+    const baseProfileName = unitProfile?.name || sel.name;
+    const baseProfileId = (matchedProfile?.id || baseProfileName.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 
     units.push({
       id: `u-imp-${Date.now()}-${idx}`,
-      customName: uItem.customName || uName,
-      baseProfileId: matchedProfile.id,
-      profileSnapshot: matchedProfile,
+      customName: sel.customName || sel.name,
+      baseProfileId,
+      profileSnapshot: {
+        id: baseProfileId,
+        name: baseProfileName,
+        factionId,
+        category,
+        baseCost: totalUnitCost,
+        stats: {
+          movement: charMap['Movement'] || matchedProfile?.stats.movement || '6"',
+          ranged: charMap['Ranged'] || matchedProfile?.stats.ranged || '+0 DICE',
+          melee: charMap['Melee'] || matchedProfile?.stats.melee || '+0 DICE',
+          armour: charMap['Armour'] || matchedProfile?.stats.armour || '-1',
+          keywords: catNames
+        },
+        innateAbilities: (sel.profiles || []).filter((p: any) => p.typeName === 'Ability').map((a: any) => ({
+          id: a.id || a.name,
+          name: a.name,
+          description: a.characteristics?.find((c: any) => c.name === 'Description')?.$text || ''
+        }))
+      },
       equippedWeapons,
       equippedArmour,
-      equippedEquipment: [],
-      xp: uItem.xp || 0,
-      advancements: uItem.advancements || [],
-      injuries: uItem.injuries || [],
+      equippedEquipment,
+      xp,
+      advancements,
+      injuries,
       isDead: false,
-      totalCost: uItem.totalCost || matchedProfile.baseCost + equippedWeapons.reduce((s, w) => s + w.cost, 0),
+      totalCost: totalUnitCost,
       currentWounds: maxHp,
       maxWounds: maxHp,
       bloodMarkers: 0,
@@ -110,13 +297,13 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
 
   return {
     id: `wb-${Date.now()}`,
-    name,
+    name: warbandName,
     factionId,
-    ducatLimit,
-    treasuryDucats: rosterData.treasury || 0,
-    gloryPoints: rosterData.glory || 0,
+    ducatLimit: ducatsLimit,
+    treasuryDucats: 0,
+    gloryPoints,
     units,
-    armoryStash: [],
+    armoryStash,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -140,8 +327,8 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
 
   selections.forEach((sel: any, idx: number) => {
     const selName = sel['@_name'] || `Unit ${idx + 1}`;
-    
-    // Find matching profile
+    if (selName === 'Campaign Rules' || selName === 'Warband Variant') return;
+
     const matchedProfile = allUnits.find(
       (p) => p.name.toLowerCase() === selName.toLowerCase() || selName.toLowerCase().includes(p.name.toLowerCase())
     ) || {
@@ -150,7 +337,7 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
       factionId,
       category: 'Trooper' as const,
       baseCost: 35,
-      stats: { movement: '6"', ranged: '+0', melee: '+1', armour: '+1', keywords: [] },
+      stats: { movement: '6"', ranged: '+0 DICE', melee: '+1 DICE', armour: '-1', keywords: [] },
       innateAbilities: []
     };
 
@@ -195,7 +382,6 @@ function parseNewRecruitText(text: string, allUnits: UnitProfile[]): Warband {
   let factionId = 'new-antioch';
   const units: ActiveUnit[] = [];
 
-  // Look for header e.g. "Warband: 3rd Trench Guard" or "++ Principality of New Antioch ++"
   lines.forEach((line, idx) => {
     const lower = line.toLowerCase();
     if (lower.startsWith('warband:') || lower.startsWith('name:')) {
@@ -205,10 +391,9 @@ function parseNewRecruitText(text: string, allUnits: UnitProfile[]): Warband {
     } else if (lower.includes('sultan')) {
       factionId = 'iron-sultanate';
     } else if (lower.includes('heretic')) {
-      factionId = 'heretic-legion';
+      factionId = 'heretic-legions';
     }
 
-    // Match lines starting with bullet, number, or unit names
     allUnits.forEach((profile) => {
       if (lower.includes(profile.name.toLowerCase())) {
         units.push({
