@@ -140,7 +140,7 @@ export const CampaignHubView: React.FC = () => {
           {[
             { id: 'leaderboard', label: 'Crusade Standings', icon: <Trophy className="w-4 h-4" /> },
             { id: 'chronicle', label: 'Narrative Chronicle', icon: <Scroll className="w-4 h-4" /> },
-            { id: 'territory', label: 'Sector IV Map', icon: <Map className="w-4 h-4" /> },
+            { id: 'territory', label: 'Campaign World Map', icon: <Map className="w-4 h-4" /> },
             { id: 'matches', label: 'Battle Records', icon: <History className="w-4 h-4" /> }
           ].map((t) => (
             <button

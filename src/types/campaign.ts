@@ -51,11 +51,14 @@ export interface MatchRecord {
 export interface TerritoryNode {
   id: string;
   name: string;
-  type: 'Trench Line' | 'Ruined Shrine' | 'Munitions Bunker' | 'No Man\'s Land' | 'Cathedral Ruins';
+  type: string;
   controlledByWarbandId?: string;
   controlledByPlayerName?: string;
   perk: string; // e.g. "+10 Ducats exploration reward"
   description: string;
+  x?: number; // Map position X percentage (0-100)
+  y?: number; // Map position Y percentage (0-100)
+  region?: string;
 }
 
 export interface Campaign {
