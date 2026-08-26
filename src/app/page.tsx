@@ -9,6 +9,7 @@ import { PlayModeView } from '@/components/play/PlayModeView';
 import { CampaignHubView } from '@/components/campaign/CampaignHubView';
 import { CodexView } from '@/components/codex/CodexView';
 import { CustomizerView } from '@/components/customizer/CustomizerView';
+import { RosterDirectoryView } from '@/components/admin/RosterDirectoryView';
 
 export default function Home() {
   const { currentView, currentTheme } = useStore();
@@ -30,6 +31,7 @@ export default function Home() {
         {currentView === 'builder' && <WarbandDashboard />}
         {currentView === 'play' && <PlayModeView />}
         {currentView === 'campaign' && <CampaignHubView />}
+        {currentView === 'directory' && <RosterDirectoryView />}
         {currentView === 'codex' && <CodexView />}
         {currentView === 'customizer' && <CustomizerView />}
       </main>

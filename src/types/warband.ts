@@ -53,11 +53,31 @@ export interface StashedItem {
 
 export type StashItem = StashedItem;
 
+export interface WarbandSnapshot {
+  id: string;
+  timestamp: string;
+  label: string; // e.g. "Founding Muster", "Post-Battle 1: Victory vs Sorcerer Zortan"
+  type: 'founding' | 'post_battle' | 'recruitment' | 'equipment' | 'manual';
+  matchId?: string;
+  scenarioName?: string;
+  outcome?: 'Victory' | 'Defeat' | 'Draw';
+  ducatCost: number;
+  treasuryDucats: number;
+  gloryPoints: number;
+  unitCount: number;
+  units: ActiveUnit[];
+  armoryStash: StashedItem[];
+  changesSummary: string[]; // Specific diff bullet points
+  notes?: string;
+}
+
 export interface Warband {
   id: string;
   name: string;
   factionId: string;
   campaignId?: string;
+  creatorId?: string;
+  creatorName?: string;
   ducatLimit: number;
   treasuryDucats: number;
   gloryPoints: number;
@@ -71,6 +91,10 @@ export interface Warband {
   chronicleLog?: string[];
   notes?: string;
 
+  // Growth Changelog & History
+  snapshots?: WarbandSnapshot[];
+
   createdAt: string;
   updatedAt: string;
 }
+

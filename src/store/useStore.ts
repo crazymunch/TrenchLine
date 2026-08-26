@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
-import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY } from '../data/warbandLore';
+import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
 import { storage } from '../services/storage';
 
-export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer';
+export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
 
 interface AppState {
   currentView: AppView;
@@ -24,6 +24,10 @@ interface AppState {
   customUnits: UnitProfile[];
   customWeapons: WeaponProfile[];
 
+  // Global Warband Directory & Cloud
+  allCloudWarbands: Warband[];
+  fetchAllCloudWarbands: () => Promise<void>;
+
   // Warband Management
   warbands: Warband[];
   activeWarbandId: string | null;
@@ -35,7 +39,18 @@ interface AppState {
   updateWarbandNotes: (warbandId: string, notes: string) => void;
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
+  saveWarbandSnapshot: (
+    warbandId: string, 
+    label: string, 
+    type: 'founding' | 'post_battle' | 'recruitment' | 'equipment' | 'manual', 
+    changesSummary?: string[], 
+    matchId?: string, 
+    scenarioName?: string, 
+    outcome?: 'Victory' | 'Defeat' | 'Draw'
+  ) => void;
   importWarband: (warband: Warband) => void;
+  enrollWarbandInCampaign: (warband: Warband, campaignId?: string) => void;
+  removeWarbandFromCampaign: (warbandId: string, campaignId?: string) => void;
 
   // Active Warband Unit Management
   addUnitToWarband: (warbandId: string, baseProfileId: string, customName?: string) => void;
@@ -277,6 +292,7 @@ export const useStore = create<AppState>((set, get) => {
       motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
       patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
       chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : []),
+      snapshots: (wb.snapshots && wb.snapshots.length > 0) ? wb.snapshots : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : []),
       units: wb.units.map(enrichUnitWithLore)
     };
   });
@@ -323,16 +339,37 @@ export const useStore = create<AppState>((set, get) => {
     customUnits,
     customWeapons,
 
+    allCloudWarbands: [],
+    fetchAllCloudWarbands: async () => {
+      const cloudWbs = await storage.fetchAllWarbandsFromCloud();
+      if (cloudWbs) {
+        set({ allCloudWarbands: cloudWbs });
+      }
+    },
+
     warbands,
     activeWarbandId,
 
     getActiveWarband: () => {
       const state = get();
       return state.warbands.find((w) => w.id === state.activeWarbandId) || null;
-
     },
 
     createWarband: (name, factionId, ducatLimit = 700) => {
+      const foundingSnapshot: WarbandSnapshot = {
+        id: `snap-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        label: '1. Founding Muster',
+        type: 'founding',
+        ducatCost: 0,
+        treasuryDucats: 0,
+        gloryPoints: 0,
+        unitCount: 0,
+        units: [],
+        armoryStash: [],
+        changesSummary: ['Warband established and ready for initial recruitment.']
+      };
+
       const newWarband: Warband = {
         id: `wb-${Date.now()}`,
         name,
@@ -342,6 +379,7 @@ export const useStore = create<AppState>((set, get) => {
         gloryPoints: 0,
         units: [],
         armoryStash: [],
+        snapshots: [foundingSnapshot],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -358,12 +396,111 @@ export const useStore = create<AppState>((set, get) => {
     },
 
     importWarband: (newWarband: Warband) => {
+      const existingSnapshots = newWarband.snapshots && newWarband.snapshots.length > 0
+        ? newWarband.snapshots
+        : [{
+            id: `snap-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            label: '1. Founding Muster (Imported)',
+            type: 'founding' as const,
+            ducatCost: newWarband.units.reduce((s, u) => s + u.totalCost, 0),
+            treasuryDucats: newWarband.treasuryDucats || 0,
+            gloryPoints: newWarband.gloryPoints || 0,
+            unitCount: newWarband.units.length,
+            units: JSON.parse(JSON.stringify(newWarband.units)),
+            armoryStash: JSON.parse(JSON.stringify(newWarband.armoryStash || [])),
+            changesSummary: [`Imported roster with ${newWarband.units.length} warriors.`]
+          }];
+
+      const enrichedWarband: Warband = {
+        ...newWarband,
+        snapshots: existingSnapshots
+      };
+
       set((state) => {
-        const updated = [...state.warbands.filter(w => w.id !== newWarband.id), newWarband];
+        const updated = [...state.warbands.filter(w => w.id !== enrichedWarband.id), enrichedWarband];
         storage.saveWarbands(updated);
-        storage.setActiveWarbandId(newWarband.id);
-        storage.syncWarbandToCloud(newWarband);
-        return { warbands: updated, activeWarbandId: newWarband.id };
+        storage.setActiveWarbandId(enrichedWarband.id);
+        storage.syncWarbandToCloud(enrichedWarband);
+        return { warbands: updated, activeWarbandId: enrichedWarband.id };
+      });
+    },
+
+    saveWarbandSnapshot: (warbandId, label, type, changesSummary = [], matchId, scenarioName, outcome) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const newSnapshot: WarbandSnapshot = {
+            id: `snap-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            label,
+            type,
+            matchId,
+            scenarioName,
+            outcome,
+            ducatCost: w.units.reduce((sum, u) => sum + u.totalCost, 0),
+            treasuryDucats: w.treasuryDucats,
+            gloryPoints: w.gloryPoints,
+            unitCount: w.units.filter((u) => !u.isDead).length,
+            units: JSON.parse(JSON.stringify(w.units)),
+            armoryStash: JSON.parse(JSON.stringify(w.armoryStash)),
+            changesSummary: changesSummary.length > 0 ? changesSummary : ['Milestone checkpoint recorded.']
+          };
+
+          const existingSnapshots = w.snapshots || [];
+          const updatedWb: Warband = {
+            ...w,
+            snapshots: [...existingSnapshots, newSnapshot]
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    enrollWarbandInCampaign: (warband, campaignId) => {
+      set((state) => {
+        const targetCampId = campaignId || state.campaign.id;
+        const exists = state.campaign.members.some((m) => m.warbandId === warband.id);
+        if (exists) return state;
+
+        const newMember: CampaignMember = {
+          userId: warband.creatorId || 'user-default',
+          playerName: warband.creatorName || 'Commander',
+          warbandId: warband.id,
+          warbandName: warband.name,
+          factionId: warband.factionId,
+          glory: warband.gloryPoints || 0,
+          rating: warband.units.reduce((sum, u) => sum + u.totalCost, 0),
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          treasury: warband.treasuryDucats || 0
+        };
+
+        const updatedCampaign = {
+          ...state.campaign,
+          members: [...state.campaign.members, newMember]
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        storage.syncCampaignToCloud(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+    },
+
+    removeWarbandFromCampaign: (warbandId, campaignId) => {
+      set((state) => {
+        const updatedCampaign = {
+          ...state.campaign,
+          members: state.campaign.members.filter((m) => m.warbandId !== warbandId)
+        };
+        storage.saveCampaign(updatedCampaign);
+        storage.syncCampaignToCloud(updatedCampaign);
+        return { campaign: updatedCampaign };
       });
     },
 
@@ -1094,11 +1231,48 @@ export const useStore = create<AppState>((set, get) => {
         };
       });
 
+      const changesSummary: string[] = [
+        `Match Result: ${outcome} in ${scenarioName} (+${gloryGained} Glory, +${ducatsGained} Ducats).`
+      ];
+      if (casualties.length > 0) {
+        casualties.forEach((c) => changesSummary.push(`Casualty: ${c.unitName} - ${c.outcome}`));
+      }
+      if (advancements.length > 0) {
+        advancements.forEach((a) => {
+          const u = activeWb.units.find((item) => item.id === a.unitId);
+          changesSummary.push(`Advancement: ${u?.customName || 'Warrior'} learned ${a.advancement}`);
+        });
+      }
+      if (mvpUnitName) {
+        changesSummary.push(`Match MVP: ${mvpUnitName}`);
+      }
+
+      const matchId = `m-${Date.now()}`;
+      const matchSnapshot: WarbandSnapshot = {
+        id: `snap-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        label: `Post-Battle: ${scenarioName} (${outcome})`,
+        type: 'post_battle',
+        matchId,
+        scenarioName,
+        outcome,
+        ducatCost: updatedUnits.reduce((s, u) => s + u.totalCost, 0),
+        treasuryDucats: activeWb.treasuryDucats + ducatsGained,
+        gloryPoints: activeWb.gloryPoints + gloryGained,
+        unitCount: updatedUnits.filter((u) => !u.isDead).length,
+        units: JSON.parse(JSON.stringify(updatedUnits)),
+        armoryStash: JSON.parse(JSON.stringify(activeWb.armoryStash)),
+        changesSummary,
+        notes: narrativeReport || narrative
+      };
+
+      const existingSnapshots = activeWb.snapshots || [];
       const updatedWarband: Warband = {
         ...activeWb,
         gloryPoints: activeWb.gloryPoints + gloryGained,
         treasuryDucats: activeWb.treasuryDucats + ducatsGained,
-        units: updatedUnits
+        units: updatedUnits,
+        snapshots: [...existingSnapshots, matchSnapshot]
       };
 
       const updatedWarbands = state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w));
@@ -1107,7 +1281,7 @@ export const useStore = create<AppState>((set, get) => {
 
       // Create Match Record
       const newMatch: MatchRecord = {
-        id: `m-${Date.now()}`,
+        id: matchId,
         campaignId: state.campaign.id,
         date: new Date().toISOString().split('T')[0],
         scenarioId,

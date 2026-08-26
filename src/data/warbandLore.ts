@@ -270,6 +270,73 @@ This discovery marks a turning point for Bayt al-Nahas al-Hamra. Kasim is no lon
   }
 ];
 
+export const SULTANATE_WARBAND_SNAPSHOTS: any[] = [
+  {
+    id: 'snap-founding',
+    timestamp: '2026-08-01T10:00:00Z',
+    label: '1. Founding Muster (1320 👑)',
+    type: 'founding',
+    ducatCost: 1320,
+    treasuryDucats: 0,
+    gloryPoints: 0,
+    unitCount: 11,
+    units: [],
+    armoryStash: [],
+    changesSummary: [
+      'Mustered the initial 11-member scientific expedition under Master Kasim bin Malik at the Great Iron Wall',
+      'Commissioned the Brazen Bull (Al-Qahhar) and Lion of Jabir (Dhi’b) from the House of Wisdom',
+      'Enlisted 4 veteran Kavass line riflemen and 2 alchemical apprentices'
+    ],
+    notes: 'Initial expeditionary charter into the Al-Nafud Marches.'
+  },
+  {
+    id: 'snap-match-1',
+    timestamp: '2026-08-15T14:30:00Z',
+    label: '2. Siege of the Sun-Drenched Laboratory',
+    type: 'post_battle',
+    matchId: 'match-hist-1',
+    scenarioName: 'Relic Hunt (Sun-Drenched Laboratory)',
+    outcome: 'Victory',
+    ducatCost: 1320,
+    treasuryDucats: 180,
+    gloryPoints: 2,
+    unitCount: 11,
+    units: [],
+    armoryStash: [],
+    changesSummary: [
+      'Decisive 13-4 Victory over Court of the Seven-Headed Serpent (Sorcerer Zortan)',
+      'Kasim bin Malik sniped Hell Knight Mephistolon in Turn 1; suffered Leg Wound (-2" Movement) and forged custom brace armor',
+      'Al-Qahhar (Brazen Bull) promoted to Elite status and awarded the legendary Wind Amulet emerald',
+      'Idris promoted to Elite Lieutenant and awarded the Relic Golden Mantle after snatching the sacred reliquary',
+      'Harvested demonic tissue from slain yoke fiends in preparation for Takwin synthesis'
+    ],
+    notes: 'Epic showdown against Sorcerer Zortan.'
+  },
+  {
+    id: 'snap-match-2',
+    timestamp: '2026-08-25T18:00:00Z',
+    label: '3. Discovery of the Book of Golems',
+    type: 'post_battle',
+    matchId: 'match-hist-2',
+    scenarioName: 'The Chronicle of the Fractured Treaty',
+    outcome: 'Victory',
+    ducatCost: 1320,
+    treasuryDucats: 320,
+    gloryPoints: 4,
+    unitCount: 11,
+    units: [],
+    armoryStash: [],
+    changesSummary: [
+      'Tactical Victory in the Salt Wastes; defeated Heretic Shocktroopers',
+      'Synthesized and deployed Al-Masyukh (Three-Armed Homunculus Behemoth with Titan Zulfiqar)',
+      'Al-Qahhar sustained a severed arm in close melee—adapted into "The Crippled" wielding single Titan Blade & Flame Cannon',
+      'Post-battle exploration unearthed the sacred Book of Golems in sunken conduit chambers',
+      'Master Kasim bin Malik recognized as "The Living Engineer" & Master of Construction'
+    ],
+    notes: 'The warband ascends into biological artifice and golem rites.'
+  }
+];
+
 export function enrichUnitWithLore(unit: ActiveUnit): ActiveUnit {
   const nameLower = `${unit.customName} ${unit.profileSnapshot.name}`.toLowerCase();
   const matched = KNOWN_UNIT_LORES.find((lore) => 
@@ -286,3 +353,4 @@ export function enrichUnitWithLore(unit: ActiveUnit): ActiveUnit {
     deeds: (unit.deeds && unit.deeds.length > 0) ? unit.deeds : matched.deeds
   };
 }
+

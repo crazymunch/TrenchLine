@@ -1,0 +1,263 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useStore } from '../../store/useStore';
+import { Warband, WarbandSnapshot } from '../../types/warband';
+import { soundEffects } from '../../services/soundEffects';
+import { 
+  X, 
+  History, 
+  Sparkles, 
+  Shield, 
+  Coins, 
+  Award, 
+  Skull, 
+  Swords, 
+  PlusCircle, 
+  Calendar, 
+  CheckCircle, 
+  ChevronRight, 
+  Eye, 
+  FileText,
+  Clock
+} from 'lucide-react';
+
+interface WarbandChangelogModalProps {
+  warband: Warband;
+  onClose: () => void;
+}
+
+export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ warband, onClose }) => {
+  const { saveWarbandSnapshot } = useStore();
+  const [selectedSnapshot, setSelectedSnapshot] = useState<WarbandSnapshot | null>(
+    warband.snapshots && warband.snapshots.length > 0 ? warband.snapshots[warband.snapshots.length - 1] : null
+  );
+  const [isCreatingSnapshot, setIsCreatingSnapshot] = useState(false);
+  const [customLabel, setCustomLabel] = useState('');
+  const [customNote, setCustomNote] = useState('');
+
+  const snapshots = warband.snapshots && warband.snapshots.length > 0 ? warband.snapshots : [
+    {
+      id: 'snap-default',
+      timestamp: warband.createdAt,
+      label: '1. Founding Muster',
+      type: 'founding' as const,
+      ducatCost: warband.units.reduce((s, u) => s + u.totalCost, 0),
+      treasuryDucats: warband.treasuryDucats,
+      gloryPoints: warband.gloryPoints,
+      unitCount: warband.units.length,
+      units: warband.units,
+      armoryStash: warband.armoryStash,
+      changesSummary: ['Initial expedition roster mustered for the Crusade.']
+    }
+  ];
+
+  const handleCreateManualSnapshot = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customLabel.trim()) return;
+
+    saveWarbandSnapshot(
+      warband.id,
+      customLabel.trim(),
+      'manual',
+      customNote.trim() ? [customNote.trim()] : ['Manual checkpoint saved by commander.']
+    );
+
+    soundEffects.playCathedralBell();
+    setIsCreatingSnapshot(false);
+    setCustomLabel('');
+    setCustomNote('');
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+        
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+          <div className="flex items-center space-x-3">
+            <History className="w-6 h-6 text-[#D4AF37]" />
+            <div>
+              <h2 className="font-gothic font-bold text-xl text-[#ECEFF4] tracking-wide">
+                WARBAND GROWTH CHRONICLE & HISTORY
+              </h2>
+              <p className="text-xs font-mono text-[#8E95A5]">
+                {warband.name} • {snapshots.length} Milestones Recorded Since Founding
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsCreatingSnapshot(!isCreatingSnapshot)}
+              className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#D4AF37]/50 text-[#D4AF37] font-mono text-xs font-bold uppercase rounded transition-colors flex items-center space-x-1.5"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Save Checkpoint</span>
+            </button>
+            <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Body: Split Timeline & Details */}
+        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+          
+          {/* Manual Checkpoint Form */}
+          {isCreatingSnapshot && (
+            <form onSubmit={handleCreateManualSnapshot} className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 font-mono text-xs">
+              <span className="font-gothic font-bold text-sm text-[#D4AF37] block">
+                CREATE MANUAL CAMPAIGN CHECKPOINT
+              </span>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-[#8E95A5] block">Checkpoint Label:</label>
+                <input
+                  type="text"
+                  value={customLabel}
+                  onChange={(e) => setCustomLabel(e.target.value)}
+                  placeholder="e.g. Mid-Campaign Re-Equip, Recruited Sniper Priest"
+                  className="w-full bg-[#161920] border border-[#323846] rounded px-3 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-[#8E95A5] block">Changes / Rationale:</label>
+                <input
+                  type="text"
+                  value={customNote}
+                  onChange={(e) => setCustomNote(e.target.value)}
+                  placeholder="e.g. Sold 2 Jezzails, purchased Machine Armour for Captain"
+                  className="w-full bg-[#161920] border border-[#323846] rounded px-3 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+              <div className="flex justify-end space-x-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsCreatingSnapshot(false)}
+                  className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#8E95A5] rounded font-bold uppercase"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow"
+                >
+                  Save Snapshot
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Timeline Visual Track */}
+          <div className="space-y-6">
+            <h3 className="font-gothic font-bold text-base text-[#D4AF37] border-b border-[#323846] pb-2 flex items-center space-x-2">
+              <History className="w-4 h-4" />
+              <span>CHRONOLOGICAL EVOLUTION TIMELINE</span>
+            </h3>
+
+            <div className="relative pl-6 border-l-2 border-[#D4AF37]/40 space-y-6">
+              {snapshots.map((snap, idx) => {
+                const isSelected = selectedSnapshot?.id === snap.id;
+                return (
+                  <div key={snap.id || idx} className="relative group">
+                    
+                    {/* Timeline Dot Marker */}
+                    <div 
+                      className={`absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-2 transition-all ${
+                        snap.type === 'founding'
+                          ? 'bg-[#D4AF37] border-white shadow-glow'
+                          : snap.outcome === 'Victory'
+                          ? 'bg-[#4E9A6E] border-white'
+                          : snap.outcome === 'Defeat'
+                          ? 'bg-[#8B0000] border-white'
+                          : 'bg-[#20242E] border-[#D4AF37]'
+                      }`} 
+                    />
+
+                    {/* Snapshot Card */}
+                    <div
+                      onClick={() => setSelectedSnapshot(snap)}
+                      className={`p-4 rounded-md border-2 transition-all cursor-pointer space-y-3 bevel-container ${
+                        isSelected
+                          ? 'bg-[#20242E] border-[#D4AF37] shadow-xl'
+                          : 'bg-[#161920] border-[#323846] hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#323846] pb-2">
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                              {snap.label}
+                            </h4>
+                            {snap.outcome && (
+                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
+                                snap.outcome === 'Victory' 
+                                  ? 'bg-[#4E9A6E]/30 text-[#4E9A6E] border border-[#4E9A6E]/50' 
+                                  : 'bg-[#8B0000]/30 text-[#E53935] border border-[#8B0000]/50'
+                              }`}>
+                                {snap.outcome}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-mono text-[#8E95A5] flex items-center space-x-1 mt-0.5">
+                            <Clock className="w-3 h-3 text-[#D4AF37]" />
+                            <span>{new Date(snap.timestamp).toLocaleDateString()}</span>
+                          </span>
+                        </div>
+
+                        {/* Financial / Strength Summary */}
+                        <div className="flex items-center space-x-3 text-xs font-mono">
+                          <div className="text-right">
+                            <span className="text-[9px] uppercase text-[#8E95A5] block">Rating</span>
+                            <strong className="text-[#D4AF37]">{snap.ducatCost} D</strong>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[9px] uppercase text-[#8E95A5] block">Treasury</span>
+                            <strong className="text-[#ECEFF4]">{snap.treasuryDucats} D</strong>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[9px] uppercase text-[#8E95A5] block">Glory</span>
+                            <strong className="text-[#D4AF37]">{snap.gloryPoints} ☼</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Changes Summary Bullets */}
+                      {snap.changesSummary && snap.changesSummary.length > 0 && (
+                        <div className="space-y-1 font-mono text-xs">
+                          <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                            Milestone Advancements & Events:
+                          </span>
+                          <ul className="space-y-1 pl-2">
+                            {snap.changesSummary.map((change, cIdx) => (
+                              <li key={cIdx} className="text-[#ECEFF4] text-[11px] flex items-start space-x-2">
+                                <span className="text-[#D4AF37] font-bold">•</span>
+                                <span>{change}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Notes / Battle Report Snippet */}
+                      {snap.notes && (
+                        <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs font-mono text-[#8E95A5] italic leading-relaxed">
+                          {snap.notes}
+                        </div>
+                      )}
+
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+};

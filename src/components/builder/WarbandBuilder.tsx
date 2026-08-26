@@ -7,6 +7,7 @@ import { AddUnitModal } from './AddUnitModal';
 import { ExportModal } from './ExportModal';
 import { ArmoryStashModal } from './ArmoryStashModal';
 import { WarbandChronicleModal } from './WarbandChronicleModal';
+import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { 
   UserPlus, 
   Coins, 
@@ -21,7 +22,8 @@ import {
   Info,
   Crown,
   Scroll,
-  BookOpen
+  BookOpen,
+  History
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -32,6 +34,7 @@ export const WarbandBuilder: React.FC = () => {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isStashOpen, setIsStashOpen] = useState(false);
   const [isChronicleOpen, setIsChronicleOpen] = useState(false);
+  const [isChangelogOpen, setIsChangelogOpen] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
   const [isNotesOpen, setIsNotesOpen] = useState(false);
 
@@ -104,11 +107,20 @@ export const WarbandBuilder: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={() => setIsChronicleOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/40 rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Warband Narrative Chronicle, House Origins, Oaths & Timeline"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+              title="House Chronicle & Lore Dossier"
             >
               <Scroll className="w-4 h-4" />
-              <span>Chronicle & Lore</span>
+              <span>House Chronicle</span>
+            </button>
+
+            <button
+              onClick={() => setIsChangelogOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Warband Growth Chronicle & Changelog"
+            >
+              <History className="w-4 h-4 text-[#D4AF37]" />
+              <span>Growth History ({warband.snapshots?.length || 1})</span>
             </button>
 
             <button
@@ -355,6 +367,14 @@ export const WarbandBuilder: React.FC = () => {
         <WarbandChronicleModal
           warband={warband}
           onClose={() => setIsChronicleOpen(false)}
+        />
+      )}
+
+      {/* Warband Growth Chronicle & History Modal */}
+      {isChangelogOpen && (
+        <WarbandChangelogModal
+          warband={warband}
+          onClose={() => setIsChangelogOpen(false)}
         />
       )}
     </div>

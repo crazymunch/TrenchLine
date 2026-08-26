@@ -70,6 +70,22 @@ export const storage = {
     }
   },
 
+  async fetchAllWarbandsFromCloud(): Promise<Warband[] | null> {
+    if (!isBrowser) return null;
+    try {
+      const res = await fetch('/api/warbands?all=true');
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (Array.isArray(data.warbands)) {
+        return data.warbands;
+      }
+      return null;
+    } catch (e) {
+      console.warn('Fetch all warbands from cloud failed:', e);
+      return null;
+    }
+  },
+
   getActiveWarbandId(): string | null {
     if (!isBrowser) return null;
     try {

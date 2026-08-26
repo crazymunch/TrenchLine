@@ -7,13 +7,52 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
+    const { searchParams } = new URL(req.url);
+    const fetchAll = searchParams.get('all') === 'true';
 
     const warbands = await prisma.warband.findMany({
-      where: userId ? { userId } : {},
+      where: (!fetchAll && userId) ? { userId } : {},
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          }
+        },
+        campaignMembers: {
+          select: {
+            campaignId: true,
+            glory: true,
+            rating: true,
+            wins: true,
+            losses: true,
+            draws: true,
+            treasury: true
+          }
+        }
+      },
       orderBy: { updatedAt: 'desc' },
     });
 
-    return NextResponse.json({ warbands });
+    const mappedWarbands = warbands.map((wb: any) => ({
+      id: wb.id,
+      name: wb.name,
+      factionId: wb.factionId,
+      ducatLimit: wb.ducatLimit,
+      treasuryDucats: wb.treasuryDucats,
+      gloryPoints: wb.gloryPoints,
+      units: wb.units,
+      armoryStash: wb.armoryStash,
+      notes: wb.notes,
+      creatorId: wb.userId,
+      creatorName: wb.user?.name || wb.user?.email || 'Crusade Commander',
+      campaignMembers: wb.campaignMembers,
+      createdAt: wb.createdAt.toISOString(),
+      updatedAt: wb.updatedAt.toISOString(),
+    }));
+
+    return NextResponse.json({ warbands: mappedWarbands });
   } catch (err: any) {
     console.error('Error fetching warbands:', err);
     return NextResponse.json({ error: 'Failed to fetch warbands', warbands: [] }, { status: 500 });

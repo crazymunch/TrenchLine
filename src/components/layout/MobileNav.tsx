@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useStore, AppView } from '../../store/useStore';
 import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
-import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette } from 'lucide-react';
+import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette, Users } from 'lucide-react';
 
 export const MobileNav: React.FC = () => {
   const { currentView, setCurrentView, currentTheme } = useStore();
@@ -15,6 +15,7 @@ export const MobileNav: React.FC = () => {
     { id: 'builder', label: 'Roster', icon: <Shield className="w-4 h-4" /> },
     { id: 'play', label: 'Play', icon: <Swords className="w-4 h-4" />, badge: 'LIVE' },
     { id: 'campaign', label: 'Campaign', icon: <Flag className="w-4 h-4" /> },
+    { id: 'directory', label: 'Directory', icon: <Users className="w-4 h-4" /> },
     { id: 'codex', label: 'Codex', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'customizer', label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }
   ];
@@ -22,7 +23,7 @@ export const MobileNav: React.FC = () => {
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0C0E12]/95 backdrop-blur border-t border-[#323846] px-2 py-1">
-        <div className="grid grid-cols-6 gap-1">
+        <div className="grid grid-cols-7 gap-1">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (

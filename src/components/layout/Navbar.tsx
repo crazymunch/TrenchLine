@@ -18,7 +18,8 @@ import {
   LogOut,
   LogIn,
   Palette,
-  ChevronDown
+  ChevronDown,
+  Users
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -45,6 +46,7 @@ export const Navbar: React.FC = () => {
     { id: 'builder', label: 'Roster', icon: <Shield className="w-3.5 h-3.5" /> },
     { id: 'play', label: 'Play', icon: <Swords className="w-3.5 h-3.5" />, badge: 'LIVE' },
     { id: 'campaign', label: 'Campaign', icon: <Flag className="w-3.5 h-3.5" /> },
+    { id: 'directory', label: 'Directory', icon: <Users className="w-3.5 h-3.5" /> },
     { id: 'codex', label: 'Codex', icon: <BookOpen className="w-3.5 h-3.5" /> },
     { id: 'customizer', label: 'Customizer', icon: <SlidersHorizontal className="w-3.5 h-3.5" /> }
   ];
