@@ -30,7 +30,8 @@ import {
   Flame,
   Users,
   Star,
-  MoreVertical
+  MoreVertical,
+  Trophy
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -88,8 +89,13 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
     setTimeout(() => setFavouriteSaved(false), 2500);
   };
 
-  // Full name with selected titles (safely filtering out any title already contained in customName)
-  const titlesToAppend = (unit.titles || []).filter(t => !unit.customName.toLowerCase().includes(t.toLowerCase()));
+  // Active titles (from titleRecords if present, or legacy titles)
+  const activeTitlesList = unit.titleRecords
+    ? unit.titleRecords.filter(r => r.active).map(r => r.title)
+    : (unit.titles || []);
+
+  // Full name with active titles (safely filtering out any title already contained in customName)
+  const titlesToAppend = activeTitlesList.filter(t => !unit.customName.toLowerCase().includes(t.toLowerCase()));
   const fullDisplayName = titlesToAppend.length > 0
     ? `${unit.customName}, ${titlesToAppend.join(', ')}`
     : unit.customName;
@@ -282,6 +288,35 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               </span>
             )}
           </div>
+
+          {/* Active Honorific & Earned Titles Badges */}
+          {activeTitlesList.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {activeTitlesList.map((t, idx) => {
+                const rec = (unit.titleRecords || []).find(r => r.title.toLowerCase() === t.toLowerCase());
+                const isEarned = rec ? rec.source !== 'user' : false;
+                return (
+                  <span
+                    key={idx}
+                    onClick={() => setIsLoreModalOpen(true)}
+                    className={`text-[10px] font-mono px-1.5 py-0.5 rounded flex items-center space-x-1 cursor-pointer transition-colors ${
+                      isEarned
+                        ? 'bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/50 hover:border-[#D4AF37]'
+                        : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846] hover:text-[#ECEFF4]'
+                    }`}
+                    title={rec?.origin || (isEarned ? 'Special Earned Title' : 'Custom Title')}
+                  >
+                    {isEarned ? (
+                      <Trophy className="w-2.5 h-2.5 text-[#D4AF37]" />
+                    ) : (
+                      <Sparkles className="w-2.5 h-2.5 text-[#8E95A5]" />
+                    )}
+                    <span>{t}</span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
           {/* Battlefield Quote Snippet */}
           {unit.quote && (

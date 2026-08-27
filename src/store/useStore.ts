@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot } from '../types/warband';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot, UnitTitleRecord } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
@@ -140,6 +140,10 @@ interface AppState {
   addUnitDeed: (warbandId: string, unitId: string, deed: string) => void;
   removeUnitDeed: (warbandId: string, unitId: string, deedIndex: number) => void;
   setUnitTitles: (warbandId: string, unitId: string, titles: string[]) => void;
+  addUnitTitleRecord: (warbandId: string, unitId: string, title: string, source?: 'user' | 'injury' | 'exploration' | 'deed', origin?: string, active?: boolean) => void;
+  toggleUnitTitleActive: (warbandId: string, unitId: string, title: string) => void;
+  removeUnitTitleRecord: (warbandId: string, unitId: string, title: string) => void;
+  setUnitTitleRecords: (warbandId: string, unitId: string, records: UnitTitleRecord[]) => void;
 
   // Favourites Database
   favouriteUnits: ActiveUnit[];
@@ -1197,9 +1201,52 @@ export const useStore = create<AppState>((set, get) => {
               if (u.id !== unitId) return u;
               const existing = u.scars || [];
               if (existing.some(s => s.name === scar.name)) return u;
+
+              const norm = scar.name.toLowerCase();
+              let earnedTitle: { title: string; origin: string } | null = null;
+              if (norm.includes('prominent scar') || norm.includes('scarred')) {
+                earnedTitle = { title: 'the Scarred', origin: 'Trauma: Prominent Scar' };
+              } else if (norm.includes('lost arm') || norm.includes('crippled') || norm.includes('severed hand')) {
+                earnedTitle = { title: 'the Crippled', origin: 'Trauma: Lost Arm' };
+              } else if (norm.includes('leg wound') || norm.includes('lame') || norm.includes('limp')) {
+                earnedTitle = { title: 'the Lame', origin: 'Trauma: Leg Wound' };
+              } else if (norm.includes('lost an eye') || norm.includes('blind') || norm.includes('one-eyed')) {
+                earnedTitle = { title: 'the One-Eyed', origin: 'Trauma: Lost an Eye' };
+              } else if (norm.includes('chest wound') || norm.includes('iron-ribbed')) {
+                earnedTitle = { title: 'the Iron-Ribbed', origin: 'Trauma: Chest Wound' };
+              } else if (norm.includes('shell-shocked') || norm.includes('shell shock')) {
+                earnedTitle = { title: 'the Shell-Shocked', origin: 'Trauma: Shell-shocked' };
+              } else if (norm.includes('possessed')) {
+                earnedTitle = { title: 'the Possessed', origin: 'Trauma: Possessed' };
+              } else if (norm.includes('hardened') || norm.includes('fearless')) {
+                earnedTitle = { title: 'the Fearless', origin: 'Trauma: Hardened' };
+              }
+
+              let currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
+                title: t,
+                source: 'user',
+                active: true
+              }));
+
+              if (earnedTitle && !currentRecords.some(r => r.title.toLowerCase() === earnedTitle!.title.toLowerCase())) {
+                currentRecords = [
+                  ...currentRecords,
+                  {
+                    title: earnedTitle.title,
+                    source: 'injury',
+                    origin: earnedTitle.origin,
+                    active: true
+                  }
+                ];
+              }
+
+              const activeTitles = currentRecords.filter(r => r.active).map(r => r.title);
+
               return {
                 ...u,
-                scars: [...existing, scar]
+                scars: [...existing, scar],
+                titleRecords: currentRecords,
+                titles: activeTitles
               };
             }),
             updatedAt: new Date().toISOString()
@@ -1344,7 +1391,136 @@ export const useStore = create<AppState>((set, get) => {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              return { ...u, titles };
+              const records: UnitTitleRecord[] = titles.map(t => ({
+                title: t,
+                source: 'user',
+                active: true
+              }));
+              return { ...u, titles, titleRecords: records };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addUnitTitleRecord: (warbandId, unitId, title, source = 'user', origin, active = true) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
+                title: t,
+                source: 'user',
+                active: true
+              }));
+              const existingIdx = currentRecords.findIndex(r => r.title.toLowerCase() === title.toLowerCase());
+              let nextRecords: UnitTitleRecord[];
+              if (existingIdx >= 0) {
+                nextRecords = currentRecords.map((r, idx) => idx === existingIdx ? { ...r, active: true } : r);
+              } else {
+                nextRecords = [...currentRecords, { title, source, origin, active }];
+              }
+              const activeTitles = nextRecords.filter(r => r.active).map(r => r.title);
+              return {
+                ...u,
+                titleRecords: nextRecords,
+                titles: activeTitles
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    toggleUnitTitleActive: (warbandId, unitId, title) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
+                title: t,
+                source: 'user',
+                active: true
+              }));
+              const nextRecords = currentRecords.map(r => r.title.toLowerCase() === title.toLowerCase() ? { ...r, active: !r.active } : r);
+              const activeTitles = nextRecords.filter(r => r.active).map(r => r.title);
+              return {
+                ...u,
+                titleRecords: nextRecords,
+                titles: activeTitles
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    removeUnitTitleRecord: (warbandId, unitId, title) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
+                title: t,
+                source: 'user',
+                active: true
+              }));
+              const nextRecords = currentRecords.filter(r => r.title.toLowerCase() !== title.toLowerCase());
+              const activeTitles = nextRecords.filter(r => r.active).map(r => r.title);
+              return {
+                ...u,
+                titleRecords: nextRecords,
+                titles: activeTitles
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    setUnitTitleRecords: (warbandId, unitId, records) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const activeTitles = records.filter(r => r.active).map(r => r.title);
+              return {
+                ...u,
+                titleRecords: records,
+                titles: activeTitles
+              };
             }),
             updatedAt: new Date().toISOString()
           };
@@ -1633,11 +1809,66 @@ export const useStore = create<AppState>((set, get) => {
 
         let newInjuries = [...u.injuries];
         let isDead = u.isDead;
+        let currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
+          title: t,
+          source: 'user',
+          active: true
+        }));
+
         if (cas) {
           newInjuries.push(cas.outcome);
           if (cas.isDead) isDead = true;
+
+          const norm = cas.outcome.toLowerCase();
+          let earnedTitle: { title: string; origin: string } | null = null;
+          if (norm.includes('prominent scar') || norm.includes('scarred')) {
+            earnedTitle = { title: 'the Scarred', origin: 'Trauma: Prominent Scar' };
+          } else if (norm.includes('lost arm') || norm.includes('crippled') || norm.includes('severed hand')) {
+            earnedTitle = { title: 'the Crippled', origin: 'Trauma: Lost Arm' };
+          } else if (norm.includes('leg wound') || norm.includes('lame') || norm.includes('limp')) {
+            earnedTitle = { title: 'the Lame', origin: 'Trauma: Leg Wound' };
+          } else if (norm.includes('lost an eye') || norm.includes('blind') || norm.includes('one-eyed')) {
+            earnedTitle = { title: 'the One-Eyed', origin: 'Trauma: Lost an Eye' };
+          } else if (norm.includes('chest wound') || norm.includes('iron-ribbed')) {
+            earnedTitle = { title: 'the Iron-Ribbed', origin: 'Trauma: Chest Wound' };
+          } else if (norm.includes('shell-shocked') || norm.includes('shell shock')) {
+            earnedTitle = { title: 'the Shell-Shocked', origin: 'Trauma: Shell-shocked' };
+          } else if (norm.includes('possessed')) {
+            earnedTitle = { title: 'the Possessed', origin: 'Trauma: Possessed' };
+          } else if (norm.includes('hardened') || norm.includes('fearless')) {
+            earnedTitle = { title: 'the Fearless', origin: 'Trauma: Hardened' };
+          }
+
+          if (earnedTitle && !currentRecords.some(r => r.title.toLowerCase() === earnedTitle!.title.toLowerCase())) {
+            currentRecords = [
+              ...currentRecords,
+              {
+                title: earnedTitle.title,
+                source: 'injury',
+                origin: earnedTitle.origin,
+                active: true
+              }
+            ];
+          }
         }
 
+        // Leader Exploration Rewards auto-title check
+        if (u.profileSnapshot.category === 'Leader' && narrative) {
+          const normN = narrative.toLowerCase();
+          if (normN.includes('book of golems') || normN.includes('takwin')) {
+            if (!currentRecords.some(r => r.title.toLowerCase() === 'weaver of flesh')) {
+              currentRecords = [
+                ...currentRecords,
+                {
+                  title: 'Weaver of Flesh',
+                  source: 'exploration',
+                  origin: 'Exploration: The Book of Golems',
+                  active: true
+                }
+              ];
+            }
+          }
+        }
         let newAdvancements = [...u.advancements];
         let newXp = u.xp + 1;
         if (adv) {
@@ -1649,12 +1880,16 @@ export const useStore = create<AppState>((set, get) => {
           newDeeds.unshift(`Match MVP: ${scenarioName} (${outcome})`);
         }
 
+        const activeTitles = currentRecords.filter(r => r.active).map(r => r.title);
+
         return {
           ...u,
           injuries: newInjuries,
           isDead,
           advancements: newAdvancements,
           deeds: newDeeds,
+          titleRecords: currentRecords,
+          titles: activeTitles,
           xp: newXp,
           currentWounds: u.maxWounds,
           bloodMarkers: 0,

@@ -12,6 +12,13 @@ export interface EquippedEquipment extends EquipmentItem {
   instanceId: string;
 }
 
+export interface UnitTitleRecord {
+  title: string;
+  source: 'user' | 'injury' | 'exploration' | 'deed';
+  origin?: string;
+  active: boolean;
+}
+
 export interface ActiveUnit {
   id: string;
   customName: string;
@@ -38,6 +45,7 @@ export interface ActiveUnit {
   // Narrative Lore & Chronicle
   lore?: string;
   titles?: string[];
+  titleRecords?: UnitTitleRecord[];
   deeds?: string[];
   quote?: string;
 

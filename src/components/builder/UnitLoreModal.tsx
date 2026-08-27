@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ActiveUnit } from '../../types/warband';
+import { ActiveUnit, UnitTitleRecord } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
   Scroll, 
@@ -13,12 +13,15 @@ import {
   Trash2, 
   Check, 
   BookOpen, 
-  Skull,
-  Shield,
-  Edit3,
-  Flame,
-  CheckSquare,
-  Square
+  Skull, 
+  Shield, 
+  Edit3, 
+  Flame, 
+  Trophy, 
+  CheckSquare, 
+  Square,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface UnitLoreModalProps {
@@ -28,26 +31,51 @@ interface UnitLoreModalProps {
 }
 
 export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, onClose }) => {
-  const { updateUnitLore, updateUnitName } = useStore();
+  const { 
+    updateUnitLore, 
+    updateUnitName, 
+    addUnitTitleRecord, 
+    toggleUnitTitleActive, 
+    removeUnitTitleRecord,
+    setUnitTitleRecords 
+  } = useStore();
 
   const [activeTab, setActiveTab] = useState<'titles' | 'deeds' | 'bio'>('titles');
   
-  // Clean base name: if customName already ended with existing titles, keep base clean
+  // Clean base name
   const [baseName, setBaseName] = useState<string>(unit.customName || unit.profileSnapshot.name);
   const [loreText, setLoreText] = useState(unit.lore || '');
   const [quoteText, setQuoteText] = useState(unit.quote || '');
-  const [activeTitles, setActiveTitles] = useState<string[]>(unit.titles || []);
+  
+  // Initialize title records from existing titleRecords or map from legacy titles string array
+  const initialRecords: UnitTitleRecord[] = unit.titleRecords && unit.titleRecords.length > 0
+    ? unit.titleRecords
+    : (unit.titles || []).map(t => ({
+        title: t,
+        source: 'user',
+        origin: 'User Custom Title',
+        active: true
+      }));
+
+  const [titleRecords, setTitleRecords] = useState<UnitTitleRecord[]>(initialRecords);
   const [deeds, setDeeds] = useState<string[]>(unit.deeds || []);
 
   const [newTitleInput, setNewTitleInput] = useState('');
   const [newDeedInput, setNewDeedInput] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
-  const handleSaveNameAndTitles = (updatedTitles?: string[]) => {
-    const titlesToSave = updatedTitles !== undefined ? updatedTitles : activeTitles;
+  // Sync active titles list
+  const activeTitlesList = titleRecords.filter(r => r.active).map(r => r.title);
+
+  const handleSaveNameAndDossier = (updatedRecords?: UnitTitleRecord[]) => {
+    const recordsToSave = updatedRecords || titleRecords;
     const cleanName = baseName.trim() || unit.profileSnapshot.name;
+    const activeTitles = recordsToSave.filter(r => r.active).map(r => r.title);
+
     updateUnitName(warbandId, unit.id, cleanName);
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, titlesToSave, deeds);
+    setUnitTitleRecords(warbandId, unit.id, recordsToSave);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, deeds);
+
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
@@ -55,18 +83,39 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
   const handleAddTitle = () => {
     if (!newTitleInput.trim()) return;
     const title = newTitleInput.trim();
-    if (!activeTitles.includes(title)) {
-      const updated = [...activeTitles, title];
-      setActiveTitles(updated);
-      handleSaveNameAndTitles(updated);
+    
+    // Check if already exists in records
+    const existingIdx = titleRecords.findIndex(r => r.title.toLowerCase() === title.toLowerCase());
+    let updated: UnitTitleRecord[];
+    if (existingIdx >= 0) {
+      updated = titleRecords.map((r, idx) => idx === existingIdx ? { ...r, active: true } : r);
+    } else {
+      updated = [
+        ...titleRecords,
+        {
+          title,
+          source: 'user',
+          origin: 'User Custom Title',
+          active: true
+        }
+      ];
     }
+
+    setTitleRecords(updated);
+    handleSaveNameAndDossier(updated);
     setNewTitleInput('');
   };
 
-  const handleRemoveTitle = (idx: number) => {
-    const updated = activeTitles.filter((_, i) => i !== idx);
-    setActiveTitles(updated);
-    handleSaveNameAndTitles(updated);
+  const handleToggleTitleActive = (idx: number) => {
+    const updated = titleRecords.map((r, i) => i === idx ? { ...r, active: !r.active } : r);
+    setTitleRecords(updated);
+    handleSaveNameAndDossier(updated);
+  };
+
+  const handleRemoveTitleRecord = (idx: number) => {
+    const updated = titleRecords.filter((_, i) => i !== idx);
+    setTitleRecords(updated);
+    handleSaveNameAndDossier(updated);
   };
 
   const handleAddDeed = () => {
@@ -74,22 +123,21 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
     const updated = [...deeds, newDeedInput.trim()];
     setDeeds(updated);
     setNewDeedInput('');
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, updated);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitlesList, updated);
   };
 
   const handleRemoveDeed = (idx: number) => {
     const updated = deeds.filter((_, i) => i !== idx);
     setDeeds(updated);
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, updated);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitlesList, updated);
   };
 
-  const handleSaveBio = () => {
-    handleSaveNameAndTitles();
-  };
-
-  const fullPreviewName = activeTitles.length > 0
-    ? `${baseName.trim() || unit.profileSnapshot.name}, ${activeTitles.join(', ')}`
-    : (baseName.trim() || unit.profileSnapshot.name);
+  // Safe full name preview
+  const safeBaseName = baseName.trim() || unit.profileSnapshot.name;
+  const titlesToDisplay = activeTitlesList.filter(t => !safeBaseName.toLowerCase().includes(t.toLowerCase()));
+  const fullPreviewName = titlesToDisplay.length > 0
+    ? `${safeBaseName}, ${titlesToDisplay.join(', ')}`
+    : safeBaseName;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
@@ -130,8 +178,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                 : 'border-transparent text-[#8E95A5] hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Name & Titles ({activeTitles.length})</span>
+            <Trophy className="w-3.5 h-3.5" />
+            <span>Title Repository ({titleRecords.length})</span>
           </button>
 
           <button
@@ -181,7 +229,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                     className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] font-gothic text-sm focus:outline-none focus:border-[#D4AF37]"
                   />
                   <button
-                    onClick={() => handleSaveNameAndTitles()}
+                    onClick={() => handleSaveNameAndDossier()}
                     className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
                   >
                     <Check className="w-3.5 h-3.5" />
@@ -196,13 +244,13 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               {/* Add Custom Title Input */}
               <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
                 <label className="text-[11px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Add Honorific Title:</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Custom Title:</span>
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Type title to add (e.g. 'the Living Engineer', 'the Undying', 'the Unbroken')..."
+                    placeholder="Type custom title to add (e.g. 'the Living Engineer', 'the Undying', 'the Unbroken')..."
                     value={newTitleInput}
                     onChange={(e) => setNewTitleInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddTitle()}
@@ -219,36 +267,95 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                 </div>
               </div>
 
-              {/* Active Titles List */}
+              {/* Title Repository List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Active Honorific Titles Attached to Warrior ({activeTitles.length}):
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                    Warrior Title Repository ({titleRecords.length}):
+                  </span>
+                  <span className="text-[10px] text-[#D4AF37]">
+                    {titleRecords.filter(r => r.active).length} Active in Display Name
+                  </span>
+                </div>
 
-                {activeTitles.length === 0 ? (
+                {titleRecords.length === 0 ? (
                   <div className="p-6 bg-[#0C0E12] rounded border border-[#323846] text-center text-[#8E95A5] italic">
-                    No honorific titles attached to this warrior. Type a title above and click &quot;Add Title&quot; to assign one.
+                    No titles in repository. Add custom titles above or earn special titles through trauma injuries and legendary exploration!
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {activeTitles.map((title, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 bg-[#0C0E12] rounded border border-[#D4AF37]/40 flex items-center justify-between gap-3 hover:border-[#D4AF37] transition-all"
-                      >
-                        <div className="flex items-center space-x-2.5">
-                          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0" />
-                          <strong className="text-xs text-[#ECEFF4] font-gothic text-sm">{title}</strong>
-                        </div>
-                        <button
-                          onClick={() => handleRemoveTitle(idx)}
-                          className="text-[#8E95A5] hover:text-[#E53935] p-1 transition-colors"
-                          title="Remove Title"
+                    {titleRecords.map((rec, idx) => {
+                      const isEarned = rec.source !== 'user';
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded border flex items-center justify-between gap-3 transition-all ${
+                            rec.active
+                              ? isEarned
+                                ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40'
+                                : 'bg-[#161920] border-[#D4AF37]/60'
+                              : 'bg-[#0C0E12] border-[#323846] opacity-75 hover:opacity-100'
+                          }`}
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
+                          {/* Title Info & Icon */}
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <div className="flex-shrink-0">
+                              {isEarned ? (
+                                <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]" title={rec.origin || 'Special Earned Title'}>
+                                  <Trophy className="w-3.5 h-3.5" />
+                                </div>
+                              ) : (
+                                <div className="w-7 h-7 rounded-full bg-[#323846] flex items-center justify-center text-[#8E95A5]" title="User Added Title">
+                                  <Sparkles className="w-3.5 h-3.5" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="min-w-0">
+                              <strong className="text-xs text-[#ECEFF4] font-gothic text-sm block truncate">
+                                {rec.title}
+                              </strong>
+                              <span className="text-[10px] text-[#8E95A5] font-mono block truncate">
+                                {rec.origin || (isEarned ? 'Special Earned Title' : 'User Added Title')}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action Controls: Toggle on/off & Delete */}
+                          <div className="flex items-center space-x-2 flex-shrink-0">
+                            <button
+                              onClick={() => handleToggleTitleActive(idx)}
+                              className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
+                                rec.active
+                                  ? 'bg-[#D4AF37] text-black shadow'
+                                  : 'bg-[#20242E] text-[#8E95A5] border border-[#323846] hover:text-white'
+                              }`}
+                              title={rec.active ? 'Click to hide from display name' : 'Click to show in display name'}
+                            >
+                              {rec.active ? (
+                                <>
+                                  <Eye className="w-3 h-3" />
+                                  <span>Active</span>
+                                </>
+                              ) : (
+                                <>
+                                  <EyeOff className="w-3 h-3" />
+                                  <span>Hidden</span>
+                                </>
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => handleRemoveTitleRecord(idx)}
+                              className="text-[#8E95A5] hover:text-[#E53935] p-1.5 rounded hover:bg-[#8B0000]/20 transition-colors"
+                              title="Delete from repository"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -354,7 +461,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
 
               <div className="flex items-center justify-end pt-2">
                 <button
-                  onClick={handleSaveBio}
+                  onClick={() => handleSaveNameAndDossier()}
                   className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
                 >
                   <Check className="w-4 h-4" />
