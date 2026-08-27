@@ -1716,7 +1716,9 @@ export const useStore = create<AppState>((set, get) => {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              const next = Math.max(0, Math.min(u.maxWounds, u.currentWounds + delta));
+              const max = Number(u.maxWounds) || 1;
+              const cur = Number(u.currentWounds) || 0;
+              const next = Math.max(0, Math.min(max, cur + delta));
               let status = u.status;
               if (next === 0 && status === 'Active') status = 'Downed';
               if (next > 0 && status === 'Downed') status = 'Active';
@@ -1737,7 +1739,10 @@ export const useStore = create<AppState>((set, get) => {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              return { ...u, bloodMarkers: Math.max(0, u.bloodMarkers + delta) };
+              const cur = Number(u.bloodMarkers) || 0;
+              // Official Rulebook Cap: max 6 blood markers per warrior
+              const next = Math.max(0, Math.min(6, cur + delta));
+              return { ...u, bloodMarkers: next };
             })
           };
         });

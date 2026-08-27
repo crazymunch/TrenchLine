@@ -34,7 +34,8 @@ import {
   ChevronRight,
   Send,
   Zap,
-  DollarSign
+  DollarSign,
+  ArrowRight
 } from 'lucide-react';
 
 interface AllOutWarCardConsoleProps {
@@ -97,14 +98,15 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
       }, 1000);
     } else if (timerSeconds === 0 && isTimerRunning) {
       setIsTimerRunning(false);
-      soundEffects.playCathedralBell();
+      soundEffects.playTrenchWhistle();
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, timerSeconds]);
 
-  // Deal Initiative Cards for this Round
+  // Deal 1 Initiative Card to each player
   const handleDealInitiative = () => {
-    soundEffects.playGunfire();
+    soundEffects.playDiceRoll();
+
     let currentDeck = [...deck];
     let currentDiscard = [...discardPile];
 
@@ -114,8 +116,10 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
     }
 
     const updatedPlayers = players.map((p) => {
-      const drawnCard = currentDeck.pop()!;
-      currentDiscard.push(drawnCard);
+      const drawnCard = currentDeck.pop() || null;
+      if (p.initiativeCard) {
+        currentDiscard.push(p.initiativeCard);
+      }
       return {
         ...p,
         initiativeCard: drawnCard
@@ -127,39 +131,22 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
     setPlayers(updatedPlayers);
   };
 
-  // Deal Betrayal Cards based on VP standing
+  // Deal Betrayal Cards (1 to each unallied player per round)
   const handleDealBetrayalCards = () => {
-    soundEffects.playCathedralBell();
+    soundEffects.playDiceRoll();
+
     let currentDeck = [...deck];
     let currentDiscard = [...discardPile];
 
-    // Find highest and lowest VPs
-    const vpValues = players.map((p) => warbandScores[p.warbandId]?.vp || 0);
-    const maxVp = Math.max(...vpValues);
-    const minVp = Math.min(...vpValues);
-
     const updatedPlayers = players.map((p) => {
-      const vp = warbandScores[p.warbandId]?.vp || 0;
-      let drawCount = 2;
-      if (vp === maxVp && maxVp !== minVp) drawCount = 1;
-      else if (vp === minVp && maxVp !== minVp) drawCount = 3;
-
-      const drawn: PlayingCard[] = [];
-      for (let i = 0; i < drawCount; i++) {
-        if (currentDeck.length === 0) {
-          currentDeck = shuffleDeck(currentDiscard);
-          currentDiscard = [];
-        }
-        if (currentDeck.length > 0) {
-          const card = currentDeck.pop()!;
-          drawn.push(card);
-          currentDiscard.push(card);
-        }
+      if (currentDeck.length < 1) {
+        currentDeck = shuffleDeck([...currentDeck, ...currentDiscard]);
+        currentDiscard = [];
       }
-
+      const drawnCard = currentDeck.pop();
       return {
         ...p,
-        betrayalHand: [...p.betrayalHand, ...drawn]
+        betrayalHand: drawnCard ? [...p.betrayalHand, drawnCard] : p.betrayalHand
       };
     });
 
@@ -186,7 +173,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
       type: isCoup ? 'coup' : 'ruse'
     });
 
-    soundEffects.playTrenchWhistle();
+    soundEffects.playDiceRoll();
 
     // Remove from player hand
     setPlayers((prev) =>
@@ -202,7 +189,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
   // Reveal Alliances and calculate Joint Alliances (+1 VP)
   const handleRevealAlliances = () => {
-    soundEffects.playTrenchWhistle();
+    soundEffects.playDiceRoll();
     setAlliancesRevealed(true);
 
     // Calculate Joint Alliances
@@ -238,25 +225,25 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
   const selectedPlayer = players[selectedPlayerIdx] || players[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono text-xs">
       <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-5xl max-h-[92vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#323846] bg-[#0C0E12]">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
-              <Layers className="w-5 h-5 text-[#D4AF37]" />
+              <Layers className="w-4 h-4 text-[#D4AF37]" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
+                <h2 className="font-gothic font-bold text-base sm:text-lg text-[#ECEFF4] tracking-wide">
                   ALL OUT WAR: MULTIPLAYER CARD & ALLIANCE ENGINE
                 </h2>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-[#8B0000] text-white font-bold uppercase">
                   52-Card System
                 </span>
               </div>
-              <p className="text-xs text-[#8E95A5]">
+              <p className="text-[11px] text-[#8E95A5]">
                 Initiative card draws, secret betrayal hands, 3-minute alliance negotiations, and VP bribes.
               </p>
             </div>
@@ -267,13 +254,13 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
           </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center space-x-2 px-6 py-2.5 border-b border-[#323846] bg-[#20242E] overflow-x-auto text-xs">
+        {/* Tab Navigation: Clean 4-Item Grid, No Horizontal Scroll */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2.5 border-b border-[#323846] bg-[#20242E] text-xs">
           {[
-            { id: 'initiative', label: '1. Initiative Cards (Round Order)', icon: Swords },
-            { id: 'betrayal', label: '2. Betrayal Cards (Coups & Ruses)', icon: Sparkles },
-            { id: 'alliance', label: '3. Alliance Period (3-Min Timer)', icon: Users },
-            { id: 'bribes', label: '4. VP Bribes & Transfers', icon: DollarSign }
+            { id: 'initiative', label: '1. Initiative', icon: Swords },
+            { id: 'betrayal', label: '2. Betrayal Cards', icon: Sparkles },
+            { id: 'alliance', label: '3. Alliances (3m)', icon: Users },
+            { id: 'bribes', label: '4. VP Bribes', icon: DollarSign }
           ].map((t) => {
             const Icon = t.icon;
             const isSel = activeTab === t.id;
@@ -281,14 +268,14 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id as any)}
-                className={`px-3.5 py-1.5 rounded font-bold uppercase flex items-center space-x-1.5 transition-all whitespace-nowrap ${
+                className={`py-2 px-2 rounded font-bold uppercase flex items-center justify-center space-x-1.5 transition-all text-center ${
                   isSel
                     ? 'bg-[#D4AF37] text-black shadow'
                     : 'bg-[#161920] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{t.label}</span>
+                <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">{t.label}</span>
               </button>
             );
           })}
@@ -296,29 +283,29 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
         {/* Resolution Banner */}
         {cardPlayBanner && (
-          <div className={`p-4 border-b flex items-start justify-between animate-fade-in ${
+          <div className={`p-3.5 border-b flex items-start justify-between animate-fade-in ${
             cardPlayBanner.type === 'coup' 
               ? 'bg-[#8B0000]/30 border-[#8B0000] text-[#ECEFF4]' 
               : 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#ECEFF4]'
           }`}>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <span className="font-gothic font-bold text-sm text-[#D4AF37] block">
                 ⚡ {cardPlayBanner.title}
               </span>
               <p className="text-xs text-[#ECEFF4] leading-relaxed">{cardPlayBanner.desc}</p>
             </div>
-            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-[#8E95A5] hover:text-white">
+            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-[#8E95A5] hover:text-white ml-2">
               Dismiss
             </button>
           </div>
         )}
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6 text-xs">
+        <div className="p-5 overflow-y-auto flex-1 space-y-5 text-xs">
           
           {/* TAB 1: INITIATIVE CARDS */}
           {activeTab === 'initiative' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-5 animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
@@ -331,7 +318,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                 <button
                   onClick={handleDealInitiative}
-                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow flex-shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Deal Round {round} Cards</span>
@@ -358,41 +345,56 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                       <div>
                         <strong className="font-gothic text-sm text-[#ECEFF4] block">{p.warbandName}</strong>
-                        <span className="text-[10px] text-[#8E95A5]">{p.playerName}</span>
+                        <span className="text-[10px] text-[#8E95A5] block">
+                          House Suit: <strong className="text-[#D4AF37] uppercase">{p.assignedAceSuit}</strong>
+                        </span>
                       </div>
 
-                      {/* Playing Card Render */}
                       {card ? (
-                        <div className={`p-4 rounded border-2 text-center space-y-1 ${
-                          card.suit === 'hearts' || card.suit === 'diamonds'
-                            ? 'bg-[#8B0000]/20 border-[#E53935] text-[#E53935]'
-                            : 'bg-[#20242E] border-[#D4AF37] text-[#ECEFF4]'
-                        }`}>
-                          <div className="text-2xl font-bold">{card.symbol} {card.rank}</div>
-                          <span className="text-[10px] uppercase font-bold block">{card.label}</span>
+                        <div className="p-3 bg-[#161920] rounded border border-[#323846] flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-[#8E95A5] block">DRAWN CARD:</span>
+                            <span className={`font-bold text-base ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>
+                              {card.symbol} {card.label}
+                            </span>
+                          </div>
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-[#20242E] text-[#D4AF37] font-bold">
+                            Rank {card.value}
+                          </span>
                         </div>
                       ) : (
-                        <div className="p-4 rounded border border-dashed border-[#323846] text-center text-[#8E95A5] italic">
-                          No card dealt yet
+                        <div className="p-3 bg-[#161920] rounded border border-dashed border-[#323846] text-center text-[#8E95A5] italic text-[11px]">
+                          No card dealt. Click &quot;Deal Round Cards&quot; above.
                         </div>
                       )}
                     </div>
                   );
                 })}
               </div>
+
+              {/* Bottom Progression Bar */}
+              <div className="pt-3 border-t border-[#323846] flex justify-end">
+                <button
+                  onClick={() => setActiveTab('betrayal')}
+                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                >
+                  <span>Proceed to Step 2: Betrayal Cards</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
           {/* TAB 2: BETRAYAL CARDS */}
           {activeTab === 'betrayal' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-5 animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
-                    BETRAYAL CARDS & SECRET HANDS
+                    SECRET BETRAYAL HANDS (COUPS & RUSES)
                   </h3>
                   <p className="text-xs text-[#8E95A5]">
-                    Cards matching your House Ace trigger <strong>COUPS</strong>. Other cards trigger tactical <strong>RUSES</strong>.
+                    Play as Coup if the card matches your assigned House Ace Suit. Play as Ruse if it matches any other suit.
                   </p>
                 </div>
 
@@ -511,7 +513,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     </div>
                   ) : (
                     <div className="p-8 text-center text-[#8E95A5] bg-[#0C0E12] rounded border border-[#323846]">
-                      No Betrayal Cards currently held. Click "Draw Turn Cards" to draw.
+                      No Betrayal Cards currently held. Click &quot;Draw Turn Cards&quot; to draw.
                     </div>
                   )
                 ) : (
@@ -527,12 +529,23 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                   </div>
                 )}
               </div>
+
+              {/* Bottom Progression Bar */}
+              <div className="pt-3 border-t border-[#323846] flex justify-end">
+                <button
+                  onClick={() => setActiveTab('alliance')}
+                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                >
+                  <span>Proceed to Step 3: Alliance Period</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
           {/* TAB 3: ALLIANCE PERIOD */}
           {activeTab === 'alliance' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-5 animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
@@ -617,13 +630,21 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 ))}
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <button
                   onClick={handleRevealAlliances}
-                  className="px-6 py-2.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+                  className="px-5 py-2.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
                 >
                   <Users className="w-4 h-4" />
                   <span>Reveal Alliances & Calculate Joint VPs</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('bribes')}
+                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                >
+                  <span>Proceed to Step 4: VP Bribes</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -631,7 +652,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
           {/* TAB 4: VP BRIBES & TRANSFERS */}
           {activeTab === 'bribes' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-5 animate-fade-in">
               <div className="bg-[#0C0E12] p-4 rounded border border-[#323846] space-y-2">
                 <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
                   VICTORY POINT BRIBES & TRANSFERS
@@ -663,9 +684,9 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                                 onClick={() => {
                                   onAdjustVp(fromPlayer.warbandId, -1);
                                   onAdjustVp(toPlayer.warbandId, 1);
-                                  soundEffects.playCathedralBell();
+                                  soundEffects.playDiceRoll();
                                 }}
-                                className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] disabled:opacity-40 text-[#ECEFF4] rounded border border-[#323846] text-xs font-bold"
+                                className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] disabled:opacity-40 text-[#ECEFF4] rounded border border-[#323846] text-xs font-bold"
                               >
                                 💸 Give 1 VP to {toPlayer.warbandName}
                               </button>
@@ -675,6 +696,20 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Final Proceed to Turn Action */}
+              <div className="pt-4 border-t border-[#323846] flex items-center justify-between">
+                <span className="text-[11px] text-[#8E95A5]">
+                  Pre-round negotiations complete.
+                </span>
+                <button
+                  onClick={onClose}
+                  className="px-6 py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 flex items-center space-x-2"
+                >
+                  <Swords className="w-4 h-4" />
+                  <span>⚔️ Enter Round Turn Combat</span>
+                </button>
               </div>
             </div>
           )}
