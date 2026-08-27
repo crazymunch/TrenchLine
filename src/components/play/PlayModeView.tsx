@@ -46,7 +46,8 @@ import {
   Play,
   Lock,
   History,
-  TrendingUp
+  TrendingUp,
+  Crown
 } from 'lucide-react';
 
 export const PlayModeView: React.FC = () => {
@@ -74,6 +75,7 @@ export const PlayModeView: React.FC = () => {
 
   // Match Lifecycle State: false = Setup/Lobby, true = Combat Active
   const [isMatchActive, setIsMatchActive] = useState<boolean>(false);
+  const [matchMode, setMatchMode] = useState<'single-device' | 'multiplayer-live'>('single-device');
 
   // Multi-Player / Multi-Warband State (1 to 4 Players)
   const [matchWarbandIds, setMatchWarbandIds] = useState<string[]>(
@@ -299,17 +301,144 @@ export const PlayModeView: React.FC = () => {
                 </p>
               </div>
 
+              {matchMode === 'single-device' && (
+                <button
+                  onClick={handleStartCombat}
+                  className="flex items-center space-x-2 px-6 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
+                >
+                  <Play className="w-4 h-4 fill-black" />
+                  <span>COMMENCE MATCH</span>
+                </button>
+              )}
+            </div>
+
+            {/* Mode Selector Tabs */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#323846]">
               <button
-                onClick={handleStartCombat}
-                className="flex items-center space-x-2 px-6 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
+                onClick={() => setMatchMode('single-device')}
+                className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
+                  matchMode === 'single-device'
+                    ? 'bg-[#D4AF37] text-black shadow'
+                    : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                }`}
               >
-                <Play className="w-4 h-4 fill-black" />
-                <span>COMMENCE MATCH</span>
+                <span>📱 Single Device Mode (Pass & Play)</span>
+              </button>
+
+              <button
+                onClick={() => setMatchMode('multiplayer-live')}
+                className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
+                  matchMode === 'multiplayer-live'
+                    ? 'bg-[#8B0000] text-white shadow ring-1 ring-[#D4AF37]'
+                    : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                }`}
+              >
+                <span>🌐 Live Multi-Device Match Link</span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold uppercase tracking-wide">
+                  Coming Soon
+                </span>
               </button>
             </div>
           </div>
 
-          {/* 1. Scenario Selection & Map Preview */}
+          {/* MULTIPLAYER LIVE MODE: COMING SOON / ARCHITECTURE ROADMAP VIEW */}
+          {matchMode === 'multiplayer-live' ? (
+            <div className="bg-[#161920] border-2 border-[#8B0000] rounded-md p-6 sm:p-8 space-y-6 shadow-2xl bevel-container animate-fade-in">
+              <div className="flex items-center space-x-3 border-b border-[#323846] pb-4">
+                <div className="w-10 h-10 rounded bg-[#8B0000]/20 border border-[#8B0000] flex items-center justify-center">
+                  <Users className="w-5 h-5 text-[#E53935]" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h2 className="font-gothic font-bold text-lg sm:text-xl text-[#ECEFF4]">
+                      LIVE MULTI-DEVICE MATCH LINK (HOST & JOIN)
+                    </h2>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37] text-black font-bold uppercase">
+                      In Development
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#8E95A5]">
+                    Play across multiple phones and tablets with central cloud synchronization.
+                  </p>
+                </div>
+              </div>
+
+              {/* Architecture & Role Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* Host Role */}
+                <div className="bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md p-5 space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Crown className="w-5 h-5 text-[#D4AF37]" />
+                    <strong className="font-gothic font-bold text-sm text-[#ECEFF4] uppercase">
+                      1. Match Host (Tabletop Director)
+                    </strong>
+                  </div>
+                  <ul className="space-y-2 text-xs text-[#8E95A5]">
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <span>Initiates match lobby & generates shareable 4-digit Match PIN (e.g. <code>TL-4091</code>) or QR Code.</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <span>Selects scenario, deployment rules, and environmental hazards.</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <span>Controls global actions: advances round turns, deals 52-card All Out War decks, and starts alliance timers.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Player Role */}
+                <div className="bg-[#0C0E12] border-2 border-[#323846] rounded-md p-5 space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-[#4E9A6E]" />
+                    <strong className="font-gothic font-bold text-sm text-[#ECEFF4] uppercase">
+                      2. Connected Players (Commanders)
+                    </strong>
+                  </div>
+                  <ul className="space-y-2 text-xs text-[#8E95A5]">
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <span>Join via phone or tablet from anywhere at the table using the Match PIN.</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <span>Controls only their own warband: tracks wounds, activations, and rolls attacks from their own screen.</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <span>Real-time WebSocket sync: changes appear immediately on the Host and all opponents' devices without refreshing.</span>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+
+              {/* Status Banner */}
+              <div className="p-4 bg-[#20242E] rounded border border-[#D4AF37]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <strong className="text-xs uppercase text-[#D4AF37] block font-bold">
+                    🚀 Currently in Alpha Architecture Staging
+                  </strong>
+                  <p className="text-[11px] text-[#8E95A5]">
+                    Use the fully-featured <strong>Single Device Mode (Pass & Play)</strong> below to run local matches and multiplayer games on your iPad, phone, or laptop.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setMatchMode('single-device')}
+                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
+                >
+                  Return to Single Device Mode
+                </button>
+              </div>
+
+            </div>
+          ) : (
+            <>
+              {/* 1. Scenario Selection & Map Preview */}
           <div className="bg-[#161920] border border-[#323846] rounded-md p-5 sm:p-6 space-y-4 bevel-container">
             <div className="flex items-center justify-between border-b border-[#323846] pb-3">
               <div className="flex items-center space-x-2">
@@ -586,6 +715,8 @@ export const PlayModeView: React.FC = () => {
               </button>
             </div>
           </div>
+            </>
+          )}
 
         </div>
       ) : (
