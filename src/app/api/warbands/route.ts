@@ -112,6 +112,7 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
     let userId = (session?.user as any)?.id;
     const userEmail = session?.user?.email?.toLowerCase().trim();
+    const isAdmin = isUserAdmin(userEmail);
     const body = await req.json();
 
     const { 
@@ -163,6 +164,18 @@ export async function POST(req: NextRequest) {
 
     const warbandId = id || `wb-${Date.now()}`;
 
+    // Check existing warband ownership if updating
+    const existingWarband = await prisma.warband.findUnique({
+      where: { id: warbandId }
+    });
+
+    if (existingWarband && existingWarband.userId && existingWarband.userId !== effectiveUserId && !isAdmin) {
+      return NextResponse.json(
+        { error: 'Unauthorized: You can only edit and update your own warbands.' },
+        { status: 403 }
+      );
+    }
+
     // Pack metadata (lore, motto, patron, chronicleLog, snapshots) into notes JSON
     const metadataPayload = JSON.stringify({
       rawNotes: notes || '',
@@ -184,7 +197,7 @@ export async function POST(req: NextRequest) {
         units: units || [],
         armoryStash: armoryStash || [],
         notes: metadataPayload,
-        userId: effectiveUserId,
+        userId: existingWarband ? existingWarband.userId : effectiveUserId,
       },
       create: {
         id: warbandId,
@@ -209,6 +222,11 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    let userId = (session?.user as any)?.id;
+    const userEmail = session?.user?.email?.toLowerCase().trim();
+    const isAdmin = isUserAdmin(userEmail);
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 
@@ -216,7 +234,25 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Missing warband id parameter' }, { status: 400 });
     }
 
-    await prisma.warband.deleteMany({
+    // Resolve userId if needed
+    if (!userId && userEmail) {
+      const dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
+      if (dbUser) userId = dbUser.id;
+    }
+
+    const existingWarband = await prisma.warband.findUnique({ where: { id } });
+    if (!existingWarband) {
+      return NextResponse.json({ success: true, deletedId: id });
+    }
+
+    if (existingWarband.userId && existingWarband.userId !== userId && !isAdmin) {
+      return NextResponse.json(
+        { error: 'Unauthorized: You can only delete your own warbands.' },
+        { status: 403 }
+      );
+    }
+
+    await prisma.warband.delete({
       where: { id },
     });
 

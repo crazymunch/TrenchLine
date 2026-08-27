@@ -18,6 +18,7 @@ import {
 } from '../../data/officialRulesData';
 import { OFFICIAL_CORE_RULES } from '../../data/officialCoreRules';
 import { AVAILABLE_RULESETS } from '../../data/rulesets';
+import { soundEffects } from '../../services/soundEffects';
 import { MissionGenerator } from './MissionGenerator';
 import { DiceProbabilityModal } from './DiceProbabilityModal';
 import { 
@@ -54,6 +55,14 @@ export const CodexView: React.FC = () => {
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
   const [selectedChartTable, setSelectedChartTable] = useState<'trauma' | 'common' | 'rare' | 'legendary'>('trauma');
   const [selectedSkillsCategory, setSelectedSkillsCategory] = useState<'melee' | 'ranged' | 'stealth' | 'wildcard'>('melee');
+  const [skillsViewMode, setSkillsViewMode] = useState<'cards' | 'tables'>('cards');
+  const [selectedSkillModal, setSelectedSkillModal] = useState<{
+    name: string;
+    description: string;
+    category: string;
+    d66Roll: string;
+    howToObtain: string;
+  } | null>(null);
   const [selectedWargearItem, setSelectedWargearItem] = useState<OfficialWargearItem | null>(null);
 
   const filterText = searchQuery.toLowerCase().trim();
@@ -504,94 +513,272 @@ export const CodexView: React.FC = () => {
 
       {/* TAB 4: SKILLS COMPENDIUM */}
       {activeTab === 'skills' && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#161920] border border-[#323846] rounded-md">
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#161920] border-2 border-[#D4AF37] rounded-md shadow-xl bevel-container">
             <div>
-              <span className="font-gothic font-bold text-base text-[#ECEFF4] block">
-                OFFICIAL HERO SKILLS & PROMOTIONS (Pages 107-111)
-              </span>
+              <div className="flex items-center space-x-2">
+                <Zap className="w-5 h-5 text-[#D4AF37]" />
+                <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                  OFFICIAL HERO SKILLS COMPENDIUM & PROMOTIONS (Pages 107-111)
+                </h3>
+              </div>
               <p className="text-xs font-mono text-[#8E95A5]">
-                Learnable skills for Elite warriors and Promoted heroes
+                Learnable skills for Elite warriors and Promoted heroes. Click any skill to inspect how to obtain it, or roll D66 directly.
               </p>
             </div>
 
-            <div className="flex space-x-1.5 font-mono text-xs">
-              {[
-                { id: 'melee', label: 'Melee & Strength' },
-                { id: 'ranged', label: 'Ranged Skills' },
-                { id: 'stealth', label: 'Stealth & Speed' },
-                { id: 'wildcard', label: 'Wildcard Skills' }
-              ].map((cat) => (
+            {/* View Mode & Roller CTAs */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => {
+                  const list = selectedSkillsCategory === 'melee' ? OFFICIAL_MELEE_SKILLS :
+                               selectedSkillsCategory === 'ranged' ? OFFICIAL_RANGED_SKILLS :
+                               selectedSkillsCategory === 'stealth' ? OFFICIAL_STEALTH_SKILLS :
+                               OFFICIAL_WILDCARD_SKILLS;
+                  const roll = Math.floor(Math.random() * list.length);
+                  const chosen = list[roll];
+                  const d1 = Math.floor(Math.random() * 6) + 1;
+                  const d2 = Math.floor(Math.random() * 6) + 1;
+                  setSelectedSkillModal({
+                    name: chosen.name,
+                    description: chosen.description,
+                    category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
+                    d66Roll: `${d1}${d2}`,
+                    howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${d1}${d2}). Awarded during Campaign Promotions when spending 5 XP or when a Troop model is Promoted to Elite.`
+                  });
+                  soundEffects.playDiceRoll();
+                }}
+                className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+              >
+                <Dice6 className="w-4 h-4" />
+                <span>Roll D66 for Skill</span>
+              </button>
+
+              <div className="flex bg-[#0C0E12] p-1 rounded border border-[#323846] text-xs font-mono">
                 <button
-                  key={cat.id}
-                  onClick={() => setSelectedSkillsCategory(cat.id as any)}
-                  className={`px-3 py-1.5 rounded font-bold uppercase transition-all ${
-                    selectedSkillsCategory === cat.id
-                      ? 'bg-[#D4AF37] text-black'
-                      : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  onClick={() => setSkillsViewMode('cards')}
+                  className={`px-3 py-1 rounded font-bold uppercase ${
+                    skillsViewMode === 'cards' ? 'bg-[#20242E] text-[#D4AF37]' : 'text-[#8E95A5]'
                   }`}
                 >
-                  {cat.label}
+                  Cards
                 </button>
-              ))}
+                <button
+                  onClick={() => setSkillsViewMode('tables')}
+                  className={`px-3 py-1 rounded font-bold uppercase ${
+                    skillsViewMode === 'tables' ? 'bg-[#20242E] text-[#D4AF37]' : 'text-[#8E95A5]'
+                  }`}
+                >
+                  D66 Tables
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(selectedSkillsCategory === 'melee'
-              ? OFFICIAL_MELEE_SKILLS
-              : selectedSkillsCategory === 'ranged'
-              ? OFFICIAL_RANGED_SKILLS
-              : selectedSkillsCategory === 'stealth'
-              ? OFFICIAL_STEALTH_SKILLS
-              : OFFICIAL_WILDCARD_SKILLS
-            ).map((skill, idx) => (
-              <div
-                key={idx}
-                className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container hover:border-[#D4AF37]/50 transition-colors"
+          {/* Category Bar */}
+          <div className="flex space-x-2 font-mono text-xs border-b border-[#323846] pb-3 overflow-x-auto">
+            {[
+              { id: 'melee', label: '1. Melee & Strength Skills' },
+              { id: 'ranged', label: '2. Ranged & Marksmanship' },
+              { id: 'stealth', label: '3. Stealth & Infiltration' },
+              { id: 'wildcard', label: '4. Wildcard & Leadership' }
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedSkillsCategory(cat.id as any)}
+                className={`px-4 py-2 rounded font-bold uppercase transition-all whitespace-nowrap ${
+                  selectedSkillsCategory === cat.id
+                    ? 'bg-[#D4AF37] text-black shadow'
+                    : 'bg-[#161920] text-[#8E95A5] hover:text-white border border-[#323846]'
+                }`}
               >
-                <div className="flex items-center space-x-2 border-b border-[#323846] pb-2">
-                  <Zap className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="font-gothic font-bold text-sm text-[#ECEFF4]">
-                    {skill.name}
-                  </span>
-                </div>
-                <p className="text-xs font-mono text-[#ECEFF4] leading-relaxed">
-                  {skill.description}
-                </p>
-              </div>
+                {cat.label}
+              </button>
             ))}
           </div>
+
+          {/* Skills Display (Cards or Tables) */}
+          {skillsViewMode === 'cards' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {(selectedSkillsCategory === 'melee'
+                ? OFFICIAL_MELEE_SKILLS
+                : selectedSkillsCategory === 'ranged'
+                ? OFFICIAL_RANGED_SKILLS
+                : selectedSkillsCategory === 'stealth'
+                ? OFFICIAL_STEALTH_SKILLS
+                : OFFICIAL_WILDCARD_SKILLS
+              ).map((skill, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    const d6Roll = `${idx + 1} (or D66 ${idx + 1}${idx + 1})`;
+                    setSelectedSkillModal({
+                      name: skill.name,
+                      description: skill.description,
+                      category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
+                      d66Roll: d6Roll,
+                      howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${idx + 1}). Available to ELITE models spending 5 XP in the Campaign Phase or when a Troop model gains a Promotion.`
+                    });
+                    soundEffects.playCathedralBell();
+                  }}
+                  className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2.5 bevel-container hover:border-[#D4AF37] cursor-pointer transition-all hover:scale-[1.01]"
+                >
+                  <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+                    <div className="flex items-center space-x-2">
+                      <Zap className="w-4 h-4 text-[#D4AF37]" />
+                      <span className="font-gothic font-bold text-sm text-[#ECEFF4]">
+                        {skill.name}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0C0E12] text-[#D4AF37] border border-[#323846] font-bold">
+                      Roll {idx + 1}
+                    </span>
+                  </div>
+                  <p className="text-xs font-mono text-[#ECEFF4] leading-relaxed">
+                    {skill.description}
+                  </p>
+                  <span className="text-[10px] font-mono text-[#8E95A5] italic block pt-1">
+                    Click to view acquisition & promotion rules ➔
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Tables View */
+            <div className="bg-[#161920] border border-[#323846] rounded-md overflow-hidden font-mono text-xs">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#0C0E12] border-b border-[#323846] text-[#D4AF37]">
+                    <th className="p-3 font-bold w-20">Roll</th>
+                    <th className="p-3 font-bold w-48">Skill Name</th>
+                    <th className="p-3 font-bold">Official Effect & Keywords</th>
+                    <th className="p-3 font-bold text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#323846]/60 text-[#ECEFF4]">
+                  {(selectedSkillsCategory === 'melee'
+                    ? OFFICIAL_MELEE_SKILLS
+                    : selectedSkillsCategory === 'ranged'
+                    ? OFFICIAL_RANGED_SKILLS
+                    : selectedSkillsCategory === 'stealth'
+                    ? OFFICIAL_STEALTH_SKILLS
+                    : OFFICIAL_WILDCARD_SKILLS
+                  ).map((skill, idx) => (
+                    <tr key={idx} className="hover:bg-[#20242E] transition-colors">
+                      <td className="p-3 font-bold text-[#D4AF37]">
+                        {idx + 1} / {idx + 1}{idx + 1}
+                      </td>
+                      <td className="p-3 font-bold text-[#ECEFF4] font-gothic text-sm">
+                        {skill.name}
+                      </td>
+                      <td className="p-3 text-[#8E95A5] leading-relaxed">
+                        {skill.description}
+                      </td>
+                      <td className="p-3 text-right">
+                        <button
+                          onClick={() => {
+                            setSelectedSkillModal({
+                              name: skill.name,
+                              description: skill.description,
+                              category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
+                              d66Roll: `${idx + 1}`,
+                              howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${idx + 1}). Awarded when an Elite warrior spends 5 XP or when a Troop model is Promoted.`
+                            });
+                          }}
+                          className="px-2.5 py-1 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] rounded border border-[#323846] text-[10px] font-bold uppercase"
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Skill Detail Popover Modal */}
+          {selectedSkillModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
+              <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container space-y-4 p-6">
+                <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+                  <div className="flex items-center space-x-2">
+                    <Zap className="w-5 h-5 text-[#D4AF37]" />
+                    <div>
+                      <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                        {selectedSkillModal.name}
+                      </h3>
+                      <span className="text-[10px] text-[#D4AF37] uppercase font-bold">
+                        {selectedSkillModal.category} • Roll {selectedSkillModal.d66Roll}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedSkillModal(null)}
+                    className="p-1 text-[#8E95A5] hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3.5 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
+                    <span className="text-[10px] text-[#8E95A5] uppercase font-bold block">Rules & Effects:</span>
+                    <p className="text-[#ECEFF4] leading-relaxed">{selectedSkillModal.description}</p>
+                  </div>
+
+                  <div className="p-3.5 bg-[#20242E] rounded border border-[#D4AF37]/40 space-y-1">
+                    <span className="text-[10px] text-[#D4AF37] uppercase font-bold block flex items-center space-x-1">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>How to Obtain in Campaign:</span>
+                    </span>
+                    <p className="text-[#ECEFF4] text-xs leading-relaxed">{selectedSkillModal.howToObtain}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2 border-t border-[#323846]">
+                  <button
+                    onClick={() => setSelectedSkillModal(null)}
+                    className="px-4 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* TAB 5: CAMPAIGN D66 TABLES */}
+      {/* TAB 5: CAMPAIGN D66 TABLES WITH EXPLANATORY GUIDES */}
       {activeTab === 'charts' && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#161920] border border-[#323846] rounded-md">
+        <div className="space-y-6 font-mono text-xs">
+          
+          {/* Header & Table Selector */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#161920] border-2 border-[#D4AF37] rounded-md shadow-xl bevel-container">
             <div>
               <span className="font-gothic font-bold text-base text-[#ECEFF4] block">
                 OFFICIAL CAMPAIGN TABLES (D66)
               </span>
-              <p className="text-xs font-mono text-[#8E95A5]">
-                Exact rulebook tables for trauma casualties and exploration scavenge
+              <p className="text-xs text-[#8E95A5]">
+                Exact rulebook tables for trauma casualties and exploration scavenge.
               </p>
             </div>
 
-            <div className="flex space-x-1.5 font-mono text-xs">
+            <div className="flex space-x-1.5 overflow-x-auto">
               {[
-                { id: 'trauma', label: 'Trauma Table (D66)' },
-                { id: 'common', label: 'Common Exploration (D66)' },
-                { id: 'rare', label: 'Rare Exploration (D66)' },
-                { id: 'legendary', label: 'Legendary Exploration' }
+                { id: 'trauma', label: '1. Trauma Table (D66)' },
+                { id: 'common', label: '2. Common Exploration (D66)' },
+                { id: 'rare', label: '3. Rare Exploration (D66)' },
+                { id: 'legendary', label: '4. Legendary Exploration' }
               ].map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedChartTable(cat.id as any)}
-                  className={`px-3 py-1.5 rounded font-bold uppercase transition-all ${
+                  className={`px-3.5 py-2 rounded font-bold uppercase transition-all whitespace-nowrap ${
                     selectedChartTable === cat.id
-                      ? 'bg-[#D4AF37] text-black'
-                      : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                      ? 'bg-[#D4AF37] text-black shadow'
+                      : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
                   }`}
                 >
                   {cat.label}
@@ -599,6 +786,49 @@ export const CodexView: React.FC = () => {
               ))}
             </div>
           </div>
+
+          {/* Comprehensive Explanation Banner per Table */}
+          {selectedChartTable === 'trauma' ? (
+            <div className="p-4 bg-[#0C0E12] rounded border border-[#8B0000] space-y-2">
+              <div className="flex items-center space-x-2 text-[#E53935]">
+                <Skull className="w-4 h-4" />
+                <strong className="font-gothic uppercase text-sm">HOW THE TRAUMA STEP & INJURY ROLLS WORK:</strong>
+              </div>
+              <p className="text-[#ECEFF4] leading-relaxed">
+                After any match, every model that was taken <strong>Out of Action</strong> must roll on this D66 Trauma Table:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+                <div className="p-2 bg-[#161920] rounded border border-[#E53935]/40 text-[#E53935]">
+                  <strong>Rolls 11–16: Dead / Slain</strong>
+                  <p className="text-[#8E95A5] pt-0.5">Model is permanently removed from the warband roster. Battlekit returns to Arsenal stash.</p>
+                </div>
+                <div className="p-2 bg-[#161920] rounded border border-[#FFB300]/40 text-[#FFB300]">
+                  <strong>Rolls 21–36: Battle Scars</strong>
+                  <p className="text-[#8E95A5] pt-0.5">Warrior survives but receives a lasting battle scar or attribute penalty. Can be healed via Field Hospital.</p>
+                </div>
+                <div className="p-2 bg-[#161920] rounded border border-[#4E9A6E]/40 text-[#4E9A6E]">
+                  <strong>Rolls 41–66: Full Recovery</strong>
+                  <p className="text-[#8E95A5] pt-0.5">Warrior recovers fully with no negative effects, gaining toughness from experience.</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 bg-[#0C0E12] rounded border border-[#D4AF37]/50 space-y-2">
+              <div className="flex items-center space-x-2 text-[#D4AF37]">
+                <Sparkles className="w-4 h-4" />
+                <strong className="font-gothic uppercase text-sm">HOW THE EXPLORATION STEP WORKS:</strong>
+              </div>
+              <p className="text-[#ECEFF4] leading-relaxed">
+                During Step 3 of the Post-Battle Campaign Phase, participating warbands search the battlefield for lost treasures, ammo caches, and holy relics.
+                The winner of the match rolls on the <strong>{selectedChartTable === 'common' ? 'Common' : selectedChartTable === 'rare' ? 'Rare' : 'Legendary'} Exploration Table</strong>.
+              </p>
+              <ul className="list-disc list-inside text-[#8E95A5] space-y-0.5 text-[11px]">
+                <li><strong>Trench Merchant:</strong> Allows purchasing items costing up to 5 Glory from the Armory.</li>
+                <li><strong>Ducat / Glory Discoveries:</strong> Added immediately to your Warband Treasury and Glory counter.</li>
+                <li><strong>Unique Relics & Battlekit:</strong> Placed in your Armory Stash or assigned to warriors in the Quartermaster Step.</li>
+              </ul>
+            </div>
+          )}
 
           {/* Table Display */}
           <div className="space-y-2">
@@ -613,7 +843,7 @@ export const CodexView: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span className="font-bold text-[#D4AF37]">{entry.title}</span>
+                    <span className="font-bold text-[#D4AF37] font-gothic text-sm">{entry.title}</span>
                     {('reward' in entry) && (
                       <span className="text-[10px] px-2 py-0.5 rounded bg-[#20242E] text-[#4E9A6E] font-bold border border-[#4E9A6E]/30">
                         {entry.reward}

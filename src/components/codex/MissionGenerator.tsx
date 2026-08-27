@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useStore } from '../../store/useStore';
+import { Scenario } from '../../types/rules';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Sparkles, 
@@ -11,9 +13,14 @@ import {
   Map, 
   RefreshCw, 
   Compass, 
-  Award,
-  ChevronRight,
-  Shield
+  Award, 
+  ChevronRight, 
+  Shield,
+  Edit3,
+  Play,
+  Save,
+  Layers,
+  Copy
 } from 'lucide-react';
 
 const WEATHER_TABLE = [
@@ -116,14 +123,67 @@ const SECONDARY_AGENDAS = [
 ];
 
 export const MissionGenerator: React.FC = () => {
-  const [mission, setMission] = useState<{
+  const { scenarios, setCurrentView } = useStore();
+  const [activeMode, setActiveMode] = useState<'designer' | 'procedural'>('designer');
+
+  // Procedural Generator State
+  const [proceduralMission, setProceduralMission] = useState<{
     weather: typeof WEATHER_TABLE[0];
     complication: typeof COMPLICATIONS_TABLE[0];
     secondaryA: typeof SECONDARY_AGENDAS[0];
     secondaryB: typeof SECONDARY_AGENDAS[0];
   } | null>(null);
-
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Custom Mission Designer State
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
+  const [customTitle, setCustomTitle] = useState<string>('Custom Trench Skirmish');
+  const [customTagline, setCustomTagline] = useState<string>('A vicious engagement in contested no man\'s land.');
+  const [customTableSize, setCustomTableSize] = useState<string>('48" x 48"');
+  const [customBattlefield, setCustomBattlefield] = useState<string>('Dense trenches, cratered ruins, and mud-choked barbed wire.');
+  const [customDeployment, setCustomDeployment] = useState<string>('Standard opposing table edges, 6" from board edge.');
+  const [customGameLength, setCustomGameLength] = useState<string>('This scenario lasts 4 Turns.');
+  const [customVictory, setCustomVictory] = useState<string>('Control the central objective markers at the end of Turn 4 (2 VPs each). +1 VP per Glorious Deed.');
+  const [customGloriousDeeds, setCustomGloriousDeeds] = useState<string>(`- **Lord of War**: Take 2 enemy models Out of Action in a single turn.
+- **Sniper**: Take an enemy ELITE model Out of Action at Long Range in Cover.
+- **Resist and Bite**: Take an enemy Out of Action after starting the activation Down.`);
+  const [customSavedSuccess, setCustomSavedSuccess] = useState<boolean>(false);
+
+  // Load Template Scenario
+  const handleLoadTemplate = (scenId: string) => {
+    setSelectedTemplateId(scenId);
+    if (!scenId) return;
+
+    const template = scenarios.find((s) => s.id === scenId);
+    if (template) {
+      setCustomTitle(template.name);
+      setCustomTagline(template.tagline || template.flavor || '');
+      setCustomTableSize(template.tableSize || '48" x 48"');
+      setCustomBattlefield(template.battlefield || '');
+      setCustomDeployment(template.deployment || '');
+      setCustomGameLength(template.gameLength || '4 Turns');
+      setCustomVictory(template.victoryConditions || '');
+      setCustomGloriousDeeds(template.gloriousDeeds || '');
+      soundEffects.playCathedralBell();
+    }
+  };
+
+  const handleClearToBlank = () => {
+    setSelectedTemplateId('');
+    setCustomTitle('New Custom Mission');
+    setCustomTagline('');
+    setCustomTableSize('48" x 48"');
+    setCustomBattlefield('');
+    setCustomDeployment('');
+    setCustomGameLength('4 Turns');
+    setCustomVictory('');
+    setCustomGloriousDeeds('');
+  };
+
+  const handleLaunchCombat = () => {
+    soundEffects.playTrenchWhistle();
+    setCurrentView('play');
+  };
 
   const handleGenerate = () => {
     setIsGenerating(true);
@@ -136,7 +196,7 @@ export const MissionGenerator: React.FC = () => {
       let secBIdx = Math.floor(Math.random() * SECONDARY_AGENDAS.length);
       if (secBIdx === secAIdx) secBIdx = (secAIdx + 1) % SECONDARY_AGENDAS.length;
 
-      setMission({
+      setProceduralMission({
         weather: WEATHER_TABLE[weatherIdx],
         complication: COMPLICATIONS_TABLE[compIdx],
         secondaryA: SECONDARY_AGENDAS[secAIdx],
@@ -151,108 +211,287 @@ export const MissionGenerator: React.FC = () => {
   return (
     <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-6 shadow-xl bevel-container">
       
-      {/* Header */}
+      {/* Header & Mode Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#323846] pb-4">
         <div>
           <div className="flex items-center space-x-2">
             <Compass className="w-5 h-5 text-[#D4AF37]" />
             <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
-              PROCEDURAL TRENCH MISSION GENERATOR
+              MISSION DESIGNER & TACTICAL GENERATOR
             </h3>
           </div>
           <p className="text-xs font-mono text-[#8E95A5]">
-            Generate dynamic weather conditions, battlefield complications, and secret secondary agendas for any skirmish.
+            Design custom battle scenarios from scratch, modify official templates, or roll dynamic battlefield complications.
           </p>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow-lg shadow-[#D4AF37]/20 transition-all"
-        >
-          <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-          <span>Generate Tactical Brief</span>
-        </button>
+        {/* Mode Toggle */}
+        <div className="flex bg-[#0C0E12] p-1 rounded border border-[#323846] text-xs font-mono">
+          <button
+            onClick={() => setActiveMode('designer')}
+            className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
+              activeMode === 'designer'
+                ? 'bg-[#D4AF37] text-black shadow'
+                : 'text-[#8E95A5] hover:text-[#ECEFF4]'
+            }`}
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Mission Designer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMode('procedural')}
+            className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
+              activeMode === 'procedural'
+                ? 'bg-[#D4AF37] text-black shadow'
+                : 'text-[#8E95A5] hover:text-[#ECEFF4]'
+            }`}
+          >
+            <Dice6 className="w-3.5 h-3.5" />
+            <span>Hazard Roller</span>
+          </button>
+        </div>
       </div>
 
-      {/* Generated Mission Brief Display */}
-      {mission ? (
-        <div className="space-y-4 animate-fade-in">
+      {/* MODE 1: CUSTOM MISSION DESIGNER & TEMPLATE CUSTOMIZER */}
+      {activeMode === 'designer' && (
+        <div className="space-y-5 font-mono text-xs animate-fade-in">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            {/* Weather Condition */}
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase text-[#8E95A5] flex items-center space-x-1">
-                  <CloudRain className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>Atmospheric Weather</span>
-                </span>
-                <span className="text-[9px] font-mono uppercase bg-[#161920] text-[#D4AF37] px-2 py-0.5 rounded border border-[#323846]">
-                  {mission.weather.badge}
-                </span>
-              </div>
-              <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">{mission.weather.name}</h4>
-              <p className="text-xs font-mono text-[#ECEFF4] bg-[#0C0E12] p-2.5 rounded border border-[#323846]/60">
-                {mission.weather.effect}
-              </p>
+          {/* Template Selector Bar */}
+          <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1 space-y-1">
+              <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">
+                Load Existing Scenario as Template:
+              </label>
+              <select
+                value={selectedTemplateId}
+                onChange={(e) => handleLoadTemplate(e.target.value)}
+                className="w-full bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#D4AF37] font-bold focus:outline-none focus:border-[#D4AF37]"
+              >
+                <option value="">-- Start Blank from Scratch --</option>
+                {scenarios.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.number ? `Scenario ${s.number}: ` : ''}{s.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Battlefield Complication */}
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase text-[#8E95A5] flex items-center space-x-1">
-                  <AlertTriangle className="w-3.5 h-3.5 text-[#E53935]" />
-                  <span>Sector Hazard / Complication</span>
-                </span>
-                <span className="text-[9px] font-mono uppercase bg-[#161920] text-[#E53935] px-2 py-0.5 rounded border border-[#323846]">
-                  {mission.complication.type}
-                </span>
+            <div className="flex items-center space-x-2 pt-2 md:pt-4">
+              <button
+                onClick={handleClearToBlank}
+                className="px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded border border-[#323846] font-bold uppercase text-xs"
+              >
+                Reset Blank
+              </button>
+            </div>
+          </div>
+
+          {/* Form Fields Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Title & Tagline */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-3">
+              <div className="space-y-1">
+                <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Scenario Title:</label>
+                <input
+                  type="text"
+                  value={customTitle}
+                  onChange={(e) => setCustomTitle(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] font-bold focus:outline-none focus:border-[#D4AF37]"
+                />
               </div>
-              <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">{mission.complication.name}</h4>
-              <p className="text-xs font-mono text-[#ECEFF4] bg-[#0C0E12] p-2.5 rounded border border-[#323846]/60">
-                {mission.complication.effect}
-              </p>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Briefing / Tagline:</label>
+                <input
+                  type="text"
+                  value={customTagline}
+                  onChange={(e) => setCustomTagline(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Table Size:</label>
+                  <input
+                    type="text"
+                    value={customTableSize}
+                    onChange={(e) => setCustomTableSize(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Game Length:</label>
+                  <input
+                    type="text"
+                    value={customGameLength}
+                    onChange={(e) => setCustomGameLength(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Battlefield & Deployment */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-3">
+              <div className="space-y-1">
+                <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Battlefield Archetype & Terrain:</label>
+                <textarea
+                  rows={3}
+                  value={customBattlefield}
+                  onChange={(e) => setCustomBattlefield(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Deployment Rules:</label>
+                <textarea
+                  rows={2}
+                  value={customDeployment}
+                  onChange={(e) => setCustomDeployment(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+            </div>
+
+            {/* Victory Conditions */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+              <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Victory Conditions & Scoring:</label>
+              <textarea
+                rows={4}
+                value={customVictory}
+                onChange={(e) => setCustomVictory(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              />
+            </div>
+
+            {/* Glorious Deeds */}
+            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+              <label className="text-[10px] text-[#8E95A5] uppercase font-bold block">Glorious Deeds (Markdown list):</label>
+              <textarea
+                rows={4}
+                value={customGloriousDeeds}
+                onChange={(e) => setCustomGloriousDeeds(e.target.value)}
+                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              />
             </div>
 
           </div>
 
-          {/* Secondary Agendas */}
-          <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
-            <div className="flex items-center space-x-2">
-              <Target className="w-4 h-4 text-[#4E9A6E]" />
-              <span className="text-xs font-mono uppercase font-bold text-[#4E9A6E]">
-                Secret Secondary Agendas (Choose 1 per Warband):
-              </span>
+          {/* Action CTAs */}
+          <div className="flex items-center justify-between pt-2">
+            <div>
+              {customSavedSuccess && (
+                <span className="text-xs text-[#4E9A6E] font-bold">✓ Mission saved to tactical planner!</span>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              
-              <div className="p-3 bg-[#161920] rounded border border-[#323846] space-y-1">
-                <div className="flex justify-between items-center text-xs font-mono">
-                  <strong className="text-[#ECEFF4] font-gothic">{mission.secondaryA.name}</strong>
-                  <span className="text-[#D4AF37] font-bold">{mission.secondaryA.reward}</span>
-                </div>
-                <p className="text-xs text-[#8E95A5]">{mission.secondaryA.description}</p>
-              </div>
-
-              <div className="p-3 bg-[#161920] rounded border border-[#323846] space-y-1">
-                <div className="flex justify-between items-center text-xs font-mono">
-                  <strong className="text-[#ECEFF4] font-gothic">{mission.secondaryB.name}</strong>
-                  <span className="text-[#D4AF37] font-bold">{mission.secondaryB.reward}</span>
-                </div>
-                <p className="text-xs text-[#8E95A5]">{mission.secondaryB.description}</p>
-              </div>
-
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleLaunchCombat}
+                className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+              >
+                <Play className="w-4 h-4 fill-black" />
+                <span>Launch in Tabletop Combat</span>
+              </button>
             </div>
           </div>
 
         </div>
-      ) : (
-        <div className="p-8 text-center bg-[#0C0E12] rounded border border-dashed border-[#323846] space-y-2">
-          <Dice6 className="w-8 h-8 text-[#D4AF37] mx-auto opacity-60" />
-          <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">NO ACTIVE MISSION BRIEF GENERATED</h4>
-          <p className="text-xs font-mono text-[#8E95A5]">Click &quot;Generate Tactical Brief&quot; to roll random weather hazards, terrain traps, and secondary victory objectives.</p>
+      )}
+
+      {/* MODE 2: PROCEDURAL HAZARDS ROLLER */}
+      {activeMode === 'procedural' && (
+        <div className="space-y-5 animate-fade-in">
+          <div className="flex justify-end">
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="flex items-center space-x-2 px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow transition-all"
+            >
+              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+              <span>Roll Random Battlefield Hazards</span>
+            </button>
+          </div>
+
+          {proceduralMission ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                
+                {/* Weather Condition */}
+                <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase text-[#8E95A5] flex items-center space-x-1">
+                      <CloudRain className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Atmospheric Weather</span>
+                    </span>
+                    <span className="text-[9px] uppercase bg-[#161920] text-[#D4AF37] px-2 py-0.5 rounded border border-[#323846]">
+                      {proceduralMission.weather.badge}
+                    </span>
+                  </div>
+                  <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">{proceduralMission.weather.name}</h4>
+                  <p className="text-xs text-[#ECEFF4] bg-[#0C0E12] p-2.5 rounded border border-[#323846]/60">
+                    {proceduralMission.weather.effect}
+                  </p>
+                </div>
+
+                {/* Battlefield Complication */}
+                <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase text-[#8E95A5] flex items-center space-x-1">
+                      <AlertTriangle className="w-3.5 h-3.5 text-[#E53935]" />
+                      <span>Sector Hazard / Complication</span>
+                    </span>
+                    <span className="text-[9px] uppercase bg-[#161920] text-[#E53935] px-2 py-0.5 rounded border border-[#323846]">
+                      {proceduralMission.complication.type}
+                    </span>
+                  </div>
+                  <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">{proceduralMission.complication.name}</h4>
+                  <p className="text-xs text-[#ECEFF4] bg-[#0C0E12] p-2.5 rounded border border-[#323846]/60">
+                    {proceduralMission.complication.effect}
+                  </p>
+                </div>
+
+              </div>
+
+              {/* Secondary Agendas */}
+              <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3 font-mono text-xs">
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-[#4E9A6E]" />
+                  <span className="uppercase font-bold text-[#4E9A6E]">
+                    Secret Secondary Agendas (Choose 1 per Warband):
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-3 bg-[#161920] rounded border border-[#323846] space-y-1">
+                    <div className="flex justify-between items-center text-xs">
+                      <strong className="text-[#ECEFF4] font-gothic">{proceduralMission.secondaryA.name}</strong>
+                      <span className="text-[#D4AF37] font-bold">{proceduralMission.secondaryA.reward}</span>
+                    </div>
+                    <p className="text-xs text-[#8E95A5]">{proceduralMission.secondaryA.description}</p>
+                  </div>
+
+                  <div className="p-3 bg-[#161920] rounded border border-[#323846] space-y-1">
+                    <div className="flex justify-between items-center text-xs">
+                      <strong className="text-[#ECEFF4] font-gothic">{proceduralMission.secondaryB.name}</strong>
+                      <span className="text-[#D4AF37] font-bold">{proceduralMission.secondaryB.reward}</span>
+                    </div>
+                    <p className="text-xs text-[#8E95A5]">{proceduralMission.secondaryB.description}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-8 text-center bg-[#0C0E12] rounded border border-dashed border-[#323846] space-y-2">
+              <Dice6 className="w-8 h-8 text-[#D4AF37] mx-auto opacity-60" />
+              <h4 className="font-gothic font-bold text-base text-[#ECEFF4]">NO ACTIVE HAZARD BRIEF GENERATED</h4>
+              <p className="text-xs font-mono text-[#8E95A5]">Click &quot;Roll Random Battlefield Hazards&quot; to roll dynamic weather conditions and secondary victory objectives.</p>
+            </div>
+          )}
         </div>
       )}
 

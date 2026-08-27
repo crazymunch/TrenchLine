@@ -42,6 +42,14 @@ export const Sidebar: React.FC = () => {
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  const isAdmin = session?.user?.email === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
+
+  useEffect(() => {
+    if (!isAdmin && currentView === 'customizer') {
+      setCurrentView('builder');
+    }
+  }, [isAdmin, currentView, setCurrentView]);
+
   // Load persisted collapse state
   useEffect(() => {
     try {
@@ -75,7 +83,7 @@ export const Sidebar: React.FC = () => {
     { id: 'campaign', label: 'Crusade Campaign', icon: <Flag className="w-5 h-5" /> },
     { id: 'directory', label: 'Roster Directory', icon: <Users className="w-5 h-5" /> },
     { id: 'codex', label: 'Rules Codex', icon: <BookOpen className="w-5 h-5" /> },
-    { id: 'customizer', label: 'Rules Customizer', icon: <SlidersHorizontal className="w-5 h-5" /> }
+    ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Rules Customizer', icon: <SlidersHorizontal className="w-5 h-5" /> }] : [])
   ];
 
   return (
@@ -86,31 +94,31 @@ export const Sidebar: React.FC = () => {
         }`}
       >
         {/* 1. Header: Brand & Collapse Toggle */}
-        <div className="flex items-center justify-between p-4 border-b border-[#323846] h-16">
+        <div className="flex items-center justify-between p-3.5 border-b border-[#323846] h-16">
           {!isCollapsed ? (
             <div 
               onClick={() => setCurrentView('builder')}
-              className="flex items-center space-x-3 cursor-pointer overflow-hidden"
+              className="flex items-center space-x-2.5 cursor-pointer overflow-hidden flex-1 min-w-0"
             >
               <div 
-                className="w-10 h-10 rounded bg-[#161920] border flex items-center justify-center shadow-lg flex-shrink-0 p-1"
+                className="w-9 h-9 rounded bg-[#161920] border flex items-center justify-center shadow-lg flex-shrink-0 p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
                 <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col min-w-0">
                 <div className="flex items-center space-x-1.5">
                   <span 
-                    className="font-gothic font-bold text-lg tracking-wider"
+                    className="font-gothic font-bold text-base tracking-wider truncate"
                     style={{ color: activeThemeObj.primaryColor }}
                   >
                     TRENCHLINE
                   </span>
-                  <span className="text-[8px] px-1 py-0.2 rounded bg-[#8B0000] text-white font-mono uppercase font-bold">
+                  <span className="text-[8px] px-1.5 py-0.2 rounded bg-[#8B0000] text-white font-mono uppercase font-bold flex-shrink-0">
                     TC
                   </span>
                 </div>
-                <span className="text-[9px] text-[#8E95A5] font-mono leading-none">
+                <span className="text-[9px] text-[#8E95A5] font-mono truncate">
                   Tactical Companion OS
                 </span>
               </div>
@@ -122,7 +130,7 @@ export const Sidebar: React.FC = () => {
               title="TrenchLine OS"
             >
               <div 
-                className="w-10 h-10 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-1"
+                className="w-9 h-9 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
                 <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
@@ -132,7 +140,7 @@ export const Sidebar: React.FC = () => {
 
           <button
             onClick={toggleCollapse}
-            className={`p-1.5 rounded hover:bg-[#20242E] text-[#8E95A5] hover:text-white transition-colors ${
+            className={`p-1.5 rounded hover:bg-[#20242E] text-[#8E95A5] hover:text-white transition-colors flex-shrink-0 ml-1 ${
               isCollapsed ? 'hidden' : 'block'
             }`}
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
@@ -143,16 +151,16 @@ export const Sidebar: React.FC = () => {
 
         {/* 2. Active Warband Command Widget (When Expanded) */}
         {!isCollapsed && activeWarband && (
-          <div className="p-3.5 mx-3 mt-3 bg-[#161920] border border-[#323846] rounded-md space-y-2.5 shadow bevel-container">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono text-[#8E95A5] uppercase font-bold flex items-center space-x-1.5">
+          <div className="p-3 mx-3 mt-3 bg-[#161920] border border-[#323846] rounded-md space-y-2 shadow bevel-container">
+            <div className="flex items-center justify-between gap-1 text-[10px] font-mono">
+              <span className="text-[#8E95A5] uppercase font-bold flex items-center space-x-1.5 min-w-0 flex-1">
                 <span 
-                  className="w-2 h-2 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
                 />
-                <span className="truncate max-w-[130px]">{currentFaction?.name || 'Active Roster'}</span>
+                <span className="truncate">{currentFaction?.name || 'Active Roster'}</span>
               </span>
-              <span className="text-[10px] font-mono font-bold text-[#D4AF37]">
+              <span className="font-bold text-[#D4AF37] whitespace-nowrap flex-shrink-0 ml-1">
                 {totalCost}/{activeWarband.ducatLimit} D
               </span>
             </div>

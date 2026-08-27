@@ -128,37 +128,68 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
             </div>
           </div>
 
-          {/* Bell Curve Distribution Visualizer */}
+          {/* Dynamic Bell Curve Distribution Visualizer */}
           <div className="space-y-3">
-            <span className="text-xs font-mono uppercase text-[#8E95A5] font-bold block">
-              2D6 Probability Bell Curve (Unmodified):
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono uppercase text-[#8E95A5] font-bold block">
+                2D6 Probability Bell Curve (With {modifier >= 0 ? `+${modifier}` : modifier} Modifier):
+              </span>
+              <span className="text-[10px] font-mono text-[#D4AF37]">
+                Standard TN 7 Pass: {calcSuccessRate(7)}%
+              </span>
+            </div>
 
             <div className="space-y-1.5 font-mono text-xs">
-              {outcomes.map((o) => (
-                <div key={o.sum} className="flex items-center space-x-3 bg-[#0C0E12] p-2 rounded border border-[#323846]/60">
-                  <span className={`w-8 font-bold text-center ${o.sum === 7 ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
-                    [{o.sum}]
-                  </span>
+              {outcomes.map((o) => {
+                const effectiveSum = o.sum + modifier;
+                const isCriticalFail = o.sum === 2;
+                const isCriticalSuccess = o.sum === 12 || effectiveSum >= 12;
+                const isSuccess = effectiveSum >= 7 && !isCriticalFail;
 
-                  <div className="flex-1 bg-[#161920] h-3.5 rounded overflow-hidden">
-                    <div
-                      className={`h-full rounded transition-all duration-300 ${
-                        o.sum === 7
-                          ? 'bg-[#D4AF37]'
-                          : o.sum === 2
-                          ? 'bg-[#E53935]'
-                          : o.sum === 12
-                          ? 'bg-[#4E9A6E]'
-                          : 'bg-[#8E95A5]'
-                      }`}
-                      style={{ width: `${(o.baseProb / 16.67) * 100}%` }}
-                    />
+                let barColor = 'bg-[#8E95A5]';
+                let tagColor = 'text-[#8E95A5]';
+                let tagLabel = 'Failure';
+
+                if (isCriticalFail) {
+                  barColor = 'bg-[#E53935]';
+                  tagColor = 'text-[#E53935] font-bold';
+                  tagLabel = 'Fumble (Double 1s)';
+                } else if (isCriticalSuccess) {
+                  barColor = 'bg-[#4E9A6E]';
+                  tagColor = 'text-[#4E9A6E] font-bold';
+                  tagLabel = 'Critical (12+)';
+                } else if (isSuccess) {
+                  barColor = 'bg-[#D4AF37]';
+                  tagColor = 'text-[#D4AF37] font-bold';
+                  tagLabel = 'Success (≥7)';
+                } else {
+                  barColor = 'bg-[#E53935]/70';
+                  tagColor = 'text-[#E53935]';
+                  tagLabel = 'Failure (<7)';
+                }
+
+                return (
+                  <div key={o.sum} className="flex items-center space-x-3 bg-[#0C0E12] p-2 rounded border border-[#323846]/60">
+                    <div className="w-16 flex items-center justify-between text-xs">
+                      <span className="text-[#8E95A5]">[{o.sum}]</span>
+                      <span className="text-[#ECEFF4] font-bold">➔ {effectiveSum}</span>
+                    </div>
+
+                    <div className="flex-1 bg-[#161920] h-3.5 rounded overflow-hidden">
+                      <div
+                        className={`h-full rounded transition-all duration-300 ${barColor}`}
+                        style={{ width: `${(o.baseProb / 16.67) * 100}%` }}
+                      />
+                    </div>
+
+                    <span className={`w-28 text-right text-[10px] ${tagColor}`}>
+                      {tagLabel}
+                    </span>
+
+                    <span className="w-12 text-right text-[11px] text-[#8E95A5] font-mono">{o.baseProb}%</span>
                   </div>
-
-                  <span className="w-14 text-right text-[11px] text-[#8E95A5]">{o.baseProb}%</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

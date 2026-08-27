@@ -6,6 +6,7 @@ import { WarbandBuilder } from './WarbandBuilder';
 import { ImportWarbandModal } from './ImportWarbandModal';
 import { WarbandComparatorModal } from './WarbandComparatorModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { useSession } from 'next-auth/react';
 import { 
   Plus, 
   Copy, 
@@ -29,6 +30,19 @@ export const WarbandDashboard: React.FC = () => {
     deleteWarband, 
     factions 
   } = useStore();
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email?.toLowerCase().trim();
+  const isAdmin = userEmail === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
+  const userId = (session?.user as any)?.id;
+
+  const canManageWarband = (wb: any) => {
+    if (isAdmin) return true;
+    if (!wb.creatorId && !wb.creatorName) return true;
+    if (wb.creatorId && wb.creatorId === userId) return true;
+    if (wb.creatorName && (wb.creatorName === userEmail || wb.creatorName === session?.user?.name)) return true;
+    return false;
+  };
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -172,17 +186,19 @@ export const WarbandDashboard: React.FC = () => {
                       <button
                         onClick={() => cloneWarband(wb.id)}
                         className="p-1 text-[#8E95A5] hover:text-[#ECEFF4] rounded transition-colors"
-                        title="Clone Warband"
+                        title="Clone / Fork Warband"
                       >
                         <Copy className="w-3.5 h-3.5" />
                       </button>
-                      <button
-                        onClick={() => setWarbandToDelete({ id: wb.id, name: wb.name })}
-                        className="p-1 text-[#8E95A5] hover:text-[#E53935] rounded transition-colors"
-                        title="Delete Warband"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {canManageWarband(wb) && (
+                        <button
+                          onClick={() => setWarbandToDelete({ id: wb.id, name: wb.name })}
+                          className="p-1 text-[#8E95A5] hover:text-[#E53935] rounded transition-colors"
+                          title="Delete Warband"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
