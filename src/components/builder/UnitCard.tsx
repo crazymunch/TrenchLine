@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
@@ -6,6 +8,7 @@ import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
 import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
   Plus, 
@@ -19,12 +22,15 @@ import {
   Copy,
   Crown,
   ChevronDown,
+  ChevronUp,
   Scroll,
   Award,
   BookOpen,
   Quote,
   Flame,
-  Users
+  Users,
+  Star,
+  MoreVertical
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -41,7 +47,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
     setUnitAsLeader,
     removeWeapon, 
     removeArmour, 
-    removeEquipment
+    removeEquipment,
+    saveUnitAsFavourite
   } = useStore();
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -49,8 +56,11 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [isEquipModalOpen, setIsEquipModalOpen] = useState(false);
   const [isAdvancementModalOpen, setIsAdvancementModalOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
   const [isConfirmDismissOpen, setIsConfirmDismissOpen] = useState(false);
+  const [expandedAbilities, setExpandedAbilities] = useState<Record<string, boolean>>({});
+  const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
   const hasLore = !!(unit.lore || (unit.deeds && unit.deeds.length > 0) || (unit.titles && unit.titles.length > 0));
@@ -67,6 +77,24 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
 
   const handlePromoteToLeader = () => {
     setUnitAsLeader(warbandId, unit.id);
+    setIsActionMenuOpen(false);
+  };
+
+  const handleSaveFavourite = () => {
+    saveUnitAsFavourite(unit);
+    soundEffects.playCathedralBell();
+    setFavouriteSaved(true);
+    setIsActionMenuOpen(false);
+    setTimeout(() => setFavouriteSaved(false), 2500);
+  };
+
+  // Full name with selected titles
+  const fullDisplayName = unit.titles && unit.titles.length > 0
+    ? `${unit.customName}, ${unit.titles.join(', ')}`
+    : unit.customName;
+
+  const toggleAbilityExpand = (id: string) => {
+    setExpandedAbilities(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
@@ -79,14 +107,14 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
         }`}
       >
         
-        {/* Card Header */}
-        <div className={`p-3.5 border-b border-[#323846] flex items-center justify-between gap-2 ${
+        {/* Card Header: Spacious, No Truncation, Clean 3-Dots Menu */}
+        <div className={`p-3.5 border-b border-[#323846] flex items-start justify-between gap-3 ${
           isLeader ? 'bg-[#20242E] border-b-[#D4AF37]/40' : 'bg-[#20242E]'
         }`}>
-          <div className="flex items-center space-x-2 flex-1 min-w-0">
+          <div className="flex items-start space-x-2.5 flex-1 min-w-0">
             
             {/* Interactive Category Badge / Dropdown */}
-            <div className="relative flex-shrink-0">
+            <div className="relative flex-shrink-0 mt-0.5">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
                 className={`text-[9px] font-mono px-2 py-0.5 rounded font-bold uppercase flex items-center space-x-1 cursor-pointer transition-all ${
@@ -124,95 +152,128 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               )}
             </div>
 
-            {/* Unit Name Edit */}
+            {/* Unit Name Edit (Full Name Display, Multi-line wrapping allowed) */}
             {isEditingName ? (
               <div className="flex items-center space-x-1 flex-1 min-w-0">
                 <input
                   type="text"
                   value={nameVal}
                   onChange={(e) => setNameVal(e.target.value)}
-                  className="bg-[#161920] border border-[#D4AF37] rounded px-1.5 py-0.5 text-xs text-white focus:outline-none w-full"
+                  className="bg-[#161920] border border-[#D4AF37] rounded px-2 py-1 text-xs text-white focus:outline-none w-full font-gothic"
                   autoFocus
                 />
                 <button onClick={handleSaveName} className="text-[#4E9A6E] hover:text-white p-1 flex-shrink-0">
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-4 h-4" />
                 </button>
                 <button onClick={() => setIsEditingName(false)} className="text-[#E53935] hover:text-white p-1 flex-shrink-0">
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
               <div 
-                className="flex items-center space-x-1.5 group cursor-pointer truncate" 
+                className="flex flex-col group cursor-pointer flex-1 min-w-0" 
                 onClick={() => setIsEditingName(true)}
                 title="Click to rename"
               >
-                <h3 className={`font-gothic font-bold text-sm truncate transition-colors ${
-                  isLeader ? 'text-[#D4AF37]' : 'text-[#ECEFF4] group-hover:text-[#D4AF37]'
-                }`}>
-                  {unit.customName}
-                </h3>
-                <Edit3 className="w-3 h-3 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                <div className="flex items-center space-x-1.5">
+                  <h3 className={`font-gothic font-bold text-sm sm:text-base leading-snug break-words transition-colors ${
+                    isLeader ? 'text-[#D4AF37]' : 'text-[#ECEFF4] group-hover:text-[#D4AF37]'
+                  }`}>
+                    {fullDisplayName}
+                  </h3>
+                  <Edit3 className="w-3 h-3 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                </div>
+                {favouriteSaved && (
+                  <span className="text-[10px] text-[#4E9A6E] font-mono font-bold animate-pulse">
+                    ⭐ Saved to Favourites!
+                  </span>
+                )}
               </div>
             )}
           </div>
 
-          {/* Quick Header Actions */}
-          <div className="flex items-center space-x-1 flex-shrink-0">
-            
-            {/* Promote to Leader Quick Button (if not already leader) */}
-            {!isLeader && (
-              <button
-                onClick={handlePromoteToLeader}
-                className="text-[#8E95A5] hover:text-[#D4AF37] p-1 rounded hover:bg-[#161920] transition-colors"
-                title="Designate as Warband Leader"
-              >
-                <Crown className="w-3.5 h-3.5" />
-              </button>
-            )}
-
-            {/* Lore, Biography & Deeds Button */}
-            <button
-              onClick={() => setIsLoreModalOpen(true)}
-              className={`p-1 rounded hover:bg-[#161920] transition-colors relative ${
-                hasLore ? 'text-[#D4AF37]' : 'text-[#8E95A5] hover:text-[#D4AF37]'
-              }`}
-              title="Open Warrior Chronicle, Deeds & Lore Dossier"
-            >
-              <Scroll className="w-3.5 h-3.5" />
-              {hasLore && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute top-0.5 right-0.5 animate-pulse" />
-              )}
-            </button>
-
+          {/* Header Right: Rating Badge & 3-Dots Action Menu */}
+          <div className="flex items-center space-x-2 flex-shrink-0">
             {/* Cost Badge */}
-            <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#161920] px-2 py-0.5 rounded border border-[#323846]">
+            <div className="text-xs font-mono font-bold text-[#D4AF37] bg-[#161920] px-2.5 py-1 rounded border border-[#323846] shadow-sm">
               {unit.totalCost} D
             </div>
 
-            <button
-              onClick={() => duplicateUnit(warbandId, unit.id)}
-              className="text-[#8E95A5] hover:text-[#D4AF37] p-1 rounded transition-colors"
-              title="Duplicate Warrior"
-            >
-              <Copy className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setIsConfirmDismissOpen(true)}
-              className="text-[#8E95A5] hover:text-[#E53935] p-1 rounded transition-colors"
-              title="Dismiss Warrior"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
+            {/* 3-Dots Dropdown Trigger */}
+            <div className="relative">
+              <button
+                onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
+                className="p-1.5 rounded bg-[#161920] hover:bg-[#323846] border border-[#323846] text-[#ECEFF4] hover:text-[#D4AF37] transition-colors"
+                title="Warrior Actions & Options"
+              >
+                <MoreVertical className="w-4 h-4" />
+              </button>
+
+              {/* 3-Dots Menu Dropdown */}
+              {isActionMenuOpen && (
+                <div className="absolute right-0 top-full mt-1 w-48 bg-[#161920] border border-[#D4AF37]/50 rounded-md shadow-2xl z-40 py-1 font-mono text-xs divide-y divide-[#323846]/60">
+                  {!isLeader && (
+                    <button
+                      onClick={handlePromoteToLeader}
+                      className="w-full px-3 py-2 text-left flex items-center space-x-2 text-[#ECEFF4] hover:bg-[#20242E] hover:text-[#D4AF37] transition-colors"
+                    >
+                      <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Make Leader</span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      duplicateUnit(warbandId, unit.id);
+                      setIsActionMenuOpen(false);
+                    }}
+                    className="w-full px-3 py-2 text-left flex items-center space-x-2 text-[#ECEFF4] hover:bg-[#20242E] hover:text-[#D4AF37] transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-[#8E95A5]" />
+                    <span>Duplicate Warrior</span>
+                  </button>
+
+                  <button
+                    onClick={handleSaveFavourite}
+                    className="w-full px-3 py-2 text-left flex items-center space-x-2 text-[#ECEFF4] hover:bg-[#20242E] hover:text-[#D4AF37] transition-colors"
+                  >
+                    <Star className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Save as Favourite</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsLoreModalOpen(true);
+                      setIsActionMenuOpen(false);
+                    }}
+                    className="w-full px-3 py-2 text-left flex items-center space-x-2 text-[#ECEFF4] hover:bg-[#20242E] hover:text-[#D4AF37] transition-colors"
+                  >
+                    <Scroll className="w-3.5 h-3.5 text-[#8E95A5]" />
+                    <span>Dossier & Bio</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsConfirmDismissOpen(true);
+                      setIsActionMenuOpen(false);
+                    }}
+                    className="w-full px-3 py-2 text-left flex items-center space-x-2 text-[#E53935] hover:bg-[#8B0000]/20 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Dismiss Warrior</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Card Body */}
         <div className="p-3.5 space-y-2.5 flex-1">
           
-          {/* Base Profile Subtitle & Titles */}
+          {/* Base Profile Subtitle & XP */}
           <div className="text-[11px] font-mono text-[#8E95A5] flex items-center justify-between">
-            <span>Base: {unit.profileSnapshot.name}</span>
+            <span>Base Profile: <strong className="text-[#ECEFF4]">{unit.profileSnapshot.name}</strong></span>
             {unit.xp > 0 && (
               <span className="text-[#D4AF37] flex items-center space-x-1">
                 <Sparkles className="w-3 h-3" />
@@ -220,21 +281,6 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               </span>
             )}
           </div>
-
-          {/* Honorific Titles Badges */}
-          {unit.titles && unit.titles.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {unit.titles.map((title, i) => (
-                <span
-                  key={i}
-                  className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30 flex items-center space-x-1"
-                >
-                  <Sparkles className="w-2.5 h-2.5 text-[#D4AF37]" />
-                  <span>{title}</span>
-                </span>
-              ))}
-            </div>
-          )}
 
           {/* Battlefield Quote Snippet */}
           {unit.quote && (
@@ -267,15 +313,31 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           </div>
 
-          {/* Innate Abilities */}
+          {/* Innate Abilities & Rules: Collapsed by Default with Expand Arrow */}
           {unit.profileSnapshot.innateAbilities && unit.profileSnapshot.innateAbilities.length > 0 && (
             <div className="space-y-1">
-              {unit.profileSnapshot.innateAbilities.map((ab) => (
-                <div key={ab.id} className="text-xs bg-[#20242E]/60 p-1.5 rounded border border-[#323846]/60">
-                  <span className="font-semibold text-[#D4AF37] font-mono text-[11px]">{ab.name}: </span>
-                  <span className="text-[#8E95A5] text-[11px]">{ab.description}</span>
-                </div>
-              ))}
+              {unit.profileSnapshot.innateAbilities.map((ab) => {
+                const isExpanded = expandedAbilities[ab.id];
+                return (
+                  <div key={ab.id} className="text-xs bg-[#20242E]/60 p-1.5 rounded border border-[#323846]/60">
+                    <button
+                      onClick={() => toggleAbilityExpand(ab.id)}
+                      className="w-full flex items-center justify-between text-left font-semibold text-[#D4AF37] font-mono text-[11px] hover:text-[#ECEFF4] transition-colors"
+                    >
+                      <span className="truncate">{ab.name}</span>
+                      <div className="flex items-center space-x-1 text-[#8E95A5] flex-shrink-0">
+                        <span className="text-[9px] uppercase">{isExpanded ? 'Hide' : 'Rule'}</span>
+                        {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      </div>
+                    </button>
+                    {isExpanded && (
+                      <p className="text-[#8E95A5] text-[11px] pt-1.5 leading-relaxed border-t border-[#323846]/40 mt-1">
+                        {ab.description}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -330,7 +392,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                     key={arm.instanceId}
                     className="inline-flex items-center space-x-1 bg-[#20242E] text-xs font-mono px-2 py-0.5 rounded border border-[#323846]"
                   >
-                    <span>{arm.name} ({arm.armourModifier})</span>
+                    <span>{arm.name} ({arm.armourModifier || arm.modifier})</span>
                     <button
                       onClick={() => removeArmour(warbandId, unit.id, arm.instanceId)}
                       className="text-[#8E95A5] hover:text-[#E53935]"
@@ -405,13 +467,14 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           )}
 
-          {/* Heroic Deeds Quick Pill */}
+          {/* Heroic Feats Quick Pill */}
           {unit.deeds && unit.deeds.length > 0 && (
             <div 
               onClick={() => setIsLoreModalOpen(true)}
               className="p-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded text-[10px] font-mono text-[#D4AF37] flex items-center space-x-1.5 cursor-pointer hover:bg-[#D4AF37]/20 transition-colors"
+              title="Click to view all heroic feats"
             >
-              <Award className="w-3 h-3 flex-shrink-0" />
+              <Award className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="truncate"><strong>{unit.deeds.length} Heroic Feat{unit.deeds.length > 1 ? 's' : ''}:</strong> {unit.deeds[0]}</span>
             </div>
           )}

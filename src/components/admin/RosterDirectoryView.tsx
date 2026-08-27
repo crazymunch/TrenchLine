@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { WarbandChangelogModal } from '../builder/WarbandChangelogModal';
+import { useSession } from 'next-auth/react';
 import { 
   Users, 
   Search, 
@@ -23,13 +24,14 @@ import {
   History, 
   X, 
   Skull, 
-  Award,
-  Crown,
-  ChevronRight,
-  ExternalLink,
-  BookOpen,
-  Bug,
-  Check
+  Award, 
+  Crown, 
+  ChevronRight, 
+  ExternalLink, 
+  BookOpen, 
+  Bug, 
+  Check, 
+  Lock 
 } from 'lucide-react';
 
 export const RosterDirectoryView: React.FC = () => {
@@ -47,6 +49,19 @@ export const RosterDirectoryView: React.FC = () => {
     cloneWarband,
     importWarband
   } = useStore();
+
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email?.toLowerCase().trim();
+  const isAdmin = userEmail === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
+  const userId = (session?.user as any)?.id;
+
+  const canManageWarband = (wb: Warband) => {
+    if (isAdmin) return true;
+    if (userEmail && wb.creatorName && wb.creatorName.toLowerCase().trim() === userEmail) return true;
+    if (session?.user?.name && wb.creatorName && wb.creatorName === session?.user?.name) return true;
+    if (userId && wb.creatorId && wb.creatorId === userId) return true;
+    return false;
+  };
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFactionFilter, setSelectedFactionFilter] = useState<string>('all');
@@ -129,22 +144,24 @@ export const RosterDirectoryView: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3 flex-shrink-0">
-            <button
-              onClick={async () => {
-                setIsBugListOpen(true);
-                try {
-                  const res = await fetch('/api/bug-reports');
-                  if (res.ok) {
-                    const data = await res.json();
-                    setBugTickets(data.bugReports || []);
-                  }
-                } catch {}
-              }}
-              className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/50 text-[#E53935] border border-[#8B0000] rounded font-mono text-xs font-bold uppercase transition-colors"
-            >
-              <Bug className="w-3.5 h-3.5" />
-              <span>Bug Tickets Log</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={async () => {
+                  setIsBugListOpen(true);
+                  try {
+                    const res = await fetch('/api/bug-reports');
+                    if (res.ok) {
+                      const data = await res.json();
+                      setBugTickets(data.bugReports || []);
+                    }
+                  } catch {}
+                }}
+                className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/50 text-[#E53935] border border-[#8B0000] rounded font-mono text-xs font-bold uppercase transition-colors"
+              >
+                <Bug className="w-3.5 h-3.5" />
+                <span>Bug Tickets Log</span>
+              </button>
+            )}
 
             <button
               onClick={handleRefresh}
@@ -316,31 +333,58 @@ export const RosterDirectoryView: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 font-mono text-xs">
-                  {isEnrolled ? (
-                    <button
-                      onClick={() => removeWarbandFromCampaign(wb.id)}
-                      className="py-1.5 px-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/60 text-[#E53935] border border-[#8B0000]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Remove</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => enrollWarbandInCampaign(wb)}
-                      className="py-1.5 px-2 bg-[#4E9A6E]/30 hover:bg-[#4E9A6E]/60 text-[#4E9A6E] border border-[#4E9A6E]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
-                    >
-                      <PlusCircle className="w-3.5 h-3.5" />
-                      <span>Enlist</span>
-                    </button>
-                  )}
+                  {canManageWarband(wb) ? (
+                    <>
+                      {isEnrolled ? (
+                        <button
+                          onClick={() => removeWarbandFromCampaign(wb.id)}
+                          className="py-1.5 px-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/60 text-[#E53935] border border-[#8B0000]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => enrollWarbandInCampaign(wb)}
+                          className="py-1.5 px-2 bg-[#4E9A6E]/30 hover:bg-[#4E9A6E]/60 text-[#4E9A6E] border border-[#4E9A6E]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                        >
+                          <PlusCircle className="w-3.5 h-3.5" />
+                          <span>Enlist</span>
+                        </button>
+                      )}
 
-                  <button
-                    onClick={() => handleSelectActive(wb)}
-                    className="py-1.5 px-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
-                  >
-                    <Shield className="w-3.5 h-3.5" />
-                    <span>Load Roster</span>
-                  </button>
+                      <button
+                        onClick={() => handleSelectActive(wb)}
+                        className="py-1.5 px-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
+                      >
+                        <Shield className="w-3.5 h-3.5" />
+                        <span>Manage</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          cloneWarband(wb.id);
+                          soundEffects.playCathedralBell();
+                          setCurrentView('builder');
+                        }}
+                        className="py-1.5 px-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                        title="Clone a local copy of this warband"
+                      >
+                        <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span>Clone Copy</span>
+                      </button>
+
+                      <button
+                        onClick={() => setInspectingWarband(wb)}
+                        className="py-1.5 px-2 bg-[#0C0E12] text-[#8E95A5] border border-[#323846] rounded font-bold uppercase flex items-center justify-center space-x-1 cursor-default"
+                      >
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>Read Only</span>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 

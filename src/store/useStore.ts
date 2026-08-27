@@ -137,6 +137,15 @@ interface AppState {
   removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
   setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
   toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string }) => void;
+  addUnitDeed: (warbandId: string, unitId: string, deed: string) => void;
+  removeUnitDeed: (warbandId: string, unitId: string, deedIndex: number) => void;
+  setUnitTitles: (warbandId: string, unitId: string, titles: string[]) => void;
+
+  // Favourites Database
+  favouriteUnits: ActiveUnit[];
+  saveUnitAsFavourite: (unit: ActiveUnit) => void;
+  removeUnitFromFavourites: (favouriteId: string) => void;
+  addUnitFromFavourite: (warbandId: string, favouriteUnit: ActiveUnit) => void;
 
   // Customizer & Overrides
   customArmour: ArmourProfile[];
@@ -403,6 +412,7 @@ export const useStore = create<AppState>((set, get) => {
     customWeapons,
     customArmour: [],
     customEquipment: [],
+    favouriteUnits: storage.getFavouriteUnits(),
 
     allCloudWarbands: [],
     fetchAllCloudWarbands: async () => {
@@ -1273,6 +1283,116 @@ export const useStore = create<AppState>((set, get) => {
                 totalCost: Math.max(0, u.totalCost + costDelta)
               };
             }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addUnitDeed: (warbandId, unitId, deed) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const existing = u.deeds || [];
+              if (existing.includes(deed)) return u;
+              return { ...u, deeds: [...existing, deed] };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    removeUnitDeed: (warbandId, unitId, deedIndex) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const existing = u.deeds || [];
+              return { ...u, deeds: existing.filter((_, idx) => idx !== deedIndex) };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    setUnitTitles: (warbandId, unitId, titles) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return { ...u, titles };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    saveUnitAsFavourite: (unit) => {
+      set((state) => {
+        const existing = state.favouriteUnits.filter(u => u.id !== unit.id && u.customName !== unit.customName);
+        const updated = [...existing, { ...unit, id: `fav-${Date.now()}` }];
+        storage.saveFavouriteUnits(updated);
+        return { favouriteUnits: updated };
+      });
+    },
+
+    removeUnitFromFavourites: (favouriteId) => {
+      set((state) => {
+        const updated = state.favouriteUnits.filter(u => u.id !== favouriteId);
+        storage.saveFavouriteUnits(updated);
+        return { favouriteUnits: updated };
+      });
+    },
+
+    addUnitFromFavourite: (warbandId, favouriteUnit) => {
+      set((state) => {
+        const newUnit: ActiveUnit = {
+          ...favouriteUnit,
+          id: `u-${Date.now()}`,
+          equippedWeapons: (favouriteUnit.equippedWeapons || []).map(w => ({ ...w, instanceId: `w-${Date.now()}-${Math.random().toString(36).substr(2, 4)}` })),
+          equippedArmour: (favouriteUnit.equippedArmour || []).map(a => ({ ...a, instanceId: `a-${Date.now()}-${Math.random().toString(36).substr(2, 4)}` })),
+          equippedEquipment: (favouriteUnit.equippedEquipment || []).map(e => ({ ...e, instanceId: `e-${Date.now()}-${Math.random().toString(36).substr(2, 4)}` })),
+          status: 'Active',
+          currentWounds: 0,
+          maxWounds: 1,
+          bloodMarkers: 0,
+          hasActedThisTurn: false
+        };
+
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: [...w.units, newUnit],
             updatedAt: new Date().toISOString()
           };
           storage.syncWarbandToCloud(updatedWb);

@@ -226,6 +226,25 @@ export const storage = {
     } catch (e) {
       console.warn('Ruleset save failed:', e);
     }
+  },
+
+  getFavouriteUnits(): any[] {
+    if (!isBrowser) return [];
+    try {
+      const data = localStorage.getItem('tc_favourite_units_v1');
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveFavouriteUnits(units: any[]): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem('tc_favourite_units_v1', JSON.stringify(units));
+    } catch (e) {
+      console.warn('Favourites save failed:', e);
+    }
   }
 };
 

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ActiveUnit } from '../../types/warband';
 import { useStore } from '../../store/useStore';
+import { soundEffects } from '../../services/soundEffects';
 import { 
   Scroll, 
   X, 
@@ -15,7 +16,10 @@ import {
   BookOpen, 
   Skull,
   Shield,
-  Edit3
+  Edit3,
+  Flame,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 
 interface UnitLoreModalProps {
@@ -24,74 +28,112 @@ interface UnitLoreModalProps {
   onClose: () => void;
 }
 
+const COMMON_TITLES_POOL = [
+  'the Living Engineer',
+  'the Crippled',
+  'the Undying',
+  'Scourge of New Antioch',
+  'Bearer of the Black Chalice',
+  'Iron Champion',
+  'the Merciful',
+  'the Unbroken',
+  'the Ironclad',
+  'the Pious',
+  'the Martyr',
+  'the Heretic-Hunter',
+  'the Blessed',
+  'of the Red Sand',
+  'the Unforgiven',
+  'the Exalted Alchemist',
+  'the Grim',
+  'the Relentless'
+];
+
 export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, onClose }) => {
   const { updateUnitLore } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'bio' | 'deeds' | 'titles'>('bio');
+  const [activeTab, setActiveTab] = useState<'titles' | 'deeds' | 'bio'>('titles');
   const [loreText, setLoreText] = useState(unit.lore || '');
   const [quoteText, setQuoteText] = useState(unit.quote || '');
-  const [titles, setTitles] = useState<string[]>(unit.titles || []);
+  const [activeTitles, setActiveTitles] = useState<string[]>(unit.titles || []);
+  const [customTitlesPool, setCustomTitlesPool] = useState<string[]>(COMMON_TITLES_POOL);
   const [deeds, setDeeds] = useState<string[]>(unit.deeds || []);
 
-  const [newTitle, setNewTitle] = useState('');
-  const [newDeed, setNewDeed] = useState('');
+  const [newTitleInput, setNewTitleInput] = useState('');
+  const [newDeedInput, setNewDeedInput] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
-  const handleSave = () => {
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, titles, deeds);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2000);
+  const handleToggleTitle = (title: string) => {
+    let updated: string[] = [];
+    if (activeTitles.includes(title)) {
+      updated = activeTitles.filter(t => t !== title);
+    } else {
+      updated = [...activeTitles, title];
+    }
+    setActiveTitles(updated);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
+    soundEffects.playCathedralBell();
   };
 
-  const handleAddTitle = () => {
-    if (!newTitle.trim()) return;
-    const updated = [...titles, newTitle.trim()];
-    setTitles(updated);
-    setNewTitle('');
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
-  };
-
-  const handleRemoveTitle = (idx: number) => {
-    const updated = titles.filter((_, i) => i !== idx);
-    setTitles(updated);
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
+  const handleAddCustomTitle = () => {
+    if (!newTitleInput.trim()) return;
+    const title = newTitleInput.trim();
+    if (!customTitlesPool.includes(title)) {
+      setCustomTitlesPool(prev => [...prev, title]);
+    }
+    if (!activeTitles.includes(title)) {
+      const updated = [...activeTitles, title];
+      setActiveTitles(updated);
+      updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
+    }
+    setNewTitleInput('');
+    soundEffects.playCathedralBell();
   };
 
   const handleAddDeed = () => {
-    if (!newDeed.trim()) return;
-    const updated = [...deeds, newDeed.trim()];
+    if (!newDeedInput.trim()) return;
+    const updated = [...deeds, newDeedInput.trim()];
     setDeeds(updated);
-    setNewDeed('');
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, titles, updated);
+    setNewDeedInput('');
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, updated);
+    soundEffects.playGunfire();
   };
 
   const handleRemoveDeed = (idx: number) => {
     const updated = deeds.filter((_, i) => i !== idx);
     setDeeds(updated);
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, titles, updated);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, updated);
   };
 
+  const handleSaveBio = () => {
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, deeds);
+    setIsSaved(true);
+    soundEffects.playCathedralBell();
+    setTimeout(() => setIsSaved(false), 2000);
+  };
+
+  const fullPreviewName = activeTitles.length > 0
+    ? `${unit.customName}, ${activeTitles.join(', ')}`
+    : unit.customName;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-[#161920] border border-[#D4AF37]/50 rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] bevel-container">
         
         {/* Modal Header */}
-        <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
+        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
               <Scroll className="w-4 h-4 text-[#D4AF37]" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-gothic font-bold text-base sm:text-lg text-white">
-                  {unit.customName}
+                  {fullPreviewName}
                 </h2>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#323846] text-[#D4AF37] uppercase font-bold">
-                  {unit.profileSnapshot.name}
-                </span>
               </div>
               <p className="text-xs text-[#8E95A5] font-mono">
-                Warrior Dossier, Narrative Chronicle & Battle Accolades
+                Base Profile: <strong className="text-[#ECEFF4]">{unit.profileSnapshot.name}</strong> • Titles, Heroic Feats & Dossier
               </p>
             </div>
           </div>
@@ -103,249 +145,248 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
           </button>
         </div>
 
-        {/* Modal Sub-Header Tabs */}
-        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-[#323846] bg-[#161920]">
-          <button
-            onClick={() => setActiveTab('bio')}
-            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeTab === 'bio' 
-                ? 'border-[#D4AF37] text-[#D4AF37]' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Biography & Lore</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('deeds')}
-            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeTab === 'deeds' 
-                ? 'border-[#D4AF37] text-[#D4AF37]' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>Heroic Deeds ({deeds.length})</span>
-          </button>
-
+        {/* Tab Navigation */}
+        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-[#323846] bg-[#161920] overflow-x-auto">
           <button
             onClick={() => setActiveTab('titles')}
-            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
+            className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
               activeTab === 'titles' 
-                ? 'border-[#D4AF37] text-[#D4AF37]' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
                 : 'border-transparent text-[#8E95A5] hover:text-white'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Honorific Titles ({titles.length})</span>
+            <span>Title Management ({activeTitles.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('deeds')}
+            className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
+              activeTab === 'deeds' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <Award className="w-3.5 h-3.5" />
+            <span>Heroic Feats ({deeds.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('bio')}
+            className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
+              activeTab === 'bio' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Biography & Battlefield Quote</span>
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-4 overflow-y-auto space-y-4 flex-1">
+        {/* Tab Content */}
+        <div className="p-5 overflow-y-auto space-y-4 flex-1">
           
-          {/* TAB 1: Biography & Lore */}
+          {/* TAB 1: TITLE MANAGEMENT */}
+          {activeTab === 'titles' && (
+            <div className="space-y-4">
+              
+              {/* Title Management Banner */}
+              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#323846] space-y-1.5">
+                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  Active Display Name:
+                </span>
+                <strong className="text-base font-gothic text-[#D4AF37] block">
+                  {fullPreviewName}
+                </strong>
+                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                  Select one or more honorific titles from the pool below, or type a custom title to affix to this warrior's name.
+                </p>
+              </div>
+
+              {/* Add Custom Title */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter custom title (e.g. 'the Unforgiven', 'of the Iron Wall')..."
+                  value={newTitleInput}
+                  onChange={(e) => setNewTitleInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddCustomTitle()}
+                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+                <button
+                  onClick={handleAddCustomTitle}
+                  disabled={!newTitleInput.trim()}
+                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Title</span>
+                </button>
+              </div>
+
+              {/* Title Selection Pool */}
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  Available Honorific Titles Pool:
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {customTitlesPool.map((title) => {
+                    const isSelected = activeTitles.includes(title);
+                    return (
+                      <div
+                        key={title}
+                        onClick={() => handleToggleTitle(title)}
+                        className={`p-2.5 rounded border cursor-pointer flex items-center justify-between transition-all ${
+                          isSelected
+                            ? 'bg-[#20242E] border-[#D4AF37] text-[#D4AF37] ring-1 ring-[#D4AF37]/40 font-bold'
+                            : 'bg-[#0C0E12] border-[#323846] text-[#ECEFF4] hover:border-[#8E95A5]'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2 truncate">
+                          {isSelected ? (
+                            <CheckSquare className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+                          ) : (
+                            <Square className="w-4 h-4 text-[#8E95A5] flex-shrink-0" />
+                          )}
+                          <span className="truncate">{title}</span>
+                        </div>
+                        {isSelected && (
+                          <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 2: HEROIC FEATS & GLORIOUS DEEDS */}
+          {activeTab === 'deeds' && (
+            <div className="space-y-4">
+              
+              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
+                <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+                  Battlefield Feats & Glorious Deeds
+                </strong>
+                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                  Record permanent heroic achievements, critical match milestones, and post-battle Glorious Deeds awarded to this warrior.
+                </p>
+              </div>
+
+              {/* Add Custom Deed Form */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Record new feat (e.g. 'Slew the Sorcerer Zortan in Sector 4', 'Heroic Trench Stand')..."
+                  value={newDeedInput}
+                  onChange={(e) => setNewDeedInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddDeed()}
+                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+                <button
+                  onClick={handleAddDeed}
+                  disabled={!newDeedInput.trim()}
+                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Record Feat</span>
+                </button>
+              </div>
+
+              {/* Deeds List */}
+              <div className="space-y-2">
+                {deeds.length === 0 ? (
+                  <p className="text-xs text-[#8E95A5] italic p-6 bg-[#0C0E12] rounded border border-[#323846] text-center">
+                    No heroic feats recorded yet. Accomplish Glorious Deeds in Tabletop Combat or add manual battle entries above.
+                  </p>
+                ) : (
+                  deeds.map((deed, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 bg-[#0C0E12] rounded border border-[#323846] flex items-center justify-between gap-3 hover:border-[#D4AF37]/50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-2.5 flex-1 min-w-0">
+                        <Award className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+                        <span className="text-xs text-[#ECEFF4]">{deed}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveDeed(idx)}
+                        className="text-[#8E95A5] hover:text-[#E53935] p-1"
+                        title="Delete Feat"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 3: BIOGRAPHY & QUOTE */}
           {activeTab === 'bio' && (
             <div className="space-y-4">
               
-              {/* Quote Block */}
-              <div className="bg-[#0C0E12] border border-[#323846] rounded-md p-3 space-y-1.5">
-                <label className="text-[11px] font-mono uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
-                  <Quote className="w-3 h-3 text-[#D4AF37]" />
-                  <span>Iconic Battlefield Quote / Oath:</span>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
+                  <Quote className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Battle Cry / Iconic Quote:</span>
                 </label>
                 <input
                   type="text"
                   value={quoteText}
                   onChange={(e) => setQuoteText(e.target.value)}
-                  placeholder="e.g. In these wastes, we use the tools we have. The Sultanate gave us a Wall; I gave us a monster."
-                  className="w-full bg-[#161920] border border-[#323846] rounded px-2.5 py-1.5 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  placeholder="e.g. 'By fire and brimstone, the Sultan's domain shall endure!'"
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
 
-              {/* Biography TextArea */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-mono uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
-                  <BookOpen className="w-3 h-3 text-[#D4AF37]" />
-                  <span>Personal History, Role & Chronicle (Markdown Supported):</span>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
+                  <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Warrior Biography & Narrative Lore:</span>
                 </label>
                 <textarea
+                  rows={6}
                   value={loreText}
                   onChange={(e) => setLoreText(e.target.value)}
-                  placeholder="Record this warrior's origins, tactical duties, unique modifications, equipment provenance, or personal motivations..."
-                  rows={10}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded-md p-3 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] leading-relaxed focus:outline-none focus:border-[#D4AF37]"
+                  placeholder="Record this warrior's origin, background, faith, and deeds in the trenches..."
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-3 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] leading-relaxed"
                 />
               </div>
 
-              {/* Combat Stats & Injuries Quick Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-2.5 bg-[#0C0E12] border border-[#323846] rounded text-xs space-y-1 font-mono">
-                  <span className="text-[#8E95A5] block font-bold uppercase text-[10px]">Combat Progression:</span>
-                  <div className="text-white flex items-center space-x-2">
-                    <span>XP: <strong className="text-[#D4AF37]">{unit.xp}</strong></span>
-                    <span>•</span>
-                    <span>Status: <strong className="text-[#4E9A6E]">{unit.status}</strong></span>
-                    <span>•</span>
-                    <span>Cost: <strong className="text-[#D4AF37]">{unit.totalCost} D</strong></span>
-                  </div>
-                </div>
-
-                <div className="p-2.5 bg-[#0C0E12] border border-[#323846] rounded text-xs space-y-1 font-mono">
-                  <span className="text-[#8E95A5] block font-bold uppercase text-[10px]">Battle Scars & Injuries:</span>
-                  {unit.injuries.length === 0 ? (
-                    <span className="text-[#4E9A6E] italic text-[11px]">Unscathed in battle</span>
-                  ) : (
-                    <ul className="text-[#E53935] list-disc list-inside text-[11px]">
-                      {unit.injuries.map((inj, i) => (
-                        <li key={i}>{inj}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          )}
-
-          {/* TAB 2: Heroic Deeds & Feats */}
-          {activeTab === 'deeds' && (
-            <div className="space-y-4">
-              <p className="text-xs text-[#8E95A5] font-mono">
-                Record momentous campaign feats, critical snipes, duel victories, clutch objective captures, and battlefield heroics.
-              </p>
-
-              {/* Add New Deed Input */}
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={newDeed}
-                  onChange={(e) => setNewDeed(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddDeed(); }}
-                  placeholder="e.g. Slew Hell Knight Mephistolon at extreme range with gas bullets in Turn 1"
-                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded px-3 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
-                />
+              <div className="flex items-center justify-end pt-2">
                 <button
-                  onClick={handleAddDeed}
-                  className="px-3 py-2 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-mono font-bold text-xs rounded uppercase flex items-center space-x-1"
+                  onClick={handleSaveBio}
+                  className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Deed</span>
+                  <Check className="w-4 h-4" />
+                  <span>{isSaved ? '✓ Biography Saved!' : 'Save Dossier'}</span>
                 </button>
               </div>
 
-              {/* Deeds List */}
-              {deeds.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-[#323846] rounded-md font-mono text-xs text-[#8E95A5]">
-                  No heroic deeds recorded yet. Enter a deed above or record battle achievements in the Post-Battle Wizard.
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {deeds.map((deed, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-start justify-between p-3 bg-[#0C0E12] border border-[#323846] rounded-md text-xs font-mono hover:border-[#D4AF37]/40 transition-colors"
-                    >
-                      <div className="flex items-start space-x-2.5">
-                        <Award className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                        <span className="text-[#ECEFF4] leading-relaxed">{deed}</span>
-                      </div>
-                      <button
-                        onClick={() => handleRemoveDeed(idx)}
-                        className="text-[#8E95A5] hover:text-[#E53935] p-1 rounded transition-colors ml-2"
-                        title="Remove Deed"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 3: Honorific Titles & Epithets */}
-          {activeTab === 'titles' && (
-            <div className="space-y-4">
-              <p className="text-xs text-[#8E95A5] font-mono">
-                Award campaign epithets, military rank titles, and alchemical honorifics earned across matches.
-              </p>
-
-              {/* Add New Title Input */}
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddTitle(); }}
-                  placeholder="e.g. The Relic Hound, Master of Construction, The Inaccurate"
-                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded px-3 py-2 text-xs text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
-                />
-                <button
-                  onClick={handleAddTitle}
-                  className="px-3 py-2 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-mono font-bold text-xs rounded uppercase flex items-center space-x-1"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Award Title</span>
-                </button>
-              </div>
-
-              {/* Titles List */}
-              {titles.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-[#323846] rounded-md font-mono text-xs text-[#8E95A5]">
-                  No honorific titles bestowed yet.
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {titles.map((title, idx) => (
-                    <div
-                      key={idx}
-                      className="inline-flex items-center space-x-2 px-3 py-1.5 bg-[#20242E] border border-[#D4AF37]/40 rounded-full text-xs font-mono text-[#D4AF37]"
-                    >
-                      <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-                      <span className="font-bold">{title}</span>
-                      <button
-                        onClick={() => handleRemoveTitle(idx)}
-                        className="text-[#8E95A5] hover:text-[#E53935]"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           )}
 
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-3.5 bg-[#20242E] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-xs font-mono text-[#4E9A6E] flex items-center space-x-1">
-            {isSaved && (
-              <>
-                <Check className="w-3.5 h-3.5" />
-                <span>Dossier saved to warband chronicle</span>
-              </>
-            )}
+        {/* Footer */}
+        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
+          <span className="text-[10px] text-[#8E95A5]">
+            Name: <strong className="text-[#D4AF37]">{fullPreviewName}</strong>
           </span>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={onClose}
-              className="px-3 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] text-[#8E95A5] hover:text-white rounded text-xs font-mono uppercase"
-            >
-              Close
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#C49F27] text-black font-mono font-bold text-xs uppercase rounded flex items-center space-x-1 shadow"
-            >
-              <Check className="w-3.5 h-3.5" />
-              <span>Save Chronicle</span>
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="px-5 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+          >
+            Done
+          </button>
         </div>
 
       </div>

@@ -36,12 +36,19 @@ export const WarbandDashboard: React.FC = () => {
   const isAdmin = userEmail === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
   const userId = (session?.user as any)?.id;
 
+  const isMyWarband = (wb: any) => {
+    if (!wb.creatorName && !wb.creatorId) return true;
+    if (userEmail && wb.creatorName && wb.creatorName.toLowerCase().trim() === userEmail) return true;
+    if (session?.user?.name && wb.creatorName && wb.creatorName === session?.user?.name) return true;
+    if (userId && wb.creatorId && wb.creatorId === userId) return true;
+    return false;
+  };
+
+  const displayedWarbands = warbands.filter(isMyWarband);
+
   const canManageWarband = (wb: any) => {
     if (isAdmin) return true;
-    if (!wb.creatorId && !wb.creatorName) return true;
-    if (wb.creatorId && wb.creatorId === userId) return true;
-    if (wb.creatorName && (wb.creatorName === userEmail || wb.creatorName === session?.user?.name)) return true;
-    return false;
+    return isMyWarband(wb);
   };
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -100,7 +107,7 @@ export const WarbandDashboard: React.FC = () => {
       </div>
 
       {/* When No Warbands Exist (Clean State) */}
-      {warbands.length === 0 ? (
+      {displayedWarbands.length === 0 ? (
         <div className="bg-[#161920] border-2 border-dashed border-[#323846] rounded-md p-12 text-center space-y-6 max-w-2xl mx-auto my-8 bevel-container">
           <div className="w-16 h-16 rounded-full bg-[#0C0E12] border-2 border-[#D4AF37] flex items-center justify-center mx-auto text-[#D4AF37] shadow-glow">
             <Swords className="w-8 h-8" />
@@ -134,7 +141,7 @@ export const WarbandDashboard: React.FC = () => {
         <>
           {/* Warband Selector Cards Carousel / List */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {warbands.map((wb) => {
+            {displayedWarbands.map((wb) => {
               const faction = factions.find((f) => f.id === wb.factionId);
               const isActive = wb.id === activeWarbandId;
               const totalCost = wb.units.reduce((sum, u) => sum + u.totalCost, 0);
