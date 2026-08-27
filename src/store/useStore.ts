@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot } from '../types/warband';
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory } from '../types/rules';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
@@ -142,6 +142,10 @@ interface AppState {
   // Theme & Visual System
   currentTheme: string;
   setTheme: (themeId: string) => void;
+
+  // Ruleset Version Switcher (1.0 vs 1.0.2 vs 1.0.2TD)
+  rulesetVersion: RulesetVersion;
+  setRulesetVersion: (version: RulesetVersion) => void;
 }
 
 // Default Strategic Theaters matching the overarching World Map ("The Lands of the Great Powers")
@@ -346,6 +350,7 @@ export const useStore = create<AppState>((set, get) => {
     matches: (rawCampaign.matches && rawCampaign.matches.length > 0) ? rawCampaign.matches : SULTANATE_MATCH_HISTORY
   };
   const initialTheme = storage.getTheme();
+  const initialRuleset = (storage.getRulesetVersion() as RulesetVersion) || '1.0.2';
 
   // Apply theme to document on init if browser
   if (typeof window !== 'undefined') {
@@ -358,11 +363,17 @@ export const useStore = create<AppState>((set, get) => {
 
     currentTheme: initialTheme,
     setTheme: (themeId: string) => {
-      set({ currentTheme: themeId });
       storage.saveTheme(themeId);
       if (typeof window !== 'undefined') {
         document.documentElement.setAttribute('data-theme', themeId);
       }
+      set({ currentTheme: themeId });
+    },
+
+    rulesetVersion: initialRuleset,
+    setRulesetVersion: (version: RulesetVersion) => {
+      storage.saveRulesetVersion(version);
+      set({ rulesetVersion: version });
     },
 
     factions: FACTIONS,

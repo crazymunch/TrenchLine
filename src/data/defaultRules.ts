@@ -12,6 +12,7 @@ import {
   OFFICIAL_WILDCARD_SKILLS
 } from './officialRulesData';
 import { OFFICIAL_CORE_RULES } from './officialCoreRules';
+import { ALL_OUT_WAR_SCENARIOS } from './allOutWarData';
 
 export const FACTIONS: Faction[] = [
   {
@@ -2033,7 +2034,7 @@ export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
   fullText: k.description || ''
 }));
 
-export const SCENARIOS: Scenario[] = OFFICIAL_SCENARIOS;
+export const SCENARIOS: Scenario[] = [...OFFICIAL_SCENARIOS, ...ALL_OUT_WAR_SCENARIOS];
 
 export const INJURY_TABLE_D66 = OFFICIAL_TRAUMA_TABLE.map((t) => ({
   roll: t.roll,

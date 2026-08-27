@@ -140,6 +140,8 @@ export interface SkillEntry {
   description: string;
 }
 
+export type RulesetVersion = '1.0' | '1.0.2' | '1.0.2TD';
+
 export interface Scenario {
   id: string;
   name: string;
@@ -157,6 +159,15 @@ export interface Scenario {
   gloriousDeeds?: string;
   fullRulesMarkdown?: string;
   
+  // All Out War & Multiplayer expansions
+  isAllOutWar?: boolean;
+  packName?: string;
+  minPlayers?: number;
+  maxPlayers?: number;
+  isBattleTeam?: boolean;
+  hasBetrayalCards?: boolean;
+  hasSupplyCrates?: boolean;
+
   // Legacy / convenience fields
   type?: string;
   flavor?: string;

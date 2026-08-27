@@ -17,6 +17,7 @@ import {
   OfficialWargearItem
 } from '../../data/officialRulesData';
 import { OFFICIAL_CORE_RULES } from '../../data/officialCoreRules';
+import { AVAILABLE_RULESETS } from '../../data/rulesets';
 import { MissionGenerator } from './MissionGenerator';
 import { DiceProbabilityModal } from './DiceProbabilityModal';
 import { 
@@ -40,12 +41,14 @@ import {
   ExternalLink,
   Info,
   Layers,
-  Coins
+  Coins,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 
 export const CodexView: React.FC = () => {
-  const { keywords, scenarios, weapons, armour, equipment, setActiveKeyword } = useStore();
-  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator'>('rules');
+  const { keywords, scenarios, weapons, armour, equipment, rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
+  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets'>('rules');
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -141,9 +144,9 @@ export const CodexView: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
               { id: 'rules', label: 'Core Rules', icon: <BookOpen className="w-4 h-4" /> },
+              { id: 'rulesets', label: `Ruleset Errata (${rulesetVersion})`, icon: <Layers className="w-4 h-4" /> },
               { id: 'keywords', label: `Keywords (${keywords.length})`, icon: <Tag className="w-4 h-4" /> },
-              { id: 'scenarios', label: '12 Scenarios & Maps', icon: <Compass className="w-4 h-4" /> },
-              { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
+              { id: 'scenarios', label: `Scenarios (${scenarios.length}) & Maps`, icon: <Compass className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -163,10 +166,10 @@ export const CodexView: React.FC = () => {
           {/* Row 2 */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
+              { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
-              { id: 'weapons', label: `Weapons Codex (${OFFICIAL_WEAPONS.length})`, icon: <Swords className="w-4 h-4" /> },
-              { id: 'armour', label: `Armour & Gear (${OFFICIAL_ARMOUR.length + OFFICIAL_EQUIPMENT.length})`, icon: <Shield className="w-4 h-4" /> },
-              { id: 'generator', label: 'Mission Generator', icon: <Dice6 className="w-4 h-4 text-[#D4AF37]" /> }
+              { id: 'weapons', label: `Weapons Codex (${weapons.length})`, icon: <Swords className="w-4 h-4" /> },
+              { id: 'armour', label: `Armour & Gear (${armour.length + equipment.length})`, icon: <Shield className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -212,7 +215,159 @@ export const CodexView: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 2: KEYWORDS GLOSSARY */}
+      {/* TAB: RULESETS & CHANGELOG ERRATA (1.0 vs 1.0.2 vs 1.0.2TD) */}
+      {activeTab === 'rulesets' && (
+        <div className="space-y-6">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#323846] pb-4">
+              <div>
+                <h2 className="font-gothic font-bold text-xl text-[#D4AF37]">
+                  RULESET ENGINE & OFFICIAL ERRATA COMPARATOR
+                </h2>
+                <p className="text-xs font-mono text-[#8E95A5]">
+                  Select the active game ruleset version. All army builder validations, keywords, and combat calculations adhere to the active version.
+                </p>
+              </div>
+              <span className="text-xs font-mono font-bold uppercase px-3 py-1.5 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]">
+                Active Ruleset: v{rulesetVersion}
+              </span>
+            </div>
+
+            {/* Ruleset Cards Selector */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              {(Object.keys(AVAILABLE_RULESETS) as (keyof typeof AVAILABLE_RULESETS)[]).map((vKey) => {
+                const meta = AVAILABLE_RULESETS[vKey];
+                const isActive = rulesetVersion === vKey;
+
+                return (
+                  <div
+                    key={vKey}
+                    onClick={() => setRulesetVersion(vKey)}
+                    className={`p-5 rounded-md border-2 cursor-pointer transition-all flex flex-col justify-between space-y-4 ${
+                      isActive
+                        ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37] shadow-xl'
+                        : 'bg-[#0C0E12] border-[#323846] hover:border-[#8E95A5]/60 opacity-80'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-gothic font-bold text-base text-[#ECEFF4]">{meta.name}</span>
+                        {isActive && (
+                          <CheckCircle2 className="w-5 h-5 text-[#4E9A6E]" />
+                        )}
+                      </div>
+                      <span className="text-[10px] font-mono text-[#D4AF37] block font-bold uppercase">
+                        {meta.releaseDate}
+                      </span>
+                      <p className="text-xs font-mono text-[#8E95A5] leading-relaxed">
+                        {meta.summary}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 pt-2 border-t border-[#323846]">
+                      <span className="text-[10px] font-mono font-bold uppercase text-[#ECEFF4] block">Key Mechanics:</span>
+                      <ul className="space-y-1 text-[11px] font-mono text-[#8E95A5]">
+                        {meta.keyChanges.map((change, idx) => (
+                          <li key={idx} className="flex items-start space-x-1.5">
+                            <span className="text-[#D4AF37]">•</span>
+                            <span className="leading-snug">{change}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setRulesetVersion(vKey);
+                      }}
+                      className={`w-full py-2 font-mono text-xs font-bold uppercase rounded transition-colors ${
+                        isActive
+                          ? 'bg-[#D4AF37] text-black font-extrabold'
+                          : 'bg-[#161920] text-[#ECEFF4] border border-[#323846] hover:bg-[#20242E]'
+                      }`}
+                    >
+                      {isActive ? '✓ Active Ruleset' : `Activate v${vKey}`}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Detailed 1.0.2 Changelog Breakdown Table */}
+          <div className="bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4">
+            <h3 className="font-gothic font-bold text-lg text-[#ECEFF4] flex items-center space-x-2">
+              <Scroll className="w-5 h-5 text-[#D4AF37]" />
+              <span>OFFICIAL 1.0.2 CHANGELOG & ERRATA INDEX</span>
+            </h3>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse font-mono text-xs">
+                <thead>
+                  <tr className="border-b border-[#323846] bg-[#0C0E12] text-[#D4AF37]">
+                    <th className="py-2.5 px-3 font-bold">Location</th>
+                    <th className="py-2.5 px-3 font-bold">Rule / Keyword</th>
+                    <th className="py-2.5 px-3 font-bold">Official 1.0.2 Errata Ruling</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#323846]/60 text-[#ECEFF4]">
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Actions</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Move</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">A Move ACTION cannot be used to move a model within 1” of an enemy model (must use Charge ACTION instead).</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Actions</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Retreat</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Before retreat, opponent makes 1 melee attack with 1 weapon (no multiple attacks, but CLEAVE X applies). Model must end retreat &gt;1” away.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Combat</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Bloodbath Rolls</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Spend 6 BLOOD MARKERS (or 3 if target is Down) to roll 3D6 and add all 3 together, picking 3 highest/lowest (4D6 if DEADLY).</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Keywords</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">ARMOUR PIERCING</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Reduces the target’s total -INJURY MODIFIER from Armour and Shields by 1, to a minimum of 0.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Keywords</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">CLEAVE (X)</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Make X separate Melee Attacks one after another against models within 1”. Blood markers spent only modify that specific attack.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Keywords</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">STRONG</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Can equip and use one 2-Handed Melee Weapon as if it were a 1-Handed Melee Weapon.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Keywords</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">REGENERATE (X)</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">When Activated, before carrying out any ACTIONS, remove up to X BLOOD MARKERS from the model.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Warbands</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Combat Engineer & Sapper</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Gains NEGATE MINED, Set Mine ACTION (8”x8” terrain with +2 DICE), and Defuse Mine Risky Roll.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Warbands</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Sultanate Assassin</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Temporal Assassin: split charge & 2 Fight actions against 2 enemies; Time Slip: redeploy 6" when enemy fails attack.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-[#8E95A5]">Spells</td>
+                    <td className="py-2.5 px-3 font-bold text-[#D4AF37]">Goetic Spells</td>
+                    <td className="py-2.5 px-3 text-[#8E95A5]">Pay spell cost by removing BLOOD MARKERS anywhere on the battlefield from non-Black Grail / non-Demonic models.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
       {activeTab === 'keywords' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredKeywords.map((kw) => (

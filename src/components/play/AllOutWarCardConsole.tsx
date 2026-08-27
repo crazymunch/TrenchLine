@@ -1,0 +1,687 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { 
+  PlayingCard, 
+  CardSuit, 
+  CardRank, 
+  PlayerCardState 
+} from '../../types/allOutWar';
+import { 
+  generateStandard52Deck, 
+  shuffleDeck, 
+  compareInitiativeCards,
+  BETRAYAL_TABLE
+} from '../../data/allOutWarData';
+import { Warband } from '../../types/warband';
+import { soundEffects } from '../../services/soundEffects';
+import { 
+  Layers, 
+  Sparkles, 
+  Crown, 
+  Flame, 
+  Clock, 
+  Users, 
+  Play, 
+  RotateCcw, 
+  Eye, 
+  EyeOff, 
+  Check, 
+  X, 
+  Gift, 
+  ShieldAlert, 
+  Swords, 
+  ChevronRight,
+  Send,
+  Zap,
+  DollarSign
+} from 'lucide-react';
+
+interface AllOutWarCardConsoleProps {
+  warbands: Warband[];
+  activeWarbandId: string;
+  round: number;
+  warbandScores: Record<string, { vp: number; completedDeeds: Record<string, string> }>;
+  onAdjustVp: (warbandId: string, delta: number) => void;
+  onClose: () => void;
+}
+
+export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
+  warbands,
+  activeWarbandId,
+  round,
+  warbandScores,
+  onAdjustVp,
+  onClose
+}) => {
+  // 52-Card Deck State
+  const [deck, setDeck] = useState<PlayingCard[]>(() => generateStandard52Deck());
+  const [discardPile, setDiscardPile] = useState<PlayingCard[]>([]);
+
+  // Player Cards & Hands
+  const [players, setPlayers] = useState<PlayerCardState[]>(() => {
+    const aces: CardSuit[] = ['spades', 'hearts', 'diamonds', 'clubs'];
+    return warbands.map((wb, idx) => ({
+      warbandId: wb.id,
+      warbandName: wb.name,
+      playerName: `Commander ${idx + 1}`,
+      assignedAceSuit: aces[idx % 4],
+      initiativeCard: null,
+      betrayalHand: [],
+      secretAllyWarbandId: null,
+      revealedAllyWarbandId: null,
+      isJointAllianceWith: null,
+      vpBribesSent: 0,
+      vpBribesReceived: 0
+    }));
+  });
+
+  const [activeTab, setActiveTab] = useState<'initiative' | 'betrayal' | 'alliance' | 'bribes'>('initiative');
+  const [selectedPlayerIdx, setSelectedPlayerIdx] = useState<number>(0);
+  const [isHandRevealed, setIsHandRevealed] = useState<boolean>(false);
+
+  // 3-Minute Alliance Timer
+  const [timerSeconds, setTimerSeconds] = useState<number>(180);
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
+  const [alliancesRevealed, setAlliancesRevealed] = useState<boolean>(false);
+
+  // Resolution Alert Banner
+  const [cardPlayBanner, setCardPlayBanner] = useState<{ title: string; desc: string; type: 'coup' | 'ruse' } | null>(null);
+
+  // Timer Tick
+  useEffect(() => {
+    let interval: any = null;
+    if (isTimerRunning && timerSeconds > 0) {
+      interval = setInterval(() => {
+        setTimerSeconds((prev) => prev - 1);
+      }, 1000);
+    } else if (timerSeconds === 0 && isTimerRunning) {
+      setIsTimerRunning(false);
+      soundEffects.playCathedralBell();
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timerSeconds]);
+
+  // Deal Initiative Cards for this Round
+  const handleDealInitiative = () => {
+    soundEffects.playGunfire();
+    let currentDeck = [...deck];
+    let currentDiscard = [...discardPile];
+
+    if (currentDeck.length < players.length) {
+      currentDeck = shuffleDeck([...currentDeck, ...currentDiscard]);
+      currentDiscard = [];
+    }
+
+    const updatedPlayers = players.map((p) => {
+      const drawnCard = currentDeck.pop()!;
+      currentDiscard.push(drawnCard);
+      return {
+        ...p,
+        initiativeCard: drawnCard
+      };
+    });
+
+    setDeck(currentDeck);
+    setDiscardPile(currentDiscard);
+    setPlayers(updatedPlayers);
+  };
+
+  // Deal Betrayal Cards based on VP standing
+  const handleDealBetrayalCards = () => {
+    soundEffects.playCathedralBell();
+    let currentDeck = [...deck];
+    let currentDiscard = [...discardPile];
+
+    // Find highest and lowest VPs
+    const vpValues = players.map((p) => warbandScores[p.warbandId]?.vp || 0);
+    const maxVp = Math.max(...vpValues);
+    const minVp = Math.min(...vpValues);
+
+    const updatedPlayers = players.map((p) => {
+      const vp = warbandScores[p.warbandId]?.vp || 0;
+      let drawCount = 2;
+      if (vp === maxVp && maxVp !== minVp) drawCount = 1;
+      else if (vp === minVp && maxVp !== minVp) drawCount = 3;
+
+      const drawn: PlayingCard[] = [];
+      for (let i = 0; i < drawCount; i++) {
+        if (currentDeck.length === 0) {
+          currentDeck = shuffleDeck(currentDiscard);
+          currentDiscard = [];
+        }
+        if (currentDeck.length > 0) {
+          const card = currentDeck.pop()!;
+          drawn.push(card);
+          currentDiscard.push(card);
+        }
+      }
+
+      return {
+        ...p,
+        betrayalHand: [...p.betrayalHand, ...drawn]
+      };
+    });
+
+    setDeck(currentDeck);
+    setDiscardPile(currentDiscard);
+    setPlayers(updatedPlayers);
+  };
+
+  // Play a Betrayal Card (Coup if matches Ace suit, Ruse otherwise)
+  const handlePlayCard = (playerIdx: number, cardId: string) => {
+    const player = players[playerIdx];
+    const card = player.betrayalHand.find((c) => c.id === cardId);
+    if (!card) return;
+
+    const effectObj = BETRAYAL_TABLE.find((e) => e.rank === card.rank);
+    const isCoup = card.suit === player.assignedAceSuit;
+
+    const title = isCoup ? (effectObj?.coupTitle || 'Coup') : (effectObj?.ruseTitle || 'Ruse');
+    const desc = isCoup ? (effectObj?.coupEffect || '') : (effectObj?.ruseEffect || '');
+
+    setCardPlayBanner({
+      title: `${player.warbandName} played ${isCoup ? 'COUP' : 'RUSE'}: ${title} (${card.label})`,
+      desc,
+      type: isCoup ? 'coup' : 'ruse'
+    });
+
+    soundEffects.playTrenchWhistle();
+
+    // Remove from player hand
+    setPlayers((prev) =>
+      prev.map((p, idx) => {
+        if (idx !== playerIdx) return p;
+        return {
+          ...p,
+          betrayalHand: p.betrayalHand.filter((c) => c.id !== cardId)
+        };
+      })
+    );
+  };
+
+  // Reveal Alliances and calculate Joint Alliances (+1 VP)
+  const handleRevealAlliances = () => {
+    soundEffects.playTrenchWhistle();
+    setAlliancesRevealed(true);
+
+    // Calculate Joint Alliances
+    const updated = players.map((p) => {
+      const chosenId = p.secretAllyWarbandId;
+      if (!chosenId) return { ...p, revealedAllyWarbandId: null, isJointAllianceWith: null };
+
+      const chosenPlayer = players.find((other) => other.warbandId === chosenId);
+      const isJoint = chosenPlayer?.secretAllyWarbandId === p.warbandId;
+
+      if (isJoint) {
+        onAdjustVp(p.warbandId, 1); // +1 VP for joint alliance
+      }
+
+      return {
+        ...p,
+        revealedAllyWarbandId: chosenId,
+        isJointAllianceWith: isJoint ? chosenId : null
+      };
+    });
+
+    setPlayers(updated);
+  };
+
+  // Sorted players by Initiative for the round
+  const sortedByInitiative = [...players].sort((a, b) => {
+    if (!a.initiativeCard && !b.initiativeCard) return 0;
+    if (!a.initiativeCard) return 1;
+    if (!b.initiativeCard) return -1;
+    return compareInitiativeCards(a.initiativeCard, b.initiativeCard);
+  });
+
+  const selectedPlayer = players[selectedPlayerIdx] || players[0];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-5xl max-h-[92vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
+              <Layers className="w-5 h-5 text-[#D4AF37]" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
+                  ALL OUT WAR: MULTIPLAYER CARD & ALLIANCE ENGINE
+                </h2>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-[#8B0000] text-white font-bold uppercase">
+                  52-Card System
+                </span>
+              </div>
+              <p className="text-xs text-[#8E95A5]">
+                Initiative card draws, secret betrayal hands, 3-minute alliance negotiations, and VP bribes.
+              </p>
+            </div>
+          </div>
+
+          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex items-center space-x-2 px-6 py-2.5 border-b border-[#323846] bg-[#20242E] overflow-x-auto text-xs">
+          {[
+            { id: 'initiative', label: '1. Initiative Cards (Round Order)', icon: Swords },
+            { id: 'betrayal', label: '2. Betrayal Cards (Coups & Ruses)', icon: Sparkles },
+            { id: 'alliance', label: '3. Alliance Period (3-Min Timer)', icon: Users },
+            { id: 'bribes', label: '4. VP Bribes & Transfers', icon: DollarSign }
+          ].map((t) => {
+            const Icon = t.icon;
+            const isSel = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id as any)}
+                className={`px-3.5 py-1.5 rounded font-bold uppercase flex items-center space-x-1.5 transition-all whitespace-nowrap ${
+                  isSel
+                    ? 'bg-[#D4AF37] text-black shadow'
+                    : 'bg-[#161920] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Resolution Banner */}
+        {cardPlayBanner && (
+          <div className={`p-4 border-b flex items-start justify-between animate-fade-in ${
+            cardPlayBanner.type === 'coup' 
+              ? 'bg-[#8B0000]/30 border-[#8B0000] text-[#ECEFF4]' 
+              : 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#ECEFF4]'
+          }`}>
+            <div className="space-y-1">
+              <span className="font-gothic font-bold text-sm text-[#D4AF37] block">
+                ⚡ {cardPlayBanner.title}
+              </span>
+              <p className="text-xs text-[#ECEFF4] leading-relaxed">{cardPlayBanner.desc}</p>
+            </div>
+            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-[#8E95A5] hover:text-white">
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* Modal Body */}
+        <div className="p-6 overflow-y-auto flex-1 space-y-6 text-xs">
+          
+          {/* TAB 1: INITIATIVE CARDS */}
+          {activeTab === 'initiative' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+                <div>
+                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                    ROUND {round} MULTIPLAYER INITIATIVE ORDER
+                  </h3>
+                  <p className="text-xs text-[#8E95A5]">
+                    Compare card ranks (A &gt; K &gt; Q &gt; J &gt; 10...2) and suits (♠ &gt; ♥ &gt; ♦ &gt; ♣) to determine activation sequence.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleDealInitiative}
+                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Deal Round {round} Cards</span>
+                </button>
+              </div>
+
+              {/* Sorted Initiative Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {sortedByInitiative.map((p, idx) => {
+                  const card = p.initiativeCard;
+                  return (
+                    <div
+                      key={p.warbandId}
+                      className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 relative bevel-container"
+                    >
+                      <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+                        <span className="text-[10px] font-bold text-[#D4AF37] uppercase">
+                          ACTIVATION #{idx + 1}
+                        </span>
+                        <span className="text-[10px] text-[#8E95A5]">
+                          {warbandScores[p.warbandId]?.vp || 0} VP
+                        </span>
+                      </div>
+
+                      <div>
+                        <strong className="font-gothic text-sm text-[#ECEFF4] block">{p.warbandName}</strong>
+                        <span className="text-[10px] text-[#8E95A5]">{p.playerName}</span>
+                      </div>
+
+                      {/* Playing Card Render */}
+                      {card ? (
+                        <div className={`p-4 rounded border-2 text-center space-y-1 ${
+                          card.suit === 'hearts' || card.suit === 'diamonds'
+                            ? 'bg-[#8B0000]/20 border-[#E53935] text-[#E53935]'
+                            : 'bg-[#20242E] border-[#D4AF37] text-[#ECEFF4]'
+                        }`}>
+                          <div className="text-2xl font-bold">{card.symbol} {card.rank}</div>
+                          <span className="text-[10px] uppercase font-bold block">{card.label}</span>
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded border border-dashed border-[#323846] text-center text-[#8E95A5] italic">
+                          No card dealt yet
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: BETRAYAL CARDS */}
+          {activeTab === 'betrayal' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+                <div>
+                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                    BETRAYAL CARDS & SECRET HANDS
+                  </h3>
+                  <p className="text-xs text-[#8E95A5]">
+                    Cards matching your House Ace trigger <strong>COUPS</strong>. Other cards trigger tactical <strong>RUSES</strong>.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setIsHandRevealed(!isHandRevealed)}
+                    className="px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase flex items-center space-x-1.5"
+                  >
+                    {isHandRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    <span>{isHandRevealed ? 'Hide Hand' : 'View Hand'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleDealBetrayalCards}
+                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                  >
+                    <Gift className="w-3.5 h-3.5" />
+                    <span>Draw Turn Cards</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Player Selector Bar */}
+              <div className="flex space-x-2 border-b border-[#323846] pb-3 overflow-x-auto">
+                {players.map((p, idx) => (
+                  <button
+                    key={p.warbandId}
+                    onClick={() => {
+                      setSelectedPlayerIdx(idx);
+                      setIsHandRevealed(false);
+                    }}
+                    className={`px-3 py-1.5 rounded font-bold uppercase flex items-center space-x-2 ${
+                      selectedPlayerIdx === idx
+                        ? 'bg-[#D4AF37] text-black'
+                        : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846]'
+                    }`}
+                  >
+                    <span>{p.warbandName}</span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-white">
+                      {p.betrayalHand.length} cards
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Selected Player Hand */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-[#20242E] p-3 rounded border border-[#323846]">
+                  <div>
+                    <span className="text-[#8E95A5] block text-[10px] uppercase">SELECTED COMMANDER</span>
+                    <strong className="text-[#ECEFF4] font-gothic text-sm">{selectedPlayer.warbandName}</strong>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[#8E95A5] block text-[10px] uppercase">ASSIGNED HOUSE SUIT</span>
+                    <strong className="text-[#D4AF37] text-sm uppercase">
+                      {selectedPlayer.assignedAceSuit} Ace
+                    </strong>
+                  </div>
+                </div>
+
+                {isHandRevealed ? (
+                  selectedPlayer.betrayalHand.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedPlayer.betrayalHand.map((card) => {
+                        const effect = BETRAYAL_TABLE.find((e) => e.rank === card.rank);
+                        const isCoup = card.suit === selectedPlayer.assignedAceSuit;
+
+                        return (
+                          <div
+                            key={card.id}
+                            className={`p-4 rounded border-2 space-y-3 flex flex-col justify-between ${
+                              isCoup
+                                ? 'bg-[#8B0000]/20 border-[#8B0000] ring-1 ring-[#8B0000]/50'
+                                : 'bg-[#0C0E12] border-[#323846]'
+                            }`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+                                <span className={`font-bold text-sm ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>
+                                  {card.symbol} {card.label}
+                                </span>
+                                <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
+                                  isCoup ? 'bg-[#8B0000] text-white' : 'bg-[#20242E] text-[#D4AF37]'
+                                }`}>
+                                  {isCoup ? 'COUP ACTION' : 'RUSE ACTION'}
+                                </span>
+                              </div>
+
+                              <div>
+                                <strong className="text-[#D4AF37] block font-gothic text-sm">
+                                  {isCoup ? effect?.coupTitle : effect?.ruseTitle}
+                                </strong>
+                                <span className="text-[10px] text-[#8E95A5] italic block pt-0.5">
+                                  {isCoup ? effect?.coupTiming : effect?.ruseTiming}
+                                </span>
+                                <p className="text-[#ECEFF4] text-[11px] leading-relaxed pt-1">
+                                  {isCoup ? effect?.coupEffect : effect?.ruseEffect}
+                                </p>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => handlePlayCard(selectedPlayerIdx, card.id)}
+                              className={`w-full py-1.5 font-bold uppercase rounded text-xs transition-colors flex items-center justify-center space-x-1 ${
+                                isCoup
+                                  ? 'bg-[#8B0000] hover:bg-[#A30000] text-white'
+                                  : 'bg-[#D4AF37] hover:bg-[#E5C158] text-black'
+                              }`}
+                            >
+                              <Zap className="w-3.5 h-3.5" />
+                              <span>Play {isCoup ? 'Coup' : 'Ruse'}</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-[#8E95A5] bg-[#0C0E12] rounded border border-[#323846]">
+                      No Betrayal Cards currently held. Click "Draw Turn Cards" to draw.
+                    </div>
+                  )
+                ) : (
+                  <div className="p-8 text-center bg-[#0C0E12] rounded border border-dashed border-[#323846] space-y-2">
+                    <EyeOff className="w-8 h-8 text-[#8E95A5] mx-auto" />
+                    <span className="text-xs text-[#ECEFF4] font-bold block">Hand Hidden for Privacy</span>
+                    <button
+                      onClick={() => setIsHandRevealed(true)}
+                      className="px-4 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs"
+                    >
+                      Reveal Hand ({selectedPlayer.betrayalHand.length} Cards)
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: ALLIANCE PERIOD */}
+          {activeTab === 'alliance' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+                <div>
+                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                    THE 3-MINUTE ALLIANCE PERIOD
+                  </h3>
+                  <p className="text-xs text-[#8E95A5]">
+                    Negotiate secretly. Joint Alliances award +1 VP per turn and prevent friendly attacks. Double-dealing is allowed!
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 bg-[#20242E] px-3 py-1.5 rounded border border-[#323846]">
+                    <Clock className="w-4 h-4 text-[#D4AF37]" />
+                    <span className="font-bold text-sm text-[#ECEFF4]">
+                      {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setIsTimerRunning(!isTimerRunning)}
+                    className="px-3 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded"
+                  >
+                    {isTimerRunning ? 'Pause Timer' : 'Start 3-Min Timer'}
+                  </button>
+
+                  <button
+                    onClick={() => setTimerSeconds(180)}
+                    className="p-1.5 bg-[#20242E] text-[#8E95A5] hover:text-white rounded border border-[#323846]"
+                    title="Reset Timer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Secret Choice Selector per Player */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {players.map((p, idx) => (
+                  <div key={p.warbandId} className="p-4 bg-[#0C0E12] border border-[#323846] rounded space-y-3">
+                    <strong className="font-gothic text-sm text-[#ECEFF4] block">{p.warbandName}</strong>
+                    
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase text-[#8E95A5] block">Secret Chosen Ally:</label>
+                      <select
+                        value={p.secretAllyWarbandId || ''}
+                        onChange={(e) => {
+                          const targetId = e.target.value || null;
+                          setPlayers((prev) =>
+                            prev.map((pl, i) => (i === idx ? { ...pl, secretAllyWarbandId: targetId } : pl))
+                          );
+                        }}
+                        className="w-full bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#D4AF37] focus:outline-none"
+                      >
+                        <option value="">-- No Alliance / Stand Alone --</option>
+                        {players
+                          .filter((other) => other.warbandId !== p.warbandId)
+                          .map((other) => (
+                            <option key={other.warbandId} value={other.warbandId}>
+                              {other.warbandName}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+
+                    {alliancesRevealed && (
+                      <div className="pt-2 border-t border-[#323846] text-[10px]">
+                        <span className="text-[#8E95A5] block">Alliance Status:</span>
+                        {p.isJointAllianceWith ? (
+                          <span className="text-[#4E9A6E] font-bold block">
+                            ✅ Joint Alliance (+1 VP)
+                          </span>
+                        ) : p.revealedAllyWarbandId ? (
+                          <span className="text-[#FFB300] font-bold block">
+                            ⚠️ One-Way Alliance (Vulnerable)
+                          </span>
+                        ) : (
+                          <span className="text-[#8E95A5] italic block">Unallied (+1 Betrayal Card)</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  onClick={handleRevealAlliances}
+                  className="px-6 py-2.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Reveal Alliances & Calculate Joint VPs</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: VP BRIBES & TRANSFERS */}
+          {activeTab === 'bribes' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="bg-[#0C0E12] p-4 rounded border border-[#323846] space-y-2">
+                <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                  VICTORY POINT BRIBES & TRANSFERS
+                </h3>
+                <p className="text-xs text-[#8E95A5] leading-relaxed">
+                  In All Out War, Victory Points can be traded freely as bribes to secure temporary ceasefires, buy attacks, or forge alliances. Transferred points are non-refundable!
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {players.map((fromPlayer) => {
+                  const fromScore = warbandScores[fromPlayer.warbandId]?.vp || 0;
+                  return (
+                    <div key={fromPlayer.warbandId} className="p-4 bg-[#0C0E12] border border-[#323846] rounded space-y-3">
+                      <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+                        <strong className="font-gothic text-sm text-[#ECEFF4]">{fromPlayer.warbandName}</strong>
+                        <span className="text-xs font-bold text-[#D4AF37]">{fromScore} VP Available</span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="text-[10px] text-[#8E95A5] block uppercase">Send 1 VP Bribe to:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {players
+                            .filter((toPlayer) => toPlayer.warbandId !== fromPlayer.warbandId)
+                            .map((toPlayer) => (
+                              <button
+                                key={toPlayer.warbandId}
+                                disabled={fromScore < 1}
+                                onClick={() => {
+                                  onAdjustVp(fromPlayer.warbandId, -1);
+                                  onAdjustVp(toPlayer.warbandId, 1);
+                                  soundEffects.playCathedralBell();
+                                }}
+                                className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] disabled:opacity-40 text-[#ECEFF4] rounded border border-[#323846] text-xs font-bold"
+                              >
+                                💸 Give 1 VP to {toPlayer.warbandName}
+                              </button>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+        </div>
+
+      </div>
+    </div>
+  );
+};

@@ -29,7 +29,9 @@ export const Navbar: React.FC = () => {
     setCurrentView,
     getActiveWarband, 
     factions,
-    currentTheme
+    currentTheme,
+    rulesetVersion,
+    setRulesetVersion
   } = useStore();
 
   const { data: session } = useSession();
@@ -127,6 +129,21 @@ export const Navbar: React.FC = () => {
             {/* 3. Right: Quick Actions (Theme & Auth) */}
             <div className="flex items-center space-x-2 flex-shrink-0">
               
+              {/* Ruleset Version Switcher */}
+              <div className="relative">
+                <select
+                  value={rulesetVersion}
+                  onChange={(e) => setRulesetVersion(e.target.value as any)}
+                  title="Active Ruleset Version"
+                  aria-label="Active Ruleset Version"
+                  className="px-2 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-[#D4AF37] text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-[#D4AF37]"
+                >
+                  <option value="1.0">v1.0 Core</option>
+                  <option value="1.0.2">v1.0.2 Errata</option>
+                  <option value="1.0.2TD">v1.0.2TD Dispatch</option>
+                </select>
+              </div>
+
               {/* Theme Trigger */}
               <button
                 onClick={() => setIsThemeModalOpen(true)}

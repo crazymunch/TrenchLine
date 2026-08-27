@@ -9,6 +9,7 @@ import { AttackCalculatorModal } from './AttackCalculatorModal';
 import { RangeCalculatorModal } from './RangeCalculatorModal';
 import { QuickSearchModal } from './QuickSearchModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { AllOutWarCardConsole } from './AllOutWarCardConsole';
 import { ActiveUnit, Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -99,6 +100,7 @@ export const PlayModeView: React.FC = () => {
   const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
   const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
+  const [isCardConsoleOpen, setIsCardConsoleOpen] = useState(false);
 
   if (!viewingWarband) {
     return (
@@ -498,13 +500,23 @@ export const PlayModeView: React.FC = () => {
             </p>
           </div>
 
-          <button
-            onClick={handleStartCombat}
-            className="flex items-center space-x-2 px-8 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
-          >
-            <Play className="w-4 h-4 fill-black" />
-            <span>⚔️ ENTER TABLETOP COMBAT</span>
-          </button>
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            <button
+              onClick={() => setIsCardConsoleOpen(true)}
+              className="flex items-center space-x-2 px-5 py-3.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded text-sm shadow-xl transition-all"
+            >
+              <Layers className="w-4 h-4 text-[#D4AF37]" />
+              <span>🃏 CARD & BETRAYAL ENGINE</span>
+            </button>
+
+            <button
+              onClick={handleStartCombat}
+              className="flex items-center space-x-2 px-8 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all"
+            >
+              <Play className="w-4 h-4 fill-black" />
+              <span>⚔️ ENTER TABLETOP COMBAT</span>
+            </button>
+          </div>
         </div>
 
         {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
@@ -701,6 +713,15 @@ export const PlayModeView: React.FC = () => {
             >
               <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Squad ({deployedUnits.length})</span>
+            </button>
+
+            <button
+              onClick={() => setIsCardConsoleOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#8B0000] hover:bg-[#A30000] text-white border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="All Out War 52-card deck, Betrayal hands, and 3-minute alliance console"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Cards & Alliances</span>
             </button>
 
             <button
@@ -1245,6 +1266,29 @@ export const PlayModeView: React.FC = () => {
         onConfirm={handleAbortMatch}
         onCancel={() => setIsAbortConfirmOpen(false)}
       />
+
+      {/* All Out War 52-Card Deck, Betrayal & Alliance Console */}
+      {isCardConsoleOpen && (
+        <AllOutWarCardConsole
+          warbands={matchWarbandIds.map((id) => warbands.find((w) => w.id === id)).filter(Boolean) as Warband[]}
+          activeWarbandId={viewingWarband.id}
+          round={playTurn}
+          warbandScores={warbandScores}
+          onAdjustVp={(wbId, delta) => {
+            setWarbandScores((prev) => {
+              const cur = prev[wbId] || { vp: 0, completedDeeds: {} };
+              return {
+                ...prev,
+                [wbId]: {
+                  ...cur,
+                  vp: Math.max(0, cur.vp + delta)
+                }
+              };
+            });
+          }}
+          onClose={() => setIsCardConsoleOpen(false)}
+        />
+      )}
 
     </div>
   );

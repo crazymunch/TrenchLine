@@ -208,6 +208,24 @@ export const storage = {
     } catch (e) {
       console.warn('Theme save failed:', e);
     }
+  },
+
+  getRulesetVersion(): string {
+    if (!isBrowser) return '1.0.2';
+    try {
+      return localStorage.getItem('tc_ruleset_version') || '1.0.2';
+    } catch {
+      return '1.0.2';
+    }
+  },
+
+  saveRulesetVersion(version: string): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem('tc_ruleset_version', version);
+    } catch (e) {
+      console.warn('Ruleset save failed:', e);
+    }
   }
 };
 
