@@ -53,6 +53,7 @@ export interface EquipmentItem {
   name: string;
   cost: number;
   effect: string;
+  category?: string;
   keywords?: string[];
   description?: string;
   factionId?: string;

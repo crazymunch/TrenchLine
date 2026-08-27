@@ -437,20 +437,28 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                     </button>
                   </span>
                 ))}
-                {unit.equippedEquipment.map((eq) => (
-                  <span
-                    key={eq.instanceId}
-                    className="inline-flex items-center space-x-1 bg-[#20242E] text-xs font-mono px-2 py-0.5 rounded border border-[#323846]"
-                  >
-                    <span>{eq.name}</span>
-                    <button
-                      onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
-                      className="text-[#8E95A5] hover:text-[#E53935]"
+                {unit.equippedEquipment.map((eq) => {
+                  const isFormula = /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(eq.name);
+                  return (
+                    <span
+                      key={eq.instanceId}
+                      className={`inline-flex items-center space-x-1 text-xs font-mono px-2 py-0.5 rounded border ${
+                        isFormula
+                          ? 'bg-[#8B0000]/30 text-[#D4AF37] border-[#8B0000] ring-1 ring-[#D4AF37]/30'
+                          : 'bg-[#20242E] text-[#ECEFF4] border-[#323846]'
+                      }`}
+                      title={eq.effect}
                     >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
+                      <span>{isFormula ? `🧪 ${eq.name}` : eq.name}</span>
+                      <button
+                        onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
+                        className="text-[#8E95A5] hover:text-[#E53935] ml-1"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
             </div>
           )}

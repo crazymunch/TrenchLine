@@ -1161,8 +1161,99 @@ export const BASE_EQUIPMENT: EquipmentItem[] = [
     name: 'Elixir of Al-Khidr',
     cost: 10,
     factionId: 'iron-sultanate',
-    effect: 'Consumable: Warrior gains the TOUGH keyword for the rest of the game.',
-    keywords: ['CONSUMABLE', 'TOUGH']
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Azeb', 'Janissary'],
+    effect: 'Alchemical Elixir: Infuses the warrior or homunculus with extraordinary vitality, granting the TOUGH keyword for the battle.',
+    keywords: ['FORMULA', 'ELIXIR', 'TOUGH', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-quicksilver',
+    name: 'Formula of Quicksilver (Mercury Draught)',
+    cost: 10,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Sultanate Assassin', 'Janissary', 'Azeb'],
+    effect: 'Alchemical Formula: Grants +2" to Movement Characteristic and allows the warrior or homunculus to Dash without testing.',
+    keywords: ['FORMULA', 'ELIXIR', 'SPEED', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-greek-fire',
+    name: 'Formula of Liquid Brimstone (Greek Fire Phial)',
+    cost: 15,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Sultanate Sapper'],
+    effect: 'Alchemical Flask: Consumable 8" ranged attack inflicting FIRE D3 and IGNORE ARMOUR on the target.',
+    keywords: ['FORMULA', 'FIRE', 'IGNORE ARMOUR', 'CONSUMABLE', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-alkahest',
+    name: 'Formula of Alkahest (Universal Solvent)',
+    cost: 15,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas'],
+    effect: 'Alchemical Solvent: Melee or 6" ranged throw that permanently reduces the target\'s Armour rating by 1 for the rest of the game.',
+    keywords: ['FORMULA', 'CORROSION', 'STRIP ARMOUR', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-vitriol',
+    name: 'Formula of Concentrated Vitriol (Acid Flask)',
+    cost: 10,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Azeb'],
+    effect: 'Alchemical Acid: Infuses weapons or throws as a flask to grant +1 INJURY DICE and ARMOUR PIERCING 2 on attacks.',
+    keywords: ['FORMULA', 'ARMOUR PIERCING 2', '+1 INJURY DICE', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-choking-vapours',
+    name: 'Formula of Alchemical Vapours (Choking Flask)',
+    cost: 12,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Sultanate Sapper'],
+    effect: 'Alchemical Gas: Creates a 2" radius toxic gas cloud (GAS, IGNORE COVER, IGNORE LONG RANGE).',
+    keywords: ['FORMULA', 'GAS', 'BLAST 2"', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-cinnabar',
+    name: 'Essence of Cinnabar (Berserk Elixir)',
+    cost: 15,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Janissary'],
+    effect: 'Alchemical Elixir: Infuses the recipient with relentless ferocity, granting +1 DICE to Melee rolls and NEGATE FEAR.',
+    keywords: ['FORMULA', 'ELIXIR', '+1 DICE MELEE', 'NEGATE FEAR', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-stonehide',
+    name: 'Formula of Stonehide Salve',
+    cost: 15,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Takwin Homunculus', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas'],
+    effect: 'Alchemical Flesh Hardening: Coats the homunculus or alchemist in petrifying salve, granting a permanent -1 Injury Modifier.',
+    keywords: ['FORMULA', '-1 INJURY MODIFIER', 'ALCHEMICAL']
+  },
+  {
+    id: 'eq-formula-philosopher-stone',
+    name: 'Phial of the Philosopher\'s Stone',
+    cost: 25,
+    factionId: 'iron-sultanate',
+    category: 'Formula',
+    allowedFactions: ['iron-sultanate'],
+    allowedUnits: ['Jabirean Alchemist', 'Kasim bin Malik, the Living Engineer', 'Zayd bin Tariq al-Nahas', 'Takwin Homunculus'],
+    effect: 'Supreme Masterwork: Once per match, if the bearer or their homunculus is Downed or taken Out of Action, immediately restore them to 1 Wound with 0 Blood Markers.',
+    keywords: ['FORMULA', 'RELIC', 'REVIVE', 'ALCHEMICAL']
   },
   {
     id: 'eq-holy-water-phial',
