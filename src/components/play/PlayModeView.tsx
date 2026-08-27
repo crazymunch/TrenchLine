@@ -101,6 +101,7 @@ export const PlayModeView: React.FC = () => {
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
   const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
   const [isCardConsoleOpen, setIsCardConsoleOpen] = useState(false);
+  const [isMapLightboxOpen, setIsMapLightboxOpen] = useState(false);
 
   if (!viewingWarband) {
     return (
@@ -290,15 +291,29 @@ export const PlayModeView: React.FC = () => {
                 ))}
               </select>
 
-              {/* Map Preview */}
+              {/* Map Preview with Lightbox Trigger */}
               {selectedScenario?.mapImage && (
-                <div className="bg-[#0C0E12] border border-[#323846] rounded p-2 space-y-1 text-center">
-                  <img
-                    src={selectedScenario.mapImage}
-                    alt={selectedScenario.name}
-                    className="w-full h-48 object-contain rounded"
-                  />
-                  <span className="text-[10px] text-[#8E95A5] block">Official Deployment Diagram</span>
+                <div 
+                  onClick={() => setIsMapLightboxOpen(true)}
+                  className="bg-[#0C0E12] border-2 border-[#D4AF37]/50 hover:border-[#D4AF37] rounded p-2.5 space-y-1.5 text-center cursor-pointer group transition-all relative overflow-hidden shadow-lg"
+                >
+                  <div className="relative overflow-hidden rounded">
+                    <img
+                      src={selectedScenario.mapImage}
+                      alt={selectedScenario.name}
+                      className="w-full h-56 object-contain rounded transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="px-3 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5">
+                        <Search className="w-3.5 h-3.5" />
+                        <span>Enlarge Official Map</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-[#8E95A5] pt-0.5 px-1 font-mono">
+                    <span className="text-[#D4AF37] font-bold">🔍 Click to Expand Diagram</span>
+                    <span>48&quot; x 48&quot; Table</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -722,6 +737,15 @@ export const PlayModeView: React.FC = () => {
             >
               <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>Cards & Alliances</span>
+            </button>
+
+            <button
+              onClick={() => setIsMapLightboxOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Inspect official scenario deployment diagram"
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span>Map</span>
             </button>
 
             <button
@@ -1288,6 +1312,54 @@ export const PlayModeView: React.FC = () => {
           }}
           onClose={() => setIsCardConsoleOpen(false)}
         />
+      )}
+
+      {/* Fullscreen Scenario Map Lightbox Modal */}
+      {isMapLightboxOpen && selectedScenario?.mapImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+            {/* Modal Header */}
+            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Compass className="w-5 h-5 text-[#D4AF37]" />
+                <div>
+                  <h3 className="font-gothic font-bold text-lg text-white">
+                    OFFICIAL DEPLOYMENT DIAGRAM: {selectedScenario.name}
+                  </h3>
+                  <span className="text-[10px] text-[#8E95A5] block">
+                    Table Size: {selectedScenario.tableSize || '48" x 48"'} • Official Rulebook Diagram
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsMapLightboxOpen(false)}
+                className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase text-xs border border-[#323846]"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            {/* Modal Body: Large Map Image */}
+            <div className="p-4 overflow-auto flex-1 flex items-center justify-center bg-[#0C0E12]/80">
+              <img
+                src={selectedScenario.mapImage}
+                alt={`${selectedScenario.name} Official Tactical Map`}
+                className="max-w-full max-h-[75vh] object-contain rounded shadow-2xl border border-[#323846]"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 bg-[#161920] border-t border-[#323846] flex items-center justify-between text-xs text-[#8E95A5]">
+              <span>Scenario {selectedScenario.number || ''}: {selectedScenario.tagline || ''}</span>
+              <button
+                onClick={() => setIsMapLightboxOpen(false)}
+                className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

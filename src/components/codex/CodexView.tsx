@@ -64,6 +64,7 @@ export const CodexView: React.FC = () => {
     howToObtain: string;
   } | null>(null);
   const [selectedWargearItem, setSelectedWargearItem] = useState<OfficialWargearItem | null>(null);
+  const [lightboxMap, setLightboxMap] = useState<{ src: string; name: string; tableSize?: string } | null>(null);
 
   const filterText = searchQuery.toLowerCase().trim();
 
@@ -434,21 +435,35 @@ export const CodexView: React.FC = () => {
                   {isExpanded && (
                     <div className="p-6 border-t border-[#323846] bg-[#0C0E12] space-y-6">
                       
-                      {/* Scenario Tactical Map Graphic */}
+                      {/* Scenario Tactical Map Graphic with Lightbox Trigger */}
                       {scen.mapImage && (
-                        <div className="bg-[#161920] border-2 border-[#D4AF37]/60 rounded-md p-4 space-y-2 max-w-2xl mx-auto shadow-2xl">
+                        <div 
+                          onClick={() => setLightboxMap({ src: scen.mapImage || '', name: scen.name, tableSize: scen.tableSize })}
+                          className="bg-[#161920] border-2 border-[#D4AF37]/60 hover:border-[#D4AF37] rounded-md p-4 space-y-2 max-w-2xl mx-auto shadow-2xl cursor-pointer group transition-all"
+                        >
                           <div className="flex items-center justify-between text-xs font-mono text-[#D4AF37] border-b border-[#323846] pb-2 font-bold uppercase">
                             <span className="flex items-center space-x-1.5">
                               <Compass className="w-4 h-4" />
                               <span>Official Deployment Diagram: {scen.name}</span>
                             </span>
-                            <span className="text-[10px] text-[#8E95A5]">48&quot; x 48&quot; Table</span>
+                            <span className="text-[10px] text-[#8E95A5] flex items-center space-x-1">
+                              <Search className="w-3 h-3 text-[#D4AF37]" />
+                              <span>Click to Enlarge</span>
+                            </span>
                           </div>
-                          <img
-                            src={scen.mapImage}
-                            alt={`${scen.name} Tactical Map`}
-                            className="w-full max-h-[500px] object-contain rounded block mx-auto"
-                          />
+                          <div className="relative overflow-hidden rounded">
+                            <img
+                              src={scen.mapImage}
+                              alt={`${scen.name} Tactical Map`}
+                              className="w-full max-h-[500px] object-contain rounded block mx-auto transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="px-4 py-2 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-2">
+                                <Search className="w-4 h-4" />
+                                <span>Inspect Full Resolution Diagram</span>
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       )}
 
@@ -1085,6 +1100,54 @@ export const CodexView: React.FC = () => {
       {/* 2D6 Probability Odds Modal */}
       {isProbabilityOpen && (
         <DiceProbabilityModal onClose={() => setIsProbabilityOpen(false)} />
+      )}
+
+      {/* Fullscreen Scenario Map Lightbox Modal */}
+      {lightboxMap && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+            {/* Header */}
+            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Compass className="w-5 h-5 text-[#D4AF37]" />
+                <div>
+                  <h3 className="font-gothic font-bold text-lg text-white">
+                    OFFICIAL DEPLOYMENT DIAGRAM: {lightboxMap.name}
+                  </h3>
+                  <span className="text-[10px] text-[#8E95A5] block">
+                    Table Size: {lightboxMap.tableSize || '48" x 48"'} • Official Rulebook Diagram
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setLightboxMap(null)}
+                className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase text-xs border border-[#323846]"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            {/* Body: High-Res Map */}
+            <div className="p-4 overflow-auto flex-1 flex items-center justify-center bg-[#0C0E12]/80">
+              <img
+                src={lightboxMap.src}
+                alt={`${lightboxMap.name} Official Tactical Map`}
+                className="max-w-full max-h-[75vh] object-contain rounded shadow-2xl border border-[#323846]"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="p-3 bg-[#161920] border-t border-[#323846] flex items-center justify-between text-xs text-[#8E95A5]">
+              <span>Official Rulebook Scenario Diagram</span>
+              <button
+                onClick={() => setLightboxMap(null)}
+                className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>
