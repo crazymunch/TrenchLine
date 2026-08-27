@@ -38,6 +38,9 @@ interface AppState {
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
   updateWarbandNotes: (warbandId: string, notes: string) => void;
+  updateWarbandDucatLimit: (warbandId: string, ducatLimit: number) => void;
+  updateWarbandTreasury: (warbandId: string, treasuryDucats: number) => void;
+  updateWarbandGlory: (warbandId: string, gloryPoints: number) => void;
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
@@ -674,6 +677,57 @@ export const useStore = create<AppState>((set, get) => {
         const updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = { ...w, notes };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandDucatLimit: (warbandId, ducatLimit) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            ducatLimit: Math.max(100, Number(ducatLimit) || 700),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandTreasury: (warbandId, treasuryDucats) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            treasuryDucats: Math.max(0, Number(treasuryDucats) || 0),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandGlory: (warbandId, gloryPoints) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            gloryPoints: Math.max(0, Number(gloryPoints) || 0),
+            updatedAt: new Date().toISOString()
+          };
           storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
