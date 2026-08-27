@@ -1,13 +1,15 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { UnitProfile } from '../../types/rules';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { GitHubDiffModal } from './GitHubDiffModal';
 import { 
   fetchLatestRepoCommit, 
   generateDiffs, 
   fetchAndParseAllRemoteCatalogs 
 } from '../../services/githubSync';
-import { parseBattleScribeXml } from '../../services/xmlParser';
+import { soundEffects } from '../../services/soundEffects';
 import { 
   SlidersHorizontal, 
   GitBranch, 
@@ -18,7 +20,11 @@ import {
   FileCode,
   Sparkles,
   Layers,
-  AlertCircle
+  AlertCircle,
+  Swords,
+  Shield,
+  Package,
+  Plus
 } from 'lucide-react';
 
 export const CustomizerView: React.FC = () => {
@@ -27,21 +33,55 @@ export const CustomizerView: React.FC = () => {
     customUnits, 
     saveCustomUnit, 
     deleteCustomUnit, 
+    weapons,
+    customWeapons,
+    saveCustomWeapon,
+    deleteCustomWeapon,
+    armour,
+    customArmour,
+    saveCustomArmour,
+    deleteCustomArmour,
+    equipment,
+    customEquipment,
+    saveCustomEquipment,
+    deleteCustomEquipment,
     pendingDiffs, 
     setPendingDiffs 
   } = useStore();
 
+  const [activeTab, setActiveTab] = useState<'units' | 'weapons' | 'armour' | 'sync'>('units');
+
+  // --- UNIT EDIT STATE ---
   const [selectedUnitId, setSelectedUnitId] = useState<string>(units[0]?.id || '');
   const selectedUnit = units.find((u) => u.id === selectedUnitId) || units[0];
-
-  // Form edit states
   const [editName, setEditName] = useState(selectedUnit?.name || '');
   const [editCost, setEditCost] = useState(selectedUnit?.baseCost || 0);
   const [editMov, setEditMov] = useState(selectedUnit?.stats.movement || '6"');
   const [editRng, setEditRng] = useState(selectedUnit?.stats.ranged || '+0');
   const [editMelee, setEditMelee] = useState(selectedUnit?.stats.melee || '+0');
   const [editArmour, setEditArmour] = useState(selectedUnit?.stats.armour || '+0');
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [savedUnitSuccess, setSavedUnitSuccess] = useState(false);
+
+  // --- WEAPON EDIT STATE ---
+  const [selectedWeaponId, setSelectedWeaponId] = useState<string>(weapons[0]?.id || '');
+  const selectedWeapon = weapons.find((w) => w.id === selectedWeaponId) || weapons[0];
+  const [editWepName, setEditWepName] = useState(selectedWeapon?.name || '');
+  const [editWepCost, setEditWepCost] = useState(selectedWeapon?.cost || 0);
+  const [editWepType, setEditWepType] = useState(selectedWeapon?.type || 'Melee');
+  const [editWepRange, setEditWepRange] = useState(selectedWeapon?.range || 'Melee');
+  const [editWepMod, setEditWepMod] = useState(selectedWeapon?.modifiers || '+0');
+  const [editWepDmg, setEditWepDmg] = useState(selectedWeapon?.damage || 'Standard');
+  const [editWepHands, setEditWepHands] = useState<1 | 2>(selectedWeapon?.hands || 1);
+  const [savedWepSuccess, setSavedWepSuccess] = useState(false);
+
+  // --- ARMOUR EDIT STATE ---
+  const [selectedArmourId, setSelectedArmourId] = useState<string>(armour[0]?.id || '');
+  const selectedArmour = armour.find((a) => a.id === selectedArmourId) || armour[0];
+  const [editArmName, setEditArmName] = useState(selectedArmour?.name || '');
+  const [editArmCost, setEditArmCost] = useState(selectedArmour?.cost || 0);
+  const [editArmMod, setEditArmMod] = useState(selectedArmour?.armourModifier || selectedArmour?.modifier || '-1 Injury Modifier');
+  const [editArmDesc, setEditArmDesc] = useState(selectedArmour?.description || '');
+  const [savedArmSuccess, setSavedArmSuccess] = useState(false);
 
   // Sync state
   const [isCheckingSync, setIsCheckingSync] = useState(false);
@@ -51,10 +91,6 @@ export const CustomizerView: React.FC = () => {
     sha: '8e4f1a9c',
     message: 'Official Community Patch: Adjusted Shocktrooper base cost & Sniper profiles'
   });
-
-  // XML Import state
-  const [xmlText, setXmlText] = useState('');
-  const [importStatus, setImportStatus] = useState<string | null>(null);
 
   const handleSelectUnit = (uId: string) => {
     setSelectedUnitId(uId);
@@ -88,8 +124,76 @@ export const CustomizerView: React.FC = () => {
     };
 
     saveCustomUnit(updatedUnit);
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2000);
+    soundEffects.playCathedralBell();
+    setSavedUnitSuccess(true);
+    setTimeout(() => setSavedUnitSuccess(false), 2000);
+  };
+
+  const handleSelectWeapon = (wId: string) => {
+    setSelectedWeaponId(wId);
+    const w = weapons.find((item) => item.id === wId);
+    if (w) {
+      setEditWepName(w.name);
+      setEditWepCost(w.cost);
+      setEditWepType(w.type);
+      setEditWepRange(w.range);
+      setEditWepMod(w.modifiers);
+      setEditWepDmg(w.damage || 'Standard');
+      setEditWepHands((w.hands as any) || 1);
+    }
+  };
+
+  const handleSaveWeapon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedWeapon) return;
+
+    const updatedWeapon: WeaponProfile = {
+      ...selectedWeapon,
+      name: editWepName,
+      cost: editWepCost,
+      type: editWepType as any,
+      range: editWepRange,
+      modifiers: editWepMod,
+      damage: editWepDmg,
+      hands: editWepHands,
+      isCustom: true
+    };
+
+    saveCustomWeapon(updatedWeapon);
+    soundEffects.playGunfire();
+    setSavedWepSuccess(true);
+    setTimeout(() => setSavedWepSuccess(false), 2000);
+  };
+
+  const handleSelectArmour = (aId: string) => {
+    setSelectedArmourId(aId);
+    const a = armour.find((item) => item.id === aId);
+    if (a) {
+      setEditArmName(a.name);
+      setEditArmCost(a.cost);
+      setEditArmMod(a.armourModifier || a.modifier || '-1 Injury Modifier');
+      setEditArmDesc(a.description || '');
+    }
+  };
+
+  const handleSaveArmour = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedArmour) return;
+
+    const updatedArmour: ArmourProfile = {
+      ...selectedArmour,
+      name: editArmName,
+      cost: editArmCost,
+      armourModifier: editArmMod,
+      modifier: editArmMod,
+      description: editArmDesc,
+      isCustom: true
+    };
+
+    saveCustomArmour(updatedArmour);
+    soundEffects.playCathedralBell();
+    setSavedArmSuccess(true);
+    setTimeout(() => setSavedArmSuccess(false), 2000);
   };
 
   const handleCheckSync = async () => {
@@ -102,16 +206,12 @@ export const CustomizerView: React.FC = () => {
       });
     }
 
-    // Generate diff against potential upstream changes
     const upstreamUnits: UnitProfile[] = units.map((u) => {
       if (u.id === 'na-shocktrooper') {
         return { ...u, baseCost: 40, stats: { ...u.stats, melee: '+2' } };
       }
       if (u.id === 'na-sniper') {
         return { ...u, baseCost: 60 };
-      }
-      if (u.id === 'tp-flagellant') {
-        return { ...u, baseCost: 30 };
       }
       return u;
     });
@@ -122,261 +222,404 @@ export const CustomizerView: React.FC = () => {
     setIsDiffModalOpen(true);
   };
 
-  const handleDownloadAllCatalogs = async () => {
-    setIsDownloadingCatalogs(true);
-    setImportStatus('Contacting GitHub raw repository and fetching all .cat files...');
-    
-    try {
-      const catalogs = await fetchAndParseAllRemoteCatalogs();
-      let totalUnits = 0;
-      catalogs.forEach((cat) => {
-        cat.units.forEach((u) => {
-          saveCustomUnit(u);
-          totalUnits++;
-        });
-      });
-
-      setImportStatus(`Successfully synced and updated ${totalUnits} profiles from live GitHub repo!`);
-    } catch (e) {
-      setImportStatus('Error fetching remote catalogs. Falling back to local catalog store.');
-    } finally {
-      setIsDownloadingCatalogs(false);
-    }
-  };
-
-  const handleImportXml = () => {
-    if (!xmlText.trim()) return;
-    try {
-      const parsed = parseBattleScribeXml(xmlText);
-      parsed.units.forEach((u) => saveCustomUnit(u));
-      setImportStatus(`Successfully imported ${parsed.units.length} units and ${parsed.weapons.length} weapons from XML!`);
-      setXmlText('');
-    } catch (err) {
-      setImportStatus('Error parsing BattleScribe XML. Please ensure valid .cat format.');
-    }
-  };
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 font-mono text-xs">
       
       {/* Header Banner */}
-      <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <SlidersHorizontal className="w-6 h-6 text-[#D4AF37]" />
-            <h1 className="font-gothic font-bold text-2xl text-[#ECEFF4] tracking-wide">
-              IN-APP RULE CUSTOMIZER & GITHUB SYNC
-            </h1>
+      <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl space-y-3 bevel-container">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center space-x-2">
+              <SlidersHorizontal className="w-6 h-6 text-[#D4AF37]" />
+              <h1 className="font-gothic font-bold text-2xl text-[#ECEFF4] tracking-wide">
+                MASTER RULES & WARGEAR CUSTOMIZER
+              </h1>
+            </div>
+            <p className="text-xs text-[#8E95A5] pt-1">
+              Live statline editor and custom rule override engine. Adjust point costs, ranges, hands, and keywords without losing custom warband rosters.
+            </p>
           </div>
-          <p className="text-xs font-mono text-[#8E95A5]">
-            Edit unit stats & costs in-app, import custom BattleScribe XML, and compare with upstream GitHub repos
-          </p>
+
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            <button
+              onClick={handleCheckSync}
+              disabled={isCheckingSync}
+              className="flex items-center space-x-2 px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase transition-colors"
+            >
+              <GitBranch className={`w-3.5 h-3.5 ${isCheckingSync ? 'animate-spin text-[#D4AF37]' : ''}`} />
+              <span>{isCheckingSync ? 'Checking Commits...' : 'Check GitHub Updates'}</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={handleDownloadAllCatalogs}
-            disabled={isDownloadingCatalogs}
-            className="flex items-center space-x-2 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
-          >
-            <DownloadCloud className={`w-4 h-4 text-[#D4AF37] ${isDownloadingCatalogs ? 'animate-bounce' : ''}`} />
-            <span>{isDownloadingCatalogs ? 'Fetching Pack...' : 'Pull Live Repos (.cat)'}</span>
-          </button>
-
-          <button
-            onClick={handleCheckSync}
-            disabled={isCheckingSync}
-            className="flex items-center space-x-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
-          >
-            <GitBranch className={`w-4 h-4 ${isCheckingSync ? 'animate-spin' : ''}`} />
-            <span>{isCheckingSync ? 'Checking Repo...' : 'Sync & Diff Rules'}</span>
-          </button>
+        {/* Tab Navigation */}
+        <div className="flex border-t border-[#323846] pt-4 gap-2 overflow-x-auto">
+          {[
+            { id: 'units', label: `Unit Profiles (${units.length})`, icon: <Sparkles className="w-3.5 h-3.5" /> },
+            { id: 'weapons', label: `Weapons & Ballistics (${weapons.length})`, icon: <Swords className="w-3.5 h-3.5" /> },
+            { id: 'armour', label: `Armour & Shields (${armour.length})`, icon: <Shield className="w-3.5 h-3.5" /> },
+            { id: 'sync', label: 'GitHub Sync & XML Parser', icon: <FileCode className="w-3.5 h-3.5" /> }
+          ].map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id as any)}
+              className={`px-4 py-2 rounded font-bold uppercase flex items-center space-x-1.5 transition-colors ${
+                activeTab === t.id
+                  ? 'bg-[#D4AF37] text-black shadow'
+                  : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+              }`}
+            >
+              {t.icon}
+              <span>{t.label}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column: Unit List Selector */}
-        <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-            <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
-              UNIT PROFILES ({units.length})
-            </h3>
-            <span className="text-[10px] font-mono text-[#D4AF37]">
-              {customUnits.length} Overrides
+      {/* TAB 1: UNIT PROFILES */}
+      {activeTab === 'units' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Unit Selector List */}
+          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+              Select Unit to Modify:
             </span>
-          </div>
-
-          <div className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
-            {units.map((u) => {
-              const isSelected = u.id === selectedUnitId;
-              return (
-                <div
+            <div className="space-y-1">
+              {units.map((u) => (
+                <button
                   key={u.id}
                   onClick={() => handleSelectUnit(u.id)}
-                  className={`p-2.5 rounded text-xs font-mono cursor-pointer transition-all flex items-center justify-between ${
-                    isSelected
-                      ? 'bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/60 font-bold'
-                      : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
+                  className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
+                    selectedUnit?.id === u.id
+                      ? 'bg-[#D4AF37] text-black font-bold shadow'
+                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
                   }`}
                 >
-                  <div className="truncate mr-2">
-                    <span>{u.name}</span>
-                    {u.isCustom && (
-                      <span className="text-[9px] ml-2 px-1.5 py-0.2 rounded bg-[#D4AF37]/20 text-[#D4AF37] font-bold">
-                        Custom
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[#ECEFF4] font-bold">{u.baseCost} D</span>
-                </div>
-              );
-            })}
+                  <span className="truncate">{u.name}</span>
+                  <span className="text-[10px]">{u.baseCost} D</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Center/Right Column: Visual Stats Editor */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 space-y-4 shadow-xl">
+          {/* Unit Edit Form */}
+          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
             <div className="flex items-center justify-between border-b border-[#323846] pb-3">
               <div>
-                <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold">Profile Editor</span>
-                <h3 className="font-gothic font-bold text-xl text-[#ECEFF4]">{selectedUnit?.name}</h3>
+                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedUnit?.name}</h2>
+                <span className="text-[10px] text-[#8E95A5]">Faction: {selectedUnit?.factionId} • Category: {selectedUnit?.category}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                {selectedUnit?.isCustom && (
-                  <button
-                    onClick={() => deleteCustomUnit(selectedUnit.id)}
-                    className="p-1.5 text-[#8E95A5] hover:text-[#E53935] rounded transition-colors"
-                    title="Reset to Baseline"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+              {selectedUnit?.isCustom && (
+                <button
+                  onClick={() => deleteCustomUnit(selectedUnit.id)}
+                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Revert</span>
+                </button>
+              )}
             </div>
 
             <form onSubmit={handleSaveUnit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Unit Title / Display Name
-                  </label>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Unit Name:</label>
                   <input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                    Base Ducats Cost
-                  </label>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Base Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editCost}
-                    onChange={(e) => setEditCost(parseInt(e.target.value) || 0)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#D4AF37] font-bold font-mono focus:outline-none focus:border-[#D4AF37]"
+                    onChange={(e) => setEditCost(Number(e.target.value))}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
 
-              {/* Statblock inputs */}
-              <div className="grid grid-cols-4 gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
-                <div>
-                  <label className="block text-[10px] font-mono uppercase text-[#8E95A5] mb-1">MOV</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Movement:</label>
                   <input
                     type="text"
                     value={editMov}
                     onChange={(e) => setEditMov(e.target.value)}
-                    className="w-full bg-[#161920] border border-[#323846] rounded p-1.5 text-center font-mono font-bold text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-                <div>
-                  <label className="block text-[10px] font-mono uppercase text-[#8E95A5] mb-1">RNG</label>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Ranged:</label>
                   <input
                     type="text"
                     value={editRng}
                     onChange={(e) => setEditRng(e.target.value)}
-                    className="w-full bg-[#161920] border border-[#323846] rounded p-1.5 text-center font-mono font-bold text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-                <div>
-                  <label className="block text-[10px] font-mono uppercase text-[#8E95A5] mb-1">MELEE</label>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Melee:</label>
                   <input
                     type="text"
                     value={editMelee}
                     onChange={(e) => setEditMelee(e.target.value)}
-                    className="w-full bg-[#161920] border border-[#323846] rounded p-1.5 text-center font-mono font-bold text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
-                <div>
-                  <label className="block text-[10px] font-mono uppercase text-[#8E95A5] mb-1">ARMOUR</label>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Armour Mod:</label>
                   <input
                     type="text"
                     value={editArmour}
                     onChange={(e) => setEditArmour(e.target.value)}
-                    className="w-full bg-[#161920] border border-[#323846] rounded p-1.5 text-center font-mono font-bold text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-2">
-                {savedSuccess && (
-                  <span className="text-xs font-mono text-[#4E9A6E] flex items-center space-x-1">
-                    <Check className="w-4 h-4" />
-                    <span>Unit Overrides Saved Locally!</span>
-                  </span>
-                )}
+              <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="flex items-center space-x-1.5 px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
-                  <span>Save Profile Overrides</span>
+                  <span>{savedUnitSuccess ? '✓ Profile Saved!' : 'Save Custom Profile'}</span>
                 </button>
               </div>
             </form>
           </div>
+        </div>
+      )}
 
-          {/* BattleScribe XML Raw Ingestion Box */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-6 space-y-3">
-            <div className="flex items-center space-x-2">
-              <FileCode className="w-5 h-5 text-[#D4AF37]" />
-              <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
-                IMPORT BATTLESCRIBE / NEWRECRUIT XML (.CAT)
-              </h3>
-            </div>
-            <p className="text-xs font-mono text-[#8E95A5]">
-              Paste the raw contents of any `.cat` or `.gst` XML file to parse units and weapons directly into your local database.
-            </p>
-
-            <textarea
-              value={xmlText}
-              onChange={(e) => setXmlText(e.target.value)}
-              placeholder="<catalogue id='...' name='...'> ... </catalogue>"
-              className="w-full h-24 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-mono text-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
-            />
-
-            <div className="flex items-center justify-between">
-              {importStatus && (
-                <span className="text-xs font-mono text-[#D4AF37]">{importStatus}</span>
-              )}
-              <button
-                onClick={handleImportXml}
-                className="px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded border border-[#323846] transition-colors ml-auto"
-              >
-                Parse & Induct XML
-              </button>
+      {/* TAB 2: WEAPONS & BALLISTICS */}
+      {activeTab === 'weapons' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Weapon Selector List */}
+          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+              Select Weapon to Modify:
+            </span>
+            <div className="space-y-1">
+              {weapons.map((w) => (
+                <button
+                  key={w.id}
+                  onClick={() => handleSelectWeapon(w.id)}
+                  className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
+                    selectedWeapon?.id === w.id
+                      ? 'bg-[#D4AF37] text-black font-bold shadow'
+                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
+                  }`}
+                >
+                  <span className="truncate">{w.name}</span>
+                  <span className="text-[10px]">{w.cost} D</span>
+                </button>
+              ))}
             </div>
           </div>
 
+          {/* Weapon Edit Form */}
+          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+              <div>
+                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedWeapon?.name}</h2>
+                <span className="text-[10px] text-[#8E95A5]">Type: {selectedWeapon?.type} • Faction: {selectedWeapon?.factionId || 'universal'}</span>
+              </div>
+              {selectedWeapon?.isCustom && (
+                <button
+                  onClick={() => deleteCustomWeapon(selectedWeapon.id)}
+                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Revert</span>
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveWeapon} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-1 sm:col-span-2">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Weapon Name:</label>
+                  <input
+                    type="text"
+                    value={editWepName}
+                    onChange={(e) => setEditWepName(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Cost (Ducats):</label>
+                  <input
+                    type="number"
+                    value={editWepCost}
+                    onChange={(e) => setEditWepCost(Number(e.target.value))}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Type:</label>
+                  <select
+                    value={editWepType}
+                    onChange={(e) => setEditWepType(e.target.value as any)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  >
+                    <option value="Melee">Melee</option>
+                    <option value="Ranged">Ranged</option>
+                    <option value="Both">Both</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Range:</label>
+                  <input
+                    type="text"
+                    value={editWepRange}
+                    onChange={(e) => setEditWepRange(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Modifiers:</label>
+                  <input
+                    type="text"
+                    value={editWepMod}
+                    onChange={(e) => setEditWepMod(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Hands Required:</label>
+                  <select
+                    value={editWepHands}
+                    onChange={(e) => setEditWepHands(Number(e.target.value) as 1 | 2)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  >
+                    <option value={1}>1-Handed</option>
+                    <option value={2}>2-Handed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end pt-4">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{savedWepSuccess ? '✓ Weapon Saved!' : 'Save Custom Weapon'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      )}
 
-      </div>
+      {/* TAB 3: ARMOUR & SHIELDS */}
+      {activeTab === 'armour' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Armour Selector List */}
+          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+              Select Armour to Modify:
+            </span>
+            <div className="space-y-1">
+              {armour.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => handleSelectArmour(a.id)}
+                  className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
+                    selectedArmour?.id === a.id
+                      ? 'bg-[#D4AF37] text-black font-bold shadow'
+                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
+                  }`}
+                >
+                  <span className="truncate">{a.name}</span>
+                  <span className="text-[10px]">{a.cost} D</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {/* GitHub 3-Way Diff Modal */}
+          {/* Armour Edit Form */}
+          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+              <div>
+                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedArmour?.name}</h2>
+                <span className="text-[10px] text-[#8E95A5]">Category: {selectedArmour?.category} • Faction: {selectedArmour?.factionId || 'universal'}</span>
+              </div>
+              {selectedArmour?.isCustom && (
+                <button
+                  onClick={() => deleteCustomArmour(selectedArmour.id)}
+                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Revert</span>
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveArmour} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-1 sm:col-span-2">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Armour Name:</label>
+                  <input
+                    type="text"
+                    value={editArmName}
+                    onChange={(e) => setEditArmName(e.target.value)}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Cost (Ducats):</label>
+                  <input
+                    type="number"
+                    value={editArmCost}
+                    onChange={(e) => setEditArmCost(Number(e.target.value))}
+                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Protection Modifier:</label>
+                <input
+                  type="text"
+                  value={editArmMod}
+                  onChange={(e) => setEditArmMod(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Description & Rules:</label>
+                <textarea
+                  rows={3}
+                  value={editArmDesc}
+                  onChange={(e) => setEditArmDesc(e.target.value)}
+                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end pt-4">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{savedArmSuccess ? '✓ Armour Saved!' : 'Save Custom Armour'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* GitHub Diff Modal */}
       {isDiffModalOpen && (
         <GitHubDiffModal
           diffs={pendingDiffs}

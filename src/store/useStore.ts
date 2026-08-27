@@ -129,10 +129,26 @@ interface AppState {
     notableMoments?: string[]
   ) => void;
 
+  // Warrior Progression, Skills & Faction Upgrades
+  updateUnitAdvancement: (warbandId: string, unitId: string, xp: number, isElite: boolean) => void;
+  addUnitSkill: (warbandId: string, unitId: string, skill: { name: string; category: string; roll?: string; effect?: string }) => void;
+  removeUnitSkill: (warbandId: string, unitId: string, skillName: string) => void;
+  addUnitScar: (warbandId: string, unitId: string, scar: { name: string; roll?: string; effect?: string }) => void;
+  removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
+  setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
+  toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string }) => void;
+
   // Customizer & Overrides
+  customArmour: ArmourProfile[];
+  customEquipment: EquipmentItem[];
   saveCustomUnit: (unit: UnitProfile) => void;
   deleteCustomUnit: (id: string) => void;
   saveCustomWeapon: (weapon: WeaponProfile) => void;
+  deleteCustomWeapon: (id: string) => void;
+  saveCustomArmour: (armour: ArmourProfile) => void;
+  deleteCustomArmour: (id: string) => void;
+  saveCustomEquipment: (equipment: EquipmentItem) => void;
+  deleteCustomEquipment: (id: string) => void;
 
   // GitHub Diff & Sync
   pendingDiffs: RuleDiffItem[];
@@ -385,6 +401,8 @@ export const useStore = create<AppState>((set, get) => {
     scenarios: SCENARIOS,
     customUnits,
     customWeapons,
+    customArmour: [],
+    customEquipment: [],
 
     allCloudWarbands: [],
     fetchAllCloudWarbands: async () => {
@@ -1082,6 +1100,189 @@ export const useStore = create<AppState>((set, get) => {
       });
     },
 
+    // Warrior Progression, Skills & Faction Upgrades
+    updateUnitAdvancement: (warbandId, unitId, xp, isElite) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                xp,
+                isElite,
+                profileSnapshot: {
+                  ...u.profileSnapshot,
+                  category: isElite && u.profileSnapshot.category === 'Trooper' ? 'Elite' : u.profileSnapshot.category
+                }
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addUnitSkill: (warbandId, unitId, skill) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const existing = u.skills || [];
+              if (existing.some(s => s.name === skill.name)) return u;
+              return {
+                ...u,
+                skills: [...existing, skill]
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    removeUnitSkill: (warbandId, unitId, skillName) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                skills: (u.skills || []).filter(s => s.name !== skillName)
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    addUnitScar: (warbandId, unitId, scar) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const existing = u.scars || [];
+              if (existing.some(s => s.name === scar.name)) return u;
+              return {
+                ...u,
+                scars: [...existing, scar]
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    removeUnitScar: (warbandId, unitId, scarName) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                scars: (u.scars || []).filter(s => s.name !== scarName)
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    setUnitFireteam: (warbandId, unitId, fireteam) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                fireteam
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    toggleUnitSpecialUpgrade: (warbandId, unitId, upgrade) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const current = u.specialUpgrades || [];
+              const exists = current.some(x => x.id === upgrade.id);
+              let nextUpgrades = [];
+              let costDelta = 0;
+              if (exists) {
+                nextUpgrades = current.filter(x => x.id !== upgrade.id);
+                costDelta = -upgrade.cost;
+              } else {
+                nextUpgrades = [...current, upgrade];
+                costDelta = upgrade.cost;
+              }
+              return {
+                ...u,
+                specialUpgrades: nextUpgrades,
+                totalCost: Math.max(0, u.totalCost + costDelta)
+              };
+            }),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
     // Armory Stash Management
     buyToStash: (warbandId, item) => {
       set((state) => {
@@ -1678,6 +1879,59 @@ export const useStore = create<AppState>((set, get) => {
         return {
           customWeapons: updated,
           weapons: [...BASE_WEAPONS, ...updated]
+        };
+      });
+    },
+
+    deleteCustomWeapon: (id) => {
+      set((state) => {
+        const updated = state.customWeapons.filter((w) => w.id !== id);
+        storage.saveCustomWeapons(updated);
+        return {
+          customWeapons: updated,
+          weapons: [...BASE_WEAPONS, ...updated]
+        };
+      });
+    },
+
+    saveCustomArmour: (armourItem) => {
+      set((state) => {
+        const existing = state.customArmour.filter((a) => a.id !== armourItem.id);
+        const updated = [...existing, { ...armourItem, isCustom: true }];
+        return {
+          customArmour: updated,
+          armour: [...BASE_ARMOUR, ...updated]
+        };
+      });
+    },
+
+    deleteCustomArmour: (id) => {
+      set((state) => {
+        const updated = state.customArmour.filter((a) => a.id !== id);
+        return {
+          customArmour: updated,
+          armour: [...BASE_ARMOUR, ...updated]
+        };
+      });
+    },
+
+    saveCustomEquipment: (equipmentItem) => {
+      set((state) => {
+        const existing = state.customEquipment.filter((e) => e.id !== equipmentItem.id);
+        const updated = [...existing, { ...equipmentItem, isCustom: true }];
+        return {
+          customEquipment: updated,
+          equipment: [...BASE_EQUIPMENT, ...updated]
+        };
+      });
+    },
+
+    deleteCustomEquipment: (id) => {
+      set((state) => {
+        const updated = state.customEquipment.filter((e) => e.id !== id);
+        return {
+          customEquipment: updated,
+          equipment: [...BASE_EQUIPMENT, ...updated]
         };
       });
     },

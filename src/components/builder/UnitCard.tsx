@@ -4,6 +4,7 @@ import { ActiveUnit } from '../../types/warband';
 import { UnitCategory } from '../../types/rules';
 import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
+import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { 
   Trash2, 
@@ -21,7 +22,9 @@ import {
   Scroll,
   Award,
   BookOpen,
-  Quote
+  Quote,
+  Flame,
+  Users
 } from 'lucide-react';
 
 interface UnitCardProps {
@@ -44,6 +47,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameVal, setNameVal] = useState(unit.customName);
   const [isEquipModalOpen, setIsEquipModalOpen] = useState(false);
+  const [isAdvancementModalOpen, setIsAdvancementModalOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
   const [isConfirmDismissOpen, setIsConfirmDismissOpen] = useState(false);
@@ -353,6 +357,54 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           )}
 
+          {/* Special Faction Upgrades (e.g. Secrets of the House of Wisdom) */}
+          {unit.specialUpgrades && unit.specialUpgrades.length > 0 && (
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider flex items-center space-x-1">
+                <Flame className="w-3 h-3" />
+                <span>{unit.specialUpgrades[0].category}:</span>
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {unit.specialUpgrades.map((upg) => (
+                  <span
+                    key={upg.id}
+                    className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-bold"
+                  >
+                    ✓ {upg.name} ({upg.cost} D)
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fireteam Protocol */}
+          {unit.fireteam && (
+            <div className="p-1.5 bg-[#20242E] rounded border border-[#323846] text-[10px] font-mono text-[#ECEFF4] flex items-center space-x-1.5">
+              <Users className="w-3 h-3 text-[#D4AF37]" />
+              <span><strong>Fireteam:</strong> {unit.fireteam}</span>
+            </div>
+          )}
+
+          {/* Acquired Skills Pills */}
+          {unit.skills && unit.skills.length > 0 && (
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider flex items-center space-x-1">
+                <BookOpen className="w-3 h-3" />
+                <span>Skills ({unit.skills.length}):</span>
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {unit.skills.map((sk, idx) => (
+                  <span
+                    key={idx}
+                    className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#0C0E12] border border-[#323846] text-[#ECEFF4]"
+                  >
+                    {sk.name} <strong className="text-[#D4AF37]">[{sk.roll || 'D66'}]</strong>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Heroic Deeds Quick Pill */}
           {unit.deeds && unit.deeds.length > 0 && (
             <div 
@@ -365,37 +417,53 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           )}
 
           {/* Injuries & Battle Scars */}
-          {unit.injuries.length > 0 && (
-            <div className="p-2 bg-[#8B0000]/10 border border-[#8B0000]/30 rounded text-xs">
-              <span className="font-mono text-[#E53935] font-bold flex items-center space-x-1 mb-1">
+          {((unit.scars && unit.scars.length > 0) || unit.injuries.length > 0) && (
+            <div className="p-2 bg-[#8B0000]/10 border border-[#8B0000]/30 rounded text-xs space-y-1">
+              <span className="font-mono text-[#E53935] font-bold flex items-center space-x-1">
                 <AlertTriangle className="w-3 h-3" />
-                <span>Injuries & Scars:</span>
+                <span>Battle Scars & Trauma:</span>
               </span>
-              <ul className="list-disc list-inside text-[#ECEFF4] space-y-0.5 text-[11px]">
-                {unit.injuries.map((inj, idx) => (
-                  <li key={idx}>{inj}</li>
+              <div className="flex flex-wrap gap-1">
+                {(unit.scars || []).map((sc, sIdx) => (
+                  <span key={sIdx} className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#8B0000]/20 text-[#E53935] border border-[#8B0000]/40">
+                    {sc.name} [{sc.roll}]
+                  </span>
                 ))}
-              </ul>
+                {unit.injuries.map((inj, idx) => (
+                  <span key={`inj-${idx}`} className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#8B0000]/20 text-[#E53935] border border-[#8B0000]/40">
+                    {inj}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
         </div>
 
         {/* Card Footer Actions */}
-        <div className="p-2.5 bg-[#20242E] border-t border-[#323846] flex items-center space-x-2">
+        <div className="p-2 bg-[#20242E] border-t border-[#323846] grid grid-cols-3 gap-1.5 text-xs font-mono">
           <button
             onClick={() => setIsLoreModalOpen(true)}
-            className="flex-1 flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded text-xs font-mono font-bold text-[#8E95A5] hover:text-[#D4AF37] uppercase tracking-wider transition-colors"
+            className="flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded font-bold text-[#8E95A5] hover:text-[#D4AF37] uppercase text-[10px] tracking-wider transition-colors"
           >
-            <Scroll className="w-3.5 h-3.5" />
-            <span>Lore & Bio</span>
+            <Scroll className="w-3 h-3" />
+            <span>Bio</span>
+          </button>
+
+          <button
+            onClick={() => setIsAdvancementModalOpen(true)}
+            className="flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded font-bold text-[#8E95A5] hover:text-[#D4AF37] uppercase text-[10px] tracking-wider transition-colors"
+            title="Skills, XP & Faction Upgrades"
+          >
+            <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+            <span>Skills</span>
           </button>
 
           <button
             onClick={() => setIsEquipModalOpen(true)}
-            className="flex-1 flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded text-xs font-mono font-bold text-[#D4AF37] uppercase tracking-wider transition-colors"
+            className="flex items-center justify-center space-x-1 py-1.5 bg-[#161920] hover:bg-[#323846] border border-[#323846] rounded font-bold text-[#D4AF37] uppercase text-[10px] tracking-wider transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3 h-3" />
             <span>Equip</span>
           </button>
         </div>
@@ -409,6 +477,15 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           unitId={unit.id}
           unitName={unit.customName}
           onClose={() => setIsEquipModalOpen(false)}
+        />
+      )}
+
+      {/* Unit Advancement & Skills Modal */}
+      {isAdvancementModalOpen && (
+        <UnitAdvancementModal
+          warbandId={warbandId}
+          unit={unit}
+          onClose={() => setIsAdvancementModalOpen(false)}
         />
       )}
 

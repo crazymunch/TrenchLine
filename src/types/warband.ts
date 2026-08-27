@@ -23,10 +23,17 @@ export interface ActiveUnit {
   
   // Progression & Campaign
   xp: number;
+  isElite?: boolean;
   advancements: string[];
+  skills?: { name: string; category: string; roll?: string; effect?: string }[];
   injuries: string[];
+  scars?: { name: string; roll?: string; effect?: string }[];
   isDead: boolean;
   totalCost: number; // calculated ducats
+
+  // Special Faction Rules & Fireteams
+  fireteam?: string;
+  specialUpgrades?: { id: string; name: string; cost: number; category: string }[];
 
   // Narrative Lore & Chronicle
   lore?: string;
