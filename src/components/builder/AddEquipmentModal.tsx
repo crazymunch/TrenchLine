@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
-import { soundEffects } from '../../services/soundEffects';
 import { 
   X, 
   Shield, 
@@ -18,7 +17,8 @@ import {
   Search,
   Sparkles,
   Layers,
-  AlertTriangle
+  AlertTriangle,
+  Zap
 } from 'lucide-react';
 
 interface AddEquipmentModalProps {
@@ -45,7 +45,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   } = useStore();
 
   const [tab, setTab] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
-  const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'ranged' | 'melee' | 'shield' | 'grenade'>('all');
+  const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
   const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'headgear' | 'relic' | 'gear'>('all');
   const [filterLegalOnly, setFilterLegalOnly] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>('');
@@ -55,14 +55,41 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const factionId = activeWarband?.factionId || 'universal';
   const unitProfileName = unit?.profileSnapshot.name || unitName;
 
-  // Calculate hands and equipment loadout counts
+  // Equipment arrays
   const currentWeapons = unit?.equippedWeapons || [];
   const currentArmour = unit?.equippedArmour || [];
   const currentEquipment = unit?.equippedEquipment || [];
 
-  const totalHandsUsed = currentWeapons.reduce((sum, w) => sum + (w.hands || 1), 0);
-  const hasTwoHanded = currentWeapons.some(w => (w.hands || 1) >= 2);
-  const isOverHandsLimit = totalHandsUsed > 2;
+  // Check special traits: STRONG and Extra Limbs (3rd Arm / Homunculus)
+  const isStrong = Boolean(
+    unit?.profileSnapshot.innateAbilities?.some(a => /strong|bulky|large|ogre/i.test(a.name) || /strong/i.test(a.description)) ||
+    unit?.specialUpgrades?.some(u => /strong/i.test(u.name)) ||
+    unit?.skills?.some(s => /strong/i.test(s.name))
+  );
+
+  const hasExtraArm = Boolean(
+    unit?.profileSnapshot.innateAbilities?.some(a => /third arm|extra arm|extra limb|four arm/i.test(a.name) || /third arm/i.test(a.description)) ||
+    unit?.specialUpgrades?.some(u => /third arm|extra arm|limb/i.test(u.name)) ||
+    unit?.skills?.some(s => /extra arm/i.test(s.name))
+  );
+
+  const maxMeleeHands = hasExtraArm ? 3 : 2;
+  const maxRangedHands = hasExtraArm ? 3 : 2;
+
+  // Melee hands calculation: 2H weapons count as 1H if model has STRONG
+  const meleeWeapons = currentWeapons.filter(w => w.type === 'Melee' || w.range === 'Melee' || w.range?.startsWith('Melee') || /shield|mantlet/i.test(w.name));
+  const meleeHandsUsed = meleeWeapons.reduce((sum, w) => {
+    const rawHands = w.hands || 1;
+    const effectiveHands = (isStrong && rawHands >= 2) ? 1 : rawHands;
+    return sum + effectiveHands;
+  }, 0);
+
+  // Ranged hands calculation
+  const rangedWeapons = currentWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range?.startsWith('Melee') && !/shield|mantlet/i.test(w.name)));
+  const rangedHandsUsed = rangedWeapons.reduce((sum, w) => sum + (w.hands || 1), 0);
+
+  const isOverMeleeHands = meleeHandsUsed > maxMeleeHands;
+  const isOverRangedHands = rangedHandsUsed > maxRangedHands;
   const isOverArmourLimit = currentArmour.length > 1;
 
   // Accurate Unit and Faction Legality Filter for Weapons
@@ -76,7 +103,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     }
 
     // 2. Heavy / Exoskeleton restrictions (e.g. Titan weapons, heavy flamers)
-    const isHeavySpecialWeapon = /titan|cannon|heavy machine gun|mortar|autocannon/i.test(w.name);
+    const isHeavySpecialWeapon = /titan|cannon|autocannon/i.test(w.name);
     const isHeavyUnit = /heavy|brazen|golem|mamluk|mechanized/i.test(unitProfileName);
     if (isHeavySpecialWeapon && !isHeavyUnit) {
       return false;
@@ -130,13 +157,13 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   // Filtering Weapons
   let displayedWeapons = filterLegalOnly ? weapons.filter(isWeaponLegal) : weapons;
   if (weaponSubCategory === 'ranged') {
-    displayedWeapons = displayedWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range.startsWith('Melee')));
+    displayedWeapons = displayedWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range.startsWith('Melee') && !/shield/i.test(w.name)));
   } else if (weaponSubCategory === 'melee') {
     displayedWeapons = displayedWeapons.filter(w => w.type === 'Melee' || w.range === 'Melee' || w.range?.startsWith('Melee'));
   } else if (weaponSubCategory === 'shield') {
     displayedWeapons = displayedWeapons.filter(w => /shield|mantlet|instrument|flag/i.test(w.name) || w.keywords?.includes('SHIELD'));
   } else if (weaponSubCategory === 'grenade') {
-    displayedWeapons = displayedWeapons.filter(w => /grenade|bomb|molotov|dynamite/i.test(w.name) || w.keywords?.includes('GRENADE'));
+    displayedWeapons = displayedWeapons.filter(w => /grenade|bomb|molotov|dynamite|flask|pot/i.test(w.name) || w.keywords?.includes('GRENADE'));
   }
 
   // Filtering Armour
@@ -161,25 +188,22 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   const handleEquipWeapon = (w: WeaponProfile) => {
     equipWeapon(warbandId, unitId, w.id);
-    soundEffects.playGunfire();
   };
 
   const handleEquipArmour = (a: ArmourProfile) => {
     equipArmour(warbandId, unitId, a.id);
-    soundEffects.playCathedralBell();
   };
 
   const handleEquipEquipment = (e: EquipmentItem) => {
     equipEquipment(warbandId, unitId, e.id);
-    soundEffects.playDiceRoll();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[92vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl h-[88vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
-        {/* Header */}
-        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Fixed Header */}
+        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
@@ -201,7 +225,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               }`}
             >
               <Filter className="w-3.5 h-3.5" />
-              <span>{filterLegalOnly ? '✓ Legal Gear Only' : 'All Armoury (Override)'}</span>
+              <span>{filterLegalOnly ? '✓ Faction Armoury Legal' : 'All Armoury (Override)'}</span>
             </button>
 
             <button
@@ -213,301 +237,316 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           </div>
         </div>
 
-        {/* Loadout Status & Hand Capacity Banner */}
-        <div className="bg-[#161920] px-4 py-2 border-b border-[#323846] flex flex-wrap items-center justify-between gap-2 text-[11px]">
-          <div className="flex items-center space-x-3">
+        {/* Fixed Loadout Status & Hand Capacity Banner */}
+        <div className="bg-[#161920] px-4 py-2.5 border-b border-[#323846] flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-[#8E95A5]">
-              Hands Used: <strong className={isOverHandsLimit ? 'text-[#E53935]' : 'text-[#D4AF37]'}>{totalHandsUsed} / 2</strong>
+              ⚔️ Melee Hands: <strong className={isOverMeleeHands ? 'text-[#E53935]' : 'text-[#D4AF37]'}>{meleeHandsUsed} / {maxMeleeHands}</strong>
             </span>
             <span>•</span>
             <span className="text-[#8E95A5]">
-              Weapons: <strong className="text-[#ECEFF4]">{currentWeapons.length}</strong>
+              🎯 Ranged Hands: <strong className={isOverRangedHands ? 'text-[#E53935]' : 'text-[#D4AF37]'}>{rangedHandsUsed} / {maxRangedHands}</strong>
             </span>
             <span>•</span>
             <span className="text-[#8E95A5]">
-              Armour: <strong className={isOverArmourLimit ? 'text-[#E53935]' : 'text-[#ECEFF4]'}>{currentArmour.length} / 1</strong>
+              🛡️ Armour: <strong className={isOverArmourLimit ? 'text-[#E53935]' : 'text-[#ECEFF4]'}>{currentArmour.length} / 1</strong>
             </span>
+            {isStrong && (
+              <span className="px-1.5 py-0.2 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] font-bold">
+                STRONG (2H as 1H)
+              </span>
+            )}
+            {hasExtraArm && (
+              <span className="px-1.5 py-0.2 rounded bg-[#7C4DFF]/20 border border-[#7C4DFF]/40 text-[#7C4DFF] text-[10px] font-bold">
+                3rd Arm (+1 Hand)
+              </span>
+            )}
           </div>
 
-          {isOverHandsLimit && (
+          {(isOverMeleeHands || isOverRangedHands) && (
             <span className="px-2 py-0.5 rounded bg-[#8B0000]/40 border border-[#8B0000] text-[#E53935] font-bold text-[10px] flex items-center space-x-1">
               <AlertTriangle className="w-3 h-3" />
-              <span>Exceeds 2-Hand Capacity</span>
+              <span>
+                {isOverMeleeHands ? `Exceeds Melee Hands (${meleeHandsUsed}/${maxMeleeHands})` : `Exceeds Ranged Hands (${rangedHandsUsed}/${maxRangedHands})`}
+              </span>
             </span>
           )}
         </div>
 
-        {/* Main Tab Navigation */}
-        <div className="flex border-b border-[#323846] bg-[#161920] px-4 pt-2 gap-2 overflow-x-auto">
+        {/* Fixed Main Category Tabs: Large, Prominent, Clear */}
+        <div className="flex border-b border-[#323846] bg-[#0C0E12] px-4 pt-2.5 gap-2 flex-shrink-0">
           <button
             onClick={() => setTab('weapons')}
-            className={`px-4 py-2 border-b-2 font-bold uppercase flex items-center space-x-1.5 transition-colors text-xs ${
+            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'weapons'
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t'
-                : 'border-transparent text-[#8E95A5] hover:text-[#ECEFF4]'
+                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
+                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
             }`}
           >
-            <Swords className="w-3.5 h-3.5" />
-            <span>Weapons ({displayedWeapons.length})</span>
+            <Swords className="w-4 h-4 text-[#D4AF37]" />
+            <span>WEAPONS ({displayedWeapons.length})</span>
           </button>
 
           <button
             onClick={() => setTab('armour')}
-            className={`px-4 py-2 border-b-2 font-bold uppercase flex items-center space-x-1.5 transition-colors text-xs ${
+            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'armour'
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t'
-                : 'border-transparent text-[#8E95A5] hover:text-[#ECEFF4]'
+                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
+                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
             }`}
           >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Armour ({displayedArmour.length})</span>
+            <Shield className="w-4 h-4 text-[#D4AF37]" />
+            <span>ARMOUR & SHIELDS ({displayedArmour.length})</span>
           </button>
 
           <button
             onClick={() => setTab('equipment')}
-            className={`px-4 py-2 border-b-2 font-bold uppercase flex items-center space-x-1.5 transition-colors text-xs ${
+            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'equipment'
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t'
-                : 'border-transparent text-[#8E95A5] hover:text-[#ECEFF4]'
+                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
+                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
             }`}
           >
-            <Package className="w-3.5 h-3.5" />
-            <span>Gear & Relics ({displayedEquipment.length})</span>
+            <Package className="w-4 h-4 text-[#D4AF37]" />
+            <span>GEAR & RELICS ({displayedEquipment.length})</span>
           </button>
         </div>
 
-        {/* Sub-Category Filter & Search Toolbar */}
-        <div className="p-3 bg-[#0C0E12] border-b border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-2">
-          {/* Sub-Categories for Weapons */}
+        {/* Fixed Sub-Category Filter & Search Toolbar */}
+        <div className="p-3 bg-[#161920] border-b border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
+          
+          {/* Sub-Category Pills for Weapons */}
           {tab === 'weapons' && (
-            <div className="flex flex-wrap gap-1 w-full sm:w-auto">
-              {[
-                { id: 'all', label: 'All' },
-                { id: 'melee', label: '⚔️ Melee' },
-                { id: 'ranged', label: '🎯 Ranged' },
-                { id: 'shield', label: '🛡️ Utility / Shields' },
-                { id: 'grenade', label: '💣 Grenades' }
-              ].map((sub) => (
-                <button
-                  key={sub.id}
-                  onClick={() => setWeaponSubCategory(sub.id as any)}
-                  className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
-                    weaponSubCategory === sub.id
-                      ? 'bg-[#D4AF37] text-black shadow'
-                      : 'bg-[#161920] text-[#8E95A5] hover:text-white border border-[#323846]'
-                  }`}
-                >
-                  {sub.label}
-                </button>
-              ))}
+            <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
+              <button
+                onClick={() => setWeaponSubCategory('all')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  weaponSubCategory === 'all' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setWeaponSubCategory('melee')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  weaponSubCategory === 'melee' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                ⚔️ Melee
+              </button>
+              <button
+                onClick={() => setWeaponSubCategory('ranged')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  weaponSubCategory === 'ranged' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                🎯 Ranged
+              </button>
+              <button
+                onClick={() => setWeaponSubCategory('shield')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  weaponSubCategory === 'shield' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                🛡️ Utility / Shields
+              </button>
+              <button
+                onClick={() => setWeaponSubCategory('grenade')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  weaponSubCategory === 'grenade' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                💣 Grenades
+              </button>
             </div>
           )}
 
-          {/* Sub-Categories for Gear */}
+          {/* Sub-Category Pills for Equipment */}
           {tab === 'equipment' && (
-            <div className="flex flex-wrap gap-1 w-full sm:w-auto">
-              {[
-                { id: 'all', label: 'All Equipment' },
-                { id: 'headgear', label: '🪖 Headgear (0/1)' },
-                { id: 'relic', label: '✨ Relics & Elixirs' },
-                { id: 'gear', label: '🎒 Battlefield Gear' }
-              ].map((sub) => (
-                <button
-                  key={sub.id}
-                  onClick={() => setEquipmentSubCategory(sub.id as any)}
-                  className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
-                    equipmentSubCategory === sub.id
-                      ? 'bg-[#D4AF37] text-black shadow'
-                      : 'bg-[#161920] text-[#8E95A5] hover:text-white border border-[#323846]'
-                  }`}
-                >
-                  {sub.label}
-                </button>
-              ))}
+            <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
+              <button
+                onClick={() => setEquipmentSubCategory('all')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  equipmentSubCategory === 'all' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                All Gear
+              </button>
+              <button
+                onClick={() => setEquipmentSubCategory('headgear')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  equipmentSubCategory === 'headgear' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                🪖 Headgear
+              </button>
+              <button
+                onClick={() => setEquipmentSubCategory('relic')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  equipmentSubCategory === 'relic' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                ✨ Relics & Elixirs
+              </button>
+              <button
+                onClick={() => setEquipmentSubCategory('gear')}
+                className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
+                  equipmentSubCategory === 'gear' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                }`}
+              >
+                🎒 Battlefield Gear
+              </button>
             </div>
           )}
 
-          {tab === 'armour' && (
-            <div className="text-[11px] text-[#8E95A5]">
-              Select 1 body armour suite (Standard, Reinforced, or Faction Exoskeleton).
-            </div>
-          )}
+          {tab === 'armour' && <div className="text-xs text-[#8E95A5]">Official Body Armour & Machine Protection</div>}
 
           {/* Search Input */}
-          <div className="relative w-full sm:w-48">
+          <div className="relative w-full sm:w-64">
             <Search className="w-3.5 h-3.5 text-[#8E95A5] absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search gear..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full bg-[#161920] border border-[#323846] rounded pl-8 pr-2.5 py-1 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-8 pr-2.5 py-1 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
         </div>
 
-        {/* Item List Body */}
-        <div className="p-4 overflow-y-auto space-y-2 flex-1">
+        {/* Scrollable Items List Body */}
+        <div className="p-4 overflow-y-auto space-y-2.5 flex-1 bg-[#0C0E12]">
           
-          {/* WEAPONS LIST */}
+          {/* TAB 1: WEAPONS */}
           {tab === 'weapons' && (
-            <div className="space-y-2">
-              {displayedWeapons.length === 0 ? (
-                <p className="text-center text-[#8E95A5] py-8 italic">No weapons match the selected category filter.</p>
-              ) : (
-                displayedWeapons.map((wep) => {
-                  const is2H = (wep.hands || 1) >= 2 || wep.keywords?.includes('2-HANDED');
-                  return (
-                    <div
-                      key={wep.id}
-                      className="p-3 bg-[#0C0E12] border border-[#323846] rounded-md flex items-center justify-between gap-3 hover:border-[#D4AF37]/50 transition-colors"
+            displayedWeapons.length === 0 ? (
+              <p className="text-[#8E95A5] italic text-center py-12">No weapons found matching the filter criteria.</p>
+            ) : (
+              displayedWeapons.map((wep) => (
+                <div
+                  key={wep.id}
+                  className="p-3 bg-[#161920] border border-[#323846] rounded-md hover:border-[#D4AF37]/70 transition-all flex items-center justify-between gap-4"
+                >
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <h4 className="font-gothic font-bold text-sm text-[#ECEFF4] truncate">{wep.name}</h4>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#20242E] text-[#8E95A5]">
+                        {wep.type} • {wep.range}
+                      </span>
+                      {wep.hands && wep.hands > 1 && (
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#8B0000]/30 text-[#E53935] font-bold">
+                          {wep.hands}-HANDED
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="text-[11px] font-mono text-[#8E95A5] flex items-center space-x-3">
+                      <span>Mod: <strong className="text-[#ECEFF4]">{wep.modifiers}</strong></span>
+                      <span>•</span>
+                      <span>Dmg: <strong className="text-[#ECEFF4]">{wep.damage}</strong></span>
+                    </div>
+
+                    {wep.keywords && wep.keywords.length > 0 && (
+                      <div className="flex flex-wrap gap-1 pt-0.5">
+                        {wep.keywords.map((kw, i) => (
+                          <span key={i} className="text-[9px] font-mono px-1 py-0.1 rounded bg-[#0C0E12] border border-[#323846] text-[#D4AF37]">
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-3 flex-shrink-0">
+                    <span className="font-mono font-bold text-sm text-[#D4AF37]">{wep.cost} D</span>
+                    <button
+                      onClick={() => handleEquipWeapon(wep)}
+                      className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded transition-colors"
+                      title="Equip Weapon"
                     >
-                      <div className="space-y-1 flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <strong className="font-gothic font-bold text-sm text-[#ECEFF4]">{wep.name}</strong>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#8E95A5]">
-                            {wep.type} • {wep.range}
-                          </span>
-                          {is2H && (
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#8B0000]/40 text-[#E53935] font-bold">
-                              2-HANDED
-                            </span>
-                          )}
-                          {wep.factionId && wep.factionId !== 'universal' && (
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30">
-                              {wep.factionId}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-[#8E95A5]">
-                          <span>Mod: <strong className="text-[#ECEFF4]">{wep.modifiers || '+0'}</strong></span>
-                          <span>Dmg: <strong className="text-[#ECEFF4]">{wep.damage || 'Standard'}</strong></span>
-                        </div>
-
-                        {wep.keywords && wep.keywords.length > 0 && (
-                          <div className="flex flex-wrap gap-1 pt-0.5">
-                            {wep.keywords.map((kw, kIdx) => (
-                              <span key={kIdx} className="text-[9px] px-1 py-0.2 rounded bg-[#161920] text-[#D4AF37]">
-                                {kw}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-center space-x-3 flex-shrink-0">
-                        <strong className="text-sm font-bold text-[#D4AF37]">{wep.cost} D</strong>
-                        <button
-                          onClick={() => handleEquipWeapon(wep)}
-                          className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-bold shadow flex items-center justify-center transition-colors"
-                          title="Equip Weapon"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
           )}
 
-          {/* ARMOUR LIST */}
+          {/* TAB 2: ARMOUR */}
           {tab === 'armour' && (
-            <div className="space-y-2">
-              {displayedArmour.length === 0 ? (
-                <p className="text-center text-[#8E95A5] py-8 italic">No armour suites match the filter.</p>
-              ) : (
-                displayedArmour.map((arm) => (
-                  <div
-                    key={arm.id}
-                    className="p-3 bg-[#0C0E12] border border-[#323846] rounded-md flex items-center justify-between gap-3 hover:border-[#D4AF37]/50 transition-colors"
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center space-x-2">
-                        <strong className="font-gothic font-bold text-sm text-[#ECEFF4]">{arm.name}</strong>
-                        {arm.factionId && arm.factionId !== 'universal' && (
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30">
-                            {arm.factionId}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-[#D4AF37]">
-                        Protection: <strong>{arm.armourModifier || arm.modifier}</strong>
-                      </div>
-                      <p className="text-[11px] text-[#8E95A5] leading-relaxed">
-                        {arm.description}
-                      </p>
+            displayedArmour.length === 0 ? (
+              <p className="text-[#8E95A5] italic text-center py-12">No armour found matching criteria.</p>
+            ) : (
+              displayedArmour.map((arm) => (
+                <div
+                  key={arm.id}
+                  className="p-3 bg-[#161920] border border-[#323846] rounded-md hover:border-[#D4AF37]/70 transition-all flex items-center justify-between gap-4"
+                >
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <h4 className="font-gothic font-bold text-sm text-[#ECEFF4] truncate">{arm.name}</h4>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] font-bold">
+                        {arm.armourModifier || arm.modifier}
+                      </span>
                     </div>
-
-                    <div className="flex items-center space-x-3 flex-shrink-0">
-                      <strong className="text-sm font-bold text-[#D4AF37]">{arm.cost} D</strong>
-                      <button
-                        onClick={() => handleEquipArmour(arm)}
-                        className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-bold shadow flex items-center justify-center transition-colors"
-                        title="Equip Armour"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <p className="text-[11px] text-[#8E95A5] leading-relaxed">{arm.description}</p>
                   </div>
-                ))
-              )}
-            </div>
+
+                  <div className="flex items-center space-x-3 flex-shrink-0">
+                    <span className="font-mono font-bold text-sm text-[#D4AF37]">{arm.cost} D</span>
+                    <button
+                      onClick={() => handleEquipArmour(arm)}
+                      className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded transition-colors"
+                      title="Equip Armour"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
           )}
 
-          {/* EQUIPMENT LIST */}
+          {/* TAB 3: EQUIPMENT & RELICS */}
           {tab === 'equipment' && (
-            <div className="space-y-2">
-              {displayedEquipment.length === 0 ? (
-                <p className="text-center text-[#8E95A5] py-8 italic">No equipment matches the filter.</p>
-              ) : (
-                displayedEquipment.map((eq) => (
-                  <div
-                    key={eq.id}
-                    className="p-3 bg-[#0C0E12] border border-[#323846] rounded-md flex items-center justify-between gap-3 hover:border-[#D4AF37]/50 transition-colors"
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center space-x-2">
-                        <strong className="font-gothic font-bold text-sm text-[#ECEFF4]">{eq.name}</strong>
-                        {eq.factionId && eq.factionId !== 'universal' && (
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#D4AF37] border border-[#D4AF37]/30">
-                            {eq.factionId}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#8E95A5] leading-relaxed">
-                        {eq.effect || eq.description}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center space-x-3 flex-shrink-0">
-                      <strong className="text-sm font-bold text-[#D4AF37]">{eq.cost} D</strong>
-                      <button
-                        onClick={() => handleEquipEquipment(eq)}
-                        className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-bold shadow flex items-center justify-center transition-colors"
-                        title="Add Equipment"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
+            displayedEquipment.length === 0 ? (
+              <p className="text-[#8E95A5] italic text-center py-12">No equipment or relics found matching criteria.</p>
+            ) : (
+              displayedEquipment.map((eq) => (
+                <div
+                  key={eq.id}
+                  className="p-3 bg-[#161920] border border-[#323846] rounded-md hover:border-[#D4AF37]/70 transition-all flex items-center justify-between gap-4"
+                >
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <h4 className="font-gothic font-bold text-sm text-[#ECEFF4] truncate">{eq.name}</h4>
+                    <p className="text-[11px] text-[#8E95A5] leading-relaxed">{eq.effect || eq.description}</p>
                   </div>
-                ))
-              )}
-            </div>
+
+                  <div className="flex items-center space-x-3 flex-shrink-0">
+                    <span className="font-mono font-bold text-sm text-[#D4AF37]">{eq.cost} D</span>
+                    <button
+                      onClick={() => handleEquipEquipment(eq)}
+                      className="p-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded transition-colors"
+                      title="Equip Item"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
           )}
 
         </div>
 
-        {/* Footer */}
-        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-[10px] text-[#8E95A5]">
-            Warrior Cost: <strong className="text-[#D4AF37]">{unit?.totalCost} Ducats</strong>
-          </span>
+        {/* Fixed Footer */}
+        <div className="p-3 bg-[#161920] border-t border-[#323846] flex items-center justify-between flex-shrink-0">
+          <div className="text-xs text-[#8E95A5]">
+            Warrior Cost: <strong className="text-[#D4AF37] font-mono">{unit?.totalCost || 0} Ducats</strong>
+          </div>
           <button
             onClick={onClose}
-            className="px-5 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+            className="px-6 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow transition-colors"
           >
             Done
           </button>

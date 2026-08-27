@@ -24,7 +24,9 @@ import {
   BookOpen, 
   Users, 
   Check,
-  Dices
+  Dices,
+  Zap,
+  FlaskConical
 } from 'lucide-react';
 
 interface UnitAdvancementModalProps {
@@ -56,6 +58,17 @@ const FACTION_SPECIAL_UPGRADES: Record<string, { category: string; maxSelect: nu
   }
 };
 
+const HOMUNCULUS_ALCHEMICAL_FORMULAS = [
+  { id: 'form-third-arm', name: 'Third Arm (Extra Limb)', cost: 10, category: 'Alchemical Formula', description: 'Grafts an additional functional arm, increasing melee and weapon capacity by +1 hand.' },
+  { id: 'form-compound-eyes', name: 'Compound Alchemical Eyes', cost: 10, category: 'Alchemical Formula', description: 'True sight that penetrates smoke & shroud penalties, granting +1 DICE on Ranged attacks.' },
+  { id: 'form-tough-hide', name: 'Toughened Hide (TOUGH)', cost: 15, category: 'Alchemical Formula', description: 'Dense synthetic carapace. Gains TOUGH keyword (+1 Injury defense, ignores first Down result).' },
+  { id: 'form-muscle-graft', name: 'Muscle Grafting (STRONG)', cost: 15, category: 'Alchemical Formula', description: 'Enhanced muscle fibers. Gains STRONG keyword (can wield 2-handed melee weapons in 1 hand).' },
+  { id: 'form-acid-blood', name: 'Mercury / Acidic Blood', cost: 10, category: 'Alchemical Formula', description: 'When wounded in melee combat, the attacker suffers D3 caustic chemical damage.' },
+  { id: 'form-elongated-tendons', name: 'Elongated Tendons', cost: 10, category: 'Alchemical Formula', description: 'Lengthened sinew cords granting +2" Movement.' },
+  { id: 'form-regenerative-bile', name: 'Regenerative Bile (REGENERATE 1)', cost: 20, category: 'Alchemical Formula', description: 'Self-repairing bio-organ that regenerates 1 wound or clears Downed on a 4+ at start of turn.' },
+  { id: 'form-chameleon-skin', name: 'Chameleon Skin', cost: 10, category: 'Alchemical Formula', description: 'Adaptive pigmentation. Counts as being in hard cover when targeted from > 12" away.' }
+];
+
 const FIRETEAMS = [
   { id: 'ft-mamluk-guarded', name: 'Fireteam: Mamluk-Guarded', cost: 0, description: 'Warrior forms a symbiotic protective bond with an adjacent heavy Mamluk warrior.' },
   { id: 'ft-mind-linked', name: 'Fireteam: Mind-Linked', cost: 0, description: 'Telepathic battlefield synchronization via alchemical or holy frequency.' },
@@ -81,7 +94,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const activeWarband = getActiveWarband();
   const factionId = activeWarband?.factionId || 'universal';
 
-  const [activeTab, setActiveTab] = useState<'advancement' | 'skills' | 'injuries' | 'upgrades'>('advancement');
+  const isHomunculus = Boolean(
+    /homunculus|takwin/i.test(unit.profileSnapshot.name) ||
+    /homunculus|takwin/i.test(unit.customName) ||
+    unit.profileSnapshot.innateAbilities?.some(a => /homunculus|takwin/i.test(a.name) || /homunculus|takwin/i.test(a.description))
+  );
+
+  const [activeTab, setActiveTab] = useState<'advancement' | 'skills' | 'injuries' | 'formulas' | 'upgrades'>(
+    isHomunculus ? 'formulas' : 'advancement'
+  );
   const [selectedSkillCategory, setSelectedSkillCategory] = useState<'melee' | 'ranged' | 'stealth' | 'wildcard'>('melee');
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
@@ -105,7 +126,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
   const handleToggleElite = () => {
     updateUnitAdvancement(warbandId, unit.id, unit.xp || 0, !unit.isElite);
-    soundEffects.playCathedralBell();
   };
 
   const handleAddSkill = () => {
@@ -118,7 +138,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         roll: skillObj.roll,
         effect: skillObj.description
       });
-      soundEffects.playCathedralBell();
       setSelectedSkillName('');
     }
   };
@@ -132,7 +151,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         roll: injuryObj.roll,
         effect: injuryObj.description
       });
-      soundEffects.playGunfire();
       setSelectedInjuryRoll('');
     }
   };
@@ -143,185 +161,255 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-2xl max-h-[90vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[92vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Header */}
         <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37] text-[#D4AF37]">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
             </div>
             <div>
-              <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
-                WARRIOR ADVANCEMENT & UPGRADES
-              </h3>
-              <span className="text-[10px] text-[#8E95A5] block">
-                {unit.customName} • {unit.profileSnapshot.name} ({unit.profileSnapshot.category})
-              </span>
+              <div className="flex items-center space-x-2">
+                <h2 className="font-gothic font-bold text-base sm:text-lg text-white">
+                  {unit.customName}
+                </h2>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#323846] text-[#D4AF37] uppercase font-bold">
+                  {unit.profileSnapshot.name}
+                </span>
+                {unit.isElite && (
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#7C4DFF] text-white uppercase font-bold">
+                    Elite
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#8E95A5] font-mono">
+                Advancement, Compendium Skills, Trauma Scars & Faction Traits
+              </p>
             </div>
           </div>
-
-          <button
+          <button 
             onClick={onClose}
-            className="text-[#8E95A5] hover:text-white p-1"
+            className="text-[#8E95A5] hover:text-white p-1 rounded transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#323846] bg-[#161920] px-4 pt-2 gap-2 overflow-x-auto">
-          {[
-            { id: 'advancement', label: 'XP & Progression', icon: <Sparkles className="w-3.5 h-3.5" /> },
-            { id: 'skills', label: `Skills (${unitSkills.length})`, icon: <BookOpen className="w-3.5 h-3.5" /> },
-            { id: 'injuries', label: `Scars & Injuries (${unitScars.length})`, icon: <Skull className="w-3.5 h-3.5" /> },
-            { id: 'upgrades', label: 'Faction Traits & Fireteams', icon: <Flame className="w-3.5 h-3.5 text-[#D4AF37]" /> }
-          ].map((t) => (
+        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-[#323846] bg-[#161920] overflow-x-auto">
+          
+          {isHomunculus && (
             <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id as any)}
-              className={`px-3 py-2 border-b-2 font-bold uppercase flex items-center space-x-1.5 transition-colors whitespace-nowrap text-xs ${
-                activeTab === t.id
-                  ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t'
-                  : 'border-transparent text-[#8E95A5] hover:text-[#ECEFF4]'
+              onClick={() => setActiveTab('formulas')}
+              className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'formulas' 
+                  ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                  : 'border-transparent text-[#8E95A5] hover:text-white'
               }`}
             >
-              {t.icon}
-              <span>{t.label}</span>
+              <FlaskConical className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Alchemical Formulas</span>
             </button>
-          ))}
+          )}
+
+          <button
+            onClick={() => setActiveTab('advancement')}
+            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'advancement' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>XP & Promotion</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('skills')}
+            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'skills' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Skills ({unitSkills.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('injuries')}
+            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'injuries' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <Skull className="w-3.5 h-3.5" />
+            <span>Trauma Scars ({unitScars.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('upgrades')}
+            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === 'upgrades' 
+                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
+                : 'border-transparent text-[#8E95A5] hover:text-white'
+            }`}
+          >
+            <Flame className="w-3.5 h-3.5" />
+            <span>Faction Traits</span>
+          </button>
         </div>
 
-        {/* Body Content */}
+        {/* Tab Content */}
         <div className="p-5 overflow-y-auto space-y-4 flex-1">
           
+          {/* TAB 0: HOMUNCULUS ALCHEMICAL FORMULAS */}
+          {activeTab === 'formulas' && isHomunculus && (
+            <div className="space-y-4">
+              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#D4AF37]/50 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <FlaskConical className="w-4 h-4 text-[#D4AF37]" />
+                  <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+                    Takwin Homunculus Alchemical Formulations
+                  </strong>
+                </div>
+                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                  Homunculi created through the Secrets of Takwin or discovered via the Book of Golems may be infused with experimental alchemical formulas upon recruitment and between campaign battles.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {HOMUNCULUS_ALCHEMICAL_FORMULAS.map((formula) => {
+                  const isSelected = unitUpgrades.some(u => u.id === formula.id);
+                  return (
+                    <div
+                      key={formula.id}
+                      onClick={() => toggleUnitSpecialUpgrade(warbandId, unit.id, {
+                        id: formula.id,
+                        name: formula.name,
+                        cost: formula.cost,
+                        category: 'Alchemical Formula'
+                      })}
+                      className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
+                        isSelected
+                          ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40 shadow'
+                          : 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {}}
+                            className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                          />
+                          <strong className={`text-xs ${isSelected ? 'text-[#D4AF37] font-bold' : 'text-[#ECEFF4]'}`}>
+                            {formula.name}
+                          </strong>
+                          <span className="text-[10px] font-bold text-[#D4AF37]">
+                            +{formula.cost} Ducats
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#8E95A5] pl-6 leading-relaxed">
+                          {formula.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* TAB 1: ADVANCEMENT & XP */}
           {activeTab === 'advancement' && (
             <div className="space-y-4">
               
-              {/* XP Box */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                    Experience Points (XP):
-                  </span>
-                  <div className="flex items-baseline space-x-2 pt-1">
-                    <strong className="text-2xl font-bold text-[#D4AF37]">{unit.xp || 0} XP</strong>
-                    <span className="text-xs text-[#8E95A5]">
-                      ({Math.floor((unit.xp || 0) / 5)} Advancement Rolls Earned)
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-[#8E95A5] pt-1">
-                    Every 5 XP gained allows a warrior to roll on the official Campaign Skills Table.
+              {/* XP Counter Card */}
+              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-xs uppercase text-[#8E95A5] font-bold block">Experience Points (XP)</span>
+                  <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                    Warriors gain 1 XP per match survived or objective scored. 5 XP unlocks an official Compendium Skill roll.
                   </p>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 flex-shrink-0">
                   <button
                     onClick={() => handleAdjustXp(-1)}
-                    className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold text-sm"
+                    className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-base"
                   >
-                    -1 XP
+                    -
                   </button>
+                  <span className="font-gothic font-bold text-2xl text-[#D4AF37] w-12 text-center">
+                    {unit.xp || 0}
+                  </span>
                   <button
                     onClick={() => handleAdjustXp(1)}
-                    className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow"
+                    className="w-8 h-8 rounded bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold text-base flex items-center justify-center shadow"
                   >
-                    +1 XP
+                    +
                   </button>
                 </div>
               </div>
 
-              {/* Elite Promotion */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex items-center justify-between">
-                <div>
+              {/* Promotion / Elite Designation */}
+              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex items-center justify-between gap-4">
+                <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Crown className="w-4 h-4 text-[#7C4DFF]" />
-                    <strong className="text-sm text-[#ECEFF4]">Elite Promotion</strong>
+                    <strong className="text-xs uppercase text-[#ECEFF4] font-bold">Elite Warrior Promotion</strong>
                   </div>
-                  <p className="text-[10px] text-[#8E95A5] pt-0.5">
-                    Promotes a seasoned Trooper to Elite status, unlocking access to advanced armaments and skill tables.
+                  <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                    Promoting a Trooper to Elite status allows them to select skills across multiple disciplines and increases their survival resilience.
                   </p>
                 </div>
 
                 <button
                   onClick={handleToggleElite}
-                  className={`px-4 py-2 rounded font-bold uppercase text-xs transition-all ${
+                  className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 ${
                     unit.isElite
                       ? 'bg-[#7C4DFF] text-white shadow-lg'
-                      : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                      : 'bg-[#20242E] text-[#8E95A5] border border-[#323846] hover:text-white'
                   }`}
                 >
-                  {unit.isElite ? '✓ Elite Status' : 'Standard Trooper'}
+                  <Crown className="w-3.5 h-3.5" />
+                  <span>{unit.isElite ? 'Elite Veteran' : 'Promote to Elite'}</span>
                 </button>
-              </div>
-
-              {/* Summary List */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-[#D4AF37] block">
-                    Acquired Skills ({unitSkills.length}):
-                  </span>
-                  {unitSkills.length === 0 ? (
-                    <span className="text-[11px] text-[#8E95A5] italic">No skills acquired yet.</span>
-                  ) : (
-                    <div className="space-y-1">
-                      {unitSkills.map((s, idx) => (
-                        <div key={idx} className="text-xs text-[#ECEFF4]">
-                          • <strong>{s.name}</strong> <span className="text-[#D4AF37]">[{s.roll || 'Skill'}]</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-[#E53935] block">
-                    Permanent Battle Scars ({unitScars.length}):
-                  </span>
-                  {unitScars.length === 0 ? (
-                    <span className="text-[11px] text-[#8E95A5] italic">No permanent scars sustained.</span>
-                  ) : (
-                    <div className="space-y-1">
-                      {unitScars.map((s, idx) => (
-                        <div key={idx} className="text-xs text-[#ECEFF4]">
-                          • <strong>{s.name}</strong> <span className="text-[#E53935]">[{s.roll || 'Scar'}]</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
               </div>
 
             </div>
           )}
 
-          {/* TAB 2: SKILLS */}
+          {/* TAB 2: COMPENDIUM SKILLS */}
           {activeTab === 'skills' && (
             <div className="space-y-4">
               
-              {/* Add Skill Form */}
+              {/* Skill Discipline Sub-tabs */}
+              <div className="flex items-center space-x-1 bg-[#0C0E12] p-1 rounded border border-[#323846]">
+                {(['melee', 'ranged', 'stealth', 'wildcard'] as const).map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedSkillCategory(cat)}
+                    className={`flex-1 py-1.5 text-center font-bold uppercase text-[10px] rounded transition-all ${
+                      selectedSkillCategory === cat
+                        ? 'bg-[#D4AF37] text-black shadow'
+                        : 'text-[#8E95A5] hover:text-white'
+                    }`}
+                  >
+                    {cat} Skills
+                  </button>
+                ))}
+              </div>
+
+              {/* Add Skill Dropdown */}
               <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] space-y-3">
-                <div className="flex items-center justify-between">
-                  <strong className="text-xs uppercase text-[#D4AF37] font-bold">
-                    Learn New Skill (From Official Compendium)
-                  </strong>
-                  <div className="flex space-x-1">
-                    {(['melee', 'ranged', 'stealth', 'wildcard'] as const).map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedSkillCategory(cat)}
-                        className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold transition-colors ${
-                          selectedSkillCategory === cat
-                            ? 'bg-[#D4AF37] text-black'
-                            : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+                  Learn Skill from {selectedSkillCategory.toUpperCase()} Discipline
+                </strong>
 
                 <div className="flex gap-2">
                   <select
@@ -329,10 +417,10 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     onChange={(e) => setSelectedSkillName(e.target.value)}
                     className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
                   >
-                    <option value="">-- Select {selectedSkillCategory.toUpperCase()} Skill --</option>
+                    <option value="">-- Select Skill --</option>
                     {currentCategorySkills.map((s) => (
                       <option key={s.name} value={s.name}>
-                        {s.name} (Roll: [{s.roll}])
+                        [{s.roll}] {s.name} - {s.description.slice(0, 50)}...
                       </option>
                     ))}
                   </select>
@@ -351,11 +439,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               {/* Acquired Skills List */}
               <div className="space-y-2">
                 <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Active Warrior Skills ({unitSkills.length}):
+                  Active Acquired Skills ({unitSkills.length}):
                 </span>
                 {unitSkills.length === 0 ? (
                   <p className="text-xs text-[#8E95A5] italic p-4 bg-[#0C0E12] rounded border border-[#323846] text-center">
-                    No skills acquired yet. Add skills through battle experience or campaign rewards.
+                    Warrior has not acquired any compendium skills yet.
                   </p>
                 ) : (
                   unitSkills.map((s, idx) => (

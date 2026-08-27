@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { ActiveUnit } from '../../types/warband';
 import { useStore } from '../../store/useStore';
-import { soundEffects } from '../../services/soundEffects';
 import { 
   Scroll, 
   X, 
@@ -28,66 +27,46 @@ interface UnitLoreModalProps {
   onClose: () => void;
 }
 
-const COMMON_TITLES_POOL = [
-  'the Living Engineer',
-  'the Crippled',
-  'the Undying',
-  'Scourge of New Antioch',
-  'Bearer of the Black Chalice',
-  'Iron Champion',
-  'the Merciful',
-  'the Unbroken',
-  'the Ironclad',
-  'the Pious',
-  'the Martyr',
-  'the Heretic-Hunter',
-  'the Blessed',
-  'of the Red Sand',
-  'the Unforgiven',
-  'the Exalted Alchemist',
-  'the Grim',
-  'the Relentless'
-];
-
 export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, onClose }) => {
-  const { updateUnitLore } = useStore();
+  const { updateUnitLore, updateUnitName } = useStore();
 
   const [activeTab, setActiveTab] = useState<'titles' | 'deeds' | 'bio'>('titles');
+  
+  // Clean base name: if customName already ended with existing titles, keep base clean
+  const [baseName, setBaseName] = useState<string>(unit.customName || unit.profileSnapshot.name);
   const [loreText, setLoreText] = useState(unit.lore || '');
   const [quoteText, setQuoteText] = useState(unit.quote || '');
   const [activeTitles, setActiveTitles] = useState<string[]>(unit.titles || []);
-  const [customTitlesPool, setCustomTitlesPool] = useState<string[]>(COMMON_TITLES_POOL);
   const [deeds, setDeeds] = useState<string[]>(unit.deeds || []);
 
   const [newTitleInput, setNewTitleInput] = useState('');
   const [newDeedInput, setNewDeedInput] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
-  const handleToggleTitle = (title: string) => {
-    let updated: string[] = [];
-    if (activeTitles.includes(title)) {
-      updated = activeTitles.filter(t => t !== title);
-    } else {
-      updated = [...activeTitles, title];
-    }
-    setActiveTitles(updated);
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
-    soundEffects.playCathedralBell();
+  const handleSaveNameAndTitles = (updatedTitles?: string[]) => {
+    const titlesToSave = updatedTitles !== undefined ? updatedTitles : activeTitles;
+    const cleanName = baseName.trim() || unit.profileSnapshot.name;
+    updateUnitName(warbandId, unit.id, cleanName);
+    updateUnitLore(warbandId, unit.id, loreText, quoteText, titlesToSave, deeds);
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2000);
   };
 
-  const handleAddCustomTitle = () => {
+  const handleAddTitle = () => {
     if (!newTitleInput.trim()) return;
     const title = newTitleInput.trim();
-    if (!customTitlesPool.includes(title)) {
-      setCustomTitlesPool(prev => [...prev, title]);
-    }
     if (!activeTitles.includes(title)) {
       const updated = [...activeTitles, title];
       setActiveTitles(updated);
-      updateUnitLore(warbandId, unit.id, loreText, quoteText, updated, deeds);
+      handleSaveNameAndTitles(updated);
     }
     setNewTitleInput('');
-    soundEffects.playCathedralBell();
+  };
+
+  const handleRemoveTitle = (idx: number) => {
+    const updated = activeTitles.filter((_, i) => i !== idx);
+    setActiveTitles(updated);
+    handleSaveNameAndTitles(updated);
   };
 
   const handleAddDeed = () => {
@@ -96,7 +75,6 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
     setDeeds(updated);
     setNewDeedInput('');
     updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, updated);
-    soundEffects.playGunfire();
   };
 
   const handleRemoveDeed = (idx: number) => {
@@ -106,15 +84,12 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
   };
 
   const handleSaveBio = () => {
-    updateUnitLore(warbandId, unit.id, loreText, quoteText, activeTitles, deeds);
-    setIsSaved(true);
-    soundEffects.playCathedralBell();
-    setTimeout(() => setIsSaved(false), 2000);
+    handleSaveNameAndTitles();
   };
 
   const fullPreviewName = activeTitles.length > 0
-    ? `${unit.customName}, ${activeTitles.join(', ')}`
-    : unit.customName;
+    ? `${baseName.trim() || unit.profileSnapshot.name}, ${activeTitles.join(', ')}`
+    : (baseName.trim() || unit.profileSnapshot.name);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
@@ -156,7 +131,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Title Management ({activeTitles.length})</span>
+            <span>Name & Titles ({activeTitles.length})</span>
           </button>
 
           <button
@@ -187,79 +162,95 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
         {/* Tab Content */}
         <div className="p-5 overflow-y-auto space-y-4 flex-1">
           
-          {/* TAB 1: TITLE MANAGEMENT */}
+          {/* TAB 1: NAME & TITLE MANAGEMENT */}
           {activeTab === 'titles' && (
             <div className="space-y-4">
               
-              {/* Title Management Banner */}
-              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#323846] space-y-1.5">
-                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Active Display Name:
-                </span>
-                <strong className="text-base font-gothic text-[#D4AF37] block">
-                  {fullPreviewName}
-                </strong>
-                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
-                  Select one or more honorific titles from the pool below, or type a custom title to affix to this warrior's name.
-                </p>
+              {/* Name Edit Card */}
+              <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
+                <label className="text-[11px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1.5">
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>Warrior Base Name:</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={baseName}
+                    onChange={(e) => setBaseName(e.target.value)}
+                    placeholder="Enter base warrior name (e.g. Kasim bin Malik)..."
+                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] font-gothic text-sm focus:outline-none focus:border-[#D4AF37]"
+                  />
+                  <button
+                    onClick={() => handleSaveNameAndTitles()}
+                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Save Name</span>
+                  </button>
+                </div>
+                <div className="text-[11px] text-[#8E95A5]">
+                  Full Display Name Preview: <strong className="text-[#ECEFF4]">{fullPreviewName}</strong>
+                </div>
               </div>
 
-              {/* Add Custom Title */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Enter custom title (e.g. 'the Unforgiven', 'of the Iron Wall')..."
-                  value={newTitleInput}
-                  onChange={(e) => setNewTitleInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddCustomTitle()}
-                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
-                />
-                <button
-                  onClick={handleAddCustomTitle}
-                  disabled={!newTitleInput.trim()}
-                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Title</span>
-                </button>
+              {/* Add Custom Title Input */}
+              <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
+                <label className="text-[11px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Add Honorific Title:</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Type title to add (e.g. 'the Living Engineer', 'the Undying', 'the Unbroken')..."
+                    value={newTitleInput}
+                    onChange={(e) => setNewTitleInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddTitle()}
+                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  />
+                  <button
+                    onClick={handleAddTitle}
+                    disabled={!newTitleInput.trim()}
+                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add Title</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Title Selection Pool */}
+              {/* Active Titles List */}
               <div className="space-y-2">
                 <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
-                  Available Honorific Titles Pool:
+                  Active Honorific Titles Attached to Warrior ({activeTitles.length}):
                 </span>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {customTitlesPool.map((title) => {
-                    const isSelected = activeTitles.includes(title);
-                    return (
+                {activeTitles.length === 0 ? (
+                  <div className="p-6 bg-[#0C0E12] rounded border border-[#323846] text-center text-[#8E95A5] italic">
+                    No honorific titles attached to this warrior. Type a title above and click &quot;Add Title&quot; to assign one.
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {activeTitles.map((title, idx) => (
                       <div
-                        key={title}
-                        onClick={() => handleToggleTitle(title)}
-                        className={`p-2.5 rounded border cursor-pointer flex items-center justify-between transition-all ${
-                          isSelected
-                            ? 'bg-[#20242E] border-[#D4AF37] text-[#D4AF37] ring-1 ring-[#D4AF37]/40 font-bold'
-                            : 'bg-[#0C0E12] border-[#323846] text-[#ECEFF4] hover:border-[#8E95A5]'
-                        }`}
+                        key={idx}
+                        className="p-3 bg-[#0C0E12] rounded border border-[#D4AF37]/40 flex items-center justify-between gap-3 hover:border-[#D4AF37] transition-all"
                       >
-                        <div className="flex items-center space-x-2 truncate">
-                          {isSelected ? (
-                            <CheckSquare className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
-                          ) : (
-                            <Square className="w-4 h-4 text-[#8E95A5] flex-shrink-0" />
-                          )}
-                          <span className="truncate">{title}</span>
+                        <div className="flex items-center space-x-2.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0" />
+                          <strong className="text-xs text-[#ECEFF4] font-gothic text-sm">{title}</strong>
                         </div>
-                        {isSelected && (
-                          <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold">
-                            Active
-                          </span>
-                        )}
+                        <button
+                          onClick={() => handleRemoveTitle(idx)}
+                          className="text-[#8E95A5] hover:text-[#E53935] p-1 transition-colors"
+                          title="Remove Title"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
-                    );
-                  })}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
             </div>

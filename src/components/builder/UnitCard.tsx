@@ -88,9 +88,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
     setTimeout(() => setFavouriteSaved(false), 2500);
   };
 
-  // Full name with selected titles
-  const fullDisplayName = unit.titles && unit.titles.length > 0
-    ? `${unit.customName}, ${unit.titles.join(', ')}`
+  // Full name with selected titles (safely filtering out any title already contained in customName)
+  const titlesToAppend = (unit.titles || []).filter(t => !unit.customName.toLowerCase().includes(t.toLowerCase()));
+  const fullDisplayName = titlesToAppend.length > 0
+    ? `${unit.customName}, ${titlesToAppend.join(', ')}`
     : unit.customName;
 
   const toggleAbilityExpand = (id: string) => {
