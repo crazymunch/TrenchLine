@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { AuthModal } from '../auth/AuthModal';
+import { BugReportModal } from '../feedback/BugReportModal';
 import { 
   Skull,
   User,
@@ -20,7 +21,8 @@ import {
   Flag,
   Users,
   BookOpen,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Bug
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -38,6 +40,7 @@ export const Navbar: React.FC = () => {
   const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
 
   const activeWarband = getActiveWarband();
   const currentFaction = factions.find(f => f.id === activeWarband?.factionId);
@@ -144,6 +147,16 @@ export const Navbar: React.FC = () => {
                 </select>
               </div>
 
+              {/* Bug Report Trigger */}
+              <button
+                onClick={() => setIsBugReportOpen(true)}
+                title="Report a Bug / Feedback"
+                className="flex items-center space-x-1 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#8B0000]/60 hover:border-[#8B0000] text-[#E53935] text-xs font-mono transition-colors"
+              >
+                <Bug className="w-3.5 h-3.5" />
+                <span className="hidden md:inline text-[11px] font-bold">Bug Report</span>
+              </button>
+
               {/* Theme Trigger */}
               <button
                 onClick={() => setIsThemeModalOpen(true)}
@@ -225,6 +238,12 @@ export const Navbar: React.FC = () => {
       <ThemeSwitcherModal 
         isOpen={isThemeModalOpen} 
         onClose={() => setIsThemeModalOpen(false)} 
+      />
+
+      {/* Bug Report Modal */}
+      <BugReportModal
+        isOpen={isBugReportOpen}
+        onClose={() => setIsBugReportOpen(false)}
       />
     </>
   );

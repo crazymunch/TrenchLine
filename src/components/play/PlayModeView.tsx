@@ -1060,16 +1060,16 @@ export const PlayModeView: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => updateUnitWounds(viewingWarband.id, unit.id, unit.currentWounds - 1)}
-                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                     >
                       -
                     </button>
-                    <span className="font-bold text-sm text-[#ECEFF4] min-w-[20px] text-center">
+                    <span className="font-bold text-sm sm:text-base text-[#ECEFF4] min-w-[24px] text-center">
                       {unit.currentWounds} / {unit.maxWounds}
                     </span>
                     <button
                       onClick={() => updateUnitWounds(viewingWarband.id, unit.id, unit.currentWounds + 1)}
-                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                     >
                       +
                     </button>
@@ -1085,16 +1085,16 @@ export const PlayModeView: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, unit.bloodMarkers - 1)}
-                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                     >
                       -
                     </button>
-                    <span className="font-bold text-sm text-[#E53935] min-w-[20px] text-center">
+                    <span className="font-bold text-sm sm:text-base text-[#E53935] min-w-[24px] text-center">
                       {unit.bloodMarkers}
                     </span>
                     <button
                       onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, unit.bloodMarkers + 1)}
-                      className="w-6 h-6 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                     >
                       +
                     </button>
@@ -1104,12 +1104,12 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               {/* Status Quick Bar */}
-              <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px]">
+              <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] sm:text-xs">
                 {(['Active', 'Downed', 'Out of Action'] as const).map((st) => (
                   <button
                     key={st}
                     onClick={() => setUnitStatus(viewingWarband.id, unit.id, st)}
-                    className={`py-1.5 rounded font-bold uppercase transition-all ${
+                    className={`py-2 rounded font-bold uppercase transition-all select-none active:scale-95 ${
                       unit.status === st
                         ? st === 'Active'
                           ? 'bg-[#4E9A6E] text-white shadow'
@@ -1149,14 +1149,14 @@ export const PlayModeView: React.FC = () => {
               <div className="flex items-center space-x-2 pt-2 border-t border-[#323846]">
                 <button
                   onClick={() => setAttackingUnit(unit)}
-                  className="flex-1 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#D4AF37] uppercase flex items-center justify-center space-x-1 transition-colors"
+                  className="flex-1 py-2 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#D4AF37] uppercase flex items-center justify-center space-x-1 transition-colors select-none active:scale-95"
                 >
                   <Crosshair className="w-3.5 h-3.5" />
                   <span>Attack</span>
                 </button>
                 <button
                   onClick={() => setRangingUnit(unit)}
-                  className="flex-1 py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#8E95A5] hover:text-white uppercase flex items-center justify-center space-x-1 transition-colors"
+                  className="flex-1 py-2 bg-[#20242E] hover:bg-[#323846] border border-[#323846] rounded font-mono text-xs font-bold text-[#8E95A5] hover:text-white uppercase flex items-center justify-center space-x-1 transition-colors select-none active:scale-95"
                 >
                   <Ruler className="w-3.5 h-3.5" />
                   <span>Range</span>

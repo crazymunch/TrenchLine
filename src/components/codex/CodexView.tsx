@@ -416,12 +416,12 @@ export const CodexView: React.FC = () => {
                     onClick={() => setExpandedScenarioId(isExpanded ? '' : scen.id)}
                     className="w-full p-5 flex items-center justify-between text-left bg-[#161920] hover:bg-[#20242E] transition-colors"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center font-gothic font-bold text-sm text-[#D4AF37]">
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <div className="min-w-[40px] px-2.5 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center font-gothic font-bold text-xs text-[#D4AF37] flex-shrink-0">
                         {scen.roman || scen.number}
                       </div>
-                      <div>
-                        <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                      <div className="min-w-0">
+                        <h3 className="font-gothic font-bold text-base sm:text-lg text-[#ECEFF4] truncate">
                           {scen.name}
                         </h3>
                         <p className="text-xs font-mono text-[#8E95A5] italic">

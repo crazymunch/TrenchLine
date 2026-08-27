@@ -27,7 +27,9 @@ import {
   Crown,
   ChevronRight,
   ExternalLink,
-  BookOpen
+  BookOpen,
+  Bug,
+  Check
 } from 'lucide-react';
 
 export const RosterDirectoryView: React.FC = () => {
@@ -52,6 +54,9 @@ export const RosterDirectoryView: React.FC = () => {
   const [inspectingWarband, setInspectingWarband] = useState<Warband | null>(null);
   const [changelogWarband, setChangelogWarband] = useState<Warband | null>(null);
   const [isLoadingCloud, setIsLoadingCloud] = useState(false);
+  const [isBugListOpen, setIsBugListOpen] = useState(false);
+  const [bugTickets, setBugTickets] = useState<any[]>([]);
+  const [isCopiedAll, setIsCopiedAll] = useState(false);
 
   useEffect(() => {
     fetchAllCloudWarbands();
@@ -124,6 +129,23 @@ export const RosterDirectoryView: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3 flex-shrink-0">
+            <button
+              onClick={async () => {
+                setIsBugListOpen(true);
+                try {
+                  const res = await fetch('/api/bug-reports');
+                  if (res.ok) {
+                    const data = await res.json();
+                    setBugTickets(data.bugReports || []);
+                  }
+                } catch {}
+              }}
+              className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/50 text-[#E53935] border border-[#8B0000] rounded font-mono text-xs font-bold uppercase transition-colors"
+            >
+              <Bug className="w-3.5 h-3.5" />
+              <span>Bug Tickets Log</span>
+            </button>
+
             <button
               onClick={handleRefresh}
               disabled={isLoadingCloud}
@@ -469,6 +491,113 @@ export const RosterDirectoryView: React.FC = () => {
           warband={changelogWarband}
           onClose={() => setChangelogWarband(null)}
         />
+      )}
+
+      {/* Bug Reports / Feedback Log Modal (Admin) */}
+      {isBugListOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[90vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+            {/* Header */}
+            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-1.5 rounded bg-[#8B0000]/30 border border-[#8B0000] text-[#E53935]">
+                  <Bug className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                    COMMUNITY BUG TICKETS & FEEDBACK LOG
+                  </h3>
+                  <span className="text-[10px] text-[#8E95A5] block">
+                    {bugTickets.length} report{bugTickets.length === 1 ? '' : 's'} collected across phones, iPads, and desktops
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsBugListOpen(false)}
+                className="text-[#8E95A5] hover:text-white p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* List */}
+            <div className="p-5 overflow-y-auto space-y-3 flex-1">
+              {bugTickets.length === 0 ? (
+                <div className="p-8 text-center space-y-2 text-[#8E95A5]">
+                  <Bug className="w-8 h-8 text-[#8E95A5] mx-auto opacity-50" />
+                  <p>No bug reports logged yet.</p>
+                </div>
+              ) : (
+                bugTickets.map((ticket, idx) => (
+                  <div key={ticket.id || idx} className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#323846]/60 pb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="px-2 py-0.5 rounded bg-[#8B0000]/40 text-[#E53935] font-bold text-[10px] uppercase">
+                          {ticket.category}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-[#20242E] text-[#D4AF37] text-[10px]">
+                          {ticket.severity}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-[#8E95A5]">
+                        {ticket.timestamp ? new Date(ticket.timestamp).toLocaleString() : 'Recent'}
+                      </span>
+                    </div>
+
+                    <p className="text-[#ECEFF4] whitespace-pre-line text-xs">
+                      {ticket.description}
+                    </p>
+
+                    {ticket.stepsToReproduce && (
+                      <div className="text-[11px] text-[#8E95A5] bg-[#161920] p-2 rounded border border-[#323846]/40">
+                        <strong>Steps:</strong> {ticket.stepsToReproduce}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-[#8E95A5] pt-1 border-t border-[#323846]/40">
+                      <span>Reporter: <strong className="text-[#ECEFF4]">{ticket.submittedBy || ticket.userEmail || 'Anonymous'}</strong></span>
+                      <span>Device: <strong>{ticket.deviceType} ({ticket.screenResolution})</strong></span>
+                      <span>View: <strong>{ticket.currentView}</strong></span>
+                      <span>Ruleset: <strong>v{ticket.rulesetVersion}</strong></span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-[#0C0E12] border-t border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-3">
+              <button
+                onClick={() => {
+                  const dump = bugTickets.map((t) => `### Bug: ${t.category} (${t.severity})
+- **Reporter:** ${t.submittedBy || t.userEmail}
+- **Device:** ${t.deviceType} (${t.screenResolution})
+- **View:** ${t.currentView} (v${t.rulesetVersion})
+- **Description:** ${t.description}
+${t.stepsToReproduce ? `- **Steps:** ${t.stepsToReproduce}` : ''}`).join('\n\n---\n\n');
+                  if (navigator.clipboard) {
+                    navigator.clipboard.writeText(dump);
+                    setIsCopiedAll(true);
+                    setTimeout(() => setIsCopiedAll(false), 2000);
+                  }
+                }}
+                className={`px-4 py-2 rounded font-bold uppercase flex items-center space-x-2 text-xs transition-all ${
+                  isCopiedAll ? 'bg-[#4E9A6E] text-white' : 'bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846]'
+                }`}
+              >
+                {isCopiedAll ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                <span>{isCopiedAll ? 'All Tickets Copied!' : 'Copy All Tickets for AI Agent'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsBugListOpen(false)}
+                className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

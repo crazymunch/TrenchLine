@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { AuthModal } from '../auth/AuthModal';
+import { BugReportModal } from '../feedback/BugReportModal';
 import { 
   Shield, 
   Swords, 
@@ -22,7 +23,8 @@ import {
   Users,
   Crown,
   LogIn,
-  LogOut
+  LogOut,
+  Bug
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -41,6 +43,7 @@ export const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
 
   const isAdmin = session?.user?.email === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
 
@@ -254,7 +257,23 @@ export const Sidebar: React.FC = () => {
             <Palette className="w-4 h-4 flex-shrink-0" style={{ color: activeThemeObj.primaryColor }} />
             {!isCollapsed && (
               <span className="truncate flex-1 text-left text-[#ECEFF4]">
-                Theme: <strong style={{ color: activeThemeObj.primaryColor }}>{activeThemeObj.name.split(' ')[0]}</strong>
+            Theme: <strong style={{ color: activeThemeObj.primaryColor }}>{activeThemeObj.name.split(' ')[0]}</strong>
+              </span>
+            )}
+          </button>
+
+          {/* Bug Report Trigger */}
+          <button
+            onClick={() => setIsBugReportOpen(true)}
+            className={`w-full flex items-center rounded border border-[#8B0000]/60 hover:border-[#8B0000] bg-[#161920] hover:bg-[#20242E] text-xs font-mono text-[#E53935] transition-colors ${
+              isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2.5'
+            }`}
+            title="Report a Bug / Feedback"
+          >
+            <Bug className="w-4 h-4 text-[#E53935] flex-shrink-0" />
+            {!isCollapsed && (
+              <span className="font-bold tracking-wider uppercase text-[11px]">
+                Report a Bug
               </span>
             )}
           </button>
@@ -333,6 +352,12 @@ export const Sidebar: React.FC = () => {
       <ThemeSwitcherModal 
         isOpen={isThemeModalOpen} 
         onClose={() => setIsThemeModalOpen(false)} 
+      />
+
+      {/* Bug Report Modal */}
+      <BugReportModal 
+        isOpen={isBugReportOpen} 
+        onClose={() => setIsBugReportOpen(false)} 
       />
     </>
   );

@@ -2,14 +2,20 @@
 
 import React, { useState } from 'react';
 import { useStore, AppView } from '../../store/useStore';
+import { useSession } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
-import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette, Users } from 'lucide-react';
+import { BugReportModal } from '../feedback/BugReportModal';
+import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette, Users, Bug } from 'lucide-react';
 
 export const MobileNav: React.FC = () => {
   const { currentView, setCurrentView, currentTheme } = useStore();
+  const { data: session } = useSession();
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
   const activeThemeObj = THEMES.find(t => t.id === currentTheme) || THEMES[0];
+
+  const isAdmin = (session?.user as any)?.isAdmin || session?.user?.email === 'crazymunch@gmail.com';
 
   const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
     { id: 'builder', label: 'Roster', icon: <Shield className="w-4 h-4" /> },
@@ -17,13 +23,13 @@ export const MobileNav: React.FC = () => {
     { id: 'campaign', label: 'Campaign', icon: <Flag className="w-4 h-4" /> },
     { id: 'directory', label: 'Directory', icon: <Users className="w-4 h-4" /> },
     { id: 'codex', label: 'Codex', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'customizer', label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }
+    ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }] : [])
   ];
 
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0C0E12]/95 backdrop-blur border-t border-[#323846] px-2 py-1">
-        <div className="grid grid-cols-7 gap-1">
+        <div className={`grid grid-cols-${navItems.length + 2} gap-1`}>
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (
@@ -58,12 +64,28 @@ export const MobileNav: React.FC = () => {
             </div>
             <span className="text-[10px] font-mono mt-1 uppercase font-semibold">Theme</span>
           </button>
+
+          {/* Bug report button on mobile */}
+          <button
+            onClick={() => setIsBugReportOpen(true)}
+            className="flex flex-col items-center justify-center py-2 px-1 rounded transition-colors text-[#E53935]/80 hover:text-[#E53935]"
+          >
+            <div className="relative">
+              <Bug className="w-4 h-4 text-[#E53935]" />
+            </div>
+            <span className="text-[10px] font-mono mt-1 uppercase font-semibold text-[#E53935]">Bug</span>
+          </button>
         </div>
       </nav>
 
       <ThemeSwitcherModal 
         isOpen={isThemeModalOpen} 
         onClose={() => setIsThemeModalOpen(false)} 
+      />
+
+      <BugReportModal
+        isOpen={isBugReportOpen}
+        onClose={() => setIsBugReportOpen(false)}
       />
     </>
   );

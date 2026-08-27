@@ -39,7 +39,7 @@ export default function Home() {
         <Navbar />
 
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 pb-20 lg:pb-6">
           {currentView === 'builder' && <WarbandDashboard />}
           {currentView === 'play' && <PlayModeView />}
           {currentView === 'campaign' && <CampaignHubView />}
