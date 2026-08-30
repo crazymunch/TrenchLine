@@ -3,6 +3,7 @@ import fs from 'node:fs';
 
 import { validateRoster, factionMatches, fireteamCap } from '../validate';
 import { armouryFor, priceOf, restrictionsFor, stocks } from '../armoury';
+import { RULESETS, RULESET_IDS, DEFAULT_RULESET_ID } from '../rulesets';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -361,5 +362,26 @@ describe('faction armouries', () => {
     expect(stocks(sultanate, { name: 'Jezzail' })).toBe(true);
     expect(stocks(sultanate, { name: 'Not A Real Weapon' })).toBe(false);
     expect(priceOf(sultanate, { name: 'Not A Real Weapon' })).toBeNull();
+  });
+});
+
+/* --------------------------------------------------------- ruleset registry */
+
+describe('ruleset registry', () => {
+  it('declares exactly the two rulesets the pipeline builds', () => {
+    expect(RULESET_IDS.sort()).toEqual(['github-latest', 'trenchline']);
+  });
+
+  it('has TrenchLine as the default', () => {
+    expect(DEFAULT_RULESET_ID).toBe('trenchline');
+  });
+
+  // It is imported by both the API route and the client precisely so that
+  // neither ends up bundling a 1.6 MB dataset to find out what exists.
+  it('describes every ruleset without importing any dataset', () => {
+    for (const r of RULESETS) {
+      expect(r.name.length).toBeGreaterThan(0);
+      expect(r.description.length).toBeGreaterThan(20);
+    }
   });
 });
