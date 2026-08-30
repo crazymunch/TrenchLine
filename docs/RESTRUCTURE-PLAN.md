@@ -138,7 +138,7 @@ All four are covered by regression tests.
 | 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
 | 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
 | 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
-| 2.10 | ✅ **Warband Variants** — 17 variants, 16 with ops derived from catalogue modifiers; `validate.ts` uses them in preference to the prose reader. Roster-side `variantId` still needs the UI. ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
+| 2.10 | ✅ **Warband Variants** — 17 variants, 16 with ops derived from catalogue modifiers; `validate.ts` uses them in preference to the prose reader. `VariantPicker` writes `variantId`, and the roster join follows the variant's renames. ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
 | 2.8 | ✅ Provenance UI — `ProvenanceTag`, per field, served per entity from `/api/dataset/provenance` |
 | 2.9 | ✅ 124 tests, including the real 1,320-Ducat roster against the real dataset |
 
@@ -181,18 +181,63 @@ Moving it is a store restructure, not a data change, and `useStore.ts` is the
 2,364-line file Phase 4.2 exists to split — so it is sequenced with that work
 rather than bolted on ahead of it.
 
+### 2.10 — picking a variant, and the joins it exposed
+
+`VariantPicker` writes `variantId`, and with it the House of Wisdom's twelve
+derived ops finally fire. The seeded Al-Qarn Rihla warband went from **1 error
+and 13 unmatched entries to 0 errors and 4**. Three separate join bugs stood
+between the two, each of which failed silently:
+
+**The dataset stores base names; a warband records printed ones.** BattleScribe
+renames `Azeb` to `Kavass` with a modifier conditioned on the variant, so the
+three Kavasses in the warband matched no entry. `variantRenames` reads the
+variant's own `set name` ops, so the join follows the rename instead of guessing.
+
+**Diacritics were stripped, not folded.** `Fāris` normalised to `fris` and
+matched nothing. `nameKey` now decomposes and drops the combining mark, keeping
+the letter, with an explicit fold for the two characters that do not decompose
+(Turkish ı, German ß — the only two that occur across every name in the data).
+One normaliser now serves all five modules that had their own copy.
+
+**A faction is spelled three ways** — `black-grail` in the app,
+`cult-of-the-black-grail` from the rulebook parser, `Black Grail` in the
+catalogues. Comparisons were ad-hoc, so the Black Grail silently resolved to no
+faction record and read no published budget. `factionKey` canonicalises, and a
+test asserts every faction the app offers still resolves.
+
+### 1.4 — the parser was skipping linked gear
+
+Found by asking why the Armoury Table priced a Jezzail the dataset did not
+carry. The catalogues let an entry either inline its profile or reach it through
+an `infoLink`, and the gear walk read only inline profiles — so every linked
+weapon was invisible. `optionsOf` had been taught this for options; the gear
+path never was.
+
+    weapons 543 -> 599, weapons carrying armoury restrictions 35 -> 72
+
+Deliberately narrowed to `Weapon`-typed links. Resolving `Battlekit` links too
+recovers more rows but costs more than it gains: the post-pass lets gear win
+over a unit option, so a Black Grail Strain — a Battlekit reached by link —
+stops being an option on the units allowed to take it and becomes equipment
+anyone can buy, losing the restriction. Options dropped 315 -> 245 when tried.
+
+Twenty Armoury rows still have no profile behind them for that reason. They are
+not treated as missing: the row itself prices the item and says the faction
+stocks it, and the profile only adds range and keywords, so `toRoster` prices
+from the row. Reporting a legally-equipped model as "not in this ruleset" would
+be the worse error.
+
 ### Also outstanding in Phase 2
 
-- **`variantId` is never set on a saved warband.** The field exists on
-  `Warband` and the validator honours it, but no UI writes it, so variant rules
-  do not fire. This is why a House of Wisdom warband still reports "must include
-  1 Yüzbaşı" — a correct rule applied to a warband that has not been told which
-  variant it is. Last mile of 2.10.
 - **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
   Collections* extends the faction armoury; nothing reads that yet, so
   `wargear-not-stocked` is advisory rather than blocking (2.4).
 - **2.5 budget presets** — required entries are enforced through variant ops;
   per-faction starting budgets exist, but presets are not surfaced in the UI.
+- The four entries still unmatched on the seeded warband are all
+  `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
+  state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are
+  hand-written composites. They resolve when recruitment moves (2.11).
 
 ---
 

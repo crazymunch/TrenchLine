@@ -40,6 +40,12 @@ export interface RosterItem {
   /** Weapon, armour or equipment attached to this model. */
   weaponId?: string;
   optionId?: string;
+  /**
+   * The item's name, carried when it was priced from an Armoury Table row that
+   * has no catalogue profile behind it. Validation reports by name, and there
+   * is no `weaponId` to look one up with.
+   */
+  name?: string;
   cost: Cost;
   quantity?: number;
 }

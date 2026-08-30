@@ -16,25 +16,14 @@
  *
  * So: a warband buys from its faction's armoury, exactly as the book reads.
  */
-import type { Dataset, Cost } from '@/types/catalogue';
+import type { Dataset, Armoury, ArmouryRow, Cost } from '@/types/catalogue';
+import { nameKey } from './names';
 
-export interface ArmouryRow {
-  name: string;
-  /** Null where the rulebook lists Battlekit the catalogues do not carry. */
-  weaponId: string | null;
-  /** 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Armour' | 'Equipment' */
-  section: string;
-  cost: Cost;
-  restrictions: string[];
-}
+// The shapes live with the rest of the generated-data model, since that is what
+// the pipeline emits; re-exported here so existing call sites keep working.
+export type { Armoury, ArmouryRow };
 
-export interface Armoury {
-  factionId: string;
-  faction: string;
-  rows: ArmouryRow[];
-}
-
-const key = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+const key = nameKey;
 
 /**
  * The armoury a warband shops from. Matched leniently because roster factions
@@ -43,7 +32,7 @@ const key = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
  * caller has to cope, rather than silently shopping from someone else's list.
  */
 export function armouryFor(dataset: Dataset, factionId: string): Armoury | undefined {
-  const all = (dataset as unknown as { armouries?: Armoury[] }).armouries ?? [];
+  const all = dataset.armouries ?? [];
   const want = key(factionId);
   if (!want) return undefined;
   return (

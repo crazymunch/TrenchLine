@@ -41,6 +41,12 @@ interface AppState {
   updateWarbandDucatLimit: (warbandId: string, ducatLimit: number) => void;
   updateWarbandTreasury: (warbandId: string, treasuryDucats: number) => void;
   updateWarbandGlory: (warbandId: string, gloryPoints: number) => void;
+  /**
+   * Which Warband Variant this warband is built as, e.g. 'houseofwisdom'.
+   * `undefined` means the standard list. Nothing set this before, so every
+   * variant rule in the ruleset went unenforced — see docs/RULESET-MODEL.md §7a.
+   */
+  updateWarbandVariant: (warbandId: string, variantId: string | undefined) => void;
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
@@ -726,6 +732,27 @@ export const useStore = create<AppState>((set, get) => {
           const updatedWb: Warband = {
             ...w,
             gloryPoints: Math.max(0, Number(gloryPoints) || 0),
+            updatedAt: new Date().toISOString()
+          };
+          storage.syncWarbandToCloud(updatedWb);
+          return updatedWb;
+        });
+        storage.saveWarbands(updated);
+        return { warbands: updated };
+      });
+    },
+
+    updateWarbandVariant: (warbandId, variantId) => {
+      set((state) => {
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const updatedWb: Warband = {
+            ...w,
+            // Empty string is the "standard list" choice in the picker, and it
+            // must clear the field rather than store '' — validate.ts matches a
+            // variant by id OR name, and '' would match neither while still
+            // reading as "a variant was chosen".
+            variantId: variantId || undefined,
             updatedAt: new Date().toISOString()
           };
           storage.syncWarbandToCloud(updatedWb);

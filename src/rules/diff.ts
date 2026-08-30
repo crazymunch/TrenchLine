@@ -10,6 +10,7 @@
  * that was computed, not described.
  */
 import type { Dataset, UnitProfile, WeaponProfile, Cost } from '@/types/catalogue';
+import { nameKey } from './names';
 
 export interface FieldChange {
   field: string;
@@ -122,7 +123,7 @@ export function diffDatasets(from: Dataset, to: Dataset): DatasetDiff {
  * generated one.
  */
 export function diffAffecting(diff: DatasetDiff, unitNames: string[]): EntityDiff[] {
-  const key = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const key = nameKey;
   const wanted = new Set(unitNames.map(key));
   return diff.changed.filter((d) => {
     const k = key(d.name);

@@ -11,7 +11,9 @@ import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { soundEffects } from '../../services/soundEffects';
 import { LegalityStrip } from './LegalityStrip';
 import { RulesetSwitcher } from './RulesetSwitcher';
+import { VariantPicker } from './VariantPicker';
 import { useDataset } from '../../rules/useDataset';
+import { variantById } from '../../rules/variants';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { 
   UserPlus, 
@@ -34,7 +36,8 @@ import {
   Check,
   Plus,
   Minus,
-  Settings
+  Settings,
+  Flag,
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -46,7 +49,8 @@ export const WarbandBuilder: React.FC = () => {
     setUnitAsLeader,
     updateWarbandDucatLimit,
     updateWarbandTreasury,
-    updateWarbandGlory
+    updateWarbandGlory,
+    updateWarbandVariant
   } = useStore();
   
   const warband = getActiveWarband();
@@ -60,6 +64,7 @@ export const WarbandBuilder: React.FC = () => {
     return window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
   });
   const [isRulesetOpen, setIsRulesetOpen] = useState(false);
+  const [isVariantOpen, setIsVariantOpen] = useState(false);
   const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
@@ -85,6 +90,8 @@ export const WarbandBuilder: React.FC = () => {
   }
 
   const faction = factions.find((f) => f.id === warband.factionId);
+  // Matched by id or name, so a warband saved with either spelling resolves.
+  const activeVariant = dataset ? variantById(dataset, warband.variantId) : undefined;
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
   const isOverBudget = totalCost > warband.ducatLimit;
 
@@ -205,6 +212,16 @@ export const WarbandBuilder: React.FC = () => {
             </button>
 
             <button
+              onClick={() => setIsVariantOpen(true)}
+              disabled={!dataset}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              title="Which Warband Variant this warband is built as"
+            >
+              <Flag className="w-4 h-4" />
+              <span>{activeVariant?.name ?? 'Standard list'}</span>
+            </button>
+
+            <button
               onClick={() => setIsExportOpen(true)}
               className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Export & Print"
@@ -238,6 +255,20 @@ export const WarbandBuilder: React.FC = () => {
             <LegalityStrip warband={warband} dataset={dataset} rulesetId={rulesetId} />
           </div>
         ) : null}
+
+        {isVariantOpen && dataset && (
+          <VariantPicker
+            dataset={dataset}
+            factionId={warband.factionId}
+            factionName={faction?.name}
+            current={warband.variantId}
+            onPick={(id) => {
+              updateWarbandVariant(warband.id, id);
+              setIsVariantOpen(false);
+            }}
+            onClose={() => setIsVariantOpen(false)}
+          />
+        )}
 
         {isRulesetOpen && dataset && (
           <RulesetSwitcher

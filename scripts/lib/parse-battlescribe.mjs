@@ -507,7 +507,27 @@ export function parseCatalogues(dir) {
     const faction = factionOf(file);
 
     walk(doc, (node) => {
-      const profiles = arr(node?.profiles?.profile);
+      // An entry may inline its profile or reach it through an infoLink, and the
+      // catalogues use both freely for gear as well as for options: the
+      // Sultanate's Jezzail, Siege Jezzail, Wind Amulet, Alchemist Armour and
+      // Titan Zulfiqar all link. Reading only inline profiles skipped every one
+      // of them, so the rulebook priced them in the Armoury Table and the
+      // pipeline had no profile to attach — 14 of 41 Iron Sultanate rows came
+      // through with weaponId null, and a warband carrying one reported it as
+      // "not in this ruleset".
+      // Only Weapon-typed links are pulled in. Resolving Battlekit links here
+      // too would be wrong, because the post-pass below lets gear win over a
+      // unit option, and a Black Grail Strain is a Battlekit reached by link —
+      // so it would stop being an option on the units allowed to take it and
+      // become equipment anyone can buy, losing the restriction entirely.
+      // Battlekit rows the catalogues only reach by link therefore still have
+      // no profile; `fromWarband` prices those from the Armoury Table instead.
+      const linkedProfiles = arr(node?.infoLinks?.infoLink)
+        .filter((l) => attr(l, 'type') === 'profile')
+        .map((l) => byId.get(attr(l, 'targetId')))
+        .filter(Boolean)
+        .filter((pr) => attr(pr, 'typeName') === 'Weapon');
+      const profiles = [...arr(node?.profiles?.profile), ...linkedProfiles];
       if (!profiles.length) return;
 
       const unitProfile = profiles.find((p) => attr(p, 'typeName') === 'Unit');

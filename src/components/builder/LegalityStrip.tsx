@@ -23,6 +23,7 @@ import type { Dataset } from '@/types/catalogue';
 import type { Warband } from '@/types/warband';
 import { toRoster } from '@/rules/fromWarband';
 import { validateRoster, type Violation } from '@/rules/validate';
+import { variantById } from '@/rules/variants';
 import { ProvenanceTag } from './ProvenanceTag';
 
 interface Props {
@@ -46,12 +47,11 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
       return [{ id: u.id, name: u.name, profileId: u.profileId,
                 profileName: byId.get(u.profileId)?.name ?? u.profileId }];
     });
-    const variants = (dataset as unknown as { variants?: { id: string; name: string;
-      specialRules?: { name: string; description: string }[] }[] }).variants ?? [];
     return {
       result: validateRoster(roster, dataset),
       unmatched,
-      variant: variants.find((v) => v.id === warband.variantId),
+      // By id or by name, so a warband saved with either spelling resolves.
+      variant: variantById(dataset, warband.variantId),
       joined,
     };
   }, [warband, dataset]);

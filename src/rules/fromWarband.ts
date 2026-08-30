@@ -18,7 +18,9 @@
 import type { Dataset, UnitProfile } from '@/types/catalogue';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { Roster, RosterUnit, RosterItem } from './costs';
-import { armouryFor, priceOf } from './armoury';
+import { armouryFor, priceOf, offersOf } from './armoury';
+import { factionOf, variantById, variantRenames } from './variants';
+import { nameKey } from './names';
 
 export interface RosterConversion {
   roster: Roster;
@@ -26,7 +28,7 @@ export interface RosterConversion {
   unmatched: { kind: 'unit' | 'wargear'; name: string; on?: string }[];
 }
 
-const key = (s: unknown) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const key = nameKey;
 
 /**
  * Names drift: a saved model may hold the printed name a variant produced
@@ -36,12 +38,30 @@ const key = (s: unknown) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, 
  */
 const PROMOTION_TITLES = /^(favoured|ascendant|blasphemous|putrid|exalted|commissioned officer)\s+/i;
 
-function findProfile(units: UnitProfile[], name: string): UnitProfile | undefined {
+function findProfile(
+  units: UnitProfile[],
+  name: string,
+  /** Printed name -> entry id, for the names this warband's variant renames. */
+  renames: Map<string, string>
+): UnitProfile | undefined {
   const want = key(name);
   if (!want) return undefined;
+  const bare = key(String(name).replace(PROMOTION_TITLES, ''));
+
+  const byRename = (k: string) => {
+    const id = renames.get(k);
+    return id ? units.find((u) => u.entryId === id || u.id === id) : undefined;
+  };
+
   return (
     units.find((u) => key(u.name) === want) ??
-    units.find((u) => key(u.name) === key(String(name).replace(PROMOTION_TITLES, ''))) ??
+    // Before the promotion strip, so a variant that renames to a title-like
+    // name is not mistaken for a promoted model.
+    byRename(want) ??
+    units.find((u) => key(u.name) === bare) ??
+    byRename(bare) ??
+    // Containment is the last resort and the loosest: it is what matches
+    // "Sniper" to "Sniper Priest", and it is why it runs after everything else.
     units.find((u) => key(u.name).includes(want) || want.includes(key(u.name)))
   );
 }
@@ -65,6 +85,17 @@ function itemsOf(
   for (const g of gear) {
     const w = dataset.weapons.find((x) => key(x.name) === key(g.name));
     if (!w) {
+      // The catalogues reach some Battlekit only through a link the parser
+      // cannot follow without turning unit options into equipment, so a real
+      // item can have an Armoury Table row and no profile. That row is still
+      // authority enough to price it and to say the faction stocks it — the
+      // profile only adds range and keywords. Treating it as unmatched would
+      // report a legally-equipped model as not in the ruleset.
+      const row = offersOf(armoury, { name: g.name })[0];
+      if (row) {
+        out.push({ weaponId: row.weaponId ?? undefined, name: g.name, cost: row.cost, quantity: 1 });
+        continue;
+      }
       unmatched.push({ kind: 'wargear', name: g.name, on: unit.customName });
       continue;
     }
@@ -81,10 +112,15 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
   const unmatched: RosterConversion['unmatched'] = [];
   const units: RosterUnit[] = [];
 
+  // A saved warband records the name the player saw, which for a variant that
+  // renames an entry is not the name the dataset stores. Without this, every
+  // Kavass in a House of Wisdom warband fails to join.
+  const renames = variantRenames(variantById(dataset, warband.variantId));
+
   for (const u of warband.units ?? []) {
     const profile =
-      findProfile(dataset.units, u.profileSnapshot?.name ?? '') ??
-      findProfile(dataset.units, u.customName ?? '');
+      findProfile(dataset.units, u.profileSnapshot?.name ?? '', renames) ??
+      findProfile(dataset.units, u.customName ?? '', renames);
 
     if (!profile) {
       unmatched.push({ kind: 'unit', name: u.profileSnapshot?.name || u.customName || '(unnamed)' });
@@ -121,8 +157,11 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
       ducats: warband.ducatLimit ?? 0,
       // The warband stores Glory as a running total rather than a limit; the
       // faction's own budget is the ceiling where one is published.
-      glory: (dataset as unknown as { factions?: { id: string; budget?: { glory: number } }[] })
-        .factions?.find((f) => key(f.id) === key(warband.factionId))?.budget?.glory
+      //
+      // Matched through `factionOf`, not a bare key comparison: the rulebook
+      // parser writes 'cult-of-the-black-grail' where the app says 'black-grail',
+      // so a direct match silently missed the Black Grail's record entirely.
+      glory: factionOf(dataset, warband.factionId)?.budget?.glory
         ?? warband.gloryPoints ?? 0,
     },
   };

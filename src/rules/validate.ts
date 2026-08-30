@@ -14,6 +14,7 @@ import type { Roster, RosterUnit } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
 import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
+import { nameKey } from './names';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -144,7 +145,7 @@ function checkRecruitmentLimits(
 
 /** Catalogue faction ids are file names ("Iron Sultanate"); rosters use slugs. */
 export function factionMatches(a: string, b: string): boolean {
-  const k = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const k = nameKey;
   return k(a) === k(b) || k(a).includes(k(b)) || k(b).includes(k(a));
 }
 

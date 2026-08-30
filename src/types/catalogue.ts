@@ -246,6 +246,13 @@ export interface Faction {
   id: string;
   name: string;
   specialRules: FactionSpecialRule[];
+  /**
+   * True when the book states this faction has no special rules — distinct from
+   * an empty `specialRules`, which would also mean "we failed to find any".
+   */
+  noSpecialRules?: boolean;
+  /** The published starting budget, where the book gives one. */
+  budget?: Partial<Cost>;
   variants: WarbandVariant[];
   /** Presentation only; never rules. */
   color?: string;
@@ -310,11 +317,38 @@ export interface Ruleset {
 
 /* ------------------------------------------------------------- the bundle */
 
+/** One priced offer of one piece of wargear in one faction's Armoury Table. */
+export interface ArmouryRow {
+  name: string;
+  /** Null where the rulebook lists Battlekit the catalogues do not carry. */
+  weaponId: string | null;
+  /** 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Armour' | 'Equipment' */
+  section: string;
+  cost: Cost;
+  restrictions: string[];
+}
+
+/**
+ * A faction's Armoury Table: the pricing and legality authority for wargear.
+ *
+ * Pricing is per faction — an Automatic Rifle is 40 Ducats in one armoury and
+ * 2 Glory in another — so this cannot collapse into `WeaponProfile.cost`.
+ */
+export interface Armoury {
+  factionId: string;
+  faction: string;
+  rows: ArmouryRow[];
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
   weapons: WeaponProfile[];
   keywords: Keyword[];
+  /** One per faction that publishes an Armoury Table. */
+  armouries: Armoury[];
+  /** Every Warband Variant, with its rules and its derived ops. */
+  variants: WarbandVariant[];
   meta: {
     rulesetId: string;
     /** The pinned catalogue commit. No build timestamp — output is reproducible. */

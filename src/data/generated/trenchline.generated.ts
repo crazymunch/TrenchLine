@@ -28423,6 +28423,639 @@ export const DATASET: Dataset = {
   ],
   "weapons": [
     {
+      "id": "ddce-6e00-e451-7281",
+      "entryId": "dc98-a4c1-0597-744b",
+      "name": "Parasite Grenades",
+      "type": "Grenades",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "FUMBLE"
+      ],
+      "rules": "Terrifying Hallucinations: If a Parasite Grenade hits a target, after resolving the Injury Roll, you can move the target model 3\". The move must be in a straight line, but can be in any direction, and can be used to make the model move within 1\" of an enemy, make a retreat move, Climb, Jump, or Jump Down. The model cannot make a Diving Charge and does not count as charging if it finishes the move within 1\" of an enemy model.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "37e8-fbe9-0123-abe7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "c403-778c-1c4f-ec6e",
+      "entryId": "23c3-ce02-f625-47d4",
+      "name": "Plague Blade",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "INFECTION MARKERS"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 7,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "258d-bdbe-189e-18a0",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:258d-bdbe-189e-18a0",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:258d-bdbe-189e-18a0",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a7be-2afb-dd87-9cd5",
+            "childName": "Entitled To Plague Blades",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "6c2c-bd2c-d794-fb34",
+      "entryId": "5d56-00d0-4830-83f0",
+      "name": "Beelzebub's Axe",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY DICE",
+        "HEAVY",
+        "INFECTION MARKERS"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c248-58c9-6743-832f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "0f19-7c79-420e-13bf",
+                "childName": "Dirge of the Great Hegemon",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:c248-58c9-6743-832f",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ce2b-3df0-f2a1-8005",
+            "childName": "Entitled To Beelzebub's Axe",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "7490-f22e-68ff-79d3",
+      "entryId": "2fa4-9890-46a0-c81f",
+      "name": "Hellblade",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "FIRE"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 1
+      },
+      "constraints": [
+        {
+          "id": "68ab-d82e-c0e4-d375",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "6bf6-ed24-d225-3675",
+            "childName": "Hellblade",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Limit: 2",
+        "Limit: 3"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "a595-aa3e-986e-edf0",
+      "entryId": "6cee-3d21-3554-4c1d",
+      "name": "Pestilent Fang",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "HEAVY"
+      ],
+      "rules": "Gnashing Blow: When a Melee Attack made with a Pestilent Fang causes 1 or more BLOOD MARKERS to be placed next to the target, place 1 INFECTION MARKER next to the target model. Rotten Splinters: If the Success Roll for a Melee Attack made with a Pestilent Fang is a Critical Success then the Injury Roll for the Attack has the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b453-919b-dd88-a5b8",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "088f-02cb-55b8-4bda",
+      "entryId": "4a6e-43f6-f094-96cd",
+      "name": "Infested Rifle",
+      "type": "2-Handed",
+      "range": "18\"",
+      "keywords": [
+        "ARMOUR-PIERCING"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "7428-8c1b-d5a5-bae5",
+      "entryId": "9eea-4e25-e838-01e4",
+      "name": "Viscera Cannon",
+      "type": "2-Handed",
+      "range": "24\"",
+      "keywords": [
+        "+2 DICE",
+        "HEAVY"
+      ],
+      "rules": "Self Sacrifice: If a Viscera Cannon hits a target, after resolving the Injury Roll, you can place up to 3 BLOOD MARKERS next to model that made the Attack (until it has a maximum of 6 markers). Then place 1 INFECTION MARKER next to the target for each BLOOD MARKER that you placed on the attacking model.",
+      "cost": {
+        "ducats": 50,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "9f83-fd6a-7331-7444",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "0",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0f19-7c79-420e-13bf",
+                    "childName": "Dirge of the Great Hegemon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9f83-fd6a-7331-7444",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "71bc-496d-162c-3816",
+            "childName": "Entitled To Viscera Cannons",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9f83-fd6a-7331-7444",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "801f-50a4-1ea2-7b92",
+      "entryId": "ced4-7c9e-e615-3587",
+      "name": "Corruption Belcher",
+      "type": "2-handed",
+      "range": "8\"",
+      "keywords": [
+        "FLAMETHROWER",
+        "GAS",
+        "IGNORE ARMOUR"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "0b3d-9c8c-5946-779a",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:0b3d-9c8c-5946-779a",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "feda-5057-a3f1-a3a5",
+            "childName": "Entitled To Corruption Belchers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "e476-2dae-7eb7-f469",
+      "entryId": "b7ef-33c1-721f-a55d",
+      "name": "Black Spot Rifle",
+      "type": "2-Handed",
+      "range": "24\"",
+      "keywords": [
+        "+1 DICE",
+        "-1 INJURY DICE",
+        "ASSAULT",
+        "INFECTION MARKERS"
+      ],
+      "rules": "If an Injury Roll for a Ranged Attack made with a Black Spot Rifle does not take an enemy model Out of Action, a Ravenous or Hound of the Black Grail within 12” of the attacking model can immediately carry out a Charge move. This Charge move does not stop that model from also being Activated in the same Turn (before or after this Charge move was made).",
+      "cost": {
+        "ducats": 25,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "e69e-9465-4a9d-2722",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "f342-1a5a-726e-8782",
+      "entryId": "daaf-90b6-cc15-7923",
+      "name": "Putrid Shotgun",
+      "type": "2-Handed",
+      "range": "12\"",
+      "keywords": [
+        "+1 DICE",
+        "ASSAULT",
+        "INFECTION MARKERS",
+        "SHOTGUN"
+      ],
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "afe2-81ea-b376-d164",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:afe2-81ea-b376-d164",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:afe2-81ea-b376-d164",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f86a-6dfe-0ae6-352d",
+            "childName": "Entitled To Putrid Shotguns",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2"
+      ],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
       "id": "d488-9020-4ba3-a3a2",
       "entryId": "481e-f5d8-f8e7-1ba1",
       "name": "Fire Shield",
@@ -29757,6 +30390,58 @@ export const DATASET: Dataset = {
       },
       "constraints": [],
       "modifiers": [],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "1063-b1d1-807f-91ec",
+      "entryId": "32a4-70a4-fd79-c4e7",
+      "name": "Butcher Bayonet",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CUMBERSOME"
+      ],
+      "rules": "Twisted Addition: A model must have a Ranged Weapon with a Bayonet Lug for it to have a Butcher Bayonet. Hack and Hew: Friendly models within 3” of a model with a Butcher Bayonet achieve a Critical Success on an 11+ for their Melee Attacks.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "366d-3022-ff99-b51a",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "2091-646f-6ff7-18b7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
@@ -34177,6 +34862,78 @@ export const DATASET: Dataset = {
       "sourceFile": "Campaign Rules.cat"
     },
     {
+      "id": "36d4-9b55-fd0a-150f",
+      "entryId": "10ca-4f2b-2f01-6de4",
+      "name": "Tormentor Chain",
+      "type": "1-Handed",
+      "range": "10\"",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "SHRAPNEL"
+      ],
+      "rules": "Dragged Forwards: If an attack made with a Tormentor Chain is a Success or Critical Success, do not make an Injury Roll for the target. Instead, place 1 BLOOD MARKER next to the target, and then place a second BLOOD MARKER on the target because the Tormentor Chain has the SHRAPNEL Keyword. After placing the BLOOD MARKERS, you can move the target model up to 12\" in a straight line, but you must move it so that it finishes the move as close as possible to the attacking model. Deadly Embrace: Enemy models cannot retreat if they are within 1\" of a model with a Tormentor Chain.",
+      "cost": {
+        "ducats": 0,
+        "glory": 3
+      },
+      "constraints": [
+        {
+          "id": "1bc6-fac8-ee95-c426",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
       "id": "4c95-f212-101f-f07f",
       "entryId": "b537-34fb-bae6-2cbb",
       "name": "Demonic Grenade",
@@ -38371,6 +39128,334 @@ export const DATASET: Dataset = {
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
+      "id": "29cd-71a7-a9f8-a828",
+      "entryId": "abaa-825a-af89-79c9",
+      "name": "Headtaker",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [],
+      "rules": "Ambush Weapon: Add a +2 INJURY MODIFIER to rolls made for this weapon if the target has not yet been Activated this Turn.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7aaa-940f-7ced-2136",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "a957-7766-e2fa-f4b3",
+            "childName": "Wretched"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "08cc-f1b9-e991-e191",
+            "childName": "Scripture Guardian"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:7aaa-940f-7ced-2136",
+          "value": "1",
+          "origin": "entry"
+        }
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "f41a-17c4-1d59-abac",
+      "entryId": "6677-a038-5ffb-c6c2",
+      "name": "Malebranche Sword",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "HEAVY",
+        "DEADLY"
+      ],
+      "cost": {
+        "ducats": 35,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "da21-de39-7b1b-b40d",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "a957-7766-e2fa-f4b3",
+            "childName": "Wretched"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "08cc-f1b9-e991-e191",
+            "childName": "Scripture Guardian"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:da21-de39-7b1b-b40d",
+          "value": "1",
+          "origin": "entry"
+        }
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "6f4c-3af9-620f-9988",
+      "entryId": "3c55-a4aa-3f5f-eb38",
+      "name": "Torture Instrument",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [],
+      "rules": "Agonising Injuries: When you make an Injury Roll for an attack made with a Torture Instrument, roll 1D6 instead of 2D6, but then double the number of BLOOD MARKERS that are caused by the roll (if there are any). Any +INJURY DICE or -INJURY DICE that applied to the Injury Roll will apply normally, except that you pick the single highest or lowest dice in the roll instead of the 2 highest or lowest. Note that when you make a Bloodbath Roll for an attack made with a Torture Instrument, you only roll 2D6 instead of 3D6, but you can then double the number of BLOOD MARKERS that are caused by the roll. Down, Whelp: If an attack made with a Torture Instrument targets a friendly model and the Success Roll is a Success or a Critical Success, do not roll on the Injury Table. Instead, the targeted friendly model is taken Down (the Agonising Injuries special rule still applies to this Injury Result).",
+      "cost": {
+        "ducats": 8,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "39a3-6b2f-e1cf-8775",
+      "entryId": "e412-6109-7f4b-af37",
+      "name": "Arquebus",
+      "type": "2-handed",
+      "range": "18\"",
+      "keywords": [
+        "CUMBERSOME"
+      ],
+      "rules": "Batter: A model that has an Arquebus can use it as a 2-Handed Melee Weapon.",
+      "cost": {
+        "ducats": 8,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "322d-1a69-dc2a-2e26",
+            "childName": "Sorcerer"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "651a-d454-07bf-a7fa",
+      "entryId": "606a-58a8-4fe9-59ef",
+      "name": "Serpent Assault Gun",
+      "type": "2-handed",
+      "range": "36\"",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2",
+        "GAS",
+        "HEAVY"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 45,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c104-74b7-d530-9b74",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "a957-7766-e2fa-f4b3",
+                "childName": "Wretched"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "658a-8247-8e8a-8f85",
+                "childName": "Yoke Fiend"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "322d-1a69-dc2a-2e26",
+            "childName": "Sorcerer"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:c104-74b7-d530-9b74",
+          "value": "1",
+          "origin": "entry"
+        }
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "d8fe-561c-9243-f9b8",
+      "entryId": "7e7d-82f7-5f9f-d356",
+      "name": "Ophidian Rifle",
+      "type": "2-handed",
+      "range": "30\"",
+      "keywords": [
+        "HEAVY",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE"
+      ],
+      "rules": "Unnatural Inversion: Add +1 DICE to roll for attacks made with this weapon if the Cover or Long Range modifiers apply to the attack, instead of adding -1 DICE. Note that this means you add +2 DICE to the roll if both modifiers apply to the attack.",
+      "cost": {
+        "ducats": 25,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "6665-823d-9789-5bbe",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "322d-1a69-dc2a-2e26",
+            "childName": "Sorcerer"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:6665-823d-9789-5bbe",
+          "value": "1",
+          "origin": "entry"
+        }
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
       "id": "a745-cf5c-0178-84df",
       "entryId": "a299-79e5-204e-1923",
       "name": "Living Instrument",
@@ -42168,6 +43253,45 @@ export const DATASET: Dataset = {
       "sourceFile": "Heretic Legion.cat"
     },
     {
+      "id": "0999-4c6b-539f-d1b2",
+      "entryId": "af47-33c1-b1fc-f2bd",
+      "name": "Tartarus Claws",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "CLEAVE 2",
+        "CRITICAL",
+        "CUMBERSOME"
+      ],
+      "rules": "Harrowing Assault: If the target is taken Down or Out of Action by a Melee Attack made with Tartarus Claws, you can immediately move the model up to 3”. You can use this move to move within 1” another enemy model, and if you do so, this model can take another Fight ACTION. However, it cannot make the 3” move if the second attack takes the target Down or Out of Action.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "77f7-5569-472a-6e92",
+            "childName": "Death Commando"
+          }
+        }
+      ],
+      "restrictions": [
+        "Death Commando only"
+      ],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
       "id": "4e92-442c-e2fc-4583",
       "entryId": "cd7e-904f-67b2-2d24",
       "name": "Coin Hammer",
@@ -42240,6 +43364,120 @@ export const DATASET: Dataset = {
             "scope": "model",
             "childId": "cf02-7a3e-ffbf-d7f9",
             "childName": "Wretched"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "fb1b-45a3-5dd0-bba1",
+      "entryId": "e154-975e-589d-4d19",
+      "name": "Gas Grenade Launcher",
+      "type": "2-handed",
+      "range": "36\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "BLAST 3\"",
+        "GAS",
+        "HEAVY",
+        "IGNORE ARMOUR",
+        "IGNORE COVER"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b23f-86c6-233b-5452",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:b23f-86c6-233b-5452",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "edfb-8199-6bb5-7556",
+            "childName": "Entitled to Grenade Launchers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:b23f-86c6-233b-5452",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5530-8135-2df1-4b67",
+            "childName": "Grenade Launcher",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:b23f-86c6-233b-5452",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "cf02-7a3e-ffbf-d7f9",
+            "childName": "Wretched"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
           }
         }
       ],
@@ -42646,6 +43884,95 @@ export const DATASET: Dataset = {
       "sourceFile": "Heretic Legion.cat"
     },
     {
+      "id": "d82e-4c7b-28ac-1413",
+      "entryId": "4194-478c-0584-06db",
+      "name": "Misericordia",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [],
+      "rules": "Despatch: This weapon has the IGNORE ARMOUR Keyword if the target is Down.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "87f2-e58d-430e-668d",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Combat Medic only, Limit: 1",
+        "Limit: 1"
+      ],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "f469-b712-2233-ac79",
+      "entryId": "4194-478c-0584-06db",
+      "name": "Scourge/Battle Whip/Flail",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 DICE"
+      ],
+      "rules": "Unwieldy: The +1 DICE Keyword does not apply when this Weapon is used as an Off-Hand Weapon.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "87f2-e58d-430e-668d",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
       "id": "0da4-88a6-6cc3-bcd8",
       "entryId": "26ad-abf9-50ff-8311",
       "name": "Essence Extractor",
@@ -43005,6 +44332,52 @@ export const DATASET: Dataset = {
       "constraints": [],
       "modifiers": [],
       "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "6efb-9e82-7136-f983",
+      "entryId": "9f94-7ffa-1b5c-0935",
+      "name": "Blasphemous Staff",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "FIRE",
+        "CRITICAL"
+      ],
+      "rules": "Evil Power: Add +1 DICE to Success Rolls or Risky Success Rolls for a model with a Blasphemous Staff, apart from the Success Rolls for a Ranged or Melee Attack, or the Risky Success Roll to take a Dash ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "1459-550f-ed53-b276",
+      "entryId": "8a11-d2f8-755a-3cc9",
+      "name": "Sacrificial Blade",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER",
+        "RISKY"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
@@ -43932,6 +45305,94 @@ export const DATASET: Dataset = {
       "sourceFile": "Iron Sultanate.cat"
     },
     {
+      "id": "4549-32db-4b08-2bdf",
+      "entryId": "2896-2fc6-1ccd-621b",
+      "name": "Assassin's Dagger",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "CRITICAL"
+      ],
+      "rules": "Slashing Attack: If an Assassin’s Blade causes at least one BLOOD MARKER to be placed next to the target model, the Assassin can use a Dash ACTION to Retreat in the same Activation. In addition, if the Assassin Retreats (by Dashing or using the normal Retreat ACTION) during the same Activation, enemy models within 1” cannot make a Melee Attack against it before it is moved as they would normally be able to do.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "62d4-d89a-f7e2-7d3b",
+            "childName": "Sultanate Assassin"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "c035-9cfd-250c-73bc",
+      "entryId": "35e9-a137-73b4-c73e",
+      "name": "Titan Zulfiqar",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER",
+        "CRITICAL",
+        "HEAVY"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "6603-2315-97b5-d845",
+                "childName": "Gargantuan Size",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [
+        "Brazen Bull only"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
       "id": "f9a1-ea01-d4b8-e52f",
       "entryId": "e7b5-4ba3-2813-a11f",
       "name": "Golden Khanjar",
@@ -44199,6 +45660,124 @@ export const DATASET: Dataset = {
       "sourceFile": "Iron Sultanate.cat"
     },
     {
+      "id": "556c-7009-6fc2-d658",
+      "entryId": "fd50-ed77-b67d-f053",
+      "name": "MURAD Bombard",
+      "type": "1-Handed",
+      "range": "36\"",
+      "keywords": [
+        "BLAST 3\"",
+        "HEAVY",
+        "SCATTER"
+      ],
+      "rules": "If the Success Roll for a Ranged Attack with an M.U.R.A.D Bombard that targets an enemy model is a Success or a Critical Success, or if the attack is a Failure and the target point scatters onto a model’s base, apply the effect of the DEADLY Keyword to the Injury Roll for that model. All other models caught in the M.U.R.A.D. Bombard’s blast radius, or that are in the M.U.R.A.D. Bombard’s blast radius if it did not hit the target model or scatter onto a model’s base, are taken Down (do not make an Injury Roll for them)",
+      "cost": {
+        "ducats": 50,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "31b6-7d34-f24d-25f1",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "6603-2315-97b5-d845",
+                "childName": "Gargantuan Size",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "ac5c-14a9-8462-8ddd",
+      "entryId": "f2de-aa0a-6254-2e20",
+      "name": "Flame Cannon",
+      "type": "1-Handed",
+      "range": "12\"",
+      "keywords": [
+        "FIRE",
+        "HEAVY",
+        "IGNORE ARMOUR"
+      ],
+      "rules": "Greek Fire: When a Flame Cannon is used to make a Ranged Attack, do not make a Success Roll for the attack. Instead, measure a straight line 1mm wide and up to 12\" long from the attacking model to a point on the ground or a model’s base. The line stops if it reaches a terrain piece that is taller than the model making the Attack. Make an Injury Roll for every model (friend or foe) that is touched by the line, apart from the attacking model itself.",
+      "cost": {
+        "ducats": 60,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "2c77-f595-07e4-3ee5",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "6603-2315-97b5-d845",
+                "childName": "Gargantuan Size",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [
+        "Brazen Bull only, Limit: 1"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
       "id": "1bff-0694-c7a5-a7f8",
       "entryId": "b9c5-9ea8-b9e0-00ac",
       "name": "Bow of Alamut",
@@ -44344,6 +45923,68 @@ export const DATASET: Dataset = {
         }
       ],
       "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "6dbb-ba95-c903-3c8c",
+      "entryId": "4f0f-a0cf-e8e8-b332",
+      "name": "Alaybozan",
+      "type": "2-handed",
+      "range": "12\"",
+      "keywords": [
+        "SHRAPNEL"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 9,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e874-ea2b-96ed-0f9a",
+                "childName": "Sultanate Sapper"
+              },
+              {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "9c5a-601e-6b16-320d",
+                    "childName": "Yüzbaşı Captain"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "6032-5543-8548-b9ac",
+                    "childName": "Defenders of the Iron Wall",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [
+        "Sultanate Sappers only, Shield Combo"
+      ],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
@@ -45115,6 +46756,98 @@ export const DATASET: Dataset = {
       "sourceFile": "Iron Sultanate.cat"
     },
     {
+      "id": "aa9b-a7a1-69a4-05f4",
+      "entryId": "0abf-e83d-51c2-9235",
+      "name": "Bayonet",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "CUMBERSOME"
+      ],
+      "cost": {
+        "ducats": 2,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "1601-594a-3aac-c1c7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "c403-4b36-5fd6-5c95",
+      "entryId": "efd3-b269-006c-46a3",
+      "name": "Halberd-Gun",
+      "type": "2-Handed",
+      "range": "Melee/24\"",
+      "keywords": [
+        "ASSAULT",
+        "BLOCK",
+        "CUMBERSOME"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "6d28-673b-5fe7-849e",
+      "entryId": "8422-0bba-a63f-f73c",
+      "name": "Jezzail",
+      "type": "2-handed",
+      "range": "18\"",
+      "keywords": [],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "59d6-227d-0859-a162",
+      "entryId": "bb23-6a19-9526-fedc",
+      "name": "Siege Jezzail",
+      "type": "2-handed",
+      "range": "30\"",
+      "keywords": [
+        "+1 INJURY DICE",
+        "HEAVY"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
       "id": "4038-bef2-1da5-b69b",
       "entryId": "80f0-b0dc-e20d-7ce0",
       "name": "Coordinated Engagement",
@@ -45210,6 +46943,481 @@ export const DATASET: Dataset = {
         }
       ],
       "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "1d82-fcc9-aeda-b03a",
+      "entryId": "d37e-36b0-6257-4182",
+      "name": "Semi-Automatic Rifle",
+      "type": "2-handed",
+      "range": "24\"",
+      "keywords": [
+        "ASSAULT"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "517c-652f-100e-71d6",
+      "entryId": "6cb0-a427-8e63-be83",
+      "name": "Machine Gun",
+      "type": "2-handed",
+      "range": "36\"",
+      "keywords": [
+        "AUTOMATIC 3",
+        "HEAVY",
+        "RELOAD"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2",
+        "Limit: 1",
+        "Amalgam only, Limit: 1"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "9b21-3223-c112-c65f",
+      "entryId": "b303-b060-3664-1d39",
+      "name": "Flamethrower",
+      "type": "2-handed",
+      "range": "8\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "FIRE",
+        "FLAMETHROWER",
+        "IGNORES ARMOUR"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 3",
+        "Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "77ea-665d-7ac6-58ef",
+      "entryId": "c718-2370-76b1-5688",
+      "name": "Punt Gun",
+      "type": "2-handed",
+      "range": "18\"",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY",
+        "SHOTGUN",
+        "SHRAPNEL"
+      ],
+      "rules": "Overcharge: Before making a Ranged Attack with a model armed with a Punt Gun, you can say that the model will Overcharge the weapon. To do so, the model has to either have the STRONG Keyword or be in base-to-base contact with a friendly model. An Overcharged Ranged Attack gains the BLAST 3\" and RELOAD Keywords. After an Overcharged attack has been carried out, place 1 BLOOD MARKER next to the model that made the attack, and its activation immediately ends.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "408d-d56e-71c4-f3c4",
+      "entryId": "633a-b691-bab2-f38b",
+      "name": "Bolt Action Rifle",
+      "type": "2-handed",
+      "range": "24\"",
+      "keywords": [],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "6eb2-c600-98e7-16d3",
+      "entryId": "ed74-b6e5-dfc6-37cb",
+      "name": "Sniper Rifle",
+      "type": "2-handed",
+      "range": "48\"",
+      "keywords": [
+        "+1 DICE",
+        "CRITICAL",
+        "RISKY"
+      ],
+      "rules": "Bull’s Eye: If the Success Roll for a Ranged Attack made with a Sniper Rifle is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 3",
+        "ELITE & Janissaries only, Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "f366-4889-0ac5-375d",
+      "entryId": "1adc-7a9c-a9ce-9bde",
+      "name": "Submachine Gun",
+      "type": "2-handed",
+      "range": "16\"",
+      "keywords": [
+        "ASSAULT"
+      ],
+      "rules": "Quick Bursts: A model armed with a Submachine Gun can take two Shoot ACTIONS during the same Activation, as long as the Submachine Gun is used to make both attacks. The Shoot ACTIONS can be taken one after the other, or other ACTIONS can be taken between the Shoot ACTIONS.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2",
+        "Bayonet Lug, Shield Combo",
+        "Bayonet Lug, Shield Combo, Limit: 1"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "2540-a186-5024-be0a",
+      "entryId": "070c-df48-2182-9a36",
+      "name": "Blunderbuss",
+      "type": "2-handed",
+      "range": "10\"",
+      "keywords": [
+        "SHRAPNEL"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "8ac5-3721-e679-7c6e",
+      "entryId": "9f09-657e-d269-2fe6",
+      "name": "Automatic Pistol",
+      "type": "1-handed",
+      "range": "12\"/Melee",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2",
+        "PISTOL"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only, Limit: 3",
+        "Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "8df3-f372-20a0-4a59",
+      "entryId": "2844-2e01-306b-f91e",
+      "name": "Anti-Tank Hammer",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "IGNORE ARMOUR",
+        "RISKY"
+      ],
+      "rules": "Dangerous: Place 1 BLOOD MARKER next to the model using this Weapon if it makes a Melee Attack and the Success Roll is a Success or a Critical Success.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "2d02-94a4-2493-186f",
+      "entryId": "3adc-0610-7ec1-9873",
+      "name": "War Cross",
+      "type": "Grenade",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE LONG RANGE"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "b16a-e1fa-433f-efc0",
+      "entryId": "b3f9-9cee-1eb5-263c",
+      "name": "Molotov Cocktail",
+      "type": "Grenade",
+      "range": "6\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "ASSAULT",
+        "FIRE",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "FUMBLE"
+      ],
+      "rules": "Liquid Fire: If the Success Roll for a Ranged Attack made with a Molotov Cocktail is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "8a16-99bf-8520-afaf",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "3113-d133-1726-05a0",
+      "entryId": "017c-bca1-464b-814e",
+      "name": "Grenade Launcher",
+      "type": "2-handed",
+      "range": "36\"",
+      "keywords": [
+        "BLAST 3\"",
+        "HEAVY",
+        "IGNORE COVER",
+        "SHRAPNEL"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "c35c-a506-683d-6c3f",
+      "entryId": "59f8-6e58-ec2a-d39b",
+      "name": "Automatic Rifle",
+      "type": "2-handed",
+      "range": "24\"",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2"
+      ],
+      "rules": "Focused Fire: When this Weapon is used to make 2 Ranged Attacks, the same enemy model must be the target of both attacks.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Bayonet Lug, Limit: 1",
+        "Bayonet Lug, Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "2fc0-bc43-b366-5b95",
+      "entryId": "fd37-48fd-0f0b-3f16",
+      "name": "Heavy Flamethrower",
+      "type": "2-handed",
+      "range": "10\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "AUTOMATIC 2",
+        "FIRE",
+        "FLAMETHROWER",
+        "HEAVY",
+        "IGNORES ARMOUR"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 1",
+        "Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "c5ac-8d24-4060-8655",
+      "entryId": "adc6-4c1c-4c18-892e",
+      "name": "Heavy Shotgun",
+      "type": "2-handed",
+      "range": "12\"",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY",
+        "SHOTGUN"
+      ],
+      "rules": "Tungsten-orichalcum Alloy Shot: Add +1 INJURY DICE to rolls for Ranged Attacks made by this Weapon at Short Range.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Shield Combo, Limit: 2"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "a19d-90ab-da9f-95ff",
+      "entryId": "43f2-ed7d-006a-cb47",
+      "name": "Automatic Shotgun",
+      "type": "2-handed",
+      "range": "12\"",
+      "keywords": [
+        "+1 DICE",
+        "ASSAULT",
+        "SHOTGUN"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2",
+        "Bayonet Lug, Shield Combo"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "3bfd-2c1d-2d6b-a36c",
+      "entryId": "b22d-63c0-3e14-283a",
+      "name": "Incendiary Grenades",
+      "type": "GRENADE",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "FIRE",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "FUMBLE"
+      ],
+      "rules": "Liquid Fire: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2",
+        "Jabirean Alchemist Only"
+      ],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "744d-f4d2-f8d5-064a",
+      "entryId": "c119-9421-07d8-fb99",
+      "name": "Satchel Charge",
+      "type": "GRENADE",
+      "range": "6\"",
+      "keywords": [
+        "+1 INJURY DICE",
+        "BLAST 3\"",
+        "CONSUMABLE",
+        "HEAVY",
+        "IGNORE ARMOUR",
+        "IGNORE COVER",
+        "SCATTER"
+      ],
+      "rules": "Heavy Explosive: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Consumable, Limit: 3 (1 per model)"
+      ],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
@@ -45747,6 +47955,121 @@ export const DATASET: Dataset = {
         }
       ],
       "modifiers": [],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "50eb-2990-0b48-1a8d",
+      "entryId": "68d9-a653-9765-d3e7",
+      "name": "Polearm",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "BLOCK",
+        "CUMBERSOME"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "6ffb-5ac2-a05a-8c44",
+            "childName": "Lost Arm [26]",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [
+        "Shield Combo"
+      ],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "e938-b0dc-418c-0924",
+      "entryId": "8574-a583-8009-ce6d",
+      "name": "Sword/Axe",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "ae18-4990-fc3c-78ce",
+      "entryId": "8574-a583-8009-ce6d",
+      "name": "Pistol",
+      "type": "1-handed",
+      "range": "12\"/Melee",
+      "keywords": [
+        "PISTOL"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "2257-4155-dd7d-8641",
+      "entryId": "71c7-f896-d812-77c5",
+      "name": "Great Sword/Axe",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "HEAVY"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "6ffb-5ac2-a05a-8c44",
+            "childName": "Lost Arm [26]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
@@ -49592,12 +51915,11 @@ export const DATASET: Dataset = {
         "ASSAULT",
         "FIRE",
         "IGNORE COVER",
-        "IGNORE LONG RANGE",
-        "FUMBLE"
+        "IGNORE LONG RANGE"
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -49628,8 +51950,7 @@ export const DATASET: Dataset = {
         "ASSAULT",
         "FIRE",
         "IGNORE COVER",
-        "IGNORE LONG RANGE",
-        "FUMBLE"
+        "IGNORE LONG RANGE"
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
@@ -50813,7 +53134,7 @@ export const DATASET: Dataset = {
       "rows": [
         {
           "name": "Automatic Pistol",
-          "weaponId": "b71e-ef7c-e836-72ec",
+          "weaponId": "8ac5-3721-e679-7c6e",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 20,
@@ -50825,7 +53146,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Automatic Rifle",
-          "weaponId": "057b-c114-772f-299c",
+          "weaponId": "c35c-a506-683d-6c3f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 40,
@@ -50837,7 +53158,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Automatic Shotgun",
-          "weaponId": "5b1a-ebaa-4d59-f2d7",
+          "weaponId": "a19d-90ab-da9f-95ff",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -50861,7 +53182,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flamethrower",
-          "weaponId": "4c15-195e-0fd4-6f54",
+          "weaponId": "9b21-3223-c112-c65f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -50873,7 +53194,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Grenade Launcher",
-          "weaponId": "a828-6f96-7eb8-7934",
+          "weaponId": "3113-d133-1726-05a0",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -50885,7 +53206,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Heavy Flamethrower",
-          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "weaponId": "2fc0-bc43-b366-5b95",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 55,
@@ -50897,7 +53218,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Heavy Shotgun",
-          "weaponId": "7bbb-8b13-8f13-49dd",
+          "weaponId": "c5ac-8d24-4060-8655",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 20,
@@ -50909,7 +53230,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -50921,7 +53242,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -50931,7 +53252,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Semi-Automatic Rifle",
-          "weaponId": "d44a-c775-04b2-e644",
+          "weaponId": "1d82-fcc9-aeda-b03a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -50955,7 +53276,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Sniper Rifle",
-          "weaponId": "b5a1-e8c3-24e5-a742",
+          "weaponId": "6eb2-c600-98e7-16d3",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 35,
@@ -50967,7 +53288,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Submachine Gun",
-          "weaponId": "f536-9890-8f44-99d7",
+          "weaponId": "f366-4889-0ac5-375d",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -50979,7 +53300,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Bayonet",
-          "weaponId": "77d0-35f2-b3d3-4022",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 2,
@@ -51011,7 +53332,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Misericordia",
-          "weaponId": "bd4b-593e-5a79-09fd",
+          "weaponId": "d82e-4c7b-28ac-1413",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 15,
@@ -51075,7 +53396,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Incendiary Grenades",
-          "weaponId": "316b-d210-767e-e340",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -51087,7 +53408,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Satchel Charge",
-          "weaponId": "d07c-55fe-e41d-a57f",
+          "weaponId": "744d-f4d2-f8d5-064a",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -51227,7 +53548,7 @@ export const DATASET: Dataset = {
       "rows": [
         {
           "name": "Automatic Pistol",
-          "weaponId": "b71e-ef7c-e836-72ec",
+          "weaponId": "8ac5-3721-e679-7c6e",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 20,
@@ -51239,7 +53560,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Blunderbuss",
-          "weaponId": "2f82-6dd2-69c2-2fea",
+          "weaponId": "2540-a186-5024-be0a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 5,
@@ -51263,7 +53584,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flamethrower",
-          "weaponId": "4c15-195e-0fd4-6f54",
+          "weaponId": "9b21-3223-c112-c65f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -51275,7 +53596,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 0,
@@ -51297,7 +53618,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -51307,7 +53628,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Punt Gun",
-          "weaponId": null,
+          "weaponId": "77ea-665d-7ac6-58ef",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 20,
@@ -51319,7 +53640,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Semi-Automatic Rifle",
-          "weaponId": "d44a-c775-04b2-e644",
+          "weaponId": "1d82-fcc9-aeda-b03a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -51343,7 +53664,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Sniper Rifle",
-          "weaponId": "b5a1-e8c3-24e5-a742",
+          "weaponId": "6eb2-c600-98e7-16d3",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 0,
@@ -51353,7 +53674,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Submachine Gun",
-          "weaponId": "f536-9890-8f44-99d7",
+          "weaponId": "f366-4889-0ac5-375d",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 0,
@@ -51365,7 +53686,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Anti-Tank Hammer",
-          "weaponId": "328e-9d8a-0a2c-47c6",
+          "weaponId": "8df3-f372-20a0-4a59",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 35,
@@ -51377,7 +53698,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Bayonet",
-          "weaponId": "77d0-35f2-b3d3-4022",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 2,
@@ -51419,7 +53740,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Misericordia",
-          "weaponId": "bd4b-593e-5a79-09fd",
+          "weaponId": "d82e-4c7b-28ac-1413",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 15,
@@ -51473,7 +53794,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Incendiary Grenades",
-          "weaponId": "316b-d210-767e-e340",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -51483,7 +53804,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Molotov Cocktail",
-          "weaponId": "414f-af63-666d-59d1",
+          "weaponId": "b16a-e1fa-433f-efc0",
           "section": "Grenades",
           "cost": {
             "ducats": 5,
@@ -51675,7 +53996,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Automatic Rifle",
-          "weaponId": "057b-c114-772f-299c",
+          "weaponId": "c35c-a506-683d-6c3f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 40,
@@ -51687,7 +54008,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -51699,7 +54020,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Submachine Gun",
-          "weaponId": "f536-9890-8f44-99d7",
+          "weaponId": "f366-4889-0ac5-375d",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -51717,7 +54038,7 @@ export const DATASET: Dataset = {
       "rows": [
         {
           "name": "Alaybozan",
-          "weaponId": null,
+          "weaponId": "6dbb-ba95-c903-3c8c",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 9,
@@ -51729,7 +54050,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flame Cannon",
-          "weaponId": null,
+          "weaponId": "ac5c-14a9-8462-8ddd",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 60,
@@ -51741,7 +54062,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flamethrower",
-          "weaponId": "4c15-195e-0fd4-6f54",
+          "weaponId": "9b21-3223-c112-c65f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -51753,7 +54074,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Jezzail",
-          "weaponId": null,
+          "weaponId": "6d28-673b-5fe7-849e",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 7,
@@ -51763,7 +54084,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -51799,7 +54120,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -51821,7 +54142,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Siege Jezzail",
-          "weaponId": null,
+          "weaponId": "59d6-227d-0859-a162",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -51831,7 +54152,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Sniper Rifle",
-          "weaponId": "b5a1-e8c3-24e5-a742",
+          "weaponId": "6eb2-c600-98e7-16d3",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 35,
@@ -51855,7 +54176,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Bayonet",
-          "weaponId": "77d0-35f2-b3d3-4022",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 2,
@@ -51887,7 +54208,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Halberd-Gun",
-          "weaponId": null,
+          "weaponId": "c403-4b36-5fd6-5c95",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 20,
@@ -51921,7 +54242,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Titan Zulfiqar",
-          "weaponId": null,
+          "weaponId": "c035-9cfd-250c-73bc",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 30,
@@ -51963,7 +54284,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Incendiary Grenades",
-          "weaponId": "316b-d210-767e-e340",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -52199,7 +54520,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Automatic Rifle",
-          "weaponId": "057b-c114-772f-299c",
+          "weaponId": "c35c-a506-683d-6c3f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 0,
@@ -52211,7 +54532,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Automatic Shotgun",
-          "weaponId": "5b1a-ebaa-4d59-f2d7",
+          "weaponId": "a19d-90ab-da9f-95ff",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -52235,7 +54556,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flamethrower",
-          "weaponId": "4c15-195e-0fd4-6f54",
+          "weaponId": "9b21-3223-c112-c65f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -52247,7 +54568,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Grenade Launcher",
-          "weaponId": "a828-6f96-7eb8-7934",
+          "weaponId": "3113-d133-1726-05a0",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -52259,7 +54580,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Heavy Flamethrower",
-          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "weaponId": "2fc0-bc43-b366-5b95",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 55,
@@ -52271,7 +54592,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -52283,7 +54604,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -52293,7 +54614,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Semi-Automatic Rifle",
-          "weaponId": "d44a-c775-04b2-e644",
+          "weaponId": "1d82-fcc9-aeda-b03a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -52329,7 +54650,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Submachine Gun",
-          "weaponId": "f536-9890-8f44-99d7",
+          "weaponId": "f366-4889-0ac5-375d",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 0,
@@ -52341,7 +54662,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Bayonet",
-          "weaponId": "77d0-35f2-b3d3-4022",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 2,
@@ -52353,7 +54674,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Blasphemous Staff",
-          "weaponId": null,
+          "weaponId": "6efb-9e82-7136-f983",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 0,
@@ -52385,7 +54706,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Hellblade",
-          "weaponId": null,
+          "weaponId": "7490-f22e-68ff-79d3",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 0,
@@ -52409,7 +54730,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Sacrificial Blade",
-          "weaponId": null,
+          "weaponId": "1459-550f-ed53-b276",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 23,
@@ -52431,7 +54752,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Tartarus Claws",
-          "weaponId": null,
+          "weaponId": "0999-4c6b-539f-d1b2",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 15,
@@ -52483,7 +54804,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Incendiary Grenades",
-          "weaponId": "316b-d210-767e-e340",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -52567,7 +54888,7 @@ export const DATASET: Dataset = {
       "rows": [
         {
           "name": "Blunderbuss",
-          "weaponId": "2f82-6dd2-69c2-2fea",
+          "weaponId": "2540-a186-5024-be0a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 5,
@@ -52591,7 +54912,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Corruption Belcher",
-          "weaponId": null,
+          "weaponId": "801f-50a4-1ea2-7b92",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -52603,7 +54924,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Infested Rifle",
-          "weaponId": null,
+          "weaponId": "088f-02cb-55b8-4bda",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 15,
@@ -52615,7 +54936,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Machine Gun",
-          "weaponId": "057c-08d9-c23f-7b47",
+          "weaponId": "517c-652f-100e-71d6",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -52639,7 +54960,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -52649,7 +54970,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Putrid Shotgun",
-          "weaponId": null,
+          "weaponId": "f342-1a5a-726e-8782",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 20,
@@ -52673,7 +54994,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Viscera Cannon",
-          "weaponId": null,
+          "weaponId": "7428-8c1b-d5a5-bae5",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -52685,7 +55006,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Bayonet",
-          "weaponId": "77d0-35f2-b3d3-4022",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 2,
@@ -52729,7 +55050,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Plague Blade",
-          "weaponId": null,
+          "weaponId": "c403-778c-1c4f-ec6e",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 7,
@@ -52793,7 +55114,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Parasite Grenades",
-          "weaponId": null,
+          "weaponId": "ddce-6e00-e451-7281",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
@@ -52867,7 +55188,7 @@ export const DATASET: Dataset = {
       "rows": [
         {
           "name": "Arquebus",
-          "weaponId": null,
+          "weaponId": "39a3-6b2f-e1cf-8775",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 8,
@@ -52877,7 +55198,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Blunderbuss",
-          "weaponId": "2f82-6dd2-69c2-2fea",
+          "weaponId": "2540-a186-5024-be0a",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 5,
@@ -52889,7 +55210,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Flamethrower",
-          "weaponId": "4c15-195e-0fd4-6f54",
+          "weaponId": "9b21-3223-c112-c65f",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 30,
@@ -52901,7 +55222,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Heavy Flamethrower",
-          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "weaponId": "2fc0-bc43-b366-5b95",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 55,
@@ -52913,7 +55234,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Ophidian Rifle",
-          "weaponId": null,
+          "weaponId": "d8fe-561c-9243-f9b8",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 25,
@@ -52925,7 +55246,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Pistol",
-          "weaponId": "917f-2532-74e9-33ed",
+          "weaponId": "ae18-4990-fc3c-78ce",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 6,
@@ -52935,7 +55256,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Serpent Assault Gun",
-          "weaponId": null,
+          "weaponId": "651a-d454-07bf-a7fa",
           "section": "Ranged Weapons",
           "cost": {
             "ducats": 50,
@@ -52979,7 +55300,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Headtaker",
-          "weaponId": null,
+          "weaponId": "29cd-71a7-a9f8-a828",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 15,
@@ -52991,7 +55312,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Hellblade",
-          "weaponId": null,
+          "weaponId": "7490-f22e-68ff-79d3",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 15,
@@ -53003,7 +55324,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Malebranche Sword",
-          "weaponId": null,
+          "weaponId": "f41a-17c4-1d59-abac",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 50,
@@ -53037,7 +55358,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Torture Instrument",
-          "weaponId": null,
+          "weaponId": "6f4c-3af9-620f-9988",
           "section": "Melee Weapons",
           "cost": {
             "ducats": 8,
@@ -53077,7 +55398,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Incendiary Grenades",
-          "weaponId": "316b-d210-767e-e340",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
             "ducats": 15,
