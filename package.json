@@ -7,6 +7,9 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "rules:fetch": "node scripts/rules-fetch.mjs",
+    "rules:crosscheck": "node scripts/rules-crosscheck.mjs",
+    "rules:extract": "node scripts/extract-pdf.mjs",
     "postinstall": "prisma generate"
   },
   "prisma": {

@@ -1,0 +1,84 @@
+# TrenchLine — working notes for AI assistants
+
+A Trench Crusade warband builder and campaign companion. Next.js 15 App Router,
+React 19, TypeScript, Tailwind, Zustand, Prisma/Postgres, NextAuth.
+
+**Read [`docs/README.md`](docs/README.md) first.** The project is mid-restructure
+following an audit; [`docs/AUDIT.md`](docs/AUDIT.md) explains what is broken and
+[`docs/RESTRUCTURE-PLAN.md`](docs/RESTRUCTURE-PLAN.md) explains the order of work.
+
+## Four rules
+
+The original codebase was AI-generated and broke all four. They exist because of
+specific, documented failures — not as style preferences.
+
+### 1. Never write game data by hand
+
+Statlines, costs, keywords, constraints, scenarios and rules text are **derived**
+from `data-sources/` by the pipeline in `scripts/`. `src/data/*.generated.ts` is
+build output.
+
+If you find yourself typing a Ducat cost or a `+2 DICE` into a source file,
+stop — that is exactly how the app ended up with 97% of its statlines wrong.
+Get the value from `data-sources/battlescribe/` and cite it.
+
+### 2. Never invent a fallback
+
+If a fetch fails, a lookup misses, or a source is unavailable: **fail loudly**.
+Do not return plausible-looking placeholder data.
+
+The shipped example is `src/services/githubSync.ts`, which fabricated a GitHub
+commit — SHA, message, author — whenever the API call failed, and presented it
+to the user as a real upstream sync.
+
+### 3. Mobile-first
+
+Base Tailwind utilities target a **375px phone**; `sm:`/`md:`/`lg:` add desktop.
+The app is used at a table, on a phone, one-handed.
+
+Hard requirements (full list in [`docs/MOBILE.md`](docs/MOBILE.md)):
+
+- `dvh`, never `vh`, for anything that must stay on screen.
+- 44px minimum touch targets; 16px minimum for form inputs.
+- **No dynamic Tailwind class names** — `` `grid-cols-${n}` `` does not compile.
+  This is a live bug in `MobileNav.tsx:32`.
+- Never `overflow-x: hidden` to hide a layout problem.
+
+### 4. Document decisions with the change
+
+A change to the data model, the ruleset layering, the source list, or the mobile
+standards updates the relevant file in `docs/` in the same commit.
+
+## Commands
+
+```bash
+npm run dev
+npm run build             # needs DATABASE_URL; rm -rf .next if /404 prerender fails
+npm run rules:fetch       # pull BattleScribe catalogues, pinned by commit SHA
+npm run rules:crosscheck  # report drift between app data and the catalogues
+npm run rules:extract     # PDF -> text
+```
+
+## Environment notes
+
+- `trenchcrusade.com` is **not reachable** from the sandbox (proxy returns 403).
+  Official rulebook PDFs must be supplied by the user and committed to
+  `data-sources/rulebook/`.
+- `raw.githubusercontent.com` **is** reachable; `api.github.com` is not. The
+  fetch script resolves commit SHAs with `git ls-remote` for that reason.
+- `pdf-parse` (a devDependency) handles PDF text extraction — see
+  `scripts/extract-pdf.mjs`. The system Python's `cryptography` module is broken,
+  so Python PDF libraries do not work here.
+
+## Gotchas
+
+- `next build` fails with `<Html> should not be imported outside of
+  pages/_document` when `.next/` is stale. `rm -rf .next` fixes it; it is not a
+  real code error.
+- `src/App.tsx`, `src/main.tsx` and `src/index.css` are dead Vite scaffolding.
+  Don't edit them — they are scheduled for deletion (Phase 0.7).
+- `src/store/useStore.ts` is 2,364 lines covering every domain. Scheduled to be
+  split (Phase 4.2); until then, change it carefully.
+- Components carry ~3,700 hardcoded hex colours and use none of the theme
+  tokens, so the theme switcher does almost nothing. New code uses the
+  `theme-*` Tailwind tokens.
