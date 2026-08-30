@@ -60,7 +60,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
           onClick={() => setActiveTab('stash')}
           className={`px-4 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all ${
             activeTab === 'stash'
-              ? 'bg-theme-primary text-black shadow'
+              ? 'bg-theme-primary text-theme-base shadow'
               : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
           }`}
         >
@@ -71,7 +71,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
           onClick={() => setActiveTab('buy')}
           className={`px-4 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all ${
             activeTab === 'buy'
-              ? 'bg-theme-primary text-black shadow'
+              ? 'bg-theme-primary text-theme-base shadow'
               : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
           }`}
         >
@@ -135,7 +135,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleAssign(item.id)}
-                        className="px-3 py-1.5 bg-status-legal hover:bg-[#5BAE7E] text-white rounded font-bold uppercase text-xs sm:text-[10px] flex items-center space-x-1"
+                        className="px-3 py-1.5 bg-status-legal hover:bg-status-legal text-white rounded font-bold uppercase text-xs sm:text-[10px] flex items-center space-x-1"
                         title="Equip to selected warrior"
                       >
                         <UserCheck className="w-3.5 h-3.5" />
@@ -170,8 +170,8 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   onClick={() => setBuyCategory(cat)}
                   className={`px-3 py-1 rounded text-xs font-mono uppercase font-bold transition-all ${
                     buyCategory === cat
-                      ? 'bg-theme-primary text-black'
-                      : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
+                      ? 'bg-theme-primary text-theme-base'
+                      : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                   }`}
                 >
                   {cat}
@@ -189,7 +189,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   </div>
                   <button
                     onClick={() => handleBuy({ id: w.id, name: w.name, type: 'Weapon', cost: w.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-black text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
+                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
                   >
                     Buy ({w.cost} D)
                   </button>
@@ -204,7 +204,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   </div>
                   <button
                     onClick={() => handleBuy({ id: a.id, name: a.name, type: 'Armour', cost: a.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-black text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
+                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
                   >
                     Buy ({a.cost} D)
                   </button>
@@ -219,7 +219,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   </div>
                   <button
                     onClick={() => handleBuy({ id: e.id, name: e.name, type: 'Equipment', cost: e.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-black text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
+                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
                   >
                     Buy ({e.cost} D)
                   </button>

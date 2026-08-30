@@ -196,7 +196,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             </span>
             <button
               onClick={onClose}
-              className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+              className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
             >
               Done
             </button>
@@ -212,7 +212,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'formulas' 
                   ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                  : 'border-transparent text-theme-muted hover:text-white'
+                  : 'border-transparent text-theme-muted hover:text-theme-text'
               }`}
             >
               <FlaskConical className="w-3.5 h-3.5 text-theme-primary" />
@@ -225,7 +225,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'advancement' 
                 ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                : 'border-transparent text-theme-muted hover:text-white'
+                : 'border-transparent text-theme-muted hover:text-theme-text'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -237,7 +237,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'skills' 
                 ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                : 'border-transparent text-theme-muted hover:text-white'
+                : 'border-transparent text-theme-muted hover:text-theme-text'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'injuries' 
                 ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                : 'border-transparent text-theme-muted hover:text-white'
+                : 'border-transparent text-theme-muted hover:text-theme-text'
             }`}
           >
             <Skull className="w-3.5 h-3.5" />
@@ -261,7 +261,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'upgrades' 
                 ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                : 'border-transparent text-theme-muted hover:text-white'
+                : 'border-transparent text-theme-muted hover:text-theme-text'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
@@ -355,7 +355,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   </span>
                   <button
                     onClick={() => handleAdjustXp(1)}
-                    className="w-8 h-8 rounded bg-theme-primary hover:bg-theme-primary-hover text-black font-bold text-base flex items-center justify-center shadow"
+                    className="w-8 h-8 rounded bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold text-base flex items-center justify-center shadow"
                   >
                     +
                   </button>
@@ -366,7 +366,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               <div className="p-4 bg-theme-base rounded-md border border-theme-border flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <Crown className="w-4 h-4 text-[#7C4DFF]" />
+                    <Crown className="w-4 h-4 text-theme-primary" />
                     <strong className="text-xs uppercase text-theme-text font-bold">Elite Warrior Promotion</strong>
                   </div>
                   <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
@@ -378,8 +378,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   onClick={handleToggleElite}
                   className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 ${
                     unit.isElite
-                      ? 'bg-[#7C4DFF] text-white shadow-lg'
-                      : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-white'
+                      ? 'bg-theme-primary text-white shadow-lg'
+                      : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-theme-text'
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5" />
@@ -402,8 +402,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     onClick={() => setSelectedSkillCategory(cat)}
                     className={`flex-1 py-1.5 text-center font-bold uppercase text-xs sm:text-[10px] rounded transition-all ${
                       selectedSkillCategory === cat
-                        ? 'bg-theme-primary text-black shadow'
-                        : 'text-theme-muted hover:text-white'
+                        ? 'bg-theme-primary text-theme-base shadow'
+                        : 'text-theme-muted hover:text-theme-text'
                     }`}
                   >
                     {cat} Skills
@@ -445,7 +445,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <button
                     onClick={handleAddSkill}
                     disabled={!selectedSkillName}
-                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Learn</span>
@@ -519,7 +519,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <button
                     onClick={handleAddInjury}
                     disabled={!selectedInjuryRoll}
-                    className="px-4 py-2 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-theme-accent hover:bg-status-error text-white font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Apply</span>

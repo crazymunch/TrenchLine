@@ -13,6 +13,9 @@ import { ConfirmModal } from '../ui/ConfirmModal';
 import { AllOutWarCardConsole } from './AllOutWarCardConsole';
 import { ActiveUnit, Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
+import { RulesProse } from '../codex/RulesProse';
+import { ViewMasthead } from '../ui/ViewMasthead';
+import { parseDeeds } from './deeds';
 import { 
   Heart, 
   Droplet, 
@@ -270,23 +273,7 @@ export const PlayModeView: React.FC = () => {
     incrementTurn();
   };
 
-  // Parse Scenario Deeds into discrete list items
-  const parseDeedsList = (deedsText?: string) => {
-    if (!deedsText) return [];
-    return deedsText
-      .split('\n')
-      .map((l) => l.trim())
-      .filter((l) => l.startsWith('- **') || l.startsWith('* **') || l.includes(':'))
-      .map((l) => {
-        const cleaned = l.replace(/^[-*]\s*/, '');
-        const parts = cleaned.split(':');
-        const title = parts[0].replace(/\*\*/g, '').trim();
-        const desc = parts.slice(1).join(':').replace(/\*\*/g, '').trim();
-        return { title, desc };
-      });
-  };
-
-  const scenarioDeeds = parseDeedsList(sectionOf(selectedScenario, 'GLORIOUS DEEDS') ?? undefined);
+  const scenarioDeeds = parseDeeds(sectionOf(selectedScenario, 'GLORIOUS DEEDS'));
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 pb-24 font-mono text-xs">
@@ -299,29 +286,23 @@ export const PlayModeView: React.FC = () => {
           
           {/* Lobby Header */}
           <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-5 sm:p-6 shadow-2xl space-y-4 bevel-container">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Swords className="w-6 h-6 sm:w-7 sm:h-7 text-theme-primary" />
-                  <h1 className="font-gothic font-bold text-xl sm:text-2xl text-theme-text tracking-wide">
-                    TACTICAL MATCH DESIGNER & CRUSADE LOBBY
-                  </h1>
-                </div>
-                <p className="text-xs text-theme-muted pt-1">
-                  Configure scenario parameters, field strength, multiplayer participants (2 to 4 Players), and battle conditions before taking to the field.
-                </p>
-              </div>
-
+            <ViewMasthead
+              eyebrow="Tabletop"
+              icon={<Swords className="w-4 h-4" />}
+              title="Match Designer & Lobby"
+              strapline="Set the scenario, the field strength, the participants (two to four players) and the battle conditions before taking to the field."
+              actions={<>
               {matchMode === 'single-device' && (
                 <button
                   onClick={handleStartCombat}
-                  className="flex items-center space-x-2 px-6 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all flex-shrink-0"
+                  className="flex items-center space-x-2 px-6 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all flex-shrink-0"
                 >
-                  <Play className="w-4 h-4 fill-black" />
-                  <span>COMMENCE MATCH</span>
+                  <Play className="w-4 h-4" />
+                  <span>Commence Match</span>
                 </button>
               )}
-            </div>
+              </>}
+            />
 
             {/* Mode Selector Tabs */}
             <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-theme-border">
@@ -329,7 +310,7 @@ export const PlayModeView: React.FC = () => {
                 onClick={() => setMatchMode('single-device')}
                 className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
                   matchMode === 'single-device'
-                    ? 'bg-theme-primary text-black shadow'
+                    ? 'bg-theme-primary text-theme-base shadow'
                     : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
@@ -345,7 +326,7 @@ export const PlayModeView: React.FC = () => {
                 }`}
               >
                 <span>🌐 Live Multi-Device Match Link</span>
-                <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase tracking-wide">
+                <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-theme-base font-bold uppercase tracking-wide">
                   Coming Soon
                 </span>
               </button>
@@ -364,7 +345,7 @@ export const PlayModeView: React.FC = () => {
                     <h2 className="font-gothic font-bold text-lg sm:text-xl text-theme-text">
                       LIVE MULTI-DEVICE MATCH LINK (HOST & JOIN)
                     </h2>
-                    <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
+                    <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-primary text-theme-base font-bold uppercase">
                       In Development
                     </span>
                   </div>
@@ -440,7 +421,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setMatchMode('single-device')}
-                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
                 >
                   Return to Single Device Mode
                 </button>
@@ -495,7 +476,7 @@ export const PlayModeView: React.FC = () => {
                         className="w-full h-56 object-contain rounded transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="px-3 py-1.5 bg-theme-primary text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5">
+                        <span className="px-3 py-1.5 bg-theme-primary text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5">
                           <Search className="w-3.5 h-3.5" />
                           <span>Enlarge Official Map</span>
                         </span>
@@ -532,9 +513,19 @@ export const PlayModeView: React.FC = () => {
                     <Award className="w-3.5 h-3.5" />
                     <span>Victory Conditions:</span>
                   </span>
-                  <p className="text-theme-text text-xs sm:text-[11px] leading-relaxed whitespace-pre-line bg-theme-surface p-2.5 rounded border border-theme-border/60">
-                    {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
-                  </p>
+                  {sectionOf(selectedScenario, 'VICTORY CONDITIONS') ? (
+                    <div className="bg-theme-surface p-2.5 border border-theme-border">
+                      <RulesProse source={sectionOf(selectedScenario, 'VICTORY CONDITIONS')} className="text-xs" />
+                    </div>
+                  ) : (
+                    /* Said, not hidden. The scenario is derived from the book;
+                       if it has no victory conditions that is a gap in the
+                       source, and a player should see that rather than an
+                       empty box. */
+                    <p className="text-xs font-mono text-theme-muted">
+                      Not present in this scenario&rsquo;s entry.
+                    </p>
+                  )}
                 </div>
 
                 {/* Glorious Deeds Preview */}
@@ -712,7 +703,7 @@ export const PlayModeView: React.FC = () => {
               {isAllOutWarScenario && (
                 <button
                   onClick={() => setIsCardConsoleOpen(true)}
-                  className="flex items-center space-x-2 px-5 py-3.5 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded text-sm shadow-xl transition-all"
+                  className="flex items-center space-x-2 px-5 py-3.5 bg-theme-accent hover:bg-status-error text-white font-bold uppercase rounded text-sm shadow-xl transition-all"
                 >
                   <Layers className="w-4 h-4 text-theme-primary" />
                   <span>🃏 CARD & BETRAYAL ENGINE</span>
@@ -721,9 +712,9 @@ export const PlayModeView: React.FC = () => {
 
               <button
                 onClick={handleStartCombat}
-                className="flex items-center space-x-2 px-8 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all"
+                className="flex items-center space-x-2 px-8 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all"
               >
-                <Play className="w-4 h-4 fill-black" />
+                <Play className="w-4 h-4" />
                 <span>⚔️ ENTER TABLETOP COMBAT</span>
               </button>
             </div>
@@ -809,7 +800,7 @@ export const PlayModeView: React.FC = () => {
                           onClick={() => setActivePlayerIndex(pIdx)}
                           className={`px-3 py-1 rounded text-xs font-mono font-bold uppercase transition-all flex items-center space-x-1.5 ${
                             isSel
-                              ? 'bg-theme-primary text-black shadow'
+                              ? 'bg-theme-primary text-theme-base shadow'
                               : 'text-theme-muted hover:text-theme-text'
                           }`}
                         >
@@ -881,7 +872,7 @@ export const PlayModeView: React.FC = () => {
                 {isAllOutWarScenario && (
                   <button
                     onClick={() => setIsCardConsoleOpen(true)}
-                    className="flex items-center space-x-1.5 px-3 py-2 bg-theme-accent hover:bg-[#A30000] text-white border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-2 bg-theme-accent hover:bg-status-error text-white border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
                     title="All Out War 52-card deck, Betrayal hands, and 3-minute alliance console"
                   >
                     <Layers className="w-3.5 h-3.5 text-theme-primary" />
@@ -918,7 +909,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsPostBattleOpen(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-accent hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-theme-accent/40"
+                  className="flex items-center space-x-2 px-4 py-2 bg-theme-accent hover:bg-status-error text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-theme-accent/40"
                 >
                   <Skull className="w-4 h-4" />
                   <span>End Match</span>
@@ -927,7 +918,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsAbortConfirmOpen(true)}
-                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center justify-center p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors`}
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center justify-center p-2 text-theme-muted hover:text-status-error bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors`}
                   title="Cancel / Abort Match"
                 >
                   <XCircle className="w-4 h-4" />
@@ -953,7 +944,7 @@ export const PlayModeView: React.FC = () => {
                   onClick={() => setFilterStatus(st)}
                   className={`px-3 py-1 rounded text-xs font-mono uppercase font-bold transition-all whitespace-nowrap ${
                     filterStatus === st
-                      ? 'bg-theme-primary text-black shadow'
+                      ? 'bg-theme-primary text-theme-base shadow'
                       : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                   }`}
                 >
@@ -1001,7 +992,7 @@ export const PlayModeView: React.FC = () => {
                   <span>Turn Score Breakdown</span>
                 </button>
 
-                <button className="tap text-theme-muted hover:text-white p-1">
+                <button className="tap text-theme-muted hover:text-theme-text p-1">
                   {isObjectivesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
               </div>
@@ -1009,7 +1000,7 @@ export const PlayModeView: React.FC = () => {
 
             {/* Turn by Turn Progressive Breakdown Card */}
             {isScoringHistoryOpen && (
-              <div className="p-4 bg-[#12151B] border-b border-theme-border space-y-3 animate-fade-in">
+              <div className="p-4 bg-theme-base border-b border-theme-border space-y-3 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <span className="text-xs uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                     <TrendingUp className="w-4 h-4" />
@@ -1073,9 +1064,7 @@ export const PlayModeView: React.FC = () => {
                       <Award className="w-3.5 h-3.5" />
                       <span>Victory Conditions & Scoring Rules:</span>
                     </span>
-                    <p className="text-xs sm:text-[11px] text-theme-text leading-relaxed whitespace-pre-line">
-                      {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
-                    </p>
+                    <RulesProse source={sectionOf(selectedScenario, 'VICTORY CONDITIONS')} className="text-xs" />
                   </div>
 
                 </div>
@@ -1183,7 +1172,7 @@ export const PlayModeView: React.FC = () => {
                     <div>
                       <div className="flex items-center space-x-2">
                         {isLeader && (
-                          <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
+                          <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-primary text-theme-base font-bold uppercase">
                             Leader
                           </span>
                         )}
@@ -1201,7 +1190,7 @@ export const PlayModeView: React.FC = () => {
                       className={`px-2.5 py-1 rounded text-xs sm:text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                         unit.hasActedThisTurn
                           ? 'bg-theme-border text-theme-muted'
-                          : 'bg-theme-primary text-black shadow'
+                          : 'bg-theme-primary text-theme-base shadow'
                       }`}
                     >
                       <UserCheck className="w-3 h-3" />
@@ -1298,9 +1287,9 @@ export const PlayModeView: React.FC = () => {
                               ? st === 'Active'
                                 ? 'bg-status-legal text-white shadow'
                                 : st === 'Downed'
-                                ? 'bg-status-warning text-black shadow'
+                                ? 'bg-status-warning text-theme-base shadow'
                                 : 'bg-status-error text-white shadow'
-                              : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
+                              : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                           }`}
                         >
                           {st}
@@ -1334,13 +1323,13 @@ export const PlayModeView: React.FC = () => {
             <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-theme-primary" />
-                <h3 className="font-gothic font-bold text-base text-white">
+                <h3 className="font-gothic font-bold text-base text-theme-text">
                   SQUAD SELECTION & FIELD STRENGTH
                 </h3>
               </div>
               <button
                 onClick={() => setIsSquadSelectOpen(false)}
-                className="text-theme-muted hover:text-white"
+                className="text-theme-muted hover:text-theme-text"
               >
                 ✕
               </button>
@@ -1369,7 +1358,7 @@ export const PlayModeView: React.FC = () => {
                       onClick={() => handleToggleDeployUnit(u.id)}
                       className={`p-3 rounded border flex items-center justify-between cursor-pointer transition-all ${
                         isDep
-                          ? 'bg-theme-elevated border-theme-primary text-white'
+                          ? 'bg-theme-elevated border-theme-primary text-theme-text'
                           : 'bg-theme-base border-theme-border text-theme-muted'
                       }`}
                     >
@@ -1395,7 +1384,7 @@ export const PlayModeView: React.FC = () => {
             <div className="p-3 bg-theme-base border-t border-theme-border flex justify-end">
               <button
                 onClick={() => setIsSquadSelectOpen(false)}
-                className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+                className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
               >
                 Confirm Squad
               </button>
@@ -1458,7 +1447,7 @@ export const PlayModeView: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Compass className="w-5 h-5 text-theme-primary" />
                 <div>
-                  <h3 className="font-gothic font-bold text-base sm:text-lg text-white">
+                  <h3 className="font-gothic font-bold text-base sm:text-lg text-theme-text">
                     OFFICIAL DEPLOYMENT DIAGRAM: {selectedScenario.name}
                   </h3>
                   <span className="text-xs sm:text-[10px] text-theme-muted block">
@@ -1488,7 +1477,7 @@ export const PlayModeView: React.FC = () => {
               <span>Scenario {selectedScenario.number || ''}: {selectedScenario.tagline || ''}</span>
               <button
                 onClick={() => setIsMapLightboxOpen(false)}
-                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
               >
                 Done
               </button>

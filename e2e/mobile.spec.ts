@@ -4,21 +4,27 @@ import {
 } from './helpers';
 
 /**
- * The mobile definition of done, on every view.
+ * The definition of done, on every view and every one of the three formats.
  *
- * These four assertions are the whole of docs/MOBILE.md §3, §4 and §6, and each
- * one exists because the app failed it: 153 controls under 44px, 106 strings
- * under 12px, 12 form controls that made iOS zoom and never zoom back, and a
- * desktop header that scrolled four views sideways.
+ * These assertions are the whole of docs/MOBILE.md §3, §4 and §6, and each one
+ * exists because the app failed it: 153 controls under 44px, 106 strings under
+ * 12px, 12 form controls that made iOS zoom and never zoom back, and a desktop
+ * header that scrolled four views sideways.
  *
  * They are asserted **per view** rather than once on the landing page, because
  * that is exactly how the header overflow survived a measurement pass: it was
  * only wrong on views whose title was long.
+ *
+ * The touch floors run on the phone and the tablet and not on the desktop —
+ * not as an oversight but because the CSS that guarantees them stops at
+ * 1024px on purpose (globals.css §3.4): a mouse does not need 44px, and
+ * forcing it there would only make neighbouring controls fight for clicks.
+ * What every format shares is the sideways-scroll rule and a clean console.
  */
 const VIEWS = ['Roster', 'Play', 'Crusade', 'Players', 'Codex'] as const;
 
 for (const view of VIEWS) {
-  test(`${view} meets the mobile definition of done`, async ({ page }) => {
+  test(`${view} meets the definition of done`, async ({ page }, testInfo) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(String(e)));
 
@@ -29,8 +35,10 @@ for (const view of VIEWS) {
     await goTo(page, view);
 
     await expectNoHorizontalScroll(page);
-    await expectTouchTargets(page);
-    await expectNoZoomingInputs(page);
+    if (testInfo.project.name !== 'desktop') {
+      await expectTouchTargets(page);
+      await expectNoZoomingInputs(page);
+    }
     expect(errors, 'page errors').toEqual([]);
   });
 }

@@ -67,7 +67,7 @@ export const CampaignHubView: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-1.5">
             <div className="flex items-center space-x-2">
-              <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
+              <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary text-theme-base font-bold uppercase">
                 CRUSADE TURN {campaign.currentTurn}
               </span>
               <span className="text-xs font-mono text-theme-muted">Admin: {campaign.adminName}</span>
@@ -98,7 +98,7 @@ export const CampaignHubView: React.FC = () => {
 
             <button
               onClick={() => setIsLogMatchOpen(true)}
-              className="flex items-center space-x-1.5 px-4 py-2.5 bg-theme-accent hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow-lg shadow-theme-accent/30"
+              className="flex items-center space-x-1.5 px-4 py-2.5 bg-theme-accent hover:bg-status-error text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow-lg shadow-theme-accent/30"
             >
               <Swords className="w-4 h-4" />
               <span>Log Match Result</span>
@@ -148,7 +148,7 @@ export const CampaignHubView: React.FC = () => {
               onClick={() => setActiveTab(t.id as any)}
               className={`flex items-center space-x-2 px-4 py-2 rounded text-xs font-mono font-bold uppercase transition-all whitespace-nowrap ${
                 activeTab === t.id
-                  ? 'bg-theme-primary text-black shadow'
+                  ? 'bg-theme-primary text-theme-base shadow'
                   : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
               }`}
             >
@@ -161,18 +161,29 @@ export const CampaignHubView: React.FC = () => {
       </div>
 
       {/* TAB 1: LEADERBOARD */}
+      {/*
+        The standings table scrolls sideways; it does not clip.
+
+        Seven columns do not fit in 375px, and the wrapper used to be
+        `overflow-hidden`: the Glory Points column — the one that says who is
+        winning the campaign — was unreachable on a phone, and the
+        horizontal-scroll test passed precisely because the overflow was
+        hidden. docs/MOBILE.md §6: wide content gets its own scroll container,
+        never a clip. The headings stop wrapping for the same reason — at 375px
+        "Record (W-L-D)" became a three-line tower.
+      */}
       {activeTab === 'leaderboard' && (
-        <div className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container">
-          <table className="w-full text-left text-xs font-mono">
+        <div className="bg-theme-surface border border-theme-border overflow-x-auto bevel-container">
+          <table className="w-full min-w-[46rem] text-left text-xs font-mono">
             <thead className="bg-theme-base text-theme-muted uppercase text-xs sm:text-[10px] border-b border-theme-border">
-              <tr>
+              <tr className="whitespace-nowrap">
                 <th className="p-4">Rank</th>
-                <th className="p-4">Warband & Commander</th>
+                <th className="p-4">Warband &amp; Commander</th>
                 <th className="p-4">Faction</th>
                 <th className="p-4 text-center">Record (W-L-D)</th>
-                <th className="p-4 text-center">Warband Rating</th>
+                <th className="p-4 text-center">Rating</th>
                 <th className="p-4 text-center">Treasury</th>
-                <th className="p-4 text-right">Glory Points</th>
+                <th className="p-4 text-right">Glory</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-theme-border/60">
@@ -382,7 +393,7 @@ export const CampaignHubView: React.FC = () => {
                   <div className="border border-theme-primary/30 rounded bg-theme-base overflow-hidden">
                     <button
                       onClick={() => toggleMatchExpanded(match.id)}
-                      className="w-full p-3 bg-theme-elevated hover:bg-[#2A303D] flex items-center justify-between text-xs font-mono font-bold text-theme-primary uppercase transition-colors"
+                      className="w-full p-3 bg-theme-elevated hover:bg-theme-elevated flex items-center justify-between text-xs font-mono font-bold text-theme-primary uppercase transition-colors"
                     >
                       <span className="flex items-center space-x-2">
                         <Scroll className="w-4 h-4 text-theme-primary" />
@@ -417,7 +428,7 @@ export const CampaignHubView: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsNewCampaignModalOpen(false)}
-                className="tap text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -478,7 +489,7 @@ export const CampaignHubView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
                 >
                   Establish Crusade
                 </button>

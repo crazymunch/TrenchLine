@@ -29,111 +29,173 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
 
-  --font-gothic: 'Cinzel', serif;
-  --font-heading: 'Oswald', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', sans-serif;
+  /*
+    Three faces, each with a job (the Iron Ledger pass).
 
-  /* Default Theme: Iron Sanctum */
-  --bg-base: 12 14 18;
-  --bg-surface: 22 25 32;
-  --bg-elevated: 32 36 46;
-  --bg-card: 32 36 46;
-  --color-primary: 212 175 55;
-  --color-primary-hover: 229 193 88;
-  --color-primary-glow: rgba(212, 175, 55, 0.25);
-  --color-border: 50 56 70;
-  --color-accent: 139 0 0;
+    `sans`  Archivo — headings and names. Grotesque, slightly condensed, reads
+            as printed record rather than as a game UI.
+    `mono`  IBM Plex Mono — every number, label and keyword. The app is full of
+            statlines and costs, and they must align in a column.
+    `serif` Newsreader italic — flavour only: mottos, battlefield quotes, the
+            rulebook's own prose. It is the one voice that is not the app's.
+
+    `--font-gothic` is kept as an alias so the 127 existing usages keep working;
+    it now resolves to the same Archivo as `--font-sans`, because a second
+    display face was doing nothing the weight scale could not.
+  */
+  --font-sans: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-gothic: var(--font-sans);
+  --font-heading: var(--font-sans);
 
   /*
-    Text, and the status ramp.
+    ------------------------------------------------------------------------
+    THE IRON LEDGER
 
-    Text is declared once rather than per theme: the app has always used one
-    pair, and a theme that wants its own can override these two lines.
+    The app is a dark *chrome* — top bar, navigation rail, bottom nav — wrapped
+    around a cream *sheet* of paper that holds the content. A ledger on a
+    workbench. That one idea is the whole visual language, and it is why this
+    looks nothing like the app it replaces.
 
-    Status is deliberately NOT themed. Red means error whichever faction you
-    are playing — it is information, not identity — and fixing it means the
-    contrast guarantees are verified once instead of seven times. A "NOT LEGAL"
-    that stops reading as alarming in one theme is a worse outcome than a
-    slightly less cohesive palette.
+    Two surfaces, and the same token names mean different things in each:
+
+      chrome (here)   dark. Frame, navigation, anything that is the *app*.
+      sheet (.sheet)  cream. Content — the roster, the codex, the campaign.
+
+    Redefining the tokens under `.sheet` rather than inventing a parallel set
+    is deliberate: custom properties inherit, so every `bg-theme-surface` and
+    `text-theme-text` already written across 47 files resolves to paper inside
+    the sheet and to iron outside it, with no component changed. That is what
+    makes a change this large tractable.
+
+    Faction identity rides on `--color-primary` only. The six themes each set
+    two accents — one for the dark chrome, one dark enough to carry text on
+    cream — because a colour legible on #16181C is rarely legible on #E9E4D7.
+    ------------------------------------------------------------------------
   */
-  --color-text: 236 239 244;
-  --color-muted: 142 149 165;
-  --status-error: 229 57 53;
-  --status-warning: 255 179 0;
-  --status-legal: 78 154 110;
+
+  /* Chrome (iron) */
+  --bg-base: 22 24 28;
+  --bg-surface: 30 33 39;
+  --bg-elevated: 26 29 34;
+  --bg-card: 30 33 39;
+  --color-border: 42 46 54;
+  --color-text: 233 228 215;
+  --color-muted: 122 130 144;
+
+  /* Paper, held here so `.sheet` can switch to them and themes can tint them. */
+  --paper: 233 228 215;
+  --paper-2: 223 217 201;
+  --paper-3: 228 222 206;
+  --paper-line: 195 188 168;
+  --ink: 25 23 19;
+  --ink-2: 74 68 58;
+  --ink-mute: 110 103 87;
+
+  /* Default accent — Iron Sanctum. Every theme overrides both. */
+  --accent-iron: 212 175 55;
+  --accent-paper: 139 0 0;
+  --color-primary: var(--accent-iron);
+  --color-primary-hover: 229 193 88;
+  --color-primary-glow: transparent;
+  --color-accent: var(--accent-paper);
+
+  --status-error: 196 52 43;
+  --status-warning: 138 106 22;
+  --status-legal: 44 97 82;
 }
 
+/*
+  The sheet. Content lives on paper; the app frame stays iron.
+
+  `--color-primary` flips to the paper accent here because the chrome accent is
+  chosen for a dark ground — Iron Sanctum's gold is 1.9:1 on cream, which is
+  invisible. The paper accents are measured against `--paper-2`, the banded
+  row, since that is the worse case.
+*/
+.sheet {
+  --bg-base: var(--paper);
+  --bg-surface: var(--paper-3);
+  --bg-elevated: var(--paper-2);
+  --bg-card: var(--paper-3);
+  --color-border: var(--paper-line);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-mute);
+  --color-primary: var(--accent-paper);
+  --color-primary-hover: var(--accent-paper);
+  --color-accent: var(--accent-paper);
+
+  background: rgb(var(--paper));
+  color: rgb(var(--ink));
+}
+
+/*
+  The six factions.
+
+  Each sets two accents. `--accent-iron` is the theme's own primaryColor, drawn
+  for a dark ground; `--accent-paper` is a colour of the same identity taken
+  down to a tonal band that carries text on cream.
+
+  Four of the six paper accents would otherwise have been reds and browns, hard
+  to tell apart at a glance. The Sultanate's #0F4C5C is the dark end of the same
+  lapis as its #76D6D5, and Hell's #73215F is the Tyrian purple the Court of the
+  Seven-Headed Serpent is named for — so hue, not just value, separates them.
+  Both were chosen rather than derived because neither theme has a colour of its
+  own dark enough to carry text on paper.
+
+  Contrast measured against `--paper-2`, the banded row, not the sheet: it is
+  the worse case and it is where costs and headers sit.
+*/
 [data-theme="iron-sanctum"] {
-  --bg-base: 12 14 18;
-  --bg-surface: 22 25 32;
-  --bg-elevated: 32 36 46;
-  --bg-card: 32 36 46;
-  --color-primary: 212 175 55;
+  --accent-iron: 212 175 55;   /* #D4AF37 */
+  --accent-paper: 139 0 0;     /* #8B0000  7.42:1 on the banded row */
   --color-primary-hover: 229 193 88;
-  --color-primary-glow: rgba(212, 175, 55, 0.25);
-  --color-border: 50 56 70;
-  --color-accent: 139 0 0;
 }
 
 [data-theme="heretic-legion"] {
-  --bg-base: 19 19 19;
-  --bg-surface: 28 27 27;
-  --bg-elevated: 38 34 32;
-  --bg-card: 38 34 32;
-  --color-primary: 255 86 37;
+  --accent-iron: 255 86 37;    /* #FF5625 */
+  --accent-paper: 146 7 3;     /* #920703  7.86:1 */
   --color-primary-hover: 255 118 77;
-  --color-primary-glow: rgba(255, 86, 37, 0.3);
-  --color-border: 93 64 56;
-  --color-accent: 146 7 3;
+  --bg-base: 25 21 20;
+  --bg-surface: 34 28 26;
+  --color-border: 56 45 41;
 }
 
 [data-theme="iron-wall-sultanate"] {
-  --bg-base: 10 15 20;
-  --bg-surface: 17 24 32;
-  --bg-elevated: 25 35 45;
-  --bg-card: 25 35 45;
-  --color-primary: 118 214 213;
+  --accent-iron: 118 214 213;  /* #76D6D5 */
+  --accent-paper: 15 76 92;    /* #0F4C5C  6.75:1 */
   --color-primary-hover: 160 240 239;
-  --color-primary-glow: rgba(118, 214, 213, 0.25);
-  --color-border: 46 63 78;
-  --color-accent: 233 195 73;
+  --bg-base: 18 24 30;
+  --bg-surface: 25 33 41;
+  --color-border: 40 54 66;
 }
 
 [data-theme="penitent-trench"] {
-  --bg-base: 16 14 12;
-  --bg-surface: 26 23 20;
-  --bg-elevated: 36 32 28;
-  --bg-card: 36 32 28;
-  --color-primary: 228 228 204;
+  --accent-iron: 228 228 204;  /* #E4E4CC */
+  --accent-paper: 143 25 29;   /* #8F191D  7.05:1 */
   --color-primary-hover: 255 255 240;
-  --color-primary-glow: rgba(228, 228, 204, 0.25);
-  --color-border: 71 71 63;
-  --color-accent: 143 25 29;
+  --bg-base: 24 22 19;
+  --bg-surface: 33 30 26;
+  --color-border: 54 49 43;
 }
 
 [data-theme="principality-of-hell"] {
-  --bg-base: 23 9 8;
-  --bg-surface: 34 18 16;
-  --bg-elevated: 46 24 21;
-  --bg-card: 46 24 21;
-  --color-primary: 255 85 64;
+  --accent-iron: 255 85 64;    /* #FF5540 */
+  --accent-paper: 115 33 95;   /* #73215F  7.06:1 */
   --color-primary-hover: 255 126 110;
-  --color-primary-glow: rgba(255, 85, 64, 0.3);
-  --color-border: 96 62 57;
-  --color-accent: 221 183 255;
+  --bg-base: 28 19 18;
+  --bg-surface: 38 26 24;
+  --color-border: 62 43 40;
 }
 
 [data-theme="black-grail"] {
-  --bg-base: 12 18 11;
-  --bg-surface: 20 28 19;
-  --bg-elevated: 29 38 28;
-  --bg-card: 29 38 28;
-  --color-primary: 139 195 74;
+  --accent-iron: 139 195 74;   /* #8BC34A */
+  --accent-paper: 121 85 72;   /* #795548  7.19:1 */
   --color-primary-hover: 156 204 101;
-  --color-primary-glow: rgba(139, 195, 74, 0.25);
-  --color-border: 51 69 49;
-  --color-accent: 121 85 72;
+  --bg-base: 20 24 19;
+  --bg-surface: 27 33 26;
+  --color-border: 45 54 43;
 }
 
 @layer base {
@@ -157,32 +219,37 @@
   }
 }
 
-.font-gothic {
-  font-family: 'Cinzel', serif;
-}
+/*
+  The eight display faces the old design loaded are down to three, and these
+  seven classes are the aliases that keep the 400-odd existing call sites
+  working.
 
-.font-heading {
-  font-family: 'Oswald', sans-serif;
+  They are aliases, not leftovers. Left pointing at Cinzel, Oswald, JetBrains
+  Mono, Bricolage, Playfair, EB Garamond — none of which layout.tsx loads any
+  more — every one of them fell back to a generic `serif` / `sans-serif` /
+  `monospace`, which is *worse* than the token stack, not merely different.
+  `font-gothic` alone is on 127 headings.
+
+  Anything that was a display face becomes Archivo; anything that was a text
+  serif becomes Newsreader; `font-mono` becomes the real mono. Weight and
+  tracking do the work the extra families used to.
+*/
+.font-gothic,
+.font-heading,
+.font-bricolage {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
-.font-bricolage {
-  font-family: 'Bricolage Grotesque', sans-serif;
-}
-
-.font-playfair {
-  font-family: 'Playfair Display', serif;
-}
-
-.font-newsreader {
-  font-family: 'Newsreader', serif;
-}
-
+.font-playfair,
+.font-newsreader,
 .font-garamond {
-  font-family: 'EB Garamond', serif;
+  font-family: var(--font-serif);
 }
 
 /* Grimdark Custom Scrollbars */
@@ -201,12 +268,19 @@
   background: rgb(var(--color-primary));
 }
 
-/* Bevels & Industrial Rivets */
+/*
+  `bevel-container` is now a plain hairline.
+
+  It drew a fake 3D edge — light on two sides, dark on the other two — which is
+  the opposite of what this design is. The Iron Ledger has exactly one border
+  weight and no simulated depth: a thing is separated from its neighbour by a
+  1px rule or by a change of ground, never by a highlight.
+
+  Kept as a class rather than deleted from 55 call sites, because "a container
+  with a hairline" is still what every one of them means.
+*/
 .bevel-container {
-  border-top: 1px solid rgb(var(--color-border));
-  border-left: 1px solid rgb(var(--color-border));
-  border-bottom: 1px solid rgb(var(--bg-base));
-  border-right: 1px solid rgb(var(--bg-base));
+  border: 1px solid rgb(var(--color-border));
 }
 
 .rivet {
@@ -490,4 +564,112 @@
   button:not(.tap) {
     min-height: 44px;
   }
+}
+
+
+/* --------------------------------------------------------------- Iron Ledger */
+
+/*
+  Flat, square, and printed.
+
+  The previous design leaned on rounded corners, drop shadows and a coloured
+  glow around the accent. This one has none: it is a document, and documents
+  have edges. Doing it here rather than editing 166 `rounded-*`, 188 `shadow-*`
+  and 55 bevel usages across 37 files is not laziness — it is the only way the
+  rule stays true for the next component someone writes.
+
+  `!important` for the same reason it is on the 16px form rule: the utilities
+  these override are applied per element, so nothing weaker wins.
+*/
+[class*='rounded'] {
+  border-radius: 0 !important;
+}
+
+[class*='shadow'] {
+  box-shadow: none !important;
+}
+
+/* The one exception: a circle is a shape, not a corner treatment. */
+.rounded-full,
+[class*='rounded-full'] {
+  border-radius: 9999px !important;
+}
+
+/*
+  Type.
+
+  Numbers, labels and keywords are monospaced everywhere — a statline that does
+  not align in a column is harder to read than a smaller one that does. Names
+  and headings are Archivo; flavour is Newsreader italic.
+*/
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+.font-mono,
+[class*='font-mono'] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Flavour text: mottos, battlefield quotes, the rulebook's own prose. */
+.flavour {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: rgb(var(--color-muted));
+}
+
+/*
+  Section labels — the small tracked-out mono caps the design uses to head a
+  block. One class instead of the same four utilities repeated.
+*/
+.eyebrow {
+  font-family: var(--font-mono);
+  /*
+    12px on a phone, 11px from a large phone up.
+
+    docs/MOBILE.md §4 sets 12px as the floor for body text, and a section label
+    is body text — it is the thing that tells you what the number under it
+    means. The tighter 11px is what the design wants and what it gets on every
+    screen that can carry it; the phone gets the readable size. The e2e suite
+    checks this (`no view renders text below 12px on a phone`), which is how
+    the first cut of this rule was caught.
+  */
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--color-muted));
+}
+
+@media (min-width: 640px) {
+  .eyebrow {
+    font-size: 0.6875rem;
+  }
+}
+
+/*
+  Two classes, so it beats the single-class `.eyebrow` above. A Tailwind
+  `text-theme-primary` would not: these rules sit after `@tailwind utilities`
+  in the source order, so at equal specificity `.eyebrow` wins and the accent
+  silently does nothing.
+*/
+.eyebrow.accent {
+  color: rgb(var(--color-primary));
+}
+
+/*
+  A meter. 3px, square, no gradient — the fill is either the ink of the sheet
+  or the faction accent, and nothing else.
+*/
+.meter {
+  height: 3px;
+  background: rgb(var(--color-border));
+}
+.meter > i {
+  display: block;
+  height: 100%;
+  background: rgb(var(--color-text));
+}
+.meter.accent > i {
+  background: rgb(var(--color-primary));
 }

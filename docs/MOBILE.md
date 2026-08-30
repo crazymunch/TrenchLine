@@ -189,11 +189,27 @@ Ordered by how much time a user spends in them on a phone:
 
 ## Definition of done
 
-A view is not finished until, at **375×667** and **768×1024**:
+Three formats, all first-class: the **phone** (375×667) is where a roster gets
+built on a commute and checked at the table, the **tablet** (768×1024) is the
+table device during a game, and the **desktop** (1440×900) is where most roster
+building actually happens. A view is not finished until all three hold.
+
+At every width:
 
 - No horizontal page scroll (with `overflow-x: hidden` removed from `body`).
-- Every interactive element is ≥44px.
-- No text below 12px, no input below 16px.
 - Modals open, scroll and close with the keyboard up.
+- No view throws.
+- Playwright covers the flow at that width.
+
+Below 1024px — phone and tablet, the two that are touched — additionally:
+
+- Every interactive element is ≥44px, as height or as a `.tap` overlay.
+- No text below 12px, no input below 16px.
 - The bottom nav clears the home indicator.
-- Playwright covers the flow at both widths.
+
+The touch floors stop at 1024px on purpose. A mouse does not need 44px, and
+enforcing it on a desktop only makes neighbouring controls fight each other for
+clicks — so `playwright.config.ts` runs the `desktop` project without those two
+assertions rather than with a weaker version of them. The rules that implement
+them live in `globals.css` under `@media (max-width: 1023px)`, not in the
+components, so the next component written inherits them.

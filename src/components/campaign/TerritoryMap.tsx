@@ -145,8 +145,8 @@ export const TerritoryMap: React.FC = () => {
               onClick={() => setViewMode('map')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
                 viewMode === 'map'
-                  ? 'bg-theme-primary text-black shadow'
-                  : 'text-theme-muted hover:text-white'
+                  ? 'bg-theme-primary text-theme-base shadow'
+                  : 'text-theme-muted hover:text-theme-text'
               }`}
             >
               <Globe className="w-3.5 h-3.5" />
@@ -157,8 +157,8 @@ export const TerritoryMap: React.FC = () => {
               onClick={() => setViewMode('grid')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
                 viewMode === 'grid'
-                  ? 'bg-theme-primary text-black shadow'
-                  : 'text-theme-muted hover:text-white'
+                  ? 'bg-theme-primary text-theme-base shadow'
+                  : 'text-theme-muted hover:text-theme-text'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -246,7 +246,7 @@ export const TerritoryMap: React.FC = () => {
                           ? 'bg-status-legal border-white text-white ring-4 ring-status-legal/40'
                           : isClaimedByOther
                           ? 'bg-theme-accent border-theme-primary text-white ring-4 ring-theme-accent/40'
-                          : 'bg-theme-base/90 border-theme-primary text-theme-primary group-hover:bg-theme-primary group-hover:text-black'
+                          : 'bg-theme-base/90 border-theme-primary text-theme-primary group-hover:bg-theme-primary group-hover:text-theme-base'
                       }`}
                     >
                       <MapPin className="w-3.5 h-3.5" />
@@ -354,7 +354,7 @@ export const TerritoryMap: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedTerritory(null)}
-                className="tap text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -410,7 +410,7 @@ export const TerritoryMap: React.FC = () => {
                   <button
                     onClick={handleAssignTerritory}
                     disabled={!selectedAssignWarbandId}
-                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow disabled:opacity-50 flex items-center justify-center space-x-1"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow disabled:opacity-50 flex items-center justify-center space-x-1"
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Assign</span>
@@ -422,7 +422,7 @@ export const TerritoryMap: React.FC = () => {
                 {activeWb && (
                   <button
                     onClick={() => handleClaimForActive(selectedTerritory)}
-                    className="py-2.5 px-4 bg-status-legal hover:bg-[#5BAE7E] text-white text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors"
+                    className="py-2.5 px-4 bg-status-legal hover:bg-status-legal text-white text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors"
                   >
                     <CheckCircle className="w-4 h-4" />
                     <span>Claim for Active Warband</span>
@@ -431,7 +431,7 @@ export const TerritoryMap: React.FC = () => {
 
                 <button
                   onClick={() => handleChallenge(selectedTerritory)}
-                  className="py-2.5 px-4 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors"
+                  className="py-2.5 px-4 bg-theme-accent hover:bg-status-error text-white text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors"
                 >
                   <Swords className="w-4 h-4" />
                   <span>Launch Offensive</span>

@@ -115,7 +115,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                 value={customLabel}
                 onChange={(e) => setCustomLabel(e.target.value)}
                 placeholder="e.g. Mid-Campaign Re-Equip, Recruited Sniper Priest"
-                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                 required
               />
             </div>
@@ -126,7 +126,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                 value={customNote}
                 onChange={(e) => setCustomNote(e.target.value)}
                 placeholder="e.g. Sold 2 Jezzails, purchased Machine Armour for Captain"
-                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
               />
             </div>
             <div className="flex justify-end space-x-2 pt-1">
@@ -139,7 +139,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow"
+                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow"
               >
                 Save Snapshot
               </button>

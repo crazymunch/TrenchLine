@@ -143,7 +143,7 @@ export const Sidebar: React.FC = () => {
 
           <button
             onClick={toggleCollapse}
-            className={`p-1.5 rounded hover:bg-theme-elevated text-theme-muted hover:text-white transition-colors flex-shrink-0 ml-1 ${
+            className={`p-1.5 rounded hover:bg-theme-elevated text-theme-muted hover:text-theme-text transition-colors flex-shrink-0 ml-1 ${
               isCollapsed ? 'hidden' : 'block'
             }`}
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
@@ -154,7 +154,7 @@ export const Sidebar: React.FC = () => {
 
         {/* 2. Active Warband Command Widget (When Expanded) */}
         {!isCollapsed && activeWarband && (
-          <div className="p-3 mx-3 mt-3 bg-theme-surface border border-theme-border rounded-md space-y-2 shadow bevel-container">
+          <div className="px-3 py-3 mx-0 border-b border-theme-border space-y-2">
             <div className="flex items-center justify-between gap-1 text-xs sm:text-[10px] font-mono">
               <span className="text-theme-muted uppercase font-bold flex items-center space-x-1.5 min-w-0 flex-1">
                 <span 
@@ -207,23 +207,16 @@ export const Sidebar: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setCurrentView(item.id)}
-                className={`w-full flex items-center rounded-md font-mono text-xs transition-all relative group ${
-                  isCollapsed ? 'justify-center p-3' : 'px-3.5 py-2.5 space-x-3'
+                className={`w-full flex items-center text-[13px] transition-colors relative group border-l-2 ${
+                  isCollapsed ? 'justify-center h-[52px] border-l-0' : 'px-3 py-2.5 gap-2.5'
                 } ${
                   isActive
-                    ? 'bg-theme-surface border border-theme-border font-bold text-white shadow'
-                    : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface/60'
+                    ? 'bg-theme-surface border-l-theme-primary font-semibold text-theme-text'
+                    : 'border-l-transparent text-theme-muted hover:text-theme-text hover:bg-theme-elevated'
                 }`}
-                style={{
-                  borderLeftColor: isActive ? activeThemeObj.primaryColor : undefined,
-                  borderLeftWidth: isActive ? '3px' : undefined
-                }}
                 title={isCollapsed ? item.label : undefined}
               >
-                <div 
-                  className="flex-shrink-0 transition-colors"
-                  style={{ color: isActive ? activeThemeObj.primaryColor : undefined }}
-                >
+                <div className={`flex-shrink-0 transition-colors ${isActive ? 'text-theme-primary' : ''}`}>
                   {item.icon}
                 </div>
 
@@ -306,7 +299,7 @@ export const Sidebar: React.FC = () => {
               {!isCollapsed && (
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="tap text-theme-muted hover:text-white p-1"
+                  className="tap text-theme-muted hover:text-theme-text p-1"
                   title="Account Details"
                 >
                   <User className="w-3.5 h-3.5" />
@@ -331,7 +324,7 @@ export const Sidebar: React.FC = () => {
           {isCollapsed && (
             <button
               onClick={toggleCollapse}
-              className="w-full flex justify-center p-2 rounded hover:bg-theme-elevated text-theme-muted hover:text-white transition-colors"
+              className="w-full flex justify-center p-2 rounded hover:bg-theme-elevated text-theme-muted hover:text-theme-text transition-colors"
               title="Expand Sidebar"
             >
               <ChevronRight className="w-4 h-4" />

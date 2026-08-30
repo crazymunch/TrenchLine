@@ -60,17 +60,33 @@ export default function Home() {
   }, [currentTheme]);
 
   return (
-    <div className="min-h-[100dvh] bg-theme-base text-theme-text flex flex-row selection:bg-theme-accent selection:text-white transition-colors duration-300">
-      {/* Left Collapsible Desktop Sidebar */}
+    /*
+      The Iron Ledger shell: a dark chrome frame around a cream sheet.
+
+      The rail, the top bar and the phone nav are the *app*; everything inside
+      `<main>` is the *document*. `.sheet` on main is what flips the whole token
+      set to paper for its subtree, so no view had to be recoloured by hand.
+
+      `min-h-[100dvh]` on the frame and `flex-1` on the sheet mean the paper
+      always reaches the bottom of the viewport even when a view is short —
+      otherwise the sheet ends mid-screen and the dark ground shows through
+      below it, which reads as a rendering fault rather than a design.
+    */
+    <div className="min-h-[100dvh] bg-theme-base text-theme-text flex flex-row selection:bg-theme-primary selection:text-theme-base">
+      {/* Desktop rail / tablet icon rail */}
       <Sidebar />
 
-      {/* Main Content & Header Column */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
         <Navbar />
 
-        {/* Main Content Area */}
-        <main className="flex-1 min-w-0 pb-nav-safe lg:pb-6">
+        {/*
+          Not a flex container. Making the sheet `flex flex-col` to get it to
+          fill the viewport height also made its children size to their content
+          on the cross axis, which put 200px of sideways scroll on the phone.
+          `flex-1` alone already stretches it in the parent column, and the
+          content decides its own layout.
+        */}
+        <main className="sheet flex-1 min-w-0 pb-nav-safe lg:pb-0">
           {currentView === 'builder' && <WarbandDashboard />}
           {currentView === 'play' && <PlayModeView />}
           {currentView === 'campaign' && <CampaignHubView />}

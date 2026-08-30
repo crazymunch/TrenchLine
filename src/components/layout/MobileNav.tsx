@@ -47,6 +47,16 @@ export const MobileNav: React.FC = () => {
         {/*
           Five destinations that carry a label, two utilities that do not.
 
+          The margins here are small and have been measured twice. The Iron
+          Ledger pass moved the whole app onto Archivo, which is wider than the
+          stack it replaced, and "Crusade" came back down to 3px of slack —
+          close enough that a different font on a different device clips it,
+          which is exactly how "Directory" failed on CI and passed locally. The
+          horizontal padding on each destination is gone and the two utility
+          buttons are 32px rather than 36px, which buys the labels back about
+          6px each. Their touch targets are unaffected: `.tap` gives both
+          utilities a 44px overlay regardless of their drawn width.
+
           3.4 raised every sub-12px string in the app to 12px, and at 12px
           "Campaign" and "Directory" clipped to "Campai…" in a seven-way split
           of a 375px screen — a clipped label is worse than the 10px one it
@@ -62,7 +72,7 @@ export const MobileNav: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setCurrentView(item.id)}
-                className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors relative ${
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0 rounded transition-colors relative ${
                   isActive ? 'bg-theme-surface' : 'text-theme-muted hover:text-theme-text'
                 }`}
                 style={{
@@ -85,7 +95,7 @@ export const MobileNav: React.FC = () => {
             onClick={() => setIsThemeModalOpen(true)}
             aria-label="Change theme"
             title="Change theme"
-            className="tap flex-none w-9 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
+            className="tap flex-none w-8 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
           >
             <Palette className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
           </button>
@@ -95,7 +105,7 @@ export const MobileNav: React.FC = () => {
             onClick={() => setIsBugReportOpen(true)}
             aria-label="Report a bug"
             title="Report a bug"
-            className="tap flex-none w-9 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
+            className="tap flex-none w-8 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
           >
             <Bug className="w-5 h-5 text-status-error" />
           </button>

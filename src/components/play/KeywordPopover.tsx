@@ -20,7 +20,7 @@ export const KeywordPopover: React.FC = () => {
           </div>
           <button
             onClick={() => setActiveKeyword(null)}
-            className="tap p-1 text-theme-muted hover:text-white rounded"
+            className="tap p-1 text-theme-muted hover:text-theme-text rounded"
           >
             <X className="w-4 h-4" />
           </button>

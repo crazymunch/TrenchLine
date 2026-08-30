@@ -130,7 +130,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 placeholder="Commander Valerius"
                 value={commanderName}
                 onChange={(e) => setCommanderName(e.target.value)}
-                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
               />
             </div>
           </div>
@@ -144,7 +144,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 placeholder="commander@trenchline.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                 required
               />
             </div>
@@ -159,7 +159,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
               />
             </div>
           </div>
@@ -167,7 +167,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors mt-2"
+            className="w-full py-2.5 px-4 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors mt-2"
           >
             <LogIn className="w-4 h-4" />
             <span>Enter the Crusade</span>

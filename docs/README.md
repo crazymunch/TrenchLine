@@ -16,7 +16,8 @@ no design documentation at all.
 | [`AUDIT.md`](AUDIT.md) | What is wrong with the codebase today, with evidence. Start here — everything else is a response to it. |
 | [`RULESET-MODEL.md`](RULESET-MODEL.md) | **The centrepiece.** How game data is sourced, layered, versioned and verified. Defines the "Latest GitHub" vs "TrenchLine" rulesets. |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Current and target application architecture. |
-| [`MOBILE.md`](MOBILE.md) | Mobile/tablet standards and the specific defects to fix. |
+| [`MOBILE.md`](MOBILE.md) | Phone, tablet and desktop standards, and the specific defects to fix. |
+| [`DESIGN.md`](DESIGN.md) | The Iron Ledger — the visual language, the two-surface token mechanism, and the type and colour rules. |
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |

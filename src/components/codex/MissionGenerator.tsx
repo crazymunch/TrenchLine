@@ -240,7 +240,7 @@ export const MissionGenerator: React.FC = () => {
             onClick={() => setActiveMode('designer')}
             className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
               activeMode === 'designer'
-                ? 'bg-theme-primary text-black shadow'
+                ? 'bg-theme-primary text-theme-base shadow'
                 : 'text-theme-muted hover:text-theme-text'
             }`}
           >
@@ -252,7 +252,7 @@ export const MissionGenerator: React.FC = () => {
             onClick={() => setActiveMode('procedural')}
             className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
               activeMode === 'procedural'
-                ? 'bg-theme-primary text-black shadow'
+                ? 'bg-theme-primary text-theme-base shadow'
                 : 'text-theme-muted hover:text-theme-text'
             }`}
           >
@@ -399,9 +399,9 @@ export const MissionGenerator: React.FC = () => {
             <div className="flex items-center space-x-3">
               <button
                 onClick={handleLaunchCombat}
-                className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+                className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow-lg flex items-center space-x-2"
               >
-                <Play className="w-4 h-4 fill-black" />
+                <Play className="w-4 h-4" />
                 <span>Launch in Tabletop Combat</span>
               </button>
             </div>
@@ -417,7 +417,7 @@ export const MissionGenerator: React.FC = () => {
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="flex items-center space-x-2 px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow transition-all"
+              className="flex items-center space-x-2 px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow transition-all"
             >
               <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
               <span>Roll Random Battlefield Hazards</span>

@@ -3,9 +3,16 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * End-to-end tests (Phase 3.7).
  *
- * Two viewports, both real targets rather than a desktop run with a phone
+ * Three viewports, all real targets rather than a desktop run with a phone
  * afterthought: 375x667 is the phone the app is used on at a table, 768x1024
- * the tablet that is the other common table device (docs/MOBILE.md).
+ * the tablet that is the other common table device (docs/MOBILE.md), and
+ * 1440x900 the desktop where most roster building actually happens.
+ *
+ * The desktop is a separate project rather than an assumed baseline because
+ * it is the only one of the three that shows the sidebar rail, and the only
+ * one where the touch-target and 16px-input floors deliberately do NOT apply
+ * — those rules stop at 1024px. What it shares with the other two is that the
+ * page must never scroll sideways and no view may throw.
  *
  * Everything runs against a **production build**. The bugs these tests exist to
  * catch are production bugs — Tailwind tree-shaking a rule out of the compiled
@@ -55,6 +62,11 @@ export default defineConfig({
       name: 'tablet',
       use: { ...devices['iPad Mini'], browserName: 'chromium',
              viewport: { width: 768, height: 1024 } },
+    },
+    {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'],
+             viewport: { width: 1440, height: 900 } },
     },
   ],
   webServer: {

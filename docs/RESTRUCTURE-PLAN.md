@@ -329,7 +329,8 @@ fabricated (AUDIT §1.13).
 | 3.4 | ✅ Touch targets ≥44px and the type scale applied app-wide, both **enforced in `globals.css`** rather than per component |
 | 3.5 | ✅ 3,815 hex values tokenised, and two bugs that stopped the themes working at all |
 | 3.6 | ✅ Play Mode phone pass — a 58px sticky combat strip through a 6,300px screen |
-| 3.7 | ✅ Playwright E2E at 375×667 and 768×1024 — 31 tests, in CI |
+| 3.7 | ✅ Playwright E2E at 375×667, 768×1024 and 1440×900 — 44 tests, in CI |
+| 3.8 | ✅ The Iron Ledger — the visual overhaul. See [`DESIGN.md`](DESIGN.md) |
 
 **Done when:** every view meets the [`MOBILE.md`](MOBILE.md) definition of done.
 
@@ -477,6 +478,48 @@ the 768px tablet — which [`MOBILE.md`](MOBILE.md) itself calls "the common tab
 device" — was exempt. A finger is a finger at 768px, and iPad Safari zooms a
 sub-16px input exactly as iPhone Safari does. Both rules now run to 1023px,
 where a laptop starts.
+
+A desktop project was added in 3.8, so all three formats are covered rather
+than two plus an assumption. It runs the sideways-scroll and console
+assertions and not the touch floors, because those deliberately stop at 1024px
+(see [`MOBILE.md`](MOBILE.md)).
+
+### 3.8 — the Iron Ledger
+
+A dark chrome around a cream sheet, flat and square, three faces. The whole of
+it is in [`DESIGN.md`](DESIGN.md); two things are worth repeating here.
+
+**It cost almost no component churn.** `.sheet` redefines the same token names
+on one element, and custom properties inherit — so ~3,800 existing
+`bg-theme-*` / `text-theme-*` usages resolve to paper inside the sheet and to
+iron outside it, unchanged. A parallel `paper-*` token set applied by hand
+would have been the same design and a month of work.
+
+**The suite caught the two things a screenshot would not.** The first cut put
+`.eyebrow` at 11px, which failed *no view renders text below 12px on a phone*
+on fifteen strings; and moving the app onto Archivo — wider than the stack it
+replaced — brought "Crusade" in the phone nav back down to 3px of slack, which
+is how "Directory" failed on CI having passed locally. Both were found by the
+suite, not by looking.
+
+Two real bugs surfaced while restyling, both fixed with the same parser:
+
+- The Codex printed the rulebook prose through `whitespace-pre-line`, so
+  players read `#### Success Roll Table (2D6)` and `- **1-6: Failure**`,
+  asterisks and all — the app's largest body of text, harder to read than the
+  book it was transcribed from.
+- Worse: `parseDeedsList` in Play Mode split the Glorious Deeds on `\n` and
+  kept only the lines that *began* a bullet. The extractor hard-wraps at the
+  source PDF's column width, so **54 of the deeds across the twelve scenarios
+  were shown cut off mid-clause** — "results in the sixth BLOOD" — and
+  presented as the whole rule. `parseRulesProse` rejoins the fragments; a test
+  asserts against the shipped dataset that no deed ends without terminal
+  punctuation.
+
+And three tables were wrapped in `overflow-hidden`, which *clipped* them rather
+than scrolling: the campaign standings lost its Glory Points column on a phone
+— the column that says who is winning — and the horizontal-scroll test passed
+precisely because the overflow was hidden.
 
 ---
 

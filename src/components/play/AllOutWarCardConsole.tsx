@@ -249,7 +249,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
             </div>
           </div>
 
-          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-theme-text rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -270,7 +270,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 onClick={() => setActiveTab(t.id as any)}
                 className={`py-2 px-2 rounded font-bold uppercase flex items-center justify-center space-x-1.5 transition-all text-center ${
                   isSel
-                    ? 'bg-theme-primary text-black shadow'
+                    ? 'bg-theme-primary text-theme-base shadow'
                     : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
@@ -294,7 +294,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </span>
               <p className="text-xs text-theme-text leading-relaxed">{cardPlayBanner.desc}</p>
             </div>
-            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-theme-muted hover:text-white ml-2">
+            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-theme-muted hover:text-theme-text ml-2">
               Dismiss
             </button>
           </div>
@@ -318,7 +318,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                 <button
                   onClick={handleDealInitiative}
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow flex-shrink-0"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-1.5 shadow flex-shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Deal Round {round} Cards</span>
@@ -376,7 +376,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <div className="pt-3 border-t border-theme-border flex justify-end">
                 <button
                   onClick={() => setActiveTab('betrayal')}
-                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 2: Betrayal Cards</span>
                   <ArrowRight className="w-4 h-4" />
@@ -409,7 +409,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                   <button
                     onClick={handleDealBetrayalCards}
-                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-1.5 shadow"
                   >
                     <Gift className="w-3.5 h-3.5" />
                     <span>Draw Turn Cards</span>
@@ -428,7 +428,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     }}
                     className={`px-3 py-1.5 rounded font-bold uppercase flex items-center space-x-2 ${
                       selectedPlayerIdx === idx
-                        ? 'bg-theme-primary text-black'
+                        ? 'bg-theme-primary text-theme-base'
                         : 'bg-theme-base text-theme-muted border border-theme-border'
                     }`}
                   >
@@ -500,8 +500,8 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                               onClick={() => handlePlayCard(selectedPlayerIdx, card.id)}
                               className={`w-full py-1.5 font-bold uppercase rounded text-xs transition-colors flex items-center justify-center space-x-1 ${
                                 isCoup
-                                  ? 'bg-theme-accent hover:bg-[#A30000] text-white'
-                                  : 'bg-theme-primary hover:bg-theme-primary-hover text-black'
+                                  ? 'bg-theme-accent hover:bg-status-error text-white'
+                                  : 'bg-theme-primary hover:bg-theme-primary-hover text-theme-base'
                               }`}
                             >
                               <Zap className="w-3.5 h-3.5" />
@@ -522,7 +522,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     <span className="text-xs text-theme-text font-bold block">Hand Hidden for Privacy</span>
                     <button
                       onClick={() => setIsHandRevealed(true)}
-                      className="px-4 py-1.5 bg-theme-primary text-black font-bold uppercase rounded text-xs"
+                      className="px-4 py-1.5 bg-theme-primary text-theme-base font-bold uppercase rounded text-xs"
                     >
                       Reveal Hand ({selectedPlayer.betrayalHand.length} Cards)
                     </button>
@@ -534,7 +534,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <div className="pt-3 border-t border-theme-border flex justify-end">
                 <button
                   onClick={() => setActiveTab('alliance')}
-                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 3: Alliance Period</span>
                   <ArrowRight className="w-4 h-4" />
@@ -566,14 +566,14 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                   <button
                     onClick={() => setIsTimerRunning(!isTimerRunning)}
-                    className="px-3 py-1.5 bg-theme-primary text-black font-bold uppercase rounded"
+                    className="px-3 py-1.5 bg-theme-primary text-theme-base font-bold uppercase rounded"
                   >
                     {isTimerRunning ? 'Pause Timer' : 'Start 3-Min Timer'}
                   </button>
 
                   <button
                     onClick={() => setTimerSeconds(180)}
-                    className="p-1.5 bg-theme-elevated text-theme-muted hover:text-white rounded border border-theme-border"
+                    className="p-1.5 bg-theme-elevated text-theme-muted hover:text-theme-text rounded border border-theme-border"
                     title="Reset Timer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -633,7 +633,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <button
                   onClick={handleRevealAlliances}
-                  className="px-5 py-2.5 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+                  className="px-5 py-2.5 bg-theme-accent hover:bg-status-error text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
                 >
                   <Users className="w-4 h-4" />
                   <span>Reveal Alliances & Calculate Joint VPs</span>
@@ -641,7 +641,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                 <button
                   onClick={() => setActiveTab('bribes')}
-                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 4: VP Bribes</span>
                   <ArrowRight className="w-4 h-4" />
@@ -705,7 +705,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 </span>
                 <button
                   onClick={onClose}
-                  className="px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 flex items-center space-x-2"
+                  className="px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 flex items-center space-x-2"
                 >
                   <Swords className="w-4 h-4" />
                   <span>⚔️ Enter Round Turn Combat</span>

@@ -196,7 +196,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
                 type="button"
                 onClick={() => setOutcome('p1')}
                 className={`py-2 rounded font-bold uppercase ${
-                  outcome === 'p1' ? 'bg-theme-primary text-black shadow' : 'bg-theme-base text-theme-muted border border-theme-border'
+                  outcome === 'p1' ? 'bg-theme-primary text-theme-base shadow' : 'bg-theme-base text-theme-muted border border-theme-border'
                 }`}
               >
                 P1 Won
@@ -249,7 +249,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
           </button>
           <button
             type="submit"
-            className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center space-x-2"
+            className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow flex items-center space-x-2"
           >
             <CheckCircle className="w-4 h-4" />
             <span>Record to Chronicle</span>

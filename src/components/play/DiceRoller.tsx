@@ -158,7 +158,7 @@ export const DiceRoller: React.FC = () => {
         soundEffects.playGunfire();
       } else if (finalTotal >= 7) {
         verdict = '🩸 SERIOUS INJURY (+1 Blood Marker)';
-        verdictColor = 'text-[#FF6B6B]';
+        verdictColor = 'text-status-error';
       } else if (finalTotal >= 4) {
         verdict = '⚠️ DOWNED (Knocked Off Feet)';
         verdictColor = 'text-status-warning';
@@ -256,7 +256,7 @@ export const DiceRoller: React.FC = () => {
             {isMuted ? <VolumeX className="w-4 h-4 text-status-error" /> : <Volume2 className="w-4 h-4 text-status-legal" />}
           </button>
 
-          <button className="text-theme-muted hover:text-white">
+          <button className="text-theme-muted hover:text-theme-text">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
@@ -278,8 +278,8 @@ export const DiceRoller: React.FC = () => {
                 onClick={() => setActiveMode(tab.id as DiceMode)}
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded uppercase font-bold transition-all ${
                   activeMode === tab.id
-                    ? 'bg-theme-primary text-black shadow'
-                    : 'bg-theme-surface text-theme-muted hover:text-white border border-theme-border'
+                    ? 'bg-theme-primary text-theme-base shadow'
+                    : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
                 {tab.icon}
@@ -302,8 +302,8 @@ export const DiceRoller: React.FC = () => {
                       onClick={() => setActionDiceModifier(mod)}
                       className={`px-2.5 py-1 rounded font-bold transition-all ${
                         actionDiceModifier === mod
-                          ? 'bg-theme-primary text-black font-extrabold shadow'
-                          : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
+                          ? 'bg-theme-primary text-theme-base font-extrabold shadow'
+                          : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                       }`}
                     >
                       {mod > 0 ? `+${mod} DICE` : mod < 0 ? `${mod} DICE` : 'Standard'}
@@ -319,7 +319,7 @@ export const DiceRoller: React.FC = () => {
                     onChange={(e) => setIsRiskyAction(e.target.checked)}
                     className="rounded border-theme-border text-theme-primary focus:ring-0"
                   />
-                  <span className={`font-bold uppercase text-xs sm:text-[11px] ${isRiskyAction ? 'text-[#FF6B6B]' : 'text-theme-muted'}`}>
+                  <span className={`font-bold uppercase text-xs sm:text-[11px] ${isRiskyAction ? 'text-status-error' : 'text-theme-muted'}`}>
                     Risky Action
                   </span>
                 </label>
@@ -330,7 +330,7 @@ export const DiceRoller: React.FC = () => {
               <button
                 onClick={rollActionTest}
                 disabled={isRolling}
-                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-theme-primary/20 text-xs tracking-wider"
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-theme-primary/20 text-xs tracking-wider"
               >
                 <Zap className="w-4 h-4" />
                 <span>
@@ -362,8 +362,8 @@ export const DiceRoller: React.FC = () => {
                         onClick={() => setInjuryDiceCount(btn.count)}
                         className={`flex-1 py-1.5 rounded font-bold uppercase text-xs sm:text-[10px] transition-all ${
                           injuryDiceCount === btn.count
-                            ? 'bg-[#B22222] text-white font-extrabold shadow'
-                            : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
+                            ? 'bg-status-error text-white font-extrabold shadow'
+                            : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                         }`}
                       >
                         {btn.label}
@@ -384,8 +384,8 @@ export const DiceRoller: React.FC = () => {
                         onClick={() => setInjuryFlatModifier(mod)}
                         className={`flex-1 py-1.5 rounded font-bold text-xs transition-all ${
                           injuryFlatModifier === mod
-                            ? 'bg-theme-primary text-black font-extrabold shadow'
-                            : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
+                            ? 'bg-theme-primary text-theme-base font-extrabold shadow'
+                            : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                         }`}
                       >
                         {mod > 0 ? `+${mod}` : mod}
@@ -400,7 +400,7 @@ export const DiceRoller: React.FC = () => {
               <button
                 onClick={rollInjuryTest}
                 disabled={isRolling}
-                className="w-full py-3 bg-[#B22222] hover:bg-[#A30000] text-white font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-[#B22222]/30 text-xs tracking-wider"
+                className="w-full py-3 bg-status-error hover:bg-status-error text-white font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-[#B22222]/30 text-xs tracking-wider"
               >
                 <Skull className="w-4 h-4" />
                 <span>
@@ -421,8 +421,8 @@ export const DiceRoller: React.FC = () => {
                     onClick={() => setCustomPoolCount(num)}
                     className={`px-3 py-1 rounded font-bold transition-all ${
                       customPoolCount === num
-                        ? 'bg-theme-primary text-black font-extrabold shadow'
-                        : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
+                        ? 'bg-theme-primary text-theme-base font-extrabold shadow'
+                        : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                     }`}
                   >
                     {num}D6
@@ -433,7 +433,7 @@ export const DiceRoller: React.FC = () => {
               <button
                 onClick={rollCustomPool}
                 disabled={isRolling}
-                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg text-xs"
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg text-xs"
               >
                 <Dices className="w-4 h-4" />
                 <span>Roll {customPoolCount} D6 Pool</span>
@@ -467,7 +467,7 @@ export const DiceRoller: React.FC = () => {
                   {lastResult.discardedDice.map((d, idx) => (
                     <div
                       key={`disc-${idx}`}
-                      className="w-11 h-11 rounded bg-theme-base border border-theme-border text-[#555E70] line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
+                      className="w-11 h-11 rounded bg-theme-base border border-theme-border text-theme-muted line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
                       title="Discarded / Dropped Die"
                     >
                       {d}
@@ -481,7 +481,7 @@ export const DiceRoller: React.FC = () => {
                   )}
 
                   <span className="text-sm font-bold text-theme-text px-1">=</span>
-                  <div className="px-3 py-1 rounded bg-theme-primary text-black font-extrabold text-base shadow">
+                  <div className="px-3 py-1 rounded bg-theme-primary text-theme-base font-extrabold text-base shadow">
                     {lastResult.finalTotal}
                   </div>
                 </div>

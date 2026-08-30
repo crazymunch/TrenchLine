@@ -156,7 +156,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
           className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'titles' 
               ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-              : 'border-transparent text-theme-muted hover:text-white'
+              : 'border-transparent text-theme-muted hover:text-theme-text'
           }`}
         >
           <Trophy className="w-3.5 h-3.5" />
@@ -168,7 +168,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
           className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'deeds' 
               ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-              : 'border-transparent text-theme-muted hover:text-white'
+              : 'border-transparent text-theme-muted hover:text-theme-text'
           }`}
         >
           <Award className="w-3.5 h-3.5" />
@@ -180,7 +180,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
           className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'bio' 
               ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-              : 'border-transparent text-theme-muted hover:text-white'
+              : 'border-transparent text-theme-muted hover:text-theme-text'
           }`}
         >
           <BookOpen className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                 />
                 <button
                   onClick={() => handleSaveNameAndDossier()}
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>Save Name</span>
@@ -239,7 +239,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                 <button
                   onClick={handleAddTitle}
                   disabled={!newTitleInput.trim()}
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Title</span>
@@ -307,8 +307,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                             onClick={() => handleToggleTitleActive(idx)}
                             className={`px-2.5 py-1 rounded text-xs sm:text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                               rec.active
-                                ? 'bg-theme-primary text-black shadow'
-                                : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-white'
+                                ? 'bg-theme-primary text-theme-base shadow'
+                                : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-theme-text'
                             }`}
                             title={rec.active ? 'Click to hide from display name' : 'Click to show in display name'}
                           >
@@ -369,7 +369,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               <button
                 onClick={handleAddDeed}
                 disabled={!newDeedInput.trim()}
-                className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Record Feat</span>
@@ -442,7 +442,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             <div className="flex items-center justify-end pt-2">
               <button
                 onClick={() => handleSaveNameAndDossier()}
-                className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
+                className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
               >
                 <Check className="w-4 h-4" />
                 <span>{isSaved ? '✓ Biography Saved!' : 'Save Dossier'}</span>
