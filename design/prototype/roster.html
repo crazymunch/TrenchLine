@@ -5,31 +5,78 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
+/* ---------------------------------------------------------------------------
+   Middle ground.
+
+   The mock fixed one palette — cream paper, oxblood accent — and dropped the
+   app's six faction themes with it. The app already ships those themes and a
+   switcher, so throwing them away is a regression, not a simplification.
+
+   So: the Iron Ledger *structure* is kept exactly, and the two things that
+   carry identity become variables.
+
+     surface   paper | iron    the sheet's ground (the mock, or the app's dark)
+     faction   6 themes        drives the accent: Glory, Leader, active states
+
+   Everything else — radius 0, one hairline weight, 3px meters, the type
+   scale — is the mock's, unchanged.
+--------------------------------------------------------------------------- */
 :root{
   --iron-base:#16181C; --iron-raised:#1E2127; --iron-hover:#1A1D22; --iron-line:#2A2E36;
   --iron-line-2:#23272F; --iron-stroke:#3A404C; --iron-text:#E9E4D7; --iron-text-2:#C9CDD4;
   --iron-mute:#7A8290;
-  --paper:#E9E4D7; --paper-2:#DFD9C9; --paper-3:#E4DECE; --paper-row:#E2DCCC;
-  --paper-line:#C3BCA8; --paper-scroll:#B5AD98;
-  --ink:#191713; --ink-2:#4A443A; --ink-mute:#6E6757;
-  --oxblood:#8C201B; --oxblood-on:#F2ECE0; --oxblood-soft:#E3B7B2; --oxblood-rail:#C08A84;
-  --glory-track:#D8C9C4; --glory-dim:#A98A82;
   --legal:#2C6152; --legal-chrome:#6FBF9B; --warn:#8A6A16; --warn-line:#C4A96A; --live:#C4342B;
   --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Archivo',system-ui,sans-serif;
   --serif:'Newsreader',Georgia,serif;
 }
+/* --- surface: paper (the mock) --- */
+.device[data-surface="paper"]{
+  --paper:#E9E4D7; --paper-2:#DFD9C9; --paper-3:#E4DECE; --paper-row:#E2DCCC;
+  --paper-line:#C3BCA8; --paper-scroll:#B5AD98;
+  --ink:#191713; --ink-2:#4A443A; --ink-mute:#6E6757;
+  --accent-on:#F2ECE0;
+}
+/* --- surface: iron (where we started — the app's own dark ground) --- */
+.device[data-surface="iron"]{
+  --paper:#161920; --paper-2:#20242E; --paper-3:#1A1E26; --paper-row:#20242E;
+  --paper-line:#323846; --paper-scroll:#3A4152;
+  --ink:#ECEFF4; --ink-2:#C2C8D4; --ink-mute:#8E95A5;
+  --accent-on:#0C0E12;
+  --legal:#4E9A6E; --warn:#FFB300; --warn-line:#8A6A16;
+}
+/* --- faction accent, taken from the app's own THEMES (src/types/theme.ts) ---
+   `--accent-iron` is the theme's primaryColor: designed for a dark ground.
+   `--accent-paper` is its accentColor, used only where that colour is dark
+   enough to carry text on cream.
+
+   Two factions have no dark colour in their theme — Iron Sultanate (teal
+   #76D6D5 / gold #E9C349) and Principality of Hell (#FF5540 / #DDB7FF). Both
+   are illegible as text on paper. They fall back to the mock's oxblood and are
+   marked below: picking a dark accent for them is a maintainer's call, not
+   something to invent here.                                                  */
+.device[data-faction="antioch"]  {--accent-iron:#D4AF37; --accent-paper:#8B0000; --swatch:#D4AF37}
+.device[data-faction="heretic"]  {--accent-iron:#FF5625; --accent-paper:#920703; --swatch:#FF5625}
+.device[data-faction="pilgrims"] {--accent-iron:#E4E4CC; --accent-paper:#8F191D; --swatch:#E4E4CC}
+.device[data-faction="grail"]    {--accent-iron:#8BC34A; --accent-paper:#795548; --swatch:#8BC34A}
+.device[data-faction="sultanate"]{--accent-iron:#76D6D5; --accent-paper:#8C201B; --swatch:#76D6D5} /* paper: needs a dark accent */
+.device[data-faction="hell"]     {--accent-iron:#FF5540; --accent-paper:#8C201B; --swatch:#FF5540} /* paper: needs a dark accent */
+
+.device[data-surface="paper"]{--accent:var(--accent-paper); --accent-2:var(--accent-paper)}
+.device[data-surface="iron"] {--accent:var(--accent-iron);  --accent-2:var(--accent-iron)}
+.device[data-surface="iron"] .chd{--accent-on:#0C0E12}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#0F1013;color:var(--iron-text);font-family:var(--sans);padding:24px;min-height:100vh}
 
 /* ---- prototype chrome (not part of the design) ---- */
 .harness{max-width:1180px;margin:0 auto 20px;font-family:var(--mono);font-size:12px;color:var(--iron-mute);line-height:1.6}
 .harness h1{font-family:var(--sans);font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--iron-text);margin-bottom:8px}
-.harness b{color:var(--oxblood-rail)}
+.harness b{color:var(--accent-2)}
 .switch{display:flex;gap:0;margin:14px 0 0;border:1px solid var(--iron-stroke);width:max-content}
 .switch button{padding:9px 16px;background:transparent;border:0;border-right:1px solid var(--iron-stroke);
   color:var(--iron-mute);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .switch button:last-child{border-right:0}
-.switch button.on{background:var(--oxblood);color:var(--oxblood-on)}
+.switch button.on{background:var(--accent);color:var(--accent-on)}
 
 .stage{display:flex;justify-content:center;padding:8px 0 40px}
 .device{position:relative;overflow:hidden;background:var(--iron-base);border:1px solid var(--iron-line);
@@ -60,7 +107,7 @@ body{background:#0F1013;color:var(--iron-text);font-family:var(--sans);padding:2
 .nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;color:var(--iron-text-2);
   font-size:13px;cursor:pointer;border-left:2px solid transparent}
 .nav a:hover{background:var(--iron-hover)}
-.nav a.on{background:var(--iron-raised);border-left-color:var(--oxblood);color:var(--iron-text);font-weight:600}
+.nav a.on{background:var(--iron-raised);border-left-color:var(--accent);color:var(--iron-text);font-weight:600}
 .nav a svg{width:16px;height:16px;flex:none}
 .nav a em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
   padding:2px 5px;background:var(--live);color:#fff}
@@ -68,15 +115,15 @@ body{background:#0F1013;color:var(--iron-text);font-family:var(--sans);padding:2
 .device[data-d="tablet"] .nav a span{display:none}
 .idmini{border-bottom:1px solid var(--iron-line);padding-bottom:12px}
 .idmini .f{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--oxblood-rail)}
-.idmini .f i{width:8px;height:8px;border-radius:50%;background:#76D6D5;display:block;flex:none}
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2)}
+.idmini .f i{width:8px;height:8px;border-radius:50%;background:var(--swatch);display:block;flex:none}
 .idmini b{display:block;font-size:15px;font-weight:700;margin-top:6px;line-height:1.2}
 .idmini .pts{display:flex;gap:12px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--iron-mute)}
 .idmini .pts b{display:inline;font-size:12px;font-weight:400;color:var(--iron-text-2);margin:0}
-.idmini .pts s{color:var(--oxblood-rail);text-decoration:none}
+.idmini .pts s{color:var(--accent-2);text-decoration:none}
 .device[data-d="tablet"] .idmini{display:none}
 .wbrow{padding:9px 10px;border-left:2px solid transparent;cursor:pointer}
-.wbrow.on{background:var(--iron-raised);border-left-color:var(--oxblood)}
+.wbrow.on{background:var(--iron-raised);border-left-color:var(--accent)}
 .wbrow b{display:block;font-size:13px;font-weight:600}
 .wbrow span{display:block;font-family:var(--mono);font-size:11px;color:var(--iron-mute);margin-top:3px}
 .railbtn{height:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--iron-stroke);
@@ -87,7 +134,7 @@ body{background:#0F1013;color:var(--iron-text);font-family:var(--sans);padding:2
 .kv dt{color:var(--iron-mute);text-transform:uppercase;letter-spacing:.06em}
 .kv dd{color:var(--iron-text-2);word-break:break-all}
 .rulehdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.rulehdr span{color:var(--oxblood-rail);font-family:var(--mono);font-size:11px}
+.rulehdr span{color:var(--accent-2);font-family:var(--mono);font-size:11px}
 .rulepanel{border:1px solid var(--iron-line);background:var(--iron-raised);margin-top:8px}
 .rulepanel div{display:flex;gap:8px;padding:8px 10px;border-bottom:1px solid var(--iron-line-2);
   font-family:var(--mono);font-size:11px;align-items:center}
@@ -114,7 +161,7 @@ h1.wb{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.015em;margin
 .btn{height:40px;padding:0 13px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);
   font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--ink-mute)}
-.btn.fill{background:var(--oxblood);border-color:var(--oxblood);color:var(--paper)}
+.btn.fill{background:var(--accent);border-color:var(--accent);color:var(--paper)}
 .btn.sq{width:40px;padding:0;font-size:15px}
 .seg{display:flex;border:1px solid var(--paper-line);height:40px}
 .seg button{padding:0 13px;border:0;background:transparent;color:var(--ink-2);font-family:var(--mono);
@@ -127,25 +174,25 @@ h1.wb{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.015em;margin
 .cur{padding:13px 26px}
 .device[data-d="phone"] .cur{padding:12px 16px}
 .cur .k{font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mute)}
-.cur.glory .k{color:var(--oxblood)}
+.cur.glory .k{color:var(--accent)}
 .cur .v{display:flex;align-items:baseline;gap:9px;margin-top:7px}
 .cur .v b{font-family:var(--mono);font-weight:400;font-size:28px;line-height:1}
 .device[data-d="phone"] .cur .v b{font-size:23px}
-.cur.glory .v b{color:var(--oxblood)}
+.cur.glory .v b{color:var(--accent)}
 .cur .v em{font-family:var(--mono);font-style:normal;font-size:14px;color:var(--ink-mute)}
-.cur.glory .v em{color:var(--glory-dim)}
+.cur.glory .v em{color:var(--ink-mute)}
 .cur .v span{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-left:10px}
 .meter{height:3px;background:var(--paper-line);margin-top:9px}
-.cur.glory .meter{background:var(--glory-track)}
+.cur.glory .meter{background:var(--paper-line)}
 .meter i{display:block;height:100%;background:var(--ink)}
-.cur.glory .meter i{background:var(--oxblood)}
+.cur.glory .meter i{background:var(--accent)}
 
 .legal{height:38px;display:flex;align-items:center;gap:12px;padding:0 26px;background:var(--paper-2);
   border-bottom:1px solid var(--paper-line);font-family:var(--mono);font-size:12px;color:var(--ink-mute)}
 .device[data-d="phone"] .legal{padding:0 16px;height:44px}
 .stamp{color:var(--legal);border:1px solid var(--legal);padding:3px 8px;letter-spacing:.1em;flex:none}
 .legal .amber{color:var(--warn)}
-.legal .review{margin-left:auto;color:var(--oxblood);cursor:pointer;background:none;border:0;
+.legal .review{margin-left:auto;color:var(--accent);cursor:pointer;background:none;border:0;
   font-family:var(--mono);font-size:12px;letter-spacing:.06em}
 
 .filters{display:flex;gap:6px;padding:10px 26px 0;flex-wrap:wrap;align-items:center}
@@ -167,19 +214,19 @@ h1.wb{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.015em;margin
 .device[data-d="phone"] .cards{grid-template-columns:1fr;gap:10px}
 .card{border:1px solid var(--paper-line);background:var(--paper-3);cursor:pointer}
 .card:hover{border-color:var(--ink-mute)}
-.card.lead{border-color:var(--oxblood)}
+.card.lead{border-color:var(--accent)}
 .chd{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--paper-2);
   border-bottom:1px solid var(--paper-line)}
-.card.lead .chd{background:var(--oxblood);border-bottom:0}
+.card.lead .chd{background:var(--accent);border-bottom:0}
 .chd b{flex:1;min-width:0;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.card.lead .chd b{color:var(--oxblood-on)}
+.card.lead .chd b{color:var(--accent-on)}
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:.11em;color:var(--ink-mute);flex:none}
-.card.lead .tag{color:var(--oxblood-soft)}
+.card.lead .tag{color:var(--accent-on)}
 .chd .c{font-family:var(--mono);font-size:12px;flex:none}
-.card.lead .chd .c{color:var(--oxblood-on)}
+.card.lead .chd .c{color:var(--accent-on)}
 .kebab{flex:none;width:26px;height:26px;border:0;background:transparent;color:var(--ink-mute);
   font-size:15px;cursor:pointer;line-height:1}
-.card.lead .kebab{color:var(--oxblood-soft)}
+.card.lead .kebab{color:var(--accent-on)}
 .cbd{padding:9px 11px;display:flex;flex-direction:column;gap:8px}
 .bp{font-family:var(--serif);font-size:15px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(5,1fr);background:var(--paper);border:1px solid var(--paper-line)}
@@ -189,9 +236,19 @@ h1.wb{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.015em;margin
 .stats b{display:block;font-family:var(--mono);font-weight:400;font-size:16px;margin-top:2px}
 .gear{display:flex;flex-wrap:wrap;gap:5px}
 .gear i{font-style:normal;font-family:var(--mono);font-size:11px;border:1px solid var(--paper-line);padding:3px 6px;color:var(--ink-2)}
-.gear i.g{border-color:var(--oxblood);color:var(--oxblood)}
+.gear i.g{border-color:var(--accent);color:var(--accent)}
 .rules{font-family:var(--mono);font-size:11px;color:var(--ink-mute);line-height:1.5}
-.rules em{font-style:normal;color:var(--oxblood)}
+/* Density the current app carries and the mock dropped: earned titles, the
+   battlefield quote, innate abilities, fireteam, XP. Present on the card at a
+   glance; the full text is one tap away in the warrior sheet. */
+.titles{display:flex;flex-wrap:wrap;gap:4px}
+.titles i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.04em;
+  border:1px solid var(--accent);color:var(--accent);padding:2px 5px}
+.quote{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--ink-2);
+  border-left:2px solid var(--accent);padding-left:8px;line-height:1.4}
+.abil{font-family:var(--mono);font-size:11px;color:var(--ink-2);line-height:1.5;
+  border-top:1px solid var(--paper-line);padding-top:7px}
+.rules em{font-style:normal;color:var(--accent)}
 
 /* table layout */
 table{width:100%;border-collapse:collapse;font-size:14px}
@@ -206,7 +263,7 @@ tbody td.n{text-align:right;font-family:var(--mono);font-size:17px;font-weight:4
 tbody .nm{font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px}
 tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-top:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
-.tag.leadtag{background:var(--oxblood);color:var(--oxblood-on);padding:2px 6px}
+.tag.leadtag{background:var(--accent);color:var(--accent-on);padding:2px 6px}
 
 /* phone bottom nav */
 .bnav{flex:none;height:58px;display:none;background:var(--iron-base);border-top:1px solid var(--iron-line)}
@@ -214,7 +271,7 @@ tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-t
 .bnav button{flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:4px;background:transparent;border:0;color:var(--iron-mute);font-family:var(--mono);font-size:10px;
   letter-spacing:.06em;text-transform:uppercase;cursor:pointer;position:relative}
-.bnav button.on{color:var(--iron-text);box-shadow:inset 0 2px 0 var(--oxblood)}
+.bnav button.on{color:var(--iron-text);box-shadow:inset 0 2px 0 var(--accent)}
 .bnav svg{width:18px;height:18px}
 .bnav .live{position:absolute;top:11px;right:22px;width:6px;height:6px;border-radius:50%;background:var(--live)}
 
@@ -242,15 +299,15 @@ tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-t
 .row .m b{display:block;font-size:14px;font-weight:600}
 .row .m span{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-mute);margin-top:2px}
 .row .c{font-family:var(--mono);font-size:12px;flex:none}
-.row .c.g{color:var(--oxblood)}
+.row .c.g{color:var(--accent)}
 .row .rm{flex:none;width:44px;height:44px;margin:-10px -8px -10px 0;border:0;background:transparent;
   color:var(--ink-mute);font-size:15px;cursor:pointer}
-.row .rm:hover{color:var(--oxblood)}
+.row .rm:hover{color:var(--accent)}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .acts button{min-height:44px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);
   font-family:var(--mono);font-size:12px;letter-spacing:.05em;cursor:pointer;padding:0 10px;text-align:left}
 .acts button:hover{border-color:var(--ink-mute)}
-.acts button.danger{color:var(--oxblood);border-color:var(--oxblood)}
+.acts button.danger{color:var(--accent);border-color:var(--accent)}
 .acts button.wide{grid-column:1/-1}
 
 .menu{position:absolute;background:var(--paper);border:1px solid var(--ink-mute);z-index:22;display:none;
@@ -260,7 +317,7 @@ tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-t
   background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:12px;text-align:left;cursor:pointer}
 .menu button:last-child{border-bottom:0}
 .menu button:hover{background:var(--paper-2)}
-.menu button.danger{color:var(--oxblood)}
+.menu button.danger{color:var(--accent)}
 .menu .hdr{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-mute);padding:8px 13px;background:var(--paper-2);border-bottom:1px solid var(--paper-line)}
 
@@ -273,29 +330,55 @@ tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-t
   <h1>TrenchLine — roster prototype</h1>
   <div>Interactive. Every value is joined from the real <b>Al-Qarn Rihla</b> export against <b>src/data/generated</b> — all 11 statlines resolve, so none of the amber “not in export” strips are needed.</div>
   <div style="margin-top:6px">This keeps the Iron-Ledger visual language exactly and adds the missing layer: <b>where the existing app's options live</b>. Try — tap a warrior, the <b>⋯</b> on a card, the <b>⋯</b> in the toolbar, or <b>REVIEW</b> on the legality strip.</div>
-  <div class="switch" id="sw">
-    <button data-d="phone" class="on">Phone 375</button>
-    <button data-d="tablet">Tablet 1024</button>
-    <button data-d="desktop">Desktop 1280</button>
+  <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end">
+    <div><div style="margin-bottom:5px;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Surface</div>
+      <div class="switch" id="sw">
+        <button data-d="phone" class="on">Phone 375</button>
+        <button data-d="tablet">Tablet 1024</button>
+        <button data-d="desktop">Desktop 1280</button>
+      </div></div>
+    <div><div style="margin-bottom:5px;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Sheet ground</div>
+      <div class="switch" id="sf">
+        <button data-s="paper" class="on">Paper (the mock)</button>
+        <button data-s="iron">Iron (where we started)</button>
+      </div></div>
+    <div><div style="margin-bottom:5px;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Faction theme</div>
+      <div class="switch" id="fc">
+        <button data-f="sultanate" class="on">Sultanate</button>
+        <button data-f="antioch">Antioch</button>
+        <button data-f="heretic">Heretic</button>
+        <button data-f="pilgrims">Pilgrims</button>
+        <button data-f="grail">Grail</button>
+      </div></div>
   </div>
 </div>
 
-<div class="stage"><div class="device" data-d="phone" id="dev"></div></div>
+<div class="stage"><div class="device" data-d="phone" data-surface="paper" data-faction="sultanate" id="dev"></div></div>
 
 <script>
 const W = [
  {n:"Kasim bin Malik",b:"Jabirean Alchemist",role:"LEADER",d:194,g:2,s:["6\"","+3","+1","−2","32"],
   gear:[["Automatic Rifle",40],["Sword/Axe",4],["Alchemist Armour",50],["Cloak of Alamut",25],["Secrets of Takwin",20],["Sniper Scope",2,"g"]],
-  adv:["Experience","Ranged Proficiency [7]","Assassinate [4]"],inj:["Leg Wound [31]"],xp:3},
+  adv:["Experience","Ranged Proficiency [7]","Assassinate [4]"],inj:["Leg Wound [31]"],xp:3,
+  titles:["The Living Engineer","Master of Construction"],
+  quote:"In these wastes, we use the tools we have.",
+  abil:[["Mastery of the Elements","On first deployment choose FIRE, GAS or SHRAPNEL; all its weapons gain that keyword."],
+        ["Elemental Change","ACTION: change the elemental keyword on all its weapons."]]},
  {n:"Al-Qahhar",b:"Favoured Brazen Bull",role:"ELITE",d:250,g:0,s:["6\"","+0","+2","−3","60"],
   gear:[["Flame Cannon",60],["Titan Zulfiqar",30],["Machine Armour",50],["Wind Amulet",10]],
-  adv:["Elite Promotion","Experience","Strength of Samson [8]"],inj:["Lost Arm [26]"],xp:5},
+  adv:["Elite Promotion","Experience","Strength of Samson [8]"],inj:["Lost Arm [26]"],xp:5,
+  titles:["The Crippled","The Unbroken Forge"],quote:"The furnace within burns hotter than the fires of the Pit.",
+  abil:[["Artificial Life","Add -1 INJURY DICE to Injury Rolls for a Brazen Bull."],
+        ["Trample","ACTION: melee attack against a Down model, ignoring armour."],
+        ["Living Battering Ram","Dispatch #1 — charge, then a Success Roll per enemy within 1\"."]]},
  {n:"Al-Masyukh",b:"Favoured Homunculus",role:"ELITE",d:252,g:0,s:["6\"","+1","+1","0","60"],
   gear:[["Massive Size",30],["Additional Arm",15],["Gargantuan Size",20],["Siege Jezzail",30],["Titan Zulfiqar",30],["Great Sword/Axe",12],["Fire Shield",20],["Hypnotic Eyes",15],["Inhuman Strength",15],["Hawk Eyes",10],["Human Hands",10],["Two Heads",5]],
   adv:["Elite Promotion","Experience"],inj:[],xp:2},
  {n:"Idris the Relic Hound",b:"Favoured Kavass",role:"ELITE",d:84,g:0,s:["6\"","+0","+0","−2","25"],
   gear:[["Jezzail",7],["Sword/Axe",4],["Reinforced Armour",40],["Alchemical Ammunition",3],["Studied Blade",5]],
-  adv:["Elite Promotion","Experience","Skill & Expertise [7]","Fireteam: Mamluk-Guarded"],inj:[],xp:4},
+  adv:["Elite Promotion","Experience","Skill & Expertise [7]"],inj:[],xp:4,
+  titles:["The Relic Hound"],fireteam:"Mamluk-Guarded",
+  abil:[["Coordinated Engagement","All models in the same FIRETEAM activate together."]]},
  {n:"Zayd bin Tariq al-Nahas",b:"Jabirean Alchemist",role:"TROOP",d:130,g:0,s:["6\"","+2","+1","−2","32"],
   gear:[["Sniper Rifle",35],["Reinforced Armour",40]],adv:[],inj:[],xp:0},
  {n:"The Iron Needle",b:"Sultanate Sapper",role:"TROOP",d:101,g:0,s:["6\"","+1","0","−1","25"],
@@ -330,8 +413,12 @@ function cardsHtml(){return `<div class="cards">${shown().map((w,i)=>`
     <div class="cbd">
       <div class="bp">${esc(w.b)}</div>
       ${statsHtml(w.s)}
+      ${w.titles?`<div class="titles">${w.titles.map(t=>`<i>${esc(t)}</i>`).join('')}</div>`:''}
+      ${w.quote?`<div class="quote">“${esc(w.quote)}”</div>`:''}
       <div class="gear">${w.gear.slice(0,5).map(g=>`<i class="${g[2]==='g'?'g':''}">${esc(g[0])}${g[1]?' '+g[1]+(g[2]==='g'?' ☼':''):''}</i>`).join('')}${w.gear.length>5?`<i>+${w.gear.length-5} more</i>`:''}</div>
-      ${(w.inj.length||w.adv.length)?`<div class="rules">${w.adv.join(' · ')}${w.inj.length?(w.adv.length?' · ':'')+'<em>'+w.inj.join(' · ')+'</em>':''}</div>`:''}
+      ${w.abil?`<div class="abil">${w.abil.length} ${w.abil.length===1?'ability':'abilities'} · ${w.abil.map(a=>esc(a[0])).join(', ')}</div>`:''}
+      ${w.fireteam?`<div class="rules">⛨ Fireteam: ${esc(w.fireteam)}</div>`:''}
+      ${(w.inj.length||w.adv.length||w.xp)?`<div class="rules">${w.xp?`${w.xp} XP · `:''}${w.adv.join(' · ')}${w.inj.length?(w.adv.length?' · ':'')+'<em>'+w.inj.join(' · ')+'</em>':''}</div>`:''}
     </div>
   </article>`).join('')}</div>`;}
 
@@ -357,7 +444,7 @@ function render(){
      <div class="idmini wide">
        <div class="f"><i></i>Iron Sultanate</div>
        <b>Al-Qarn Rihla</b>
-       <div class="pts"><span>1320<b> / 1320</b></span><s>6 ☼<b style="color:var(--glory-dim)"> / 9</b></s></div>
+       <div class="pts"><span>1320<b> / 1320</b></span><s>6 ☼<b style="color:var(--ink-mute)"> / 9</b></s></div>
      </div>
 
      <div>
@@ -479,6 +566,11 @@ function openWarrior(i){
         <button class="rm" data-toast="Unequipped ${esc(g[0])}">✕</button></div>`).join('')}
       <button class="acts" style="display:block;width:100%;min-height:44px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:12px;cursor:pointer;margin-top:6px" data-toast="Opens the Armoury (AddEquipmentModal)">+ Equip from armoury</button>
     </div>
+    ${w.abil?`<div class="sec"><h4>Innate abilities (${w.abil.length})</h4>
+      ${w.abil.map(a=>`<div class="row" style="display:block"><b style="font-size:13px">${esc(a[0])}</b>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--ink-mute);line-height:1.55;margin-top:5px">${esc(a[1])}</div></div>`).join('')}
+    </div>`:''}
+    ${w.titles?`<div class="sec"><h4>Earned titles</h4><div class="titles">${w.titles.map(t=>`<i>${esc(t)}</i>`).join('')}</div></div>`:''}
     ${w.adv.length?`<div class="sec"><h4>Advancements</h4><div class="gear">${w.adv.map(a=>`<i>${esc(a)}</i>`).join('')}</div></div>`:''}
     ${w.inj.length?`<div class="sec"><h4>Injuries</h4><div class="gear">${w.inj.map(a=>`<i class="g">${esc(a)}</i>`).join('')}</div></div>`:''}
     <div class="sec"><h4>Actions</h4>
@@ -569,6 +661,16 @@ dev.addEventListener('click',e=>{
  const l=t.closest('[data-layout]'); if(l){S.layout=l.dataset.layout;render();return;}
  const row=t.closest('[data-i]'); if(row){openWarrior(+row.dataset.i);return;}
 });
+
+function bindSwitch(id,attr,key){
+ document.getElementById(id).addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  dev.dataset[attr]=b.dataset[key];
+  [...e.currentTarget.children].forEach(c=>c.classList.toggle('on',c===b));
+ });
+}
+bindSwitch('sf','surface','s');
+bindSwitch('fc','faction','f');
 
 document.getElementById('sw').addEventListener('click',e=>{
  const b=e.target.closest('button'); if(!b)return;
