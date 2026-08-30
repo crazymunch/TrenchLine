@@ -1,0 +1,145 @@
+<script src="./support.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --gothic:'Cinzel',serif; --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    width:375px; height:812px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .appbar { height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 12px;
+    background:var(--void); border-bottom:1px solid var(--line); }
+  .appbar .b { font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.14em; color:var(--gold); }
+  .appbar .r { display:flex; align-items:center; gap:5px; height:28px; padding:0 8px; background:var(--elev);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:10px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--gold); }
+  .appbar .r i { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+
+  .wrap { position:absolute; top:48px; bottom:53px; left:0; right:0; padding:12px; overflow:hidden; }
+
+  /* the verdict, stated once and unambiguously */
+  .verdict { background:rgba(139,0,0,.14); border:1px solid var(--danger); border-radius:6px; padding:11px 12px; }
+  .verdict-1 { display:flex; align-items:center; gap:8px; }
+  .verdict-1 i { flex:none; width:22px; height:22px; border-radius:50%; background:var(--danger); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-style:normal; font-weight:700; }
+  .verdict-1 h2 { flex:1; font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.05em; color:var(--danger); }
+  .verdict-1 span { flex:none; font-family:var(--mono); font-size:10px; font-weight:700; color:var(--muted); }
+  .verdict p { margin-top:6px; font-size:11px; line-height:1.5; color:var(--muted); }
+  .verdict p b { color:var(--text); }
+
+  .grp { margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .grp span { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); }
+  .grp hr { flex:1; border:0; border-top:1px solid var(--line); }
+
+  .v { margin-top:6px; background:var(--surface); border:1px solid var(--line); border-radius:5px;
+    border-left:3px solid var(--danger); padding:9px 10px; display:grid; gap:5px; }
+  .v.warn { border-left-color:var(--warn); }
+  .v-1 { display:flex; align-items:center; gap:6px; }
+  .v-code { flex:none; height:16px; padding:0 5px; display:inline-flex; align-items:center; border-radius:2px;
+    background:rgba(139,0,0,.25); border:1px solid rgba(139,0,0,.5); color:var(--danger);
+    font-family:var(--mono); font-size:8.5px; font-weight:700; letter-spacing:.04em; }
+  .v.warn .v-code { background:rgba(255,179,0,.15); border-color:rgba(255,179,0,.45); color:var(--warn); }
+  .v-1 .who { flex:1; min-width:0; font-family:var(--mono); font-size:9.5px; color:var(--muted);
+    text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .v-msg { font-size:12px; line-height:1.4; font-weight:500; }
+  /* every violation cites the rule that produced it */
+  .v-rule { display:flex; gap:6px; padding:5px 7px; background:var(--void); border:1px solid var(--line);
+    border-radius:3px; }
+  .v-rule i { flex:none; font-style:normal; font-family:var(--mono); font-size:9px; color:var(--gold); }
+  .v-rule p { flex:1; min-width:0; font-family:var(--mono); font-size:9px; line-height:1.5; color:var(--muted); }
+  .v-fix { justify-self:start; height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px;
+    border-radius:4px; background:var(--elev); border:1px solid var(--line); color:var(--text);
+    font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+
+  .nav { position:absolute; left:0; right:0; bottom:0; height:53px; background:rgba(12,14,18,.95);
+    border-top:1px solid var(--line); padding:4px 4px 0; display:flex; gap:2px; }
+  .nav button { flex:1; min-height:44px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; border:0; background:transparent; border-radius:4px; color:var(--muted); }
+  .nav button.on { background:var(--surface); color:var(--gold); }
+  .nav svg { width:16px; height:16px; }
+  .nav span { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+  .nav .pip { position:absolute; top:6px; margin-left:16px; width:14px; height:14px; border-radius:50%;
+    background:var(--danger); color:#fff; font-family:var(--mono); font-size:8px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; }
+</style>
+
+<div class="tl-root">
+
+  <header class="appbar">
+    <div class="b">TRENCHLINE</div>
+    <div class="r"><i></i>TrenchLine v1 ▾</div>
+  </header>
+
+  <div class="wrap">
+
+    <section class="verdict">
+      <div class="verdict-1">
+        <i>!</i>
+        <h2>NOT LEGAL</h2>
+        <span>5 errors · 1 warning</span>
+      </div>
+      <p><b>Al-Qarn Rihla</b> · Iron Sultanate · The House of Wisdom · <b>1365 / 1320 👑</b> · <b>11 / 9 ☼</b></p>
+    </section>
+
+    <div class="grp"><span>Errors</span><hr></div>
+
+    <article class="v">
+      <div class="v-1"><span class="v-code">over-budget-ducats</span><span class="who">warband</span></div>
+      <div class="v-msg">Over budget by 45 Ducats (1365 of 1320).</div>
+    </article>
+
+    <article class="v">
+      <div class="v-1"><span class="v-code">over-budget-glory</span><span class="who">warband</span></div>
+      <div class="v-msg">Over budget by 2 Glory (11 of 9).</div>
+    </article>
+
+    <article class="v">
+      <div class="v-1"><span class="v-code">variant-forbids</span><span class="who">2 × Janissary</span></div>
+      <div class="v-msg">The House of Wisdom cannot include Janissaries.</div>
+      <div class="v-rule"><i>§</i><p><b>Private Venture</b> — A House of Wisdom Warband cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins.</p></div>
+      <span class="v-fix">Remove both →</span>
+    </article>
+
+    <article class="v">
+      <div class="v-1"><span class="v-code">unit-max</span><span class="who">Lion of Jabir</span></div>
+      <div class="v-msg">Lion of Jabir: 4 taken, limit is 3.</div>
+      <div class="v-rule"><i>§</i><p><b>Pride of Jabir</b> — 0–3 Lion of Jabir</p></div>
+      <span class="v-fix">Show all 4 →</span>
+    </article>
+
+    <article class="v">
+      <div class="v-1"><span class="v-code">wargear-restricted</span><span class="who">Nasir, the Inaccurate</span></div>
+      <div class="v-msg">Kavass cannot take Reinforced Armour — ELITE only.</div>
+      <div class="v-rule"><i>§</i><p>Armoury Table — <b>ELITE only</b></p></div>
+      <span class="v-fix">Open warrior →</span>
+    </article>
+
+    <div class="grp"><span>Warnings</span><hr></div>
+
+    <article class="v warn">
+      <div class="v-1"><span class="v-code">unparsed-restriction</span><span class="who">Jawhar al-Sari</span></div>
+      <div class="v-msg">Combat Helmet: “Headgear” — check this by hand, TrenchLine cannot verify it yet.</div>
+      <div class="v-rule"><i>§</i><p>A restriction we cannot read is still shown, verbatim — never silently dropped.</p></div>
+    </article>
+
+  </div>
+
+  <nav class="nav">
+    <button class="on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Roster</span><i class="pip">5</i>
+    </button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="M19 3h2v2l-9 9"/></svg><span>Play</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg><span>Camp</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Dir</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Codex</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z"/></svg><span>Theme</span></button>
+    <button style="color:#E53935;"><svg viewBox="0 0 24 24" fill="none" stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11a6 6 0 0 0-12 0v3a6 6 0 1 0 12 0z"/><path d="M3 13h4M17 13h4"/></svg><span>Bug</span></button>
+  </nav>
+
+</div>

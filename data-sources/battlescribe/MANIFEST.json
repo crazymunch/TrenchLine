@@ -1,0 +1,56 @@
+{
+  "repo": "Fawkstrot11/TrenchCrusade",
+  "ref": "main",
+  "commit": "1b463a8e2eaafc9d6722ae6eeda93e296fb7012b",
+  "fetchedAt": "2026-08-30T07:27:52.203Z",
+  "files": {
+    "Black Grail.cat": {
+      "bytes": 321988,
+      "sha256": "ba4718c9c42d4fbe72bd688f394fb99ed019a634f25cfb718d2be803eba24ea6"
+    },
+    "Campaign Rules.cat": {
+      "bytes": 470687,
+      "sha256": "3bc67fc0e317cf0bdef89605517d1eb454b2d997abd9e6bed81d3dd5c0d8e7a6"
+    },
+    "Court of the Seven-Headed Serpent.cat": {
+      "bytes": 416480,
+      "sha256": "892f824ef268ccc28615fb93ff143f8d8b16fdbdc747ccdb21882be9f68e63d1"
+    },
+    "Equipment.cat": {
+      "bytes": 34721,
+      "sha256": "23ea8bcc1d7c222672fbdaf6e79ac5fb02b68946cc11eccb1a501e719d62e7c0"
+    },
+    "Heretic Legion.cat": {
+      "bytes": 374787,
+      "sha256": "858034a0a23cafcbb4ccacf7fd3225885a017166aad36fbd4565d90cc6aaf4dc"
+    },
+    "Iron Sultanate.cat": {
+      "bytes": 519726,
+      "sha256": "8682cda8f958534b9efa988e14dc6e36731332de5032041dc1bdaddabda41962"
+    },
+    "Melee Weapons.cat": {
+      "bytes": 12918,
+      "sha256": "5601525127872e7be761c25a11ad79c49c6330d08cc265e106843243313a3c26"
+    },
+    "Mercenaries.cat": {
+      "bytes": 140739,
+      "sha256": "825993de4982e8a7a8c6565a92d74a20ad538c7eb5b0e43fb1087098beb8188c"
+    },
+    "New Antioch.cat": {
+      "bytes": 436532,
+      "sha256": "96d1d54f1b7d9386d62b66f3a61381410f7f44328963940d40cdf919eae67cf4"
+    },
+    "Ranged Weapons.cat": {
+      "bytes": 35150,
+      "sha256": "4ffd02c8b26ef560c94ca5aeb35ce18b9fb83f653b28d4d4d0533ec5d7e56a61"
+    },
+    "Trench Crusade.gst": {
+      "bytes": 134976,
+      "sha256": "78e98ea56a7ab86b80b626075ebf078cccd3fa069d5bc90f68d53ea1e34599eb"
+    },
+    "Trench Pilgrims.cat": {
+      "bytes": 281898,
+      "sha256": "42296789f79749338119f0abc47835b6f6bdca7eab0cb21d16855a7dfd014e69"
+    }
+  }
+}

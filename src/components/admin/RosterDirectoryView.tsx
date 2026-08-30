@@ -396,7 +396,7 @@ export const RosterDirectoryView: React.FC = () => {
       {/* Detailed Warband Inspection Modal */}
       {inspectingWarband && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90vh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
@@ -540,7 +540,7 @@ export const RosterDirectoryView: React.FC = () => {
       {/* Bug Reports / Feedback Log Modal (Admin) */}
       {isBugListOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[90vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[90dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Header */}
             <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
               <div className="flex items-center space-x-2.5">

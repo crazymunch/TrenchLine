@@ -1,0 +1,919 @@
+Trench Dispatch
+#1
+April 2026 Rules Updates
+This is an unofficial, fan-made digital rules update for Trench Crusade, collecting all rules from the April Rules Update in
+one convenient place. It is provided free of charge for personal use and may be freely downloaded and printed. This
+document is not an official Trench Crusade publication and is not affiliated with or endorsed by Factory Fortress Inc.
+
+-- 1 of 18 --
+
+April 2026 Rules Updates
+You can find all of these April Rules Review updates here, on Trench Wire articles:
+
+Infiltrators
+
+Grenades
+
+Amalgam and Strains
+
+Iron Sultanate
+
+Mercenaries
+
+The Court Rules Review Hotfix
+
+
+
+
+Important:
+
+
+This is an unofficial, fan-made digital rules update for Trench Crusade, collecting all rules from the
+April Rules Update in one convenient place. It is provided free of charge for personal use and may
+be freely downloaded and printed. This document is not an official Trench Crusade publication and
+is not affiliated with or endorsed by Factory Fortress Inc.
+Infiltrators
+Public Beta
+INFILTRATOR
+Replace the INFILTRATOR Keyword with:
+
+
+INFILTRATOR (Effect): When a model with this Keyword is deployed for the first time in a game, it can be set up
+anywhere on the battlefield as long as it is out of the Line of Sight of all enemies and is at least 8” away from the closest
+enemy. INFILTRATORS are deployed after models that do not have this Keyword. Any INFILTRATORS that
+cannot be deployed in this way for any reason can instead deploy up to 6” outside their side’s deployment zone.
+01
+
+-- 2 of 18 --
+
+Grenades
+Public Beta
+Replace the Grenades rule on page 78 of the “Trench Crusade Digital Rulebook” with:
+
+Grenades
+
+
+Grenades have a Range and can be used to perform a Ranged Attack even though they are not specifically a Ranged Weapon (▶ see
+the Core Rules). They do not count towards the number of Ranged Weapons a model can have, and a model is assumed to be
+carrying enough to be able to use them every Turn. Grenades that have the BLAST Keyword cannot target a point on the battlefield
+(they can only target an enemy model).
+Keywords
+(Effect)	FUMBLE
+If the Success Roll for an attack made with a Weapon that has the FUMBLE Keyword is 2 or less, then the attacking model fumbles
+the attack and hits themselves instead of the target. Treat the attack as a successful attack made by the Weapon that targeted the
+attacking model.
+Stosstruppen of the Free State of Prussia
+
+
+Change Masters of the Grenade to:
+
+
+Masters of the Grenade: Add 4” to the Range of all Grenades used by models from a Stosstruppen of the Free State of Prussia
+Warband. However, if the range to the target is more than 8”, add -1 DICE to the Success Roll for the attack.
+Warband Entries
+
+
+Combat Engineer
+
+
+Change the Profile of a Combat Engineer to:
+Movement
+6”/Infantry
+Ranged
++1 DICE
+Melee
++0 DICE
+Armour
+-2
+Base
+25mm
+Battlekit
+
+
+Add the FUMBLE Keyword to:
+
+
+Frag Grenades
+
+Gas Grenades
+
+Incendiary Grenades
+
+Molotov Cocktail
+
+Demonic Aura Grenade
+
+Holy Grenade
+
+Parasite Grenades
+Armoury Tables
+
+
+Change the Cost of Incendiary Grenades to 10 	in the
+following Armoury Tables:
+
+
+New Antioch
+
+Trench Pilgrims
+
+Iron Sultanate
+
+Heretic Legions
+
+The Court
+Note that: 
+Satchel Charges and Warcrosses do not have the FUMBLE Keyword)
+02
+
+-- 3 of 18 --
+
+Strains & Amalgam - Strains
+Public Beta
+Replace the Grail Thrall and Amalgam Warband Entries with the following:
+
+
+Grail Thralls - Cost: 25
+
+The boons of the Cult of the Black Grail lead slowly but surely down the path of utter corruption. Only very few of the chosen can
+withstand the blessings of the Lord of the Flies. Most are turned into Grail Thralls, destined to join the endless legions of empty, hollowed-
+out and diseased husks who must obey the whims of the Cult of the Black Grail nobles for all eternity, while suffering the torment of their
+countless supernatural infections.
+Movement
+5”/Infantry
+Ranged
+-
+Melee
+-1 DICE
+Armour
+0
+Base
+25mm
+Battlekit
+Abilities
+Keywords
+A Grail Thrall cannot have any Battlekit but can have up to 1 Strain.
+✥ Overwhelming Horde: A Grail Thrall can make a Melee Attack even though it does not have a Melee Weapon. In
+addition, add +1 DICE to the Success Roll for a Melee Attack made by a Grail Thrall for each other friendly model
+within 3” of the attacking model (not including the attacking model itself).
+
+
+✥ Undead Fortitude: Add -1 INJURY DICE to Injury Rolls for a Grail Thrall unless the attack has the FIRE
+Keyword.
+BLACK GRAIL 	FEAR 	NEGATE GAS
+Grail Strains
+
+Many are Beelzebub’s twisted iterations of the Black Grail, and nowhere else are they better seen than in the myriad hordes of
+Grail Thralls – perfect seedbeds in which new rot can bloom. Strains can be purchased upon recruiting a model or during the
+Quartermaster Step at the indicated cost in 	. If the total cost of all of the other models in the Warband (including their
+Battlekit, etc.) adds up to 1000 	or higher, Grail Thralls may have an additional Strain. Once a model has a Strain, it cannot
+be removed or lost for any reason.
+
+
+✥ Bolgias Gut (10 	): A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model
+finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having
+to take a Burst ACTION.
+
+Burst ACTION: A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a
+move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a
+Burst ACTION. 
+
+✥ Hellfly Host (0 	): A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the
+FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability.
+
+
+✥ Leech Grip (7 	): A model with the Leech Grip Strain has a Melee Characteristic of +0. In addition, whenever an enemy
+model takes a Retreat ACTION within 1” of a model with the Leech Grip Strain, place 1 BLOOD MARKER next to the model
+taking the retreat (before any melee attacks are made against the retreating model).
+
+
+✥ Tapeworm Throng (10 	):
+
+Add -1 DICE to rolls for Ranged Attacks that target a model with the Tapeworm Throng Strain if they are within Short Range
+of the attacking model. This Strain has no effect if the model has the NEGATE FEAR Keyword.
+03
+
+-- 4 of 18 --
+
+Strains & Amalgam - Amalgam
+Public Beta
+Replace the Grail Thrall and Amalgam Warband Entries with the following:
+
+
+0-1 Amalgam - Cost: 150
+
+An Amalgam is a huge, shambling mass of dozens of bodies of infected enemy warriors, insects, mammals and any other living creatures that had the
+misfortune of succumbing to the agonising blessings of the Cult of the Black Grail together. These aberrations shamble across the battlefield like
+walking mountains of corpulent, diseased flesh, their flailing arms still wielding weapons its victims used in life. Anyone or anything unfortunate
+enough to be in its path is crushed into a disgusting pulp beneath its elephantine feet.
+Movement
+5”/Infantry
+Ranged
++0 DICE
+Melee
+-1 DICE
+Armour
+-1
+Base
+60mm
+Battlekit
+Abilities
+Keywords
+An Amalgam always has a Gluttonous Arsenal. This weapon is part of the Amalgam and cannot be removed or
+lost throughout the campaign for any reason. It cannot have any other Battlekit, but it can have up to 1 Vile
+Corpus.
+✥ Absorb: When a model (friend or foe) within 1” of an Amalgam is taken Out of Action, you may remove a BLOOD
+MARKER from the Amalgam’s model. If the model that is taken Out of Action is mounted on a base that is 40mm or
+larger and the Amalgam’s TOUGH Keyword has been used, the Amalgam no longer counts as having used the TOUGH
+Keyword and may use it again the next time it is taken Out of Action.
+
+
+✥ Corpulent: Add -2 INJURY DICE to Injury Rolls for any attacks that target an Amalgam model.
+
+
+✥ Curse on Creation: If the total cost of all of the other models in the Warband (including their Battlekit, etc.)
+adds up to 1000 	or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6
+Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have
+to 0-2, and immediately recruit an Amalgam at no cost in 	.
+
+
+✥ Trample ACTION: An Amalgam can take a Trample ACTION. If it does so, it can make a Melee Attack
+that must target an enemy model that is Down. A Trample Melee Attack does not use a Melee Weapon and has
+the IGNORE ARMOUR Keyword.
+
+
+✥ Unstoppable: Enemy models that are mounted on a base that is 32mm or smaller are not allowed to make a
+Melee Attack when an Amalgam that is within 1” of them retreats. In addition, an Amalgam can take a Move or
+Charge ACTION if all enemy models within 1” of it are mounted on bases that are 32mm or smaller.
+BLACK GRAIL 	FEAR 	NEGATE GAS 	TOUGH
+Gluttonous Arsenal
+
+The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of
+cascading violence.
+Type 	Ranged 	Keywords
+Special 	Melee/16” 	ASSAULT, AUTOMATIC 3, CLEAVE 3
+✥ Putrid Spray: ACTION: Melee Attacks made with a Gluttonous Arsenal have the INFECTION MARKERS Keyword.
+04
+
+-- 5 of 18 --
+
+Strains & Amalgam
+Public Beta
+Vile Corpus Abilities
+
+ach Amalgam can have 1 Vile Corpus, which can be purchased when recruiting the model or during the
+Quartermaster Step at the indicated cost in 	. Once an Amalgam has a Vile Corpus, it cannot be removed or lost
+for any reason. In addition, each Amalgam in a Warband must have a different Vile Corpus.
+Type 	Ranged 	Keywords
+Special 	Melee/16” 	ASSAULT, AUTOMATIC 3, CLEAVE 3
+✥ Bombardment Horde (20 	): An Amalgam with this Vile Corpus has a Ranged Characteristic of +1 DICE
+and a Melee Characteristic of +0 DICE. In addition, when this model takes a Shoot ACTION with its
+Gluttonous Arsenal, you can replace the AUTOMATIC 3 Keyword with the BLAST 3”and SCATTER
+Keywords.
+The Cult of the Black Grail Glory Items
+
+
+Add the following entry to the BLACK GRAIL Glory Items Table:
+Blessings of Beelzebub 	Lord of Tumours only, Limit: 1 	9
+Glory Item Cartulary
+
+
+Add the following Glory Item:
+
+
+To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s
+plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order
+of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster
+than otherwise possible.
+Type 	Ranged 	Keywords
+Special 	- 	-
+✥ Favoured Strain: At the start of each game, choose 1 Strain. Friendly models that have the chosen Strain gain the
+additional Favoured effects listed below for the rest of the game.
+
+
+✥ Bolgias Gut Favoured: Burst ACTIONS taken by model with the Bolgias Gut Strain do not have the -1 INJURY
+DICE Keyword.
+
+
+✥ Hellfly Host Favoured: A model with the Hellfly Host Strain gains the Undead Fortitude ability.
+
+
+✥ Leech Grip Favourede: Place D3 BLOOD MARKERS next to any enemy model that takes a Retreat ACTION
+while within 1” of a model with the Leech Grip Strain instead of 1 BLOOD MARKER.
+
+
+✥ Tapeworm Throng Favoured: The Long Range modifier for Ranged Attacks that target a model with the
+Tapeworm Throng Strain is -2 DICE instead of -1 DICE.
+05
+
+-- 6 of 18 --
+
+Iron Sultanate
+Public Beta
+Armoury Tables
+
+
+Replace the Grail Thrall and Amalgam Warband Entries with the following:
+Ranged Weapons
+Alaybozan 	Sultanate Sappers only, Shield Combo 	10
+Melee Weapons
+Halberd-Gun 	ELITE only, Shield Combo, Limit: 2 	30
+Grenades
+Gas Grenades 	Limit: 4 	10
+Equipment
+Al-inbīq Kit 	Jabirean Alchemist only 	15
+Alchemical Fire 	ELITE only, Limit: 3 	10
+Corrosive Ammunition 	Limit: 5 	10
+Battlekit
+
+
+Add/replace the following entries in the Iron Sultanate Battlekit:
+Al-inbīq Kit | 15 	| Jabirean Alchemist only
+
+Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field
+repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan
+himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit.
+Type 	Ranged 	Keywords
+Equipment 	- 	-
+✥ 'Ilm al-Mīzān ACTION: A model with an Al-inbīq Kit can take an 'Ilm al-Mīzān ACTION if it is not within 1” of
+any enemy models. If it does so, make a Risky Success Roll for the model. If the roll is a Failure, nothing happens and
+the model’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model with the ARTIFICIAL
+Keyword within 6” and in Line of Sight of the Jabirean Alchemist. The model you pick can stand back up at no cost to
+their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the
+model.
+06
+
+-- 7 of 18 --
+
+Iron Sultanate
+Public Beta
+Alaybozan | 10 	| Sultanate Sappers only, Shield Combo
+
+This blunderbuss is based on the traditional design of tribal warriors and modernised by the foundries of the Sultanate. It
+has proven its worth as the preferred weapon of the Sapper Corps, who often fight in close quarters. It shoots a hail of lead
+bullets and iron shrapnel.
+Type 	Ranged 	Keywords
+2-Handed 	12” 	SHOTGUN, SHRAPNEL
+Alchemical Fire | 10 	| ELITE only, Limit: 3
+
+So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can
+deter its destructive heat.
+Type 	Ranged 	Keywords
+Equipment 	- 	-
+✥ Unfettered Flame: Injury Rolls caused by Ranged Attacks made by a model with Alchemical Fire are unaffected by
+the NEGATE FIRE Keyword.
+Corrosive Ammunition | 10 	| Limit: 5
+
+The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore
+equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to
+command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs
+etched with time-bending talismans that rapidly rust and rot enemy armour.
+Type 	Ranged 	Keywords
+Equipment 	12” 	AMMUNITION (ARMOUR PIERCING)
+✥ Volatile Concoction: Corrosive Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail, or Siege
+Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Corrosive
+Ammunition to another model.
+Flame Cannon | 60 	| Brazen Bull only, Limit: 1
+
+A great cannon that shoots a stream of alchemical fire with tremendous force. It has a tendency to overheat and ignite the
+skin of its artillery crew, but the mighty Brazen Bulls use them as mere handguns. The secret formula used for the fuel of the
+flame cannons was gleaned from the ruins of lost Constantinople and is commonly known as Greek fire.
+Type 	Ranged 	Keywords
+1-Handed 	12” 	ASSAULT, FIRE, HEAVY, IGNORE ARMOUR
+✥ Greek Fire: When a Flame Cannon is used to make a Ranged Attack, do not make a Success Roll for the attack.
+Instead, measure a straight line 1mm wide and up to 12” long from the attacking model to a point on the ground or a
+model’s base. The line stops if it reaches a terrain piece that is taller than the model making the Attack. Make an Injury
+Roll for every model (friend or foe) that is touched by the line, apart from the attacking model itself.
+Halberd-Gun | 30 	| ELITE only, Shield Combo, Limit: 2
+
+An invention of the House of Wisdom, this weapon acts both as a symbol of high rank and an excellent weapon in combat.
+Type 	Ranged 	Keywords
+2-Handed 	Melee/24” +1 INJURY DICE, ASSAULT, BLOCK, CUMBERSOME,
+HEAVY
+07
+
+-- 8 of 18 --
+
+Iron Sultanate
+Public Beta
+M.U.R.A.D. Bombard | 50 	| Brazen Bull only, Limit: 1
+
+Named after the great Sultan who commissioned the first of these weapons to defend the Iron Wall, this mighty bombard is
+used to disrupt advancing enemy formations. The echo of its blast recites the 99 names of Allah, throwing even the greatest
+of warriors to ground like chaff.
+Type 	Ranged 	Keywords
+1-Handed 	36” 	+1 DICE, BLAST 3”, HEAVY, SCATTER
+✥ Echoing Blast: If the Success Roll for a Ranged Attack with an M.U.R.A.D. Bombard that targets an enemy model
+is a Success or a Critical Success, or if the attack is a Failure and the target point scatters onto a model's base, apply the
+effect of the DEADLY Keyword to the Injury Roll for that model. All other models caught in the M.U.R.A.D.
+Bombard’s blast radius, or that are in the M.U.R.A.D. Bombard's blast radius if it did not hit the target model or scatter
+onto a model's base, are taken Down (do not make an Injury Roll for them).
+The Sultanate of the Iron Wall Glory Items
+
+
+dd the following entry to the SULTANATE Glory Items Table:
+Regimental Kaşık 	Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1 	4
+Glory Item Cartulary
+
+
+Add the following Glory Item:
+
+
+Regimental Kaşık
+
+Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the
+Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great
+honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the
+honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık.
+Type 	Ranged 	Keywords
+Equipment 	- 	LEADER
+✥ Brotherhood of the Spoon: Do not count friendly Janissaries that are Down or have been taken Out of Action in
+the Morale Phase whilst there is a friendly Janissary with a Regimental Kaşık on the battlefield. In addition, this counts
+as a Musical Instrument for the purposes of the Mehterân ability.
+Warband Entries
+
+
+Amend the Janissaries and Lions of Jabir Warband Entries as follows:
+
+
+Janissaries
+
+
+Replace the Counter Charge ability with the following ability:
+✥ Mehterân: Add +1 DICE to Risky Success Rolls for a Janissary that is taking a Dash
+ACTION and is within 4” of a friendly model with a Musical Instrument (for a total of +2
+DICE including the Musical Instrument’s Fanfare special rule).
+08
+
+-- 9 of 18 --
+
+Iron Sultanate
+Public Beta
+Lions of Jabir
+
+
+Add the following ability:
+✥ Ferocious Claws: Lions of Jabir models can add the CLEAVE 2 Keyword to their Melee
+Attacks at a cost of +5 	each.
+Replace the Yüzbaşı and Brazen Bull Warband Entries with the following:
+
+
+1 Yüzbaşı - Cost: 75
+An Iron Sultanate Warband must include 1 Yüzbaşı.
+Military expeditions over the Great Iron Wall into No Man’s Land carry many risks, and their commanders are field
+officers known as Yüzbaşı. They are expected to lead from the front, and their selection is solely on merit, with no
+consideration given to family pedigree or wealth. Yüzbaşı are selected from amongst the very best soldiers of the Sultanate,
+and their bodies are hardened against injury by the Jabirean arts.
+Movement
+6”/Infantry
+Ranged
++2 DICE
+Melee
++2 DICE
+Armour
+0
+Base
+32mm
+Battlekit
+Abilities
+Keywords
+A Yüzbaşı can have any Battlekit from the Iron Sultanate Armoury Tables.
+✥ Janissary Veteran: You can make the Yüzbaşı a Janissary Veteran with the Janissary Mehterân ability at
+a cost of +5 	.
+
+
+✥ Mehterân (Janissary Veterans only): Add +1 DICE to Risky Success Rolls for a Yüzbaşı that is
+taking a Dash ACTION and is within 4” of a friendly model with a Musical Instrument (for a total
+of +2 DICE including the Musical Instrument’s Fanfare special rule).
+
+
+✥ Mubarizun: A Yüzbaşı is expected to face the mightiest of their enemies in personal combat,
+inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made
+by a Yüzbaşı if the target model has the TOUGH Keyword.
+SULTANATE 	ELITE 	LEADER 	NEGATE FEAR 	STRONG 	TOUGH
+09
+
+-- 10 of 18 --
+
+Iron Sultanate
+Public Beta
+Replace the Yüzbaşı and Brazen Bull Warband Entries with the following:
+
+
+0-1 Brazen Bull - Cost: 115
+A Brazen Bull is a monstrous being of immense power and vitality, capable of tearing even the bastard child of a demon
+clean in half. The Sultan’s armourers equip the Bulls with heavy artillery that even the superhuman Janissaries cannot lift,
+let alone use in battle: flame cannons, volley guns, and holy blades blessed by the Word of the Great Protector.
+Movement
+6”/Infantry
+Ranged
++0 DICE
+Melee
++2 DICE
+Armour
+0
+Base
+60mm
+Battlekit
+Abilities
+Keywords
+A Brazen Bull can have Battlekit from the Iron Sultanate Armoury Tables. It may only have Weapons
+that have the HEAVY Keyword and may not have a Shovel unless it is a Marid Shovel. No restrictions
+apply to any other Types of Battlekit.
+✥ Artificial Life: Add -1 INJURY DICE to Injury Rolls for a Brazen Bull.
+
+
+✥ Living Battering Ram ACTION: If a Brazen Bull takes a Charge ACTION and ends its charge
+move within 1” of any enemy models, it can immediately take a Living Battering Ram ACTION. If it
+does so, make a Success Roll for each enemy model within 1” of the Brazen Bull. Add -1 DICE to the
+Success Roll if the enemy model is on a base that is 40mm or larger. On a failure, nothing happens.
+On a Success or a Critical Success, the enemy model is immediately taken Down.
+
+
+✥ Trample ACTION: 	A Brazen Bull can take a Trample ACTION. If it does so, it can make a
+Melee Attack that must target an enemy model that is Down. A Trample Melee Attack does not use a
+Melee Weapon and has the IGNORE ARMOUR Keyword.
+SULTANATE 	ARTIFICIAL 	FEAR 	NEGATE SHRAPNEL 	STRONG 	TOUGH
+10
+
+-- 11 of 18 --
+
+Mercenaries
+Public Beta
+Add the following Keyword to the Keyword Glossary:
+MERCENARY (Effect): This model is a Mercenary and can be recruited by various Factions. Mercenaries do not
+benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated
+Attack rule, including Warband Variant special rules, such as the Éire Rangers Light Infantry rule. They do count as
+friendly models for the purposes of other rules used by their Warband, such as the Kingdom of Alba Assault
+Detachment Bagpipe rules, unless stated otherwise. In a campaign, this includes counting towards Threshold Limits
+and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out
+of Action, being Promoted and gaining Experience Points, and so on. A Mercenaries’ Battlekit cannot be removed or
+lost over the course of the campaign for any reason, and they cannot have any other Battlekit. Note that the Injury
+Modifier for any Armour they have has been included in the model’s Profile.
+Combat Biologist
+
+
+Replace the recruitment sentence with:
+
+
+A Combat Biologist is Faithful and can be recruited as a Mercenary by NEW ANTIOCH
+and SULTANATE Warbands.
+
+
+Replace the Keywords with:
+MERCENARY 	NEGATE FEAR
+Communicant Anti-Tank Hunter
+
+
+Replace the recruitment sentence with:
+
+
+A Communicant Anti-Tank Hunter is Faithful and can be recruited as a Mercenary by
+NEW ANTIOCH and PILGRIM Warbands.
+
+
+Replace the Keywords with:
+MERCENARY 	REGENERATE 1 	STRONG 	TOUGH
+Mamluk Faris
+
+
+Replace the recruitment sentence with:
+
+
+A Mamluk Faris is Faithful and can be recruited as a Mercenary by NEW ANTIOCH
+and SULTANATE Warbands.
+
+
+Replace the Keywords with:
+MERCENARY 	FIRETEAM (▶ see Sworn Brethren)
+IGNORE OFF-HAND WEAPON
+11
+
+-- 12 of 18 --
+
+Mercenaries
+Public Beta
+Mendelist Ammo Monk
+
+
+Replace the recruitment sentence with:
+
+
+A Mendelist Ammo Monk is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM
+Warbands.
+
+
+Replace the Ammunition Sacrament ACTION ability with:
+
+
+✥ Ammunition Sacrament ACTION: A Mendelist Ammo Monk can take an Ammunition Sacrament ACTION. If
+they do so, take a Risky Success Roll for the Mendelist Ammo Monk. If the roll is a Failure, the Mendelist Ammo Monk’s
+Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model within 1" of the Mendelist Ammo Monk
+and in their Line of Sight, and then pick one of the following Ammunition Sacraments. The Sacrament you pick applies to
+the model until the end of its next Activation. A model cannot have more than one Sacrament at any given time.
+
+
+✥ Bullet of the Guided Path Sacrament: Add the IGNORE COVER and IGNORE LONG RANGE Keywords to
+Ranged Attacks made by Ranged Weapons used by the model.
+
+
+✥ Cartridge of his Wrath Sacrament: Add the BLAST 2” and SHRAPNEL Keywords to Ranged Weapons used by
+the model that do not have the AUTOMATIC, BLAST, HEAVY, or FLAMETHROWER Keywords.
+
+
+✥ Echo of his Word Sacrament: Add +1 INJURY DICE to rolls for Ranged Attacks made by the model.
+
+
+Replace the Keywords with:
+MERCENARY
+Observer
+
+
+Replace the recruitment sentence with:
+
+
+An Observer is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and
+PILGRIM Warbands.
+
+
+Replace an Observer's Cost with 5
+
+
+Replace the Keywords with:
+MERCENARY
+Sister of Saint Cosmas
+
+
+Replace the recruitment sentence with:
+
+
+A Sister of Saint Cosmas is Faithful and can be recruited as a Mercenary by PILGRIM
+Warbands.
+
+
+Replace the Keywords with:
+MERCENARY 	NEGATE FEAR
+12
+
+-- 13 of 18 --
+
+Mercenaries - Sin Eater
+Public Beta
+Sin Eater
+
+
+Replace the Devour the Guilty ACTION ability with:
+✥ Devour the Guilty ACTION: A Sin Eater can take a Devour the Guilty ACTION. If they do so, pick 1 model (friend or foe)
+that is within 1” of the Sin Eater and is mounted on a base that is 40mm or smaller. If the model is an enemy, take a Risky Success
+Roll for the Sin Eater. If the model is friendly, take a Success Roll for the Sin Eater with +1 DICE. If the roll is a Failure, nothing
+happens and the Sin Eater’s Activation ends. If the roll is a Success or a Critical Success, the model you picked is devoured, and the
+following rules apply to it:
+✥ Place the model to one side, along with any MARKERS it may have. It is inside the Sin Eater and cannot be affected in any way
+or carry out any ACTIONS except as described below. However, BLOOD MARKERS on the devoured model can be removed
+to pay the cost of Goetic Spells. While it is in the Sin Eater, it is considered to be Down for the purposes of Morale Checks.
+
+
+✥ A Sin Eater can only have 1 devoured model at a time. In addition, the Sin Eater has the REGENERATE 1 Keyword when it
+has a devoured model.
+
+
+✥ When a Sin Eater suffers an Out of Action result on the Injury table (even if it becomes a Down result due to the TOUGH
+Keyword), deploy the devoured model within 1” of the Sin Eater and place it Down. Models deployed this way may be placed
+within 1” of enemy models. If this is impossible, the model is taken Out of Action. If the Sin Eater was taken Out of Action,
+remove it from the battlefield after deploying the devoured model.
+
+
+✥ If a devoured model is still inside a Sin Eater when the game ends, it is considered to have been taken Out of Action.
+
+
+✥ Each time the Sin Eater is Activated, place 1 BLOOD MARKER next to the devoured model. As soon as a devoured model has 6
+BLOOD MARKERS, it is immediately taken Out of Action (even if the model has TOUGH or another rule that would prevent the
+model from being taken Out of Action) and is no longer considered to be inside the Sin Eater.
+
+
+✥ A Sin Eater that has a devoured model inside it can take a Purge ACTION. If it does so, deploy the devoured model within 1”
+of the Sin Eater and place it Down. If you cannot deploy the devoured model within 1” of the Sin Eater due to terrain or other
+models, then it remains inside the Sin Eater. Note that unlike the normal rules for model placement, you can deploy the enemy
+model within 1” of the Sin Eater in such a manner that they would fall. Once released the model can be Activated normally. A Sin
+Eater may not target a model with the Devour the Guilty ACTION that it has purged in the same Activation.
+
+
+Replace the Tenderiser Maul Battlekit with:
+Tenderiser Maul
+
+The Sin Eater wields an enormous maul, a terrifying weapon and a tool for mulching fallen opponents into a disgusting pulp,
+which it consumes in great gluttonous gulps.
+Type 	Ranged 	Keywords
+2-Handed 	Melee 	+1 INJURY MODIFIER, HEAVY
+✥ Mulch: When a model armed with a Tenderiser Maul takes a Fight ACTION, you must choose if the model takes a
+Crushing Blow or a Swinging Blow:
+Crushing Blow: Injury Rolls for an attack made with a Crushing Blow have the +2 INJURY MODIFIER Keyword
+instead of the +1 INJURY MODIFIER Keyword.
+
+Swinging Blow: Make 1 Melee Attack against each enemy model within 1” of the attacking model. Resolve each Melee
+Attack one at a time in the order of your choice.
+Replace the Keywords with:
+MERCENARY, 	DEMONIC 	FEAR 	STRONG 	TOUGH
+13
+
+-- 14 of 18 --
+
+Mercenaries - Scripture Guardian
+Public Beta
+Replace the Scripture Guardian, Goetic Warlock and Witchburner Mercenary Entries with the following:
+
+
+0-1 Scripture Guardian - Cost: 7
+
+
+A Scripture Guardian is a Mercenary that can be recruited by any Warband. The Scripture Guardian has the
+same alignment as the Warband they are recruited into.
+The origins of the Scripture Guardians remain shrouded in mystery, though rumours suggest they were created by the great masters of
+Kabbalah. Accounts of their existence began circulating in the early days of the Great War as the destruction of Jerusalem unearthed
+tombs and sacred resting places. Those who had once been interred in peace now wander the unhappy land, endlessly reciting the sacred
+writings entrusted to them in death. On rare occasions, expeditions into No Man’s Land have encountered such creatures, and by placing
+a holy text of their faith into its hands, they have transformed the Scripture Guardian into a powerful ally, bound to the will of those who
+align with the holy (or desecrated) scroll or tome it holds.
+
+
+Capable of speaking and reading the One True Language, the Scripture Guardian can unleash the powers it calls upon against anyone its
+master commands. It carries out its purpose with the single-mindedness of an automaton, devoid of thought or empathy. When spoken by
+the Guardian, the words are imbued with the primordial power of Creation, and capable of unmaking anything in their path. The
+longer the Guardian concentrates on its target, the greater the power it channels.
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+2 DICE 	+1DICE 	-2 	40mm
+Battlekit
+Abilities
+Keywords
+A Scripture Guardian always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture. In
+addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You
+must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost, and you
+must obey any stipulations that apply to the weapons you choose (e.g. ELITE only, Limit: 1 etc.).
+Vengeful Scripture and the weapons you choose cannot be removed or lost over the course of the
+campaign for any reason.
+✥ Slow: Treat a Scripture Guardian as having a Movement Characteristic of 3”/Infantry when it
+takes a Dash ACTION.
+MERCENARY 	GOLEM
+Vengeful Scripture
+
+The Scripture Guardian reads words from the holy (or unholy) text it carries, unmaking foes with words of primordial power.t
+Type 	Ranged 	Keywords
+Special 	18” 	ASSAULT, IGNORE COVER
+✥ Unmaking: Add +1 INJURY MODIFIER for each BLOOD MARKER the enemy has (in addition to any benefits you
+receive if you spend them to affect the Injury Roll). If the Success Roll for a Ranged Attack made with Vengeful Scripture is a
+Critical Success, make an Injury Roll for the enemy model with IGNORE ARMOUR, add +1 INJURY DICE, and a +1
+INJURY MODIFIER for each BLOOD MARKER the enemy model has.
+
+
+✥ Spoken: A model may make a Ranged Attack with Vengeful Scripture even if it is within 1” of an enemy model.
+14
+
+-- 15 of 18 --
+
+Mercenaries - Goetic Warlock
+Public Beta
+0-1 Goetic Warlock - Cost: 4
+
+
+A Goetic Warlock is Fallen and can be recruited as a Mercenary by HERETIC and THE COURT Warbands.
+Goetic Warlocks are nightmarish creations forged in the death factories of the Third Circle of Hell. Captured priests, prophets, vicars,
+rectors, and monks are tortured in fiendish machines that burn away their flesh with hellfire, encasing their still-living skeletons in
+infernal suits of armour, and stamping them with Goetic runes. Thus, a new Goetic Warlock is born, now a ruthless predator, driven to
+hunt the very mortals they once swore to protect.
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+1 DICE 	+1DICE 	-2 	40mm
+Battlekit 	A Goetic Warlock always has Reinforced Armour and Flaying Iron Claws. These pieces of Battlekit can never be
+removed or lost.
+Powers 	Goetic Warlocks use Goetic Powers (▶ see Goetic Powers in The Court’s Special Rules). However, a Goetic
+Warlock can only remove BLOOD MARKERS from enemy models, or friendly Wretched models when paying
+the Cost to cast a Goetic Spell. A Goetic Warlock always has the Goetic Portal and Necrotic Gaze Goetic Powers.
+Abilities 	✥ Barbed Embrace: An enemy model within 1” of a Goetic Warlock cannot take a Retreat ACTION. In
+addition, place 1 BLOOD MARKER next to enemy models that Activate within 1” of a Goetic Warlock.
+
+
+✥ Disturbing Presence: Your opponent cannot remove BLOOD MARKERS from models they own whilst
+they are within 1” of a Goetic Warlock.
+Keywords MERCENARY 	ARTIFICIAL 	DEMONIC 	FEAR
+Flaying Iron Claws
+Type 	Ranged 	Keywords
+2-Handed 	Melee 	CLEAVE 2, CRITICAL
+Goetic Portal | Spell (Cost 2) | Goetic Warlock only
+You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, pick up the Goetic
+Warlock and deploy it anywhere on the battlefield within 6” of the location it originally occupied (measured from the centre
+of its base to the centre of its base). This does not count as Moving or Retreating for the purposes of other rules. In addition,
+if the Goetic Warlock is within 1” of any enemy models on a base that is 32mm or smaller, then the Goetic Warlock can take 1
+of the enemy models with it. If you do so, you must deploy the Goetic Warlock first and then deploy the enemy model within
+1” of the Goetic Warlock. If you cannot deploy the enemy model within 1” of the Goetic Warlock due to terrain or other
+models, then the enemy model stays in its original location. Note that you can deploy the enemy model within 1” of the
+Goetic Warlock in such a manner that they would fall
+Necrotic Gaze | Spell (Cost 0) | Goetic Warlock only
+
+You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, make a Ranged
+Attack with a Range of 24”. If the Success Roll for the Ranged Attack is a Success or Critical Success, do not make an Injury
+Roll. Instead, double the number of BLOOD MARKERS the target model has (a model still cannot have more than 6
+BLOOD MARKERS). If the target model has no BLOOD MARKERS, place 1 BLOOD MARKER next to them.
+15
+
+-- 16 of 18 --
+
+Mercenaries - Witchburner
+Public Beta
+0-1 Witchburner - Cost: 6
+
+
+A Witchburner is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.
+Witchburners are the field officers of the Inquisition, charged with hunting down and punishing witches, warlocks, and Heretics who
+cannot be brought to face justice by conventional means. Each Witchburner spends seven years in confrontation with stones carved from
+one of the Hellgates, body inured by radiant hellfire and mind fortified by enduring scrutiny of the enemy’s twisted ways. Inviolable of
+purpose, their stride towards judgement is unbreaking in even the most hazardous fronts, regarding concussive artillery and suppressive
+strikes as nothing more than dust meant to be brushed away. On the battlefield, they wield the power to call down divine retribution on
+those deemed to have transgressed against God, causing sinners to burst into flames with mere words of condemnation. Since none are
+without sin, none are truly safe.
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+0 DICE 	+2DICE 	-2 	32mm
+Battlekit 	A Witchburner always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice.
+Abilities 	✥ Dignified Conduct: Witchburners are well aware of the dignity of their status. A Witchburner cannot take
+the Dash ACTION. In addition, do not halve the Movement Characteristic of a Witchburner when it stands up
+at the start of an Activation, and a Witchburner can never be moved by an ability or ACTION taken by an
+enemy model.
+
+
+✥ Divine Judgement ACTION: A Witchburner can take a Divine Judgement ACTION. If you do so, the
+Witchburner can make a Ranged Attack with a Range of 18”. The attack has the FIRE, IGNORE COVER,
+and IGNORE LONG RANGE Keywords, and does not require Line of Sight. In addition, when a model
+suffers an Out of Action result on the Injury Table from an attack made with Divine Judgement, it is treated as a
+Down result instead.
+
+
+✥ Elitist: Enemy models that do not have the ELITE Keyword are not allowed to make a Melee Attack when a
+Witchburner that is within 1” of them retreats. In addition, a Witchburner can make a Move or Charge
+ACTION if no enemy models within 1” of it have the ELITE Keyword.
+
+
+✥ Found Guilty: After making an Injury Roll for an attack made with Divine Judgement or a Gavel of Justice,
+place 1 extra BLOOD MARKER next to the model if the model is part of a Fallen Warband (even if the Injury
+Roll result is No Effect).
+Keywords MERCENARY 	ELITE 	FEAR 	TOUGH 	NEGATE DIFFICULT TERRAIN
+NEGATE FIRE
+Gavel of Justice
+
+The staff of a Witchburner is both a mark of their office and a weapon imbued with the wrath of God against those who have
+broken divine law. It dooms the souls of those found guilty to burn in flames for all eternity.
+Type 	Ranged 	Keywords
+1-Handed 	Melee 	CRITICAL, FIRE
+16
+
+-- 17 of 18 --
+
+The Court of the Seven-Headed Serpent
+Public Beta
+Goetic Powers
+
+
+Add the following sentence to the Goetic Powers special rule:
+Goetic Powers can be purchased for a model when it is recruited, or during the Quartermaster Step. However, you must pay 1 	for
+each model that you wish to purchase a Goetic Power in the Quartermaster Step, representing the effort needed to learn a new power.
+Armoury Tables
+
+
+Amend the following entries in The Court Armoury Tables:
+Ranged Weapons
+Serpent Assault Gun 	Limit: 2 	45
+Melee Weapons
+Malebranche Sword 	Limit: 1 	35
+Battlekit
+
+
+Add the following special rule to the Torture Instrument:
+✥ Down, Whelp: If an attack made with a Torture Instrument targets a friendly model and the Success Roll is a Success or a Critical
+Success, do not roll on the Injury Table. Instead, the targeted friendly model is taken Down (the Agonising Injuries special rule still
+applies to this Injury Result).
+Warband Entries
+
+
+Amend the Hell Knights, Wretched, and Desecrated Saint Warband Entries as follows:
+
+
+Hell Knights
+
+
+Add the following ability:
+✥ Corpse Candles: A Hell Knight can have an Unholy Relic at a modified cost of 5 	each.
+Wretched
+
+
+Add the following ability:
+✥ Goaded Forth: Add +1 DICE to the Risky Success Rolls for a Wretched that is taking a Dash ACTION if there is a friendly Yoke
+Fiend within 8” and in Line of Sight.
+Desecrated Saint
+
+
+Add the following ability:
+✥ Relentless: Do not halve the Movement Characteristic of a Desecrated Saint when it stands up at the start of an Activation.
+Replace the Keywords with:
+THE COURT 	DEMONIC 	FEAR 	IGNORE OFF-HAND 	NEGATE DIFFICULT TERRAIN
+STRONG 	TOUGH
+17
+
+-- 18 of 18 --
+

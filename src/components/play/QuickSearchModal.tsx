@@ -38,7 +38,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-2xl max-h-[85vh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-2xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Search Header */}
         <div className="p-4 border-b border-[#323846] bg-[#0C0E12] flex items-center justify-between gap-3">

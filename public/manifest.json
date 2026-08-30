@@ -1,24 +1,38 @@
 {
-  "name": "TrenchLine - Trench Crusade Companion",
+  "name": "TrenchLine — Trench Crusade Companion",
   "short_name": "TrenchLine",
-  "description": "Tactical Warband Builder, Combat HUD Companion, and Multi-Player Campaign System for Trench Crusade.",
+  "description": "Warband builder, tabletop combat companion, and campaign manager for Trench Crusade.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0C0E12",
   "theme_color": "#0C0E12",
   "orientation": "any",
+  "categories": ["games", "utilities"],
   "icons": [
     {
-      "src": "/assets/stitch/combat_companion_hud_mobile.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/assets/stitch/iron_sanctum_roster.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

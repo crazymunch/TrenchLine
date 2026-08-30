@@ -31,3 +31,19 @@ out
 *.sw?
 scratch/
 
+
+# Pipeline reports (regenerated)
+reports/
+
+# Large official PDFs — held as GitHub release assets, fetched via `npm run rules:pdfs`.
+# Their extracted text under data-sources/rulebook/extracted/ IS committed.
+data-sources/rulebook/warbands-of-trench-crusade.pdf
+data-sources/rulebook/trench-crusade-digital-rulebook.pdf
+
+# Pipeline scratch
+*.tmp.mjs
+
+# Seeded design-canvas payload (2.5MB of bundled editor code). Regenerate from
+# design/canvas/*.dc.html — see design/canvas/README.md.
+/trenchline-interface.html
+trenchline-artboards.zip

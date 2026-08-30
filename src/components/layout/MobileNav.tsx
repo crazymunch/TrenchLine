@@ -28,15 +28,21 @@ export const MobileNav: React.FC = () => {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0C0E12]/95 backdrop-blur border-t border-[#323846] px-2 py-1">
-        <div className={`grid grid-cols-${navItems.length + 2} gap-1`}>
+      <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0C0E12]/95 backdrop-blur border-t border-[#323846] px-1 pt-1 pb-safe">
+        {/*
+          Flex, not grid: the item count varies with the admin flag, and a
+          template-literal `grid-cols-${n}` is never compiled by Tailwind's
+          static scanner — which silently collapsed this nav to one column.
+          `flex-1` needs no class per count and cannot fail the same way.
+        */}
+        <div className="flex items-stretch gap-0.5">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setCurrentView(item.id)}
-                className={`flex flex-col items-center justify-center py-2 px-1 rounded transition-colors relative ${
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors relative ${
                   isActive ? 'bg-[#161920]' : 'text-[#8E95A5] hover:text-[#ECEFF4]'
                 }`}
                 style={{
@@ -49,7 +55,7 @@ export const MobileNav: React.FC = () => {
                     <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-[#E53935] animate-ping" />
                   )}
                 </div>
-                <span className="text-[10px] font-mono mt-1 uppercase font-semibold">{item.label}</span>
+                <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold truncate max-w-full leading-tight">{item.label}</span>
               </button>
             );
           })}
@@ -57,23 +63,23 @@ export const MobileNav: React.FC = () => {
           {/* Theme switcher button on mobile */}
           <button
             onClick={() => setIsThemeModalOpen(true)}
-            className="flex flex-col items-center justify-center py-2 px-1 rounded transition-colors text-[#8E95A5] hover:text-[#ECEFF4]"
+            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-[#8E95A5] hover:text-[#ECEFF4]"
           >
             <div className="relative">
               <Palette className="w-4 h-4" style={{ color: activeThemeObj.primaryColor }} />
             </div>
-            <span className="text-[10px] font-mono mt-1 uppercase font-semibold">Theme</span>
+            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold truncate max-w-full leading-tight">Theme</span>
           </button>
 
           {/* Bug report button on mobile */}
           <button
             onClick={() => setIsBugReportOpen(true)}
-            className="flex flex-col items-center justify-center py-2 px-1 rounded transition-colors text-[#E53935]/80 hover:text-[#E53935]"
+            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-[#E53935]/80 hover:text-[#E53935]"
           >
             <div className="relative">
               <Bug className="w-4 h-4 text-[#E53935]" />
             </div>
-            <span className="text-[10px] font-mono mt-1 uppercase font-semibold text-[#E53935]">Bug</span>
+            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold text-[#E53935] truncate max-w-full leading-tight">Bug</span>
           </button>
         </div>
       </nav>

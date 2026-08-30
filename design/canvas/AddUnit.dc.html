@@ -1,0 +1,237 @@
+<script src="./support.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E; --merc:#00897B;
+    --gothic:'Cinzel',serif; --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    width:375px; height:900px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .hd { padding:12px; background:var(--void); border-bottom:1px solid var(--line);
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .hd h2 { font-family:var(--gothic); font-weight:700; font-size:16px; letter-spacing:.05em; }
+  .hd p { margin-top:3px; font-family:var(--mono); font-size:10px; color:var(--muted); line-height:1.4; }
+  .x { flex:none; width:44px; height:44px; margin:-8px -8px 0 0; display:flex; align-items:center;
+    justify-content:center; color:var(--muted); font-size:20px; }
+
+  /* the variant is stated once, at the top, because it governs everything below */
+  .variant { margin:10px 12px 0; padding:8px 10px; background:rgba(212,175,55,.08);
+    border:1px solid rgba(212,175,55,.35); border-radius:4px; display:flex; gap:8px; align-items:flex-start; }
+  .variant i { flex:none; font-style:normal; font-size:12px; line-height:1.3; }
+  .variant div { flex:1; min-width:0; }
+  .variant b { display:block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--gold); }
+  .variant span { display:block; margin-top:3px; font-size:10.5px; line-height:1.45; color:var(--muted); }
+
+  .search { margin:10px 12px 0; height:44px; display:flex; align-items:center; gap:8px; padding:0 11px;
+    background:var(--surface); border:1px solid var(--line); border-radius:4px; }
+  .search svg { width:15px; height:15px; color:var(--muted); flex:none; }
+  .search span { font-size:16px; color:var(--muted); } /* 16px: never zooms on iOS focus */
+
+  .tabs { margin:10px 12px 0; display:flex; gap:6px; }
+  .tab { height:32px; padding:0 11px; display:inline-flex; align-items:center; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .tab.on { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .list { margin:10px 12px 0; display:grid; gap:6px; }
+  .row { background:var(--surface); border:1px solid var(--line); border-radius:5px; padding:9px 10px;
+    display:grid; gap:6px; }
+  .row.blocked { background:rgba(22,25,32,.5); border-color:rgba(50,56,70,.6); }
+  .r1 { display:flex; align-items:center; gap:8px; }
+  .r1 h3 { flex:1; min-width:0; font-family:var(--gothic); font-weight:700; font-size:13.5px; line-height:1.2;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.blocked h3 { color:var(--muted); }
+  .r1 .c { flex:none; font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--gold); }
+  .row.blocked .r1 .c { color:var(--muted); }
+  .r1 .c.glory { color:var(--gold-hi); }
+
+  .lim { flex:none; height:17px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.05em; }
+  .lim.free { background:var(--elev); border:1px solid var(--line); color:var(--muted); }
+  .lim.max  { background:rgba(255,179,0,.15); border:1px solid rgba(255,179,0,.5); color:var(--warn); }
+  .lim.no   { background:rgba(139,0,0,.2); border:1px solid rgba(139,0,0,.55); color:var(--danger); }
+
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:4px 2px; text-align:center; }
+  .row.blocked .stats { opacity:.45; }
+  .stats div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.06em; color:var(--muted); }
+  .stats div strong { display:block; font-family:var(--mono); font-size:11.5px; font-weight:700; line-height:1.3; }
+
+  /* every block names the rule that blocked it — never a greyed row with no reason */
+  .why { display:flex; align-items:flex-start; gap:6px; padding:6px 8px; border-radius:4px;
+    background:rgba(139,0,0,.12); border:1px solid rgba(139,0,0,.35); }
+  .why.soft { background:rgba(255,179,0,.08); border-color:rgba(255,179,0,.3); }
+  .why i { flex:none; font-style:normal; font-size:10px; color:var(--danger); line-height:1.45; }
+  .why.soft i { color:var(--warn); }
+  .why p { flex:1; min-width:0; font-family:var(--mono); font-size:9px; line-height:1.5; color:var(--muted); }
+  .why p b { color:var(--text); font-weight:600; }
+
+  .add { flex:none; height:30px; padding:0 11px; display:inline-flex; align-items:center; gap:4px;
+    border-radius:4px; background:var(--gold); color:#000; font-family:var(--mono); font-size:10px;
+    font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+  .add.off { background:transparent; border:1px solid var(--line); color:var(--muted); }
+
+  .footbar { position:absolute; left:0; right:0; bottom:0; padding:10px 12px 14px; background:var(--void);
+    border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .footbar div { font-family:var(--mono); font-size:10px; line-height:1.5; color:var(--muted); }
+  .footbar div b { color:var(--gold); }
+  .footbar button { flex:none; height:44px; padding:0 18px; border:0; border-radius:4px; background:var(--gold);
+    color:#000; font-family:var(--mono); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+</style>
+
+<div class="tl-root">
+
+  <header class="hd">
+    <div>
+      <h2>RECRUIT WARRIOR</h2>
+      <p>Iron Sultanate · 1320 / 1320 👑 · 6 / 9 ☼</p>
+    </div>
+    <div class="x">✕</div>
+  </header>
+
+  <div class="variant">
+    <i>⚑</i>
+    <div>
+      <b>Warband Variant · The House of Wisdom</b>
+      <span>Seven special rules are live and filtering this list. Entries the variant forbids are shown, disabled, with the rule that forbids them — not hidden.</span>
+    </div>
+  </div>
+
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <span>Search 89 profiles…</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on">All</div>
+    <div class="tab">Elite</div>
+    <div class="tab">Troop</div>
+    <div class="tab">Merc</div>
+    <div class="tab">★ Saved</div>
+  </div>
+
+  <div class="list">
+
+    <article class="row">
+      <div class="r1">
+        <h3>Azeb</h3>
+        <span class="lim free">2 taken</span>
+        <span class="c">25 👑</span>
+      </div>
+      <div class="stats">
+        <div><span>MOV</span><strong>6"</strong></div><div><span>RNG</span><strong>+0</strong></div>
+        <div><span>MEL</span><strong>−1</strong></div><div><span>ARM</span><strong>−1</strong></div>
+        <div><span>BASE</span><strong>25</strong></div>
+      </div>
+      <div class="r1"><div style="flex:1;font-family:var(--mono);font-size:9px;color:var(--muted);">No limit · upgradeable to Kavass</div><span class="add">+ Recruit</span></div>
+    </article>
+
+    <article class="row">
+      <div class="r1">
+        <h3>Lion of Jabir</h3>
+        <span class="lim free">1 / 3</span>
+        <span class="c">60 👑</span>
+      </div>
+      <div class="stats">
+        <div><span>MOV</span><strong>8"</strong></div><div><span>RNG</span><strong>N/A</strong></div>
+        <div><span>MEL</span><strong>+1</strong></div><div><span>ARM</span><strong>−1</strong></div>
+        <div><span>BASE</span><strong>50</strong></div>
+      </div>
+      <div class="why soft">
+        <i>▲</i>
+        <p><b>Pride of Jabir</b> — a House of Wisdom Warband can include 0–3 Lions of Jabir. The base Iron Sultanate limit is 0–2; the variant raised it.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add">+ Recruit</span></div>
+    </article>
+
+    <article class="row blocked">
+      <div class="r1">
+        <h3>Jabirean Alchemist</h3>
+        <span class="lim max">2 / 2 · MAX</span>
+        <span class="c">55 👑</span>
+      </div>
+      <div class="why soft">
+        <i>▲</i>
+        <p><b>Alchemists</b> — a House of Wisdom Warband must include 1–2 Jabirean Alchemists. You have 2.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">At limit</span></div>
+    </article>
+
+    <article class="row blocked">
+      <div class="r1">
+        <h3>Brazen Bull</h3>
+        <span class="lim max">1 / 1 · MAX</span>
+        <span class="c">115 👑</span>
+      </div>
+      <div class="why soft">
+        <i>▲</i>
+        <p><b>0–1 Brazen Bull</b> — Warbands of Trench Crusade, Iron Sultanate warband entries.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">At limit</span></div>
+    </article>
+
+    <article class="row blocked">
+      <div class="r1">
+        <h3>Yüzbaşı Captain</h3>
+        <span class="lim no">FORBIDDEN</span>
+        <span class="c">75 👑</span>
+      </div>
+      <div class="why">
+        <i>✕</i>
+        <p><b>Private Venture</b> — a House of Wisdom Warband cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">Blocked</span></div>
+    </article>
+
+    <article class="row blocked">
+      <div class="r1">
+        <h3>Janissary</h3>
+        <span class="lim no">FORBIDDEN</span>
+        <span class="c">55 👑</span>
+      </div>
+      <div class="why">
+        <i>✕</i>
+        <p><b>Private Venture</b> — same rule. Recruit a <b>Fāris</b> instead: <b>Noble Guardians</b> lets a House of Wisdom take 0–2, using the Janissary entry with ELITE at no cost.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">Blocked</span></div>
+    </article>
+
+    <article class="row blocked">
+      <div class="r1">
+        <h3>Sultanate Assassin</h3>
+        <span class="lim no">FORBIDDEN</span>
+        <span class="c">85 👑</span>
+      </div>
+      <div class="why">
+        <i>✕</i>
+        <p><b>Private Venture</b> — same rule.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">Blocked</span></div>
+    </article>
+
+    <article class="row">
+      <div class="r1">
+        <h3>Pairika</h3>
+        <span class="lim free">Mercenary</span>
+        <span class="c glory">7 ☼</span>
+      </div>
+      <div class="why soft">
+        <i>☼</i>
+        <p>Priced in <b>Glory</b>, not Ducats. You have <b>3 Glory</b> left — this one does not fit.</p>
+      </div>
+      <div class="r1"><div style="flex:1;"></div><span class="add off">Not affordable</span></div>
+    </article>
+
+  </div>
+
+  <div class="footbar">
+    <div>Remaining <b>0 👑</b> · <b>3 ☼</b><br>Recruiting costs from the current budget.</div>
+    <button>Done</button>
+  </div>
+
+</div>

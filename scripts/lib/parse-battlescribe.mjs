@@ -1,0 +1,478 @@
+/**
+ * BattleScribe .cat/.gst -> normalised entities.
+ *
+ * The catalogues are the base layer of every ruleset (docs/RULESET-MODEL.md §2).
+ * They are the only machine-readable source, and they carry the three things
+ * the hand-written data could not express: Glory Points as a separate cost,
+ * recruitment limits as constraints, and base sizes.
+ *
+ * Shape notes, from surveying the files:
+ *   - profile typeName is one of Unit | Weapon | Battlekit | Ability
+ *   - Unit profiles carry Movement / Ranged / Melee / Armour / Base
+ *   - Weapon and Battlekit carry Type / Range / Keywords / Rules
+ *   - entryLink@targetId points into sharedSelectionEntries, so entries must be
+ *     resolved through an id index rather than read positionally
+ *   - categoryLink gives both keywords (HEAVY, FEAR) and roles (Elite, Troop)
+ *   - constraint gives min/max scoped to roster or parent
+ *   - `modifier` is how the catalogues express everything conditional: a
+ *     Warband Variant renaming Azeb -> Kavass, armour derived from the armour
+ *     you equipped, an option that raises a cost. There are 1,862 of them and
+ *     they were previously discarded, which is why the generated data could
+ *     not express `Favoured Brazen Bull` at all. See `modifiersOf`.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { XMLParser } from 'fast-xml-parser';
+
+const parser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '@_',
+  // Attribute values are kept verbatim. The default trims them, and the `join`
+  // separator on an append/prepend modifier is U+00A0 — a non-breaking space,
+  // so trimming silently reduced it to '' and produced "FavouredBrazen Bull".
+  // Everything read for display goes through `clean()` anyway.
+  trimValues: false,
+  // Keep single children as arrays where we always want to iterate.
+  isArray: (name) =>
+    ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'categoryLink',
+     'constraint', 'cost', 'profile', 'characteristic', 'categoryEntry',
+     'infoLink', 'costType', 'characteristicType',
+     'modifier', 'modifierGroup', 'condition', 'conditionGroup'].includes(name),
+});
+
+const arr = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
+const attr = (n, k) => (n ? n[`@_${k}`] : undefined);
+
+/** Depth-first walk over every object node. */
+function walk(node, fn) {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) { node.forEach((c) => walk(c, fn)); return; }
+  fn(node);
+  for (const k of Object.keys(node)) walk(node[k], fn);
+}
+
+const clean = (s) =>
+  String(s ?? '')
+    .replace(/ /g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/** `6"/Infantry` -> { inches: 6, type: 'Infantry' } */
+export function splitMovement(raw) {
+  const s = clean(raw).replace(/&quot;/g, '"').replace(/[”″]/g, '"');
+  const m = s.match(/^([\d.]+)\s*"?\s*(?:\/\s*(.+))?$/);
+  if (!m) return { movement: s, movementInches: null, movementType: null };
+  return {
+    movement: s,
+    movementInches: Number(m[1]),
+    movementType: m[2] ? clean(m[2]) : null,
+  };
+}
+
+const charMap = (profile) => {
+  const out = {};
+  for (const c of arr(profile?.characteristics?.characteristic)) {
+    out[attr(c, 'name')] = clean(c['#text']);
+  }
+  return out;
+};
+
+function costsOf(node) {
+  const cost = { ducats: 0, glory: 0 };
+  for (const c of arr(node?.costs?.cost)) {
+    const name = attr(c, 'name');
+    const value = Number(attr(c, 'value') ?? 0);
+    if (name === 'Ducats') cost.ducats += value;
+    else if (name === 'Glory Points') cost.glory += value;
+  }
+  return cost;
+}
+
+function constraintsOf(node) {
+  return arr(node?.constraints?.constraint).map((c) => ({
+    // Kept because modifiers address constraints by id: "a House of Wisdom
+    // Warband cannot include Janissaries" is a modifier setting the Janissary's
+    // roster max to 0, not prose anywhere in the catalogue.
+    id: attr(c, 'id'),
+    type: attr(c, 'type'),
+    value: Number(attr(c, 'value')),
+    scope: attr(c, 'scope'),
+    includeChildSelections: attr(c, 'includeChildSelections') === 'true',
+  }));
+}
+
+/* ------------------------------------------------------------- modifiers */
+
+/**
+ * BattleScribe expresses every conditional rule as a `modifier`: "set the name
+ * to Favoured Kavass when this option is selected", "decrement Armour when this
+ * armour is equipped", "add 5 Ducats". They hang off entries, off groups, and
+ * off the profiles inside an entry, and the field they touch is a
+ * characteristicType or costType id rather than a name.
+ *
+ * Reading them is what lets the app answer "what does this model actually look
+ * like once I have equipped it", which is the whole point of a roster builder.
+ * They are parsed and preserved here, with their condition tree intact and
+ * every id resolved to a readable name; evaluating them against a roster is
+ * `src/rules/modifiers.ts`.
+ *
+ * Nothing is invented: a field or condition this cannot map is kept verbatim
+ * under its raw id and reported, never dropped and never guessed.
+ */
+
+/** Characteristic/cost name -> the path it occupies on our entities. */
+const FIELD_PATHS = {
+  Movement: 'stats.movement',
+  Ranged: 'stats.ranged',
+  Melee: 'stats.melee',
+  Armour: 'stats.armour',
+  Base: 'stats.base',
+  Keywords: 'keywords',
+  Range: 'range',
+  Type: 'type',
+  Rules: 'rules',
+  Description: 'description',
+  Ducats: 'cost.ducats',
+  'Glory Points': 'cost.glory',
+};
+
+/** Fields BattleScribe names directly rather than by id. */
+const LITERAL_FIELDS = new Set(['name', 'hidden', 'category', 'error', 'warning', 'forces']);
+
+function conditionOf(c, nameOf) {
+  const childId = attr(c, 'childId');
+  const out = {
+    type: attr(c, 'type'),
+    value: attr(c, 'value'),
+    field: attr(c, 'field'),
+    scope: attr(c, 'scope'),
+  };
+  if (childId) {
+    out.childId = childId;
+    // A UUID in a rule nobody can read is a rule nobody will maintain.
+    const n = nameOf(childId);
+    if (n) out.childName = n;
+  }
+  if (attr(c, 'includeChildSelections') === 'true') out.includeChildSelections = true;
+  return out;
+}
+
+/** `<conditions>` and `<conditionGroups>` on one node -> a boolean tree. */
+function conditionTreeOf(node, nameOf, joiner = 'and') {
+  const leaves = arr(node?.conditions?.condition).map((c) => conditionOf(c, nameOf));
+  const groups = arr(node?.conditionGroups?.conditionGroup).map((g) =>
+    conditionTreeOf(g, nameOf, attr(g, 'type') ?? 'and'));
+  const all = [...leaves, ...groups];
+  if (!all.length) return null;              // unconditional
+  if (all.length === 1 && joiner === 'and') return all[0];
+  return { [joiner === 'or' ? 'any' : 'all']: all };
+}
+
+function modifierOf(m, nameOf, fieldNameOf, origin, comment, isConstraint) {
+  const rawField = attr(m, 'field');
+
+  // A modifier can target a constraint rather than a characteristic, which is
+  // how a Warband Variant changes a recruitment limit. BattleScribe writes the
+  // constraint's id, sometimes suffixed -min/-max where one entry carries both.
+  const asConstraint = String(rawField ?? '').match(/^(.*?)(?:-(min|max))?$/);
+  if (asConstraint && isConstraint(asConstraint[1])) {
+    const out = {
+      op: attr(m, 'type'),
+      field: `constraint:${asConstraint[1]}`,
+      value: attr(m, 'value'),
+      origin,
+    };
+    if (asConstraint[2]) out.constraintBound = asConstraint[2];
+    const when = conditionTreeOf(m, nameOf);
+    if (when) out.when = when;
+    if (comment) out.comment = comment;
+    return out;
+  }
+
+  const named = LITERAL_FIELDS.has(rawField) ? rawField : fieldNameOf(rawField);
+  const out = {
+    op: attr(m, 'type'),
+    field: FIELD_PATHS[named] ?? named ?? rawField,
+    value: attr(m, 'value'),
+    origin,
+  };
+  // `join` is the separator an append/prepend uses — usually U+00A0, so
+  // "Favoured Brazen Bull" keeps its title on the same line as its name.
+  const join = attr(m, 'join');
+  if (join != null) out.join = join;
+  // `scope` on the modifier itself, distinct from the condition's scope.
+  const mScope = attr(m, 'scope');
+  if (mScope) out.scope = mScope;
+  // Keep the raw id whenever we could not name the field, so an unmapped
+  // modifier is visibly unmapped rather than silently mislabelled.
+  if (!FIELD_PATHS[named] && !LITERAL_FIELDS.has(rawField)) out.rawField = rawField;
+  const when = conditionTreeOf(m, nameOf);
+  if (when) out.when = when;
+  if (comment) out.comment = comment;
+  return out;
+}
+
+/** Every modifier on an entry, its groups, and the profiles it contains. */
+function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
+  const out = [];
+
+  const fromNode = (n, origin, comment) => {
+    for (const m of arr(n?.modifiers?.modifier)) {
+      out.push(modifierOf(m, nameOf, fieldNameOf, origin, comment, isConstraint));
+    }
+    for (const g of arr(n?.modifierGroups?.modifierGroup)) {
+      // A group carries its own conditions that gate every modifier inside it,
+      // and usually a <comment> naming the rule ("armour adjustments").
+      const gate = conditionTreeOf(g, nameOf, attr(g, 'type') ?? 'and');
+      const label = clean(g.comment) || comment;
+      for (const m of arr(g?.modifiers?.modifier)) {
+        const mod = modifierOf(m, nameOf, fieldNameOf, origin, label, isConstraint);
+        if (gate) mod.when = mod.when ? { all: [gate, mod.when] } : gate;
+        out.push(mod);
+      }
+      for (const inner of arr(g?.modifierGroups?.modifierGroup)) fromNode(inner, origin, label);
+    }
+  };
+
+  fromNode(node, 'entry');
+  for (const p of arr(node?.profiles?.profile)) {
+    fromNode(p, `profile:${clean(attr(p, 'name'))}`);
+  }
+
+  // The catalogues routinely state the same rule twice — once on the entry and
+  // again on the profile inside it — because BattleScribe needs both to update
+  // its own two views. It is one rule, so keep one copy: the entry-level
+  // statement, which is the one that survives if the profile is restructured.
+  const seen = new Set();
+  return out.filter((m) => {
+    const { origin, ...rule } = m;
+    const k = JSON.stringify(rule);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+/**
+ * min/max for a unit entry. BattleScribe expresses "0-2 Sniper Priests" as a
+ * roster-scoped max of 2 (and a min of 1 for required entries like the
+ * Lieutenant), so read them off the constraints rather than the name.
+ */
+function recruitLimits(constraints) {
+  const roster = constraints.filter((c) => c.scope === 'roster');
+  const min = roster.find((c) => c.type === 'min');
+  const max = roster.find((c) => c.type === 'max');
+  return { min: min ? min.value : null, max: max ? max.value : null };
+}
+
+export function parseCatalogues(dir) {
+  const files = fs.readdirSync(dir).filter((f) => /\.(cat|gst)$/.test(f));
+
+  /** id -> node, so entryLink@targetId can be resolved. */
+  const byId = new Map();
+  const docs = [];
+
+  for (const file of files) {
+    const doc = parser.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+    docs.push({ file, doc });
+    walk(doc, (n) => {
+      const id = attr(n, 'id');
+      if (id && !byId.has(id)) byId.set(id, n);
+    });
+  }
+
+  // Category id -> name, so categoryLinks resolve to readable keywords/roles.
+  const categoryNames = new Map();
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      if (n.categoryEntries) {
+        for (const c of arr(n.categoryEntries.categoryEntry)) {
+          categoryNames.set(attr(c, 'id'), attr(c, 'name'));
+        }
+      }
+    });
+  }
+
+  // characteristicType / costType id -> name, so a modifier's `field` reads as
+  // "Armour" rather than 5de9-d70e-9021-6f71. Derived from the catalogues
+  // themselves; nothing here is a hardcoded id.
+  const fieldNames = new Map();
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const t of arr(n?.characteristicTypes?.characteristicType)) {
+        fieldNames.set(attr(t, 'id'), clean(attr(t, 'name')));
+      }
+      for (const t of arr(n?.costTypes?.costType)) {
+        fieldNames.set(attr(t, 'id'), clean(attr(t, 'name')));
+      }
+    });
+  }
+  // Characteristics carry their own typeId inline, which covers types declared
+  // in a catalogue rather than the game system.
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const c of arr(n?.characteristics?.characteristic)) {
+        const id = attr(c, 'typeId');
+        if (id && !fieldNames.has(id)) fieldNames.set(id, clean(attr(c, 'name')));
+      }
+      for (const c of arr(n?.costs?.cost)) {
+        const id = attr(c, 'typeId');
+        if (id && !fieldNames.has(id)) fieldNames.set(id, clean(attr(c, 'name')));
+      }
+    });
+  }
+
+  // Every constraint id in every catalogue, so a modifier targeting one is
+  // recognised as changing a limit rather than reported as an unknown field.
+  const constraintIds = new Set();
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const c of arr(n?.constraints?.constraint)) {
+        const id = attr(c, 'id');
+        if (id) constraintIds.add(id);
+      }
+    });
+  }
+  const isConstraint = (id) => constraintIds.has(id);
+
+  // entryLink id -> the entry it points at. Rosters address a shared entry
+  // through a chain of links ("fa41-…::4252-…"), so nothing can be looked up
+  // by target id without resolving these first.
+  const links = {};
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const key of ['entryLink', 'infoLink']) {
+        for (const l of arr(n?.[`${key}s`]?.[key])) {
+          const id = attr(l, 'id');
+          const target = attr(l, 'targetId');
+          if (id && target) links[id] = target;
+        }
+      }
+    });
+  }
+
+  const fieldNameOf = (id) => fieldNames.get(id) ?? null;
+  const nameOf = (id) => {
+    const n = byId.get(id);
+    return n ? clean(attr(n, 'name')) || null : null;
+  };
+
+  const ROLE_NAMES = new Set(['Elite', 'Troop', 'Mercenary', 'Leader', 'Configuration']);
+
+  const factionOf = (file) => path.basename(file, path.extname(file));
+
+  const units = [];
+  const weapons = [];
+  const abilitiesSeen = new Map();
+
+  for (const { file, doc } of docs) {
+    const faction = factionOf(file);
+
+    walk(doc, (node) => {
+      const profiles = arr(node?.profiles?.profile);
+      if (!profiles.length) return;
+
+      const unitProfile = profiles.find((p) => attr(p, 'typeName') === 'Unit');
+      const gearProfiles = profiles.filter((p) =>
+        ['Weapon', 'Battlekit'].includes(attr(p, 'typeName')));
+
+      // categoryLinks give both keywords and the Elite/Troop role.
+      const cats = arr(node?.categoryLinks?.categoryLink)
+        .map((c) => attr(c, 'name') ?? categoryNames.get(attr(c, 'targetId')))
+        .filter(Boolean)
+        .map(clean);
+
+      const abilities = profiles
+        .filter((p) => attr(p, 'typeName') === 'Ability')
+        .map((p) => {
+          const a = {
+            id: attr(p, 'id'),
+            name: clean(attr(p, 'name')),
+            description: clean(charMap(p).Description),
+          };
+          abilitiesSeen.set(a.id, a);
+          return a;
+        });
+
+      const constraints = constraintsOf(node);
+      const cost = costsOf(node);
+      const modifiers = modifiersOf(node, nameOf, fieldNameOf, isConstraint);
+
+      if (unitProfile) {
+        const c = charMap(unitProfile);
+        const mv = splitMovement(c.Movement);
+        const { min, max } = recruitLimits(constraints);
+        units.push({
+          id: attr(unitProfile, 'id'),
+          // The id of the selectionEntry that contains this profile. Roster
+          // exports and modifier conditions both address entries, not
+          // profiles, so evaluation needs it.
+          entryId: attr(node, 'id'),
+          name: clean(attr(unitProfile, 'name')),
+          factionId: faction,
+          roles: cats.filter((x) => ROLE_NAMES.has(x)),
+          keywords: cats.filter((x) => !ROLE_NAMES.has(x)).map((k) => k.toUpperCase()),
+          stats: {
+            movement: mv.movement,
+            movementInches: mv.movementInches,
+            movementType: mv.movementType,
+            ranged: clean(c.Ranged) || '-',
+            melee: clean(c.Melee) || '-',
+            armour: clean(c.Armour) || '0',
+            base: clean(c.Base) || '',
+          },
+          cost,
+          min,
+          max,
+          abilities,
+          options: [],
+          constraints,
+          modifiers,
+          sourceFile: file,
+        });
+        return;
+      }
+
+      for (const g of gearProfiles) {
+        const c = charMap(g);
+        weapons.push({
+          id: attr(g, 'id'),
+          // As with units: the containing selectionEntry, which is what a
+          // roster selects and what a model-scoped modifier is attached to.
+          entryId: attr(node, 'id'),
+          name: clean(attr(g, 'name')),
+          type: clean(c.Type) || attr(g, 'typeName'),
+          range: clean(c.Range) || '',
+          keywords: clean(c.Keywords)
+            .split(',')
+            .map((k) => clean(k))
+            .filter((k) => k && k !== '-'),
+          rules: clean(c.Rules) || undefined,
+          cost,
+          constraints,
+          modifiers,
+          restrictions: [],
+          factionId: faction,
+          sourceFile: file,
+        });
+      }
+    });
+  }
+
+  // Entries are reachable both inline and through sharedSelectionEntries, so the
+  // same profile can be visited twice. Keep the first, which carries the
+  // constraints from its real container.
+  const dedupe = (xs) => {
+    const seen = new Map();
+    for (const x of xs) if (!seen.has(x.id)) seen.set(x.id, x);
+    return [...seen.values()];
+  };
+
+  return {
+    units: dedupe(units),
+    weapons: dedupe(weapons),
+    abilities: [...abilitiesSeen.values()],
+    links,
+    files,
+  };
+}

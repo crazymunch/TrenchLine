@@ -997,7 +997,7 @@ export const CodexView: React.FC = () => {
       {/* WARGEAR OFFICIAL INSPECTOR MODAL */}
       {selectedWargearItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
             
             {/* Modal Header */}
             <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
@@ -1105,7 +1105,7 @@ export const CodexView: React.FC = () => {
       {/* Fullscreen Scenario Map Lightbox Modal */}
       {lightboxMap && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Header */}
             <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -1132,7 +1132,7 @@ export const CodexView: React.FC = () => {
               <img
                 src={lightboxMap.src}
                 alt={`${lightboxMap.name} Official Tactical Map`}
-                className="max-w-full max-h-[75vh] object-contain rounded shadow-2xl border border-[#323846]"
+                className="max-w-full max-h-[75dvh] object-contain rounded shadow-2xl border border-[#323846]"
               />
             </div>
 

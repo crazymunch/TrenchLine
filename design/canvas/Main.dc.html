@@ -1,0 +1,275 @@
+<script src="./support.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .tl-root {
+    /* Lifted verbatim from src/app/globals.css — Iron Sanctum, the default theme. */
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5;
+    --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E; --elite:#7C4DFF; --merc:#00897B;
+    --gothic:'Cinzel',serif; --head:'Oswald',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    width:375px; height:812px; position:relative; overflow:hidden;
+    background:var(--void); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* .bevel-container, globals.css */
+  .tl-root .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+                    border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+  .tl-root .mono { font-family:var(--mono); }
+
+  /* ---- app bar ---------------------------------------------------------- */
+  .tl-appbar { height:48px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 12px; background:var(--void); border-bottom:1px solid var(--line); }
+  .tl-brand { font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.14em; color:var(--gold); }
+  .tl-ruleset { display:flex; align-items:center; gap:5px; height:28px; padding:0 8px;
+    background:var(--elev); border:1px solid var(--line); border-radius:4px;
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--gold); }
+  .tl-ruleset .dot { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+
+  /* ---- scroll body ------------------------------------------------------ */
+  .tl-body { position:absolute; top:48px; bottom:53px; left:0; right:0; padding:10px 12px 12px; }
+
+  /* ---- warband header --------------------------------------------------- */
+  .tl-wb { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:11px 12px 12px; }
+  .tl-wb-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .tl-faction { display:flex; align-items:center; gap:6px; min-width:0; }
+  .tl-faction .swatch { width:9px; height:9px; border-radius:50%; background:#76D6D5; flex:none; }
+  .tl-faction span { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tl-legal { flex:none; display:flex; align-items:center; gap:4px; height:20px; padding:0 7px;
+    border-radius:3px; background:rgba(78,154,110,.16); border:1px solid rgba(78,154,110,.55);
+    font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.08em; color:var(--ok); }
+  .tl-name { font-family:var(--gothic); font-weight:700; font-size:22px; line-height:1.15;
+    letter-spacing:.02em; color:var(--text); margin-top:6px; }
+  .tl-motto { margin-top:6px; padding:4px 8px; background:var(--void); border-left:2px solid var(--gold);
+    border-radius:0 3px 3px 0; font-family:Georgia,serif; font-style:italic; font-size:11px;
+    line-height:1.35; color:var(--text); }
+
+  /* ---- the two currencies ----------------------------------------------- */
+  .tl-purse { margin-top:11px; padding-top:10px; border-top:1px solid var(--line); display:grid; gap:8px; }
+  .tl-cur-row { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; }
+  .tl-cur-label { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); width:76px; }
+  .tl-glyph { font-size:12px; line-height:1; }
+  .tl-meter { height:8px; border-radius:999px; background:var(--void); border:1px solid var(--line); overflow:hidden; }
+  .tl-meter i { display:block; height:100%; }
+  .tl-cur-val { font-family:var(--mono); font-size:11px; font-weight:700; white-space:nowrap; }
+
+  /* ---- filters ----------------------------------------------------------- */
+  .tl-filters { display:flex; gap:6px; margin-top:11px; }
+  .tl-chip { height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px;
+    border-radius:4px; background:var(--elev); border:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); }
+  .tl-chip b { color:var(--text); font-weight:700; }
+  .tl-chip.on { background:var(--gold); border-color:var(--gold); color:#000; }
+  .tl-chip.on b { color:#000; }
+
+  /* ---- warrior rows ------------------------------------------------------ */
+  .tl-roll { margin-top:10px; display:grid; gap:6px; }
+  .tl-row { background:var(--surface); border:1px solid var(--line); border-radius:5px;
+    padding:8px 9px; display:grid; gap:5px; }
+  .tl-row.lead { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); }
+  .tl-row-1 { display:flex; align-items:center; gap:6px; }
+  .tl-badge { flex:none; height:16px; padding:0 5px; display:inline-flex; align-items:center; gap:3px;
+    border-radius:3px; font-family:var(--mono); font-size:8.5px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; }
+  .tl-badge.lead { background:var(--gold); color:#000; }
+  .tl-badge.elite { background:var(--elite); color:#fff; }
+  .tl-badge.troop { background:var(--line); color:var(--text); }
+  .tl-badge.merc { background:var(--merc); color:#fff; }
+  .tl-row-name { flex:1; min-width:0; font-family:var(--gothic); font-weight:700; font-size:13px;
+    line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tl-row.lead .tl-row-name { color:var(--gold); }
+  .tl-row-cost { flex:none; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); }
+  .tl-row-cost .g { color:var(--gold-hi); }
+  .tl-row-sub { font-size:10px; line-height:1.25; color:var(--muted); white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; }
+  .tl-row-sub b { color:var(--text); font-weight:600; }
+  /* the statline is the most-read element on the card: mono, boxed, full width */
+  .tl-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:4px 2px; text-align:center; }
+  .tl-stats div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.06em;
+    color:var(--muted); }
+  .tl-stats div strong { display:block; font-family:var(--mono); font-size:11.5px; font-weight:700;
+    color:var(--text); line-height:1.3; }
+
+  .tl-more { margin-top:8px; text-align:center; font-family:var(--mono); font-size:9.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+
+  /* ---- bottom nav (MobileNav.tsx, verbatim geometry) --------------------- */
+  .tl-nav { position:absolute; left:0; right:0; bottom:0; height:53px; background:rgba(12,14,18,.95);
+    border-top:1px solid var(--line); padding:4px 4px 0; display:flex; align-items:stretch; gap:2px; }
+  .tl-nav button { flex:1; min-width:0; min-height:44px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; border:0; background:transparent;
+    border-radius:4px; color:var(--muted); font:inherit; }
+  .tl-nav button.on { background:var(--surface); color:var(--gold); }
+  .tl-nav svg { width:16px; height:16px; }
+  .tl-nav span { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; line-height:1.1; }
+  .tl-nav .live { position:relative; }
+  .tl-nav .live::after { content:''; position:absolute; top:-3px; right:-6px; width:6px; height:6px;
+    border-radius:50%; background:var(--danger); }
+</style>
+
+<div class="tl-root">
+
+  <header class="tl-appbar">
+    <div class="tl-brand">TRENCHLINE</div>
+    <div class="tl-ruleset"><i class="dot"></i>TrenchLine v1 ▾</div>
+  </header>
+
+  <div class="tl-body">
+
+    <section class="tl-wb bevel">
+      <div class="tl-wb-top">
+        <div class="tl-faction"><i class="swatch"></i><span>Iron Sultanate · House of Wisdom</span></div>
+        <div class="tl-legal">✓ LEGAL</div>
+      </div>
+      <h1 class="tl-name">Al-Qarn Rihla</h1>
+      <div class="tl-motto">“The Wall may forget, but the Copper remembers!”</div>
+
+      <div class="tl-purse">
+        <div class="tl-cur-row">
+          <div class="tl-cur-label"><i class="tl-glyph">👑</i>Ducats</div>
+          <div class="tl-meter"><i style="width:100%;background:var(--gold);"></i></div>
+          <div class="tl-cur-val" style="color:var(--gold);">1320 / 1320</div>
+        </div>
+        <div class="tl-cur-row">
+          <div class="tl-cur-label"><i class="tl-glyph" style="color:var(--gold-hi);">☼</i>Glory</div>
+          <div class="tl-meter"><i style="width:66.7%;background:var(--gold-hi);"></i></div>
+          <div class="tl-cur-val" style="color:var(--gold-hi);">6 / 9</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="tl-filters">
+      <div class="tl-chip on">All <b>11</b></div>
+      <div class="tl-chip">Elite <b>3</b></div>
+      <div class="tl-chip">Troop <b>6</b></div>
+      <div class="tl-chip">Merc <b>1</b></div>
+    </div>
+
+    <div class="tl-roll">
+
+      <article class="tl-row lead">
+        <div class="tl-row-1">
+          <span class="tl-badge lead">♛ Leader</span>
+          <div class="tl-row-name">Kasim bin Malik</div>
+          <div class="tl-row-cost">194 👑 <span class="g">2 ☼</span></div>
+        </div>
+        <div class="tl-row-sub"><b>Jabirean Alchemist</b> · The Living Engineer</div>
+        <div class="tl-stats">
+          <div><span>MOV</span><strong>6"</strong></div>
+          <div><span>RNG</span><strong>+3</strong></div>
+          <div><span>MEL</span><strong>+1</strong></div>
+          <div><span>ARM</span><strong>−2</strong></div>
+          <div><span>BASE</span><strong>32</strong></div>
+        </div>
+      </article>
+
+      <article class="tl-row">
+        <div class="tl-row-1">
+          <span class="tl-badge elite">Elite</span>
+          <div class="tl-row-name">Al-Qahhar, the Crippled</div>
+          <div class="tl-row-cost">250 👑</div>
+        </div>
+        <div class="tl-row-sub"><b>Favoured Brazen Bull</b> · Lost Arm [26]</div>
+        <div class="tl-stats">
+          <div><span>MOV</span><strong>6"</strong></div>
+          <div><span>RNG</span><strong>+0</strong></div>
+          <div><span>MEL</span><strong>+2</strong></div>
+          <div><span>ARM</span><strong>−3</strong></div>
+          <div><span>BASE</span><strong>60</strong></div>
+        </div>
+      </article>
+
+      <article class="tl-row">
+        <div class="tl-row-1">
+          <span class="tl-badge elite">Elite</span>
+          <div class="tl-row-name">Al-Masyukh</div>
+          <div class="tl-row-cost">252 👑</div>
+        </div>
+        <div class="tl-row-sub"><b>Favoured Takwin Homunculus</b> · 8 options</div>
+        <div class="tl-stats">
+          <div><span>MOV</span><strong>6"</strong></div>
+          <div><span>RNG</span><strong>+1</strong></div>
+          <div><span>MEL</span><strong>+1</strong></div>
+          <div><span>ARM</span><strong>−1</strong></div>
+          <div><span>BASE</span><strong>60</strong></div>
+        </div>
+      </article>
+
+      <article class="tl-row">
+        <div class="tl-row-1">
+          <span class="tl-badge elite">Elite</span>
+          <div class="tl-row-name">Idris the Relic Hound</div>
+          <div class="tl-row-cost">84 👑</div>
+        </div>
+        <div class="tl-row-sub"><b>Favoured Kavass</b> · Fireteam: Mamluk-Guarded</div>
+        <div class="tl-stats">
+          <div><span>MOV</span><strong>6"</strong></div>
+          <div><span>RNG</span><strong>+0</strong></div>
+          <div><span>MEL</span><strong>+0</strong></div>
+          <div><span>ARM</span><strong>−2</strong></div>
+          <div><span>BASE</span><strong>25</strong></div>
+        </div>
+      </article>
+
+      <article class="tl-row">
+        <div class="tl-row-1">
+          <span class="tl-badge merc">Merc</span>
+          <div class="tl-row-name">Jawhar al-Sari</div>
+          <div class="tl-row-cost"><span class="g">4 ☼</span></div>
+        </div>
+        <div class="tl-row-sub"><b>Mamluk Faris</b> · The Gilded Blade</div>
+        <div class="tl-stats">
+          <div><span>MOV</span><strong>6"</strong></div>
+          <div><span>RNG</span><strong>+1</strong></div>
+          <div><span>MEL</span><strong>+1</strong></div>
+          <div><span>ARM</span><strong>−3</strong></div>
+          <div><span>BASE</span><strong>32</strong></div>
+        </div>
+      </article>
+
+      <div class="tl-more">▾ 6 more warriors</div>
+    </div>
+
+  </div>
+
+  <nav class="tl-nav">
+    <button class="on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Roster</span>
+    </button>
+    <button>
+      <div class="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="M16 16l4 4"/><path d="M19 3h2v2l-9 9"/></svg></div>
+      <span>Play</span>
+    </button>
+    <button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
+      <span>Camp</span>
+    </button>
+    <button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      <span>Dir</span>
+    </button>
+    <button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Codex</span>
+    </button>
+    <button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z"/></svg>
+      <span>Theme</span>
+    </button>
+    <button style="color:#E53935;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88M14.12 3.88 16 2"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/><path d="M18 11a6 6 0 0 0-12 0v3a6 6 0 1 0 12 0z"/><path d="M3 13h4M17 13h4M3 6h1M20 6h1M3 20h1M20 20h1"/></svg>
+      <span>Bug</span>
+    </button>
+  </nav>
+
+</div>

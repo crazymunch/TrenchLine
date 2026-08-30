@@ -79,7 +79,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in print:p-0 print:bg-white">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90vh] rounded-md flex flex-col shadow-2xl overflow-hidden print:border-none print:max-h-full print:bg-white print:text-black bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden print:border-none print:max-h-full print:bg-white print:text-black bevel-container">
         
         {/* Modal Header (Hidden during print) */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12] print:hidden">

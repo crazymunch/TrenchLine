@@ -1,0 +1,878 @@
+Changelog
+1`0`2
+
+-- 1 of 15 --
+
+14 	CORE RULES,
+before 1st sen-
+tence
+Add the following new paragraph:
+The first section of the rulebook is called the Core Rules, and explains how to play Trench Crusade in a quick and easy to
+use format. The Core Rules are followed by the Comprehensive Rules section, which provides more detailed explanations
+of the rules and additional information about how they work. If you are using the Core Rules and encounter a situation
+that you are not sure how to resolve, read the Comprehensive Rules to find the answer.
+14 & 34 ACTIONS >
+Move.
+Add the following sentence to the end of the Move rule:
+A Move ACTION cannot be used to move a model within 1” of an enemy model (you must use a Charge ACTION
+instead).
+14 	ACTIONS >
+Retreat
+Change to:
+Taking a Retreat ACTION with a model allows you to make a special type of move, called a retreat, that is used when a
+model is within 1” of an enemy model and wishes to move away. Before you make, or are forced to make, a retreat move
+with a model, your opponent can take a Fight ACTION with each enemy model that is within 1” of the retreating model.
+When a model attacks a retreating enemy model, it can only make 1 melee attack with 1 weapon (it cannot use the Multiple
+Melee Attacks rule, but if the attacking weapon has the CLEAVE (X) Keyword it will still apply). After carrying out the at-
+tack(s) you can move the retreating model as long as it did not suffer a Down or Out of Action result ( > see Injury Rolls). A
+retreating model must end its retreat move more than 1” away from all enemy models. If this is impossible, it cannot move
+at all. Note that redeploying a model does not count as a retreat move.
+20 	Down Results,
+3rd bullet point
+Change to:
+Until the model stands back up, it cannot be moved for any reason unless it falls.
+30 	Measuring
+Distances
+Add the following subsection after the first paragraph and before “Within”:
+In Contact
+Two models are in contact if any part of the models and/or their bases are in contact. A model is in contact with a terrain
+piece if any part of the model and/or its base is in contact with the terrain piece.
+30 	Line of Sight 	Change to:
+You will often need to check to see if a model has a “Line of Sight” to another model or terrain piece. If you are unsure
+whether a model has a Line of Sight to a target, stoop down and take a look from behind the attacking model and check
+if it can see any part of the target model (do not count the target’s base, its hands or feet, or anything that is carried by
+or attached to the target such as a weapon or banner), or any part of a target terrain piece. Models can see all around (i.e.
+360°) and they may be pivoted to face any direction before the Line of Sight is checked.
+“Partial Line of Sight”
+A model that has a Line of Sight to a model is said to have a partial Line of Sight if it can draw a Line of Sight to part of
+the target model but not all of it.
+30 	Other Rules Prin-
+ciples, after Line
+of Sight
+Add the following paragraph after LINE OF SIGHT:
+POINTS ON THE BATTLEFIELD OR TERRAIN PIECES
+You may also need to check Line of Sight to a point on the battlefield or on a terrain piece. When this is the case, the point
+is considered to be 1mm across and 1mm high, and you have a Line of Sight to it if you can see any part of it.
+31 	Model Placement,
+2nd sentence
+Change to:
+You can set up a model so that part of its base is on the battlefield or in terrain and the rest of its base is “in the air”, as
+long as more than half of the model’s base is on the battlefield or in terrain.
+Trench Crusade 1.0.2 Changelog
+This document lists all of the important changes that were made as part of the 1.0.2 Rules Update. It does not include minor changes
+that do not affect how the game is played, such as spelling mistakes, capitalisation of words, extra spaces, renamed abilities or special
+rules, and so on.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+Trench Crusade Changelog 1.0.2	
+2
+
+-- 2 of 15 --
+
+37 	Retreating 	Change to:
+Taking a Retreat ACTION with a model allows you to make a special type of move that is used when a model is within
+1” of an enemy model and wishes to move away. Before you make, or are forced to make, a retreat move with a model,
+your opponent can take a Fight ACTION with each enemy model that is within 1” of the retreating model. After carrying
+out the attack(s), you can move the retreating model as long as it did not suffer a Down or Out of Action result (▶ see
+Injury Rolls). A retreating model must end its retreat move more than 1” away from all enemy models. If this is impossi-
+ble, it cannot move at all.
+38 	Terrain Types 	Change to:
+Open: Open terrain includes any area where there is nothing to impede a model. It is the most common terrain in
+Trench Crusade. Models can be moved freely across Open terrain.
+* Difficult: Difficult terrain includes rock beds, swamps, barbed wire and so on, and has the DIFFICULT TERRAIN
+Keyword (▶ see DIFFICULT TERRAIN).
+* Dangerous: Dangerous terrain includes barbed wire, minefields, raging fires, areas of poisonous gas, and so on, and has
+the DANGEROUS TERRAIN Keyword (▶ see DANGEROUS TERRAIN).
+* Impassable: Impassable terrain includes cliffs, large monuments on which there is nowhere for a model to stand, pools of
+magma, and so on, and has the IMPASSABLE TERRAIN Keyword (▶ see IMPASSABLE TERRAIN).
+* Cover: A model has the COVER Keyword from another model if it is in contact with a terrain piece that is at least ½”
+high and at least as wide as its base, and the terrain piece lies between it and the other model in such a way that it partially
+blocks the Line of Sight between the two models (▶ see Partial Line of Sight).
+38 	Moving Into
+Terrain
+Change to: Moving into Terrain
+A model is said to be “in” a piece of terrain if more than half of its base is within the boundary of that piece of terrain.
+41 	Flying 	Remove the Flying rule (see the FLYING Keyword instead).
+45 	Multiple Melee
+Attacks text
+Change:
+MULTIPLE MELEE WEAPONS
+A model that has two Melee Weapons can use a single Fight ACTION to make two separate Melee Attacks, one with each
+Weapon, in the order of your choice. The Weapon used for the second attack is referred to as the Off-Hand Weapon (▶ see
+Melee Attack Modifiers below). You can pick the same or a different model as the target for each attack. If a model has two
+Melee Weapons, and one or both of them have the CLEAVE Keyword, pick one of them and make a Melee Attack with it;
+if it has the CLEAVE Keyword carry out all of its attacks one after the other. Then pick the other Melee Weapon and make
+a Melee Attack with it using the Off-Hand Modifier; if it has the CLEAVE Keyword carry out all of its attacks out one after
+the other with the Off-Hand modifier.
+46 	Injury Rolls 	Add the following line to the end of this section:
+Note that if a rule says a model is taken Down or Out of Action, apply the appropriate Result from the Injury Roll Table
+in full (which means a model that is taken Down will have a BLOOD MARKER placed beside it).
+47 	Bloodbath Rolls 	Change to:
+When you make an Injury Roll for an enemy model, you can spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if
+the target is Down) to convert the Injury Roll to a Bloodbath Roll. To make a Bloodbath Roll, roll 3D6 and add all 3 dice
+together. Add +/- INJURY DICE and +/- INJURY MODIFIERS in the same way you would to an Injury Roll, except that
+you pick the 3 highest or 3 lowest dice in the roll, instead of the 2 highest or lowest. If the Injury Roll has the DEADLY
+Keyword, instead roll 4D6 and add all 4 dice together.
+49 	Down Results,
+4th bullet point
+Change to:
+Until the model stands back up, it cannot move for any reason unless it falls.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+Trench Crusade Changelog 1.0.2	
+3
+
+-- 3 of 15 --
+
+49 	Down Results, last
+bullet point, 2nd
+sentence
+Change to:
+Take a Success Roll for the model before it is taken Down.
+52 	Keyword
+Glossary, first
+paragraph
+Change to:
+Rules governing all Keywords in the game are listed here. A model, a piece of Battlekit, a Marker or a terrain piece can
+have 1 or more Keywords. They define the core abilities, rules, troop types, and damage categories in the game. Key-
+words appear in the rules in CAPITALS to make it easy for you to spot them.
+52 	New Keyword 	AMMUNITION (KEYWORD) (Effect): If a model has a piece of Battlekit with this Keyword, it will use it in the next
+game that it takes part in. When the model is deployed, say which Ranged Weapon the Battlekit will be used for. It gains
+the (KEYWORD) until the end of the game. The Ranged Weapon you choose cannot have the BLAST, FIRE, GAS, or
+SHRAPNEL Keywords, and cannot have more than one type of AMMUNITION.
+52 	ARMOUR
+PIERCING
+Keyword
+Change to:
+A Weapon with this Keyword reduces the target’s total -INJURY MODIFIER from its Armour Characteristic, and/
+or any Armour or Shields it has, by 1, to a minimum of 0. For example, if a target had Standard Armour and a Trench
+Shield, the -INJURY MODIFIER would be lowered from -2 to -1.
+53 	AUTOMATIC
+Keyword, 1st
+sentence
+Change to:
+When you take a Shoot ACTION with a Ranged Weapon that has this Keyword, you can make a number of Ranged
+Attacks with this weapon equal to X, one after another.
+53 	BLAST Keyword 	Change to:
+BLAST (X”) (Effect): A Ranged Weapon with BLAST (X”) has a blast radius in inches equal to X (including vertically).
+When you make an attack with the Weapon, you must pick a target for the attack. The target can either be an enemy model
+or a visible point on the battlefield or on a terrain piece; whichever you choose must be within the attacking model’s Line
+of Sight and the Weapon’s range. If the Success Roll for the attack is a Failure, the attack misses and nothing happens unless
+the weapon also has the SCATTER Keyword (> see SCATTER). If the Success Roll for the attack is a Success or Critical
+Success, every model that has a Line of Sight to the target of the attack and which is within the Weapon’s blast radius is hit.
+In addition, friendly models that are within 1” of an enemy model that was hit by the blast radius are also hit. Measure the
+blast radius from the centre of the target model’s base, or the centre of the visible point you picked, to the closest point on
+the other model’s base. Make an Injury Roll for every model that was hit. If you roll a Critical Success, only add the extra
+INJURY DICE to the roll for a model if it was chosen as the target of the attack.
+53 	New Keyword 	Add the following new Keyword:
+CLEAVE (X) (Effect): When you take a Fight ACTION with a Weapon that has this Keyword, you can make a number
+of Melee Attacks with this weapon equal to X, one after another. The attacks can target different enemy models, as long as
+they are all within 1” of the model taking the Fight ACTION. Resolve each attack one at a time, using steps 2 to 4 of the
+Melee Attack Sequence. Any BLOOD MARKERS that are spent only modify the Injury Roll for the attack they are spent
+on, and do not modify Injury Rolls for subsequent attacks.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+54 	New Keyword 	Add the following new Keyword:
+DANGEROUS TERRAIN (Effect): If you Activate a model that is in terrain with this Keyword, or if you move a model
+into terrain with this Keyword during a move, you must take a Risky Success Roll for the model. If the roll is a Success or
+Critical Success, you can carry on with the model’s move, and you do not have to take any more Risky Success Rolls for the
+model if it moves into any more terrain with this Keyword as part of that move. If the roll is a Failure, you must make an In-
+jury Roll for the model and its Activation ends. Sometimes DANGEROUS TERRAIN will have one or more Keywords in
+brackets directly after it. Any Injury Rolls caused by the DANGEROUS TERRAIN rule have those Keywords. For example,
+if a terrain piece had the DANGEROUS TERRAIN (FIRE) Keywords, then any Injury Rolls caused by it would count as
+having the FIRE Keyword.
+Trench Crusade Changelog 1.0.2	
+4
+
+-- 4 of 15 --
+
+54 	New Keyword 	Add the following new Keyword:
+DEADLY (Effect): When you make an Injury Roll for an attack made with a weapon with this Keyword, roll 3D6 and
+add all 3 dice together. Any +INJURY DICE or INJURY DICE are added to the roll normally, except that you pick the
+3 highest or lowest dice in the roll instead of the 2 highest or lowest.
+54 	New Keyword 	Add the following new Keyword:
+DEPLOYABLE (Tag): Battlekit that is represented by a model or terrain piece that can be set up during the game.
+54 	New Keyword 	Add the following new Keyword:
+DIFFICULT TERRAIN (Effect): Every 1” a model is moved across terrain with this Keyword counts as 2”.
+54 	FIRETEAM
+Keyword
+Add:
+A model cannot be in more than 1 Fireteam.
+55 	New Keyword 	Add the following new Keyword:
+FLYING (Effect): When you make a move, retreat move or charge move with a model with this Keyword, you can measure
+the path on which it travels ‘through the air’. It must end the move on the battlefield or on a terrain piece. You must still
+take a Risky Success Roll for the model if it is Activated or ends its move on Dangerous terrain, and it cannot end its move
+on Impassable terrain. In addition do not make an Injury Roll if a model with this Keyword Falls.
+55 	New Keyword 	Add the following new Keyword:
+IMPASSABLE TERRAIN (Effect): Models cannot be moved onto or across terrain with this Keyword.
+56 	New Keyword 	Add the following new Keyword:
+REGENERATE (X) (Effect): When you Activate a model with this Keyword, before carrying out any ACTIONS, you
+can remove up to X BLOOD MARKERS from the model.
+57 	SCATTER
+Keyword
+Change to:
+SCATTER (Effect): Some Weapons with the BLAST Keyword also have the SCATTER Keyword. When you make an
+attack with the Weapon, pick a target and carry out the attack as described in the rules for BLAST. However, if the Success
+Roll for the attack was a Failure, the attack will scatter instead of missing. To see where it scatters to, subtract the Success
+Roll from 7. For example, if the Success Roll was 4, then the target point would scatter (7–4=) 3”. Your opponent must
+move the attack exactly that many inches in a direction of their choice, to a point on the battlefield, on a terrain piece, or
+on the base of a model. There must be Line of Sight between the point that is chosen and the original target for the attack.
+If this is impossible for any reason, then treat the attack as a miss. Then, determine who is hit as described in the rules for
+BLAST.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+57 	New Keyword
+MINED (Effect): When a model moves into contact with a Marker or terrain piece with the MINED Keyword, the mine
+will detonate unless the model has the NEGATE MINED Keyword. Make an Injury Roll with the SHRAPNEL Keyword
+for the model that detonated the mine, and then the Marker or terrain piece loses the MINED Keyword. If the model that
+detonated the mine wasn’t taken Down or Out of Action, it can then continue its move. Models with the FLYING Keyword
+only detonate a mine if they finish a move in contact with a MINED terrain piece (they can fly across it without setting it
+off).
+Add the following new Keyword:
+57 	RISKY
+Keyword
+Change to:
+RISKY (Effect): If you must make a Success Roll for a model that is using a piece of Battlekit that has this Keyword, then
+the Success Roll becomes a Risky Success Roll (the model’s Activation or ACTION will end if the Risky Success Roll is a
+Failure). For example, the Success Roll for an attack made with a Weapon that has the RISKY Keyword would become a
+Risky Success Roll. This Effect is ignored if the Success Roll is already a Risky Success Roll.
+Trench Crusade Changelog 1.0.2	
+5
+
+-- 5 of 15 --
+
+57 	SKIRMISHER
+Keyword
+Change to:
+If an enemy selects a friendly model with this Keyword as the target of a charge, you can choose to evade with your model
+before the charge is made, as long as your model is not within 1” of an enemy. When a model evades, roll a D3 and move
+the model that many inches. It must finish this move more than 1” away from all enemy models. If the move results in there
+being an interposing model between the evading model and the model that is making the charge, then the charging model
+must choose the interposing model as the target for its charge.
+57 	STRONG
+Keyword, 2nd
+sentence
+Change to:
+In addition, it can equip and use one 2-Handed Melee Weapon as if it were a 1-Handed Melee Weapon.
+69 	Two Hands, One
+Head and a Body
+boxout, final sen-
+tence
+Change to:
+A model may freely switch between Ranged and Melee Weapons between ACTIONS, slinging unused weapons over the
+shoulder or stowing them in a holster or scabbard as needed.
+80 	Shields
+Introduction
+Add:
+A Shield does not block Line of Sight to the model that is carrying it.
+81 	Armour-Piercing
+Bullets Add AMMUNITION (ARMOUR-PIERCING) Keyword and delete special rule.
+82 	Dum-Dum Bullets 	Add AMMUNITION (CRITICAL) Keyword and delete special rule.
+82 	Field Shrine 	Add the DEPLOYABLE Keyword.
+83 	Incendiary
+Ammunition Add AMMUNITION (FIRE) Keyword and delete special rule.
+85 	Tracer Bullets 	Add AMMUNITION (+1 DICE) Keyword and delete special rule.
+89 	LEARNED
+SAINT,
+Knowledge of
+Science, 1st
+sentence
+Change to:
+The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the War-
+band.
+89 	LEARNED
+SAINT, Logistical
+Skills, 1st sentence
+Change to:
+A Warband that includes a model with this Skill can increase any Limits on the number of models it can include by 1, as
+long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary.
+91 	SUBLIME GATE,
+Imported Wares
+Imported Wares: You can purchase 1 Weapon or 1 suit of Armour from the New Antioch Armoury for a model with this
+Skill in the following Quartermaster Step. Choose the Weapon or suit of Armour and write down your choice on your
+Warband Roster. If this item is lost for any reason during the campaign, you can repurchase it.
+91 	SUBLIME GATE,
+Sultan's Favour,
+1st sentence
+Change to:
+A Warband that includes a model with this Skill can increase any Limits on the number of models it can include by 1, as
+long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary.
+92 	ORDER OF THE
+FLY, Wings of the
+Fly
+Change to:
+A model with this Skill gains the FLYING Keyword if it doesn’t already have it.
+93 	MAMMON,
+Money Can Buy
+Anything, 1st
+sentence
+Change to:
+The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the War-
+band.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+69
+Battlekit Limits, 6th
+bullet
+Change to:
+Any number of pieces of Equipment or Special Battlekit. A Model cannot have two or more pieces of Equipment or Special
+Battlekit with the same Name.
+Trench Crusade Changelog 1.0.2	
+6
+
+-- 6 of 15 --
+
+102 	Head Wound
+Injury
+Change to:
+This model can no longer gain Experience Points. You can assign Promotion Dice to this model as if it were a Troop in
+the Promotions and Experience Step. If one of its assigned Promotion Dice rolls a “6”, it regains the ability to gain Experi-
+ence Points, although the Battle Scar remains.
+104 	Assign Promotion
+Dice
+Change to:
+After you have filled the Promotion Dice Poll, you must assign the dice in the pool to the Troop models in your Warband
+that can be Promoted. You cannot assign a third dice to the same model until all Troop models in your Warband have at
+least 2 dice each, or assign a fourth dice until all Troop models have at least 3 dice each, and so on. Any Promotion Dice
+not assigned are lost.
+104 	Promoting a
+Model
+Change to:
+When a Troop model receives a Promotion, they immediately gain the ELITE Keyword and they are considered to be an
+Elite model from then on, including for the rest of the Promotions and Experience Step. Cross out their old entry on your
+Warband Roster and write a new one for them in the Elite Models section. They begin with 0 Experience Points, but will
+gain at least 1 due to surviving the game after which they were Promoted.
+107 	Champion Skill 	Change to:
+Melee Weapons that do not have the CLEAVE Keyword which are used by a model with the skill gain the CLEAVE 2
+Keyword. In addition, add -1 DICE to the Success Roll for the second Melee Attack made with each Melee Weapon that
+gains the CLEAVE 2 Keyword.
+108 	Gunslinger 	Change to:
+Gunslinger: The following rules apply to a model with this Skill if it is armed with Ranged Weapons with the
+PISTOL Keyword.
+If it is equipped with 2 Weapons with the PISTOL Keyword, it can take a Shoot ACTION with one and then
+immediately take a Shoot ACTION with the other.
+Add the ASSAULT and IGNORE OFF-HAND WEAPON Keywords to any weapons that have the PISTOL Keyword
+(unless they have them already).
+110 	Skill & Expertise 	Change to:
+Skill & Expertise: When you give a model this Skill, choose 1 ACTION on that model’s Warband Entry, or 1 Common
+ACTION apart from Fight or Shoot ACTIONS, and write it on your Warband Roster. Add +1 DICE to rolls made as part
+of the chosen ACTION when they are taken by this model.
+112 	Reinforcement
+Sequence, step 6
+Change to:
+If you Call for Reinforcements, you must forego the Exploration Step and Quartermaster Step completely. Go directly to
+the Roster Step.
+125 	Glory Items intro
+paragraph
+Change to:
+Glory Items are pieces of Battlekit. They are similar in many ways to the Battlekit that can only be purchased with ducats
+that are found in the Armoury Tables of a Faction List. However, Glory Items can only be purchased during a campaign and
+if the Warband has made a discovery from an Exploration Table that allows them to take a Glory Item for free or purchase
+it in the Quartermaster Step. For example, the Trench Merchant discovery on the Common Exploration Locations Table
+allows a Warband to purchase Glory Items costing 5 glory or less.
+128 	Armour of the Fly
+Keywords Add the FLYING Keyword.
+102 	Captured, 2nd
+sentence
+Change to:
+Before continuing the Trauma Step, you and your opponent from the game can negotiate a ransom price in ducats
+for the release of the model.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+129 	Battlefield Title 	Change Type to Special.
+Trench Crusade Changelog 1.0.2	
+7
+
+-- 7 of 15 --
+
+129 	Beelzebub’s
+Embrace
+Change Type to Special and change the Many-Legged Form special rule to:
+A model that has been blessed with Beelzebub’s Embrace has its arms replaced with fly-like limbs. The model cannot have
+Weapons, Grenades, Shields or Equipment that has the HELD Keyword. It can make a Melee Attack with the CLEAVE 4
+Keyword even though it doesn’t have any Melee Weapons. If all 4 Melee Attacks successfully hit the same target model, and
+the target is mounted on a 32mm base or smaller, then the target is immediately taken Out of Action when it is hit by the
+fourth attack. Do not make an Injury Roll for the fourth attack, and any rules or abilities that would change the result do
+not apply (i.e. the TOUGH Keyword would not affect the fourth attack).
+131 	Damascus Armour,
+Type box on profile
+Change Type from Equipment to Armour.
+132 	Ducal Winged
+Armour
+Add the FLYING Keyword and change Type from Equipment to Armour.
+133 	Field Hospital 	Change Type to Special and change the Field Hospital special rule to:
+A Field Hospital cannot be allocated to a model, but is added to your Arsenal. If your Warband also includes a Combat
+Medic, Jabirean Alchemist or a Sister of Saint Cosmas, at the end of the Trauma Step in the Campaign Phase you can use
+a Field Hospital to treat 1 model from your Warband that has 1 or more Battle Scars. If you do so, roll 2D6. On a roll of
+7+ you can remove 1 of the model’s Battle Scars; on a roll of 3-6 nothing happens; on a roll of 2 the model receives 1 extra
+Battle Scar.
+134 	Horn of Joshua,
+Blow Thy Horn
+Add:
+Once a model has successfully taken a Blow Thy Horn ACTION, it cannot be used again in the same game.
+135 	Knighthood &
+Koraktor, the
+Great Tome of
+Hell
+Change Type to Special.
+137 	Lordship of this
+World
+Change Type to Special.
+138 	Piece of Silver and
+Resurrection Engine Change Type to Special.
+139 	Rocket-Propelled
+Grenade and Sal-
+vage Golem
+Change Type to Special.
+140 	Sniper Scope 	Add:
+A Sniper Scope cannot be reallocated during the Quartermaster Step.
+141 	Tormenter Chain 	Add the ASSAULT Keyword and change Dragged Forwards to:
+If an attack made with a Tormentor Chain is a Success or Critical Success, do not make an Injury Roll for the target. In-
+stead, place 1 BLOOD MARKER next to the target, and then place a second BLOOD MARKER on the target because the
+Tormentor Chain has the SHRAPNEL Keyword. After placing the BLOOD MARKERS, you can move the target model
+up to 12” in a straight line, but you must move it so that it finishes the move as close as possible to the attacking model.
+This move can be used to make the model move within 1” of an enemy, make a retreat move, Climb, Jump, or Jump
+Down. The model cannot make a Diving Charge.
+142 	Trench Dog 	Change Type to Special and add the DEPLOYABLE Keyword.
+153,
+163 &
+177
+Glorious Deeds,
+Hold Your Ground
+Change to:
+Hold Your Ground: A Warband is the first to pass a Morale Check in this game. You receive a Victory Point for achieving
+this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has
+the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as
+you would do normally.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+153 	Resist and Bite
+Glorious Deed
+Change to:
+A friendly model that began its Activation Down takes an enemy model Out of Action in the same Activation.
+Trench Crusade Changelog 1.0.2	
+8
+
+-- 8 of 15 --
+
+155 	Machine Gun
+Emplacement
+Marker
+Add:
+Each Machine Gun Emplacement can be used once per Turn.
+156 	UNFORESEEN
+EVENTS, 2nd
+sentence
+Change to:
+On a roll of 1-4 nothing happens, but on a 5 or 6, an Unforeseen Event takes place (do not roll again to see if any
+further Unforeseen Events take place).
+159 	DEPLOYMENT,
+6th sentence
+Change to:
+Models mounted on bases 40mm or larger count as 2 models for this purpose.
+162 	Mine Markers 	Change to:
+After the defender sets up their Trenches, they can set up 12 Mine Markers within the Mine Placement Area. After setting
+the Mine Markers up, the defender must secretly write down which 4 of the Mine Markers are duds. All of the other Mine
+Markers are live and have the MINED Keyword and the following special rule.
+Slaughter Mines: As soon as a model moves within 3” of a Mine Marker, temporarily halt its move. The defender must
+then reveal if the Mine Marker is a dud. If it is, nothing happens. If it is a live mine, it detonates in the same way as if the
+model had moved into contact with a Marker with the MINED Keyword (▶ See MINED). The Mine Marker is removed,
+and the moving model can then continue its move as long as it wasn’t taken Down or Out of Action. Models with the
+FLYING Keyword only trigger a Mine Marker if they finish a move in within 3” of it (they can fly across it without setting
+it off ). It is possible for a single move to cause several mines to explode. When this is the case, the defender chooses the
+order in which the explosions occur. Completely resolve each explosion before moving on to the next one.
+163,
+177 &
+194
+Glorious Deeds,
+Victory or Death
+Change to:
+* Victory or Death: A Warband wins the game.This Glorious Deed is only used in campaign games and is determined after
+the result of the game has been decided. You do not receive any Victory Points for achieving this Glorious Deed, but you
+can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one
+available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would do normally.
+176 	Supply Cache
+Markers, last
+sentence
+Change to:
+Only one Marker can be placed in the defender’s Deployment Zone, and none can be placed within 12” of the attacker’s
+Deployment Zone.
+179 	Ichor Pit Markers 	Change the rule to:
+Open ground and terrain within 2” of the centre of the Ichor Pit Marker is treated as being Difficult and Dangerous terrain,
+in addition to any other terrain rules it may have. Each Ichor Pit contains enough Ichor to fill 6 Ichor Vials (see below). We
+recommend that you keep track of how many vials have been filled from a pit by putting a D6 on top of the Marker. An
+Ichor Pit with no Ichor left is no longer Dangerous Terrain.
+186 	No Escape Glo-
+rious Deed
+Change to:
+A friendly model successfully charges an enemy model that it did not have a Line of Sight to at the start of its Activa-
+tion.
+Digital Rulebook Updates 1.0.2
+Page 	Location 	Errata
+189 	Gas Mine
+Markers
+Change to:
+After the defender sets up their Trenches, they can set up 12 Gas Mine Markers. At least 8 of the Gas Mine Markers
+must be placed wholly within the Mine Placement Area. Up to 4 can be played wholly within the defender’s Deploy-
+ment Zone After setting the Gas Mine Markers up, the defender must secretly write down which 4 of the Gas Mine
+Markers are duds. All of the other Gas Mine Markers are live and have the MINED Keyword and the following special
+rules.
+Choking Mines: As soon as a model moves within 3” of a Gas Mine Marker, temporarily halt its move. The defender
+must then reveal if the Gas Mine Marker is a dud. If it is, nothing happens. If it is a live mine, it detonates in the same
+way as if the model had moved into contact with a Marker with the MINED Keyword, except that the INJURY counts
+as having the GAS Keyword instead of the SHRAPNEL Keyword (▶ see MINED). The Gas Mine Marker is then
+removed and replaced with a Gas Cloud Marker, and the moving model can then continue its move as long as it wasn’t
+taken Down or Out of Action. Models with the FLYING Keyword only trigger a Mine Marker if they finish a move
+in contact with it (they can fly across it without setting it off ). It is possible for a single move to cause several mines to
+explode. When this is the case, the defender chooses the order in which the explosions occur. Completely resolve each
+explosion before moving on to the next one.
+Trench Crusade Changelog 1.0.2	
+9
+
+-- 9 of 15 --
+
+13 	Warband Entries,
+Base bullet point
+Change to:
+The size of the base the model must be mounted on. If a model’s Base Characteristic has a single number, the base is
+round and the number is its diameter. If a model’s Base Characteristic has two numbers, the base is an oval, the smaller
+number is the width of the base and the larger number is the length of the base.
+15-20 	Keyword
+Glossary
+Make the same changes as those made in the Keyword Glossary in the Digital Rulebook (see pages 52-57 of the
+Digital Rulebook Changelog).
+23 	Special Rules,
+Concentrated
+Attacks
+Change to:
+If a model from a Fireteam hits a target that had been hit by an attack made by the other member of their Fireteam
+earlier in the same joint Activation, then you can spend 3 BLOOD MARKERS to convert the Injury Roll for the
+second attack to a Bloodbath Roll, even if the target is not Down.
+32 	Combat Engineer 	Add the NEGATE MINED KEYWORD, add the Set Mine ability and change Defuse Mine as shown below:
+Set Mine ACTION: A Combat Engineer can take a Set Mine ACTION if they are in contact with a terrain piece that
+measures up to 8” by 8” that doesn’t have the MINED Keyword. If they do so, take a Success Roll for the model and add
++2 DICE to the roll. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, the terrain piece
+gains the MINED Keyword.
+Defuse Mine: When you move a Combat Engineer into contact with a Marker or terrain piece with the MINED Keyword,
+you can say the Combat Engineer will halt and try to defuse the mine before it detonates (▶ see MINED). If you do so,
+take a Risky Success Roll for the model. If the roll is a Failure, the mine detonates anyway and the Combat Engineer’s
+Activation ends. If the roll is a Success or a Critical Success, the mine does not detonate and the Marker or terrain piece
+loses the MINED Keyword. A model that sets a mine on a terrain piece can defuse the mine automatically if it moves into
+contact with the terrain piece (do not take a Risky Success Roll).
+35 	Papal States,
+Lector special
+rule first para-
+graph
+Change to:
+A Papal States Intervention Force Warband must include 1 Trench Cleric, but does not have to include a Lieutenant.
+A Trench Cleric in a Papal States Intervention Force Warband has the LEADER Keyword and the following additional
+ability:
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+35 	Specialist Force 	Change to:
+You have 500 Ducats and 11 Glory to recruit a Papal State Force Warband for a campaign (▶ see Starting a Warband). A
+Papal States Intervention Force gains 4 Glory each time it calls for Reinforcements. In a campaign, its Threshold Value is
+reduced by 200 Ducats. When recruiting models for a one-off game, after agreeing upon the size of the game, reduce the
+amount of Ducats a Papal States Intervention Force Warband has to spend by 200 Ducats and increase the amount of Glory
+they have to spend by 11 Glory.
+42 	Tank-Splitter
+Sword
+Change to:
+When you make an Injury Roll for an attack made with a Tank-Splitter Sword, determine if the target has an Armour Char-
+acteristic that is -1 or greater, or if it is wearing Armour or carrying a Shield. If it does, before rolling the dice for the Injury
+Roll, put one dice aside and turn it so that it shows a “6”. Roll the rest of the dice, then return the dice you put to one side;
+it counts as having rolled a 6. In addition, attacks made with a Tank-Splitter Sword are not affected by the Dragonslayer
+Patron Skill ( ▶ see Patrons in the Trench Crusade Digital Rulebook).
+44 	Holy Warriors,
+Arise and be Healed!
+ACTION, 2nd
+sentence
+Change to:
+If they do so, take a Risky Success Roll for the Holy Warrior.
+Trench Crusade Changelog 1.0.2	
+10
+
+-- 10 of 15 --
+
+54 	Communicant 	Remove Miracle of Regeneration and add REGENERATE 1 Keyword.
+56 	Ressurection
+Ability, 1st
+sentence
+Change to:
+If a Trench Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resur-
+rected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile at a cost of 45 Ducats.
+57 	Stigmatic Nun 	Add REGENERATE 1 Keyword an change Blessed Stigmata to:
+Each time you remove a BLOOD MARKER from a Stigmatic Nun because of the REGENERATE 1 Keyword, place 1
+BLESSING MARKER next to the Stigmatic Nun.
+59 	Anchorite Shrine,
+Broken on the
+Wheel
+Change to:
+Broken on the Wheel: At the start of each game, before deployment, you can say that one Trench Pilgrim or Ecclesiastic
+Prisoner will be broken on the wheel to show their piety and devotion. The model you choose is permanently removed
+from your Warband, but in a campaign you can redistribute their Battlekit to other models that would be allowed to have
+it in the following Quartermaster Step. Injuries that would be inflicted on the Anchorite Shrine are instead inflicted on its
+unfortunate victim, until the victim finally passes away. This is represented by the following special rules, which apply to the
+Anchorite Shrine until it suffers an Out of Action result on the Injury Table:
+It has an Armour Characteristic of 0 and does not have the NEGATE SHRAPNEL and TOUGH Keywords.
+It treats Down results as Minor Hit results.
+The first time the Anchorite Shrine suffers an Out of Action result on the Injury Table, it is treated as a No Effect result.
+When this happens, any BLOOD MARKERS on the Anchorite Shrine are removed, and from then on, these special rules
+no longer apply to the model, it has an Armour Characteristic of -3, and gains the NEGATE SHRAPNEL and TOUGH
+Keywords (the TOUGH Keyword will apply the next time the Anchorite Shrine suffers an Out of Action result on the
+Injury Table).
+60 	Catherine Wheel 	Add DEADLY 1 Keyword and remove Mighty Blows special rule.
+65 	Gas Filters 	Change Type to Special.
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+66 Grand Anchorite,
+Hallowed Ancho-
+rite, Holy Diesel
+Engine, and Piston
+Legs
+Change Type to Special.
+67 	Sacred Geometry
+and Wrathful Cher-
+ub Face
+Change Type to Special.
+76 	Alchemical
+Ammunition
+Add AMMUNITION (+1 DICE), remove “models with Jezzail, Siege Jezzail, Alaybozan or Halberd-Gun only”, and
+change Guiding Path to:
+Guiding Path: Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even
+though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to
+another model.
+78 	M.U.R.A.D.
+Bombard, Ech-
+oing Blast
+Change to:
+If the Success Roll for a Ranged Attack with an M.U.R.A.D Bombard that targets an enemy model is a Success or a Crit-
+ical Success, or if the attack is a Failure and the target point scatters onto a model’s base, apply the effect of the DEADLY
+Keyword to the Injury Roll for that model. All other models caught in the M.U.R.A.D. Bombard’s blast radius, or that are
+in the M.U.R.A.D. Bombard’s blast radius if it did not hit the target model or scatter onto a model’s base, are taken Down
+(do not make an Injury Roll for them).
+Trench Crusade Changelog 1.0.2	
+11
+
+-- 11 of 15 --
+
+83 	Sultanate
+Assassin Abilities
+Change to:
+Temporal Assassin: After determining the Charge Bonus for a Sultanate Assassin that has not already carried out a Fight
+ACTION in its Activation, you can say that the Sultanate Assassin will split itself through time. If you do so, choose an
+additional enemy model as the target of the Charge (the normal rules for picking a target apply, but do not count targets
+of the Charge as interposing enemy models). Then make a charge move with the Sultanate Assassin which finishes within
+1” of the first enemy model you picked as a target, and then take a Fight ACTION with the enemy model as the target.
+After resolving the Fight ACTION, you must immediately remove the Sultanate Assassin from the battlefield and redeploy
+it to within 1” of the other model that you picked. Then take a second Fight ACTION with the other enemy model as the
+target. The Sultanate Assassin must use the same Melee Weapon for both attacks, and cannot take a Fight ACTION later
+in the same Activation.
+Time Slip: If your opponent fails their Success Roll for an attack targeting a Sultanate Assassin, you can say the Sultanate
+Assassin will slip into a moment in the future. If you do so, you can redeploy it anywhere within 6” of its original location
+(measured from the centre of its base to the centre of its base), and more than 1” away from any enemy models. If the
+failed attack took place because the Sultanate Assassin is retreating, the retreat move ends after you redeploy the model.
+85 	Sultanate Sapper 	Add the NEGATE MINED KEYWORD, remove Detonating Mines, add the Set Mine ability and change Defuse
+Mine and Forward Positions as shown below:
+Set Mine ACTION: A Sultanate Sapper can take a Set Mine ACTION if they are in contact with a terrain piece that
+measures up to 8” by 8” that doesn’t have the MINED Keyword. If they do so, take a Success Roll for the model and add
++2 DICE to the roll. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, the terrain piece
+gains the MINED Keyword.
+Defuse Mine: When you move a Sultanate Sapper into contact with a Marker or terrain piece with the MINED Keyword,
+you can say the Sultanate Sapper will halt and try to defuse the mine before it detonates (▶ see MINED). If you do so, take
+a Risky Success Roll for the model. If the roll is a Failure, the mine detonates anyway and the Sultanate Sapper’s Activation
+ends. If the roll is a Success or a Critical Success, the mine does not detonate and the Marker or terrain piece loses the
+MINED Keyword. A model that sets a mine on a terrain piece can defuse the mine automatically if it moves into contact
+with the terrain piece (do not take a Risky Success Roll).
+Forward Positions: When you deploy a Sultanate Sapper for the first time in a game, you can deploy them up to 6” away
+from your deployment zone and in contact with a terrain piece that is at least ½” high.
+90 	Fida'i of Alamut,
+Master Assassin
+Change to:
+A Fida’i of Alamut Warband must include 1 Master Assassin. The Master Assassin uses the Sultanate Assassin War-
+band Entry, except that it has the LEADER and TOUGH Keywords and has a cost of 95 Ducats.
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+91 	Bow of Alamut,
+Keywords
+Add the ASSAULT Keyword.
+92 	Golden Khanjar 	Change the Limit to 2, remove the Attack Twice and add the CLEAVE 2 Keyword.
+94 	Chemistry and
+Alchemy
+Change to:
+At the start of the first Turn of the game, before any models have been Activated, you can set up an Elemental Obstacle
+terrain piece that is up to 2” wide and 6” long. It must be set up more than 1” away from any other terrain pieces and
+more than 6” from any models. The Elemental Obstacle has the DIFFICULT TERRAIN and DANGEROUS TERRAIN
+(X) Keywords. After setting it up, you must say if X is the FIRE, GAS, or SHRAPNEL Keyword.
+96 	Additional Arm 	Change to:
+This Takwin Homunculus adds the CLEAVE 2 Keyword to attacks made with its Pummelling Blows Ability.
+97 	Regenerative
+Tissue
+Change to:
+This Takwin Homunculus gains the REGENERATE 1 Keyword.
+Trench Crusade Changelog 1.0.2	
+12
+
+-- 12 of 15 --
+
+97 	Wings 	Change to:
+Change this Takwin Homunculus’s Movement Characteristic to 8”/Flying and give it the FLYING Keyword. A Homun-
+culus cannot have the Wings Alchemical Formula if it has the Massive Size Alchemical Formula.
+100 	Anqā Guard 	Add DEPLOYABLE Keyword.
+100 	Banner of Desert
+Wind, Sandstorm
+Change to:
+Models that start an Activation within 24” of an enemy model that has the Banner of the Desert Wind have 1 subtracted
+from their Movement Characteristic until the end of the Activation. This rule does not apply if the model with the Banner of
+Desert Wind is Down.
+102 	Sultanate Grand
+Cannon
+Add DEPLOYABLE Keyword.
+108 	Tartarus Claws 	Change the Type to 2-Handed, add the CLEAVE 2 Keyword, and change Paired Weapons to:
+Harrowing Assault: If the target is taken Down or Out of Action by a Melee Attack made with Tartarus Claws, you can
+immediately move the model up to 3”. You can use this move to move within 1” another enemy model, and if you do
+so, this model can take another Fight ACTION. However, it cannot make the 3” move again if the second attack takes
+the target Down or Out of Action.
+109 	Heretic Priest,
+Puppet Master,
+4th sentence
+Change to:
+If the roll is a Success or Critical Success, pick 1 model (friend or foe) that is within 12” of the Heretic Priest and in
+their Line of Sight, apart from the Heretic Priest themselves.
+113 	War Wolf Assault
+Beast
+Add NEGATE DIFFICULT TERRAIN Keyword and change Loping Dash to: Add +1 DICE to the Risky Suc-
+cess Roll for a War Wolf taking a Dash ACTION.
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+117 	Infernal Bomb,
+Infernal Strike
+Change to:
+If the Success Roll for a Ranged Attack with an Infernal Bomb that targets an enemy model is a Success or a Critical Suc-
+cess, or if the attack is a Failure and the target point scatters onto a model’s base, apply the effect of the DEADLY Keyword
+to the Injury Roll for that model. Injury Rolls for other models caught in the Infernal Bomb’s BLAST are made normally.
+118 	Slow special rule 	Change to:
+Slow and Creeping: Treat a Trench Ghost model as having a Movement Characteristic of 3”/Infantry when it takes a Dash
+ACTION. In addition, add -1 DICE to the Success Roll for an attack made by a Trench Ghost model on an enemy model
+that is making a Retreat.
+121 	Golden Calf Altar 	Remove CONSUMABLE Keyword, add DEPLOYABLE Keword and change the Illusions special rule to:
+Enemy models treat Open ground and all terrain within 3” of a model with a Golden Calf Altar as being Difficult
+terrain (if it is not already), even if they have the FLYING Keyword.
+131 	Grail Devotee,
+Jealous Obses-
+sion
+Add:
+Grail Devotees cannot be reallocated unless the model that had them is removed from the Warband Roster.
+134 	Lord of Tumours,
+Crushing Blows
+Change to:
+A Lord of Tumours can make a Crushing Blows Melee Attack even if it does not have any Melee Weapons, or instead of
+using any Melee Weapons that it has. If it does so, this Melee Attack has the CLEAVE 2 Keyword.
+Trench Crusade Changelog 1.0.2	
+13
+
+-- 13 of 15 --
+
+137 	Grail Thrall
+Keywords
+Add FLYING (Fly Thralls only) Keyword.
+139 	Herald of
+Beelzebub
+Add FLYING Keyword and remove option of having a Grail Devotee.
+140 	Amalgam
+Battlekit
+Change to:
+An Amalgam has six arms, which allows it to carry a vast combination of different Ranged and Melee Weapons. It
+can have up to six Ranged or Melee Weapons from the Black Grail Armoury. In addition, an Amalgam can treat two
+2-Handed Weapons with the HEAVY Keyword (regardless of whether they are Ranged or Melee Weapons) as 1-Hand-
+ed Weapons instead of the single 2-Handed Melee Weapon granted by the STRONG Keyword. Remaining 2-Handed
+Weapons count as two weapons towards this total. An Amalgam cannot have the same Weapon more than twice and it
+cannot have Grenades.
+An Amalgam may have up to 1 Trench Shield in place of one of its 1-Handed Weapons, but it does not benefit from the
+Shield Combo rule. It cannot have any other Battlekit.
+142 	The Executor 	Change to:
+A Dirge of the Great Hegemon Warband must include 1 Executor. The Executor uses the Plague Knight Warband Entry,
+except that it has a Ranged Characteristic of +1 DICE and the LEADER and TOUGH Keywords, and has a cost of 80
+Ducats. The Warband can still include 0-2 Plague Knights.
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+147 	Goetic Spells 	Change the bullet points to:
+* A model cannot cast the same spell more than once per Activation.
+* To cast a Goetic Spell, you must remove a number of BLOOD MARKERS from models equal to the spell’s cost. You can
+remove the BLOOD MARKERS from any models (friend or foe) that do not have the BLACK GRAIL or DEMONIC
+Keywords. The models can be anywhere on the battlefield and do not have to be in the spell caster’s Line of Sight, and
+the spell cost can be paid by removing BLOOD MARKERS from more than one model if you wish.
+* If the cost of a Goetic Spell is a range of numbers, you must choose how many BLOOD MARKERS you will pay before
+the spell is cast. For example, if a Goetic Spell had (Cost 1-3), you must pay a cost of 1, 2 or 3 BLOOD MARKERS
+before you cast the spell.
+* A model that is casting a spell is called the spellcaster.
+* Some Goetic Spells can only be cast if a model takes a Cast Spell ACTION. When it does so, you must pay the spell cost as
+described above, and you can then cast the spell with the model. You can use the Cast Spell ACTION more than once per
+Activation, as long as you do not cast the same spell more than once.
+151 	Malebranche
+Sword
+Add the DEADLY Keyword and remove Abyssal Blade.
+159 	Charm of Acedia,
+2nd sentence
+Change to:
+If you do so, if the next ACTION the spellcaster takes as part of this Activation requires one or more Success Rolls or Risky
+Success Rolls for any part of it, the first roll is automatically a Success (do not roll any dice).
+160 	Uncaring Gluttony 	Change to:
+You must take a Cast Spell ACTION with the spellcaster in order for it to cast this spell. If you do so, pick 1 enemy model
+that has not yet been Activated this Turn, and pick one piece of Equipment that the model has (note its Type must be
+Equipment, not Weapon or Special and so on). Equipment that has the CONSUMABLE Keyword cannot be picked as it
+has already been consumed, and Equipment that has the DEPLOYABLE Keyword cannot be picked if it is more than 1”
+away from the model. The model chews on the Equipment, rendering it unusable for the rest of the game.
+162 	Praetor Keywords 	Add the FLYING Keyword.
+163 	Sorcerer
+Keywords
+Add the FLYING Keyword.
+Trench Crusade Changelog 1.0.2	
+14
+
+-- 14 of 15 --
+
+165 	Left-Hand Path
+spell, 1st sentence
+Change to:
+You can cast this spell when the spellcaster takes a Move, Dash or Charge Action and moves into contact with a terrain
+piece.
+168 	Poison Stingers 	Change to:
+A Pit Locust can make a Melee Attack with the CLEAVE 2 and SHRAPNEL Keywords even though it does not have a
+Melee Weapon.
+168 	Pit Locust
+Keywords
+Add the FLYING Keyword.
+170 	Desecrated Saint,
+Aura of Envy
+Change to:
+Enemy models within 12” of the Desecrated Saint cannot charge enemy models that are within 1” of a model from the
+charging model’s own Warband (it is allowed to move around them in order to reach a different target and does not treat
+them as an interposing enemy model).
+175 	Communicant
+Anti-Tank Hunter
+Add the REGENERATE 1 Keyword and remove Miracle of Regeneration.
+Warbands of Trench Crusade Updates 1.0.2
+Page 	Location 	Errata
+176 	Iron-Clawed
+Hands
+Change to:
+A Goetic Warlock can make a Melee Attack with the CLEAVE 2 and CRITICAL Keywords even though it does not have
+a Melee Weapon. In addition, the Off-Hand Weapon modifier applies to the second attack.
+179 	Mamluk Faris
+Battlekit
+Change to:
+A Mamluk Faris always has Reinforced Armour, a Combat Helmet, and a a Jezzail with Alchemical Ammunition from the
+Iron Sultanate Faction List (▶ see Iron Sultanate Battlekit ). In addition, a Mamluk Faris always has either a Greatsword, or a
+Polearm and a Trench Shield, or a Pistol and a Sword/Axe. Decide which Battlekit the Mamluk Faris has upon recruitment,
+and you can swap the loadout in each Quartermaster Step. The Mamluk Faris has an Armour Characteristic of -3 if it has a
+Trench Shield and an Armour Characteristic of -2 if it does not.
+181 	Observer,
+Lightning Speed
+Change to:
+An Observer’s Polearm has the CLEAVE 2 Keyword.
+Trench Crusade Changelog 1.0.2	
+15
+
+-- 15 of 15 --
+

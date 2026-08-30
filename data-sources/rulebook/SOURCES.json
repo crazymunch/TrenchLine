@@ -1,0 +1,61 @@
+{
+  "_comment": [
+    "Official PDFs, held as GitHub release assets rather than in git history.",
+    "Fetch them with: npm run rules:pdfs",
+    "Large PDFs are gitignored; their extracted text in extracted/ is committed,",
+    "and that text is what the verification pipeline actually reads.",
+    "Each entry pins a sha256 taken from the release asset digest."
+  ],
+  "release": {
+    "repo": "crazymunch/TrenchLine",
+    "tag": "assets",
+    "note": "Private repo — the public releases/download URL 404s. Fetch via the authenticated api.github.com asset endpoint; see scripts/rules-fetch-pdfs.mjs."
+  },
+  "assets": [
+    {
+      "file": "warbands-of-trench-crusade.pdf",
+      "assetId": 536111071,
+      "bytes": 15915440,
+      "sha256": "9f917f3babfc83007ff70350f2c80ced4e013bfab0a5dcb5d2b544bb17225ea6",
+      "extract": "extracted/warbands-of-trench-crusade.txt",
+      "committed": false,
+      "role": "Statline authority: 48 warband entries with limits, costs, statlines, keywords."
+    },
+    {
+      "file": "trench-crusade-digital-rulebook.pdf",
+      "assetId": 536111395,
+      "bytes": 22566388,
+      "sha256": "9ae002f11a28ac571535f3aa92aebeab277f9aae71ec4bc80746f9593dc699ef",
+      "extract": "extracted/trench-crusade-digital-rulebook.txt",
+      "committed": false,
+      "role": "Core + Comprehensive rules, keyword glossary, D66 tables, scenarios."
+    },
+    {
+      "file": "all-out-war.pdf",
+      "assetId": 536110999,
+      "bytes": 5517292,
+      "sha256": "26203d31b693af34b2d6a352e22dc721b0445bdd595a4c4be13d408cc3b1633d",
+      "extract": "extracted/all-out-war.txt",
+      "committed": true,
+      "role": "Multiplayer scenario pack. Verified byte-identical to the copy the extract came from."
+    },
+    {
+      "file": "changelog-1.0.2.pdf",
+      "assetId": 536110981,
+      "bytes": 921127,
+      "sha256": "c04d0f745c07cc48b62befe0d360f71a6abd8d9d417f3574b96a6bdbb725db5c",
+      "extract": "extracted/changelog-1.0.2.txt",
+      "committed": true,
+      "role": "Official 1.0.2 errata table. Transcribes to a layer."
+    },
+    {
+      "file": "rules-commentaries-1.0.2.pdf",
+      "assetId": 536110923,
+      "bytes": 1050671,
+      "sha256": "a30dae0ca4370b08b9caef75ed907879444fee8054c13d9e7a71dfbd5c14c4f7",
+      "extract": "extracted/rules-commentaries-1.0.2.txt",
+      "committed": true,
+      "role": "Official FAQ. Feeds the Codex and rules-engine edge cases."
+    }
+  ]
+}

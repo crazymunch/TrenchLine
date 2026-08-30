@@ -1261,7 +1261,7 @@ export const PlayModeView: React.FC = () => {
       {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
       {isSquadSelectOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85dvh]">
             
             <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -1384,7 +1384,7 @@ export const PlayModeView: React.FC = () => {
       {/* FULLSCREEN SCENARIO MAP LIGHTBOX MODAL (WORKS IN BOTH LOBBY & COMBAT) */}
       {isMapLightboxOpen && selectedScenario?.mapImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Modal Header */}
             <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -1411,7 +1411,7 @@ export const PlayModeView: React.FC = () => {
               <img
                 src={selectedScenario.mapImage}
                 alt={`${selectedScenario.name} Official Tactical Map`}
-                className="max-w-full max-h-[75vh] object-contain rounded shadow-2xl border border-[#323846]"
+                className="max-w-full max-h-[75dvh] object-contain rounded shadow-2xl border border-[#323846]"
               />
             </div>
 

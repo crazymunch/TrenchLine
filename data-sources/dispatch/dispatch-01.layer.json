@@ -1,0 +1,153 @@
+{
+  "id": "dispatch-01",
+  "name": "Trench Dispatch #1 — April 2026 Rules Updates",
+  "sourceRef": "data-sources/dispatch/trench-dispatch-01-april-2026.txt",
+  "publishedAt": "2026-04",
+  "status": "public-beta",
+  "_note": [
+    "Transcribed from the extracted Dispatch text, not interpreted from it.",
+    "The document is already written as errata operations ('Add the FUMBLE",
+    "Keyword to: …', 'Change the Cost of Incendiary Grenades to 10 …'), so each",
+    "op below quotes the line it came from in _src.",
+    "",
+    "The Dispatch describes itself as an unofficial fan compilation of official",
+    "Trench Wire updates, and most of it is marked Public Beta — hence",
+    "status: public-beta, which a ruleset can exclude.",
+    "",
+    "INCOMPLETE. This covers the mechanical changes that map cleanly onto the",
+    "current entity model. Still to transcribe: the Black Grail Strains and Vile",
+    "Corpus (needs UnitOption), the Amalgam and Grail Thrall replacements, the",
+    "Mercenary keyword rewrites, and the new Glory Items."
+  ],
+  "ops": [
+    {
+      "op": "setCost",
+      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
+      "currency": "ducats",
+      "value": 75,
+      "_src": "p.9 — '1 Yüzbaşı - Cost: 75'"
+    },
+    {
+      "op": "setCost",
+      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "currency": "ducats",
+      "value": 115,
+      "_src": "p.10 — '0-1 Brazen Bull - Cost: 115'"
+    },
+    {
+      "op": "set",
+      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "field": "stats.melee",
+      "value": "+2 DICE",
+      "_src": "p.10 — Brazen Bull profile: Melee +2 DICE"
+    },
+    {
+      "op": "set",
+      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "field": "stats.base",
+      "value": "60mm",
+      "_src": "p.10 — Brazen Bull profile: Base 60mm"
+    },
+    {
+      "op": "setKeywords",
+      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "keywords": ["SULTANATE", "ARTIFICIAL", "FEAR", "NEGATE SHRAPNEL", "STRONG", "TOUGH"],
+      "_src": "p.10 — 'SULTANATE ARTIFICIAL FEAR NEGATE SHRAPNEL STRONG TOUGH'"
+    },
+    {
+      "op": "setKeywords",
+      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
+      "keywords": ["SULTANATE", "ELITE", "LEADER", "NEGATE FEAR", "STRONG", "TOUGH"],
+      "_src": "p.9 — 'SULTANATE ELITE LEADER NEGATE FEAR STRONG TOUGH'"
+    },
+    {
+      "op": "addAbility",
+      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
+      "ability": {
+        "id": "dispatch01-mubarizun",
+        "name": "Mubarizun",
+        "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword."
+      },
+      "_src": "p.9 — Mubarizun"
+    },
+    {
+      "op": "addAbility",
+      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "ability": {
+        "id": "dispatch01-living-battering-ram",
+        "name": "Living Battering Ram ACTION",
+        "description": "If a Brazen Bull takes a Charge ACTION and ends its charge move within 1” of any enemy models, it can immediately take a Living Battering Ram ACTION. If it does so, make a Success Roll for each enemy model within 1” of the Brazen Bull. Add -1 DICE to the Success Roll if the enemy model is on a base that is 40mm or larger. On a failure, nothing happens. On a Success or a Critical Success, the enemy model is immediately taken Down."
+      },
+      "_src": "p.10 — Living Battering Ram ACTION"
+    },
+    {
+      "op": "add",
+      "collection": "keywords",
+      "entity": {
+        "name": "FUMBLE",
+        "type": "Effect",
+        "description": "If the Success Roll for an attack made with a Weapon that has the FUMBLE Keyword is 2 or less, then the attacking model fumbles the attack and hits themselves instead of the target. Treat the attack as a successful attack made by the Weapon that targeted the attacking model."
+      },
+      "_src": "p.2 — Grenades > Keywords > FUMBLE"
+    },
+    {
+      "op": "add",
+      "collection": "keywords",
+      "entity": {
+        "name": "MERCENARY",
+        "type": "Effect",
+        "description": "This model is a Mercenary and can be recruited by various Factions. Mercenaries do not benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated Attack rule, including Warband Variant special rules. They do count as friendly models for the purposes of other rules used by their Warband unless stated otherwise. In a campaign, this includes counting towards Threshold Limits and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out of Action, being Promoted and gaining Experience Points, and so on."
+      },
+      "_src": "p.11 — Mercenaries > Keyword Glossary"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Frag Grenades" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: Frag Grenades …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Gas Grenades" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Gas Grenades …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Incendiary Grenades" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Incendiary Grenades …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Molotov Cocktail" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Molotov Cocktail …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Demonic Aura Grenade" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Demonic Aura Grenade …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Holy Grenade" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Holy Grenade …'"
+    },
+    {
+      "op": "addKeyword",
+      "target": { "kind": "weapon", "id": "Parasite Grenades" },
+      "keyword": "FUMBLE",
+      "_src": "p.2 — 'Add the FUMBLE Keyword to: … Parasite Grenades'"
+    },
+    {
+      "op": "setCost",
+      "target": { "kind": "weapon", "id": "Incendiary Grenades" },
+      "currency": "ducats",
+      "value": 10,
+      "_src": "p.2 — 'Change the Cost of Incendiary Grenades to 10 in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court'"
+    }
+  ]
+}

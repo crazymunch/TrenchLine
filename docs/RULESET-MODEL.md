@@ -1,0 +1,581 @@
+# The Ruleset Model
+
+How TrenchLine sources, layers, versions and verifies game data.
+
+This is the most important document in the project. The original codebase's
+central failure was that game data was *typed in* rather than *derived*, with no
+way to tell a verified number from an invented one. Everything here exists to
+make that failure impossible to repeat.
+
+---
+
+## 1. Principles
+
+1. **Data is generated, never authored.** `src/data/*.generated.ts` is build
+   output. Hand-editing it is a bug.
+2. **Every field carries provenance.** A value knows which source it came from
+   and which layer last touched it. A field with no provenance fails the build.
+3. **Sources disagree — that is expected and must be visible.** The pipeline
+   does not silently pick a winner. Conflicts are surfaced, resolved
+   explicitly in a checked-in file, and the resolution is itself provenance.
+4. **Rulesets are compositions, not copies.** A ruleset is a base plus an
+   ordered list of patch layers. Adding a new Dispatch must never mean forking
+   the whole dataset.
+5. **Failures are loud.** No fallback ever invents data. If a source cannot be
+   fetched, the build fails with the reason.
+
+---
+
+## 2. The three sources
+
+| Source | Role | Format | Reachable from CI |
+|---|---|---|---|
+| **BattleScribe catalogues** — [`Fawkstrot11/TrenchCrusade`](https://github.com/Fawkstrot11/TrenchCrusade) | **Base layer.** Structured, complete, community-maintained, pinned by commit SHA. | `.cat` / `.gst` XML | Yes — `raw.githubusercontent.com` |
+| **Official rulebooks** — [trenchcrusade.com/rules](https://www.trenchcrusade.com/rules/) | **Cross-check + prose.** Authoritative for keyword text, scenarios, tables, lore. | PDF | **No** — must be committed to `data-sources/` manually |
+| **Trench Dispatch** | **Patch layer.** The newest rules, superseding the books and the catalogues. | PDF → extracted text → patch file | **No** — committed to `data-sources/` |
+
+### Why the catalogues are the base
+
+They are the only machine-readable source. They carry everything the app needs
+and the app currently lacks: statlines with movement type, Ducats **and Glory
+Points** as separate costs, base sizes, category/keyword links, and 1,187
+`<constraint>` elements encoding warband composition rules.
+
+They are also what NewRecruit itself consumes for this system, so a roster
+imported from NewRecruit lines up with our data by construction.
+
+### Why the catalogues are not sufficient
+
+They lag the official rules. Checked against Trench Dispatch #1 (April 2026) at
+the time of writing:
+
+| Dispatch content | In the catalogues? |
+|---|---|
+| `FUMBLE` keyword | **Absent** |
+| Bolgias Gut / Vile Corpus (Black Grail Strains) | **Absent** |
+| Al-inbīq Kit, Corrosive Ammunition | **Absent** |
+| Mehterân ability, Regimental Kaşık | **Absent** |
+| Hellfly Host, Alaybozan, Halberd-Gun | Present |
+| Scripture Guardian, Witchburner, Goetic Warlock | Present |
+
+They also have gaps the rulebook fills — `Combat Engineer` has a full profile in
+both the rulebook and the Dispatch, but no matching entry in the catalogues.
+
+**This is precisely why the layered model exists.** No single source is correct.
+
+---
+
+## 3. Layers
+
+A **layer** is an ordered set of operations against the accumulated dataset.
+Layers are declarative data, not code, so they are diffable and reviewable.
+
+```ts
+type LayerOp =
+  | { op: 'set';     target: Ref; field: string; value: Json }
+  | { op: 'replace'; target: Ref; entity: Json }          // whole-entity replacement
+  | { op: 'add';     collection: Collection; entity: Json }
+  | { op: 'remove';  target: Ref }
+  | { op: 'addKeyword';    target: Ref; keyword: string }
+  | { op: 'setKeywords';   target: Ref; keywords: string[] }
+  | { op: 'addAbility';    target: Ref; ability: Ability }
+  | { op: 'replaceAbility'; target: Ref; name: string; ability: Ability }
+  | { op: 'setCost';       target: Ref; currency: 'ducats' | 'glory'; value: number
+                         ; scope?: Ref[] };               // e.g. per-faction armoury tables
+
+interface Layer {
+  id: string;              // 'dispatch-01'
+  name: string;            // 'Trench Dispatch #1 — April 2026'
+  sourceRef: string;       // 'data-sources/dispatch/trench-dispatch-01-april-2026.txt'
+  publishedAt: string;     // '2026-04'
+  status: 'official' | 'public-beta' | 'community';
+  ops: LayerOp[];
+}
+```
+
+This shape is not invented for convenience — it is the shape the Dispatch is
+already written in. Compare the source text to the ops it compiles to:
+
+> *"Add the FUMBLE Keyword to: Frag Grenades, Gas Grenades, Incendiary Grenades, Molotov Cocktail…"*
+> → seven `addKeyword` ops.
+
+> *"Change the Cost of Incendiary Grenades to 10 Ducats in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court"*
+> → one `setCost` op with a five-faction `scope`.
+
+> *"Change the Profile of a Combat Engineer to: Movement 6"/Infantry, Ranged +1 DICE, Melee +0 DICE, Armour -2, Base 25mm"*
+> → one `replace` op.
+
+> *"Replace the Counter Charge ability with the following ability: ✥ Mehterân: …"*
+> → one `replaceAbility` op.
+
+Writing the Dispatch patch file is therefore transcription, not interpretation —
+which is exactly the property we want, because transcription is checkable.
+
+### `status: 'speculative'` — predicted rules
+
+A layer may be built from **community reporting rather than a published source**:
+previews, faction-focus articles and roundtables that appear months before a box
+drops. The Carcass Front is the first case — enough has been written publicly to
+reconstruct most of it before release, and being able to draft a warband early is
+genuinely useful.
+
+This is also, obviously, the exact shape of the failure this whole document
+exists to prevent. The difference between *predicted* and *invented* is not the
+confidence of the guess — it is whether the reader can tell. So a speculative
+layer carries hard constraints:
+
+1. **Never in a default ruleset.** It is its own opt-in ruleset
+   (`carcass-front-preview`), never a layer on `trenchline`.
+2. **Per-field sourcing is mandatory.** Every value cites the article and URL it
+   came from. A value nobody published is not "predicted", it is invented, and
+   it does not go in — the field is left absent and rendered as *unknown*, not
+   filled with a plausible number.
+3. **Confidence is part of the data.** `stated` (an article gives the number
+   outright) vs `inferred` (derived from comparable units or partial text).
+   Inferred values render differently.
+4. **The UI cannot be subtle about it.** Persistent banner on the roster,
+   speculative badge on every affected entry, and exports stamped
+   "PREDICTED RULES — NOT FOR ORGANISED PLAY".
+5. **It expires.** When the real PDF lands, the speculative layer is deleted and
+   replaced by a normal PDF-primary layer. It is never merged into `trenchline`.
+
+The verification pass treats a speculative layer inversely to a normal one: it
+does not check values against a rulebook (there is none), it checks that every
+field has a citation and a confidence, and fails the build otherwise.
+
+Recorded as a Phase 5 task; see [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md).
+
+### `status: 'public-beta'`
+
+Most of Dispatch #1 is marked *Public Beta* in the source. The layer records
+that, the UI surfaces it on affected entries, and a ruleset can choose to
+include or exclude beta ops. This matters for tournament play.
+
+---
+
+## 4. Rulesets
+
+A **ruleset** is a base plus an ordered layer list.
+
+```ts
+interface Ruleset {
+  id: string;
+  name: string;
+  description: string;
+  base: { source: 'battlescribe'; repo: string; commit: string };
+  layers: string[];          // applied in order
+  includeBeta: boolean;
+  isDefault?: boolean;
+}
+```
+
+### The two that ship
+
+```ts
+export const RULESETS: Ruleset[] = [
+  {
+    id: 'github-latest',
+    name: 'Latest GitHub Rules',
+    description:
+      'The community BattleScribe catalogues exactly as published, with no ' +
+      'TrenchLine corrections applied. Matches what NewRecruit shows. Use this ' +
+      'when you need to agree with an opponent who is using NewRecruit.',
+    base: { source: 'battlescribe', repo: 'Fawkstrot11/TrenchCrusade', commit: '<pinned>' },
+    layers: [],
+    includeBeta: false,
+  },
+  {
+    id: 'trenchline',
+    name: 'TrenchLine Rules',
+    description:
+      'The GitHub catalogues, corrected against the official rulebooks and ' +
+      'brought up to date with the Trench Dispatch. The most accurate ruleset ' +
+      'available in the app.',
+    base: { source: 'battlescribe', repo: 'Fawkstrot11/TrenchCrusade', commit: '<pinned>' },
+    layers: ['rulebook-corrections', 'dispatch-01'],
+    includeBeta: true,
+    isDefault: true,
+  },
+];
+```
+
+`rulebook-corrections` is generated by the cross-check in §6 and reviewed by a
+human before it lands. It is not automatic.
+
+### Adding a future Dispatch
+
+Extract → transcribe to `data-sources/dispatch/NN.layer.json` → append
+`'dispatch-NN'` to the `trenchline` ruleset. No dataset fork, no data rewrite.
+
+### Adding a brand-new faction (the Carcass Front case)
+
+**This is a first-class requirement, not an edge case.** The community
+catalogues typically lag a new release by months, so for new content the
+BattleScribe base has *nothing* to correct — the PDF is the only source.
+
+A layer can therefore be **PDF-primary**: an `add` op carrying whole entities
+rather than a patch to existing ones.
+
+```ts
+{
+  id: 'carcass-front',
+  name: 'The Carcass Front',
+  sourceRef: 'data-sources/rulebook/extracted/carcass-front.txt',
+  status: 'official',
+  ops: [
+    { op: 'add', collection: 'factions', entity: { id: 'carcass-front', … } },
+    { op: 'add', collection: 'units',    entity: { … } },  // one per warband entry
+  ],
+}
+```
+
+Nothing about the engine changes — `add` already exists because the Dispatch
+needs it (Strains, Glory Items, the Scripture Guardian). The only new work per
+release is transcription.
+
+When the catalogues eventually catch up, the base gains the same entries. The
+layer's `add` ops become redundant rather than conflicting: the pipeline reports
+"layer op is now a no-op" so they can be retired deliberately, and the
+provenance record shows the entity moved from PDF-sourced to catalogue-sourced.
+
+**Turnaround target: same day.** Extraction is already automated
+(`npm run rules:extract`); transcription of one faction is a few hours of
+careful work against the extracted text, and the verification pass catches
+transcription slips. This is the app's main advantage over NewRecruit for this
+game.
+
+### Historical rulesets
+
+The app's existing `1.0` / `1.0.2` / `1.0.2TD` entries are deleted — their
+changelogs are unsourced (see [`AUDIT.md`](AUDIT.md) §1.9).
+
+**1.0.2 itself is real and now sourceable.** The official
+`Changelog 1.0.2` PDF is committed and is a structured errata table
+(`Page | Location | Errata`) written in exactly the same operation form as the
+Dispatch — *"Add the following sentence to the end of the Move rule"*,
+*"Change to:"*. It transcribes to a `changelog-1-0-2` layer like any other.
+
+Whether to *expose* 1.0.2 as a selectable ruleset is a separate question: the
+catalogues already track current rules, so 1.0.2 is mainly valuable as the
+authoritative text for keyword definitions and core-rules prose that the
+catalogues do not carry.
+
+### What a ruleset selection affects
+
+Selecting a ruleset changes the profiles, costs, keywords and constraints used
+for **new** decisions. It does **not** silently rewrite saved warbands — see §8.
+
+---
+
+## 5. The pipeline
+
+```
+data-sources/                          scripts/                    src/data/
+├── battlescribe/           ──┐
+│   ├── *.cat  (pinned)       │      1. fetch    ─┐
+│   └── MANIFEST.json         │      2. parse     │
+├── rulebook/                 ├───►  3. layer     ├──►  *.generated.ts
+│   ├── *.pdf                 │      4. verify    │     + provenance.json
+│   └── extracted/*.txt       │      5. emit     ─┘
+└── dispatch/               ──┘
+    ├── *.txt  (extracted)
+    └── *.layer.json
+```
+
+| Step | Script | Does |
+|---|---|---|
+| 1 | `rules:fetch` | Pulls catalogues at the pinned SHA into `data-sources/battlescribe/`. Writes `MANIFEST.json` with SHA, fetch time, per-file checksum. Fails loudly; never falls back. |
+| 2 | `rules:parse` | BattleScribe XML → normalised entities. Resolves `sharedSelectionEntries`, category links, cost types, constraints. |
+| 3 | `rules:layer` | Applies each ruleset's layers in order. Every write stamps `{ layer, sourceRef }` onto the field. |
+| 4 | `rules:verify` | Cross-checks against extracted rulebook text; writes `reports/crosscheck.md`; **exits non-zero on an unresolved conflict or a field with no provenance**. |
+| 5 | `rules:build` | Emits `src/data/*.generated.ts` + `provenance.json`. Runs 1–4 first. |
+
+`npm run rules:build` runs in CI on every PR. A drifted or unverified dataset
+fails the build.
+
+### Provenance
+
+Every generated field carries its origin:
+
+```ts
+{
+  id: 'na-lieutenant',
+  name: 'Lieutenant',
+  stats: { movement: '6"/Infantry', ranged: '+2 DICE', melee: '+2 DICE', armour: '0', base: '32mm' },
+  costs: { ducats: 70, glory: 0 },
+  _provenance: {
+    'stats.ranged': { layer: 'base', source: 'battlescribe:New Antioch.cat@9c4f1ab', verified: 'rulebook:p.27' },
+    'stats.armour': { layer: 'base', source: 'battlescribe:New Antioch.cat@9c4f1ab', verified: 'rulebook:p.27' },
+    'costs.ducats': { layer: 'base', source: 'battlescribe:New Antioch.cat@9c4f1ab', verified: 'rulebook:p.27' },
+  }
+}
+```
+
+This is what the Codex "where does this number come from?" affordance renders,
+and what makes the "TrenchLine vs GitHub" diff view possible for free.
+
+---
+
+## 6. Cross-checking and conflicts
+
+`rules:verify` compares the layered dataset against text extracted from the
+official rulebook PDFs. Rulebook extraction is *fuzzy* — the PDFs are
+multi-column and text order is unreliable — so verification is a **matcher, not
+a parser**: it looks for the expected value near the entity name, and reports
+three outcomes.
+
+| Outcome | Meaning | Build |
+|---|---|---|
+| `confirmed` | Value found in the rulebook near the entity | passes |
+| `unconfirmed` | Extraction could not locate it — not evidence of an error | passes, counted in the report |
+| `conflict` | Rulebook clearly states a different value | **fails** until resolved |
+
+Conflicts are resolved by hand in `data-sources/resolutions.json`:
+
+```json
+{
+  "na-lieutenant.stats.armour": {
+    "chose": "battlescribe",
+    "because": "Rulebook p.27 column extraction interleaved the Sniper Priest row; visual check of the PDF confirms Armour 0.",
+    "reviewed": "2026-08-30",
+    "reviewer": "crazymunch"
+  }
+}
+```
+
+Every resolution needs a reason. The file is the project's record of *why* the
+data says what it says — the thing the original build never had.
+
+Precedence when sources genuinely disagree, absent an explicit resolution:
+
+```
+Trench Dispatch  >  Official rulebook  >  BattleScribe catalogue
+```
+
+The Dispatch wins because it is the most recent rules update. The rulebook beats
+the catalogues because the catalogues are a community transcription of it.
+
+> **On the Dispatch's status:** the document describes itself as *"an unofficial,
+> fan-made digital rules update… not affiliated with or endorsed by Factory
+> Fortress Inc."* It is a **compilation** of official Trench Wire rules updates,
+> not an official publication. It sits top of precedence because it carries the
+> newest official changes, but the layer is marked `status: 'public-beta'` and
+> the UI says so.
+
+---
+
+## 7. The entity model
+
+Replaces `src/types/rules.ts`. Only the parts that change materially:
+
+```ts
+interface Statline {
+  movement: string;        // '6"/Infantry'  — full string, type included
+  movementInches: number;  // 6              — derived, for range maths
+  movementType: string;    // 'Infantry' | 'Flying' | …
+  ranged: string;          // '+2 DICE' | '-' | 'N/A'
+  melee: string;
+  armour: string;          // '0' | '-1'
+  baseSize: string;        // '32mm'         — load-bearing in the rules
+}
+
+interface Cost {
+  ducats: number;
+  glory: number;           // NEW — a first-class second currency
+}
+
+interface Constraint {
+  type: 'min' | 'max';
+  value: number;
+  scope: 'roster' | 'parent';
+  appliesTo: Ref;
+  condition?: Condition;   // e.g. 'warband total >= 1000 Ducats'
+}
+
+interface UnitOption {         // NEW — Strains, Vile Corpus, Goetic Powers, Glory Items
+  id: string;
+  name: string;
+  kind: 'strain' | 'vile-corpus' | 'goetic-power' | 'glory-item' | 'variant';
+  cost: Cost;
+  constraints: Constraint[];
+  effect: string;
+  modifies?: LayerOp[];        // reuses the layer ops — an option is a patch scoped to one model
+}
+```
+
+`UnitOption.modifies` reusing `LayerOp` is deliberate: *"A model with the Hellfly
+Host Strain replaces their Movement Characteristic with 6"/Flying and gains the
+FLYING Keyword"* is the same kind of operation as an errata change, just applied
+to one model at build-a-roster time rather than to the dataset at build time.
+One engine, two uses.
+
+---
+
+## 7b. Catalogue modifiers — the conditional layer
+
+The single largest thing the first pass threw away.
+
+BattleScribe does not store a model's printed profile. It stores a **base**
+profile plus `modifier` elements that fire when a condition holds. There are
+**1,862** of them in the pinned catalogues; the parser read none, which is why
+the generated data had no `Kavass`, derived no Armour from equipped armour, and
+could not reach `Favoured Brazen Bull` at all.
+
+They are now parsed into `Modifier` (`src/types/catalogue.ts`) and evaluated by
+[`src/rules/modifiers.ts`](../src/rules/modifiers.ts).
+
+### What they encode
+
+| Target | Count | Example |
+|---|---|---|
+| `hidden` | 772 | availability — the machine-readable "cannot include" |
+| Armour | 171 | `set stats.armour = -2` when Reinforced Armour is equipped |
+| `name` | 91 | `set name = Kavass` when the roster has The House of Wisdom |
+| `category` | 77 | grants ELITE at no cost |
+| Melee / Ranged | 141 | `set stats.melee = +0 Dice` when Studied Blade |
+| constraints | ~60 | `increment` the Lion of Jabir's roster max under a variant |
+| Ducats / Glory | 41 | an option that changes the price |
+
+### Why this matters more than it sounds
+
+**The variant rules are derivable, not transcribable.** §7a describes reading
+the fourteen variants out of the Warbands PDF as prose and hand-writing ops.
+Most of that work is already done, in machine-readable form, in the catalogues:
+
+```
+Lion of Jabir     base max 2  +  increment 1 when "The House of Wisdom"   -> 0-3
+Jabirean Alchemist base max 1  +  increment 1 when "The House of Wisdom"   -> 0-2
+                   base min 0  +  increment 1 when "The House of Wisdom"   -> must include 1
+```
+
+which is *Pride of Jabir* and *Alchemists*, word for word, without anyone
+transcribing them. Prefer the derived form; keep the PDF prose as the
+cross-check, not the source.
+
+### Rules this file obeys
+
+- **Document order.** A later `set` overrides an earlier `increment`. That is
+  BattleScribe's own semantics and we reproduce it rather than imposing one we
+  find tidier.
+- **Three-valued conditions.** `instanceOf` needs a type hierarchy the
+  catalogues do not give us. Such a condition evaluates to `null`, never to
+  `false`, and the modifier is reported as unevaluated rather than dropped.
+- **No invented fields.** A field id we cannot resolve is kept verbatim under
+  `rawField` and counted by the build (currently 3 of 820 on units and weapons).
+
+### Verified against a real roster
+
+`src/rules/__tests__/modifiers.test.ts` replays the Al-Qarn Rihla NewRecruit
+export through the evaluator and compares every statline against what NewRecruit
+itself printed. **All of them match** from the catalogue base plus modifiers.
+
+### Elite promotion titles
+
+A promoted model prints with a faction title: `Favoured Brazen Bull`,
+`Ascendant …`, `Blasphemous …`. These are a **community convention**, not a rule
+in any book — but they are real catalogue data, held on the shared
+`Elite Promotion` entry and chosen by an `instanceOf` against the roster's
+primary catalogue:
+
+| Faction | Title |
+|---|---|
+| Principality of New Antioch | Commissioned Officer |
+| Trench Pilgrims | Exalted |
+| Iron Sultanate | **Favoured** |
+| Heretic Legions | Blasphemous |
+| Court of the Seven-Headed Serpent | Ascendant |
+| The Black Grail | Putrid |
+
+So they are derived, never hand-written. Trench Companion publishes a competing
+set that agrees on five of six and calls the Sultanate's *Veteran*; the
+maintainer has ruled for the NewRecruit set, which is the one the catalogues
+carry, so no layer is needed to express that preference today. If it ever is,
+it belongs in a layer with a citation.
+
+The separator is U+00A0, carried on the modifier's `join` attribute — a
+non-breaking space, so a title never wraps away from the name it decorates.
+The parser reads attribute values verbatim for exactly this reason; trimming
+them turned the separator into `''` and produced `FavouredBrazen Bull`.
+
+---
+
+## 7a. Warband Variants
+
+A **Variant** (Papal States Intervention Force, House of Wisdom, Trench Ghosts…)
+is a named modifier a warband selects at creation, on top of its faction. There
+are 14 official ones and the app currently models none — see
+[`AUDIT.md`](AUDIT.md) §1.6a.
+
+Variants need no new machinery: a variant *is* a layer, scoped to one roster
+instead of the dataset.
+
+```ts
+interface Variant {
+  id: string;                 // 'house-of-wisdom'
+  factionId: string;          // 'iron-sultanate'
+  name: string;
+  loreText: string;
+  specialRules: FactionSpecialRule[];
+  budget?: Partial<Cost>;     // e.g. Papal States: 500 Ducats + 11 Glory
+  ops: LayerOp[];             // applied to the roster's view of the dataset
+}
+```
+
+The rules from the book map straight onto existing ops:
+
+| Book text | Op |
+|---|---|
+| "cannot include Trench Moles" | `remove` (or a `max: 0` constraint) |
+| "must include 1 Trench Cleric" | `add` constraint `{min:1}` |
+| "cannot have Iron Capirotes" | `remove` from the armoury, scoped to the roster |
+| "Ecclesiastic Prisoners do not have Iron Capirotes, but their cost remains the same" | `replace` on the entry |
+| "Papal States: 500 Ducats + 11 Glory" | `budget` |
+
+So the same engine serves three jobs: dataset errata (Dispatch, 1.0.2), per-model
+upgrades (`UnitOption.modifies`), and now per-roster variants. `Warband` gains a
+`variantId`, and roster validation resolves faction → variant → model options in
+that order.
+
+## 8. Migration of saved warbands
+
+**Decided (Aug 2026):** existing saved warbands are not worth a general migration
+path. The maintainer has confirmed that only **one** warband matters — a
+1,320-Ducat Iron Sultanate *House of Wisdom* roster carrying substantial
+hand-written lore. Everything else is discarded when the data is regenerated.
+
+That removes the reconciliation-review screen from Phase 1's critical path. What
+replaces it:
+
+1. **A one-off import for the preserved warband.** Export it from the running app
+   (`ExportModal` → Download JSON, which serialises the whole `Warband` object),
+   commit it to `data-sources/fixtures/`, and write a migration that re-maps it
+   onto corrected profiles.
+2. **Narrative content is preserved verbatim, never regenerated.** Warband `lore`,
+   `motto`, `patron`, `chronicleLog`, `notes`, and per-unit `lore`, `quote`,
+   `titles`, `titleRecords`, `deeds`, `notes` are copied across untouched. Only
+   *derived* fields — statlines, costs, keywords — are rebuilt from source.
+3. **It doubles as a test fixture.** A real roster with campaign rules enabled,
+   XP and advancements (`Ranged Proficiency [7]`, `Assassinate [4]`), an injury
+   (`Leg Wound [31]`), a Glory-costed item (`Sniper Scope — 2 Glory`), an armoury
+   stash and a Warband Variant is a far better regression test than anything
+   synthetic. It exercises Glory costs, variants and options — the three things
+   the current model cannot express.
+4. **Anything that cannot be re-mapped is surfaced, not silently dropped.** The
+   migration reports every unit it could not match rather than guessing.
+
+A general ruleset-switching diff is still wanted eventually — switching between
+*Latest GitHub* and *TrenchLine* needs it — but it moves to Phase 2.7 and stops
+blocking the data work.
+
+## 9. Open questions
+
+- **`Combat Engineer` is missing from the catalogues** but present in the
+  rulebook and the Dispatch. Decide whether TrenchLine adds it via a layer op
+  (and ideally upstream a PR to the catalogues).
+- **Faction identity.** With `FACTIONS[].rules` deleted as fabricated, decide
+  what replaces it — real faction rules from the rulebook, or nothing.
+- **Rulebook licensing.** The repo is public and already contains substantial
+  verbatim rules text. Committing more extracted rules text under
+  `data-sources/` is consistent with that but worth a deliberate decision.
+  Options: keep as-is, move sources to a private submodule, or ship only
+  derived values plus page citations.
