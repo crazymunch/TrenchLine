@@ -4,9 +4,6 @@ import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
-import { 
-  OFFICIAL_TRAUMA_TABLE 
-} from '../../data/officialRulesData';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
@@ -111,6 +108,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const { dataset, error: datasetError } = useDataset(rulesetId);
 
   /**
+   * The Trauma Table, from the derived data. `Dead` is excluded: this picker
+   * records an injury a surviving model carries, and a dead model has been
+   * removed from the roster rather than scarred.
+   */
+  const traumaRows = (dataset?.campaign.trauma ?? []).filter((t) => !/^dead$/i.test(t.name));
+
+  /**
    * The Advancement Skills, from the derived tables.
    *
    * The hand-written version was wrong twice over. Its six entries per category
@@ -162,10 +166,10 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
   const handleAddInjury = () => {
     if (!selectedInjuryRoll) return;
-    const injuryObj = OFFICIAL_TRAUMA_TABLE.find(t => t.roll === selectedInjuryRoll);
+    const injuryObj = traumaRows.find(t => t.roll === selectedInjuryRoll);
     if (injuryObj) {
       addUnitScar(warbandId, unit.id, {
-        name: injuryObj.title,
+        name: injuryObj.name,
         roll: injuryObj.roll,
         effect: injuryObj.description
       });
@@ -521,9 +525,9 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     className="flex-1 bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-text focus:outline-none focus:border-status-error"
                   >
                     <option value="">-- Select Trauma Table Result --</option>
-                    {OFFICIAL_TRAUMA_TABLE.filter(t => !t.isDead).map((t) => (
+                    {traumaRows.map((t) => (
                       <option key={t.roll} value={t.roll}>
-                        [{t.roll}] {t.title} - {t.description.slice(0, 50)}...
+                        [{t.roll}] {t.name} — {t.description.slice(0, 50)}…
                       </option>
                     ))}
                   </select>

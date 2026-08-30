@@ -2,14 +2,6 @@ import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Rule
 import { 
   OFFICIAL_SCENARIOS, 
   OFFICIAL_KEYWORDS, 
-  OFFICIAL_TRAUMA_TABLE, 
-  OFFICIAL_COMMON_EXPLORATION, 
-  OFFICIAL_RARE_EXPLORATION, 
-  OFFICIAL_LEGENDARY_EXPLORATION,
-  OFFICIAL_MELEE_SKILLS,
-  OFFICIAL_RANGED_SKILLS,
-  OFFICIAL_STEALTH_SKILLS,
-  OFFICIAL_WILDCARD_SKILLS
 } from './officialRulesData';
 import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 import { ALL_OUT_WAR_SCENARIOS } from './allOutWarData';
@@ -2129,32 +2121,15 @@ export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
 
 export const SCENARIOS: Scenario[] = [...OFFICIAL_SCENARIOS, ...ALL_OUT_WAR_SCENARIOS];
 
-export const INJURY_TABLE_D66 = OFFICIAL_TRAUMA_TABLE.map((t) => ({
-  roll: t.roll,
-  title: t.title,
-  name: t.title,
-  effect: t.description,
-  description: t.description,
-  isDead: t.isDead
-}));
-
-export const EXPLORATION_TABLE_D66 = OFFICIAL_COMMON_EXPLORATION.map((e) => ({
-  roll: e.roll,
-  title: e.title,
-  reward: e.reward,
-  description: e.description
-}));
+/*
+  INJURY_TABLE_D66 and EXPLORATION_TABLE_D66 were re-exports of the fabricated
+  tables and are deleted with them. Both are now read from `dataset.campaign`,
+  where the Trauma Table comes from the campaign catalogue and the Exploration
+  tables from the rulebook. See AUDIT §1.13.
+*/
 
 export {
   OFFICIAL_SCENARIOS,
   OFFICIAL_KEYWORDS,
-  OFFICIAL_TRAUMA_TABLE,
-  OFFICIAL_COMMON_EXPLORATION,
-  OFFICIAL_RARE_EXPLORATION,
-  OFFICIAL_LEGENDARY_EXPLORATION,
-  OFFICIAL_MELEE_SKILLS,
-  OFFICIAL_RANGED_SKILLS,
-  OFFICIAL_STEALTH_SKILLS,
-  OFFICIAL_WILDCARD_SKILLS,
   OFFICIAL_CORE_RULES
 };

@@ -31,6 +31,7 @@ import { XMLParser } from 'fast-xml-parser';
 const CAT = 'data-sources/battlescribe/Campaign Rules.cat';
 const BOOK = 'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
 const APP = 'src/data/officialRulesData.ts';
+const GENERATED = 'src/data/generated/trenchline.generated.ts';
 
 const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
 const key = (s) =>
@@ -111,11 +112,34 @@ const bookMentions = (title) => bookKey.includes(key(title));
 const src = readFileSync(APP, 'utf8');
 const injuries = catalogueInjuries();
 
-console.log('=== TRAUMA TABLE ===');
+/**
+ * The hand-written tables were deleted once all seven were derived, so this now
+ * audits what the app actually ships: `dataset.campaign`. It still reports if a
+ * hand-written table reappears in `officialRulesData.ts`, because that is how
+ * fabricated data got in the first time.
+ */
+const strays = ['OFFICIAL_TRAUMA_TABLE', 'OFFICIAL_COMMON_EXPLORATION', 'OFFICIAL_RARE_EXPLORATION',
+                'OFFICIAL_LEGENDARY_EXPLORATION', 'OFFICIAL_MELEE_SKILLS', 'OFFICIAL_RANGED_SKILLS',
+                'OFFICIAL_STEALTH_SKILLS', 'OFFICIAL_WILDCARD_SKILLS']
+  .filter((n) => arrayLiteral(src, n));
+if (strays.length) {
+  console.log(`!! hand-written campaign tables are back in ${APP}: ${strays.join(', ')}`);
+  console.log('   These were fabricated once (AUDIT §1.13). The app reads dataset.campaign.\n');
+} else {
+  console.log(`ok: no hand-written campaign tables in ${APP} — all seven are derived.\n`);
+}
+
+const gen = readFileSync(GENERATED, 'utf8');
+/** Pull the campaign block's trauma rows straight out of the generated module. */
+// The generated module is pretty-printed JSON, so the pair spans two lines.
+const generatedTrauma = [...gen.matchAll(/"roll":\s*"(\d{2}(?:-\d{2})?)",\s*\n\s*"name":\s*"((?:[^"\\]|\\.)*)"/g)]
+  .map((m) => ({ roll: m[1], title: m[2] }));
+
+console.log('=== TRAUMA TABLE (as shipped) ===');
 console.log(`  catalogue carries ${injuries.size} injuries with a D66 roll`);
 
-const app = entriesOf(arrayLiteral(src, 'OFFICIAL_TRAUMA_TABLE'));
-console.log(`  app table has ${app.length} entries\n`);
+const app = generatedTrauma;
+console.log(`  generated table has ${app.length} rows\n`);
 
 const rows = [];
 for (const e of app) {
@@ -147,23 +171,16 @@ console.log(`\n  match ${tally('MATCH')}  book-only ${tally('book only')}  ` +
 /* The exploration and skills tables have no catalogue equivalent with roll
    numbers, so the book is the only source — and its table extraction is the
    part that scrambled. Report what can and cannot be checked, and say which. */
-console.log('\n=== EXPLORATION & SKILLS TABLES ===');
-for (const name of ['OFFICIAL_COMMON_EXPLORATION', 'OFFICIAL_RARE_EXPLORATION',
-                    'OFFICIAL_LEGENDARY_EXPLORATION', 'OFFICIAL_MELEE_SKILLS',
-                    'OFFICIAL_RANGED_SKILLS', 'OFFICIAL_STEALTH_SKILLS',
-                    'OFFICIAL_WILDCARD_SKILLS']) {
-  const es = entriesOf(arrayLiteral(src, name));
-  const seen = es.filter((e) => bookMentions(e.title));
-  const unseen = es.filter((e) => !bookMentions(e.title));
-  console.log(`\n  ${name}  (${es.length} entries)`);
-  console.log(`    name found in rulebook text: ${seen.length}`);
-  if (unseen.length) {
-    console.log(`    NOT FOUND (${unseen.length}):`);
-    for (const e of unseen) console.log(`       ${(e.roll || '—').padEnd(6)} ${e.title}`);
-  }
+console.log('\n=== EXPLORATION & SKILLS TABLES (as shipped) ===');
+const count = (re) => [...gen.matchAll(re)].length;
+for (const [label, re] of [
+  ['exploration + skills rows', /"roll":\s*\d+,\s*\n\s*"name":\s*"/g],
+]) {
+  console.log(`  ${label}: ${count(re)} rows in the generated dataset`);
 }
-
-console.log('\nNote: a name found in the rulebook text is not a verified table row.');
-console.log('The PDF prints these as two-column tables and the extraction interleaves');
-console.log('them with page furniture, so roll-to-result mapping cannot be read from it.');
-console.log('Only the Trauma Table has a machine-readable source with roll numbers.');
+console.log('\n  These are derived by scripts/lib/parse-campaign.mjs:');
+console.log('    parseExploration   3 Location tables + dice and table-selection bands');
+console.log('    parseSkillsTables  4 x 2D6 tables, 11 rows each, 2-12 with no gaps');
+console.log('    parseTraumaTable   catalogue injuries + the 4 rulebook-only results');
+console.log('\n  The parsers fail the build on a gap, a blank rules text, or a row whose');
+console.log('  text is scrambled column data, so a silent regression is not possible.');

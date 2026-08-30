@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { INJURY_TABLE_D66, EXPLORATION_TABLE_D66 } from '../../data/defaultRules';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
   X, 
   Search, 
@@ -32,9 +33,19 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
     (s) => s.name.toLowerCase().includes(term) || (s.flavor || s.objective || '').toLowerCase().includes(term)
   );
 
-  const filteredInjuries = INJURY_TABLE_D66.filter(
-    (i) => (i.title || i.name || '').toLowerCase().includes(term) || (i.effect || i.description || '').toLowerCase().includes(term) || i.roll.includes(term)
-  );
+  // The Trauma Table, derived. The hand-written INJURY_TABLE_D66 this replaced
+  // was a re-export of the fabricated tables (AUDIT §1.13).
+  const searchRulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset: searchDataset } = useDataset(searchRulesetId);
+
+  const filteredInjuries = (searchDataset?.campaign.trauma ?? [])
+    .map((t) => ({ roll: t.roll, title: t.name, name: t.name, effect: t.description, description: t.description }))
+    .filter((i) =>
+      i.title.toLowerCase().includes(term) ||
+      i.effect.toLowerCase().includes(term) ||
+      i.roll.includes(term));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">

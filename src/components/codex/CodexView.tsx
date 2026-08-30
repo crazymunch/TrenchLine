@@ -3,20 +3,14 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { 
-  OFFICIAL_TRAUMA_TABLE, 
-  OFFICIAL_COMMON_EXPLORATION, 
-  OFFICIAL_RARE_EXPLORATION, 
-  OFFICIAL_LEGENDARY_EXPLORATION,
-  OFFICIAL_MELEE_SKILLS,
-  OFFICIAL_RANGED_SKILLS,
-  OFFICIAL_STEALTH_SKILLS,
-  OFFICIAL_WILDCARD_SKILLS,
   OFFICIAL_WEAPONS,
   OFFICIAL_ARMOUR,
   OFFICIAL_EQUIPMENT,
   OfficialWargearItem
 } from '../../data/officialRulesData';
 import { OFFICIAL_CORE_RULES } from '../../data/officialCoreRules';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { AVAILABLE_RULESETS } from '../../data/rulesets';
 import { soundEffects } from '../../services/soundEffects';
 import { MissionGenerator } from './MissionGenerator';
@@ -50,6 +44,40 @@ import {
 export const CodexView: React.FC = () => {
   const { keywords, scenarios, weapons, armour, equipment, rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
   const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets'>('rules');
+
+  /**
+   * The reference tables, from the generated dataset.
+   *
+   * The Codex was the last thing reading the hand-written copies, and those
+   * were fabricated: every Exploration Location and every Skill was invented,
+   * and the Skills had no roll numbers at all (AUDIT §1.13). A reference view
+   * showing invented rules is worse than most wrong data, because a player
+   * consults it precisely when they are unsure.
+   */
+  const codexRulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset: codexDataset, error: codexDatasetError } = useDataset(codexRulesetId);
+
+  /** Derived rows -> the shape this view renders. */
+  const skillsFor = (cat: string) => {
+    const key = (['melee', 'ranged', 'stealth', 'wildcard'] as const)
+      .find((k) => k === cat) ?? 'wildcard';
+    return (codexDataset?.campaign.skills[key] ?? [])
+      .map((r) => ({ name: r.name, description: r.description, roll: String(r.roll) }));
+  };
+  const chartFor = (which: string) => {
+    if (!codexDataset) return [];
+    if (which === 'trauma') {
+      return codexDataset.campaign.trauma.map((r) => ({
+        roll: r.roll, title: r.name, description: r.description,
+      }));
+    }
+    const table = which === 'common' ? 'common' : which === 'rare' ? 'rare' : 'legendary';
+    return codexDataset.campaign.exploration.locations[table].map((r) => ({
+      roll: String(r.roll), title: r.name, description: r.description,
+    }));
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -546,10 +574,8 @@ export const CodexView: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => {
-                  const list = selectedSkillsCategory === 'melee' ? OFFICIAL_MELEE_SKILLS :
-                               selectedSkillsCategory === 'ranged' ? OFFICIAL_RANGED_SKILLS :
-                               selectedSkillsCategory === 'stealth' ? OFFICIAL_STEALTH_SKILLS :
-                               OFFICIAL_WILDCARD_SKILLS;
+                  const list = skillsFor(selectedSkillsCategory);
+                  if (!list.length) return;
                   const roll = Math.floor(Math.random() * list.length);
                   const chosen = list[roll];
                   const d1 = Math.floor(Math.random() * 6) + 1;
@@ -615,14 +641,7 @@ export const CodexView: React.FC = () => {
           {/* Skills Display (Cards or Tables) */}
           {skillsViewMode === 'cards' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(selectedSkillsCategory === 'melee'
-                ? OFFICIAL_MELEE_SKILLS
-                : selectedSkillsCategory === 'ranged'
-                ? OFFICIAL_RANGED_SKILLS
-                : selectedSkillsCategory === 'stealth'
-                ? OFFICIAL_STEALTH_SKILLS
-                : OFFICIAL_WILDCARD_SKILLS
-              ).map((skill, idx) => (
+              {skillsFor(selectedSkillsCategory).map((skill, idx) => (
                 <div
                   key={idx}
                   onClick={() => {
@@ -671,14 +690,7 @@ export const CodexView: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-theme-border/60 text-theme-text">
-                  {(selectedSkillsCategory === 'melee'
-                    ? OFFICIAL_MELEE_SKILLS
-                    : selectedSkillsCategory === 'ranged'
-                    ? OFFICIAL_RANGED_SKILLS
-                    : selectedSkillsCategory === 'stealth'
-                    ? OFFICIAL_STEALTH_SKILLS
-                    : OFFICIAL_WILDCARD_SKILLS
-                  ).map((skill, idx) => (
+                  {skillsFor(selectedSkillsCategory).map((skill, idx) => (
                     <tr key={idx} className="hover:bg-theme-elevated transition-colors">
                       <td className="p-3 font-bold text-theme-primary">
                         {idx + 1} / {idx + 1}{idx + 1}
@@ -847,11 +859,14 @@ export const CodexView: React.FC = () => {
 
           {/* Table Display */}
           <div className="space-y-2">
-            {(selectedChartTable === 'trauma' ? OFFICIAL_TRAUMA_TABLE :
-              selectedChartTable === 'common' ? OFFICIAL_COMMON_EXPLORATION :
-              selectedChartTable === 'rare' ? OFFICIAL_RARE_EXPLORATION :
-              OFFICIAL_LEGENDARY_EXPLORATION
-            ).map((entry, idx) => (
+            {chartFor(selectedChartTable).length === 0 && (
+              <p className="text-xs font-mono text-status-error leading-relaxed">
+                {codexDatasetError
+                  ? `The reference tables could not be loaded: ${codexDatasetError}.`
+                  : 'Loading the reference tables…'}
+              </p>
+            )}
+            {chartFor(selectedChartTable).map((entry, idx) => (
               <div
                 key={idx}
                 className="p-3.5 bg-theme-surface border border-theme-border rounded-md space-y-1 font-mono text-xs hover:border-theme-primary/40 transition-colors"
@@ -859,11 +874,10 @@ export const CodexView: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <span className="font-bold text-theme-primary font-gothic text-sm">{entry.title}</span>
-                    {('reward' in entry) && (
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-theme-elevated text-status-legal font-bold border border-status-legal/30">
-                        {entry.reward}
-                      </span>
-                    )}
+                    {/* No separate reward badge: the derived rows keep the
+                        reward inside the rules text, because that is where the
+                        book puts it — "Sell (Any Warband): Add 30 👑 to your
+                        Strongbox" is a number in a sentence. */}
                   </div>
                   <span className="px-2.5 py-0.5 rounded bg-theme-base text-theme-primary font-bold text-[11px] border border-theme-border">
                     Roll {entry.roll}
