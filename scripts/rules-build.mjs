@@ -120,14 +120,87 @@ for (const ruleset of RULESETS) {
     });
   }
 
-  // Variants ride along as data; their ops apply per-roster, not here.
-  dataset.variants = variants.map((v) => ({
-    id: v.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-    name: v.name,
-    factionId: '',
-    specialRules: v.specialRules,
-    ops: [],
-  }));
+  // ------------------------------------------------------------- variants
+  //
+  // A Warband Variant's mechanical effect is not prose to be transcribed: it is
+  // already in the catalogues, as modifiers conditioned on that variant being
+  // selected at roster scope. "Pride of Jabir: a House of Wisdom Warband can
+  // include 0-3 Lions of Jabir" is an `increment` on the Lion's roster max.
+  //
+  // Ops are matched to a variant by its entry id, never by name. Matching on a
+  // roster-scope condition's name alone also catches units, campaign settings
+  // and the Court's seven sins — 44 "variants" for 17 real ones.
+  const conditionLeaves = (c, out = []) => {
+    if (!c) return out;
+    if (c.all) c.all.forEach((x) => conditionLeaves(x, out));
+    else if (c.any) c.any.forEach((x) => conditionLeaves(x, out));
+    else out.push(c);
+    return out;
+  };
+
+  const opsByVariantId = new Map();
+  for (const u of dataset.units) {
+    for (const m of u.modifiers ?? []) {
+      for (const leaf of conditionLeaves(m.when)) {
+        if (leaf.scope !== 'roster' && leaf.scope !== 'force') continue;
+        if (!leaf.childId) continue;
+        if (!opsByVariantId.has(leaf.childId)) opsByVariantId.set(leaf.childId, []);
+        opsByVariantId.get(leaf.childId).push({
+          op: m.op,
+          target: { kind: 'unit', id: u.entryId ?? u.id, name: u.name },
+          field: m.field,
+          value: m.value,
+          ...(m.constraintBound ? { constraintBound: m.constraintBound } : {}),
+        });
+      }
+    }
+  }
+
+  // The rulebook parse is kept as the cross-check on the prose, not the source:
+  // the catalogues carry the same special rules with full published text, and
+  // three variants the Warbands PDF extraction never produced.
+  // The PDF prints variant headings in caps and drops articles, so "THE HOUSE
+  // OF WISDOM" and "TRENCH GHOST" have to reach "The House of Wisdom" and
+  // "Trench Ghosts". Normalise case and punctuation, drop a leading article,
+  // and treat one name containing the other as the same variant — otherwise
+  // every heading looks like a variant the catalogues are missing.
+  const variantKey = (n) => String(n).toLowerCase()
+    // The PDF transliterates: Stoßtruppen prints as STOSSTRUPPEN. NFKD leaves
+    // ß alone, so spell it out before normalising.
+    .replace(/ß/g, 'ss').normalize('NFKD')
+    .replace(/[^a-z0-9 ]+/g, '').replace(/^the /, '').replace(/\s+/g, '');
+  const sameVariant = (a, b) => {
+    const [x, y] = [variantKey(a), variantKey(b)];
+    return x === y || x.startsWith(y) || y.startsWith(x);
+  };
+  const bookFor = (name) => variants.find((v) => sameVariant(v.name, name));
+
+  dataset.variants = base.variantEntries.map((v) => {
+    const book = bookFor(v.name);
+    return {
+      id: variantKey(v.name),
+      entryId: v.id,
+      name: v.name,
+      factionId: v.factionId,
+      specialRules: v.specialRules,
+      ops: opsByVariantId.get(v.id) ?? [],
+      sources: book ? ['catalogue', 'rulebook'] : ['catalogue'],
+    };
+  });
+
+  // A variant the book describes but the catalogues do not carry is a real
+  // finding, not something to paper over.
+  const bookOnly = variants.filter(
+    (v) => !base.variantEntries.some((c) => sameVariant(c.name, v.name)));
+  for (const v of bookOnly) {
+    dataset.variants.push({
+      id: variantKey(v.name), name: v.name, factionId: '',
+      specialRules: v.specialRules, ops: [], sources: ['rulebook'],
+    });
+  }
+
+  const withOps = dataset.variants.filter((v) => v.ops.length).length;
+  const bookOnlyCount = bookOnly.length;
 
   // 3. verify
   const v = verify(dataset, bookEntries, provenance, resolutions);
@@ -139,7 +212,7 @@ for (const ruleset of RULESETS) {
   summaries.push({ ruleset, v, missingProv, unresolvedOps, layerNotes, layerReport, dataset });
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
-  console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}  variants ${variants.length}`);
+  console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}`);
   console.log(`  weapons carrying armoury restrictions: ${restricted}`);
   const mods = [...dataset.units, ...dataset.weapons]
     .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
@@ -151,6 +224,8 @@ for (const ruleset of RULESETS) {
   const optUnits = dataset.units.filter((u) => u.options?.length).length;
   const optGroups = new Set(dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.group)));
   console.log(`  unit options: ${opts} across ${optUnits} units, ${optGroups.size} groups`);
+  console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +
+              (bookOnlyCount ? `, ${bookOnlyCount} in the rulebook only` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
   console.log(`  verified against the rulebook: ${v.compared} units`);
   console.log(`    confirmed   ${v.confirmed}`);

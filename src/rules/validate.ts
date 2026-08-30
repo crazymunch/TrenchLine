@@ -60,7 +60,11 @@ const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : 's'}`;
  * roster-scoped max of 2, and "A New Antioch Warband must include 1
  * Lieutenant" as a min of 1 — neither of which the old data carried at all.
  */
-function checkRecruitmentLimits(roster: Roster, profiles: Map<string, UnitProfile>): Violation[] {
+function checkRecruitmentLimits(
+  roster: Roster,
+  profiles: Map<string, UnitProfile>,
+  variant?: WarbandVariant
+): Violation[] {
   const out: Violation[] = [];
   const counts = new Map<string, number>();
 
@@ -78,11 +82,31 @@ function checkRecruitmentLimits(roster: Roster, profiles: Map<string, UnitProfil
       }));
       continue;
     }
-    if (p.max != null && n > p.max) {
+    // The variant moves the bound before it is checked, so the message quotes
+    // the limit actually in force rather than the base one.
+    const { max } = variantLimits(p, variant);
+    if (max != null && n > max) {
       out.push(err({
         code: 'unit-max',
-        message: `${p.name}: ${n} taken, limit is ${p.max}.`,
-        rule: `0-${p.max} ${p.name}`,
+        message: `${p.name}: ${n} taken, limit is ${max}.`,
+        rule: max === p.max ? `0-${max} ${p.name}`
+                            : `${variant?.name}: 0-${max} ${p.name} (base ${p.max})`,
+        profileId,
+      }));
+    }
+  }
+
+  // Entries the variant forbids outright.
+  const forbidden = variantForbids(variant);
+  if (forbidden.size) {
+    for (const [profileId, n] of counts) {
+      const p = profiles.get(profileId);
+      if (!p) continue;
+      if (!forbidden.has(p.entryId ?? p.id)) continue;
+      out.push(err({
+        code: 'variant-forbids',
+        message: `${variant?.name} cannot include ${p.name} — ${plural(n, p.name)} taken.`,
+        rule: `${variant?.name}: ${p.name} is not available to this variant`,
         profileId,
       }));
     }
@@ -94,12 +118,19 @@ function checkRecruitmentLimits(roster: Roster, profiles: Map<string, UnitProfil
   for (const p of profiles.values()) {
     if (!p.min || p.min < 1) continue;
     if (p.factionId && roster.factionId && !factionMatches(p.factionId, roster.factionId)) continue;
+    // A variant can raise a required minimum (House of Wisdom: 1-2 Alchemists)
+    // or forbid the entry entirely, in which case there is nothing to require.
+    if (variantForbids(variant).has(p.entryId ?? p.id)) continue;
+    const { min } = variantLimits(p, variant);
+    if (!min || min < 1) continue;
     const n = counts.get(p.id) ?? 0;
-    if (n < p.min) {
+    if (n < min) {
       out.push(err({
         code: 'unit-min',
-        message: `A ${roster.factionId} warband must include ${plural(p.min, p.name)} — ${n} taken.`,
-        rule: `must include ${p.min} ${p.name}`,
+        message: `A ${variant?.name ?? roster.factionId} warband must include ` +
+                 `${plural(min, p.name)} — ${n} taken.`,
+        rule: min === p.min ? `must include ${min} ${p.name}`
+                            : `${variant?.name}: must include ${min} ${p.name}`,
         profileId: p.id,
       }));
     }
@@ -192,9 +223,77 @@ function restrictionsOf(w: { restrictions?: string[] }): Restriction[] {
   return parsed;
 }
 
+/* ------------------------------------------------------- variant mechanics */
+
+/**
+ * A variant's effect on a unit's recruitment limits, taken from its derived
+ * ops rather than from prose.
+ *
+ * "Pride of Jabir: a House of Wisdom Warband can include 0-3 Lions of Jabir" is
+ * an `increment` of 1 on the Lion's roster-max constraint. Reading it from the
+ * catalogue beats regexing the sentence: the sentence wraps across lines in the
+ * PDF, phrases the same rule three different ways across variants, and says
+ * nothing at all for the three variants the PDF extraction never produced.
+ */
+export function variantLimits(
+  profile: UnitProfile,
+  variant: WarbandVariant | undefined
+): { min: number | null; max: number | null } {
+  let { min, max } = profile;
+  const key = profile.entryId ?? profile.id;
+
+  for (const op of (variant?.ops ?? []) as VariantOp[]) {
+    if (op.target?.id !== key) continue;
+    if (!op.field?.startsWith('constraint:')) continue;
+
+    const id = op.field.slice('constraint:'.length);
+    const c = profile.constraints?.find((x) => (x as { id?: string }).id === id);
+    // The op may name a bound directly (`-min` / `-max`), otherwise the
+    // constraint it points at says which one it is.
+    const bound = op.constraintBound ?? c?.type;
+    if (bound !== 'min' && bound !== 'max') continue;
+
+    const value = Number(op.value);
+    if (!Number.isFinite(value)) continue;
+    const current = bound === 'min' ? min : max;
+    const next =
+      op.op === 'set' ? value
+      : op.op === 'increment' ? (current ?? 0) + value
+      : op.op === 'decrement' ? (current ?? 0) - value
+      : current;
+
+    if (bound === 'min') min = next; else max = next;
+  }
+  return { min, max };
+}
+
+interface VariantOp {
+  op: string;
+  field: string;
+  value: string;
+  constraintBound?: 'min' | 'max';
+  target?: { kind: string; id: string; name?: string };
+}
+
+/**
+ * Entries a variant forbids outright. The catalogues express this as
+ * `set hidden = true` on the unit, conditioned on the variant — the
+ * machine-readable form of "a House of Wisdom Warband cannot include a
+ * Yüzbaşı, Janissaries, or Sultanate Assassins".
+ */
+export function variantForbids(variant: WarbandVariant | undefined): Set<string> {
+  const out = new Set<string>();
+  for (const op of (variant?.ops ?? []) as VariantOp[]) {
+    if (op.field === 'hidden' && String(op.value) === 'true' && op.target?.id) {
+      out.add(op.target.id);
+    }
+  }
+  return out;
+}
+
 /**
  * Warband Variant rules — "cannot include Trench Moles", "must include 1
- * Trench Cleric". Fourteen official variants, none of which the app supported.
+ * Trench Cleric". Seventeen variants; the app supported none.
  */
 function checkVariant(
   roster: Roster,
@@ -202,6 +301,11 @@ function checkVariant(
   profiles: Map<string, UnitProfile>
 ): Violation[] {
   if (!variant) return [];
+  // Where the catalogues gave us ops, they are the authority: they are exact,
+  // they cover the three variants the PDF extraction missed, and they do not
+  // depend on a sentence surviving a PDF line wrap. The prose reader below is
+  // the fallback for a variant that has no derived ops at all.
+  if (variant.ops?.length) return [];
   const out: Violation[] = [];
 
   const names = roster.units
@@ -285,7 +389,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     }));
   }
 
-  violations.push(...checkRecruitmentLimits(roster, profiles));
+  violations.push(...checkRecruitmentLimits(roster, profiles, variant));
   violations.push(...checkWargear(roster, profiles, weapons));
   violations.push(...checkVariant(roster, variant, profiles));
 

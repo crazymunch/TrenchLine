@@ -449,6 +449,60 @@ export function parseCatalogues(dir) {
   const weapons = [];
   const abilitiesSeen = new Map();
 
+  // The authoritative list of Warband Variants: the children of each faction's
+  // "Warband Variant" group. Reading them here rather than inferring from
+  // modifier conditions matters — a roster-scope condition can name a unit, a
+  // campaign setting or one of the Court's seven sins, none of which are
+  // variants, and inferring produced 44 "variants" for 14 real ones.
+  //
+  // Their special rules come with them, as Ability profiles carrying the full
+  // published text — the same rules the Warbands PDF states as prose.
+  const variantEntries = [];
+  for (const { file, doc } of docs) {
+    walk(doc, (n) => {
+      // "Warband Variant" is a selectionEntry, not a group: the variants are
+      // selectionEntries nested in the groups beneath it.
+      for (const holder of arr(n?.selectionEntries?.selectionEntry)) {
+        if (clean(attr(holder, 'name')) !== 'Warband Variant') continue;
+        // Direct children only. A full walk descends into each variant's own
+        // equipment list and returns the armoury as "variants".
+        const kids = [
+          ...arr(holder?.selectionEntries?.selectionEntry),
+          ...arr(holder?.selectionEntryGroups?.selectionEntryGroup)
+            .flatMap((g) => arr(g?.selectionEntries?.selectionEntry)),
+        ];
+        for (const e of kids) {
+          if (attr(e, 'id') === attr(holder, 'id')) continue;
+          // A Warband Variant states its special rules as Ability profiles.
+          // An entry with none is something else that happens to sit here.
+          const rules = arr(e?.profiles?.profile)
+            .filter((pr) => attr(pr, 'typeName') === 'Ability');
+          if (!rules.length) continue;
+          variantEntries.push({
+            id: attr(e, 'id'),
+            name: clean(attr(e, 'name')),
+            factionId: path.basename(file, path.extname(file)),
+            specialRules: arr(e?.profiles?.profile)
+              .filter((pr) => attr(pr, 'typeName') === 'Ability')
+              .map((pr) => ({
+                name: clean(attr(pr, 'name')),
+                description: clean(charMap(pr).Description),
+              })),
+          });
+        }
+      }
+    });
+  }
+  // The same variant is reachable more than once through links.
+  {
+    const seen = new Set();
+    for (let i = variantEntries.length - 1; i >= 0; i--) {
+      const id = variantEntries[i].id;
+      if (seen.has(id)) variantEntries.splice(i, 1);
+      else seen.add(id);
+    }
+  }
+
   for (const { file, doc } of docs) {
     const faction = factionOf(file);
 
@@ -571,6 +625,7 @@ export function parseCatalogues(dir) {
     units: dedupe(units),
     weapons: dedupe(weapons),
     abilities: [...abilitiesSeen.values()],
+    variantEntries,
     links,
     files,
   };

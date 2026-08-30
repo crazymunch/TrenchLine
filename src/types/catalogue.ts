@@ -223,8 +223,12 @@ export interface FactionSpecialRule {
 /** Papal States Intervention Force, House of Wisdom, Trench Ghosts, … */
 export interface WarbandVariant {
   id: string;
+  /** The catalogue entry a roster selects to take this variant. */
+  entryId?: string;
   factionId: string;
   name: string;
+  /** Which sources carry it: 'catalogue', 'rulebook', or both. */
+  sources?: string[];
   lore?: string;
   specialRules: FactionSpecialRule[];
   /** Papal States starts on a different budget, for example. */
