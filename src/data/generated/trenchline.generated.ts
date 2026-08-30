@@ -40696,7 +40696,7 @@ export const DATASET: Dataset = {
         "-2 INJURY MODIFIER"
       ],
       "cost": {
-        "ducats": 40,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40727,7 +40727,7 @@ export const DATASET: Dataset = {
         "-1 INJURY MODIFIER"
       ],
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40773,7 +40773,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Survey the Land**: Enemy models cannot use the INFILTRATOR Keyword to deploy within 16” of a model with this Keyword unless they are in their own side’s deployment zone.",
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40803,7 +40803,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Talisman**: Once during a game, when a Risky Success Roll for a model with a Blessed Icon is a Failure, you can say that the model will use its Talisman. If you do, the model’s Activation does not end.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40832,7 +40832,7 @@ export const DATASET: Dataset = {
         "NEGATE SHRAPNEL"
       ],
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40883,7 +40883,7 @@ export const DATASET: Dataset = {
       "rules": "A Field Shrine is represented by a terrain piece that is at least ½” high and which is mounted on a 40mm base. It is Impassable terrain. - **Site of Worship**: After you deploy a model that has Field Shrine, you can also deploy their Field Shrine anywhere wholly within their deployment zone. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Once deployed, the model that had the Field Shrine is not considered to be carrying it for the rest of the game. - **Tear It Down!**: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and is removed from the Warband Roster (no Injury Roll is required).",
       "cost": {
         "ducats": 0,
-        "glory": 2
+        "glory": 0
       },
       "constraints": [
         {
@@ -40909,7 +40909,7 @@ export const DATASET: Dataset = {
         "NEGATE GAS"
       ],
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -40963,7 +40963,7 @@ export const DATASET: Dataset = {
       ],
       "cost": {
         "ducats": 0,
-        "glory": 2
+        "glory": 0
       },
       "constraints": [
         {
@@ -40992,7 +40992,7 @@ export const DATASET: Dataset = {
         "CONSUMABLE"
       ],
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -41059,17 +41059,7 @@ export const DATASET: Dataset = {
         "Consumable, Limit: 3"
       ],
       "factionId": "Equipment",
-      "sourceFile": "Equipment.cat",
-      "priceOptions": [
-        {
-          "ducats": 0,
-          "glory": 1
-        },
-        {
-          "ducats": 20,
-          "glory": 0
-        }
-      ]
+      "sourceFile": "Equipment.cat"
     },
     {
       "id": "cb36-de41-f960-6526",
@@ -41106,7 +41096,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Ropes and Pitons**: Add +1 DICE to Risky Success Rolls for friendly models with this special rule that are attempting to climb a sheer surface.",
       "cost": {
-        "ducats": 3,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -41138,7 +41128,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Fanfare**: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 4” of one or more models with a Musical Instrument.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -41166,7 +41156,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Dug In**: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -41242,7 +41232,7 @@ export const DATASET: Dataset = {
       ],
       "cost": {
         "ducats": 0,
-        "glory": 1
+        "glory": 0
       },
       "constraints": [
         {
@@ -41270,7 +41260,7 @@ export const DATASET: Dataset = {
         "FEAR"
       ],
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -41298,7 +41288,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Talisman**: Once during a game, when a Risky Success Roll for a model with an Unholy Trinket is a Failure, you can say that the model will use it. If you do, the model’s Activation does not end.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -45335,7 +45325,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Dangerous**: Place 1 BLOOD MARKER next to the model using this Weapon if it makes a Melee Attack and the Success Roll is a Success or a Critical Success.",
       "cost": {
-        "ducats": 35,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45356,7 +45346,7 @@ export const DATASET: Dataset = {
         "CUMBERSOME"
       ],
       "cost": {
-        "ducats": 2,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -45386,7 +45376,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Unwieldy**: The +1 DICE Keyword does not apply when this Weapon is used as an Off- Hand Weapon.",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45406,7 +45396,7 @@ export const DATASET: Dataset = {
         "HEAVY"
       ],
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45427,7 +45417,7 @@ export const DATASET: Dataset = {
         "HEAVY"
       ],
       "cost": {
-        "ducats": 12,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45445,7 +45435,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Despatch**: This weapon has the IGNORE ARMOUR Keyword if the target is Down.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45468,7 +45458,7 @@ export const DATASET: Dataset = {
         "CUMBERSOME"
       ],
       "cost": {
-        "ducats": 7,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45489,7 +45479,7 @@ export const DATASET: Dataset = {
         "CRITICAL"
       ],
       "cost": {
-        "ducats": 4,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45506,7 +45496,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 3,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -45525,7 +45515,7 @@ export const DATASET: Dataset = {
         "-1 DICE"
       ],
       "cost": {
-        "ducats": 1,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49142,7 +49132,7 @@ export const DATASET: Dataset = {
         "PISTOL"
       ],
       "cost": {
-        "ducats": 20,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49176,17 +49166,7 @@ export const DATASET: Dataset = {
         "Bayonet Lug, Limit: 2"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat",
-      "priceOptions": [
-        {
-          "ducats": 40,
-          "glory": 0
-        },
-        {
-          "ducats": 0,
-          "glory": 2
-        }
-      ]
+      "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "5b1a-ebaa-4d59-f2d7",
@@ -49200,7 +49180,7 @@ export const DATASET: Dataset = {
         "SHOTGUN"
       ],
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49222,7 +49202,7 @@ export const DATASET: Dataset = {
         "SHRAPNEL"
       ],
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49241,7 +49221,7 @@ export const DATASET: Dataset = {
       "range": "24\"",
       "keywords": [],
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49265,7 +49245,7 @@ export const DATASET: Dataset = {
         "IGNORE ARMOUR"
       ],
       "cost": {
-        "ducats": 30,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49290,7 +49270,7 @@ export const DATASET: Dataset = {
         "SHRAPNEL"
       ],
       "cost": {
-        "ducats": 30,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49316,7 +49296,7 @@ export const DATASET: Dataset = {
         "IGNORE ARMOUR"
       ],
       "cost": {
-        "ducats": 55,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49342,7 +49322,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Tungsten-orichalcum Alloy Shot**: Add +1 INJURY DICE to rolls for Ranged Attacks made by this Weapon at Short Range.",
       "cost": {
-        "ducats": 20,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49376,17 +49356,7 @@ export const DATASET: Dataset = {
         "Amalgam only, Limit: 1"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat",
-      "priceOptions": [
-        {
-          "ducats": 50,
-          "glory": 0
-        },
-        {
-          "ducats": 0,
-          "glory": 2
-        }
-      ]
+      "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "86be-7c29-216e-66b8",
@@ -49398,7 +49368,7 @@ export const DATASET: Dataset = {
         "-1 INJURY DICE"
       ],
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49421,7 +49391,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Silent**: Add +1 DICE to the roll if the attacker is in contact with a terrain piece that is at least 1/2\" tall and that lies in between it and the target model.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49442,7 +49412,7 @@ export const DATASET: Dataset = {
         "ASSAULT"
       ],
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49464,7 +49434,7 @@ export const DATASET: Dataset = {
         "SHOTGUN"
       ],
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49486,7 +49456,7 @@ export const DATASET: Dataset = {
         "PISTOL"
       ],
       "cost": {
-        "ducats": 6,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -49518,17 +49488,7 @@ export const DATASET: Dataset = {
         "ELITE & Janissaries only, Limit: 2"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat",
-      "priceOptions": [
-        {
-          "ducats": 35,
-          "glory": 0
-        },
-        {
-          "ducats": 0,
-          "glory": 2
-        }
-      ]
+      "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "f536-9890-8f44-99d7",
@@ -49552,17 +49512,7 @@ export const DATASET: Dataset = {
         "Bayonet Lug, Shield Combo, Limit: 1"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat",
-      "priceOptions": [
-        {
-          "ducats": 30,
-          "glory": 0
-        },
-        {
-          "ducats": 0,
-          "glory": 2
-        }
-      ]
+      "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "00d3-c557-3993-f094",
@@ -49579,7 +49529,7 @@ export const DATASET: Dataset = {
         "FUMBLE"
       ],
       "cost": {
-        "ducats": 7,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -49613,7 +49563,7 @@ export const DATASET: Dataset = {
         "FUMBLE"
       ],
       "cost": {
-        "ducats": 10,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -49681,7 +49631,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -49715,7 +49665,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Heavy Explosive**: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack.",
       "cost": {
-        "ducats": 15,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -50854,6 +50804,2368 @@ export const DATASET: Dataset = {
       "dispatch-01"
     ]
   },
+  "armouries": [
+    {
+      "factionId": "new-antioch",
+      "faction": "New Antioch",
+      "rows": [
+        {
+          "name": "Automatic Pistol",
+          "weaponId": "b71e-ef7c-e836-72ec",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Automatic Rifle",
+          "weaponId": "057b-c114-772f-299c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Limit: 1"
+          ]
+        },
+        {
+          "name": "Automatic Shotgun",
+          "weaponId": "5b1a-ebaa-4d59-f2d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo, Limit: 2"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "4c15-195e-0fd4-6f54",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Grenade Launcher",
+          "weaponId": "a828-6f96-7eb8-7934",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Heavy Flamethrower",
+          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 55,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Heavy Shotgun",
+          "weaponId": "7bbb-8b13-8f13-49dd",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo, Limit: 2"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "d44a-c775-04b2-e644",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Sniper Rifle",
+          "weaponId": "b5a1-e8c3-24e5-a742",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 35,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f536-9890-8f44-99d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo, Limit: 2"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "77d0-35f2-b3d3-4022",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Misericordia",
+          "weaponId": "bd4b-593e-5a79-09fd",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Combat Medic only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Frag Grenades",
+          "weaponId": "00d3-c557-3993-f094",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "316b-d210-767e-e340",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Satchel Charge",
+          "weaponId": "d07c-55fe-e41d-a57f",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable, Limit: 3 (1 per model)"
+          ]
+        },
+        {
+          "name": "Engineer Body Armour",
+          "weaponId": null,
+          "section": "Armour",
+          "cost": {
+            "ducats": 45,
+            "glory": 0
+          },
+          "restrictions": [
+            "Combat Engineer only"
+          ]
+        },
+        {
+          "name": "Binoculars",
+          "weaponId": "d8ed-a44c-df74-d064",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Field Shrine",
+          "weaponId": "5b7d-4bc2-5a44-43ce",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Martyrdom Pills",
+          "weaponId": "322c-cb76-719a-0cb9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Consumable, ELITE only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Medi-kit",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 4"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": []
+        }
+      ]
+    },
+    {
+      "factionId": "trench-pilgrims",
+      "faction": "Trench Pilgrims",
+      "rows": [
+        {
+          "name": "Automatic Pistol",
+          "weaponId": "b71e-ef7c-e836-72ec",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Blunderbuss",
+          "weaponId": "2f82-6dd2-69c2-2fea",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "4c15-195e-0fd4-6f54",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Musket",
+          "weaponId": "86be-7c29-216e-66b8",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Punt Gun",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "d44a-c775-04b2-e644",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Sniper Rifle",
+          "weaponId": "b5a1-e8c3-24e5-a742",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f536-9890-8f44-99d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Anti-Tank Hammer",
+          "weaponId": "328e-9d8a-0a2c-47c6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 35,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "77d0-35f2-b3d3-4022",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Flail/Scourge",
+          "weaponId": "9e8c-dc75-19ab-36b0",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Misericordia",
+          "weaponId": "bd4b-593e-5a79-09fd",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "316b-d210-767e-e340",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Molotov Cocktail",
+          "weaponId": "414f-af63-666d-59d1",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Warcross",
+          "weaponId": null,
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Blessed Icon",
+          "weaponId": "3c35-dded-ffab-2e12",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        },
+        {
+          "name": "Field Shrine",
+          "weaponId": "5b7d-4bc2-5a44-43ce",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Holy Relic",
+          "weaponId": "0e24-838f-4297-c2b9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Iron Capirote",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Martyrdom Pills",
+          "weaponId": "322c-cb76-719a-0cb9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable, Limit: 3"
+          ]
+        },
+        {
+          "name": "Medi-kit",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Automatic Rifle",
+          "weaponId": "057b-c114-772f-299c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Limit: 1"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f536-9890-8f44-99d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo, Limit: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "iron-sultanate",
+      "faction": "Iron Sultanate",
+      "rows": [
+        {
+          "name": "Alaybozan",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 9,
+            "glory": 0
+          },
+          "restrictions": [
+            "Sultanate Sappers only, Shield Combo"
+          ]
+        },
+        {
+          "name": "Flame Cannon",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 60,
+            "glory": 0
+          },
+          "restrictions": [
+            "Brazen Bull only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "4c15-195e-0fd4-6f54",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Jezzail",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "M.U.R.A.D. Bombard",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Brazen Bull only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Musket",
+          "weaponId": "86be-7c29-216e-66b8",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Siege Jezzail",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Sniper Rifle",
+          "weaponId": "b5a1-e8c3-24e5-a742",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 35,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Janissaries only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Assassin’s Dagger",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Sultanate Assassins only"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "77d0-35f2-b3d3-4022",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Halberd-Gun",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Titan Zulfiqar",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Brazen Bull only"
+          ]
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Frag Grenades",
+          "weaponId": "00d3-c557-3993-f094",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "316b-d210-767e-e340",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Jabirean Alchemist Only"
+          ]
+        },
+        {
+          "name": "Alchemist Armour",
+          "weaponId": null,
+          "section": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Janissaries only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Alchemical Ammunition",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Binoculars",
+          "weaponId": "d8ed-a44c-df74-d064",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Cloak of Alamut",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Holy Relic",
+          "weaponId": "0e24-838f-4297-c2b9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Marid Shovel",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Brazen Bull only"
+          ]
+        },
+        {
+          "name": "Medi-kit",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Takwin Anqā Bird",
+          "weaponId": "0888-90bb-c320-ca0f",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Wind Amulet",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "heretic-legions",
+      "faction": "Heretic Legions",
+      "rows": [
+        {
+          "name": "Anti-Materiel Rifle",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit:1"
+          ]
+        },
+        {
+          "name": "Automatic Rifle",
+          "weaponId": "057b-c114-772f-299c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug, Limit: 2"
+          ]
+        },
+        {
+          "name": "Automatic Shotgun",
+          "weaponId": "5b1a-ebaa-4d59-f2d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "4c15-195e-0fd4-6f54",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Grenade Launcher",
+          "weaponId": "a828-6f96-7eb8-7934",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Heavy Flamethrower",
+          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 55,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "d44a-c775-04b2-e644",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Silenced Pistol",
+          "weaponId": "ad8a-00d3-726b-b10c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f536-9890-8f44-99d7",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "77d0-35f2-b3d3-4022",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Blasphemous Staff",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Hellblade",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sacrificial Blade",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 23,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Tartarus Claws",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Death Commando only"
+          ]
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Frag Grenades",
+          "weaponId": "00d3-c557-3993-f094",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Grenades",
+          "weaponId": "5f7a-f61c-c4cc-98ad",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "316b-d210-767e-e340",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "Anointed & ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Binoculars",
+          "weaponId": "d8ed-a44c-df74-d064",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        }
+      ]
+    },
+    {
+      "factionId": "cult-of-the-black-grail",
+      "faction": "Cult of the Black Grail",
+      "rows": [
+        {
+          "name": "Blunderbuss",
+          "weaponId": "2f82-6dd2-69c2-2fea",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Corruption Belcher",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Infested Rifle",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "057c-08d9-c23f-7b47",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Amalgam only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Musket",
+          "weaponId": "86be-7c29-216e-66b8",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Putrid Shotgun",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo, Limit: 2"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug, Shield Combo"
+          ]
+        },
+        {
+          "name": "Viscera Cannon",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "77d0-35f2-b3d3-4022",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Beelzebub’s Axe",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Plague Blade",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Grenades",
+          "weaponId": "5f7a-f61c-c4cc-98ad",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Parasite Grenades",
+          "weaponId": null,
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "court-of-the-seven-headed-serpent",
+      "faction": "Court of the Seven-Headed Serpent",
+      "rows": [
+        {
+          "name": "Arquebus",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 8,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Blunderbuss",
+          "weaponId": "2f82-6dd2-69c2-2fea",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "4c15-195e-0fd4-6f54",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Heavy Flamethrower",
+          "weaponId": "b8e5-9d0c-ebd4-8208",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 55,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Ophidian Rifle",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "917f-2532-74e9-33ed",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Serpent Assault Gun",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Headtaker",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Hellblade",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Malebranche Sword",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Torture Instrument",
+          "weaponId": null,
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 8,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Grenades",
+          "weaponId": "5f7a-f61c-c4cc-98ad",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "316b-d210-767e-e340",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Infernal Iron Armour",
+          "weaponId": null,
+          "section": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Hell Knights only"
+          ]
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Crown of Hellfire",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Pit Locusts only"
+          ]
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Restraining Muzzle",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Yoke Fiend only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Wretched & Yoke Fiends only"
+          ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Unholy Relic",
+          "weaponId": "411f-228a-4117-3784",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Unholy Trinket",
+          "weaponId": "ab23-2c25-8507-9ca3",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        }
+      ]
+    }
+  ],
   "variants": [
     {
       "id": "dirgeofthegreathegemon",

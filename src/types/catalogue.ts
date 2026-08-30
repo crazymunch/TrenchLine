@@ -185,16 +185,15 @@ export interface WeaponProfile {
   rules?: string;
   cost: Cost;
   constraints: Constraint[];
-  /** Restriction text from the Armoury Tables, e.g. 'ELITE only'. */
+  /**
+   * The union of every faction's armoury restrictions on this weapon — a quick
+   * "restricted somewhere" signal only. What actually governs a warband is its
+   * own faction's armoury row (`src/rules/armoury.ts`), because the same weapon
+   * is restricted differently by different factions.
+   */
   restrictions: string[];
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];
-  /**
-   * Set when the Armoury Tables price this weapon differently per faction — an
-   * Automatic Rifle is 40 Ducats in one and 2 Glory in another. `cost` is left
-   * unset in that case; the roster's faction decides which of these applies.
-   */
-  priceOptions?: Cost[];
   factionId?: string;
 }
 

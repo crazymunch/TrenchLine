@@ -13,6 +13,7 @@ import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule } from '@
 import type { Roster, RosterUnit } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
+import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -150,7 +151,8 @@ export function factionMatches(a: string, b: string): boolean {
 function checkWargear(
   roster: Roster,
   profiles: Map<string, UnitProfile>,
-  weapons: Map<string, { id: string; name: string; restrictions?: string[] }>
+  weapons: Map<string, { id: string; name: string; restrictions?: string[] }>,
+  armoury?: Armoury
 ): Violation[] {
   const out: Violation[] = [];
   const rosterCounts = new Map<string, number>();
@@ -168,7 +170,20 @@ function checkWargear(
       const w = weapons.get(item.weaponId);
       if (!w) continue;
 
-      for (const r of restrictionsOf(w)) {
+      // A faction that does not stock an item cannot buy it. This is a real
+      // rule the old data could not express: the armoury *is* the list of what
+      // is available, not merely what it costs.
+      if (armoury && !stocks(armoury, w)) {
+        out.push(err({
+          code: 'wargear-restricted',
+          message: `${armoury.faction} does not stock ${w.name}.`,
+          rule: `${armoury.faction} Armoury Table`,
+          unitId: u.id,
+        }));
+        continue;
+      }
+
+      for (const r of restrictionsOf(w, armoury)) {
         if (r.kind === 'onlyFor' && profile && !satisfiesOnlyFor(r.requires, profile)) {
           out.push(err({
             code: 'wargear-restricted',
@@ -201,7 +216,7 @@ function checkWargear(
   for (const [weaponId, n] of rosterCounts) {
     const w = weapons.get(weaponId);
     if (!w) continue;
-    for (const r of restrictionsOf(w)) {
+    for (const r of restrictionsOf(w, armoury)) {
       if (r.kind === 'limit' && r.perModel == null && n > r.max) {
         out.push(err({
           code: 'wargear-limit',
@@ -215,13 +230,21 @@ function checkWargear(
   return out;
 }
 
-const restrictionCache = new WeakMap<object, Restriction[]>();
-function restrictionsOf(w: { restrictions?: string[] }): Restriction[] {
-  const cached = restrictionCache.get(w);
-  if (cached) return cached;
-  const parsed = (w.restrictions ?? []).flatMap(parseRestrictions);
-  restrictionCache.set(w, parsed);
-  return parsed;
+/**
+ * The restrictions in force for this warband.
+ *
+ * The faction's armoury is authoritative, because the same weapon is restricted
+ * differently by different factions — an Automatic Rifle is `Limit: 1` for New
+ * Antioch and `Limit: 2` for the Heretic Legions. The weapon's own list is the
+ * union across every armoury, and is only a fallback for a roster whose faction
+ * we could not match.
+ */
+function restrictionsOf(
+  w: { id?: string; name: string; restrictions?: string[] },
+  armoury?: Armoury
+): Restriction[] {
+  const text = armoury ? restrictionsFor(armoury, w) : (w.restrictions ?? []);
+  return text.flatMap(parseRestrictions);
 }
 
 /* ------------------------------------------------------- variant mechanics */
@@ -446,7 +469,8 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   }
 
   violations.push(...checkRecruitmentLimits(roster, profiles, variant));
-  violations.push(...checkWargear(roster, profiles, weapons));
+  const armoury = armouryFor(dataset, roster.factionId);
+  violations.push(...checkWargear(roster, profiles, weapons, armoury));
   violations.push(...checkVariant(roster, variant, profiles));
 
   const faction = (dataset as unknown as { factions?: { id: string; name: string;

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 
 import { validateRoster, factionMatches, fireteamCap } from '../validate';
+import { armouryFor, priceOf, restrictionsFor, stocks } from '../armoury';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -305,5 +306,60 @@ describe('faction special rules', () => {
 
   it('is absent for a faction the book says has no special rules', () => {
     expect(fireteamCap({ specialRules: [] }, undefined)).toBeNull();
+  });
+});
+
+/* ------------------------------------------------------------- the armoury */
+
+/**
+ * The Armoury Table is the pricing and legality authority, and it is per
+ * faction. Every assertion here reads the real generated data.
+ */
+describe('faction armouries', () => {
+  const load = () => {
+    const s = fs.readFileSync('src/data/generated/trenchline.generated.ts', 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  };
+  const ds = load();
+
+  it('carries one armoury per faction', () => {
+    expect(ds.armouries.length).toBe(6);
+    for (const a of ds.armouries) expect(a.rows.length).toBeGreaterThan(20);
+  });
+
+  /**
+   * The case that forced this model. Same weapon, three armouries, two
+   * currencies and two different limits — no single `cost` field can say it.
+   */
+  it('prices the Automatic Rifle per faction, currency and limit included', () => {
+    const rifle = { name: 'Automatic Rifle' };
+
+    const antioch = armouryFor(ds, 'new-antioch');
+    expect(priceOf(antioch, rifle)).toEqual({ ducats: 40, glory: 0 });
+    expect(restrictionsFor(antioch, rifle).join()).toMatch(/Limit: 1/);
+
+    const heretic = armouryFor(ds, 'heretic-legions');
+    expect(priceOf(heretic, rifle)).toEqual({ ducats: 0, glory: 2 });
+    expect(restrictionsFor(heretic, rifle).join()).toMatch(/Limit: 2/);
+  });
+
+  it('matches a slug faction id against the book\'s prose name', () => {
+    expect(armouryFor(ds, 'iron-sultanate')?.faction).toBe('Iron Sultanate');
+    expect(armouryFor(ds, 'cult-of-the-black-grail')?.faction).toBe('Cult of the Black Grail');
+  });
+
+  // Never shop from someone else's list because a name did not match.
+  it('returns nothing for a faction it cannot match, rather than guessing', () => {
+    expect(armouryFor(ds, 'not-a-faction-at-all')).toBeUndefined();
+    expect(priceOf(undefined, { name: 'Automatic Rifle' })).toBeNull();
+  });
+
+  // "Not stocked" is a legality answer, not a free item.
+  it('distinguishes an item a faction does not stock from a free one', () => {
+    const sultanate = armouryFor(ds, 'iron-sultanate');
+    expect(stocks(sultanate, { name: 'Jezzail' })).toBe(true);
+    expect(stocks(sultanate, { name: 'Not A Real Weapon' })).toBe(false);
+    expect(priceOf(sultanate, { name: 'Not A Real Weapon' })).toBeNull();
   });
 });

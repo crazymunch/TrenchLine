@@ -109,67 +109,63 @@ for (const ruleset of RULESETS) {
     includeBeta: ruleset.includeBeta,
   });
 
-  // Attach the Armoury Table restrictions ("ELITE only", "Limit: 2") to the
-  // weapons they govern. The catalogues carry the profiles; the rulebook
-  // carries the legality rules, and the roster validator needs both.
-  const armouryByName = new Map();
-  for (const row of armoury) {
-    const k = row.name.toLowerCase();
-    if (!armouryByName.has(k)) armouryByName.set(k, new Set());
-    if (row.restrictions) armouryByName.get(k).add(row.restrictions);
-  }
-  // The Armoury Tables also carry the prices. The catalogues mostly do not:
-  // a shared weapon entry costs 0 there because the price hangs off each
-  // faction's armoury link, so 363 of 543 weapons came through free. A roster
-  // built on that data would silently under-count by hundreds of Ducats.
+  // ------------------------------------------------------------- armouries
   //
-  // Pricing is per faction: an Automatic Rifle is 40 Ducats in one armoury and
-  // 2 Glory in another. A single `cost` cannot say that, so where the tables
-  // disagree the candidates are recorded on the weapon and reported, and the
-  // cost is left alone. Picking one silently would put a wrong number in front
-  // of a player with nothing to show it was a guess.
-  const priceByName = new Map();
-  for (const row of armoury) {
-    const k = row.name.toLowerCase();
-    if (!priceByName.has(k)) priceByName.set(k, new Set());
-    priceByName.get(k).add(`${row.ducats}/${row.glory}`);
+  // The Armoury Table is the pricing and legality authority, and it is per
+  // faction. An Automatic Rifle is 40 Ducats with "Limit: 1" in the New Antioch
+  // and Trench Pilgrims armouries, and 2 Glory with "Limit: 2" in the Heretic
+  // Legions one — the price and the restriction both differ.
+  //
+  // So the armoury is modelled as itself rather than flattened onto the weapon.
+  // A weapon entry is a profile: what it does. An armoury row is an offer: what
+  // this faction pays for it and under what condition. A warband buys from its
+  // faction's armoury, which is exactly how the book reads.
+  const slug = (n) => String(n).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const weaponByName = new Map();
+  for (const w of dataset.weapons) {
+    const k = w.name.toLowerCase();
+    if (!weaponByName.has(k)) weaponByName.set(k, w);
   }
 
-  let restricted = 0;
-  let priced = 0;
-  const pricingConflicts = [];
-  for (const w of dataset.weapons) {
-    const hit = armouryByName.get(w.name.toLowerCase());
-    if (hit && hit.size) {
-      w.restrictions = [...hit];
-      restricted++;
-      provenance.stamp('weapon', w.id, 'restrictions', {
-        layer: 'base',
-        source: 'rulebook:warbands-of-trench-crusade#armoury',
-        verified: 'rulebook:warbands-of-trench-crusade',
-      });
+  const armouryByFaction = new Map();
+  let unmatchedRows = 0;
+  for (const row of armoury) {
+    if (!row.faction) continue;
+    const id = slug(row.faction);
+    if (!armouryByFaction.has(id)) {
+      armouryByFaction.set(id, { factionId: id, faction: row.faction, rows: [] });
     }
+    const w = weaponByName.get(row.name.toLowerCase());
+    if (!w) unmatchedRows++;
+    armouryByFaction.get(id).rows.push({
+      name: row.name,
+      // Null where the rulebook lists Battlekit the catalogues do not carry.
+      // Recorded rather than dropped: it is a real offer the player can take.
+      weaponId: w?.id ?? null,
+      section: row.section,
+      cost: { ducats: row.ducats, glory: row.glory },
+      restrictions: row.restrictions ? [row.restrictions] : [],
+    });
+  }
+  dataset.armouries = [...armouryByFaction.values()];
 
-    if (w.cost.ducats || w.cost.glory) continue;      // catalogue priced it
-    const prices = priceByName.get(w.name.toLowerCase());
-    if (!prices || !prices.size) continue;
-    if (prices.size > 1) {
-      w.priceOptions = [...prices].map((p) => {
-        const [d, g] = p.split('/').map(Number);
-        return { ducats: d, glory: g };
-      });
-      provenance.stamp('weapon', w.id, 'priceOptions', {
-        layer: 'base',
-        source: 'rulebook:warbands-of-trench-crusade#armoury',
-      });
-      pricingConflicts.push(`${w.name}: ${[...prices].join(' vs ')}`);
-      continue;
-    }
-    const [d, g] = [...prices][0].split('/').map(Number);
-    if (!d && !g) continue;
-    w.cost = { ducats: d, glory: g };
-    priced++;
-    provenance.stamp('weapon', w.id, 'cost.ducats', {
+  // The weapon keeps the union of every armoury's restrictions as a quick
+  // "this is restricted somewhere" signal, stamped so it can say where from.
+  // The per-faction row above is what actually governs a roster.
+  const restrictionsByName = new Map();
+  for (const row of armoury) {
+    if (!row.restrictions) continue;
+    const k = row.name.toLowerCase();
+    if (!restrictionsByName.has(k)) restrictionsByName.set(k, new Set());
+    restrictionsByName.get(k).add(row.restrictions);
+  }
+  let restricted = 0;
+  for (const w of dataset.weapons) {
+    const hit = restrictionsByName.get(w.name.toLowerCase());
+    if (!hit || !hit.size) continue;
+    w.restrictions = [...hit];
+    restricted++;
+    provenance.stamp('weapon', w.id, 'restrictions', {
       layer: 'base',
       source: 'rulebook:warbands-of-trench-crusade#armoury',
       verified: 'rulebook:warbands-of-trench-crusade',
@@ -277,13 +273,9 @@ for (const ruleset of RULESETS) {
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
   console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}`);
   console.log(`  weapons carrying armoury restrictions: ${restricted}`);
-  console.log(`  weapons priced from the Armoury Tables: ${priced}` +
-              (pricingConflicts.length ? `  (${pricingConflicts.length} priced per faction, left unset)` : ''));
-  if (pricingConflicts.length) {
-    for (const c of pricingConflicts) console.log(`      ${c}`);
-    console.log('      Armoury pricing is per faction; a single cost cannot express it.');
-    console.log('      Candidates recorded on the weapon as priceOptions.');
-  }
+  const rows = dataset.armouries.reduce((n, a) => n + a.rows.length, 0);
+  console.log(`  armouries: ${dataset.armouries.length} factions, ${rows} priced rows` +
+              (unmatchedRows ? `  (${unmatchedRows} row(s) name Battlekit the catalogues lack)` : ''));
   const mods = [...dataset.units, ...dataset.weapons]
     .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
   const unmapped = [...dataset.units, ...dataset.weapons]

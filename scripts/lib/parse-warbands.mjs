@@ -147,10 +147,18 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
   const lines = fs.readFileSync(src, 'utf8').split('\n');
   const out = [];
   let section = null;
+  let faction = null;
 
   for (const raw of lines) {
     const line = raw.replace(/\s+$/, '');
     const bare = line.trim();
+
+    // Each faction's Armoury Table announces itself. This is the only thing
+    // that says which armoury a row belongs to, and it matters: pricing is per
+    // faction — an Automatic Rifle is 40 Ducats in one armoury and 2 Glory in
+    // another — so a row without its faction cannot be priced at all.
+    const owner = bare.match(/^(.+?)\s+(?:Warbands\s+)?can have the following Battlekit/i);
+    if (owner) { faction = owner[1].trim(); section = null; continue; }
 
     if (SECTIONS.has(bare)) { section = bare; continue; }
     if (!section) continue;
@@ -172,6 +180,7 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
 
     out.push({
       name,
+      faction,
       section,
       restrictions: cells.length > 2 ? cells.slice(1, -1).join(', ') : '',
       ducats: m[2] === GLORY_GLYPH ? 0 : Number(m[1]),
