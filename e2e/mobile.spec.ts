@@ -15,7 +15,7 @@ import {
  * that is exactly how the header overflow survived a measurement pass: it was
  * only wrong on views whose title was long.
  */
-const VIEWS = ['Roster', 'Play', 'Crusade', 'Directory', 'Codex'] as const;
+const VIEWS = ['Roster', 'Play', 'Crusade', 'Players', 'Codex'] as const;
 
 for (const view of VIEWS) {
   test(`${view} meets the mobile definition of done`, async ({ page }) => {
@@ -49,11 +49,23 @@ test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'the bottom nav is phone-only');
   await page.goto('/');
   await page.waitForTimeout(1500);
-  // Raising these to 12px in 3.4 clipped "Campaign" to "Campaig…", which is
-  // worse than the 10px label it replaced.
-  const clipped = await page.evaluate(() =>
+  /*
+    Raising these to 12px in 3.4 clipped "Campaign" to "Campaig…", which is
+    worse than the 10px label it replaced.
+
+    Measured with **4px of slack**, not just for clipping. Whether a label
+    clips depends on the platform font, and "Directory" proved it: it fitted
+    exactly in this sandbox and clipped on CI's runner. A label that only just
+    fits is one that clips on somebody's phone, so a label with no room to
+    spare fails here — where it is cheap — rather than on a device.
+
+    This narrows the risk; it cannot eliminate it, since a font wider than any
+    tested still exists. Keep nav labels to about seven characters.
+  */
+  const tight = await page.evaluate(() =>
     [...document.querySelectorAll('nav.fixed button span')]
-      .filter((s) => s.scrollWidth > s.clientWidth + 1)
-      .map((s) => s.textContent));
-  expect(clipped).toEqual([]);
+      .map((s) => ({ text: s.textContent ?? '', slack: s.clientWidth - s.scrollWidth }))
+      .filter((s) => s.slack < 4)
+      .map((s) => `${s.text} (${s.slack}px of room)`));
+  expect(tight, 'a bottom-nav label has no room to spare').toEqual([]);
 });

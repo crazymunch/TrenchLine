@@ -1,14 +1,14 @@
 import { expect, type Page } from '@playwright/test';
 
 /** Go to a view through whichever nav the viewport shows. */
-export async function goTo(page: Page, view: 'Roster' | 'Play' | 'Crusade' | 'Directory' | 'Codex') {
+export async function goTo(page: Page, view: 'Roster' | 'Play' | 'Crusade' | 'Players' | 'Codex') {
   const bottomNav = page.locator('nav.fixed');
   if (await bottomNav.isVisible()) {
     await bottomNav.getByRole('button', { name: view, exact: true }).click();
   } else {
     const sidebarLabel = {
       Roster: 'Warband Roster', Play: 'Tabletop Combat', Crusade: 'Crusade Campaign',
-      Directory: 'Roster Directory', Codex: 'Rules Codex',
+      Players: 'Roster Directory', Codex: 'Rules Codex',
     }[view];
     await page.getByRole('button', { name: new RegExp(sidebarLabel) }).first().click();
   }

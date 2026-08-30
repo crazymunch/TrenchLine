@@ -24,7 +24,13 @@ export const MobileNav: React.FC = () => {
     // to "Campaig…", and this is what the view calls itself anyway — the
     // sidebar reads "Crusade Campaign" and the header "CRUSADE CAMPAIGN HUB".
     { id: 'campaign', label: 'Crusade', icon: <Flag className="w-4 h-4" /> },
-    { id: 'directory', label: 'Directory', icon: <Users className="w-4 h-4" /> },
+    // "Players", not "Directory": nine characters do not fit in the ~53px a
+    // five-way split of a 375px bar gives each label, and whether they *appear*
+    // to fit depends on the platform font — it passed locally and clipped on
+    // CI's. "Crusade" is seven and fits on both, so seven is the safe width.
+    // The icon here is already `Users`, and this is other players' warbands as
+    // against your own roster in the first slot.
+    { id: 'directory', label: 'Players', icon: <Users className="w-4 h-4" /> },
     { id: 'codex', label: 'Codex', icon: <BookOpen className="w-4 h-4" /> },
     ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }] : [])
   ];
