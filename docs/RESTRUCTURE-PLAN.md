@@ -143,7 +143,7 @@ All four are covered by regression tests.
 | 2.8 | ✅ Provenance UI — `ProvenanceTag`, per field, served per entity from `/api/dataset/provenance` |
 | 2.9 | ✅ 124 tests, including the real 1,320-Ducat roster against the real dataset |
 
-| 2.11 | 🟡 **Migrate the app onto the generated dataset** — legality is migrated; **recruitment is not**. See below. |
+| 2.11 | ✅ **Migrate the app onto the generated dataset** — legality *and* recruitment. See below. |
 
 **Done when:** an illegal roster cannot be silently built; every violation names
 the rule and cites its source; switching rulesets shows a diff rather than
@@ -165,22 +165,38 @@ legality authority: 6 armouries, 213 rows. The 1.6 MB dataset is served from
 `fromWarband.toRoster` joins the saved warband to it by name, re-pricing from
 the armoury.
 
-**What is not: recruiting.** `useStore.ts` still builds its unit list as
-`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts`, and `AddUnitModal`
-reads it. So the models a player can *add* still come from the hand-written
-data the audit measured as 97% wrong on statlines, with 38% of its wargear
-invented. `QuickSearchModal`, `newRecruitImporter` and `warbandLore` read it too.
+**And recruiting, now.** `useStore` built its unit list as
+`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts` — 45 hand-written
+entries the audit measured as 97% wrong on statlines, with 38% of its wargear
+invented — and `AddUnitModal` read it. So a roster was *checked* against sourced
+data but *assembled* from unsourced data, and the check fired after the mistake
+instead of preventing it.
 
-This is the gap between the two halves of Phase 2's own acceptance test. A
-finished roster is now checked against sourced data and told exactly what is
-wrong with it — but it is still *assembled* from unsourced data, so the check
-fires after the fact rather than preventing the mistake. Until the recruit path
-moves, **"an illegal roster cannot be silently built" is not true**; only "an
-illegal roster does not stay silent" is.
+`src/rules/recruitable.ts` converts the generated dataset into the shape the
+roster format speaks, and `hydrateCatalogs` fills the store from it. **All 2,000
+lines of hand-written profiles are deleted.** What the conversion drops — Glory
+costs the format cannot hold, per-model options — is dropped in one place with a
+note, not silently per call site; and `gloryCost` was added to the roster format
+rather than dropped, because a Mercenary at 0 Ducats and 5 Glory rendered as
+"0 D": free, and hireable without limit.
 
-Moving it is a store restructure, not a data change, and `useStore.ts` is the
-2,364-line file Phase 4.2 exists to split — so it is sequenced with that work
-rather than bolted on ahead of it.
+Three things the deleted entries got wrong that the dataset gets right:
+
+| | old | new |
+|---|---|---|
+| statlines | 97% wrong | traceable to a pinned catalogue commit |
+| recruitment limits | none at all | 69 of 89 units carry one, enforced |
+| default loadouts | invented | none — the catalogues do not issue gear |
+
+**The catalogs start empty** and fill when the dataset loads. That is the honest
+state and the builder says so; there is deliberately no fallback, because a
+fallback to `defaultRules.ts` is precisely the `githubSync` failure this project
+deleted (AUDIT §1.8).
+
+One bug found wiring it up, and it is the third instance of the same one: the
+dataset spells a faction `Iron Sultanate` and the app spells it
+`iron-sultanate`, so the recruit list filtered to nothing and showed an empty
+roster. The adapter resolves through `sameFaction` now.
 
 ### 2.10 — picking a variant, and the joins it exposed
 
@@ -308,12 +324,12 @@ fabricated (AUDIT §1.13).
 | # | Task |
 |---|---|
 | 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
-| 3.2 | 🟡 4 modals fully on `Sheet`; the other 20 get scroll lock, focus trap and Escape via `useOverlay`. Structural migration outstanding. |
+| 3.2 | ✅ All 24 modals on `Sheet` — behaviour *and* layout |
 | 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
-| 3.4 | Touch targets ≥44px and the type scale from [`MOBILE.md`](MOBILE.md) applied app-wide |
+| 3.4 | ✅ Touch targets ≥44px and the type scale applied app-wide, both **enforced in `globals.css`** rather than per component |
 | 3.5 | ✅ 3,815 hex values tokenised, and two bugs that stopped the themes working at all |
-| 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
-| 3.7 | Playwright E2E at 375×667 and 768×1024 |
+| 3.6 | ✅ Play Mode phone pass — a 58px sticky combat strip through a 6,300px screen |
+| 3.7 | ✅ Playwright E2E at 375×667 and 768×1024 — 31 tests, in CI |
 
 **Done when:** every view meets the [`MOBILE.md`](MOBILE.md) definition of done.
 
@@ -335,18 +351,52 @@ header is now two rows — badge and actions, then the name full width. All 28 o
 the card's sub-12px sizes moved behind `sm:`, so the phone reads at 12px and the
 desktop density is unchanged.
 
-Measured in Chromium against a production build:
+Measured in Chromium against a production build, across all five views and the
+modals reachable from them:
 
-| | 375×667 | 768×1024 | 1280×900 |
-|---|---|---|---|
-| horizontal page scroll | none | none | none |
-| page errors | 0 | 0 | 0 |
-| text under 12px | 30 | *by design* | *by design* |
-| targets under 44px | 115 | — | — |
+| | before 3.4 | after 3.4 |
+|---|---|---|
+| text under 12px (375px) | 106 | **0** |
+| targets under 44px (375px) | 153 | **0** |
+| form controls under 16px | 12 | **0** |
+| horizontal page scroll | none | none |
 
-The phone numbers are the honest remaining backlog. They have barely moved,
-because 3.5 was about *colour* and these are about *size* — 3.4 is the pass that
-drives them down, and it has only touched `UnitCard` so far.
+Desktop density is unchanged: 413 sub-12px strings remain at 1280px, which is
+the `sm:` restoration working as intended.
+
+### 3.4 — the rules moved into the stylesheet
+
+Two thirds of the backlog was one class of mistake repeated: `py-1.5` on a
+button, `text-xs` on a select. Fixing 150 of those by hand fixes them once — the
+next toolbar button is 30px again, because nothing says otherwise. So `phone
+buttons are 44px` and `phone form controls are 16px and 44px` are now rules in
+`globals.css`, with `.tap` as the documented opt-out for controls that must stay
+visually small (a remove cross, a chip, a modal close button) and get their 44px
+as an invisible hit overlay instead.
+
+Both sit **outside `@layer`** for the reason the theme variables do: Tailwind
+drops `@layer base` rules whose selectors are not in the content globs, which is
+how the six theme blocks vanished in 3.5.
+
+The type scale was mechanical — 397 occurrences of `text-[9|10|11]px` became
+`text-xs sm:text-[Npx]` — but it was not free. At 12px the bottom nav clipped
+`Campaign` to `Campaig…` at every phone width, which is worse than the 10px
+label it replaced. The nav gave the labels room instead: the theme switcher and
+bug reporter are utilities rather than destinations, so they became icon-only at
+a fixed 44px, and `Campaign` became `Crusade`, which is what the view calls
+itself anyway.
+
+**Two layout bugs found while measuring**, both in the desktop header and both
+invisible until a view with a long title was measured rather than the default
+one:
+
+- The title block had no `min-w-0`, so it sized to its longest subtitle.
+- The actions group had `min-w-0` *and* `flex-shrink-0` children, so it shrank
+  below its own content and the children spilled out of it.
+
+Together they put 26px of sideways scroll on four of five views at 1280px. The
+fix is the priority the layout always wanted: the title truncates, the controls
+never shrink.
 
 ### 3.5 — and the two bugs behind the dead theme switcher
 
@@ -378,16 +428,55 @@ Measured: switching theme moves the body ground across all six, and 324 of the
 358 elements carrying the default gold follow it. The 34 that do not are
 remaining one-off hexes.
 
-### 3.2 — behaviour first
+### 3.2 — behaviour first, then layout
 
 Across the thirty un-migrated modals there was **one** Escape handler, **one**
 body scroll lock and **one** focus trap, all three inside `Sheet`. `useOverlay`
-extracts that implementation so a modal still rendering its own overlay gets the
-guarantees from one hook; `Sheet` delegates to it. Applied to 20; `KeywordPopover`
-and `ConfirmModal` take no `onClose` and are named rather than skipped silently.
+extracted that implementation so a modal still rendering its own overlay got the
+guarantees from one hook. That bought the correctness; the remaining 20 have now
+moved structurally too, so they also get `dvh`, a bottom sheet on a phone, a
+sticky header and footer, and safe-area padding.
 
-Structural migration to `<Sheet>` is still outstanding for those 20 — this buys
-the correctness, not the layout.
+Seven carried a footer whose only content duplicated the header's close button;
+those are dropped, each one named in the commit rather than vanishing quietly.
+Three needed their own shape: the quick search makes the search field its title,
+and the recruit sheet and post-battle wizard keep their tab strips in the
+scrolling body — `Sheet`'s header is already sticky, and a second fixed bar plus
+a fixed footer leaves about a third of a phone screen for the step you are
+filling in.
+
+### 3.6 — Play Mode on a phone
+
+The combat screen is about **6,300px tall** with nine models deployed: nine and
+a half phone screens. Turn, Next Turn and End Match all lived at the top of it,
+so after the second model a player was scrolling the length of the match to
+touch any of them, one-handed, at a table.
+
+Making the whole HUD sticky was the obvious fix and the wrong one — it is 323px
+even collapsed, and a bar that permanently owns half a 667px screen is not a fix
+for a scrolling problem. A **58px strip** carries the turn number and the three
+actions instead, and the full HUD scrolls with the page.
+
+### 3.7 — end-to-end
+
+31 tests across two viewports, against a **production build**: the bugs they
+exist to catch are production bugs (a Tailwind rule tree-shaken out of the
+compiled stylesheet, a layout that only overflows once real data has loaded) and
+none of them reproduce under `next dev`.
+
+They assert the mobile definition of done **per view**, because that is exactly
+how the desktop header overflow survived an earlier measurement pass: it was
+only wrong on views whose title was long. And they assert the *data on screen* —
+"this scenario lasts four Turns", "Infiltrators must deploy normally",
+`ARMOUR PIERCING` present and `HEAVY COVER` absent — because unit tests covering
+the dataset are what let the Codex display invented Glorious Deeds for as long
+as it did.
+
+Running them exposed a real gap: the 44px and 16px rules stopped at 639px, so
+the 768px tablet — which [`MOBILE.md`](MOBILE.md) itself calls "the common table
+device" — was exempt. A finger is a finger at 768px, and iPad Safari zooms a
+sub-16px input exactly as iPhone Safari does. Both rules now run to 1023px,
+where a laptop starts.
 
 ---
 
@@ -398,10 +487,40 @@ the correctness, not the layout.
 | # | Task |
 |---|---|
 | 4.1 | Real routes — `/roster/[id]`, `/play/[matchId]`, `/campaign/[id]`, `/codex/[...slug]` |
-| 4.2 | Split `useStore.ts` (2,364 lines) into roster / match / campaign / settings |
+| 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
 | 4.3 | Resolve the `localStorage` ⇄ Postgres dual source of truth |
 | 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
 | 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
+
+### 4.2 — the store, in pieces
+
+`useStore.ts` was 2,471 lines: warbands, models, progression, play mode, the
+campaign, the customizer and the theme, in one object literal. It is now 54
+lines of composition over seven slices.
+
+| file | lines | |
+|---|---:|---|
+| `slices/roster.ts` | 561 | warbands, cloud sync, stash, favourites |
+| `slices/campaign.ts` | 437 | enrolment, territories, the post-battle sequence |
+| `slices/progression.ts` | 431 | advancements, skills, scars, titles, deeds |
+| `slices/units.ts` | 395 | recruiting, naming, equipping |
+| `slices/catalog.ts` | 146 | the rule catalogs and the player's own additions |
+| `slices/match.ts` | 136 | the turn counter, wounds, markers, activation |
+| `slices/settings.ts` | 43 | view, theme, ruleset, pending diffs |
+
+`AppState` stays whole. Zustand's slice pattern types each creator as
+`StateCreator<AppState, [], [], ItsOwnKeys>` precisely so `get()` still reaches
+the whole store, and seven partial types importing each other would be the same
+coupling spread over more files. Nothing about how components use the store
+changed — `useStore()` still returns everything.
+
+The split was checked mechanically rather than by eye: every key the old
+returned object defined is defined by exactly one slice, none is missing and
+none is defined twice.
+
+`readInitialState()` does the one read of `localStorage`, so a slice that needs
+a seed takes it as an argument instead of closing over a variable defined four
+hundred lines above it.
 
 ---
 

@@ -120,13 +120,20 @@ const injuries = catalogueInjuries();
  */
 const strays = ['OFFICIAL_TRAUMA_TABLE', 'OFFICIAL_COMMON_EXPLORATION', 'OFFICIAL_RARE_EXPLORATION',
                 'OFFICIAL_LEGENDARY_EXPLORATION', 'OFFICIAL_MELEE_SKILLS', 'OFFICIAL_RANGED_SKILLS',
-                'OFFICIAL_STEALTH_SKILLS', 'OFFICIAL_WILDCARD_SKILLS']
+                'OFFICIAL_STEALTH_SKILLS', 'OFFICIAL_WILDCARD_SKILLS',
+                // The arsenal and the glossary went the same way, and for the
+                // same reason: one Ducat cost cannot be right for six factions,
+                // and two of the 46 hand-written keywords were invented outright.
+                'OFFICIAL_WEAPONS', 'OFFICIAL_ARMOUR', 'OFFICIAL_EQUIPMENT',
+                'OFFICIAL_KEYWORDS']
   .filter((n) => arrayLiteral(src, n));
 if (strays.length) {
-  console.log(`!! hand-written campaign tables are back in ${APP}: ${strays.join(', ')}`);
-  console.log('   These were fabricated once (AUDIT §1.13). The app reads dataset.campaign.\n');
+  console.log(`!! hand-written game data is back in ${APP}: ${strays.join(', ')}`);
+  console.log('   Every one of these was fabricated or wrong by construction ' +
+              '(AUDIT §1.13). The app reads the generated dataset.\n');
+  process.exitCode = 1;
 } else {
-  console.log(`ok: no hand-written campaign tables in ${APP} — all seven are derived.\n`);
+  console.log(`ok: no hand-written tables, arsenal or glossary in ${APP} — all derived.\n`);
 }
 
 const gen = readFileSync(GENERATED, 'utf8');

@@ -137,7 +137,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
                 Switching would change
               </h3>
 
-              <div className="flex flex-wrap gap-2 text-[11px] font-mono">
+              <div className="flex flex-wrap gap-2 text-xs sm:text-[11px] font-mono">
                 <Stat label="changed" value={diff.changed.length} />
                 <Stat label="added" value={diff.added.length} />
                 <Stat label="removed" value={diff.removed.length} tone={diff.removed.length ? 'warn' : undefined} />
@@ -162,7 +162,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
               ))}
 
               {diff.changed.length > affecting.length + 8 && (
-                <p className="text-[10px] font-mono text-theme-muted">
+                <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
                   …and {diff.changed.length - affecting.length - 8} more elsewhere in the ruleset.
                 </p>
               )}
@@ -193,7 +193,7 @@ const Entry: React.FC<{ entry: EntityDiff; muted?: boolean }> = ({ entry, muted 
     </div>
     <div className="mt-1.5 space-y-1">
       {entry.changes.map((c, i) => (
-        <div key={i} className="flex items-baseline gap-2 text-[10px] font-mono">
+        <div key={i} className="flex items-baseline gap-2 text-xs sm:text-[10px] font-mono">
           <span className="text-theme-muted w-24 flex-shrink-0">{c.field}</span>
           <span className="text-theme-muted line-through truncate">{c.from}</span>
           <ArrowRight className="w-3 h-3 text-theme-muted flex-shrink-0" />

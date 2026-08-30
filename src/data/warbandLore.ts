@@ -1,6 +1,5 @@
 import { ActiveUnit, Warband, WarbandSnapshot, StashedItem } from '../types/warband';
 import { MatchRecord } from '../types/campaign';
-import { BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from './defaultRules';
 
 export interface KnownUnitLore {
   matchPatterns: string[];

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
+import { useScenarios } from '../../rules/useScenarios';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
   X, 
@@ -21,28 +22,30 @@ interface QuickSearchModalProps {
 }
 
 export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) => {
-  const { keywords, scenarios, weapons, armour } = useStore();
+  // The derived twelve plus the All Out War pack.
+  const { scenarios } = useScenarios();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [searchTerm, setSearchTerm] = useState('');
 
   const term = searchTerm.toLowerCase().trim();
 
-  const filteredKeywords = keywords.filter(
-    (k) => k.name.toLowerCase().includes(term) || (k.summary || '').toLowerCase().includes(term) || (k.fullText || k.description || '').toLowerCase().includes(term)
-  );
-
-  const filteredScenarios = scenarios.filter(
-    (s) => s.name.toLowerCase().includes(term) || (s.flavor || s.objective || '').toLowerCase().includes(term)
-  );
-
-  // The Trauma Table, derived. The hand-written INJURY_TABLE_D66 this replaced
-  // was a re-export of the fabricated tables (AUDIT §1.13).
+  // The Trauma Table and the Keyword Glossary, both derived. The hand-written
+  // INJURY_TABLE_D66 this replaced was a re-export of the fabricated tables
+  // (AUDIT §1.13), and the hand-written glossary invented two keywords.
   const searchRulesetId = typeof window !== 'undefined'
     ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
     : DEFAULT_RULESET_ID;
   const { dataset: searchDataset } = useDataset(searchRulesetId);
+
+  const filteredKeywords = (searchDataset?.keywords ?? []).filter(
+    (k) => k.name.toLowerCase().includes(term) || (k.description || '').toLowerCase().includes(term)
+  );
+
+  const filteredScenarios = scenarios.filter(
+    (s) => s.name.toLowerCase().includes(term)
+      || s.tagline.toLowerCase().includes(term)
+      || (s.entry?.sections ?? []).some((sec) => sec.body.toLowerCase().includes(term))
+  );
 
   const filteredInjuries = (searchDataset?.campaign.trauma ?? [])
     .map((t) => ({ roll: t.roll, title: t.name, name: t.name, effect: t.description, description: t.description }))
@@ -52,29 +55,29 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
       i.roll.includes(term));
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
-        
-        {/* Search Header */}
-        <div className="p-4 border-b border-theme-border bg-theme-base flex items-center justify-between gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-theme-primary absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              autoFocus
-              placeholder="Quick search rules, keywords, scenarios, or D66 injury rolls..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-theme-surface border border-theme-border rounded pl-9 pr-3 py-2 text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
-            />
-          </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
-            <X className="w-5 h-5" />
-          </button>
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      label="Quick rules search"
+      // The search field *is* the title: this sheet exists to be typed into,
+      // and a heading above the input would push it further from the thumb on
+      // the one screen where speed is the whole point.
+      title={
+        <div className="relative">
+          <Search className="w-4 h-4 text-theme-primary absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            autoFocus
+            placeholder="Search rules, keywords, scenarios, injuries…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-base sm:text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+          />
         </div>
-
-        {/* Results Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+      }
+    >
+      <div className="space-y-6">
           
           {/* Keywords Section */}
           {filteredKeywords.length > 0 && (
@@ -88,13 +91,14 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
                   <div key={k.name} className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-gothic font-bold text-sm text-theme-text">{k.name}</span>
-                      <span className="text-[9px] font-mono uppercase bg-theme-elevated text-theme-primary px-1.5 py-0.2 rounded">
-                        {k.category}
-                      </span>
+                      {k.type && (
+                        <span className="text-xs sm:text-[9px] font-mono uppercase bg-theme-elevated text-theme-primary px-1.5 py-0.2 rounded">
+                          {k.type}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-xs text-theme-muted">{k.summary}</p>
                     <p className="text-xs text-theme-text font-mono bg-theme-surface p-2 rounded mt-1 border border-theme-border/60">
-                      {k.fullText}
+                      {k.description}
                     </p>
                   </div>
                 ))}
@@ -136,19 +140,23 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
                 {filteredScenarios.map((sc) => (
                   <div key={sc.id} className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5">
                     <h4 className="font-gothic font-bold text-sm text-theme-text">{sc.name}</h4>
-                    <p className="text-xs text-theme-muted italic">{sc.flavor}</p>
-                    <div className="text-xs font-mono text-theme-primary bg-theme-surface p-2 rounded">
-                      <strong>Victory:</strong> {sc.victoryConditions}
-                    </div>
+                    <p className="text-xs text-theme-muted italic">{sc.tagline}</p>
+                    {/* The published victory conditions, or nothing. The
+                        hand-written scenarios this replaced had them wrong. */}
+                    {sc.entry?.sections
+                      .filter((sec) => sec.heading === 'VICTORY CONDITIONS' || sec.heading === 'GAME LENGTH')
+                      .map((sec) => (
+                        <div key={sec.heading} className="text-xs font-mono text-theme-primary bg-theme-surface p-2 rounded">
+                          <strong>{sec.heading}:</strong> {sec.body.replace(/\*\*/g, '').replace(/\n+/g, ' ')}
+                        </div>
+                      ))}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-        </div>
-
       </div>
-    </div>
+    </Sheet>
   );
 };

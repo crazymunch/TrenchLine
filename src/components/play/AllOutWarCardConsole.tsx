@@ -239,17 +239,17 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 <h2 className="font-gothic font-bold text-base sm:text-lg text-theme-text tracking-wide">
                   ALL OUT WAR: MULTIPLAYER CARD & ALLIANCE ENGINE
                 </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
+                <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
                   52-Card System
                 </span>
               </div>
-              <p className="text-[11px] text-theme-muted">
+              <p className="text-xs sm:text-[11px] text-theme-muted">
                 Initiative card draws, secret betrayal hands, 3-minute alliance negotiations, and VP bribes.
               </p>
             </div>
           </div>
 
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -335,17 +335,17 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                       className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-3 relative bevel-container"
                     >
                       <div className="flex items-center justify-between border-b border-theme-border pb-2">
-                        <span className="text-[10px] font-bold text-theme-primary uppercase">
+                        <span className="text-xs sm:text-[10px] font-bold text-theme-primary uppercase">
                           ACTIVATION #{idx + 1}
                         </span>
-                        <span className="text-[10px] text-theme-muted">
+                        <span className="text-xs sm:text-[10px] text-theme-muted">
                           {warbandScores[p.warbandId]?.vp || 0} VP
                         </span>
                       </div>
 
                       <div>
                         <strong className="font-gothic text-sm text-theme-text block">{p.warbandName}</strong>
-                        <span className="text-[10px] text-theme-muted block">
+                        <span className="text-xs sm:text-[10px] text-theme-muted block">
                           House Suit: <strong className="text-theme-primary uppercase">{p.assignedAceSuit}</strong>
                         </span>
                       </div>
@@ -353,17 +353,17 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                       {card ? (
                         <div className="p-3 bg-theme-surface rounded border border-theme-border flex items-center justify-between">
                           <div>
-                            <span className="text-[10px] text-theme-muted block">DRAWN CARD:</span>
+                            <span className="text-xs sm:text-[10px] text-theme-muted block">DRAWN CARD:</span>
                             <span className={`font-bold text-base ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-status-error' : 'text-theme-text'}`}>
                               {card.symbol} {card.label}
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-theme-elevated text-theme-primary font-bold">
+                          <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-elevated text-theme-primary font-bold">
                             Rank {card.value}
                           </span>
                         </div>
                       ) : (
-                        <div className="p-3 bg-theme-surface rounded border border-dashed border-theme-border text-center text-theme-muted italic text-[11px]">
+                        <div className="p-3 bg-theme-surface rounded border border-dashed border-theme-border text-center text-theme-muted italic text-xs sm:text-[11px]">
                           No card dealt. Click &quot;Deal Round Cards&quot; above.
                         </div>
                       )}
@@ -433,7 +433,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     }`}
                   >
                     <span>{p.warbandName}</span>
-                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-white">
+                    <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-white">
                       {p.betrayalHand.length} cards
                     </span>
                   </button>
@@ -444,11 +444,11 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-between bg-theme-elevated p-3 rounded border border-theme-border">
                   <div>
-                    <span className="text-theme-muted block text-[10px] uppercase">SELECTED COMMANDER</span>
+                    <span className="text-theme-muted block text-xs sm:text-[10px] uppercase">SELECTED COMMANDER</span>
                     <strong className="text-theme-text font-gothic text-sm">{selectedPlayer.warbandName}</strong>
                   </div>
                   <div className="text-right">
-                    <span className="text-theme-muted block text-[10px] uppercase">ASSIGNED HOUSE SUIT</span>
+                    <span className="text-theme-muted block text-xs sm:text-[10px] uppercase">ASSIGNED HOUSE SUIT</span>
                     <strong className="text-theme-primary text-sm uppercase">
                       {selectedPlayer.assignedAceSuit} Ace
                     </strong>
@@ -476,7 +476,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                                 <span className={`font-bold text-sm ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-status-error' : 'text-theme-text'}`}>
                                   {card.symbol} {card.label}
                                 </span>
-                                <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
+                                <span className={`text-xs sm:text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
                                   isCoup ? 'bg-theme-accent text-white' : 'bg-theme-elevated text-theme-primary'
                                 }`}>
                                   {isCoup ? 'COUP ACTION' : 'RUSE ACTION'}
@@ -487,10 +487,10 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                                 <strong className="text-theme-primary block font-gothic text-sm">
                                   {isCoup ? effect?.coupTitle : effect?.ruseTitle}
                                 </strong>
-                                <span className="text-[10px] text-theme-muted italic block pt-0.5">
+                                <span className="text-xs sm:text-[10px] text-theme-muted italic block pt-0.5">
                                   {isCoup ? effect?.coupTiming : effect?.ruseTiming}
                                 </span>
-                                <p className="text-theme-text text-[11px] leading-relaxed pt-1">
+                                <p className="text-theme-text text-xs sm:text-[11px] leading-relaxed pt-1">
                                   {isCoup ? effect?.coupEffect : effect?.ruseEffect}
                                 </p>
                               </div>
@@ -588,7 +588,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     <strong className="font-gothic text-sm text-theme-text block">{p.warbandName}</strong>
                     
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase text-theme-muted block">Secret Chosen Ally:</label>
+                      <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Secret Chosen Ally:</label>
                       <select
                         value={p.secretAllyWarbandId || ''}
                         onChange={(e) => {
@@ -611,7 +611,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     </div>
 
                     {alliancesRevealed && (
-                      <div className="pt-2 border-t border-theme-border text-[10px]">
+                      <div className="pt-2 border-t border-theme-border text-xs sm:text-[10px]">
                         <span className="text-theme-muted block">Alliance Status:</span>
                         {p.isJointAllianceWith ? (
                           <span className="text-status-legal font-bold block">
@@ -673,7 +673,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                       </div>
 
                       <div className="space-y-2">
-                        <span className="text-[10px] text-theme-muted block uppercase">Send 1 VP Bribe to:</span>
+                        <span className="text-xs sm:text-[10px] text-theme-muted block uppercase">Send 1 VP Bribe to:</span>
                         <div className="flex flex-wrap gap-2">
                           {players
                             .filter((toPlayer) => toPlayer.warbandId !== fromPlayer.warbandId)
@@ -700,7 +700,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
               {/* Final Proceed to Turn Action */}
               <div className="pt-4 border-t border-theme-border flex items-center justify-between">
-                <span className="text-[11px] text-theme-muted">
+                <span className="text-xs sm:text-[11px] text-theme-muted">
                   Pre-round negotiations complete.
                 </span>
                 <button

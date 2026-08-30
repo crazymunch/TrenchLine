@@ -261,10 +261,10 @@ export const TerritoryMap: React.FC = () => {
                   {/* Pin Label Tooltip */}
                   {showLabels && (
                     <div className="mt-1 px-2 py-0.5 rounded bg-theme-base/95 border border-theme-border shadow-xl text-center whitespace-nowrap pointer-events-none group-hover:border-theme-primary transition-all">
-                      <span className="font-gothic font-bold text-[11px] text-theme-text block leading-tight">
+                      <span className="font-gothic font-bold text-xs sm:text-[11px] text-theme-text block leading-tight">
                         {node.name}
                       </span>
-                      <span className="text-[9px] text-theme-primary block font-mono">
+                      <span className="text-xs sm:text-[9px] text-theme-primary block font-mono">
                         {node.controlledByPlayerName ? `Held by: ${node.controlledByPlayerName.slice(0, 20)}` : 'Unclaimed'}
                       </span>
                     </div>
@@ -297,21 +297,21 @@ export const TerritoryMap: React.FC = () => {
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-theme-muted">
+                    <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">
                       {node.type} • {node.region || 'Strategic Sector'}
                     </span>
                     {isControlledByMe ? (
-                      <span className="text-[10px] font-bold text-status-legal flex items-center space-x-1">
+                      <span className="text-xs sm:text-[10px] font-bold text-status-legal flex items-center space-x-1">
                         <CheckCircle className="w-3.5 h-3.5" />
                         <span>FORTIFIED</span>
                       </span>
                     ) : isContested ? (
-                      <span className="text-[10px] font-bold text-theme-primary flex items-center space-x-1">
+                      <span className="text-xs sm:text-[10px] font-bold text-theme-primary flex items-center space-x-1">
                         <Shield className="w-3.5 h-3.5" />
                         <span>OCCUPIED</span>
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold text-theme-muted">UNCLAIMED</span>
+                      <span className="text-xs sm:text-[10px] font-bold text-theme-muted">UNCLAIMED</span>
                     )}
                   </div>
 
@@ -331,7 +331,7 @@ export const TerritoryMap: React.FC = () => {
                     <Award className="w-3.5 h-3.5" />
                     <span>Perk: {node.perk}</span>
                   </div>
-                  <div className="text-[11px] text-theme-muted">
+                  <div className="text-xs sm:text-[11px] text-theme-muted">
                     Controller: <strong className="text-theme-text">{node.controlledByPlayerName || 'None (Unclaimed)'}</strong>
                   </div>
                 </div>
@@ -354,7 +354,7 @@ export const TerritoryMap: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedTerritory(null)}
-                className="text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-white p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -363,7 +363,7 @@ export const TerritoryMap: React.FC = () => {
             <div className="p-6 space-y-4">
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-[10px] text-theme-primary uppercase font-bold px-2 py-0.5 rounded bg-theme-elevated border border-theme-primary/30">
+                  <span className="text-xs sm:text-[10px] text-theme-primary uppercase font-bold px-2 py-0.5 rounded bg-theme-elevated border border-theme-primary/30">
                     {selectedTerritory.region || 'Frontline Sector'}
                   </span>
                   <span className="text-xs text-theme-muted">{selectedTerritory.type}</span>
@@ -389,7 +389,7 @@ export const TerritoryMap: React.FC = () => {
 
               {/* Assign to Any Warband in Roster Directory */}
               <div className="p-4 bg-theme-base rounded border border-theme-border space-y-2">
-                <label className="text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                   <Users className="w-3.5 h-3.5" />
                   <span>Assign Theater Control to Warband from Directory:</span>
                 </label>

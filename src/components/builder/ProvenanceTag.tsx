@@ -78,7 +78,7 @@ export const ProvenanceTag: React.FC<Props> = ({ entity, rulesetId, fields, labe
     <>
       <button
         onClick={show}
-        className="inline-flex items-center gap-1 min-h-[44px] px-1 -my-2 text-xs sm:text-[10px] sm:min-h-0 sm:my-0 font-mono text-theme-muted hover:text-theme-primary transition-colors"
+        className="inline-flex items-center gap-1 min-h-[44px] px-1 -my-2 text-xs sm:text-[10px] lg:min-h-0 lg:my-0 font-mono text-theme-muted hover:text-theme-primary transition-colors"
         title="Where these values came from"
       >
         <HelpCircle className="w-3 h-3" />

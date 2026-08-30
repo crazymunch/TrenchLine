@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -103,8 +103,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
 
   const rulesetId = typeof window !== 'undefined'
     ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
@@ -186,41 +184,24 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const unitUpgrades = unit.specialUpgrades || [];
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
-        
-        {/* Header */}
-        <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-theme-primary" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="font-gothic font-bold text-base sm:text-lg text-white">
-                  {unit.customName}
-                </h2>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-theme-border text-theme-primary uppercase font-bold">
-                  {unit.profileSnapshot.name}
-                </span>
-                {unit.isElite && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#7C4DFF] text-white uppercase font-bold">
-                    Elite
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-theme-muted font-mono">
-                Advancement, Compendium Skills, Trauma Scars & Faction Traits
-              </p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-theme-muted hover:text-white p-1 rounded transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      title={`Advancement: ${unit.customName}`}
+      label="Advancement"
+      footer={<div className="flex items-center justify-between w-full gap-3">
+            <span className="text-xs sm:text-[10px] text-theme-muted">
+              Warband Cost Adjusted: <strong className="text-theme-primary">{unit.totalCost} D</strong>
+            </span>
+            <button
+              onClick={onClose}
+              className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+            >
+              Done
+            </button>
+      </div>}
+    >
 
         {/* Tab Navigation */}
         <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
@@ -289,7 +270,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         </div>
 
         {/* Tab Content */}
-        <div className="p-5 overflow-y-auto space-y-4 flex-1">
           
           {/* TAB 0: HOMUNCULUS ALCHEMICAL FORMULAS */}
           {activeTab === 'formulas' && isHomunculus && (
@@ -301,7 +281,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     Takwin Homunculus Alchemical Formulations
                   </strong>
                 </div>
-                <p className="text-[11px] text-theme-muted leading-relaxed">
+                <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                   Homunculi created through the Secrets of Takwin or discovered via the Book of Golems may be infused with experimental alchemical formulas upon recruitment and between campaign battles.
                 </p>
               </div>
@@ -335,11 +315,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                           <strong className={`text-xs ${isSelected ? 'text-theme-primary font-bold' : 'text-theme-text'}`}>
                             {formula.name}
                           </strong>
-                          <span className="text-[10px] font-bold text-theme-primary">
+                          <span className="text-xs sm:text-[10px] font-bold text-theme-primary">
                             +{formula.cost} Ducats
                           </span>
                         </div>
-                        <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
+                        <p className="text-xs sm:text-[11px] text-theme-muted pl-6 leading-relaxed">
                           {formula.description}
                         </p>
                       </div>
@@ -358,7 +338,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               <div className="p-4 bg-theme-base rounded-md border border-theme-border flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <span className="text-xs uppercase text-theme-muted font-bold block">Experience Points (XP)</span>
-                  <p className="text-[11px] text-theme-muted leading-relaxed">
+                  <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                     Warriors gain 1 XP per match survived or objective scored. 5 XP unlocks an official Compendium Skill roll.
                   </p>
                 </div>
@@ -389,7 +369,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     <Crown className="w-4 h-4 text-[#7C4DFF]" />
                     <strong className="text-xs uppercase text-theme-text font-bold">Elite Warrior Promotion</strong>
                   </div>
-                  <p className="text-[11px] text-theme-muted leading-relaxed">
+                  <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                     Promoting a Trooper to Elite status allows them to select skills across multiple disciplines and increases their survival resilience.
                   </p>
                 </div>
@@ -420,7 +400,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <button
                     key={cat}
                     onClick={() => setSelectedSkillCategory(cat)}
-                    className={`flex-1 py-1.5 text-center font-bold uppercase text-[10px] rounded transition-all ${
+                    className={`flex-1 py-1.5 text-center font-bold uppercase text-xs sm:text-[10px] rounded transition-all ${
                       selectedSkillCategory === cat
                         ? 'bg-theme-primary text-black shadow'
                         : 'text-theme-muted hover:text-white'
@@ -475,7 +455,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
               {/* Acquired Skills List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-theme-muted block">
+                <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Active Acquired Skills ({unitSkills.length}):
                 </span>
                 {unitSkills.length === 0 ? (
@@ -488,11 +468,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
                           <strong className="text-xs text-theme-primary font-bold">{s.name}</strong>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
+                          <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                             {s.category} • [{s.roll || 'D66'}]
                           </span>
                         </div>
-                        <p className="text-[11px] text-theme-muted leading-relaxed">
+                        <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
                       </div>
@@ -549,7 +529,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
               {/* Scars List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-theme-muted block">
+                <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Active Permanent Injuries & Scars ({unitScars.length}):
                 </span>
                 {unitScars.length === 0 ? (
@@ -562,11 +542,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
                           <strong className="text-xs text-status-error font-bold">{s.name}</strong>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
+                          <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                             Trauma Roll: [{s.roll}]
                           </span>
                         </div>
-                        <p className="text-[11px] text-theme-muted leading-relaxed">
+                        <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
                       </div>
@@ -598,7 +578,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                       <Flame className="w-3.5 h-3.5" />
                       <span>{factionUpgrades.category} (Max {factionUpgrades.maxSelect})</span>
                     </strong>
-                    <span className="text-[10px] text-theme-muted">
+                    <span className="text-xs sm:text-[10px] text-theme-muted">
                       {unitUpgrades.filter(u => u.category === factionUpgrades.category).length} / {factionUpgrades.maxSelect} Selected
                     </span>
                   </div>
@@ -632,11 +612,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                               <strong className={`text-xs ${isSelected ? 'text-theme-primary' : 'text-theme-text'}`}>
                                 {opt.name}
                               </strong>
-                              <span className="text-[10px] font-bold text-theme-primary">
+                              <span className="text-xs sm:text-[10px] font-bold text-theme-primary">
                                 {opt.cost} Ducats
                               </span>
                             </div>
-                            <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
+                            <p className="text-xs sm:text-[11px] text-theme-muted pl-6 leading-relaxed">
                               {opt.description}
                             </p>
                           </div>
@@ -654,7 +634,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     <Users className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Fireteam Coordination Protocol (0/1)</span>
                   </strong>
-                  <span className="text-[10px] text-theme-muted">
+                  <span className="text-xs sm:text-[10px] text-theme-muted">
                     {unit.fireteam ? 'Assigned' : 'None'}
                   </span>
                 </div>
@@ -684,7 +664,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                               {ft.name}
                             </strong>
                           </div>
-                          <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
+                          <p className="text-xs sm:text-[11px] text-theme-muted pl-6 leading-relaxed">
                             {ft.description}
                           </p>
                         </div>
@@ -697,22 +677,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             </div>
           )}
 
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
-          <span className="text-[10px] text-theme-muted">
-            Warband Cost Adjusted: <strong className="text-theme-primary">{unit.totalCost} D</strong>
-          </span>
-          <button
-            onClick={onClose}
-            className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
-          >
-            Done
-          </button>
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

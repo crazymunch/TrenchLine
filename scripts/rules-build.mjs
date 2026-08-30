@@ -22,8 +22,11 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
+import { parseBattlekit } from './lib/parse-battlekit.mjs';
+import { parseKeywords } from './lib/parse-keywords.mjs';
+import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
-import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
+import { verify, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
@@ -85,6 +88,35 @@ for (const ruleset of RULESETS) {
       `book, or the faction entries disagree (${startingBudget?.seen?.join(', ') ?? 'none found'}).`);
   }
 
+  // The Battlekit chapter: descriptions and per-item special rules. Throws if
+  // the chapter stops yielding profiles, rather than shipping an empty arsenal
+  // — the Codex would render that as "this ruleset has no wargear".
+  const battlekit = parseBattlekit();
+
+  // The Keyword Glossary. The app's hand-written copy had 46 entries against
+  // the book's 59, invented HEAVY COVER and LIGHT COVER outright, and split the
+  // book's parameterised forms into instances — NEGATE FIRE, NEGATE GAS and
+  // NEGATE SHRAPNEL for the one NEGATE [KEYWORD] rule.
+  const keywords = parseKeywords();
+
+  // The twelve scenarios. The hand-written set had the wrong game length for
+  // all twelve, inverted Claim No Man's Land's Infiltrator rule, and invented
+  // 32 of its 46 Glorious Deeds.
+  const scenarios = parseScenarios().map((s) => {
+    // The map is not derived, it is *resolved*: the hand-written scenarios
+    // pointed every one of them at /maps/scenario_N.webp, and not one of those
+    // files exists — twelve broken images that nothing ever reported, the same
+    // failure as the campaign map's /world_map.png.
+    const file = `maps/${s.slug}.png`;
+    if (!fs.existsSync(path.join('public', file))) {
+      throw new Error(
+        `rules-build: scenario ${s.roman} (${s.name}) has no deployment map at ` +
+        `public/${file}. Emitting the path anyway is how the app ended up ` +
+        'showing twelve broken images for its twelve scenario maps.');
+    }
+    return { ...s, mapImage: `/${file}` };
+  });
+
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
   const dataset = {
@@ -101,7 +133,26 @@ for (const ruleset of RULESETS) {
       // "we failed to find any" — only the first is a fact about the game.
       noSpecialRules: Boolean(f.explicitlyNone),
     })),
-    keywords: [],
+    /**
+     * The Keyword Glossary, verbatim, Tag/Effect distinction intact.
+     *
+     * The book draws that distinction and it is itself a rule — "a Keyword that
+     * confers an Effect also acts as a Tag" — so the two are carried through
+     * rather than flattened into one list.
+     */
+    keywords,
+    /** The twelve scenarios, as printed, with their maps resolved. */
+    scenarios,
+    /**
+     * The Battlekit chapter, verbatim.
+     *
+     * The Codex's arsenal read 34 hand-written wargear records until this
+     * existed, each with a single typed Ducat cost — and wargear is priced per
+     * faction, so one cost on one record was wrong for five factions out of
+     * six by construction. Prices come from the Armoury Tables; this carries
+     * the prose they do not print.
+     */
+    battlekit: battlekit.entries,
     /**
      * The campaign economy's published numbers.
      *
@@ -328,6 +379,23 @@ for (const ruleset of RULESETS) {
   const optUnits = dataset.units.filter((u) => u.options?.length).length;
   const optGroups = new Set(dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.group)));
   console.log(`  unit options: ${opts} across ${optUnits} units, ${optGroups.size} groups`);
+  // How much of the arsenal the chapter actually covers. Reported rather than
+  // asserted: the Armoury Tables also stock faction-exclusive Battlekit printed
+  // in Warbands of Trench Crusade, so a shortfall here is expected, and only a
+  // *collapse* in the number means the parse broke.
+  const bkKeys = new Set(dataset.battlekit.map((b) => nameKey(b.name)));
+  const armouryNames = new Set(dataset.armouries.flatMap((a) => a.rows.map((r) => nameKey(r.name))));
+  const described = [...armouryNames].filter((n) => bkKeys.has(n)).length;
+  const deeds = dataset.scenarios.reduce((n, s) =>
+    n + (s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body.match(/^- /gm)?.length ?? 0), 0);
+  console.log(`  scenarios: ${dataset.scenarios.length} with maps, ${deeds} Glorious Deeds`);
+  console.log(`  keywords: ${dataset.keywords.length} glossary entries ` +
+              `(${dataset.keywords.filter((k) => k.type === 'Effect').length} Effect, ` +
+              `${dataset.keywords.filter((k) => k.type === 'Tag').length} Tag)`);
+  console.log(`  battlekit: ${dataset.battlekit.length} entries described` +
+              ` (${described}/${armouryNames.size} distinct armoury items carry a description)` +
+              (battlekit.unreadable.length ? `  (${battlekit.unreadable.length} unreadable)` : ''));
+
   const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
   console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
   console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +

@@ -378,3 +378,116 @@
 .pb-nav-safe {
   padding-bottom: calc(4.5rem + var(--safe-bottom));
 }
+
+/* ------------------------------------------------------------------ 3.4 */
+
+/*
+  A real 44px touch target that does not change how the control looks.
+
+  docs/MOBILE.md §3: "Icon-only buttons get an invisible expanded hit area, not
+  a bigger icon." A 12x12 remove button next to a weapon name is the right size
+  *visually* — it is a footnote, not an action you take often — but it is a
+  quarter of the area a thumb can reliably hit while holding dice in the other
+  hand. Growing the icon would wreck the density that makes a unit card
+  readable at all on a phone; growing the *hit area* costs nothing visible.
+
+  The overlay is centred on the control and clipped to nothing from `lg:` up,
+  where a mouse is doing the pointing and 44px would only make neighbouring
+  controls fight each other for clicks. Below that — phone *and* tablet — it
+  stands, because both are touched.
+*/
+.tap {
+  position: relative;
+}
+
+.tap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (min-width: 1024px) {
+  .tap::after {
+    min-width: 0;
+    min-height: 0;
+  }
+}
+
+/*
+  Two overlapping hit areas must not both claim a tap. Where `.tap` controls sit
+  side by side the later one wins by paint order, which is arbitrary; giving the
+  hovered/focused control's overlay a higher layer makes it the one that is
+  actually reachable.
+*/
+.tap:hover::after,
+.tap:focus-visible::after {
+  z-index: 1;
+}
+
+/*
+  16px form controls on the phone, and 44px tall. Not negotiable, and not
+  locally overridable.
+
+  docs/MOBILE.md §4: an input below 16px makes iOS Safari zoom the page on
+  focus and never zoom back out. The user is then panning a 1.4x-scaled app
+  one-handed, at a table, mid-game. Twelve controls across the app were at
+  12px, so this happened on the warband picker, the ruleset select, the bug
+  report form and the campaign match log.
+
+  Three deliberate choices:
+
+  - **`!important`.** Normally a smell; here it is the point. A Tailwind
+    `text-xs` on the element beats any element selector on specificity, and the
+    whole failure mode is that someone reaches for `text-xs` to make a form
+    look denser. This is a platform constraint, not a style preference, and it
+    should not be possible to lose it locally.
+  - **Outside `@layer`.** Rules inside `@layer base` are dropped when Tailwind
+    cannot find their selectors in the content globs — that is exactly how all
+    six theme blocks vanished from the compiled stylesheet in 3.5.
+  - **Everything below a desktop**, not just the phone. docs/MOBILE.md calls the
+    768px tablet "the common table device": it is touched, not moused, and iPad
+    Safari zooms a sub-16px input exactly as iPhone Safari does. The cut is at
+    1024px — `lg:`, where a laptop starts — rather than at `sm:`, which is large
+    phone *landscape* and still a thumb.
+
+  Checkboxes and radios are excluded: they need hit *area*, not height, and get
+  it from `.tap` instead.
+*/
+@media (max-width: 1023px) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+}
+
+/*
+  44px buttons on the phone.
+
+  The remaining backlog after the per-component pass was 45 buttons between 22
+  and 34px tall, from a dozen different `py-1.5` / `py-2` / `p-1` spellings
+  across a dozen files. Fixing those one at a time fixes them once: the next
+  toolbar button someone writes is 30px again, because nothing says otherwise.
+
+  So the rule lives here, and `.tap` is the opt-out — a control that must stay
+  visually small (a remove cross beside a weapon name, a category chip) carries
+  `.tap` and gets its 44px as an invisible overlay instead of as height. That
+  is the same distinction docs/MOBILE.md §3 draws, enforced rather than
+  restated.
+
+  Below a desktop, and outside `@layer` for the reason the rule above is. The
+  tablet is in scope for the same reason it is above: docs/MOBILE.md calls the
+  768px tablet "the common table device", and a finger is a finger at 768px.
+*/
+@media (max-width: 1023px) {
+  button:not(.tap) {
+    min-height: 44px;
+  }
+}

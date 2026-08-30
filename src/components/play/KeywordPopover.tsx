@@ -20,14 +20,14 @@ export const KeywordPopover: React.FC = () => {
           </div>
           <button
             onClick={() => setActiveKeyword(null)}
-            className="p-1 text-theme-muted hover:text-white rounded"
+            className="tap p-1 text-theme-muted hover:text-white rounded"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="space-y-2">
-          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-theme-elevated text-theme-primary font-bold border border-theme-border">
+          <span className="text-xs sm:text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-theme-elevated text-theme-primary font-bold border border-theme-border">
             {activeKeyword.category} Keyword
           </span>
           <p className="text-xs font-semibold text-theme-text font-mono">{activeKeyword.summary}</p>

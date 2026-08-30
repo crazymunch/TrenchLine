@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
@@ -33,13 +33,13 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
     addUnitToWarband, 
     favouriteUnits, 
     addUnitFromFavourite, 
-    removeUnitFromFavourites 
+    removeUnitFromFavourites,
+    catalogsLoaded,
+    catalogsError,
   } = useStore();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [customNameInput, setCustomNameInput] = useState<Record<string, string>>({});
 
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
@@ -74,45 +74,33 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
-        
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-3">
-            <UserPlus className="w-5 h-5 text-theme-primary" />
-            <div>
-              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">RECRUIT WARRIOR</h2>
-              <p className="text-xs font-mono text-theme-muted">Select a unit profile or induct a saved veteran from your Favourites</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-theme-muted hover:text-theme-text rounded hover:bg-theme-elevated transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
-                selectedCategory === cat
-                  ? 'bg-theme-primary text-black shadow-md'
-                  : 'bg-theme-elevated text-theme-muted hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Units Body */}
-        <div className="p-6 overflow-y-auto space-y-4 flex-1">
+    <Sheet
+      open
+      onClose={onClose}
+      size="xl"
+      title="RECRUIT WARRIOR"
+      subtitle="Select a unit profile or induct a saved veteran from your Favourites"
+      label="Recruit a warrior"
+    >
+      {/* The filter row stays with the content rather than the header:
+          Sheet's header is sticky, and a second sticky bar costs a
+          quarter of a phone screen before a single result is shown. */}
+    {/* Filter Tabs */}
+    <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
+      {categories.map((cat) => (
+        <button
+          key={cat}
+          onClick={() => setSelectedCategory(cat)}
+          className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
+            selectedCategory === cat
+              ? 'bg-theme-primary text-black shadow-md'
+              : 'bg-theme-elevated text-theme-muted hover:text-white'
+          }`}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
           
           {/* TAB: FAVOURITES HALL */}
           {isFavouritesTab ? (
@@ -135,7 +123,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                     >
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-theme-primary text-black">
+                          <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-theme-primary text-black">
                             {fav.profileSnapshot.category}
                           </span>
                           <h3 className="font-gothic font-bold text-base text-theme-text">
@@ -152,7 +140,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                         </div>
 
                         {/* Wargear Summary */}
-                        <div className="flex flex-wrap gap-1 text-[10px]">
+                        <div className="flex flex-wrap gap-1 text-xs sm:text-[10px]">
                           {fav.equippedWeapons?.map((w, idx) => (
                             <span key={idx} className="px-1.5 py-0.2 rounded bg-theme-base text-theme-text border border-theme-border">
                               ⚔️ {w.name}
@@ -187,6 +175,30 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                 })
               )}
             </div>
+          ) : !catalogsLoaded ? (
+            /*
+              The recruitable list comes from the generated dataset, which is
+              fetched. Until it arrives there is nothing to show — and saying so
+              is the point. This modal used to be backed by `defaultRules.ts`,
+              whose statlines the audit measured as 97% wrong, so it was always
+              instantly full and always partly wrong. An empty list that says
+              why beats a full one that lies.
+            */
+            <div className="p-8 text-center text-theme-muted">
+              {catalogsError ? (
+                <>
+                  <p className="font-bold text-status-error">The ruleset could not be loaded.</p>
+                  <p className="mt-1">{catalogsError}</p>
+                  <p className="mt-2">
+                    Nothing is shown rather than falling back to older data —
+                    recruiting from the wrong ruleset is worse than not
+                    recruiting yet.
+                  </p>
+                </>
+              ) : (
+                <p>Loading the roster from the ruleset…</p>
+              )}
+            </div>
           ) : (
             /* TAB: STANDARD PROFILES */
             filtered.map((unit) => {
@@ -200,7 +212,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center space-x-2">
                       <span
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
+                        className={`text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
                           unit.category === 'Leader'
                             ? 'bg-theme-primary text-black'
                             : unit.category === 'Elite'
@@ -214,7 +226,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       </span>
                       <h3 className="font-gothic font-bold text-base text-theme-text">{unit.name}</h3>
                       {isMercenary && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#00897B]/20 text-[#00897B] border border-[#00897B]/40 font-bold uppercase">
+                        <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#00897B]/20 text-[#00897B] border border-[#00897B]/40 font-bold uppercase">
                           Mercenary
                         </span>
                       )}
@@ -223,26 +235,26 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-2 font-mono text-xs max-w-xs bg-theme-surface p-1.5 rounded border border-theme-border">
                       <div>
-                        <span className="text-[9px] text-theme-muted block">MOV</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">MOV</span>
                         <span className="font-bold text-theme-text">{unit.stats.movement}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">RNG</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">RNG</span>
                         <span className="font-bold text-theme-text">{unit.stats.ranged}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">MEL</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">MEL</span>
                         <span className="font-bold text-theme-text">{unit.stats.melee}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">ARM</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARM</span>
                         <span className="font-bold text-theme-text">{unit.stats.armour}</span>
                       </div>
                     </div>
 
                     {/* Innate Abilities */}
                     {unit.innateAbilities && unit.innateAbilities.length > 0 && (
-                      <div className="text-[11px] text-theme-muted space-y-0.5 pt-1">
+                      <div className="text-xs sm:text-[11px] text-theme-muted space-y-0.5 pt-1">
                         {unit.innateAbilities.map((ab) => (
                           <div key={ab.id}>
                             <strong className="text-theme-primary">{ab.name}:</strong> {ab.description}
@@ -269,16 +281,19 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>{unit.baseCost} D</span>
+                      {/* Both currencies. This read "0 D" for every Mercenary
+                          the catalogues price in Glory — free, and hireable
+                          without limit. */}
+                      <span>
+                        {unit.baseCost > 0 || !unit.gloryCost ? `${unit.baseCost} D` : ''}
+                        {unit.gloryCost ? `${unit.baseCost > 0 ? ' + ' : ''}${unit.gloryCost} Glory` : ''}
+                      </span>
                     </button>
                   </div>
                 </div>
               );
             })
           )}
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

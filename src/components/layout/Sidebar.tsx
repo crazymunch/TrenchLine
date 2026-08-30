@@ -121,7 +121,7 @@ export const Sidebar: React.FC = () => {
                     TC
                   </span>
                 </div>
-                <span className="text-[9px] text-theme-muted font-mono truncate">
+                <span className="text-xs sm:text-[9px] text-theme-muted font-mono truncate">
                   Tactical Companion OS
                 </span>
               </div>
@@ -155,7 +155,7 @@ export const Sidebar: React.FC = () => {
         {/* 2. Active Warband Command Widget (When Expanded) */}
         {!isCollapsed && activeWarband && (
           <div className="p-3 mx-3 mt-3 bg-theme-surface border border-theme-border rounded-md space-y-2 shadow bevel-container">
-            <div className="flex items-center justify-between gap-1 text-[10px] font-mono">
+            <div className="flex items-center justify-between gap-1 text-xs sm:text-[10px] font-mono">
               <span className="text-theme-muted uppercase font-bold flex items-center space-x-1.5 min-w-0 flex-1">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
@@ -196,7 +196,7 @@ export const Sidebar: React.FC = () => {
         {/* 3. Navigation Links List */}
         <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
           {!isCollapsed && (
-            <div className="px-3 pb-1 text-[10px] font-mono uppercase font-bold text-theme-muted tracking-wider">
+            <div className="px-3 pb-1 text-xs sm:text-[10px] font-mono uppercase font-bold text-theme-muted tracking-wider">
               OPERATIONAL COMMAND
             </div>
           )}
@@ -232,7 +232,7 @@ export const Sidebar: React.FC = () => {
                 )}
 
                 {item.badge && (
-                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase font-mono ${
+                  <span className={`px-1.5 py-0.2 rounded text-xs sm:text-[9px] font-bold uppercase font-mono ${
                     isCollapsed ? 'absolute top-1 right-1 w-2 h-2 p-0 rounded-full bg-theme-accent' : 'bg-theme-accent text-white'
                   }`}>
                     {!isCollapsed && item.badge}
@@ -272,7 +272,7 @@ export const Sidebar: React.FC = () => {
           >
             <Bug className="w-4 h-4 text-status-error flex-shrink-0" />
             {!isCollapsed && (
-              <span className="font-bold tracking-wider uppercase text-[11px]">
+              <span className="font-bold tracking-wider uppercase text-xs sm:text-[11px]">
                 Report a Bug
               </span>
             )}
@@ -291,7 +291,7 @@ export const Sidebar: React.FC = () => {
                 )}
                 {!isCollapsed && (
                   <div className="truncate flex flex-col">
-                    <span className="font-bold text-theme-text truncate text-[11px]">
+                    <span className="font-bold text-theme-text truncate text-xs sm:text-[11px]">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
                     {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
@@ -306,7 +306,7 @@ export const Sidebar: React.FC = () => {
               {!isCollapsed && (
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="text-theme-muted hover:text-white p-1"
+                  className="tap text-theme-muted hover:text-white p-1"
                   title="Account Details"
                 >
                   <User className="w-3.5 h-3.5" />

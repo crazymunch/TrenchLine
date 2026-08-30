@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
+import { useScenarios, sectionOf } from '../../rules/useScenarios';
 import { DiceRoller } from './DiceRoller';
 import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
@@ -64,8 +65,6 @@ export const PlayModeView: React.FC = () => {
     setUnitStatus, 
     toggleUnitActed,
     setActiveKeyword,
-    keywords,
-    scenarios,
     isPostBattleOpen,
     setIsPostBattleOpen,
     setCurrentView
@@ -111,6 +110,15 @@ export const PlayModeView: React.FC = () => {
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
   const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
+  /**
+   * Whether the phone HUD is showing its secondary controls.
+   *
+   * Sticky, the full HUD is 391px of a 667px screen — 59% of the viewport
+   * permanently spent on chrome while you are trying to read a model's card.
+   * Collapsed it is the four things you touch every turn; the rest is one tap
+   * away. Above `sm:` there is no collapse: the whole HUD fits.
+   */
+  const [isHudExpanded, setIsHudExpanded] = useState(false);
   const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
   const [isCardConsoleOpen, setIsCardConsoleOpen] = useState(false);
   const [isMapLightboxOpen, setIsMapLightboxOpen] = useState(false);
@@ -141,13 +149,16 @@ export const PlayModeView: React.FC = () => {
     return u.status === filterStatus;
   });
 
+  // The derived twelve plus the All Out War pack, in place of the hand-written
+  // set whose game lengths and Glorious Deeds were invented.
+  const { scenarios } = useScenarios();
   const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   // Check if scenario is All Out War (Multiplayer card deck applies only here)
   const isAllOutWarScenario = Boolean(
     selectedScenario && (
       /all out war/i.test(selectedScenario.name) ||
-      /all-out-war/i.test(selectedScenario.slug || selectedScenario.id) ||
+      /all-out-war/i.test(selectedScenario.id) ||
       selectedScenario.tagline?.toLowerCase().includes('all out war') ||
       (selectedScenario.number && selectedScenario.number > 12)
     )
@@ -275,7 +286,7 @@ export const PlayModeView: React.FC = () => {
       });
   };
 
-  const scenarioDeeds = parseDeedsList(selectedScenario?.gloriousDeeds);
+  const scenarioDeeds = parseDeedsList(sectionOf(selectedScenario, 'GLORIOUS DEEDS') ?? undefined);
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 pb-24 font-mono text-xs">
@@ -334,7 +345,7 @@ export const PlayModeView: React.FC = () => {
                 }`}
               >
                 <span>🌐 Live Multi-Device Match Link</span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase tracking-wide">
+                <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase tracking-wide">
                   Coming Soon
                 </span>
               </button>
@@ -353,7 +364,7 @@ export const PlayModeView: React.FC = () => {
                     <h2 className="font-gothic font-bold text-lg sm:text-xl text-theme-text">
                       LIVE MULTI-DEVICE MATCH LINK (HOST & JOIN)
                     </h2>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
+                    <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
                       In Development
                     </span>
                   </div>
@@ -422,7 +433,7 @@ export const PlayModeView: React.FC = () => {
                   <strong className="text-xs uppercase text-theme-primary block font-bold">
                     🚀 Currently in Alpha Architecture Staging
                   </strong>
-                  <p className="text-[11px] text-theme-muted">
+                  <p className="text-xs sm:text-[11px] text-theme-muted">
                     Use the fully-featured <strong>Single Device Mode (Pass & Play)</strong> below to run local matches and multiplayer games on your iPad, phone, or laptop.
                   </p>
                 </div>
@@ -456,7 +467,7 @@ export const PlayModeView: React.FC = () => {
               
               {/* Scenario Picker & Map Card */}
               <div className="space-y-3">
-                <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Select Mission / Scenario:
                 </label>
                 <select
@@ -490,9 +501,9 @@ export const PlayModeView: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-theme-muted pt-0.5 px-1 font-mono">
+                    <div className="flex items-center justify-between text-xs sm:text-[10px] text-theme-muted pt-0.5 px-1 font-mono">
                       <span className="text-theme-primary font-bold">🔍 Click to Expand Diagram</span>
-                      <span>{selectedScenario.tableSize || '48" x 48"'} Table</span>
+                      <span>{selectedScenario.name}</span>
                     </div>
                   </div>
                 )}
@@ -502,38 +513,40 @@ export const PlayModeView: React.FC = () => {
               <div className="lg:col-span-2 space-y-4 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-theme-primary">{selectedScenario?.name}</h3>
-                  <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline || selectedScenario?.flavor}</p>
-                  
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-theme-text pt-2 border-b border-theme-border pb-2">
-                    <span>Table: <strong>{selectedScenario?.tableSize || '48" x 48"'}</strong></span>
-                    <span>•</span>
-                    <span>Game Length: <strong>{selectedScenario?.gameLength || '4-5 Turns'}</strong></span>
-                    <span>•</span>
-                    <span>Deployment: <strong>{selectedScenario?.deployment || 'Standard'}</strong></span>
-                  </div>
+                  <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline}</p>
+
+                  {/* Published, or absent. The defaults these replaced —
+                      '48" x 48"', '4-5 Turns', 'Standard' — were what the app
+                      actually displayed, because the hand-written fields behind
+                      them were wrong for every scenario. */}
+                  {selectedScenario?.gameLength && (
+                    <p className="text-xs text-theme-text pt-2 border-b border-theme-border pb-2">
+                      {selectedScenario.gameLength}
+                    </p>
+                  )}
                 </div>
 
                 {/* Victory Conditions */}
                 <div className="space-y-1 text-xs">
-                  <span className="text-[10px] uppercase font-bold text-status-legal block flex items-center space-x-1">
+                  <span className="text-xs sm:text-[10px] uppercase font-bold text-status-legal block flex items-center space-x-1">
                     <Award className="w-3.5 h-3.5" />
                     <span>Victory Conditions:</span>
                   </span>
-                  <p className="text-theme-text text-[11px] leading-relaxed whitespace-pre-line bg-theme-surface p-2.5 rounded border border-theme-border/60">
-                    {selectedScenario?.victoryConditions}
+                  <p className="text-theme-text text-xs sm:text-[11px] leading-relaxed whitespace-pre-line bg-theme-surface p-2.5 rounded border border-theme-border/60">
+                    {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
                   </p>
                 </div>
 
                 {/* Glorious Deeds Preview */}
                 {scenarioDeeds.length > 0 && (
                   <div className="space-y-1.5 text-xs">
-                    <span className="text-[10px] uppercase font-bold text-theme-primary block flex items-center space-x-1">
+                    <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary block flex items-center space-x-1">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Glorious Deeds Available ({scenarioDeeds.length}):</span>
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {scenarioDeeds.map((deed, dIdx) => (
-                        <div key={dIdx} className="p-2 bg-theme-surface rounded border border-theme-border text-[10px]">
+                        <div key={dIdx} className="p-2 bg-theme-surface rounded border border-theme-border text-xs sm:text-[10px]">
                           <strong className="text-theme-primary block">{deed.title}</strong>
                           <span className="text-theme-muted">{deed.desc}</span>
                         </div>
@@ -568,7 +581,7 @@ export const PlayModeView: React.FC = () => {
                 return (
                   <div key={wbId} className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-3 relative">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold text-theme-primary">
+                      <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary">
                         PLAYER {idx + 1} {idx === 0 ? '(YOU)' : ''}
                       </span>
                       {idx > 0 && (
@@ -584,7 +597,7 @@ export const PlayModeView: React.FC = () => {
 
                     <div>
                       <h3 className="font-gothic font-bold text-base text-theme-text">{wb?.name}</h3>
-                      <span className="text-[10px] text-theme-muted block">
+                      <span className="text-xs sm:text-[10px] text-theme-muted block">
                         Faction: {wb?.factionId}
                       </span>
                     </div>
@@ -656,7 +669,7 @@ export const PlayModeView: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Environmental Condition / Battlefield Hazard:
                 </label>
                 <select
@@ -673,10 +686,10 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Deployment Rules:
                 </label>
-                <div className="p-2.5 bg-theme-base border border-theme-border rounded text-theme-muted text-[11px]">
+                <div className="p-2.5 bg-theme-base border border-theme-border rounded text-theme-muted text-xs sm:text-[11px]">
                   Infiltrators & Forward Positions deploy per official scenario diagram.
                 </div>
               </div>
@@ -725,15 +738,61 @@ export const PlayModeView: React.FC = () => {
             ---------------------------------------------------------------------------- */
         <div className="space-y-5">
           
-          {/* Active Combat HUD Top Bar */}
-          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-4 shadow-2xl space-y-3 bevel-container">
+          {/*
+            Phone combat strip — the four controls you touch every turn (3.6).
+
+            The combat screen is about 6,300px tall with nine models deployed:
+            nine and a half phone screens. Turn, Next Turn and End Match all
+            lived at the very top of it, so after the second model a player was
+            scrolling the length of the match to touch any of them, one-handed,
+            at a table.
+
+            Making the whole HUD sticky was the obvious fix and the wrong one:
+            it is 323px even collapsed, and a bar that permanently owns half a
+            667px screen is not a fix for a scrolling problem. This carries the
+            turn number and the three actions in 56px, and the full HUD below
+            keeps everything else and scrolls with the page.
+
+            `top-14` clears the app header, which is itself sticky. Phone only:
+            above `sm:` the HUD is on screen anyway.
+          */}
+          <div className="sm:hidden sticky top-14 z-30 -mx-3 px-3 py-1.5 bg-theme-base/95 backdrop-blur border-y border-theme-primary/60 flex items-center gap-2">
+            <span className="font-gothic font-bold text-base text-theme-primary flex-shrink-0">
+              T{playTurn}
+            </span>
+            <button
+              onClick={() => setIsQuickSearchOpen(true)}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-elevated text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase"
+              title="Lookup rules and keywords"
+            >
+              <Search className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">Rules</span>
+            </button>
+            <button
+              onClick={handleNextTurnWithWhistle}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-elevated text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase"
+            >
+              <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">Turn</span>
+            </button>
+            <button
+              onClick={() => setIsPostBattleOpen(true)}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-accent text-white rounded font-mono text-xs font-bold uppercase"
+            >
+              <Skull className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">End</span>
+            </button>
+          </div>
+
+          {/* Active Combat HUD — the full set, scrolling with the page. */}
+          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-3 sm:p-4 shadow-2xl space-y-3 bevel-container">
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               
               {/* Left: Warband & Turn Info */}
               <div className="flex flex-wrap items-center gap-3">
                 <div className="bg-theme-base border border-theme-primary px-3 py-1.5 rounded flex items-center space-x-2">
-                  <span className="text-[10px] uppercase font-bold text-theme-muted">TURN</span>
+                  <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">TURN</span>
                   <span className="font-gothic font-bold text-lg text-theme-primary">{playTurn}</span>
                 </div>
 
@@ -755,16 +814,16 @@ export const PlayModeView: React.FC = () => {
                           }`}
                         >
                           <span>P{pIdx + 1}: {wb?.name.slice(0, 10)}</span>
-                          <span className="text-[10px] px-1 rounded bg-black/30 font-bold">{pScore} VP</span>
+                          <span className="text-xs sm:text-[10px] px-1 rounded bg-black/30 font-bold">{pScore} VP</span>
                         </button>
                       );
                     })}
                   </div>
                 )}
 
-                <div>
+                <div className={isHudExpanded ? 'block' : 'hidden sm:block'}>
                   <h2 className="font-gothic font-bold text-base text-theme-text">{viewingWarband.name}</h2>
-                  <span className="text-[10px] text-theme-muted block">
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">
                     Scenario: <strong className="text-theme-primary">{selectedScenario?.name}</strong> • {environmentalHazard}
                   </span>
                 </div>
@@ -786,7 +845,7 @@ export const PlayModeView: React.FC = () => {
                           : 'bg-theme-base/60 border-theme-border'
                       }`}
                     >
-                      <span className={`text-[10px] uppercase font-bold ${isCurrent ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                      <span className={`text-xs sm:text-[10px] uppercase font-bold ${isCurrent ? 'text-theme-primary' : 'text-theme-muted'}`}>
                         {pIdx === 0 ? 'YOU' : `P${pIdx + 1}`}:
                       </span>
                       <button
@@ -811,7 +870,7 @@ export const PlayModeView: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setIsSquadSelectOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors`}
                   title="Select which warriors are deployed in this match"
                 >
                   <Users className="w-3.5 h-3.5 text-theme-primary" />
@@ -832,7 +891,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsMapLightboxOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors`}
                   title="Inspect official scenario deployment diagram"
                 >
                   <Compass className="w-3.5 h-3.5" />
@@ -868,10 +927,19 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsAbortConfirmOpen(true)}
-                  className="p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center justify-center p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors`}
                   title="Cancel / Abort Match"
                 >
                   <XCircle className="w-4 h-4" />
+                </button>
+
+                {/* Phone only: the rest of the HUD, one tap away. */}
+                <button
+                  onClick={() => setIsHudExpanded((v) => !v)}
+                  className="sm:hidden flex items-center justify-center px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-muted border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+                  aria-expanded={isHudExpanded}
+                >
+                  {isHudExpanded ? 'Less' : 'More'}
                 </button>
               </div>
 
@@ -911,7 +979,7 @@ export const PlayModeView: React.FC = () => {
                     <h3 className="font-gothic font-bold text-base text-theme-text">
                       SCENARIO OBJECTIVES & GLORIOUS DEEDS TRACKER
                     </h3>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
+                    <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
                       {selectedScenario?.name}
                     </span>
                   </div>
@@ -933,7 +1001,7 @@ export const PlayModeView: React.FC = () => {
                   <span>Turn Score Breakdown</span>
                 </button>
 
-                <button className="text-theme-muted hover:text-white p-1">
+                <button className="tap text-theme-muted hover:text-white p-1">
                   {isObjectivesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
               </div>
@@ -947,7 +1015,7 @@ export const PlayModeView: React.FC = () => {
                     <TrendingUp className="w-4 h-4" />
                     <span>Progressive Turn-by-Turn VP Breakdown:</span>
                   </span>
-                  <span className="text-[10px] text-theme-muted">Current Turn: {playTurn}</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted">Current Turn: {playTurn}</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -963,10 +1031,10 @@ export const PlayModeView: React.FC = () => {
                           <span className="text-xs font-bold text-theme-primary">{scores.vp} Total VP</span>
                         </div>
 
-                        <div className="grid grid-cols-5 gap-1 text-center text-[10px]">
+                        <div className="grid grid-cols-5 gap-1 text-center text-xs sm:text-[10px]">
                           {turns.map((tNum) => (
                             <div key={tNum} className={`p-1 rounded ${playTurn === tNum ? 'bg-theme-primary/20 border border-theme-primary' : 'bg-theme-surface'}`}>
-                              <span className="text-[9px] text-theme-muted block">T{tNum}</span>
+                              <span className="text-xs sm:text-[9px] text-theme-muted block">T{tNum}</span>
                               <strong className="text-theme-text">{scores.turnScores[tNum] || 0}</strong>
                             </div>
                           ))}
@@ -987,7 +1055,7 @@ export const PlayModeView: React.FC = () => {
                   
                   {/* Scenario Status: Locked during active match */}
                   <div className="space-y-1.5">
-                    <label className="text-[10px] uppercase font-bold text-theme-muted block flex items-center space-x-1">
+                    <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block flex items-center space-x-1">
                       <Lock className="w-3 h-3 text-theme-primary" />
                       <span>Active Scenario (Locked for Match):</span>
                     </label>
@@ -995,18 +1063,18 @@ export const PlayModeView: React.FC = () => {
                       {selectedScenario?.name}
                     </div>
                     {selectedScenario?.tagline && (
-                      <p className="text-[11px] text-theme-muted italic pt-1">{selectedScenario.tagline}</p>
+                      <p className="text-xs sm:text-[11px] text-theme-muted italic pt-1">{selectedScenario.tagline}</p>
                     )}
                   </div>
 
                   {/* Victory Conditions Rules */}
                   <div className="md:col-span-2 p-3 bg-theme-surface border border-theme-border rounded space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-status-legal flex items-center space-x-1.5">
+                    <span className="text-xs sm:text-[10px] uppercase font-bold text-status-legal flex items-center space-x-1.5">
                       <Award className="w-3.5 h-3.5" />
                       <span>Victory Conditions & Scoring Rules:</span>
                     </span>
-                    <p className="text-[11px] text-theme-text leading-relaxed whitespace-pre-line">
-                      {selectedScenario?.victoryConditions}
+                    <p className="text-xs sm:text-[11px] text-theme-text leading-relaxed whitespace-pre-line">
+                      {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
                     </p>
                   </div>
 
@@ -1015,11 +1083,11 @@ export const PlayModeView: React.FC = () => {
                 {/* Glorious Deeds Checklist */}
                 <div className="space-y-2 pt-2 border-t border-theme-border">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
+                    <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Glorious Deeds Checklist ({viewingWarband.name}):</span>
                     </span>
-                    <span className="text-[10px] text-theme-muted">
+                    <span className="text-xs sm:text-[10px] text-theme-muted">
                       {Object.keys(currentScoreObj.completedDeeds).length} Deeds Claimed
                     </span>
                   </div>
@@ -1050,7 +1118,7 @@ export const PlayModeView: React.FC = () => {
                                 <strong className={`block text-xs ${isChecked ? 'text-theme-primary' : 'text-theme-text'}`}>
                                   {deed.title}
                                 </strong>
-                                <p className="text-[11px] text-theme-muted leading-relaxed pt-0.5">
+                                <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed pt-0.5">
                                   {deed.desc}
                                 </p>
                               </div>
@@ -1059,7 +1127,7 @@ export const PlayModeView: React.FC = () => {
 
                           {/* Attaching warrior performer */}
                           {isChecked && (
-                            <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between gap-2 text-[11px]">
+                            <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between gap-2 text-xs sm:text-[11px]">
                               <span className="text-theme-muted">Achieved by:</span>
                               <select
                                 value={performer}
@@ -1115,7 +1183,7 @@ export const PlayModeView: React.FC = () => {
                     <div>
                       <div className="flex items-center space-x-2">
                         {isLeader && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
+                          <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
                             Leader
                           </span>
                         )}
@@ -1123,14 +1191,14 @@ export const PlayModeView: React.FC = () => {
                           {unit.customName}
                         </h4>
                       </div>
-                      <span className="text-[10px] text-theme-muted block">
+                      <span className="text-xs sm:text-[10px] text-theme-muted block">
                         Base: {unit.profileSnapshot.name}
                       </span>
                     </div>
 
                     <button
                       onClick={() => toggleUnitActed(viewingWarband.id, unit.id)}
-                      className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
+                      className={`px-2.5 py-1 rounded text-xs sm:text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                         unit.hasActedThisTurn
                           ? 'bg-theme-border text-theme-muted'
                           : 'bg-theme-primary text-black shadow'
@@ -1147,19 +1215,19 @@ export const PlayModeView: React.FC = () => {
                     {/* Stat Grid */}
                     <div className="grid grid-cols-4 gap-1 text-center bg-theme-base p-1.5 rounded border border-theme-border text-xs">
                       <div>
-                        <span className="text-[9px] text-theme-muted block">MOV</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">MOV</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.movement}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">RNG</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">RNG</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.ranged}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">MEL</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">MEL</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-theme-muted block">ARM</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARM</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
@@ -1220,7 +1288,7 @@ export const PlayModeView: React.FC = () => {
                     </div>
 
                     {/* Status Quick Bar */}
-                    <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] sm:text-xs">
+                    <div className="grid grid-cols-3 gap-1.5 font-mono text-xs sm:text-[10px] sm:text-xs">
                       {(['Active', 'Downed', 'Out of Action'] as const).map((st) => (
                         <button
                           key={st}
@@ -1281,12 +1349,12 @@ export const PlayModeView: React.FC = () => {
             <div className="p-5 overflow-y-auto space-y-4 text-xs">
               <div className="flex items-center justify-between bg-theme-base p-3 rounded border border-theme-border">
                 <div>
-                  <span className="text-[10px] text-theme-muted block">DEPLOYED STRENGTH</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">DEPLOYED STRENGTH</span>
                   <strong className="text-sm text-theme-primary">{deployedUnits.length} Models ({deployedCost} D)</strong>
                 </div>
                 <button
                   onClick={handleSelectAllSquad}
-                  className="px-3 py-1 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded text-[10px] font-bold uppercase"
+                  className="px-3 py-1 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded text-xs sm:text-[10px] font-bold uppercase"
                 >
                   Deploy All
                 </button>
@@ -1314,7 +1382,7 @@ export const PlayModeView: React.FC = () => {
                         />
                         <div>
                           <strong className="block text-xs">{u.customName}</strong>
-                          <span className="text-[10px] text-theme-muted">{u.profileSnapshot.name}</span>
+                          <span className="text-xs sm:text-[10px] text-theme-muted">{u.profileSnapshot.name}</span>
                         </div>
                       </div>
                       <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
@@ -1393,8 +1461,8 @@ export const PlayModeView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-base sm:text-lg text-white">
                     OFFICIAL DEPLOYMENT DIAGRAM: {selectedScenario.name}
                   </h3>
-                  <span className="text-[10px] text-theme-muted block">
-                    Table Size: {selectedScenario.tableSize || '48" x 48"'} • Vector Scenario Map
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">
+                    {selectedScenario.tagline}
                   </span>
                 </div>
               </div>

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
+import { useScenarios } from '../../rules/useScenarios';
 import {
   explorationDice, explorationTables, resolveExploration, campaignGameOf,
 } from '../../rules/campaign';
@@ -32,10 +33,8 @@ interface PostBattleWizardModalProps {
 }
 
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
-  const { getActiveWarband, scenarios, applyPostBattleResults, campaign } = useStore();
+  const { getActiveWarband, applyPostBattleResults, campaign } = useStore();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const warband = getActiveWarband();
 
   // The post-battle tables come from the generated dataset. The hand-written
@@ -50,7 +49,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
 
   const [step, setStep] = useState<number>(1);
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(scenarios[0]?.id || 'claim-no-mans-land');
+  // Empty until the dataset loads; `scenario` below falls back to the first.
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
@@ -88,6 +88,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       ? selectedExplorationTable
       : (openTables?.tables[0] ?? 'common');
 
+  // The derived twelve plus the All Out War pack, in place of the hand-written
+  // set whose game lengths and Glorious Deeds were invented.
+  const { scenarios } = useScenarios(rulesetId);
   const scenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   /**
@@ -209,46 +212,70 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   // is worse than not opening at all.
   if (datasetLoading || datasetError || !dataset) {
     return (
-      <div ref={overlayRef} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm font-mono">
-        <div className="w-full sm:max-w-md bg-theme-surface border border-theme-border sm:rounded-md p-5 space-y-3">
-          <h2 className="font-gothic font-bold text-base text-theme-text">Post-battle sequence</h2>
-          <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-            {datasetError
-              ? `The rules tables could not be loaded: ${datasetError}. Nothing has been ` +
-                'recorded. The sequence writes permanent results, so it will not run without them.'
-              : 'Loading the Trauma and Exploration tables…'}
-          </p>
-          <button
-            onClick={onClose}
-            className="w-full min-h-[44px] rounded-sm border border-theme-border text-theme-muted text-xs font-bold uppercase tracking-wider hover:text-theme-text"
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      <Sheet
+        open
+        onClose={onClose}
+        size="sm"
+        title="Post-battle sequence"
+      >
+            <h2 className="font-gothic font-bold text-base text-theme-text">Post-battle sequence</h2>
+            <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+              {datasetError
+                ? `The rules tables could not be loaded: ${datasetError}. Nothing has been ` +
+                  'recorded. The sequence writes permanent results, so it will not run without them.'
+                : 'Loading the Trauma and Exploration tables…'}
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full min-h-[44px] rounded-sm border border-theme-border text-theme-muted text-xs font-bold uppercase tracking-wider hover:text-theme-text"
+            >
+              Close
+            </button>
+      </Sheet>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-3">
-            <Award className="w-6 h-6 text-theme-primary" />
-            <div>
-              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
-                OFFICIAL TRENCH CRUSADE POST-BATTLE SEQUENCE
-              </h2>
-              <p className="text-xs text-theme-muted">Step {step} of 4: Trauma, Experience, Scavenge & Chronicle</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+    <Sheet
+      open
+      onClose={onClose}
+      size="xl"
+      title="POST-BATTLE SEQUENCE"
+      subtitle={`Step ${step} of 4: Trauma, Experience, Scavenge & Chronicle`}
+      footer={<div className="flex items-center justify-between w-full gap-3">
+            {step > 1 ? (
+              <button
+                onClick={() => setStep(step - 1)}
+                className="flex items-center space-x-1 px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text text-xs font-bold uppercase rounded"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back</span>
+              </button>
+            ) : <div />}
+    
+            {step < 4 ? (
+              <button
+                onClick={() => setStep(step + 1)}
+                className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black text-xs font-bold uppercase rounded shadow"
+              >
+                <span>Next Step</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <button
+                onClick={handleFinalSubmit}
+                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
+              >
+                <Check className="w-4 h-4" />
+                <span>Commit to Campaign Chronicle</span>
+              </button>
+            )}
+      </div>}
+    >
+      {/* The step tabs scroll with the content. Sheet's header is
+          already sticky, and on a phone a second fixed bar plus a
+          fixed footer leaves about a third of the screen for the
+          step you are actually filling in. */}
         {/* Step Tabs */}
         <div className="grid grid-cols-4 border-b border-theme-border bg-theme-surface text-center text-xs">
           <div className={`py-2.5 ${step === 1 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
@@ -264,9 +291,6 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             4. Exploration & Report
           </div>
         </div>
-
-        {/* Modal Body */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
           
           {/* STEP 1: OUTCOME & SCENARIO */}
           {step === 1 && (
@@ -302,12 +326,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   )}
                   <div className="text-xs space-y-1">
                     <span className="text-theme-primary font-bold block">{scenario.name}</span>
-                    <p className="text-theme-muted text-[11px] italic">{scenario.tagline || scenario.flavor}</p>
-                    <div className="text-[10px] text-theme-text space-x-2 pt-1">
-                      <span>Length: <strong>{scenario.gameLength || '5 Turns'}</strong></span>
-                      <span>•</span>
-                      <span>Table: <strong>{scenario.tableSize || '48" x 48"'}</strong></span>
-                    </div>
+                    <p className="text-theme-muted text-xs sm:text-[11px] italic">{scenario.tagline}</p>
+                    {/* No `|| '5 Turns'` fallback. That default is what hid the
+                        hand-written game lengths being wrong for all twelve —
+                        every one fell through to it, so the app showed five
+                        Turns for scenarios the book plays over four. */}
+                    {scenario.gameLength && (
+                      <p className="text-xs sm:text-[10px] text-theme-text pt-1">{scenario.gameLength}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -390,7 +416,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <div className="flex space-x-1.5 flex-shrink-0">
                   <button
                     onClick={() => setTraumaRollMode('digital')}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition-all ${
+                    className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
                       traumaRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
@@ -398,7 +424,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   </button>
                   <button
                     onClick={() => setTraumaRollMode('manual')}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition-all ${
+                    className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
                       traumaRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
@@ -444,7 +470,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                           </button>
                         ) : (
                           <div className="flex items-center space-x-2 flex-shrink-0">
-                            <span className="text-[11px] text-theme-muted">D66:</span>
+                            <span className="text-xs sm:text-[11px] text-theme-muted">D66:</span>
                             <input
                               type="number"
                               min={11}
@@ -496,7 +522,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                                 [unit.id]: isSelected ? '' : adv
                               })
                             }
-                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-[11px] ${
+                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-xs sm:text-[11px] ${
                               isSelected
                                 ? 'bg-theme-primary text-black font-bold'
                                 : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
@@ -531,7 +557,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       value={explorationTable}
                       onChange={(e) => setSelectedExplorationTable(e.target.value as ExplorationTableName)}
                       disabled={!openTables?.choose}
-                      className="bg-theme-base border border-theme-border text-theme-primary text-base sm:text-xs rounded px-2 py-1 min-h-[44px] sm:min-h-0 disabled:opacity-60"
+                      className="bg-theme-base border border-theme-border text-theme-primary text-base sm:text-xs rounded px-2 py-1 min-h-[44px] lg:min-h-0 disabled:opacity-60"
                     >
                       {(openTables?.tables ?? ['common']).map((t) => (
                         <option key={t} value={t}>
@@ -546,7 +572,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     <div className="flex space-x-1">
                       <button
                         onClick={() => setExplorationRollMode('digital')}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                        className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
                           explorationRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
@@ -554,7 +580,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       </button>
                       <button
                         onClick={() => setExplorationRollMode('manual')}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                        className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
                           explorationRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
@@ -601,7 +627,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
               {/* Payout Summary */}
               <div className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-2 text-xs">
-                <span className="text-[10px] uppercase font-bold text-theme-muted block">Post-Battle Payout:</span>
+                <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">Post-Battle Payout:</span>
                 <div className="flex justify-between text-sm">
                   <span>Glory Points Gained:</span>
                   <strong className="text-theme-primary">+{gloryGained} Glory</strong>
@@ -614,14 +640,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
               {/* Narrative Battle Report Section */}
               <div className="p-4 bg-theme-elevated border border-theme-border rounded-md space-y-3 text-xs">
-                <span className="text-[11px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
+                <span className="text-xs sm:text-[11px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                   <Award className="w-3.5 h-3.5" />
                   <span>Battlefield Chronicle & Narrative Report</span>
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
+                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
                     <input
                       type="text"
                       value={opponentWarbandName}
@@ -632,7 +658,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase text-theme-muted block">Match MVP (Awards Heroic Deed):</label>
+                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Match MVP (Awards Heroic Deed):</label>
                     <select
                       value={mvpUnitName}
                       onChange={(e) => setMvpUnitName(e.target.value)}
@@ -649,7 +675,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase text-theme-muted block">Battle Narrative / Turning Points (Markdown):</label>
+                  <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Battle Narrative / Turning Points (Markdown):</label>
                   <textarea
                     value={battleReportText}
                     onChange={(e) => setBattleReportText(e.target.value)}
@@ -663,40 +689,6 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             </div>
           )}
 
-        </div>
-
-        {/* Footer Navigation */}
-        <div className="px-6 py-4 border-t border-theme-border bg-theme-base flex items-center justify-between">
-          {step > 1 ? (
-            <button
-              onClick={() => setStep(step - 1)}
-              className="flex items-center space-x-1 px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text text-xs font-bold uppercase rounded"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
-            </button>
-          ) : <div />}
-
-          {step < 4 ? (
-            <button
-              onClick={() => setStep(step + 1)}
-              className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black text-xs font-bold uppercase rounded shadow"
-            >
-              <span>Next Step</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          ) : (
-            <button
-              onClick={handleFinalSubmit}
-              className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
-            >
-              <Check className="w-4 h-4" />
-              <span>Commit to Campaign Chronicle</span>
-            </button>
-          )}
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

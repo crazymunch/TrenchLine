@@ -1,0 +1,45 @@
+name: Deploy
+
+# Fires the Vercel deploy hook once `main` has actually passed CI.
+#
+# `workflow_run` rather than a step inside CI, for two reasons: a pull-request
+# run must never deploy — CI runs on every PR, and most of those are somebody
+# else's branch — and a deploy that needs re-running should be re-runnable on
+# its own without re-running the whole check suite.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  # Same job, by hand, when a deploy needs forcing.
+  workflow_dispatch:
+
+# One deploy at a time; a newer push supersedes an in-flight one rather than
+# queueing behind it.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # A red CI must not ship. `workflow_dispatch` has no source run, so it is
+    # allowed through on the assumption the person firing it means it.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Trigger the Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::VERCEL_DEPLOY_HOOK_URL is not set on this repository."
+            exit 1
+          fi
+          # --fail-with-body so a rejected hook fails the job loudly and shows
+          # what Vercel said, rather than exiting 0 on an HTTP 4xx.
+          # The URL itself carries the secret, so only the response is printed.
+          curl --silent --show-error --fail-with-body \
+               --request POST "$HOOK" \
+               --write-out '\nHTTP %{http_code}\n'

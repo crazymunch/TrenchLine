@@ -173,12 +173,12 @@ export const WarbandDashboard: React.FC = () => {
                           className="w-2.5 h-2.5 rounded-full"
                           style={{ backgroundColor: faction?.color || '#D4AF37' }}
                         />
-                        <span className="text-[10px] font-mono text-theme-primary uppercase font-semibold">
+                        <span className="text-xs sm:text-[10px] font-mono text-theme-primary uppercase font-semibold">
                           {faction?.name || wb.factionId}
                         </span>
                       </div>
                       {isActive && (
-                        <span className="text-[9px] font-mono font-bold bg-theme-primary text-black px-1.5 py-0.2 rounded uppercase">
+                        <span className="text-xs sm:text-[9px] font-mono font-bold bg-theme-primary text-black px-1.5 py-0.2 rounded uppercase">
                           ACTIVE
                         </span>
                       )}
@@ -202,7 +202,7 @@ export const WarbandDashboard: React.FC = () => {
                     <div className="flex items-center space-x-1" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => cloneWarband(wb.id)}
-                        className="p-1 text-theme-muted hover:text-theme-text rounded transition-colors"
+                        className="tap p-1 text-theme-muted hover:text-theme-text rounded transition-colors"
                         title="Clone / Fork Warband"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export const WarbandDashboard: React.FC = () => {
                       {canManageWarband(wb) && (
                         <button
                           onClick={() => setWarbandToDelete({ id: wb.id, name: wb.name })}
-                          className="p-1 text-theme-muted hover:text-status-error rounded transition-colors"
+                          className="tap p-1 text-theme-muted hover:text-status-error rounded transition-colors"
                           title="Delete Warband"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -240,7 +240,7 @@ export const WarbandDashboard: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-white p-1"
               >
                 <X className="w-5 h-5" />
               </button>
