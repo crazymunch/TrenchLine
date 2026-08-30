@@ -1,0 +1,35 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",     "x": 0,    "y": 0,    "w": 375,  "h": 812, "title": "Roster — phone, above the fold" },
+    { "file": "AddUnit.dc.html",  "x": 455,  "y": 0,    "w": 375,  "h": 900, "title": "Recruit — limits enforced" },
+    { "file": "Illegal.dc.html",  "x": 910,  "y": 0,    "w": 375,  "h": 812, "title": "Roster — illegal" },
+    { "file": "PlayHUD.dc.html",  "x": 1365, "y": 0,    "w": 375,  "h": 812, "title": "Play mode — table HUD" },
+    { "file": "UnitCard.dc.html", "x": 0,    "y": 1060, "w": 375,  "h": 980, "title": "Warrior card — expanded" },
+    { "file": "Rulesets.dc.html", "x": 455,  "y": 1060, "w": 375,  "h": 940, "title": "Ruleset switch — reconciliation" },
+    { "file": "Desktop.dc.html",  "x": 910,  "y": 1060, "w": 1280, "h": 800, "title": "Desktop — roster + legality rail" }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": -330,
+      "y": 0,
+      "w": 280,
+      "text": "TrenchLine — Al-Qarn Rihla\n\nEvery number on these boards is real: joined from the August 1320d NewRecruit export against src/data/generated/. Colours, fonts, radii and control sizes lifted from globals.css and the live components.\n\nTop row = phone (375x812, the mobile-first target). Bottom row = detail + desktop.\n\nThree things the current app cannot do, drawn here: two currencies side by side, variant rules that actually block recruitment, and provenance on every value."
+    },
+    {
+      "id": "note-touch",
+      "x": -330,
+      "y": 300,
+      "w": 280,
+      "text": "Touch targets\n\nEvery control here is >=44px. The live app has 122 under that, mostly the 28px steppers in PlayModeView and the 24px chip close buttons in UnitCard. The Play HUD board shows the 44px version."
+    },
+    {
+      "id": "note-currency",
+      "x": -330,
+      "y": 560,
+      "w": 280,
+      "text": "Ducats vs Glory\n\n1320 / 1320 Ducats and 6 / 9 Glory are two separate budgets and must never share a meter. Glory-priced items (Sniper Scope 2, Jawhar 4, Pairika 7) carry the sun glyph and a warmer gold so they read differently at arm's length."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

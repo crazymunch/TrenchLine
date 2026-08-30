@@ -1,0 +1,273 @@
+<script src="./support.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --elite:#7C4DFF; --merc:#00897B;
+    --gothic:'Cinzel',serif; --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    width:1280px; height:800px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); display:grid; grid-template-rows:52px 1fr; -webkit-font-smoothing:antialiased;
+  }
+  .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+           border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+
+  .top { display:flex; align-items:center; gap:16px; padding:0 18px; background:var(--void);
+    border-bottom:1px solid var(--line); }
+  .top .brand { font-family:var(--gothic); font-weight:700; font-size:17px; letter-spacing:.16em; color:var(--gold); }
+  .top nav { flex:1; display:flex; gap:4px; }
+  .top nav a { height:34px; padding:0 13px; display:flex; align-items:center; border-radius:4px;
+    font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; }
+  .top nav a.on { background:var(--surface); color:var(--gold); }
+  .rules { display:flex; align-items:center; gap:7px; height:34px; padding:0 11px; background:var(--elev);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:11px;
+    font-weight:700; letter-spacing:.05em; color:var(--gold); }
+  .rules i { width:7px; height:7px; border-radius:50%; background:var(--ok); }
+  .rules em { font-style:normal; color:var(--muted); font-weight:400; font-size:10px; }
+
+  .cols { display:grid; grid-template-columns:216px 1fr 304px; min-height:0; }
+
+  /* left rail */
+  .side { border-right:1px solid var(--line); background:var(--void); padding:14px 12px; display:grid;
+    gap:8px; align-content:start; }
+  .side h5 { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+  .wbtn { padding:9px 10px; border-radius:4px; background:var(--surface); border:1px solid var(--line); }
+  .wbtn.on { border-color:var(--gold); background:var(--elev); }
+  .wbtn b { display:block; font-family:var(--gothic); font-size:12.5px; font-weight:700; line-height:1.25; }
+  .wbtn.on b { color:var(--gold); }
+  .wbtn span { display:block; margin-top:3px; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .newbtn { height:38px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:4px;
+    background:var(--gold); color:#000; font-family:var(--mono); font-size:10.5px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; margin-top:4px; }
+
+  /* centre */
+  .main { min-width:0; padding:14px 16px; overflow:hidden; }
+  .wbhead { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:14px 16px; }
+  .wbhead .t { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .wbhead .fac { display:flex; align-items:center; gap:7px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .wbhead .fac i { width:9px; height:9px; border-radius:50%; background:#76D6D5; }
+  .wbhead h1 { font-family:var(--gothic); font-weight:700; font-size:26px; line-height:1.15; margin-top:6px; }
+  .wbhead .motto { margin-top:7px; padding:4px 9px; background:var(--void); border-left:2px solid var(--gold);
+    border-radius:0 3px 3px 0; font-family:Georgia,serif; font-style:italic; font-size:12px; color:var(--text); }
+  .tools { display:flex; gap:7px; flex:none; }
+  .tools div { height:36px; padding:0 12px; display:flex; align-items:center; gap:6px; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10.5px;
+    font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text); }
+  .tools div.gold { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .purse { margin-top:14px; padding-top:12px; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .cur { display:grid; gap:6px; }
+  .cur .l { display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:11px; }
+  .cur .l span { color:var(--muted); letter-spacing:.06em; text-transform:uppercase; font-weight:700; }
+  .cur .l b { font-weight:700; }
+  .cur .m { height:9px; border-radius:999px; background:var(--void); border:1px solid var(--line); overflow:hidden; }
+  .cur .m i { display:block; height:100%; }
+
+  .filters { display:flex; gap:7px; margin-top:14px; }
+  .chip { height:30px; padding:0 11px; display:inline-flex; align-items:center; gap:5px; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .chip.on { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .grid { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .u { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .u.lead { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); }
+  .u-h { padding:10px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:8px; }
+  .u-h .bg { flex:none; height:17px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    font-family:var(--mono); font-size:8.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .bg.lead { background:var(--gold); color:#000; } .bg.elite { background:var(--elite); color:#fff; }
+  .bg.troop { background:var(--line); color:var(--text); } .bg.merc { background:var(--merc); color:#fff; }
+  .u-h b { flex:1; min-width:0; font-family:var(--gothic); font-size:13.5px; font-weight:700;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .u.lead .u-h b { color:var(--gold); }
+  .u-h .c { flex:none; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); }
+  .u-b { padding:10px 11px; display:grid; gap:8px; }
+  .u-b > p { font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .u-b > p b { color:var(--text); }
+  .st { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:6px 3px; text-align:center; }
+  .st div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.07em; color:var(--muted); }
+  .st div strong { display:block; font-family:var(--mono); font-size:13px; font-weight:700; line-height:1.35; }
+  .gp { display:flex; flex-wrap:wrap; gap:4px; }
+  .gp span { height:19px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    background:var(--void); border:1px solid var(--line); font-family:var(--mono); font-size:9px; }
+  .gp span.glory { border-color:rgba(229,193,88,.55); color:var(--gold-hi); }
+
+  /* right rail: the two things the old app never showed */
+  .rail { border-left:1px solid var(--line); background:var(--void); padding:14px 13px; display:grid;
+    gap:12px; align-content:start; }
+  .panel { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .panel > h4 { padding:9px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .panel > div { padding:11px; display:grid; gap:9px; }
+  .ok-line { display:flex; align-items:center; gap:8px; }
+  .ok-line i { flex:none; width:18px; height:18px; border-radius:50%; background:rgba(78,154,110,.18);
+    color:var(--ok); display:grid; place-items:center; font-size:10px; font-style:normal; }
+  .ok-line p { flex:1; min-width:0; font-family:var(--mono); font-size:9.5px; line-height:1.5; color:var(--muted); }
+  .ok-line p b { color:var(--text); font-weight:600; }
+  .warnline i { background:rgba(255,179,0,.15); color:var(--warn); }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:4px 9px; font-family:var(--mono); font-size:9.5px; }
+  .kv dt { color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .kv dd { color:var(--text); word-break:break-all; }
+  .swap { height:36px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:4px;
+    background:var(--elev); border:1px solid rgba(212,175,55,.45); color:var(--gold);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+</style>
+
+<div class="tl-root">
+
+  <header class="top">
+    <div class="brand">TRENCHLINE</div>
+    <nav>
+      <a class="on" href="#">Roster</a><a href="#">Play</a><a href="#">Campaign</a>
+      <a href="#">Directory</a><a href="#">Codex</a>
+    </nav>
+    <div class="rules"><i></i>TrenchLine v1 <em>· base 1b463a8 + dispatch-01</em> ▾</div>
+  </header>
+
+  <div class="cols">
+
+    <aside class="side">
+      <h5>Warbands</h5>
+      <div class="wbtn on"><b>Al-Qarn Rihla</b><span>Iron Sultanate · 1320 👑</span></div>
+      <div class="wbtn"><b>The Iron Crusade of Saint Lazarus</b><span>New Antioch · 880 👑</span></div>
+      <div class="newbtn">+ New warband</div>
+    </aside>
+
+    <main class="main">
+
+      <section class="wbhead bevel">
+        <div class="t">
+          <div>
+            <div class="fac"><i></i>Iron Sultanate · The House of Wisdom</div>
+            <h1>Al-Qarn Rihla</h1>
+            <div class="motto">“The Wall may forget, but the Copper remembers!”</div>
+          </div>
+          <div class="tools">
+            <div>Chronicle</div><div>Stash (2)</div><div>Export</div><div class="gold">+ Recruit</div>
+          </div>
+        </div>
+
+        <div class="purse">
+          <div class="cur">
+            <div class="l"><span>👑 Ducats</span><b style="color:var(--gold);">1320 / 1320</b></div>
+            <div class="m"><i style="width:100%;background:var(--gold);"></i></div>
+          </div>
+          <div class="cur">
+            <div class="l"><span>☼ Glory</span><b style="color:var(--gold-hi);">6 / 9</b></div>
+            <div class="m"><i style="width:66.7%;background:var(--gold-hi);"></i></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="filters">
+        <div class="chip on">All 11</div><div class="chip">Leader 1</div><div class="chip">Elite 3</div>
+        <div class="chip">Troop 6</div><div class="chip">Merc 1</div>
+      </div>
+
+      <div class="grid">
+
+        <article class="u lead">
+          <div class="u-h"><span class="bg lead">♛ Leader</span><b>Kasim bin Malik</b><span class="c">194 👑 · 2 ☼</span></div>
+          <div class="u-b">
+            <p>Base <b>Jabirean Alchemist</b> · The Living Engineer · 3 XP</p>
+            <div class="st">
+              <div><span>MOV</span><strong>6"</strong></div><div><span>RNG</span><strong style="color:var(--gold);">+3</strong></div>
+              <div><span>MEL</span><strong>+1</strong></div><div><span>ARM</span><strong>−2</strong></div>
+              <div><span>BASE</span><strong>32</strong></div>
+            </div>
+            <div class="gp">
+              <span>Automatic Rifle 40</span><span>Sword/Axe 4</span><span>Alchemist Armour 50</span>
+              <span>Cloak of Alamut 25</span><span>Secrets of Takwin 20</span><span class="glory">Sniper Scope 2 ☼</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="u">
+          <div class="u-h"><span class="bg elite">Elite</span><b>Al-Qahhar, the Crippled</b><span class="c">250 👑</span></div>
+          <div class="u-b">
+            <p>Base <b>Favoured Brazen Bull</b> · Lost Arm [26]</p>
+            <div class="st">
+              <div><span>MOV</span><strong>6"</strong></div><div><span>RNG</span><strong>+0</strong></div>
+              <div><span>MEL</span><strong>+2</strong></div><div><span>ARM</span><strong>−3</strong></div>
+              <div><span>BASE</span><strong>60</strong></div>
+            </div>
+            <div class="gp">
+              <span>Flame Cannon 60</span><span>Titan Zulfiqar 30</span><span>Machine Armour 50</span><span>Wind Amulet 10</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="u">
+          <div class="u-h"><span class="bg elite">Elite</span><b>Al-Masyukh</b><span class="c">252 👑</span></div>
+          <div class="u-b">
+            <p>Base <b>Favoured Takwin Homunculus</b> · 8 stacked options</p>
+            <div class="st">
+              <div><span>MOV</span><strong>6"</strong></div><div><span>RNG</span><strong>+1</strong></div>
+              <div><span>MEL</span><strong>+1</strong></div><div><span>ARM</span><strong>−1</strong></div>
+              <div><span>BASE</span><strong>60</strong></div>
+            </div>
+            <div class="gp">
+              <span>Massive Size 30</span><span>Additional Arm 15</span><span>Gargantuan 20</span>
+              <span>Siege Jezzail 30</span><span>Fire Shield 20</span><span>+5 more</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="u">
+          <div class="u-h"><span class="bg merc">Merc</span><b>Jawhar al-Sari</b><span class="c">4 ☼</span></div>
+          <div class="u-b">
+            <p>Base <b>Mamluk Faris</b> · The Gilded Blade</p>
+            <div class="st">
+              <div><span>MOV</span><strong>6"</strong></div><div><span>RNG</span><strong>+1</strong></div>
+              <div><span>MEL</span><strong>+1</strong></div><div><span>ARM</span><strong>−3</strong></div>
+              <div><span>BASE</span><strong>32</strong></div>
+            </div>
+            <div class="gp">
+              <span>Alchemical Jezzail</span><span>Polearm</span><span>Shield</span><span>Reinforced Armour</span><span>Combat Helmet</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </main>
+
+    <aside class="rail">
+
+      <section class="panel">
+        <h4>Legality <span style="color:var(--ok);">LEGAL</span></h4>
+        <div>
+          <div class="ok-line"><i>✓</i><p><b>Alchemists</b> — must include 1–2 Jabirean Alchemists · 2 taken</p></div>
+          <div class="ok-line"><i>✓</i><p><b>Pride of Jabir</b> — 0–3 Lions of Jabir · 1 taken</p></div>
+          <div class="ok-line"><i>✓</i><p><b>Private Venture</b> — no Yüzbaşı, Janissaries or Sultanate Assassins</p></div>
+          <div class="ok-line"><i>✓</i><p><b>Budget</b> — 1320 / 1320 👑 · 6 / 9 ☼</p></div>
+          <div class="ok-line warnline"><i>!</i><p><b>Combat Helmet</b> — “Headgear” cannot be verified automatically. Check by hand.</p></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h4>Provenance</h4>
+        <div>
+          <dl class="kv">
+            <dt>Ruleset</dt><dd>TrenchLine v1 <span style="color:var(--gold);">(default)</span></dd>
+            <dt>Base</dt><dd>Fawkstrot11/TrenchCrusade @1b463a8</dd>
+            <dt>Layers</dt><dd>dispatch-01</dd>
+            <dt>Verified</dt><dd>89 units · 0 unresolved conflicts</dd>
+          </dl>
+          <div class="swap">⇄ Compare with GitHub Latest</div>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
+</div>

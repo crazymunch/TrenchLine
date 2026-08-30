@@ -1,0 +1,160 @@
+<script src="./support.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --gothic:'Cinzel',serif; --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    width:375px; height:940px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .hd { padding:12px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start;
+    justify-content:space-between; gap:10px; }
+  .hd h2 { font-family:var(--gothic); font-weight:700; font-size:16px; letter-spacing:.05em; }
+  .hd p { margin-top:4px; font-size:11px; line-height:1.45; color:var(--muted); }
+  .x { flex:none; width:44px; height:44px; margin:-8px -8px 0 0; display:grid; place-items:center;
+    color:var(--muted); font-size:20px; }
+
+  .pad { padding:12px; display:grid; gap:10px; }
+
+  .rs { border-radius:6px; padding:12px; background:var(--surface); border:1px solid var(--line); display:grid; gap:9px; }
+  .rs.on { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); background:var(--elev); }
+  .rs-1 { display:flex; align-items:flex-start; gap:10px; }
+  .radio { flex:none; width:20px; height:20px; margin-top:1px; border-radius:50%; border:2px solid var(--line);
+    display:grid; place-items:center; }
+  .rs.on .radio { border-color:var(--gold); }
+  .rs.on .radio::after { content:''; width:10px; height:10px; border-radius:50%; background:var(--gold); }
+  .rs-t { flex:1; min-width:0; }
+  .rs-t b { display:flex; align-items:center; gap:6px; font-family:var(--gothic); font-weight:700; font-size:15px; }
+  .rs.on .rs-t b { color:var(--gold); }
+  .tagd { height:16px; padding:0 5px; display:inline-flex; align-items:center; border-radius:2px;
+    background:var(--gold); color:#000; font-family:var(--mono); font-size:8px; font-weight:800; letter-spacing:.07em; }
+  .rs-t span { display:block; margin-top:4px; font-size:11px; line-height:1.45; color:var(--muted); }
+  .prov { display:grid; grid-template-columns:auto 1fr; gap:3px 9px; padding:8px 9px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:9px; }
+  .prov dt { color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .prov dd { color:var(--text); word-break:break-all; }
+
+  .sec { margin-top:2px; display:flex; align-items:center; gap:7px; }
+  .sec span { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); }
+  .sec hr { flex:1; border:0; border-top:1px solid var(--line); }
+
+  /* the reconciliation: what actually changes, named, before you commit */
+  .diff { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .diff > h4 { padding:9px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    font-family:var(--gothic); font-size:13px; font-weight:700; }
+  .diff > h4 em { font-family:var(--mono); font-size:9px; font-style:normal; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); }
+  .diff > div { padding:10px 11px; display:grid; gap:6px; }
+  .d { display:grid; grid-template-columns:66px 1fr; gap:9px; align-items:baseline; }
+  .d dt { font-family:var(--mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .d dd { font-family:var(--mono); font-size:10px; line-height:1.5; }
+  .old { color:var(--muted); text-decoration:line-through; }
+  .new { color:var(--gold); font-weight:700; }
+  .add { color:var(--ok); }
+  .rm  { color:var(--danger); }
+  .cite { margin-top:2px; padding:6px 8px; background:var(--void); border:1px solid var(--line);
+    border-radius:3px; font-family:var(--mono); font-size:9px; line-height:1.55; color:var(--muted); }
+  .cite b { color:var(--gold); }
+
+  .impact { padding:10px 11px; background:rgba(255,179,0,.08); border:1px solid rgba(255,179,0,.35);
+    border-radius:5px; display:flex; gap:9px; }
+  .impact i { flex:none; font-style:normal; color:var(--warn); font-size:12px; line-height:1.4; }
+  .impact div { flex:1; min-width:0; }
+  .impact b { display:block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--warn); }
+  .impact p { margin-top:4px; font-size:11px; line-height:1.5; color:var(--muted); }
+  .impact p em { color:var(--text); font-style:normal; font-weight:600; }
+
+  .foot { position:absolute; left:0; right:0; bottom:0; padding:11px 12px 14px; background:var(--void);
+    border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .foot div { height:48px; display:grid; place-items:center; border-radius:4px; font-family:var(--mono);
+    font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .foot .ghost { background:var(--elev); border:1px solid var(--line); color:var(--muted); }
+  .foot .go { background:var(--gold); color:#000; }
+</style>
+
+<div class="tl-root">
+
+  <header class="hd">
+    <div>
+      <h2>RULESET</h2>
+      <p>Which set of rules this warband is built and checked against. Switching never edits your roster — it re-derives it and shows you what moved.</p>
+    </div>
+    <div class="x">✕</div>
+  </header>
+
+  <div class="pad">
+
+    <section class="rs on">
+      <div class="rs-1">
+        <i class="radio"></i>
+        <div class="rs-t">
+          <b>TrenchLine v1 <span class="tagd">DEFAULT</span></b>
+          <span>BattleScribe catalogues, cross-checked against the official rulebooks, then the Trench Dispatch applied on top. Every field records where it came from.</span>
+        </div>
+      </div>
+      <dl class="prov">
+        <dt>Base</dt><dd>Fawkstrot11/TrenchCrusade @1b463a8</dd>
+        <dt>Layers</dt><dd>dispatch-01 — Trench Dispatch #1, Apr 2026</dd>
+        <dt>Verified</dt><dd>89 units · 389 weapons · 0 unresolved conflicts</dd>
+      </dl>
+    </section>
+
+    <section class="rs">
+      <div class="rs-1">
+        <i class="radio"></i>
+        <div class="rs-t">
+          <b>GitHub Latest</b>
+          <span>The community catalogues exactly as published, with nothing layered on. Use this when your opponent or tournament plays to the public repo.</span>
+        </div>
+      </div>
+      <dl class="prov">
+        <dt>Base</dt><dd>Fawkstrot11/TrenchCrusade @1b463a8</dd>
+        <dt>Layers</dt><dd>(none)</dd>
+      </dl>
+    </section>
+
+    <div class="sec"><span>Switching would change</span><hr></div>
+
+    <div class="impact">
+      <i>▲</i>
+      <div>
+        <b>11 units · 4 weapons</b>
+        <p>One warrior in <em>Al-Qarn Rihla</em> derives from a changed entry: <em>Al-Qahhar</em> (Brazen Bull). Grenades lose the FUMBLE keyword and Incendiary Grenades drop from 10 👑 back to no listed cost.</p>
+      </div>
+    </div>
+
+    <div class="diff">
+      <h4>Brazen Bull <em>TrenchLine → GitHub</em></h4>
+      <div>
+        <dl class="d"><dt>Cost</dt><dd><span class="new">115 👑</span> → <span class="old">100 👑</span></dd></dl>
+        <dl class="d"><dt>Melee</dt><dd><span class="new">+2 DICE</span> → <span class="old">+2 Dice</span></dd></dl>
+        <dl class="d"><dt>Keywords</dt><dd><span class="rm">− FEAR</span> · <span class="rm">− NEGATE SHRAPNEL</span> · <span class="add">+ LIMITED POTENTIAL</span></dd></dl>
+        <dl class="d"><dt>Abilities</dt><dd><span class="rm">− Living Battering Ram ACTION</span></dd></dl>
+        <div class="cite"><b>§</b> Trench Dispatch #1, p.10 — “0-1 Brazen Bull · Cost: 115” and “SULTANATE ARTIFICIAL FEAR NEGATE SHRAPNEL STRONG TOUGH”. The Dispatch supersedes the books and the public catalogues.</div>
+      </div>
+    </div>
+
+    <div class="diff">
+      <h4>Yüzbaşı Captain <em>TrenchLine → GitHub</em></h4>
+      <div>
+        <dl class="d"><dt>Cost</dt><dd><span class="new">75 👑</span> → <span class="old">70 👑</span></dd></dl>
+        <dl class="d"><dt>Keywords</dt><dd><span class="rm">− ELITE</span> · <span class="rm">− LEADER</span> · <span class="rm">− NEGATE FEAR</span> · <span class="rm">− STRONG</span></dd></dl>
+        <div class="cite"><b>§</b> Trench Dispatch #1, p.9. Not in your warband — <em>Private Venture</em> forbids a Yüzbaşı in a House of Wisdom.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <div class="ghost">Cancel</div>
+    <div class="go">Switch &amp; re-check</div>
+  </div>
+
+</div>
