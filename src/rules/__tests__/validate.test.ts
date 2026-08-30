@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 
-import { validateRoster, factionMatches } from '../validate';
+import { validateRoster, factionMatches, fireteamCap } from '../validate';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -272,5 +272,38 @@ describe.skipIf(!haveReal)('Al-Qarn Rihla — the real roster', () => {
     const glory = all.filter((s) => s.costs?.some((c) => c.name === 'Glory Points' && c.value > 0));
     expect(glory.length).toBeGreaterThan(0);
     expect(glory.map((g) => g.name)).toContain('Sniper Scope');
+  });
+});
+
+/* ------------------------------------------------------- faction-level rules */
+
+describe('faction special rules', () => {
+  const antioch = {
+    id: 'new-antioch', name: 'New Antioch',
+    specialRules: [{
+      name: 'New Antioch Fireteams',
+      description: 'A New Antioch Warband can include up to 2 Fireteams. Each Fireteam ' +
+                   'consists of any two models from the Warband.',
+    }],
+  };
+
+  it('reads the Fireteam cap out of the published rule text', () => {
+    expect(fireteamCap(antioch, undefined)).toBe(2);
+  });
+
+  it('lets a variant raise the cap it states', () => {
+    const stoss = {
+      id: 'x', name: 'Stoßtruppen', factionId: '', ops: [],
+      specialRules: [{
+        name: 'Expert Fireteams',
+        description: 'A Stosstruppen of the Free State of Prussia Warband can include ' +
+                     'up to 3 Fireteams instead of only 2.',
+      }],
+    } as unknown as Parameters<typeof fireteamCap>[1];
+    expect(fireteamCap(antioch, stoss)).toBe(3);
+  });
+
+  it('is absent for a faction the book says has no special rules', () => {
+    expect(fireteamCap({ specialRules: [] }, undefined)).toBeNull();
   });
 });

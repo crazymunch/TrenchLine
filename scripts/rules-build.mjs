@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
-import { parseWarbandEntries, parseVariants, parseArmouryTables } from './lib/parse-warbands.mjs';
+import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -55,6 +55,7 @@ function loadLayer(id) {
 const bookEntries = parseWarbandEntries();
 const variants = parseVariants();
 const armoury = parseArmouryTables();
+const factionRules = parseFactionRules();
 const resolutions = loadResolutions();
 
 if (!bookEntries.length) {
@@ -77,7 +78,17 @@ for (const ruleset of RULESETS) {
   const dataset = {
     units: base.units,
     weapons: base.weapons,
-    factions: [],
+    factions: factionRules.map((f) => ({
+      id: f.faction.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      name: f.faction,
+      // Every faction starts on 700 Ducats; kept per-faction because the
+      // variants change it and a future faction need not match.
+      budget: { ducats: f.budget ?? 0, glory: 0 },
+      specialRules: f.specialRules,
+      // Distinguishes "the book says this faction has no special rules" from
+      // "we failed to find any" — only the first is a fact about the game.
+      noSpecialRules: Boolean(f.explicitlyNone),
+    })),
     keywords: [],
     meta: {
       rulesetId: ruleset.id,
@@ -224,6 +235,8 @@ for (const ruleset of RULESETS) {
   const optUnits = dataset.units.filter((u) => u.options?.length).length;
   const optGroups = new Set(dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.group)));
   console.log(`  unit options: ${opts} across ${optUnits} units, ${optGroups.size} groups`);
+  const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
+  console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
   console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +
               (bookOnlyCount ? `, ${bookOnlyCount} in the rulebook only` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);

@@ -180,3 +180,85 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
   }
   return out;
 }
+
+/**
+ * Faction-level Warband Creation rules: the starting budget and the special
+ * rules that apply to every warband of that faction, variants included.
+ *
+ * These are distinct from the variant rules `parseVariants` reads. The book
+ * states them once per faction under a stable heading:
+ *
+ *     Warband Creation
+ *     You have 700 👑  to recruit a New Antioch Warband for a campaign
+ *     Special Rules
+ *     The following special rules apply to New Antioch Warbands (including
+ *     any New Antioch Variant Warbands):
+ *     ** New Antioch Fireteams: A New Antioch Warband can include up to 2
+ *     Fireteams. …
+ *
+ * They are the source for both the budget presets (2.5) and the faction
+ * special rules the engine enforces (2.5a). The catalogues do not carry them:
+ * they carry the *variant* overrides ("up to 3 Fireteams instead of only 2"),
+ * which only make sense against a base this supplies.
+ */
+export function parseFactionRules(src = WARBANDS_TXT) {
+  if (!fs.existsSync(src)) return [];
+  const clean = (x) => String(x ?? '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const out = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    if (clean(lines[i]) !== 'Warband Creation') continue;
+
+    // The budget sentence names the faction, so both come from one match.
+    let budget = null;
+    let faction = null;
+    for (let j = i + 1; j < Math.min(i + 8, lines.length); j++) {
+      const m = clean(lines[j]).match(/You have\s+([\d,]+)\s*👑?\s*to recruit an?\s+(.+?)\s+Warband/i);
+      if (m) {
+        budget = Number(m[1].replace(/,/g, ''));
+        faction = clean(m[2]);
+        break;
+      }
+    }
+    if (!faction) continue;
+
+    // Then the special-rule bullets, up to the next major heading.
+    const rules = [];
+    let current = null;
+    for (let j = i + 1; j < Math.min(i + 90, lines.length); j++) {
+      const line = clean(lines[j]);
+      if (/^(Armoury|Warband Entries|Elite Warband|Battlekit)$/i.test(line)) break;
+
+      const bullet = line.match(/^\*\*\s*(.+?):\s*(.*)$/);
+      if (bullet) {
+        current = { name: clean(bullet[1]), description: clean(bullet[2]) };
+        rules.push(current);
+        continue;
+      }
+      // A sub-bullet ("* Concentrated Attack: …") and any wrapped line belong
+      // to the rule above; the PDF wraps mid-sentence constantly.
+      if (current && line && !/^-- \d+ of \d+ --$/.test(line)) {
+        current.description = clean(`${current.description} ${line}`);
+      }
+    }
+
+    // A faction with no special rules says so ("No special rules apply to a
+    // standard Iron Sultanate Warband"). That is data, not a parse failure —
+    // dropping it would lose the budget too and make the faction look missing.
+    let explicitlyNone = false;
+    for (let j = i + 1; j < Math.min(i + 20, lines.length); j++) {
+      if (/^No special rules apply/i.test(clean(lines[j]))) { explicitlyNone = true; break; }
+    }
+    out.push({ faction, budget, specialRules: rules, explicitlyNone });
+  }
+
+  // A faction is described once; later repeats are page furniture.
+  const seen = new Set();
+  return out.filter((f) => {
+    const k = f.faction.toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}

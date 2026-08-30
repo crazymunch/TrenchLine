@@ -50649,7 +50649,82 @@ export const DATASET: Dataset = {
       "sourceFile": "Trench Pilgrims.cat"
     }
   ],
-  "factions": [],
+  "factions": [
+    {
+      "id": "new-antioch",
+      "name": "New Antioch",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "New Antioch Fireteams",
+          "description": "A New Antioch Warband can include up to 2 Fireteams. Each Fireteam consists of any two models from the Warband. All of the models in the Fireteams are given the FIRETEAM Keyword at no additional cost in 👑 . Fireteams in a New Antioch Warband have the Concentrated Attack ability: * Concentrated Attack: If a model from a Fireteam hits a target that had been hit by an attack made by the other member of their Fireteam earlier in the same joint Activation, then you can spend 3 BLOOD MARKERS to convert the Injury Roll for the second attack to a Bloodbath Roll, even if the target is not Down."
+        }
+      ],
+      "noSpecialRules": false
+    },
+    {
+      "id": "trench-pilgrims",
+      "name": "Trench Pilgrims",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [],
+      "noSpecialRules": true
+    },
+    {
+      "id": "iron-sultanate",
+      "name": "Iron Sultanate",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [],
+      "noSpecialRules": true
+    },
+    {
+      "id": "heretic-legions",
+      "name": "Heretic Legions",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [],
+      "noSpecialRules": true
+    },
+    {
+      "id": "cult-of-the-black-grail",
+      "name": "Cult of the Black Grail",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "INFECTION MARKERS",
+          "description": "Some Cult of the Black Grail Weapons have the INFECTION MARKERS Keyword. These Weapons cause INFECTION MARKERS (instead of BLOOD MARKERS) to be placed next to the target (▶ see INFECTION MARKERS )."
+        },
+        {
+          "name": "Morale",
+          "description": "Fighting against the Cult of the Black Grail is a terrifying prospect. Your opponent must add -1 DICE to all Morale Checks unless their Warband is of either the Court of the Seven-Headed Serpent or the Cult of the Black Grail."
+        }
+      ],
+      "noSpecialRules": false
+    },
+    {
+      "id": "court-of-the-seven-headed-serpent",
+      "name": "Court of the Seven-Headed Serpent",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [],
+      "noSpecialRules": false
+    }
+  ],
   "keywords": [],
   "meta": {
     "rulesetId": "github-latest",

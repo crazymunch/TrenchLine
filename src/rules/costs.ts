@@ -52,6 +52,8 @@ export interface RosterUnit {
   cost: Cost;
   items: RosterItem[];
   options: RosterItem[];
+  /** Name of the Fireteam this model belongs to, if any. */
+  fireteam?: string;
 }
 
 export interface Roster {

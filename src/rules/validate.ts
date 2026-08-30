@@ -9,7 +9,7 @@
  * Everything here is a pure function over a Roster and a Dataset, so the rules
  * can be tested without rendering anything.
  */
-import type { Dataset, UnitProfile, WarbandVariant } from '@/types/catalogue';
+import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule } from '@/types/catalogue';
 import type { Roster, RosterUnit } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
@@ -29,6 +29,7 @@ export interface Violation {
     | 'variant-forbids'
     | 'variant-requires'
     | 'unknown-profile'
+    | 'faction-rule'
     | 'unparsed-restriction';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
@@ -363,6 +364,61 @@ function splitList(s: string): string[] {
     .filter((x) => x.length > 2);
 }
 
+/* ------------------------------------------------------ faction-level rules */
+
+/**
+ * Faction special rules, which apply to every warband of that faction
+ * *including its variants* — distinct from the variant rules above.
+ *
+ * Only New Antioch and the Black Grail have any: the other four factions
+ * state, in the book, that they have none. The one with a countable bound is
+ * the Fireteam cap:
+ *
+ *     New Antioch Fireteams: A New Antioch Warband can include up to 2
+ *     Fireteams.
+ *
+ * A variant can move it — "a Stosstruppen of the Free State of Prussia Warband
+ * can include up to 3 Fireteams instead of only 2" — so the variant's own rules
+ * are read second and win.
+ */
+const FIRETEAM_CAP = /can include up to (\d+)\s+Fireteams?/i;
+
+export function fireteamCap(
+  faction: { specialRules?: FactionSpecialRule[] } | undefined,
+  variant: WarbandVariant | undefined
+): number | null {
+  let cap: number | null = null;
+  for (const r of faction?.specialRules ?? []) {
+    const m = r.description?.match(FIRETEAM_CAP);
+    if (m) cap = Number(m[1]);
+  }
+  for (const r of variant?.specialRules ?? []) {
+    const m = r.description?.match(FIRETEAM_CAP);
+    if (m) cap = Number(m[1]);          // the variant overrides the faction
+  }
+  return cap;
+}
+
+function checkFactionRules(
+  roster: Roster,
+  faction: { name?: string; specialRules?: FactionSpecialRule[] } | undefined,
+  variant: WarbandVariant | undefined
+): Violation[] {
+  const cap = fireteamCap(faction, variant);
+  if (cap == null) return [];
+
+  // A Fireteam is a pair, so two models carrying the keyword are one team.
+  const inFireteams = roster.units.filter((u) => u.fireteam).length;
+  const teams = Math.ceil(inFireteams / 2);
+  if (teams <= cap) return [];
+
+  return [err({
+    code: 'faction-rule',
+    message: `${teams} Fireteams — ${variant?.name ?? faction?.name} allows up to ${cap}.`,
+    rule: `${faction?.name} Fireteams: can include up to ${cap} Fireteams`,
+  })];
+}
+
 /* ---------------------------------------------------------------- entry point */
 
 export function validateRoster(roster: Roster, dataset: Dataset): ValidationResult {
@@ -392,6 +448,11 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkRecruitmentLimits(roster, profiles, variant));
   violations.push(...checkWargear(roster, profiles, weapons));
   violations.push(...checkVariant(roster, variant, profiles));
+
+  const faction = (dataset as unknown as { factions?: { id: string; name: string;
+    specialRules?: FactionSpecialRule[] }[] }).factions
+    ?.find((f) => factionMatches(f.id, roster.factionId) || factionMatches(f.name, roster.factionId));
+  violations.push(...checkFactionRules(roster, faction, variant));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
