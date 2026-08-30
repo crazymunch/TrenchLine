@@ -217,7 +217,7 @@ export const TerritoryMap: React.FC = () => {
           >
             {/* Authentic Lore Map Background */}
             <img
-              src="/world_map.png"
+              src="/images/world-map.webp"
               alt="The Lands of the Great Powers World Map"
               className="w-full h-full object-cover object-center pointer-events-none opacity-90 contrast-110"
               style={{ filter: 'brightness(0.95) contrast(1.15) sepia(0.15)' }}

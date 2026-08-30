@@ -62,7 +62,7 @@ export const Navbar: React.FC = () => {
     <>
       <header className="sticky top-0 z-20 bg-[#0C0E12]/95 backdrop-blur border-b border-[#323846] text-[#ECEFF4] shadow-md transition-colors duration-300">
         <div className="max-w-[1700px] mx-auto px-3 sm:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 gap-3">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-3 min-w-0">
             
             {/* 1. Left (Mobile Only): Brand Emblem */}
             <div 
@@ -103,7 +103,7 @@ export const Navbar: React.FC = () => {
 
             {/* 2. Middle: Active Warband Pill (When Selected) */}
             {activeWarband && (
-              <div className="flex items-center space-x-2.5 bg-[#161920] px-3 py-1.5 rounded border border-[#323846] text-xs font-mono">
+              <div className="hidden sm:flex items-center space-x-2.5 bg-[#161920] px-2 sm:px-3 py-1.5 rounded border border-[#323846] text-xs font-mono min-w-0 shrink">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
@@ -130,7 +130,7 @@ export const Navbar: React.FC = () => {
             )}
 
             {/* 3. Right: Quick Actions (Theme & Auth) */}
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
               
               {/* Ruleset Version Switcher */}
               <div className="relative">
@@ -139,7 +139,7 @@ export const Navbar: React.FC = () => {
                   onChange={(e) => setRulesetVersion(e.target.value as any)}
                   title="Active Ruleset Version"
                   aria-label="Active Ruleset Version"
-                  className="px-2 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-[#D4AF37] text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-[#D4AF37]"
+                  className="max-w-[104px] sm:max-w-none px-2 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-[#D4AF37] text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-[#D4AF37]"
                 >
                   <option value="1.0">v1.0 Core</option>
                   <option value="1.0.2">v1.0.2 Errata</option>
@@ -151,7 +151,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsBugReportOpen(true)}
                 title="Report a Bug / Feedback"
-                className="flex items-center space-x-1 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#8B0000]/60 hover:border-[#8B0000] text-[#E53935] text-xs font-mono transition-colors"
+                className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#8B0000]/60 hover:border-[#8B0000] text-[#E53935] text-xs font-mono transition-colors"
               >
                 <Bug className="w-3.5 h-3.5" />
                 <span className="hidden md:inline text-[11px] font-bold">Bug Report</span>
@@ -161,7 +161,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsThemeModalOpen(true)}
                 title={`Theme: ${activeThemeObj.name}`}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-xs font-mono transition-colors"
+                className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-xs font-mono transition-colors"
               >
                 <div 
                   className="w-2.5 h-2.5 rounded-full"
