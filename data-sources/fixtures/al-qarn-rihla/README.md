@@ -83,3 +83,54 @@ only as the one-time mechanism for the initial attach.
 `scripts/extract-warband-lore.mjs` performs that split and can re-attach the
 narrative to a rebuilt roster, matching units on identity and **reporting**
 anything it cannot match rather than dropping it.
+
+## The lore transcript
+
+`lore-transcript.docx` / `.md` — ~21,000 words, the source the app's
+`warbandLore.ts` was written from.
+
+⚠️ **This is a conversation transcript, not settled canon.** It interleaves:
+
+- **Canon** — the house, its characters, and genuine battle reports written by
+  the maintainer (the 13–4 victory over Zortan's Wrath, Kasim's leg wound from
+  Hell Knight Ugar, Al-Qahhar losing an arm standing over him, Idris stealing
+  the Golden Mantle).
+- **Rejected alternatives** — six candidate names for the Brazen Bull, competing
+  "Thematic Options" and "Alchemical Options", a superseded 700-Ducat roster.
+- **Assistant commentary** — advice, questions, and rules interpretations.
+
+Anything promoted to canon must be picked deliberately from this file. Do not
+bulk-import it.
+
+## Rules claims in the transcript, checked
+
+The transcript states the House of Wisdom restrictions. Checked against the
+Warbands book (p.93):
+
+| Transcript claim | Verdict |
+|---|---|
+| "cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins" | **Correct** — matches *Private Venture* exactly |
+| "You can take your Alchemist, Brazen Bull, Lions of Jabir, and Azebs" | **Incomplete.** *Alchemists* is a **requirement** (must include 1–2 Jabirean Alchemists), not a permission; *Pride of Jabir* caps Lions at 0–3. |
+| "Azebs … can be upgraded to elite Kavass bodyguards" | **Imprecise.** *Kavasses* changes the Melee Characteristic of up to 3 Azebs, and **they lose the Light Skirmisher ability** — a cost the transcript omits. |
+| — | **Missed entirely:** *Noble Guardians* — a House of Wisdom can include 0–2 **Fāris**, who use the Janissary Warband Entry but gain ELITE at no cost. Note this is a different entry from the **Mamluk Faris** mercenary in the roster. |
+| "If you want to use all your models in one list, run them as a Standard Iron Sultanate warband" | **Unnecessary** — the roster is legal as House of Wisdom; see below. |
+
+### The current roster is legal
+
+Validated against the House of Wisdom special rules:
+
+```
+PASS  Alchemists: must include 1-2 Jabirean Alchemists   (found 2)
+PASS  Pride of Jabir: 0-3 Lions of Jabir                 (found 1)
+PASS  Private Venture: no Yüzbaşı                        (found 0)
+PASS  Private Venture: no Janissaries                    (found 0)
+PASS  Private Venture: no Sultanate Assassins            (found 0)
+```
+
+Jawhar al-Sari is a **Mamluk Faris mercenary**, which the Trench Dispatch
+confirms is recruitable by SULTANATE warbands — legal, and distinct from the
+House of Wisdom Fāris.
+
+This is precisely the check the app should run automatically, and today cannot:
+it has no variant support, no unit limits and no required-entry rules. It is the
+acceptance test for Phase 2.
