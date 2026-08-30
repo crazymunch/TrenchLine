@@ -23,13 +23,17 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && currentTheme) {
+      // Set on <html> only. Setting it on <body> as well meant body carried its
+      // own value, which shadows the inherited one for everything inside it —
+      // so if the two ever diverged, the whole app would silently render the
+      // body's theme and the html one would look applied but do nothing.
       document.documentElement.setAttribute('data-theme', currentTheme);
-      document.body?.setAttribute('data-theme', currentTheme);
+      document.body?.removeAttribute('data-theme');
     }
   }, [currentTheme]);
 
   return (
-    <div className="min-h-[100dvh] bg-[#0C0E12] text-[#ECEFF4] flex flex-row selection:bg-[#8B0000] selection:text-white transition-colors duration-300">
+    <div className="min-h-[100dvh] bg-theme-base text-theme-text flex flex-row selection:bg-theme-accent selection:text-white transition-colors duration-300">
       {/* Left Collapsible Desktop Sidebar */}
       <Sidebar />
 

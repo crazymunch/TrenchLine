@@ -179,20 +179,20 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Header */}
-        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+        <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+            <div className="w-8 h-8 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h2 className="font-gothic font-bold text-base sm:text-lg text-white">
                   {unit.customName}
                 </h2>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#323846] text-[#D4AF37] uppercase font-bold">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-theme-border text-theme-primary uppercase font-bold">
                   {unit.profileSnapshot.name}
                 </span>
                 {unit.isElite && (
@@ -201,32 +201,32 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#8E95A5] font-mono">
+              <p className="text-xs text-theme-muted font-mono">
                 Advancement, Compendium Skills, Trauma Scars & Faction Traits
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="text-[#8E95A5] hover:text-white p-1 rounded transition-colors"
+            className="text-theme-muted hover:text-white p-1 rounded transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-[#323846] bg-[#161920] overflow-x-auto">
+        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
           
           {isHomunculus && (
             <button
               onClick={() => setActiveTab('formulas')}
               className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === 'formulas' 
-                  ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                  : 'border-transparent text-[#8E95A5] hover:text-white'
+                  ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                  : 'border-transparent text-theme-muted hover:text-white'
               }`}
             >
-              <FlaskConical className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <FlaskConical className="w-3.5 h-3.5 text-theme-primary" />
               <span>Alchemical Formulas</span>
             </button>
           )}
@@ -235,8 +235,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             onClick={() => setActiveTab('advancement')}
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'advancement' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -247,8 +247,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             onClick={() => setActiveTab('skills')}
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'skills' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -259,8 +259,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             onClick={() => setActiveTab('injuries')}
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'injuries' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <Skull className="w-3.5 h-3.5" />
@@ -271,8 +271,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             onClick={() => setActiveTab('upgrades')}
             className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'upgrades' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
@@ -286,14 +286,14 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
           {/* TAB 0: HOMUNCULUS ALCHEMICAL FORMULAS */}
           {activeTab === 'formulas' && isHomunculus && (
             <div className="space-y-4">
-              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#D4AF37]/50 space-y-1">
+              <div className="p-3.5 bg-theme-base rounded border border-theme-primary/50 space-y-1">
                 <div className="flex items-center space-x-2">
-                  <FlaskConical className="w-4 h-4 text-[#D4AF37]" />
-                  <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+                  <FlaskConical className="w-4 h-4 text-theme-primary" />
+                  <strong className="text-xs uppercase text-theme-primary font-bold block">
                     Takwin Homunculus Alchemical Formulations
                   </strong>
                 </div>
-                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                <p className="text-[11px] text-theme-muted leading-relaxed">
                   Homunculi created through the Secrets of Takwin or discovered via the Book of Golems may be infused with experimental alchemical formulas upon recruitment and between campaign battles.
                 </p>
               </div>
@@ -312,8 +312,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                       })}
                       className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
                         isSelected
-                          ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40 shadow'
-                          : 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]/50'
+                          ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40 shadow'
+                          : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
                       }`}
                     >
                       <div className="space-y-1 flex-1">
@@ -322,16 +322,16 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => {}}
-                            className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                            className="rounded border-theme-border text-theme-primary focus:ring-0"
                           />
-                          <strong className={`text-xs ${isSelected ? 'text-[#D4AF37] font-bold' : 'text-[#ECEFF4]'}`}>
+                          <strong className={`text-xs ${isSelected ? 'text-theme-primary font-bold' : 'text-theme-text'}`}>
                             {formula.name}
                           </strong>
-                          <span className="text-[10px] font-bold text-[#D4AF37]">
+                          <span className="text-[10px] font-bold text-theme-primary">
                             +{formula.cost} Ducats
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#8E95A5] pl-6 leading-relaxed">
+                        <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
                           {formula.description}
                         </p>
                       </div>
@@ -347,10 +347,10 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             <div className="space-y-4">
               
               {/* XP Counter Card */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex items-center justify-between gap-4">
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border flex items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <span className="text-xs uppercase text-[#8E95A5] font-bold block">Experience Points (XP)</span>
-                  <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                  <span className="text-xs uppercase text-theme-muted font-bold block">Experience Points (XP)</span>
+                  <p className="text-[11px] text-theme-muted leading-relaxed">
                     Warriors gain 1 XP per match survived or objective scored. 5 XP unlocks an official Compendium Skill roll.
                   </p>
                 </div>
@@ -358,16 +358,16 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 <div className="flex items-center space-x-3 flex-shrink-0">
                   <button
                     onClick={() => handleAdjustXp(-1)}
-                    className="w-8 h-8 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-base"
+                    className="w-8 h-8 rounded bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-base"
                   >
                     -
                   </button>
-                  <span className="font-gothic font-bold text-2xl text-[#D4AF37] w-12 text-center">
+                  <span className="font-gothic font-bold text-2xl text-theme-primary w-12 text-center">
                     {unit.xp || 0}
                   </span>
                   <button
                     onClick={() => handleAdjustXp(1)}
-                    className="w-8 h-8 rounded bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold text-base flex items-center justify-center shadow"
+                    className="w-8 h-8 rounded bg-theme-primary hover:bg-theme-primary-hover text-black font-bold text-base flex items-center justify-center shadow"
                   >
                     +
                   </button>
@@ -375,13 +375,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               </div>
 
               {/* Promotion / Elite Designation */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] flex items-center justify-between gap-4">
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Crown className="w-4 h-4 text-[#7C4DFF]" />
-                    <strong className="text-xs uppercase text-[#ECEFF4] font-bold">Elite Warrior Promotion</strong>
+                    <strong className="text-xs uppercase text-theme-text font-bold">Elite Warrior Promotion</strong>
                   </div>
-                  <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                  <p className="text-[11px] text-theme-muted leading-relaxed">
                     Promoting a Trooper to Elite status allows them to select skills across multiple disciplines and increases their survival resilience.
                   </p>
                 </div>
@@ -391,7 +391,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 ${
                     unit.isElite
                       ? 'bg-[#7C4DFF] text-white shadow-lg'
-                      : 'bg-[#20242E] text-[#8E95A5] border border-[#323846] hover:text-white'
+                      : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-white'
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5" />
@@ -407,15 +407,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             <div className="space-y-4">
               
               {/* Skill Discipline Sub-tabs */}
-              <div className="flex items-center space-x-1 bg-[#0C0E12] p-1 rounded border border-[#323846]">
+              <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
                 {(['melee', 'ranged', 'stealth', 'wildcard'] as const).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedSkillCategory(cat)}
                     className={`flex-1 py-1.5 text-center font-bold uppercase text-[10px] rounded transition-all ${
                       selectedSkillCategory === cat
-                        ? 'bg-[#D4AF37] text-black shadow'
-                        : 'text-[#8E95A5] hover:text-white'
+                        ? 'bg-theme-primary text-black shadow'
+                        : 'text-theme-muted hover:text-white'
                     }`}
                   >
                     {cat} Skills
@@ -424,15 +424,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               </div>
 
               {/* Add Skill Dropdown */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] space-y-3">
-                <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border space-y-3">
+                <strong className="text-xs uppercase text-theme-primary font-bold block">
                   Learn Skill from {selectedSkillCategory.toUpperCase()} Discipline
                 </strong>
 
                 {/* An empty list must not read as "this category has no skills".
                     Say the tables are missing, and why nothing can be added. */}
                 {currentCategorySkills.length === 0 && (
-                  <p className="text-xs sm:text-[11px] font-mono text-[#E53935] leading-relaxed mb-2">
+                  <p className="text-xs sm:text-[11px] font-mono text-status-error leading-relaxed mb-2">
                     {datasetError
                       ? `The Skills tables could not be loaded: ${datasetError}. No Skill can be added until they are.`
                       : 'Loading the Skills tables…'}
@@ -444,7 +444,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     value={selectedSkillName}
                     onChange={(e) => setSelectedSkillName(e.target.value)}
                     disabled={currentCategorySkills.length === 0}
-                    className="flex-1 min-h-[44px] bg-[#161920] border border-[#323846] rounded p-2 text-base sm:text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] disabled:opacity-50"
+                    className="flex-1 min-h-[44px] bg-theme-surface border border-theme-border rounded p-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary disabled:opacity-50"
                   >
                     <option value="">-- Select Skill --</option>
                     {currentCategorySkills.map((s) => (
@@ -457,7 +457,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <button
                     onClick={handleAddSkill}
                     disabled={!selectedSkillName}
-                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Learn</span>
@@ -467,31 +467,31 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
               {/* Acquired Skills List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <span className="text-[10px] uppercase font-bold text-theme-muted block">
                   Active Acquired Skills ({unitSkills.length}):
                 </span>
                 {unitSkills.length === 0 ? (
-                  <p className="text-xs text-[#8E95A5] italic p-4 bg-[#0C0E12] rounded border border-[#323846] text-center">
+                  <p className="text-xs text-theme-muted italic p-4 bg-theme-base rounded border border-theme-border text-center">
                     Warrior has not acquired any compendium skills yet.
                   </p>
                 ) : (
                   unitSkills.map((s, idx) => (
-                    <div key={idx} className="p-3 bg-[#0C0E12] rounded border border-[#323846] flex items-start justify-between gap-3">
+                    <div key={idx} className="p-3 bg-theme-base rounded border border-theme-border flex items-start justify-between gap-3">
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
-                          <strong className="text-xs text-[#D4AF37] font-bold">{s.name}</strong>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#ECEFF4] border border-[#323846]">
+                          <strong className="text-xs text-theme-primary font-bold">{s.name}</strong>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                             {s.category} • [{s.roll || 'D66'}]
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                        <p className="text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
                       </div>
 
                       <button
                         onClick={() => removeUnitSkill(warbandId, unit.id, s.name)}
-                        className="text-[#8E95A5] hover:text-[#E53935] p-1"
+                        className="text-theme-muted hover:text-status-error p-1"
                         title="Remove Skill"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -509,8 +509,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             <div className="space-y-4">
               
               {/* Add Injury Form */}
-              <div className="p-4 bg-[#0C0E12] rounded-md border border-[#323846] space-y-3">
-                <strong className="text-xs uppercase text-[#E53935] font-bold block">
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border space-y-3">
+                <strong className="text-xs uppercase text-status-error font-bold block">
                   Add Trauma Table Injury / Permanent Scar
                 </strong>
 
@@ -518,7 +518,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <select
                     value={selectedInjuryRoll}
                     onChange={(e) => setSelectedInjuryRoll(e.target.value)}
-                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#E53935]"
+                    className="flex-1 bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-text focus:outline-none focus:border-status-error"
                   >
                     <option value="">-- Select Trauma Table Result --</option>
                     {OFFICIAL_TRAUMA_TABLE.filter(t => !t.isDead).map((t) => (
@@ -531,7 +531,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   <button
                     onClick={handleAddInjury}
                     disabled={!selectedInjuryRoll}
-                    className="px-4 py-2 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Apply</span>
@@ -541,31 +541,31 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
               {/* Scars List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <span className="text-[10px] uppercase font-bold text-theme-muted block">
                   Active Permanent Injuries & Scars ({unitScars.length}):
                 </span>
                 {unitScars.length === 0 ? (
-                  <p className="text-xs text-[#8E95A5] italic p-4 bg-[#0C0E12] rounded border border-[#323846] text-center">
+                  <p className="text-xs text-theme-muted italic p-4 bg-theme-base rounded border border-theme-border text-center">
                     Warrior has suffered no permanent trauma.
                   </p>
                 ) : (
                   unitScars.map((s, idx) => (
-                    <div key={idx} className="p-3 bg-[#0C0E12] rounded border border-[#323846] flex items-start justify-between gap-3">
+                    <div key={idx} className="p-3 bg-theme-base rounded border border-theme-border flex items-start justify-between gap-3">
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
-                          <strong className="text-xs text-[#E53935] font-bold">{s.name}</strong>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#ECEFF4] border border-[#323846]">
+                          <strong className="text-xs text-status-error font-bold">{s.name}</strong>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                             Trauma Roll: [{s.roll}]
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                        <p className="text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
                       </div>
 
                       <button
                         onClick={() => removeUnitScar(warbandId, unit.id, s.name)}
-                        className="text-[#8E95A5] hover:text-[#E53935] p-1"
+                        className="text-theme-muted hover:text-status-error p-1"
                         title="Remove Scar"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -585,12 +585,12 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               {/* Faction Special Abilities (e.g. Secrets of the House of Wisdom) */}
               {factionUpgrades && (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-                    <strong className="text-xs uppercase text-[#D4AF37] font-bold flex items-center space-x-1.5">
+                  <div className="flex items-center justify-between border-b border-theme-border pb-2">
+                    <strong className="text-xs uppercase text-theme-primary font-bold flex items-center space-x-1.5">
                       <Flame className="w-3.5 h-3.5" />
                       <span>{factionUpgrades.category} (Max {factionUpgrades.maxSelect})</span>
                     </strong>
-                    <span className="text-[10px] text-[#8E95A5]">
+                    <span className="text-[10px] text-theme-muted">
                       {unitUpgrades.filter(u => u.category === factionUpgrades.category).length} / {factionUpgrades.maxSelect} Selected
                     </span>
                   </div>
@@ -609,8 +609,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                           })}
                           className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
                             isSelected
-                              ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40'
-                              : 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]/50'
+                              ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
+                              : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
                           }`}
                         >
                           <div className="space-y-1 flex-1">
@@ -619,16 +619,16 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => {}}
-                                className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                                className="rounded border-theme-border text-theme-primary focus:ring-0"
                               />
-                              <strong className={`text-xs ${isSelected ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
+                              <strong className={`text-xs ${isSelected ? 'text-theme-primary' : 'text-theme-text'}`}>
                                 {opt.name}
                               </strong>
-                              <span className="text-[10px] font-bold text-[#D4AF37]">
+                              <span className="text-[10px] font-bold text-theme-primary">
                                 {opt.cost} Ducats
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#8E95A5] pl-6 leading-relaxed">
+                            <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
                               {opt.description}
                             </p>
                           </div>
@@ -640,13 +640,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               )}
 
               {/* Fireteam Protocols */}
-              <div className="space-y-2 pt-2 border-t border-[#323846]">
-                <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-                  <strong className="text-xs uppercase text-[#ECEFF4] font-bold flex items-center space-x-1.5">
-                    <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <div className="space-y-2 pt-2 border-t border-theme-border">
+                <div className="flex items-center justify-between border-b border-theme-border pb-2">
+                  <strong className="text-xs uppercase text-theme-text font-bold flex items-center space-x-1.5">
+                    <Users className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Fireteam Coordination Protocol (0/1)</span>
                   </strong>
-                  <span className="text-[10px] text-[#8E95A5]">
+                  <span className="text-[10px] text-theme-muted">
                     {unit.fireteam ? 'Assigned' : 'None'}
                   </span>
                 </div>
@@ -660,8 +660,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         onClick={() => setUnitFireteam(warbandId, unit.id, isSelected ? undefined : ft.name)}
                         className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
                           isSelected
-                            ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40'
-                            : 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]/50'
+                            ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
+                            : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
                         }`}
                       >
                         <div className="space-y-1 flex-1">
@@ -670,13 +670,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => {}}
-                              className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                              className="rounded border-theme-border text-theme-primary focus:ring-0"
                             />
-                            <strong className={`text-xs ${isSelected ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
+                            <strong className={`text-xs ${isSelected ? 'text-theme-primary' : 'text-theme-text'}`}>
                               {ft.name}
                             </strong>
                           </div>
-                          <p className="text-[11px] text-[#8E95A5] pl-6 leading-relaxed">
+                          <p className="text-[11px] text-theme-muted pl-6 leading-relaxed">
                             {ft.description}
                           </p>
                         </div>
@@ -692,13 +692,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-[10px] text-[#8E95A5]">
-            Warband Cost Adjusted: <strong className="text-[#D4AF37]">{unit.totalCost} D</strong>
+        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
+          <span className="text-[10px] text-theme-muted">
+            Warband Cost Adjusted: <strong className="text-theme-primary">{unit.totalCost} D</strong>
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+            className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
           >
             Done
           </button>

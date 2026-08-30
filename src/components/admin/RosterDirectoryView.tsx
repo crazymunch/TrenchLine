@@ -129,16 +129,16 @@ export const RosterDirectoryView: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl space-y-4 bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl space-y-4 bevel-container">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
-              <Users className="w-6 h-6 text-[#D4AF37]" />
-              <h1 className="font-gothic font-bold text-2xl text-[#ECEFF4] tracking-wide">
+              <Users className="w-6 h-6 text-theme-primary" />
+              <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
                 GLOBAL WARBAND DIRECTORY & CRUSADE ROSTER
               </h1>
             </div>
-            <p className="text-xs font-mono text-[#8E95A5]">
+            <p className="text-xs font-mono text-theme-muted">
               Administrative command center to inspect all warbands in the system, oversee campaign enrollment, and audit warband growth.
             </p>
           </div>
@@ -156,7 +156,7 @@ export const RosterDirectoryView: React.FC = () => {
                     }
                   } catch {}
                 }}
-                className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/50 text-[#E53935] border border-[#8B0000] rounded font-mono text-xs font-bold uppercase transition-colors"
+                className="flex items-center space-x-1.5 px-3.5 py-2 bg-theme-accent/30 hover:bg-theme-accent/50 text-status-error border border-theme-accent rounded font-mono text-xs font-bold uppercase transition-colors"
               >
                 <Bug className="w-3.5 h-3.5" />
                 <span>Bug Tickets Log</span>
@@ -166,9 +166,9 @@ export const RosterDirectoryView: React.FC = () => {
             <button
               onClick={handleRefresh}
               disabled={isLoadingCloud}
-              className="flex items-center space-x-2 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-2 px-3.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
             >
-              <RotateCw className={`w-3.5 h-3.5 ${isLoadingCloud ? 'animate-spin text-[#D4AF37]' : ''}`} />
+              <RotateCw className={`w-3.5 h-3.5 ${isLoadingCloud ? 'animate-spin text-theme-primary' : ''}`} />
               <span>Refresh Cloud Database</span>
             </button>
           </div>
@@ -178,13 +178,13 @@ export const RosterDirectoryView: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
           {/* Search */}
           <div className="relative md:col-span-1">
-            <Search className="w-4 h-4 text-[#8E95A5] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by Warband, Commander, Warrior..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-xs font-mono text-[#ECEFF4] placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
           </div>
 
@@ -193,7 +193,7 @@ export const RosterDirectoryView: React.FC = () => {
             <select
               value={selectedFactionFilter}
               onChange={(e) => setSelectedFactionFilter(e.target.value)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded px-3 py-2 text-xs font-mono text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-theme-base border border-theme-border rounded px-3 py-2 text-xs font-mono text-theme-text focus:outline-none focus:border-theme-primary"
             >
               <option value="all">All Factions ({allWarbandsList.length})</option>
               {factions.map((f) => (
@@ -209,7 +209,7 @@ export const RosterDirectoryView: React.FC = () => {
             <select
               value={selectedCampaignFilter}
               onChange={(e) => setSelectedCampaignFilter(e.target.value as any)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded px-3 py-2 text-xs font-mono text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-theme-base border border-theme-border rounded px-3 py-2 text-xs font-mono text-theme-text focus:outline-none focus:border-theme-primary"
             >
               <option value="all">All Campaign Statuses</option>
               <option value="enrolled">Enrolled in Active Crusade ({campaign.members.length})</option>
@@ -233,77 +233,77 @@ export const RosterDirectoryView: React.FC = () => {
           return (
             <div
               key={wb.id}
-              className={`bg-[#161920] border-2 rounded-md p-5 flex flex-col justify-between space-y-4 shadow-xl transition-all bevel-container ${
+              className={`bg-theme-surface border-2 rounded-md p-5 flex flex-col justify-between space-y-4 shadow-xl transition-all bevel-container ${
                 isActive
-                  ? 'border-[#D4AF37] ring-1 ring-[#D4AF37]/50'
+                  ? 'border-theme-primary ring-1 ring-theme-primary/50'
                   : isEnrolled
-                  ? 'border-[#323846] hover:border-[#D4AF37]/40'
-                  : 'border-[#323846]/70 opacity-90 hover:opacity-100'
+                  ? 'border-theme-border hover:border-theme-primary/40'
+                  : 'border-theme-border/70 opacity-90 hover:opacity-100'
               }`}
             >
               <div className="space-y-3">
                 
                 {/* Card Header */}
-                <div className="flex items-start justify-between gap-2 border-b border-[#323846] pb-3">
+                <div className="flex items-start justify-between gap-2 border-b border-theme-border pb-3">
                   <div>
                     <div className="flex items-center space-x-2">
                       <span 
                         className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ backgroundColor: faction?.color || '#D4AF37' }}
                       />
-                      <span className="text-[10px] font-mono uppercase font-bold text-[#8E95A5]">
+                      <span className="text-[10px] font-mono uppercase font-bold text-theme-muted">
                         {faction?.name || wb.factionId}
                       </span>
                     </div>
-                    <h3 className="font-gothic font-bold text-lg text-[#ECEFF4] mt-0.5 tracking-wide">
+                    <h3 className="font-gothic font-bold text-lg text-theme-text mt-0.5 tracking-wide">
                       {wb.name}
                     </h3>
-                    <span className="text-[11px] font-mono text-[#8E95A5] block">
-                      Commander: <strong className="text-[#ECEFF4]">{wb.creatorName || 'Crusade Commander'}</strong>
+                    <span className="text-[11px] font-mono text-theme-muted block">
+                      Commander: <strong className="text-theme-text">{wb.creatorName || 'Crusade Commander'}</strong>
                     </span>
                   </div>
 
                   {/* Campaign Status Badge */}
                   {isEnrolled ? (
-                    <span className="px-2 py-0.5 rounded bg-[#20242E] border border-[#4E9A6E]/50 text-[#4E9A6E] text-[10px] font-mono font-bold uppercase flex items-center space-x-1 flex-shrink-0">
+                    <span className="px-2 py-0.5 rounded bg-theme-elevated border border-status-legal/50 text-status-legal text-[10px] font-mono font-bold uppercase flex items-center space-x-1 flex-shrink-0">
                       <CheckCircle className="w-3 h-3" />
                       <span>CRUSADE</span>
                     </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded bg-[#0C0E12] border border-[#323846] text-[#8E95A5] text-[10px] font-mono font-bold uppercase flex-shrink-0">
+                    <span className="px-2 py-0.5 rounded bg-theme-base border border-theme-border text-theme-muted text-[10px] font-mono font-bold uppercase flex-shrink-0">
                       UNENROLLED
                     </span>
                   )}
                 </div>
 
                 {/* Warband Stats Row */}
-                <div className="grid grid-cols-3 gap-2 bg-[#0C0E12] p-2.5 rounded border border-[#323846] text-xs font-mono text-center">
+                <div className="grid grid-cols-3 gap-2 bg-theme-base p-2.5 rounded border border-theme-border text-xs font-mono text-center">
                   <div>
-                    <span className="text-[9px] uppercase text-[#8E95A5] block">Points</span>
-                    <strong className="text-[#D4AF37]">{totalPoints} D</strong>
+                    <span className="text-[9px] uppercase text-theme-muted block">Points</span>
+                    <strong className="text-theme-primary">{totalPoints} D</strong>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase text-[#8E95A5] block">Treasury</span>
-                    <strong className="text-[#ECEFF4]">{wb.treasuryDucats} D</strong>
+                    <span className="text-[9px] uppercase text-theme-muted block">Treasury</span>
+                    <strong className="text-theme-text">{wb.treasuryDucats} D</strong>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase text-[#8E95A5] block">Warriors</span>
-                    <strong className="text-[#ECEFF4]">{wb.units.length}</strong>
+                    <span className="text-[9px] uppercase text-theme-muted block">Warriors</span>
+                    <strong className="text-theme-text">{wb.units.length}</strong>
                   </div>
                 </div>
 
                 {/* Key Units Preview */}
                 <div className="text-xs font-mono space-y-1">
-                  <div className="flex justify-between text-[#8E95A5]">
+                  <div className="flex justify-between text-theme-muted">
                     <span>Leader:</span>
-                    <strong className="text-[#ECEFF4]">{leader?.customName || 'Unassigned'}</strong>
+                    <strong className="text-theme-text">{leader?.customName || 'Unassigned'}</strong>
                   </div>
-                  <div className="flex justify-between text-[#8E95A5]">
+                  <div className="flex justify-between text-theme-muted">
                     <span>Composition:</span>
                     <span>{eliteCount} Elites • {trooperCount} Troopers</span>
                   </div>
                   {wb.snapshots && wb.snapshots.length > 0 && (
-                    <div className="flex justify-between text-[#D4AF37] text-[11px] pt-1">
+                    <div className="flex justify-between text-theme-primary text-[11px] pt-1">
                       <span>History Milestones:</span>
                       <strong>{wb.snapshots.length} Snapshots</strong>
                     </div>
@@ -313,21 +313,21 @@ export const RosterDirectoryView: React.FC = () => {
               </div>
 
               {/* Card Action Buttons */}
-              <div className="space-y-2 pt-2 border-t border-[#323846]">
+              <div className="space-y-2 pt-2 border-t border-theme-border">
                 <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                   <button
                     onClick={() => setInspectingWarband(wb)}
-                    className="py-1.5 px-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors border border-[#323846]"
+                    className="py-1.5 px-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors border border-theme-border"
                   >
-                    <Eye className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <Eye className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Inspect</span>
                   </button>
 
                   <button
                     onClick={() => setChangelogWarband(wb)}
-                    className="py-1.5 px-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors border border-[#323846]"
+                    className="py-1.5 px-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors border border-theme-border"
                   >
-                    <History className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <History className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Growth</span>
                   </button>
                 </div>
@@ -338,7 +338,7 @@ export const RosterDirectoryView: React.FC = () => {
                       {isEnrolled ? (
                         <button
                           onClick={() => removeWarbandFromCampaign(wb.id)}
-                          className="py-1.5 px-2 bg-[#8B0000]/30 hover:bg-[#8B0000]/60 text-[#E53935] border border-[#8B0000]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                          className="py-1.5 px-2 bg-theme-accent/30 hover:bg-theme-accent/60 text-status-error border border-theme-accent/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Remove</span>
@@ -346,7 +346,7 @@ export const RosterDirectoryView: React.FC = () => {
                       ) : (
                         <button
                           onClick={() => enrollWarbandInCampaign(wb)}
-                          className="py-1.5 px-2 bg-[#4E9A6E]/30 hover:bg-[#4E9A6E]/60 text-[#4E9A6E] border border-[#4E9A6E]/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                          className="py-1.5 px-2 bg-status-legal/30 hover:bg-status-legal/60 text-status-legal border border-status-legal/50 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
                         >
                           <PlusCircle className="w-3.5 h-3.5" />
                           <span>Enlist</span>
@@ -355,7 +355,7 @@ export const RosterDirectoryView: React.FC = () => {
 
                       <button
                         onClick={() => handleSelectActive(wb)}
-                        className="py-1.5 px-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
+                        className="py-1.5 px-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
                       >
                         <Shield className="w-3.5 h-3.5" />
                         <span>Manage</span>
@@ -369,16 +369,16 @@ export const RosterDirectoryView: React.FC = () => {
                           soundEffects.playCathedralBell();
                           setCurrentView('builder');
                         }}
-                        className="py-1.5 px-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
+                        className="py-1.5 px-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors"
                         title="Clone a local copy of this warband"
                       >
-                        <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <Copy className="w-3.5 h-3.5 text-theme-primary" />
                         <span>Clone Copy</span>
                       </button>
 
                       <button
                         onClick={() => setInspectingWarband(wb)}
-                        className="py-1.5 px-2 bg-[#0C0E12] text-[#8E95A5] border border-[#323846] rounded font-bold uppercase flex items-center justify-center space-x-1 cursor-default"
+                        className="py-1.5 px-2 bg-theme-base text-theme-muted border border-theme-border rounded font-bold uppercase flex items-center justify-center space-x-1 cursor-default"
                       >
                         <Lock className="w-3.5 h-3.5" />
                         <span>Read Only</span>
@@ -396,18 +396,18 @@ export const RosterDirectoryView: React.FC = () => {
       {/* Detailed Warband Inspection Modal */}
       {inspectingWarband && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-3">
-                <Shield className="w-6 h-6 text-[#D4AF37]" />
+                <Shield className="w-6 h-6 text-theme-primary" />
                 <div>
-                  <h2 className="font-gothic font-bold text-xl text-[#ECEFF4] tracking-wide">
+                  <h2 className="font-gothic font-bold text-xl text-theme-text tracking-wide">
                     {inspectingWarband.name}
                   </h2>
-                  <p className="text-xs font-mono text-[#8E95A5]">
-                    Commander: <strong className="text-[#ECEFF4]">{inspectingWarband.creatorName || 'Crusade Commander'}</strong> • Faction: <strong className="text-[#D4AF37]">{inspectingWarband.factionId}</strong>
+                  <p className="text-xs font-mono text-theme-muted">
+                    Commander: <strong className="text-theme-text">{inspectingWarband.creatorName || 'Crusade Commander'}</strong> • Faction: <strong className="text-theme-primary">{inspectingWarband.factionId}</strong>
                   </p>
                 </div>
               </div>
@@ -415,13 +415,13 @@ export const RosterDirectoryView: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => handleSelectActive(inspectingWarband)}
-                  className="px-3 py-1 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow"
                 >
                   Set as Active
                 </button>
                 <button
                   onClick={() => setInspectingWarband(null)}
-                  className="text-[#8E95A5] hover:text-white p-1"
+                  className="text-theme-muted hover:text-white p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -433,19 +433,19 @@ export const RosterDirectoryView: React.FC = () => {
               
               {/* Lore & Patron Callout */}
               {(inspectingWarband.lore || inspectingWarband.patron || inspectingWarband.motto) && (
-                <div className="p-4 bg-[#0C0E12] border border-[#323846] rounded-md space-y-2 font-mono text-xs">
+                <div className="p-4 bg-theme-base border border-theme-border rounded-md space-y-2 font-mono text-xs">
                   {inspectingWarband.motto && (
-                    <p className="text-sm font-gothic italic text-[#D4AF37]">
+                    <p className="text-sm font-gothic italic text-theme-primary">
                       &ldquo;{inspectingWarband.motto}&rdquo;
                     </p>
                   )}
                   {inspectingWarband.patron && (
-                    <div className="text-[11px] text-[#8E95A5]">
-                      Patron Sovereign: <strong className="text-[#ECEFF4]">{inspectingWarband.patron}</strong>
+                    <div className="text-[11px] text-theme-muted">
+                      Patron Sovereign: <strong className="text-theme-text">{inspectingWarband.patron}</strong>
                     </div>
                   )}
                   {inspectingWarband.lore && (
-                    <p className="text-xs text-[#ECEFF4] leading-relaxed pt-1 whitespace-pre-line">
+                    <p className="text-xs text-theme-text leading-relaxed pt-1 whitespace-pre-line">
                       {inspectingWarband.lore}
                     </p>
                   )}
@@ -454,9 +454,9 @@ export const RosterDirectoryView: React.FC = () => {
 
               {/* Units Roster */}
               <div className="space-y-3">
-                <h3 className="font-gothic font-bold text-base text-[#D4AF37] border-b border-[#323846] pb-2 flex items-center justify-between">
+                <h3 className="font-gothic font-bold text-base text-theme-primary border-b border-theme-border pb-2 flex items-center justify-between">
                   <span>WARRIORS ROSTER ({inspectingWarband.units.length})</span>
-                  <span className="text-xs font-mono text-[#ECEFF4]">
+                  <span className="text-xs font-mono text-theme-text">
                     Total Rating: {inspectingWarband.units.reduce((s, u) => s + u.totalCost, 0)} Ducats
                   </span>
                 </h3>
@@ -465,27 +465,27 @@ export const RosterDirectoryView: React.FC = () => {
                   {inspectingWarband.units.map((u) => (
                     <div
                       key={u.id}
-                      className="p-4 bg-[#20242E] border border-[#323846] rounded-md space-y-3 bevel-container font-mono text-xs"
+                      className="p-4 bg-theme-elevated border border-theme-border rounded-md space-y-3 bevel-container font-mono text-xs"
                     >
-                      <div className="flex items-start justify-between border-b border-[#323846] pb-2">
+                      <div className="flex items-start justify-between border-b border-theme-border pb-2">
                         <div>
                           <div className="flex items-center space-x-1.5">
                             {u.profileSnapshot.category === 'Leader' && (
-                              <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                              <Crown className="w-3.5 h-3.5 text-theme-primary" />
                             )}
-                            <h4 className="font-gothic font-bold text-sm text-[#ECEFF4]">
+                            <h4 className="font-gothic font-bold text-sm text-theme-text">
                               {u.customName}
                             </h4>
                           </div>
-                          <span className="text-[10px] text-[#8E95A5]">
+                          <span className="text-[10px] text-theme-muted">
                             {u.profileSnapshot.name} ({u.profileSnapshot.category})
                           </span>
                         </div>
-                        <span className="text-xs font-bold text-[#D4AF37]">{u.totalCost} D</span>
+                        <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
                       </div>
 
                       {/* Statline */}
-                      <div className="grid grid-cols-4 gap-1 bg-[#0C0E12] p-1.5 rounded border border-[#323846] text-center text-[10px]">
+                      <div className="grid grid-cols-4 gap-1 bg-theme-base p-1.5 rounded border border-theme-border text-center text-[10px]">
                         <div>MOV: <strong className="text-white">{u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-white">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-white">{u.profileSnapshot.stats.melee}</strong></div>
@@ -494,27 +494,27 @@ export const RosterDirectoryView: React.FC = () => {
 
                       {/* Wargear */}
                       <div className="space-y-1 text-[11px]">
-                        <div className="text-[#8E95A5]">
-                          Weapons: <strong className="text-[#ECEFF4]">{u.equippedWeapons.map((w) => w.name).join(', ') || 'None'}</strong>
+                        <div className="text-theme-muted">
+                          Weapons: <strong className="text-theme-text">{u.equippedWeapons.map((w) => w.name).join(', ') || 'None'}</strong>
                         </div>
-                        <div className="text-[#8E95A5]">
-                          Armour: <strong className="text-[#ECEFF4]">{u.equippedArmour.map((a) => a.name).join(', ') || 'None'}</strong>
+                        <div className="text-theme-muted">
+                          Armour: <strong className="text-theme-text">{u.equippedArmour.map((a) => a.name).join(', ') || 'None'}</strong>
                         </div>
                         {u.equippedEquipment.length > 0 && (
-                          <div className="text-[#8E95A5]">
-                            Gear: <strong className="text-[#ECEFF4]">{u.equippedEquipment.map((e) => e.name).join(', ')}</strong>
+                          <div className="text-theme-muted">
+                            Gear: <strong className="text-theme-text">{u.equippedEquipment.map((e) => e.name).join(', ')}</strong>
                           </div>
                         )}
                       </div>
 
                       {/* Injuries & Deeds */}
                       {u.injuries && u.injuries.length > 0 && (
-                        <div className="text-[10px] text-[#E53935] pt-1">
+                        <div className="text-[10px] text-status-error pt-1">
                           Injuries: {u.injuries.join(' • ')}
                         </div>
                       )}
                       {u.deeds && u.deeds.length > 0 && (
-                        <div className="text-[10px] text-[#D4AF37] pt-0.5">
+                        <div className="text-[10px] text-theme-primary pt-0.5">
                           Deeds: {u.deeds[0]}
                         </div>
                       )}
@@ -540,25 +540,25 @@ export const RosterDirectoryView: React.FC = () => {
       {/* Bug Reports / Feedback Log Modal (Admin) */}
       {isBugListOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[90dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[90dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Header */}
-            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+            <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
-                <div className="p-1.5 rounded bg-[#8B0000]/30 border border-[#8B0000] text-[#E53935]">
+                <div className="p-1.5 rounded bg-theme-accent/30 border border-theme-accent text-status-error">
                   <Bug className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                  <h3 className="font-gothic font-bold text-base text-theme-text">
                     COMMUNITY BUG TICKETS & FEEDBACK LOG
                   </h3>
-                  <span className="text-[10px] text-[#8E95A5] block">
+                  <span className="text-[10px] text-theme-muted block">
                     {bugTickets.length} report{bugTickets.length === 1 ? '' : 's'} collected across phones, iPads, and desktops
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setIsBugListOpen(false)}
-                className="text-[#8E95A5] hover:text-white p-1"
+                className="text-theme-muted hover:text-white p-1"
               >
                 ✕
               </button>
@@ -567,39 +567,39 @@ export const RosterDirectoryView: React.FC = () => {
             {/* List */}
             <div className="p-5 overflow-y-auto space-y-3 flex-1">
               {bugTickets.length === 0 ? (
-                <div className="p-8 text-center space-y-2 text-[#8E95A5]">
-                  <Bug className="w-8 h-8 text-[#8E95A5] mx-auto opacity-50" />
+                <div className="p-8 text-center space-y-2 text-theme-muted">
+                  <Bug className="w-8 h-8 text-theme-muted mx-auto opacity-50" />
                   <p>No bug reports logged yet.</p>
                 </div>
               ) : (
                 bugTickets.map((ticket, idx) => (
-                  <div key={ticket.id || idx} className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#323846]/60 pb-2">
+                  <div key={ticket.id || idx} className="p-4 bg-theme-base rounded border border-theme-border space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-border/60 pb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="px-2 py-0.5 rounded bg-[#8B0000]/40 text-[#E53935] font-bold text-[10px] uppercase">
+                        <span className="px-2 py-0.5 rounded bg-theme-accent/40 text-status-error font-bold text-[10px] uppercase">
                           {ticket.category}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-[#20242E] text-[#D4AF37] text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-theme-elevated text-theme-primary text-[10px]">
                           {ticket.severity}
                         </span>
                       </div>
-                      <span className="text-[10px] text-[#8E95A5]">
+                      <span className="text-[10px] text-theme-muted">
                         {ticket.timestamp ? new Date(ticket.timestamp).toLocaleString() : 'Recent'}
                       </span>
                     </div>
 
-                    <p className="text-[#ECEFF4] whitespace-pre-line text-xs">
+                    <p className="text-theme-text whitespace-pre-line text-xs">
                       {ticket.description}
                     </p>
 
                     {ticket.stepsToReproduce && (
-                      <div className="text-[11px] text-[#8E95A5] bg-[#161920] p-2 rounded border border-[#323846]/40">
+                      <div className="text-[11px] text-theme-muted bg-theme-surface p-2 rounded border border-theme-border/40">
                         <strong>Steps:</strong> {ticket.stepsToReproduce}
                       </div>
                     )}
 
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-[#8E95A5] pt-1 border-t border-[#323846]/40">
-                      <span>Reporter: <strong className="text-[#ECEFF4]">{ticket.submittedBy || ticket.userEmail || 'Anonymous'}</strong></span>
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-theme-muted pt-1 border-t border-theme-border/40">
+                      <span>Reporter: <strong className="text-theme-text">{ticket.submittedBy || ticket.userEmail || 'Anonymous'}</strong></span>
                       <span>Device: <strong>{ticket.deviceType} ({ticket.screenResolution})</strong></span>
                       <span>View: <strong>{ticket.currentView}</strong></span>
                       <span>Ruleset: <strong>v{ticket.rulesetVersion}</strong></span>
@@ -610,7 +610,7 @@ export const RosterDirectoryView: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-[#0C0E12] border-t border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="p-4 bg-theme-base border-t border-theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
               <button
                 onClick={() => {
                   const dump = bugTickets.map((t) => `### Bug: ${t.category} (${t.severity})
@@ -626,16 +626,16 @@ ${t.stepsToReproduce ? `- **Steps:** ${t.stepsToReproduce}` : ''}`).join('\n\n--
                   }
                 }}
                 className={`px-4 py-2 rounded font-bold uppercase flex items-center space-x-2 text-xs transition-all ${
-                  isCopiedAll ? 'bg-[#4E9A6E] text-white' : 'bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846]'
+                  isCopiedAll ? 'bg-status-legal text-white' : 'bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border'
                 }`}
               >
-                {isCopiedAll ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                {isCopiedAll ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-theme-primary" />}
                 <span>{isCopiedAll ? 'All Tickets Copied!' : 'Copy All Tickets for AI Agent'}</span>
               </button>
 
               <button
                 onClick={() => setIsBugListOpen(false)}
-                className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+                className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
               >
                 Done
               </button>

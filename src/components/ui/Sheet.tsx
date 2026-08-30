@@ -127,29 +127,29 @@ export const Sheet: React.FC<SheetProps> = ({
         tabIndex={-1}
         // dvh, not vh. Bottom sheet on a phone, centred dialog from sm: up.
         className={`w-full ${WIDTH[size]} max-h-[90dvh] flex flex-col overflow-hidden
-                    bg-[#161920] border border-[#323846]
+                    bg-theme-surface border border-theme-border
                     rounded-t-xl sm:rounded-md outline-none`}
       >
         {(title || dismissible) && (
-          <header className="flex items-start justify-between gap-3 px-4 py-3 bg-[#20242E] border-b border-[#323846] flex-shrink-0">
+          <header className="flex items-start justify-between gap-3 px-4 py-3 bg-theme-elevated border-b border-theme-border flex-shrink-0">
             <div className="min-w-0">
               {/* Grab handle: a phone affordance, and it says "this came from
                   the bottom edge" before anything is read. */}
-              <div className="sm:hidden w-9 h-1 rounded-full bg-[#323846] mx-auto mb-2 -mt-1" />
+              <div className="sm:hidden w-9 h-1 rounded-full bg-theme-border mx-auto mb-2 -mt-1" />
               {title && (
-                <h2 className="font-gothic font-bold text-lg sm:text-base text-[#ECEFF4] truncate">
+                <h2 className="font-gothic font-bold text-lg sm:text-base text-theme-text truncate">
                   {title}
                 </h2>
               )}
               {subtitle && (
-                <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5] mt-0.5">{subtitle}</p>
+                <p className="text-xs sm:text-[11px] font-mono text-theme-muted mt-0.5">{subtitle}</p>
               )}
             </div>
             {dismissible && (
               <button
                 onClick={onClose}
                 className="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center
-                           text-[#8E95A5] hover:text-[#ECEFF4] flex-shrink-0"
+                           text-theme-muted hover:text-theme-text flex-shrink-0"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -161,7 +161,7 @@ export const Sheet: React.FC<SheetProps> = ({
         <div className="overflow-y-auto overscroll-contain flex-1 p-4">{children}</div>
 
         {footer && (
-          <footer className="flex-shrink-0 flex gap-2 p-3 pb-safe sm:pb-3 bg-[#20242E] border-t border-[#323846]">
+          <footer className="flex-shrink-0 flex gap-2 p-3 pb-safe sm:pb-3 bg-theme-elevated border-t border-theme-border">
             {footer}
           </footer>
         )}

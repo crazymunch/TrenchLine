@@ -28,7 +28,7 @@ export const MobileNav: React.FC = () => {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0C0E12]/95 backdrop-blur border-t border-[#323846] px-1 pt-1 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-theme-base/95 backdrop-blur border-t border-theme-border px-1 pt-1 pb-safe">
         {/*
           Flex, not grid: the item count varies with the admin flag, and a
           template-literal `grid-cols-${n}` is never compiled by Tailwind's
@@ -43,7 +43,7 @@ export const MobileNav: React.FC = () => {
                 key={item.id}
                 onClick={() => setCurrentView(item.id)}
                 className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors relative ${
-                  isActive ? 'bg-[#161920]' : 'text-[#8E95A5] hover:text-[#ECEFF4]'
+                  isActive ? 'bg-theme-surface' : 'text-theme-muted hover:text-theme-text'
                 }`}
                 style={{
                   color: isActive ? activeThemeObj.primaryColor : undefined
@@ -52,7 +52,7 @@ export const MobileNav: React.FC = () => {
                 <div className="relative">
                   {item.icon}
                   {item.badge && (
-                    <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-[#E53935] animate-ping" />
+                    <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-status-error animate-ping" />
                   )}
                 </div>
                 <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold truncate max-w-full leading-tight">{item.label}</span>
@@ -63,7 +63,7 @@ export const MobileNav: React.FC = () => {
           {/* Theme switcher button on mobile */}
           <button
             onClick={() => setIsThemeModalOpen(true)}
-            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-[#8E95A5] hover:text-[#ECEFF4]"
+            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-theme-muted hover:text-theme-text"
           >
             <div className="relative">
               <Palette className="w-4 h-4" style={{ color: activeThemeObj.primaryColor }} />
@@ -74,12 +74,12 @@ export const MobileNav: React.FC = () => {
           {/* Bug report button on mobile */}
           <button
             onClick={() => setIsBugReportOpen(true)}
-            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-[#E53935]/80 hover:text-[#E53935]"
+            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-status-error/80 hover:text-status-error"
           >
             <div className="relative">
-              <Bug className="w-4 h-4 text-[#E53935]" />
+              <Bug className="w-4 h-4 text-status-error" />
             </div>
-            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold text-[#E53935] truncate max-w-full leading-tight">Bug</span>
+            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold text-status-error truncate max-w-full leading-tight">Bug</span>
           </button>
         </div>
       </nav>

@@ -60,7 +60,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-20 bg-[#0C0E12]/95 backdrop-blur border-b border-[#323846] text-[#ECEFF4] shadow-md transition-colors duration-300">
+      <header className="sticky top-0 z-20 bg-theme-base/95 backdrop-blur border-b border-theme-border text-theme-text shadow-md transition-colors duration-300">
         <div className="max-w-[1700px] mx-auto px-3 sm:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-3 min-w-0">
             
@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setCurrentView('builder')}
             >
               <div 
-                className="w-8 h-8 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-0.5"
+                className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-lg p-0.5"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
                 <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
@@ -86,16 +86,16 @@ export const Navbar: React.FC = () => {
             {/* 1. Left (Desktop): View Title Breadcrumb */}
             <div className="hidden lg:flex items-center space-x-3">
               <div 
-                className="w-8 h-8 rounded bg-[#161920] border flex items-center justify-center shadow-inner"
+                className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-inner"
                 style={{ borderColor: activeThemeObj.primaryColor, color: activeThemeObj.primaryColor }}
               >
                 {currentViewInfo.icon}
               </div>
               <div>
-                <h2 className="font-gothic font-bold text-sm tracking-wide text-[#ECEFF4]">
+                <h2 className="font-gothic font-bold text-sm tracking-wide text-theme-text">
                   {currentViewInfo.title}
                 </h2>
-                <p className="text-[10px] font-mono text-[#8E95A5] leading-none">
+                <p className="text-[10px] font-mono text-theme-muted leading-none">
                   {currentViewInfo.subtitle}
                 </p>
               </div>
@@ -103,26 +103,26 @@ export const Navbar: React.FC = () => {
 
             {/* 2. Middle: Active Warband Pill (When Selected) */}
             {activeWarband && (
-              <div className="hidden sm:flex items-center space-x-2.5 bg-[#161920] px-2 sm:px-3 py-1.5 rounded border border-[#323846] text-xs font-mono min-w-0 shrink">
+              <div className="hidden sm:flex items-center space-x-2.5 bg-theme-surface px-2 sm:px-3 py-1.5 rounded border border-theme-border text-xs font-mono min-w-0 shrink">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
                 />
-                <span className="font-bold text-[#ECEFF4] truncate max-w-[120px] sm:max-w-[180px]">
+                <span className="font-bold text-theme-text truncate max-w-[120px] sm:max-w-[180px]">
                   {activeWarband.name}
                 </span>
 
-                <div className="h-3 w-[1px] bg-[#323846]" />
+                <div className="h-3 w-[1px] bg-theme-border" />
 
                 <div className="flex items-center space-x-1">
-                  <Coins className="w-3 h-3 text-[#D4AF37]" />
-                  <span className={totalSpent > activeWarband.ducatLimit ? 'text-[#E53935] font-bold' : 'text-[#ECEFF4]'}>
+                  <Coins className="w-3 h-3 text-theme-primary" />
+                  <span className={totalSpent > activeWarband.ducatLimit ? 'text-status-error font-bold' : 'text-theme-text'}>
                     {totalSpent}
                   </span>
-                  <span className="text-[#8E95A5] text-[10px]">/{activeWarband.ducatLimit} D</span>
+                  <span className="text-theme-muted text-[10px]">/{activeWarband.ducatLimit} D</span>
                 </div>
 
-                <div className="hidden sm:flex items-center space-x-1 text-[#D4AF37]">
+                <div className="hidden sm:flex items-center space-x-1 text-theme-primary">
                   <Sparkles className="w-3 h-3" />
                   <span>{activeWarband.gloryPoints} ☼</span>
                 </div>
@@ -139,7 +139,7 @@ export const Navbar: React.FC = () => {
                   onChange={(e) => setRulesetVersion(e.target.value as any)}
                   title="Active Ruleset Version"
                   aria-label="Active Ruleset Version"
-                  className="max-w-[104px] sm:max-w-none px-2 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-[#D4AF37] text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-[#D4AF37]"
+                  className="max-w-[104px] sm:max-w-none px-2 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-theme-primary text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-theme-primary"
                 >
                   <option value="1.0">v1.0 Core</option>
                   <option value="1.0.2">v1.0.2 Errata</option>
@@ -151,7 +151,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsBugReportOpen(true)}
                 title="Report a Bug / Feedback"
-                className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#8B0000]/60 hover:border-[#8B0000] text-[#E53935] text-xs font-mono transition-colors"
+                className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-accent/60 hover:border-theme-accent text-status-error text-xs font-mono transition-colors"
               >
                 <Bug className="w-3.5 h-3.5" />
                 <span className="hidden md:inline text-[11px] font-bold">Bug Report</span>
@@ -161,13 +161,13 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsThemeModalOpen(true)}
                 title={`Theme: ${activeThemeObj.name}`}
-                className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 bg-[#161920] hover:bg-[#20242E] rounded border border-[#323846] text-xs font-mono transition-colors"
+                className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-xs font-mono transition-colors"
               >
                 <div 
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: activeThemeObj.primaryColor }}
                 />
-                <Palette className="w-3.5 h-3.5 text-[#8E95A5]" />
+                <Palette className="w-3.5 h-3.5 text-theme-muted" />
                 <span className="hidden sm:inline text-[11px] font-bold" style={{ color: activeThemeObj.primaryColor }}>
                   {activeThemeObj.name.split(' ')[0]}
                 </span>
@@ -178,18 +178,18 @@ export const Navbar: React.FC = () => {
                 {session?.user ? (
                   <button
                     onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
-                    className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-[#20242E] hover:bg-[#323846] rounded border border-[#323846] text-xs font-mono transition-colors"
+                    className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-elevated hover:bg-theme-border rounded border border-theme-border text-xs font-mono transition-colors"
                   >
                     {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
-                      <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Crown className="w-3.5 h-3.5 text-theme-primary" />
                     ) : (
                       <User className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
                     )}
-                    <span className="max-w-[70px] sm:max-w-[110px] truncate text-[#ECEFF4] font-bold">
+                    <span className="max-w-[70px] sm:max-w-[110px] truncate text-theme-text font-bold">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
                     {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
-                      <span className="text-[8px] px-1 py-0.2 rounded bg-[#D4AF37] text-black font-bold font-mono">
+                      <span className="text-[8px] px-1 py-0.2 rounded bg-theme-primary text-black font-bold font-mono">
                         ADMIN
                       </span>
                     )}
@@ -207,13 +207,13 @@ export const Navbar: React.FC = () => {
 
                 {/* Dropdown Menu */}
                 {isAuthMenuOpen && session?.user && (
-                  <div className="absolute right-0 mt-2 w-48 bg-[#161920] border border-[#323846] rounded-md shadow-2xl py-1 z-50">
-                    <div className="px-3 py-2 border-b border-[#323846] text-xs font-mono text-[#8E95A5]">
-                      Signed in as <strong className="text-[#ECEFF4] block truncate">{session.user.email}</strong>
+                  <div className="absolute right-0 mt-2 w-48 bg-theme-surface border border-theme-border rounded-md shadow-2xl py-1 z-50">
+                    <div className="px-3 py-2 border-b border-theme-border text-xs font-mono text-theme-muted">
+                      Signed in as <strong className="text-theme-text block truncate">{session.user.email}</strong>
                     </div>
                     <button
                       onClick={() => signOut()}
-                      className="w-full px-3 py-2 text-left text-xs font-mono text-[#E53935] hover:bg-[#20242E] flex items-center space-x-2"
+                      className="w-full px-3 py-2 text-left text-xs font-mono text-status-error hover:bg-theme-elevated flex items-center space-x-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       <span>Sign Out</span>

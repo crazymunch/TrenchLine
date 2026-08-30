@@ -68,13 +68,13 @@ export const RulesetSwitcher: React.FC<Props> = ({
         <>
           <button
             onClick={onClose}
-            className="flex-1 min-h-[44px] rounded-sm border border-[#323846] text-[#8E95A5] font-mono text-sm sm:text-xs font-bold uppercase tracking-wider hover:text-[#ECEFF4]"
+            className="flex-1 min-h-[44px] rounded-sm border border-theme-border text-theme-muted font-mono text-sm sm:text-xs font-bold uppercase tracking-wider hover:text-theme-text"
           >
             Cancel
           </button>
           <button
             onClick={() => onApply(target)}
-            className="flex-1 min-h-[44px] rounded-sm bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-sm sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+            className="flex-1 min-h-[44px] rounded-sm bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-sm sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
           >
             <Check className="w-4 h-4" /> Switch &amp; re-check
           </button>
@@ -92,40 +92,40 @@ export const RulesetSwitcher: React.FC<Props> = ({
                 disabled={active}
                 className={`w-full text-left p-3 rounded-sm border transition-colors ${
                   active
-                    ? 'border-[#D4AF37] bg-[#20242E] cursor-default'
+                    ? 'border-theme-primary bg-theme-elevated cursor-default'
                     : chosen
-                    ? 'border-[#D4AF37]/60 bg-[#20242E]'
-                    : 'border-[#323846] hover:border-[#D4AF37]/50'
+                    ? 'border-theme-primary/60 bg-theme-elevated'
+                    : 'border-theme-border hover:border-theme-primary/50'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-gothic font-bold text-sm text-[#ECEFF4]">{r.name}</span>
+                  <span className="font-gothic font-bold text-sm text-theme-text">{r.name}</span>
                   {active && (
-                    <span className="text-xs sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-[#D4AF37] text-black">
+                    <span className="text-xs sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-theme-primary text-black">
                       IN USE
                     </span>
                   )}
                   {r.isDefault && !active && (
-                    <span className="text-xs sm:text-[9px] font-mono text-[#8E95A5]">default</span>
+                    <span className="text-xs sm:text-[9px] font-mono text-theme-muted">default</span>
                   )}
                 </div>
-                <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1.5 leading-relaxed">{r.description}</p>
+                <p className="text-xs sm:text-[11px] text-theme-muted mt-1.5 leading-relaxed">{r.description}</p>
               </button>
             );
           })}
 
           {busy && (
-            <div className="flex items-center gap-2 p-3 text-xs sm:text-[11px] font-mono text-[#8E95A5]">
+            <div className="flex items-center gap-2 p-3 text-xs sm:text-[11px] font-mono text-theme-muted">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Working out what changes…
             </div>
           )}
 
           {error && (
-            <div className="p-3 rounded-sm bg-[#8B0000]/15 border border-[#8B0000]/50">
-              <p className="text-xs sm:text-[11px] font-mono text-[#E53935] leading-relaxed">
+            <div className="p-3 rounded-sm bg-theme-accent/15 border border-theme-accent/50">
+              <p className="text-xs sm:text-[11px] font-mono text-status-error leading-relaxed">
                 Could not preview the switch: {error}
               </p>
-              <p className="text-xs sm:text-[10px] font-mono text-[#8E95A5] mt-1.5">
+              <p className="text-xs sm:text-[10px] font-mono text-theme-muted mt-1.5">
                 Nothing has changed. A ruleset is never applied without showing its effect first.
               </p>
             </div>
@@ -133,7 +133,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
 
           {diff && !busy && (
             <section className="space-y-3 pt-1">
-              <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5]">
+              <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-theme-muted">
                 Switching would change
               </h3>
 
@@ -144,10 +144,10 @@ export const RulesetSwitcher: React.FC<Props> = ({
               </div>
 
               {affecting.length > 0 && (
-                <div className="p-3 rounded-sm bg-[#FFB300]/10 border border-[#FFB300]/40 space-y-2">
+                <div className="p-3 rounded-sm bg-status-warning/10 border border-status-warning/40 space-y-2">
                   <div className="flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 text-[#FFB300]" />
-                    <span className="text-xs sm:text-[11px] font-mono font-bold text-[#FFB300]">
+                    <AlertTriangle className="w-3.5 h-3.5 text-status-warning" />
+                    <span className="text-xs sm:text-[11px] font-mono font-bold text-status-warning">
                       {affecting.length} in this warband
                     </span>
                   </div>
@@ -162,7 +162,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
               ))}
 
               {diff.changed.length > affecting.length + 8 && (
-                <p className="text-[10px] font-mono text-[#8E95A5]">
+                <p className="text-[10px] font-mono text-theme-muted">
                   …and {diff.changed.length - affecting.length - 8} more elsewhere in the ruleset.
                 </p>
               )}
@@ -177,27 +177,27 @@ const Stat: React.FC<{ label: string; value: number; tone?: 'warn' }> = ({ label
   <span
     className={`px-2 py-1 rounded-sm border ${
       tone === 'warn' && value > 0
-        ? 'border-[#FFB300]/50 text-[#FFB300]'
-        : 'border-[#323846] text-[#8E95A5]'
+        ? 'border-status-warning/50 text-status-warning'
+        : 'border-theme-border text-theme-muted'
     }`}
   >
-    <strong className="text-[#ECEFF4]">{value}</strong> {label}
+    <strong className="text-theme-text">{value}</strong> {label}
   </span>
 );
 
 const Entry: React.FC<{ entry: EntityDiff; muted?: boolean }> = ({ entry, muted }) => (
-  <div className={`p-2.5 rounded-sm border ${muted ? 'border-[#323846] bg-[#0C0E12]' : 'border-[#323846] bg-[#161920]'}`}>
+  <div className={`p-2.5 rounded-sm border ${muted ? 'border-theme-border bg-theme-base' : 'border-theme-border bg-theme-surface'}`}>
     <div className="flex items-center gap-2">
-      <span className="font-gothic font-bold text-xs text-[#ECEFF4]">{entry.name}</span>
-      <span className="text-xs sm:text-[9px] font-mono text-[#8E95A5] uppercase">{entry.kind}</span>
+      <span className="font-gothic font-bold text-xs text-theme-text">{entry.name}</span>
+      <span className="text-xs sm:text-[9px] font-mono text-theme-muted uppercase">{entry.kind}</span>
     </div>
     <div className="mt-1.5 space-y-1">
       {entry.changes.map((c, i) => (
         <div key={i} className="flex items-baseline gap-2 text-[10px] font-mono">
-          <span className="text-[#8E95A5] w-24 flex-shrink-0">{c.field}</span>
-          <span className="text-[#8E95A5] line-through truncate">{c.from}</span>
-          <ArrowRight className="w-3 h-3 text-[#8E95A5] flex-shrink-0" />
-          <span className="text-[#D4AF37] truncate">{c.to}</span>
+          <span className="text-theme-muted w-24 flex-shrink-0">{c.field}</span>
+          <span className="text-theme-muted line-through truncate">{c.from}</span>
+          <ArrowRight className="w-3 h-3 text-theme-muted flex-shrink-0" />
+          <span className="text-theme-primary truncate">{c.to}</span>
         </div>
       ))}
     </div>

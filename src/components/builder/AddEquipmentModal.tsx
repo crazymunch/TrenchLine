@@ -245,23 +245,23 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl h-[88dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl h-[88dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Fixed Header */}
-        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
+        <div className="p-4 bg-theme-base border-b border-theme-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
-                EQUIP WARRIOR: <span className="text-[#D4AF37]">{unitName}</span>
+              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
+                EQUIP WARRIOR: <span className="text-theme-primary">{unitName}</span>
               </h2>
               {isHomunculus && (
-                <span className="text-[10px] px-2 py-0.5 rounded bg-[#8B0000] text-white font-bold uppercase">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
                   🧪 Homunculus (Shields & Formulae Only)
                 </span>
               )}
             </div>
-            <p className="text-xs font-mono text-[#8E95A5]">
-              Base Profile: <strong className="text-[#ECEFF4]">{unitProfileName}</strong> ({factionId})
+            <p className="text-xs font-mono text-theme-muted">
+              Base Profile: <strong className="text-theme-text">{unitProfileName}</strong> ({factionId})
             </p>
           </div>
 
@@ -270,8 +270,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               onClick={() => setFilterLegalOnly(!filterLegalOnly)}
               className={`px-3 py-1.5 rounded font-mono text-xs font-bold uppercase flex items-center space-x-1.5 border transition-all ${
                 filterLegalOnly
-                  ? 'bg-[#20242E] text-[#D4AF37] border-[#D4AF37]'
-                  : 'bg-[#0C0E12] text-[#8E95A5] border-[#323846]'
+                  ? 'bg-theme-elevated text-theme-primary border-theme-primary'
+                  : 'bg-theme-base text-theme-muted border-theme-border'
               }`}
               title="Toggle filter to only show legal wargear per official faction rules"
             >
@@ -281,7 +281,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
             <button
               onClick={onClose}
-              className="p-1.5 text-[#8E95A5] hover:text-white rounded bg-[#20242E] hover:bg-[#323846] border border-[#323846]"
+              className="p-1.5 text-theme-muted hover:text-white rounded bg-theme-elevated hover:bg-theme-border border border-theme-border"
             >
               <X className="w-5 h-5" />
             </button>
@@ -289,33 +289,33 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         </div>
 
         {/* Loadout Status & Hand Limits Banner */}
-        <div className="px-4 py-2 bg-[#20242E] border-b border-[#323846] flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">
+        <div className="px-4 py-2 bg-theme-elevated border-b border-theme-border flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[#8E95A5]">
-              Melee Hands: <strong className={`font-bold ${isOverMeleeHands ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>{meleeHandsUsed} / {maxMeleeHands}</strong>
+            <span className="text-theme-muted">
+              Melee Hands: <strong className={`font-bold ${isOverMeleeHands ? 'text-status-error' : 'text-theme-text'}`}>{meleeHandsUsed} / {maxMeleeHands}</strong>
             </span>
             <span>•</span>
-            <span className="text-[#8E95A5]">
-              Ranged Hands: <strong className={`font-bold ${isOverRangedHands ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>{rangedHandsUsed} / {maxRangedHands}</strong>
+            <span className="text-theme-muted">
+              Ranged Hands: <strong className={`font-bold ${isOverRangedHands ? 'text-status-error' : 'text-theme-text'}`}>{rangedHandsUsed} / {maxRangedHands}</strong>
             </span>
             <span>•</span>
-            <span className="text-[#8E95A5]">
-              Armour Slots: <strong className={`font-bold ${isOverArmourLimit ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>{currentArmour.length} / 1</strong>
+            <span className="text-theme-muted">
+              Armour Slots: <strong className={`font-bold ${isOverArmourLimit ? 'text-status-error' : 'text-theme-text'}`}>{currentArmour.length} / 1</strong>
             </span>
             {isStrong && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold uppercase">
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
                 STRONG (2H Melee = 1H)
               </span>
             )}
             {hasExtraArm && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#4E9A6E] text-white font-bold uppercase">
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-status-legal text-white font-bold uppercase">
                 3rd Arm (+1 Hand Capacity)
               </span>
             )}
           </div>
 
           {(isOverMeleeHands || isOverRangedHands) && (
-            <span className="text-[11px] text-[#E53935] flex items-center space-x-1 font-bold">
+            <span className="text-[11px] text-status-error flex items-center space-x-1 font-bold">
               <AlertTriangle className="w-3.5 h-3.5" />
               <span>
                 {isOverMeleeHands ? `Exceeds Melee Hands (${meleeHandsUsed}/${maxMeleeHands})` : `Exceeds Ranged Hands (${rangedHandsUsed}/${maxRangedHands})`}
@@ -325,16 +325,16 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         </div>
 
         {/* Fixed Main Category Tabs: Large, Prominent, Clear */}
-        <div className="flex border-b border-[#323846] bg-[#0C0E12] px-4 pt-2.5 gap-2 flex-shrink-0">
+        <div className="flex border-b border-theme-border bg-theme-base px-4 pt-2.5 gap-2 flex-shrink-0">
           <button
             onClick={() => setTab('weapons')}
             className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'weapons'
-                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
-                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
+                ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
+                : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
             }`}
           >
-            <Swords className="w-4 h-4 text-[#D4AF37]" />
+            <Swords className="w-4 h-4 text-theme-primary" />
             <span>WEAPONS ({displayedWeapons.length})</span>
           </button>
 
@@ -342,11 +342,11 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             onClick={() => setTab('armour')}
             className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'armour'
-                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
-                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
+                ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
+                : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
             }`}
           >
-            <Shield className="w-4 h-4 text-[#D4AF37]" />
+            <Shield className="w-4 h-4 text-theme-primary" />
             <span>ARMOUR & SHIELDS ({displayedArmour.length})</span>
           </button>
 
@@ -354,17 +354,17 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             onClick={() => setTab('equipment')}
             className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'equipment'
-                ? 'bg-[#20242E] text-[#D4AF37] border-t-2 border-x border-[#323846] border-t-[#D4AF37]'
-                : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]'
+                ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
+                : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
             }`}
           >
-            <Package className="w-4 h-4 text-[#D4AF37]" />
+            <Package className="w-4 h-4 text-theme-primary" />
             <span>GEAR & FORMULAE ({displayedEquipment.length})</span>
           </button>
         </div>
 
         {/* Fixed Sub-Category Filter & Search Toolbar */}
-        <div className="p-3 bg-[#161920] border-b border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
+        <div className="p-3 bg-theme-surface border-b border-theme-border flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
           
           {/* Sub-Category Pills for Weapons */}
           {tab === 'weapons' && (
@@ -372,7 +372,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('all')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  weaponSubCategory === 'all' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  weaponSubCategory === 'all' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 All
@@ -380,7 +380,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('melee')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  weaponSubCategory === 'melee' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  weaponSubCategory === 'melee' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 ⚔️ Melee
@@ -388,7 +388,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('ranged')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  weaponSubCategory === 'ranged' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  weaponSubCategory === 'ranged' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 🎯 Ranged
@@ -396,7 +396,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('shield')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  weaponSubCategory === 'shield' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  weaponSubCategory === 'shield' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 🛡️ Utility / Shields
@@ -404,7 +404,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('grenade')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  weaponSubCategory === 'grenade' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  weaponSubCategory === 'grenade' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 💣 Grenades
@@ -418,7 +418,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('all')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  equipmentSubCategory === 'all' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  equipmentSubCategory === 'all' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 All
@@ -426,16 +426,16 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('formulae')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors flex items-center space-x-1 ${
-                  equipmentSubCategory === 'formulae' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  equipmentSubCategory === 'formulae' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
-                <FlaskConical className="w-3 h-3 text-[#E53935]" />
+                <FlaskConical className="w-3 h-3 text-status-error" />
                 <span>🧪 Formulae & Elixirs</span>
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('headgear')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  equipmentSubCategory === 'headgear' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  equipmentSubCategory === 'headgear' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 🪖 Headgear
@@ -443,7 +443,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('relic')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  equipmentSubCategory === 'relic' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  equipmentSubCategory === 'relic' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 ✨ Relics & Icons
@@ -451,7 +451,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('gear')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-[10px] transition-colors ${
-                  equipmentSubCategory === 'gear' ? 'bg-[#D4AF37] text-black font-extrabold' : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  equipmentSubCategory === 'gear' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
                 }`}
               >
                 🎒 Gear & Ammo
@@ -461,13 +461,13 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
           {/* Search Box */}
           <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[#8E95A5]" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-theme-muted" />
             <input
               type="text"
               placeholder="Search by name or keyword..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-8 pr-2.5 py-1.5 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-theme-base border border-theme-border rounded pl-8 pr-2.5 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
             />
           </div>
         </div>
@@ -485,25 +485,25 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                     key={w.id}
                     className={`p-3 rounded border flex flex-col justify-between space-y-2 transition-all ${
                       legal
-                        ? 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]'
-                        : 'bg-[#0C0E12]/50 border-[#8B0000]/40 opacity-70'
+                        ? 'bg-theme-base border-theme-border hover:border-theme-primary'
+                        : 'bg-theme-base/50 border-theme-accent/40 opacity-70'
                     }`}
                   >
                     <div className="space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <strong className="text-xs text-[#ECEFF4] block">{w.name}</strong>
-                          <span className="text-[10px] text-[#8E95A5] block">
+                          <strong className="text-xs text-theme-text block">{w.name}</strong>
+                          <span className="text-[10px] text-theme-muted block">
                             {w.type} • {w.hands || 1}H • Range: {w.range}
                           </span>
                         </div>
-                        <span className="font-bold text-xs text-[#D4AF37] px-2 py-0.5 rounded bg-[#161920] border border-[#323846] flex-shrink-0">
+                        <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
                           {w.cost} D
                         </span>
                       </div>
 
                       {w.description && (
-                        <p className="text-[11px] text-[#8E95A5] italic leading-relaxed pt-0.5">
+                        <p className="text-[11px] text-theme-muted italic leading-relaxed pt-0.5">
                           {w.description}
                         </p>
                       )}
@@ -511,7 +511,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       {w.keywords && w.keywords.length > 0 && (
                         <div className="flex flex-wrap gap-1 pt-1">
                           {w.keywords.map((kw, kwIdx) => (
-                            <span key={kwIdx} className="text-[9px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#ECEFF4] border border-[#323846]">
+                            <span key={kwIdx} className="text-[9px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                               {kw}
                             </span>
                           ))}
@@ -519,13 +519,13 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       )}
                     </div>
 
-                    <div className="pt-2 border-t border-[#323846]/60 flex items-center justify-between">
-                      <span className="text-[10px] text-[#8E95A5]">
-                        Mod: <strong className="text-[#ECEFF4]">{typeof w.modifiers === 'string' ? w.modifiers : '-'}</strong>
+                    <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
+                      <span className="text-[10px] text-theme-muted">
+                        Mod: <strong className="text-theme-text">{typeof w.modifiers === 'string' ? w.modifiers : '-'}</strong>
                       </span>
                       <button
                         onClick={() => handleEquipWeapon(w)}
-                        className="px-3 py-1 bg-[#20242E] hover:bg-[#D4AF37] hover:text-black text-[#ECEFF4] border border-[#323846] rounded text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
+                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border rounded text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Equip</span>
@@ -549,50 +549,50 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                     key={a.id}
                     className={`p-3 rounded border flex flex-col justify-between space-y-2 transition-all ${
                       legal
-                        ? 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]'
-                        : 'bg-[#0C0E12]/50 border-[#8B0000]/40 opacity-70'
+                        ? 'bg-theme-base border-theme-border hover:border-theme-primary'
+                        : 'bg-theme-base/50 border-theme-accent/40 opacity-70'
                     }`}
                   >
                     <div className="space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <strong className="text-xs text-[#ECEFF4] block">{a.name}</strong>
+                            <strong className="text-xs text-theme-text block">{a.name}</strong>
                             {isShield && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#4E9A6E] text-white font-bold uppercase">
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-status-legal text-white font-bold uppercase">
                                 Shield
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] text-[#8E95A5] block">
+                          <span className="text-[10px] text-theme-muted block">
                             Type: {a.category || 'Standard'} • Mod: {a.armourModifier || a.modifier || '-'}
                           </span>
                         </div>
-                        <span className="font-bold text-xs text-[#D4AF37] px-2 py-0.5 rounded bg-[#161920] border border-[#323846] flex-shrink-0">
+                        <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
                           {a.cost} D
                         </span>
                       </div>
 
                       {a.description && (
-                        <p className="text-[11px] text-[#8E95A5] italic leading-relaxed pt-0.5">
+                        <p className="text-[11px] text-theme-muted italic leading-relaxed pt-0.5">
                           {a.description}
                         </p>
                       )}
 
                       {!legal && isHomunculus && (
-                        <span className="text-[10px] text-[#E53935] block font-bold">
+                        <span className="text-[10px] text-status-error block font-bold">
                           ⚠️ Homunculus restriction: Shields only. Body armour prohibited.
                         </span>
                       )}
                     </div>
 
-                    <div className="pt-2 border-t border-[#323846]/60 flex items-center justify-between">
-                      <span className="text-[10px] text-[#8E95A5]">
-                        Save Mod: <strong className="text-[#D4AF37]">{a.armourModifier || a.modifier || '-'}</strong>
+                    <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
+                      <span className="text-[10px] text-theme-muted">
+                        Save Mod: <strong className="text-theme-primary">{a.armourModifier || a.modifier || '-'}</strong>
                       </span>
                       <button
                         onClick={() => handleEquipArmour(a)}
-                        className="px-3 py-1 bg-[#20242E] hover:bg-[#D4AF37] hover:text-black text-[#ECEFF4] border border-[#323846] rounded text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
+                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border rounded text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Equip</span>
@@ -616,36 +616,36 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                     key={e.id}
                     className={`p-3 rounded border flex flex-col justify-between space-y-2 transition-all ${
                       isFormula
-                        ? 'bg-[#161920] border-[#D4AF37]/50 ring-1 ring-[#D4AF37]/20 hover:border-[#D4AF37]'
+                        ? 'bg-theme-surface border-theme-primary/50 ring-1 ring-theme-primary/20 hover:border-theme-primary'
                         : legal
-                        ? 'bg-[#0C0E12] border-[#323846] hover:border-[#D4AF37]'
-                        : 'bg-[#0C0E12]/50 border-[#8B0000]/40 opacity-70'
+                        ? 'bg-theme-base border-theme-border hover:border-theme-primary'
+                        : 'bg-theme-base/50 border-theme-accent/40 opacity-70'
                     }`}
                   >
                     <div className="space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <strong className={`text-xs block ${isFormula ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
+                            <strong className={`text-xs block ${isFormula ? 'text-theme-primary' : 'text-theme-text'}`}>
                               {e.name}
                             </strong>
                             {isFormula && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#8B0000] text-white font-bold uppercase">
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-theme-accent text-white font-bold uppercase">
                                 Formula
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] text-[#8E95A5] block">
+                          <span className="text-[10px] text-theme-muted block">
                             Faction: {e.factionId || 'Universal'}
                           </span>
                         </div>
-                        <span className="font-bold text-xs text-[#D4AF37] px-2 py-0.5 rounded bg-[#161920] border border-[#323846] flex-shrink-0">
+                        <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
                           {e.cost} D
                         </span>
                       </div>
 
                       {e.effect && (
-                        <p className="text-[11px] text-[#ECEFF4] leading-relaxed pt-0.5">
+                        <p className="text-[11px] text-theme-text leading-relaxed pt-0.5">
                           {e.effect}
                         </p>
                       )}
@@ -653,7 +653,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       {e.keywords && e.keywords.length > 0 && (
                         <div className="flex flex-wrap gap-1 pt-1">
                           {e.keywords.map((kw, kwIdx) => (
-                            <span key={kwIdx} className="text-[9px] px-1.5 py-0.2 rounded bg-[#20242E] text-[#ECEFF4] border border-[#323846]">
+                            <span key={kwIdx} className="text-[9px] px-1.5 py-0.2 rounded bg-theme-elevated text-theme-text border border-theme-border">
                               {kw}
                             </span>
                           ))}
@@ -661,16 +661,16 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       )}
                     </div>
 
-                    <div className="pt-2 border-t border-[#323846]/60 flex items-center justify-between">
-                      <span className="text-[10px] text-[#8E95A5]">
+                    <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
+                      <span className="text-[10px] text-theme-muted">
                         {isFormula ? 'Alchemical Infusion' : 'Gear / Relic'}
                       </span>
                       <button
                         onClick={() => handleEquipEquipment(e)}
                         className={`px-3 py-1 rounded text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
                           isFormula
-                            ? 'bg-[#8B0000] hover:bg-[#A30000] text-white'
-                            : 'bg-[#20242E] hover:bg-[#D4AF37] hover:text-black text-[#ECEFF4] border border-[#323846]'
+                            ? 'bg-theme-accent hover:bg-[#A30000] text-white'
+                            : 'bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border'
                         }`}
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -686,13 +686,13 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         </div>
 
         {/* Fixed Footer */}
-        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between text-xs text-[#8E95A5] flex-shrink-0">
+        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between text-xs text-theme-muted flex-shrink-0">
           <span>
             {tab === 'weapons' ? `${displayedWeapons.length} weapons available` : tab === 'armour' ? `${displayedArmour.length} armour/shields available` : `${displayedEquipment.length} gear items & formulae available`}
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded uppercase font-bold text-xs border border-[#323846]"
+            className="px-5 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded uppercase font-bold text-xs border border-theme-border"
           >
             Done
           </button>

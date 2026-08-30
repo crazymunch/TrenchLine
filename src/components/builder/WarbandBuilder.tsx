@@ -87,7 +87,7 @@ export const WarbandBuilder: React.FC = () => {
   if (!warband) {
     return (
       <div className="p-8 text-center space-y-4">
-        <p className="text-sm font-mono text-[#8E95A5]">No active warband selected.</p>
+        <p className="text-sm font-mono text-theme-muted">No active warband selected.</p>
       </div>
     );
   }
@@ -139,7 +139,7 @@ export const WarbandBuilder: React.FC = () => {
     <div className="space-y-6">
       
       {/* Warband Command Header */}
-      <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl relative overflow-hidden bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl relative overflow-hidden bevel-container">
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
@@ -148,31 +148,31 @@ export const WarbandBuilder: React.FC = () => {
                 className="w-3 h-3 rounded-full" 
                 style={{ backgroundColor: faction?.color || '#D4AF37' }} 
               />
-              <span className="text-xs font-mono uppercase font-bold text-[#D4AF37] tracking-wider">
+              <span className="text-xs font-mono uppercase font-bold text-theme-primary tracking-wider">
                 {faction?.name}
               </span>
               {warband.patron && (
                 <>
-                  <span className="text-[#8E95A5]">•</span>
-                  <span className="text-xs font-mono text-[#8E95A5] truncate max-w-sm">
+                  <span className="text-theme-muted">•</span>
+                  <span className="text-xs font-mono text-theme-muted truncate max-w-sm">
                     {warband.patron}
                   </span>
                 </>
               )}
             </div>
-            <h1 className="font-gothic font-bold text-2xl sm:text-3xl text-[#ECEFF4] tracking-wide">
+            <h1 className="font-gothic font-bold text-2xl sm:text-3xl text-theme-text tracking-wide">
               {warband.name}
             </h1>
             {warband.motto ? (
               <div 
                 onClick={() => setIsChronicleOpen(true)}
-                className="inline-block p-1.5 bg-[#0C0E12] border-l-2 border-[#D4AF37] rounded-r text-xs italic text-[#ECEFF4] font-serif cursor-pointer hover:border-[#E5C158] transition-colors"
+                className="inline-block p-1.5 bg-theme-base border-l-2 border-theme-primary rounded-r text-xs italic text-theme-text font-serif cursor-pointer hover:border-theme-primary-hover transition-colors"
                 title="Click to view full Warband Chronicle & Lore Dossier"
               >
                 &quot;{warband.motto}&quot;
               </div>
             ) : (
-              <p className="text-xs text-[#8E95A5] max-w-xl">{faction?.tagline}</p>
+              <p className="text-xs text-theme-muted max-w-xl">{faction?.tagline}</p>
             )}
           </div>
 
@@ -180,7 +180,7 @@ export const WarbandBuilder: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={() => setIsChronicleOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors shadow"
               title="House Chronicle & Lore Dossier"
             >
               <Scroll className="w-4 h-4" />
@@ -189,16 +189,16 @@ export const WarbandBuilder: React.FC = () => {
 
             <button
               onClick={() => setIsChangelogOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Warband Growth Chronicle & Changelog"
             >
-              <History className="w-4 h-4 text-[#D4AF37]" />
+              <History className="w-4 h-4 text-theme-primary" />
               <span>Growth History ({warband.snapshots?.length || 1})</span>
             </button>
 
             <button
               onClick={() => setIsStashOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/40 rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/40 rounded font-mono text-xs font-bold uppercase transition-colors"
               title="View & manage unassigned munitions in Warband Stash"
             >
               <Archive className="w-4 h-4" />
@@ -207,7 +207,7 @@ export const WarbandBuilder: React.FC = () => {
 
             <button
               onClick={() => setIsAddUnitOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow"
+              className="flex items-center space-x-2 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow"
             >
               <UserPlus className="w-4 h-4" />
               <span>Recruit Warrior</span>
@@ -215,17 +215,17 @@ export const WarbandBuilder: React.FC = () => {
 
             <button
               onClick={() => setIsRulesetOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Which rules this warband is built and checked against"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4E9A6E]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-status-legal" />
               <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
             </button>
 
             <button
               onClick={() => setIsVariantOpen(true)}
               disabled={!dataset}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               title="Which Warband Variant this warband is built as"
             >
               <Flag className="w-4 h-4" />
@@ -234,7 +234,7 @@ export const WarbandBuilder: React.FC = () => {
 
             <button
               onClick={() => setIsExportOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Export & Print"
             >
               <Share2 className="w-4 h-4" />
@@ -243,7 +243,7 @@ export const WarbandBuilder: React.FC = () => {
 
             <button
               onClick={() => setIsNotesOpen(!isNotesOpen)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Campaign Notes"
             >
               <FileText className="w-4 h-4" />
@@ -254,11 +254,11 @@ export const WarbandBuilder: React.FC = () => {
 
         {/* Roster legality, from the generated ruleset. */}
         {datasetError ? (
-          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#8B0000]/15 border-t border-[#8B0000]/50 text-xs font-mono text-[#E53935]">
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-theme-accent/15 border-t border-theme-accent/50 text-xs font-mono text-status-error">
             Legality unavailable: {datasetError}
           </div>
         ) : datasetLoading ? (
-          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#20242E] border-t border-[#323846] text-xs font-mono text-[#8E95A5]">
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-theme-elevated border-t border-theme-border text-xs font-mono text-theme-muted">
             Checking legality…
           </div>
         ) : dataset ? (
@@ -296,14 +296,14 @@ export const WarbandBuilder: React.FC = () => {
         )}
 
         {/* Budget Bar & Validation Stats */}
-        <div className="mt-6 pt-4 border-t border-[#323846] grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+        <div className="mt-6 pt-4 border-t border-theme-border grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
           
           {/* Budget Meter with Edit Limit Trigger */}
           <div className="md:col-span-2 space-y-1.5">
             <div className="flex justify-between items-center text-xs font-mono">
               <div className="flex items-center space-x-2">
-                <span className="text-[#8E95A5] flex items-center space-x-1">
-                  <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="text-theme-muted flex items-center space-x-1">
+                  <Coins className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Ducat Point Limit:</span>
                 </span>
                 {isCampaignForce ? (
@@ -311,7 +311,7 @@ export const WarbandBuilder: React.FC = () => {
                      a player who cannot find the button should learn that the
                      number is published, not that the app lost a feature. */
                   <span
-                    className="px-1.5 py-0.5 rounded bg-[#20242E] text-[#8E95A5] border border-[#323846] text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
+                    className="px-1.5 py-0.5 rounded bg-theme-elevated text-theme-muted border border-theme-border text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
                     title={limits
                       ? `Game ${limits.game} of the campaign. Set by the Warband Threshold Table, not by hand.`
                       : 'Set by the Warband Threshold Table, not by hand.'}
@@ -322,7 +322,7 @@ export const WarbandBuilder: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleOpenBudgetModal}
-                    className="px-1.5 py-0.5 min-h-[44px] sm:min-h-0 rounded bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
+                    className="px-1.5 py-0.5 min-h-[44px] sm:min-h-0 rounded bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
                     title="Manually adjust warband Ducat Point Limit"
                   >
                     <Edit2 className="w-2.5 h-2.5" />
@@ -331,15 +331,15 @@ export const WarbandBuilder: React.FC = () => {
                 )}
               </div>
 
-              <span className={`font-bold ${isOverBudget ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>
+              <span className={`font-bold ${isOverBudget ? 'text-status-error' : 'text-theme-text'}`}>
                 {totalCost} / {warband.ducatLimit} Ducats
               </span>
             </div>
 
-            <div className="w-full bg-[#0C0E12] h-2.5 rounded-full overflow-hidden border border-[#323846]">
+            <div className="w-full bg-theme-base h-2.5 rounded-full overflow-hidden border border-theme-border">
               <div
                 className={`h-full transition-all duration-300 ${
-                  isOverBudget ? 'bg-[#E53935]' : 'bg-[#D4AF37]'
+                  isOverBudget ? 'bg-status-error' : 'bg-theme-primary'
                 }`}
                 style={{ width: `${Math.min(100, (totalCost / warband.ducatLimit) * 100)}%` }}
               />
@@ -349,23 +349,23 @@ export const WarbandBuilder: React.FC = () => {
           {/* Treasury & Glory (Clickable to Edit) */}
           <div 
             onClick={handleOpenBudgetModal}
-            className="flex items-center justify-around bg-[#0C0E12] hover:bg-[#161920] p-2 rounded border border-[#323846] hover:border-[#D4AF37]/60 font-mono text-xs cursor-pointer transition-colors group"
+            className="flex items-center justify-around bg-theme-base hover:bg-theme-surface p-2 rounded border border-theme-border hover:border-theme-primary/60 font-mono text-xs cursor-pointer transition-colors group"
             title="Click to adjust Treasury Ducats & Glory Points"
           >
             <div className="text-center">
-              <span className="text-[10px] text-[#8E95A5] block flex items-center justify-center space-x-1">
+              <span className="text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
                 <span>TREASURY</span>
-                <Edit2 className="w-2.5 h-2.5 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
               </span>
-              <span className="font-bold text-[#D4AF37]">{warband.treasuryDucats} D</span>
+              <span className="font-bold text-theme-primary">{warband.treasuryDucats} D</span>
             </div>
-            <div className="h-6 w-[1px] bg-[#323846]" />
+            <div className="h-6 w-[1px] bg-theme-border" />
             <div className="text-center">
-              <span className="text-[10px] text-[#8E95A5] block flex items-center justify-center space-x-1">
+              <span className="text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
                 <span>GLORY</span>
-                <Edit2 className="w-2.5 h-2.5 text-[#8E95A5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
               </span>
-              <span className="font-bold text-[#D4AF37] flex items-center justify-center space-x-1">
+              <span className="font-bold text-theme-primary flex items-center justify-center space-x-1">
                 <Sparkles className="w-3 h-3" />
                 <span>{warband.gloryPoints}</span>
               </span>
@@ -373,24 +373,24 @@ export const WarbandBuilder: React.FC = () => {
           </div>
 
           {/* Composition Badges */}
-          <div className="flex items-center justify-around bg-[#0C0E12] p-2 rounded border border-[#323846] font-mono text-[11px]">
+          <div className="flex items-center justify-around bg-theme-base p-2 rounded border border-theme-border font-mono text-[11px]">
             <div className="text-center">
-              <span className="text-[9px] text-[#8E95A5] block">LEADER</span>
-              <span className={hasLeader ? 'text-[#4E9A6E] font-bold' : 'text-[#E53935] font-bold'}>
+              <span className="text-[9px] text-theme-muted block">LEADER</span>
+              <span className={hasLeader ? 'text-status-legal font-bold' : 'text-status-error font-bold'}>
                 {hasLeader ? '1/1' : '0/1'}
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-[#8E95A5] block">ELITES</span>
-              <span className="font-bold text-[#ECEFF4]">{eliteCount}</span>
+              <span className="text-[9px] text-theme-muted block">ELITES</span>
+              <span className="font-bold text-theme-text">{eliteCount}</span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-[#8E95A5] block">TROOPERS</span>
-              <span className="font-bold text-[#ECEFF4]">{trooperCount}</span>
+              <span className="text-[9px] text-theme-muted block">TROOPERS</span>
+              <span className="font-bold text-theme-text">{trooperCount}</span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-[#8E95A5] block">MERC</span>
-              <span className="font-bold text-[#ECEFF4]">{mercenaryCount}</span>
+              <span className="text-[9px] text-theme-muted block">MERC</span>
+              <span className="font-bold text-theme-text">{mercenaryCount}</span>
             </div>
           </div>
 
@@ -398,13 +398,13 @@ export const WarbandBuilder: React.FC = () => {
 
         {/* Validation Warnings */}
         {(!hasLeader || isOverBudget) && (
-          <div className="mt-4 p-3 bg-[#8B0000]/20 border border-[#8B0000] rounded text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[#E53935]">
+          <div className="mt-4 p-3 bg-theme-accent/20 border border-theme-accent rounded text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-status-error">
             <div className="flex items-center space-x-2">
               <ShieldAlert className="w-4 h-4 flex-shrink-0" />
               <div>
                 {!hasLeader && (
                   <p>
-                    • Roster requires exactly 1 Leader warrior. Appoint below or click the crown <Crown className="w-3 h-3 inline text-[#D4AF37]" /> on any warrior card.
+                    • Roster requires exactly 1 Leader warrior. Appoint below or click the crown <Crown className="w-3 h-3 inline text-theme-primary" /> on any warrior card.
                   </p>
                 )}
                 {isOverBudget && (
@@ -417,7 +417,7 @@ export const WarbandBuilder: React.FC = () => {
             {isOverBudget && (
               <button
                 onClick={handleOpenBudgetModal}
-                className="px-3 py-1 bg-[#8B0000] text-white rounded uppercase font-bold text-xs hover:bg-[#A30000] flex-shrink-0 transition-colors"
+                className="px-3 py-1 bg-theme-accent text-white rounded uppercase font-bold text-xs hover:bg-[#A30000] flex-shrink-0 transition-colors"
               >
                 Adjust Limit
               </button>
@@ -429,15 +429,15 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* Campaign Notes Popover */}
       {isNotesOpen && (
-        <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2">
+        <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono text-[#D4AF37] uppercase font-bold flex items-center space-x-1.5">
+            <span className="text-xs font-mono text-theme-primary uppercase font-bold flex items-center space-x-1.5">
               <FileText className="w-3.5 h-3.5" />
               <span>Warband Field Journal & Notes</span>
             </span>
             <button
               onClick={() => setIsNotesOpen(false)}
-              className="text-[#8E95A5] hover:text-white text-xs"
+              className="text-theme-muted hover:text-white text-xs"
             >
               ✕
             </button>
@@ -446,7 +446,7 @@ export const WarbandBuilder: React.FC = () => {
             value={warband.notes || ''}
             onChange={(e) => updateWarbandNotes(warband.id, e.target.value)}
             placeholder="Record post-match casualty notes, campaign upgrades, tactical reminders, or narrative deeds..."
-            className="w-full h-28 bg-[#0C0E12] border border-[#323846] rounded p-3 text-xs font-mono text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+            className="w-full h-28 bg-theme-base border border-theme-border rounded p-3 text-xs font-mono text-theme-text focus:outline-none focus:border-theme-primary"
           />
         </div>
       )}
@@ -459,8 +459,8 @@ export const WarbandBuilder: React.FC = () => {
             onClick={() => setActiveCategoryFilter(cat)}
             className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all whitespace-nowrap ${
               activeCategoryFilter === cat
-                ? 'bg-[#D4AF37] text-black shadow'
-                : 'bg-[#161920] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                ? 'bg-theme-primary text-black shadow'
+                : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
             }`}
           >
             {cat} ({cat === 'All' ? warband.units.length : warband.units.filter((u) => u.profileSnapshot.category === cat).length})
@@ -470,11 +470,11 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* Unit Cards Grid */}
       {filteredUnits.length === 0 ? (
-        <div className="bg-[#161920] border-2 border-dashed border-[#323846] rounded-md p-12 text-center space-y-4 bevel-container">
-          <p className="text-xs font-mono text-[#8E95A5]">No warriors in this category.</p>
+        <div className="bg-theme-surface border-2 border-dashed border-theme-border rounded-md p-12 text-center space-y-4 bevel-container">
+          <p className="text-xs font-mono text-theme-muted">No warriors in this category.</p>
           <button
             onClick={() => setIsAddUnitOpen(true)}
-            className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded"
+            className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded"
           >
             Recruit First Warrior
           </button>
@@ -531,19 +531,19 @@ export const WarbandBuilder: React.FC = () => {
       {/* EDIT WARBAND BUDGET & STATS MODAL */}
       {isBudgetModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col">
             
             {/* Header */}
-            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+            <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Coins className="w-5 h-5 text-[#D4AF37]" />
-                <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                <Coins className="w-5 h-5 text-theme-primary" />
+                <h3 className="font-gothic font-bold text-base text-theme-text">
                   WARBAND BUDGET & CAMPAIGN LEDGER
                 </h3>
               </div>
               <button
                 onClick={() => setIsBudgetModalOpen(false)}
-                className="text-[#8E95A5] hover:text-white"
+                className="text-theme-muted hover:text-white"
               >
                 ✕
               </button>
@@ -555,10 +555,10 @@ export const WarbandBuilder: React.FC = () => {
               {/* Ducat Limit Control */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-[#D4AF37] block">
+                  <label className="text-[10px] uppercase font-bold text-theme-primary block">
                     1. Ducat Point Limit (Match Budget):
                   </label>
-                  <span className="text-[#8E95A5] text-[11px]">Current: {warband.ducatLimit} D</span>
+                  <span className="text-theme-muted text-[11px]">Current: {warband.ducatLimit} D</span>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -569,14 +569,14 @@ export const WarbandBuilder: React.FC = () => {
                     step={10}
                     value={editLimit}
                     onChange={(e) => setEditLimit(parseInt(e.target.value, 10) || 700)}
-                    className="flex-1 bg-[#0C0E12] border-2 border-[#D4AF37] rounded p-2.5 text-sm font-bold text-[#ECEFF4] focus:outline-none"
+                    className="flex-1 bg-theme-base border-2 border-theme-primary rounded p-2.5 text-sm font-bold text-theme-text focus:outline-none"
                   />
-                  <span className="text-xs font-bold text-[#D4AF37]">Ducats</span>
+                  <span className="text-xs font-bold text-theme-primary">Ducats</span>
                 </div>
 
                 {/* Preset Quick Limit Buttons */}
                 <div className="space-y-1 pt-1">
-                  <span className="text-[10px] text-[#8E95A5] block uppercase">Standard Rulebook Limits:</span>
+                  <span className="text-[10px] text-theme-muted block uppercase">Standard Rulebook Limits:</span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                     {[
                       { label: '700 D (Standard Skirmish)', value: 700 },
@@ -590,8 +590,8 @@ export const WarbandBuilder: React.FC = () => {
                         onClick={() => setEditLimit(preset.value)}
                         className={`py-1.5 px-2 rounded text-[10px] font-bold transition-all border ${
                           editLimit === preset.value
-                            ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
-                            : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border-[#323846]'
+                            ? 'bg-theme-primary text-black border-theme-primary'
+                            : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
                         }`}
                       >
                         {preset.label}
@@ -602,12 +602,12 @@ export const WarbandBuilder: React.FC = () => {
               </div>
 
               {/* Treasury Ducats */}
-              <div className="space-y-2 pt-3 border-t border-[#323846]">
+              <div className="space-y-2 pt-3 border-t border-theme-border">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
                     2. Unspent Treasury Ducats:
                   </label>
-                  <span className="text-[#8E95A5] text-[11px]">Unspent Cash</span>
+                  <span className="text-theme-muted text-[11px]">Unspent Cash</span>
                 </div>
                 
                 <div className="flex items-center space-x-2">
@@ -616,17 +616,17 @@ export const WarbandBuilder: React.FC = () => {
                     min={0}
                     value={editTreasury}
                     onChange={(e) => setEditTreasury(parseInt(e.target.value, 10) || 0)}
-                    className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-bold text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="flex-1 bg-theme-base border border-theme-border rounded p-2 text-xs font-bold text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                   <button
                     onClick={() => setEditTreasury((prev) => prev + 50)}
-                    className="px-2.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded border border-[#323846] text-[10px] font-bold"
+                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-[10px] font-bold"
                   >
                     +50 D
                   </button>
                   <button
                     onClick={() => setEditTreasury((prev) => prev + 100)}
-                    className="px-2.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded border border-[#323846] text-[10px] font-bold"
+                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-[10px] font-bold"
                   >
                     +100 D
                   </button>
@@ -634,12 +634,12 @@ export const WarbandBuilder: React.FC = () => {
               </div>
 
               {/* Glory Points */}
-              <div className="space-y-2 pt-3 border-t border-[#323846]">
+              <div className="space-y-2 pt-3 border-t border-theme-border">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
                     3. Campaign Glory Points:
                   </label>
-                  <span className="text-[#8E95A5] text-[11px]">Glory Level</span>
+                  <span className="text-theme-muted text-[11px]">Glory Level</span>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -648,17 +648,17 @@ export const WarbandBuilder: React.FC = () => {
                     min={0}
                     value={editGlory}
                     onChange={(e) => setEditGlory(parseInt(e.target.value, 10) || 0)}
-                    className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-bold text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="flex-1 bg-theme-base border border-theme-border rounded p-2 text-xs font-bold text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                   <button
                     onClick={() => setEditGlory((prev) => Math.max(0, prev - 1))}
-                    className="w-8 h-8 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded border border-[#323846] font-bold"
+                    className="w-8 h-8 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border font-bold"
                   >
                     -1
                   </button>
                   <button
                     onClick={() => setEditGlory((prev) => prev + 1)}
-                    className="w-8 h-8 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] rounded border border-[#323846] font-bold"
+                    className="w-8 h-8 bg-theme-elevated hover:bg-theme-border text-theme-primary rounded border border-theme-border font-bold"
                   >
                     +1
                   </button>
@@ -668,16 +668,16 @@ export const WarbandBuilder: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
+            <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
               <button
                 onClick={() => setIsBudgetModalOpen(false)}
-                className="px-4 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#8E95A5] hover:text-white rounded uppercase font-bold text-xs"
+                className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-muted hover:text-white rounded uppercase font-bold text-xs"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveBudget}
-                className="px-6 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black rounded uppercase font-bold text-xs shadow-lg flex items-center space-x-1.5"
+                className="px-6 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded uppercase font-bold text-xs shadow-lg flex items-center space-x-1.5"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Save Budget & Stats</span>

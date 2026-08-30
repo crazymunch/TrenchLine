@@ -2,109 +2,151 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Theme variables — deliberately OUTSIDE @layer base.
+
+   Tailwind tree-shakes rules inside `@layer base` whose selectors it cannot
+   find in the content globs. `[data-theme="heretic-legion"]` appears only here
+   and in `src/types/theme.ts`, never as a class in a component, so Tailwind
+   dropped all six theme blocks from the build: 43 in this file, 1 in the
+   compiled stylesheet.
+
+   That is why the theme switcher did nothing. The hardcoded hex values in the
+   components were the visible half of it; this was the other half, and moving
+   the components onto tokens would not have fixed anything on its own, because
+   the tokens never changed value.
+
+   Custom properties do not need a layer, so they live at the top level where
+   nothing can shake them out.
+--------------------------------------------------------------------------- */
+:root {
+  /*
+    Safe-area insets. These resolve to 0px unless the viewport meta carries
+    `viewport-fit=cover` (set in app/layout.tsx) — so the fallback matters.
+  */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  --font-gothic: 'Cinzel', serif;
+  --font-heading: 'Oswald', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+
+  /* Default Theme: Iron Sanctum */
+  --bg-base: 12 14 18;
+  --bg-surface: 22 25 32;
+  --bg-elevated: 32 36 46;
+  --bg-card: 32 36 46;
+  --color-primary: 212 175 55;
+  --color-primary-hover: 229 193 88;
+  --color-primary-glow: rgba(212, 175, 55, 0.25);
+  --color-border: 50 56 70;
+  --color-accent: 139 0 0;
+
+  /*
+    Text, and the status ramp.
+
+    Text is declared once rather than per theme: the app has always used one
+    pair, and a theme that wants its own can override these two lines.
+
+    Status is deliberately NOT themed. Red means error whichever faction you
+    are playing — it is information, not identity — and fixing it means the
+    contrast guarantees are verified once instead of seven times. A "NOT LEGAL"
+    that stops reading as alarming in one theme is a worse outcome than a
+    slightly less cohesive palette.
+  */
+  --color-text: 236 239 244;
+  --color-muted: 142 149 165;
+  --status-error: 229 57 53;
+  --status-warning: 255 179 0;
+  --status-legal: 78 154 110;
+}
+
+[data-theme="iron-sanctum"] {
+  --bg-base: 12 14 18;
+  --bg-surface: 22 25 32;
+  --bg-elevated: 32 36 46;
+  --bg-card: 32 36 46;
+  --color-primary: 212 175 55;
+  --color-primary-hover: 229 193 88;
+  --color-primary-glow: rgba(212, 175, 55, 0.25);
+  --color-border: 50 56 70;
+  --color-accent: 139 0 0;
+}
+
+[data-theme="heretic-legion"] {
+  --bg-base: 19 19 19;
+  --bg-surface: 28 27 27;
+  --bg-elevated: 38 34 32;
+  --bg-card: 38 34 32;
+  --color-primary: 255 86 37;
+  --color-primary-hover: 255 118 77;
+  --color-primary-glow: rgba(255, 86, 37, 0.3);
+  --color-border: 93 64 56;
+  --color-accent: 146 7 3;
+}
+
+[data-theme="iron-wall-sultanate"] {
+  --bg-base: 10 15 20;
+  --bg-surface: 17 24 32;
+  --bg-elevated: 25 35 45;
+  --bg-card: 25 35 45;
+  --color-primary: 118 214 213;
+  --color-primary-hover: 160 240 239;
+  --color-primary-glow: rgba(118, 214, 213, 0.25);
+  --color-border: 46 63 78;
+  --color-accent: 233 195 73;
+}
+
+[data-theme="penitent-trench"] {
+  --bg-base: 16 14 12;
+  --bg-surface: 26 23 20;
+  --bg-elevated: 36 32 28;
+  --bg-card: 36 32 28;
+  --color-primary: 228 228 204;
+  --color-primary-hover: 255 255 240;
+  --color-primary-glow: rgba(228, 228, 204, 0.25);
+  --color-border: 71 71 63;
+  --color-accent: 143 25 29;
+}
+
+[data-theme="principality-of-hell"] {
+  --bg-base: 23 9 8;
+  --bg-surface: 34 18 16;
+  --bg-elevated: 46 24 21;
+  --bg-card: 46 24 21;
+  --color-primary: 255 85 64;
+  --color-primary-hover: 255 126 110;
+  --color-primary-glow: rgba(255, 85, 64, 0.3);
+  --color-border: 96 62 57;
+  --color-accent: 221 183 255;
+}
+
+[data-theme="black-grail"] {
+  --bg-base: 12 18 11;
+  --bg-surface: 20 28 19;
+  --bg-elevated: 29 38 28;
+  --bg-card: 29 38 28;
+  --color-primary: 139 195 74;
+  --color-primary-hover: 156 204 101;
+  --color-primary-glow: rgba(139, 195, 74, 0.25);
+  --color-border: 51 69 49;
+  --color-accent: 121 85 72;
+}
+
 @layer base {
-  :root {
-    /*
-      Safe-area insets. These resolve to 0px unless the viewport meta carries
-      `viewport-fit=cover` (set in app/layout.tsx) — so the fallback matters.
-    */
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-left: env(safe-area-inset-left, 0px);
-    --safe-right: env(safe-area-inset-right, 0px);
 
-    --font-gothic: 'Cinzel', serif;
-    --font-heading: 'Oswald', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-sans: 'Inter', sans-serif;
 
-    /* Default Theme: Iron Sanctum */
-    --bg-base: #0C0E12;
-    --bg-surface: #161920;
-    --bg-elevated: #20242E;
-    --bg-card: #20242E;
-    --color-primary: #D4AF37;
-    --color-primary-hover: #E5C158;
-    --color-primary-glow: rgba(212, 175, 55, 0.25);
-    --color-border: #323846;
-    --color-accent: #8B0000;
-  }
 
-  [data-theme="iron-sanctum"] {
-    --bg-base: #0C0E12;
-    --bg-surface: #161920;
-    --bg-elevated: #20242E;
-    --bg-card: #20242E;
-    --color-primary: #D4AF37;
-    --color-primary-hover: #E5C158;
-    --color-primary-glow: rgba(212, 175, 55, 0.25);
-    --color-border: #323846;
-    --color-accent: #8B0000;
-  }
 
-  [data-theme="heretic-legion"] {
-    --bg-base: #131313;
-    --bg-surface: #1C1B1B;
-    --bg-elevated: #262220;
-    --bg-card: #262220;
-    --color-primary: #FF5625;
-    --color-primary-hover: #FF764D;
-    --color-primary-glow: rgba(255, 86, 37, 0.3);
-    --color-border: #5D4038;
-    --color-accent: #920703;
-  }
 
-  [data-theme="iron-wall-sultanate"] {
-    --bg-base: #0A0F14;
-    --bg-surface: #111820;
-    --bg-elevated: #19232D;
-    --bg-card: #19232D;
-    --color-primary: #76D6D5;
-    --color-primary-hover: #A0F0EF;
-    --color-primary-glow: rgba(118, 214, 213, 0.25);
-    --color-border: #2E3F4E;
-    --color-accent: #E9C349;
-  }
 
-  [data-theme="penitent-trench"] {
-    --bg-base: #100E0C;
-    --bg-surface: #1A1714;
-    --bg-elevated: #24201C;
-    --bg-card: #24201C;
-    --color-primary: #E4E4CC;
-    --color-primary-hover: #FFFFF0;
-    --color-primary-glow: rgba(228, 228, 204, 0.25);
-    --color-border: #47473F;
-    --color-accent: #8F191D;
-  }
-
-  [data-theme="principality-of-hell"] {
-    --bg-base: #170908;
-    --bg-surface: #221210;
-    --bg-elevated: #2E1815;
-    --bg-card: #2E1815;
-    --color-primary: #FF5540;
-    --color-primary-hover: #FF7E6E;
-    --color-primary-glow: rgba(255, 85, 64, 0.3);
-    --color-border: #603E39;
-    --color-accent: #DDB7FF;
-  }
-
-  [data-theme="black-grail"] {
-    --bg-base: #0C120B;
-    --bg-surface: #141C13;
-    --bg-elevated: #1D261C;
-    --bg-card: #1D261C;
-    --color-primary: #8BC34A;
-    --color-primary-hover: #9CCC65;
-    --color-primary-glow: rgba(139, 195, 74, 0.25);
-    --color-border: #334531;
-    --color-accent: #795548;
-  }
 
   body {
     font-family: var(--font-sans);
-    background-color: var(--bg-base);
+    background-color: rgb(var(--bg-base));
     color: #ECEFF4;
     /*
       No `overflow-x: hidden` here. It hides layout bugs rather than fixing
@@ -149,43 +191,43 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-base);
+  background: rgb(var(--bg-base));
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: rgb(var(--color-border));
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary);
+  background: rgb(var(--color-primary));
 }
 
 /* Bevels & Industrial Rivets */
 .bevel-container {
-  border-top: 1px solid var(--color-border);
-  border-left: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--bg-base);
-  border-right: 1px solid var(--bg-base);
+  border-top: 1px solid rgb(var(--color-border));
+  border-left: 1px solid rgb(var(--color-border));
+  border-bottom: 1px solid rgb(var(--bg-base));
+  border-right: 1px solid rgb(var(--bg-base));
 }
 
 .rivet {
   width: 4px;
   height: 4px;
-  background-color: var(--color-border);
+  background-color: rgb(var(--color-border));
   border-radius: 50%;
   box-shadow: inset 1px 1px 1px #000, 0 0 1px #000;
 }
 
 /* Dynamic Theme Helpers */
 .theme-primary-text {
-  color: var(--color-primary);
+  color: rgb(var(--color-primary));
 }
 
 .theme-primary-border {
-  border-color: var(--color-primary);
+  border-color: rgb(var(--color-primary));
 }
 
 .theme-primary-bg {
-  background-color: var(--color-primary);
+  background-color: rgb(var(--color-primary));
 }
 
 .theme-glow {
@@ -199,7 +241,7 @@
 
 /* Dynamic Backgrounds */
 [data-theme] {
-  background-color: var(--bg-base);
+  background-color: rgb(var(--bg-base));
   color: #ECEFF4;
 }
 
@@ -209,7 +251,7 @@
 [data-theme] .bg-\[\#0C0E12\]\/90,
 [data-theme] .bg-\[\#0C0E12\]\/85,
 [data-theme] .bg-\[\#0C0E12\]\/80 {
-  background-color: var(--bg-base) !important;
+  background-color: rgb(var(--bg-base)) !important;
 }
 
 [data-theme] .bg-\[\#161920\],
@@ -217,7 +259,7 @@
 [data-theme] .bg-\[\#161920\]\/90,
 [data-theme] .bg-\[\#161920\]\/80,
 [data-theme] .bg-\[\#161920\]\/60 {
-  background-color: var(--bg-surface) !important;
+  background-color: rgb(var(--bg-surface)) !important;
 }
 
 [data-theme] .bg-\[\#20242E\],
@@ -225,19 +267,19 @@
 [data-theme] .bg-\[\#20242E\]\/90,
 [data-theme] .bg-\[\#20242E\]\/80,
 [data-theme] .bg-\[\#20242E\]\/60 {
-  background-color: var(--bg-elevated) !important;
+  background-color: rgb(var(--bg-elevated)) !important;
 }
 
 [data-theme] .hover\:bg-\[\#20242E\]:hover {
-  background-color: var(--bg-elevated) !important;
+  background-color: rgb(var(--bg-elevated)) !important;
 }
 
 [data-theme] .hover\:bg-\[\#161920\]:hover {
-  background-color: var(--bg-surface) !important;
+  background-color: rgb(var(--bg-surface)) !important;
 }
 
 [data-theme] .hover\:bg-\[\#323846\]:hover {
-  background-color: var(--color-border) !important;
+  background-color: rgb(var(--color-border)) !important;
 }
 
 /* Dynamic Borders */
@@ -245,17 +287,17 @@
 [data-theme] .border-\[\#323846\]\/80,
 [data-theme] .border-\[\#323846\]\/60,
 [data-theme] .border-\[\#323846\]\/40 {
-  border-color: var(--color-border) !important;
+  border-color: rgb(var(--color-border)) !important;
 }
 
 /* Dynamic Primary Accent Color (Replacing hardcoded #D4AF37) */
 [data-theme] .text-\[\#D4AF37\],
 [data-theme] .text-\[\#d4af37\] {
-  color: var(--color-primary) !important;
+  color: rgb(var(--color-primary)) !important;
 }
 
 [data-theme] .hover\:text-\[\#D4AF37\]:hover {
-  color: var(--color-primary) !important;
+  color: rgb(var(--color-primary)) !important;
 }
 
 [data-theme] .border-\[\#D4AF37\],
@@ -263,39 +305,39 @@
 [data-theme] .border-\[\#D4AF37\]\/80,
 [data-theme] .border-\[\#D4AF37\]\/50,
 [data-theme] .border-\[\#D4AF37\]\/40 {
-  border-color: var(--color-primary) !important;
+  border-color: rgb(var(--color-primary)) !important;
 }
 
 [data-theme] .hover\:border-\[\#D4AF37\]\/50:hover,
 [data-theme] .hover\:border-\[\#D4AF37\]:hover {
-  border-color: var(--color-primary) !important;
+  border-color: rgb(var(--color-primary)) !important;
 }
 
 [data-theme] .bg-\[\#D4AF37\],
 [data-theme] .bg-\[\#d4af37\] {
-  background-color: var(--color-primary) !important;
+  background-color: rgb(var(--color-primary)) !important;
 }
 
 [data-theme] .hover\:bg-\[\#E5C158\]:hover {
-  background-color: var(--color-primary-hover) !important;
+  background-color: rgb(var(--color-primary-hover)) !important;
 }
 
 
 /* Grimdark Surface Utilities */
 .bg-trench-surface {
-  background-color: var(--bg-surface);
+  background-color: rgb(var(--bg-surface));
 }
 
 .bg-trench-elevated {
-  background-color: var(--bg-elevated);
+  background-color: rgb(var(--bg-elevated));
 }
 
 .bg-trench-dark {
-  background-color: var(--bg-base);
+  background-color: rgb(var(--bg-base));
 }
 
 .border-trench-line {
-  border-color: var(--color-border);
+  border-color: rgb(var(--color-border));
 }
 
 /* Animations */

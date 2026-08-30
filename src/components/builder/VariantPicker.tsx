@@ -67,9 +67,9 @@ export const VariantPicker: React.FC<Props> = ({
 
         {variants.length === 0 && (
           /* Not an error and not a silent empty list — say which it is. */
-          <div className="flex gap-2 p-3 rounded-sm bg-[#20242E] border border-[#323846]">
-            <ShieldQuestion className="w-4 h-4 text-[#8E95A5] flex-shrink-0 mt-0.5" />
-            <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5] leading-relaxed">
+          <div className="flex gap-2 p-3 rounded-sm bg-theme-elevated border border-theme-border">
+            <ShieldQuestion className="w-4 h-4 text-theme-muted flex-shrink-0 mt-0.5" />
+            <p className="text-xs sm:text-[11px] font-mono text-theme-muted leading-relaxed">
               No Warband Variants are published for this faction in the current ruleset.
               The standard list is the only option.
             </p>
@@ -92,30 +92,30 @@ const Choice: React.FC<{
     onClick={onSelect}
     className={`w-full text-left p-3 rounded-sm border transition-colors min-h-[44px] ${
       selected
-        ? 'border-[#D4AF37] bg-[#20242E]'
-        : 'border-[#323846] hover:border-[#D4AF37]/50'
+        ? 'border-theme-primary bg-theme-elevated'
+        : 'border-theme-border hover:border-theme-primary/50'
     }`}
   >
     <div className="flex items-center gap-2">
-      {selected && <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />}
-      <span className="font-gothic font-bold text-sm text-[#ECEFF4]">{name}</span>
+      {selected && <Check className="w-4 h-4 text-theme-primary flex-shrink-0" />}
+      <span className="font-gothic font-bold text-sm text-theme-text">{name}</span>
       {opCount > 0 && (
-        <span className="ml-auto text-xs sm:text-[9px] font-mono text-[#8E95A5] flex-shrink-0">
+        <span className="ml-auto text-xs sm:text-[9px] font-mono text-theme-muted flex-shrink-0">
           {opCount} rule{opCount === 1 ? '' : 's'} enforced
         </span>
       )}
     </div>
 
     {description && (
-      <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1.5 leading-relaxed">{description}</p>
+      <p className="text-xs sm:text-[11px] text-theme-muted mt-1.5 leading-relaxed">{description}</p>
     )}
 
     {rules && rules.length > 0 && (
       <div className="mt-2 space-y-1.5">
         {rules.map((r, i) => (
-          <div key={i} className="p-2 rounded-sm bg-[#0C0E12] border border-[#323846]">
-            <div className="text-xs sm:text-[10px] font-mono font-bold text-[#D4AF37]">{r.name}</div>
-            <p className="text-xs sm:text-[10px] text-[#8E95A5] mt-0.5 leading-relaxed">{r.description}</p>
+          <div key={i} className="p-2 rounded-sm bg-theme-base border border-theme-border">
+            <div className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary">{r.name}</div>
+            <p className="text-xs sm:text-[10px] text-theme-muted mt-0.5 leading-relaxed">{r.description}</p>
           </div>
         ))}
       </div>

@@ -39,8 +39,8 @@ export const Stepper: React.FC<Props> = ({
 
   const button =
     'w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-sm ' +
-    'bg-[#20242E] border border-[#323846] text-[#ECEFF4] ' +
-    'active:bg-[#323846] transition-colors ' +
+    'bg-theme-elevated border border-theme-border text-theme-text ' +
+    'active:bg-theme-border transition-colors ' +
     'disabled:opacity-30 disabled:cursor-not-allowed';
 
   return (
@@ -56,10 +56,10 @@ export const Stepper: React.FC<Props> = ({
       </button>
 
       <div className="flex-1 text-center min-w-0">
-        <div className="text-2xl sm:text-xl font-gothic font-bold text-[#ECEFF4] tabular-nums leading-none">
+        <div className="text-2xl sm:text-xl font-gothic font-bold text-theme-text tabular-nums leading-none">
           {value}
         </div>
-        <div className="text-xs sm:text-[11px] font-mono text-[#8E95A5] mt-1 truncate">
+        <div className="text-xs sm:text-[11px] font-mono text-theme-muted mt-1 truncate">
           {hint ?? label}
         </div>
       </div>

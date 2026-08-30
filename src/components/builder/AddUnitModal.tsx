@@ -71,35 +71,35 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-3xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-3">
-            <UserPlus className="w-5 h-5 text-[#D4AF37]" />
+            <UserPlus className="w-5 h-5 text-theme-primary" />
             <div>
-              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">RECRUIT WARRIOR</h2>
-              <p className="text-xs font-mono text-[#8E95A5]">Select a unit profile or induct a saved veteran from your Favourites</p>
+              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">RECRUIT WARRIOR</h2>
+              <p className="text-xs font-mono text-theme-muted">Select a unit profile or induct a saved veteran from your Favourites</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-[#8E95A5] hover:text-[#ECEFF4] rounded hover:bg-[#20242E] transition-colors"
+            className="p-1 text-theme-muted hover:text-theme-text rounded hover:bg-theme-elevated transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center space-x-2 px-6 py-3 border-b border-[#323846] bg-[#161920] overflow-x-auto">
+        <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
                 selectedCategory === cat
-                  ? 'bg-[#D4AF37] text-black shadow-md'
-                  : 'bg-[#20242E] text-[#8E95A5] hover:text-white'
+                  ? 'bg-theme-primary text-black shadow-md'
+                  : 'bg-theme-elevated text-theme-muted hover:text-white'
               }`}
             >
               {cat}
@@ -114,10 +114,10 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
           {isFavouritesTab ? (
             <div className="space-y-3">
               {favouriteUnits.length === 0 ? (
-                <div className="p-12 text-center bg-[#0C0E12] rounded border border-[#323846] space-y-3">
-                  <Star className="w-8 h-8 text-[#8E95A5] mx-auto opacity-40" />
-                  <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">NO SAVED FAVOURITES YET</h3>
-                  <p className="text-xs text-[#8E95A5] max-w-md mx-auto leading-relaxed">
+                <div className="p-12 text-center bg-theme-base rounded border border-theme-border space-y-3">
+                  <Star className="w-8 h-8 text-theme-muted mx-auto opacity-40" />
+                  <h3 className="font-gothic font-bold text-base text-theme-text">NO SAVED FAVOURITES YET</h3>
+                  <p className="text-xs text-theme-muted max-w-md mx-auto leading-relaxed">
                     Save your seasoned veterans, custom champions, and customized warriors to Favourites via the 3-dots menu on any warrior card!
                   </p>
                 </div>
@@ -127,35 +127,35 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                   return (
                     <div
                       key={fav.id}
-                      className="p-4 bg-[#20242E] border border-[#D4AF37]/50 rounded hover:border-[#D4AF37] transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg"
+                      className="p-4 bg-theme-elevated border border-theme-primary/50 rounded hover:border-theme-primary transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg"
                     >
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-[#D4AF37] text-black">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-theme-primary text-black">
                             {fav.profileSnapshot.category}
                           </span>
-                          <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                          <h3 className="font-gothic font-bold text-base text-theme-text">
                             {fav.customName}{titlesStr}
                           </h3>
                         </div>
 
-                        <div className="text-xs text-[#8E95A5] space-x-3">
-                          <span>Base: <strong className="text-[#ECEFF4]">{fav.profileSnapshot.name}</strong></span>
+                        <div className="text-xs text-theme-muted space-x-3">
+                          <span>Base: <strong className="text-theme-text">{fav.profileSnapshot.name}</strong></span>
                           <span>•</span>
-                          <span>XP: <strong className="text-[#D4AF37]">{fav.xp || 0} XP</strong></span>
+                          <span>XP: <strong className="text-theme-primary">{fav.xp || 0} XP</strong></span>
                           <span>•</span>
-                          <span>Rating: <strong className="text-[#D4AF37]">{fav.totalCost} D</strong></span>
+                          <span>Rating: <strong className="text-theme-primary">{fav.totalCost} D</strong></span>
                         </div>
 
                         {/* Wargear Summary */}
                         <div className="flex flex-wrap gap-1 text-[10px]">
                           {fav.equippedWeapons?.map((w, idx) => (
-                            <span key={idx} className="px-1.5 py-0.2 rounded bg-[#0C0E12] text-[#ECEFF4] border border-[#323846]">
+                            <span key={idx} className="px-1.5 py-0.2 rounded bg-theme-base text-theme-text border border-theme-border">
                               ⚔️ {w.name}
                             </span>
                           ))}
                           {fav.equippedArmour?.map((a, idx) => (
-                            <span key={idx} className="px-1.5 py-0.2 rounded bg-[#0C0E12] text-[#ECEFF4] border border-[#323846]">
+                            <span key={idx} className="px-1.5 py-0.2 rounded bg-theme-base text-theme-text border border-theme-border">
                               🛡️ {a.name}
                             </span>
                           ))}
@@ -165,14 +165,14 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <div className="flex items-center space-x-2 flex-shrink-0">
                         <button
                           onClick={() => removeUnitFromFavourites(fav.id)}
-                          className="p-2 text-[#8E95A5] hover:text-[#E53935] rounded border border-[#323846] hover:bg-[#8B0000]/20"
+                          className="p-2 text-theme-muted hover:text-status-error rounded border border-theme-border hover:bg-theme-accent/20"
                           title="Remove from Favourites"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleInductFavourite(fav)}
-                          className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-1.5"
+                          className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-1.5"
                         >
                           <UserPlus className="w-4 h-4" />
                           <span>Induct Veteran</span>
@@ -190,7 +190,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
               return (
                 <div
                   key={unit.id}
-                  className="p-4 bg-[#20242E] border border-[#323846] rounded hover:border-[#D4AF37]/60 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className="p-4 bg-theme-elevated border border-theme-border rounded hover:border-theme-primary/60 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   {/* Unit Details */}
                   <div className="flex-1 space-y-2">
@@ -198,17 +198,17 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <span
                         className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
                           unit.category === 'Leader'
-                            ? 'bg-[#D4AF37] text-black'
+                            ? 'bg-theme-primary text-black'
                             : unit.category === 'Elite'
                             ? 'bg-[#7C4DFF] text-white'
                             : unit.category === 'Mercenary'
                             ? 'bg-[#00897B] text-white'
-                            : 'bg-[#323846] text-[#ECEFF4]'
+                            : 'bg-theme-border text-theme-text'
                         }`}
                       >
                         {unit.category}
                       </span>
-                      <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{unit.name}</h3>
+                      <h3 className="font-gothic font-bold text-base text-theme-text">{unit.name}</h3>
                       {isMercenary && (
                         <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#00897B]/20 text-[#00897B] border border-[#00897B]/40 font-bold uppercase">
                           Mercenary
@@ -217,31 +217,31 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-4 gap-2 font-mono text-xs max-w-xs bg-[#161920] p-1.5 rounded border border-[#323846]">
+                    <div className="grid grid-cols-4 gap-2 font-mono text-xs max-w-xs bg-theme-surface p-1.5 rounded border border-theme-border">
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">MOV</span>
-                        <span className="font-bold text-[#ECEFF4]">{unit.stats.movement}</span>
+                        <span className="text-[9px] text-theme-muted block">MOV</span>
+                        <span className="font-bold text-theme-text">{unit.stats.movement}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">RNG</span>
-                        <span className="font-bold text-[#ECEFF4]">{unit.stats.ranged}</span>
+                        <span className="text-[9px] text-theme-muted block">RNG</span>
+                        <span className="font-bold text-theme-text">{unit.stats.ranged}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">MEL</span>
-                        <span className="font-bold text-[#ECEFF4]">{unit.stats.melee}</span>
+                        <span className="text-[9px] text-theme-muted block">MEL</span>
+                        <span className="font-bold text-theme-text">{unit.stats.melee}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">ARM</span>
-                        <span className="font-bold text-[#ECEFF4]">{unit.stats.armour}</span>
+                        <span className="text-[9px] text-theme-muted block">ARM</span>
+                        <span className="font-bold text-theme-text">{unit.stats.armour}</span>
                       </div>
                     </div>
 
                     {/* Innate Abilities */}
                     {unit.innateAbilities && unit.innateAbilities.length > 0 && (
-                      <div className="text-[11px] text-[#8E95A5] space-y-0.5 pt-1">
+                      <div className="text-[11px] text-theme-muted space-y-0.5 pt-1">
                         {unit.innateAbilities.map((ab) => (
                           <div key={ab.id}>
-                            <strong className="text-[#D4AF37]">{ab.name}:</strong> {ab.description}
+                            <strong className="text-theme-primary">{ab.name}:</strong> {ab.description}
                           </div>
                         ))}
                       </div>
@@ -257,12 +257,12 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       onChange={(e) =>
                         setCustomNameInput({ ...customNameInput, [unit.id]: e.target.value })
                       }
-                      className="bg-[#161920] border border-[#323846] rounded px-3 py-1.5 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] w-full sm:w-44"
+                      className="bg-theme-surface border border-theme-border rounded px-3 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary w-full sm:w-44"
                     />
 
                     <button
                       onClick={() => handleAdd(unit)}
-                      className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
+                      className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>{unit.baseCost} D</span>

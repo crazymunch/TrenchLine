@@ -92,19 +92,19 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       <aside
-        className={`hidden lg:flex flex-col flex-shrink-0 bg-[#0C0E12] border-r border-[#323846] text-[#ECEFF4] transition-all duration-300 z-30 sticky top-0 h-[100dvh] select-none ${
+        className={`hidden lg:flex flex-col flex-shrink-0 bg-theme-base border-r border-theme-border text-theme-text transition-all duration-300 z-30 sticky top-0 h-[100dvh] select-none ${
           isCollapsed ? 'w-[72px]' : 'w-[260px]'
         }`}
       >
         {/* 1. Header: Brand & Collapse Toggle */}
-        <div className="flex items-center justify-between p-3.5 border-b border-[#323846] h-16">
+        <div className="flex items-center justify-between p-3.5 border-b border-theme-border h-16">
           {!isCollapsed ? (
             <div 
               onClick={() => setCurrentView('builder')}
               className="flex items-center space-x-2.5 cursor-pointer overflow-hidden flex-1 min-w-0"
             >
               <div 
-                className="w-9 h-9 rounded bg-[#161920] border flex items-center justify-center shadow-lg flex-shrink-0 p-1"
+                className="w-9 h-9 rounded bg-theme-surface border flex items-center justify-center shadow-lg flex-shrink-0 p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
                 <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
@@ -117,11 +117,11 @@ export const Sidebar: React.FC = () => {
                   >
                     TRENCHLINE
                   </span>
-                  <span className="text-[8px] px-1.5 py-0.2 rounded bg-[#8B0000] text-white font-mono uppercase font-bold flex-shrink-0">
+                  <span className="text-[8px] px-1.5 py-0.2 rounded bg-theme-accent text-white font-mono uppercase font-bold flex-shrink-0">
                     TC
                   </span>
                 </div>
-                <span className="text-[9px] text-[#8E95A5] font-mono truncate">
+                <span className="text-[9px] text-theme-muted font-mono truncate">
                   Tactical Companion OS
                 </span>
               </div>
@@ -133,7 +133,7 @@ export const Sidebar: React.FC = () => {
               title="TrenchLine OS"
             >
               <div 
-                className="w-9 h-9 rounded bg-[#161920] border flex items-center justify-center shadow-lg p-1"
+                className="w-9 h-9 rounded bg-theme-surface border flex items-center justify-center shadow-lg p-1"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
                 <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
@@ -143,7 +143,7 @@ export const Sidebar: React.FC = () => {
 
           <button
             onClick={toggleCollapse}
-            className={`p-1.5 rounded hover:bg-[#20242E] text-[#8E95A5] hover:text-white transition-colors flex-shrink-0 ml-1 ${
+            className={`p-1.5 rounded hover:bg-theme-elevated text-theme-muted hover:text-white transition-colors flex-shrink-0 ml-1 ${
               isCollapsed ? 'hidden' : 'block'
             }`}
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
@@ -154,16 +154,16 @@ export const Sidebar: React.FC = () => {
 
         {/* 2. Active Warband Command Widget (When Expanded) */}
         {!isCollapsed && activeWarband && (
-          <div className="p-3 mx-3 mt-3 bg-[#161920] border border-[#323846] rounded-md space-y-2 shadow bevel-container">
+          <div className="p-3 mx-3 mt-3 bg-theme-surface border border-theme-border rounded-md space-y-2 shadow bevel-container">
             <div className="flex items-center justify-between gap-1 text-[10px] font-mono">
-              <span className="text-[#8E95A5] uppercase font-bold flex items-center space-x-1.5 min-w-0 flex-1">
+              <span className="text-theme-muted uppercase font-bold flex items-center space-x-1.5 min-w-0 flex-1">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
                 />
                 <span className="truncate">{currentFaction?.name || 'Active Roster'}</span>
               </span>
-              <span className="font-bold text-[#D4AF37] whitespace-nowrap flex-shrink-0 ml-1">
+              <span className="font-bold text-theme-primary whitespace-nowrap flex-shrink-0 ml-1">
                 {totalCost}/{activeWarband.ducatLimit} D
               </span>
             </div>
@@ -171,7 +171,7 @@ export const Sidebar: React.FC = () => {
             <select
               value={activeWarbandId || ''}
               onChange={(e) => setActiveWarbandId(e.target.value)}
-              className="w-full bg-[#0C0E12] border border-[#323846] rounded px-2.5 py-1.5 text-xs font-mono text-[#ECEFF4] font-bold focus:outline-none focus:border-[#D4AF37]"
+              className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs font-mono text-theme-text font-bold focus:outline-none focus:border-theme-primary"
             >
               {warbands.map((w) => (
                 <option key={w.id} value={w.id}>
@@ -181,7 +181,7 @@ export const Sidebar: React.FC = () => {
             </select>
 
             {/* Point Meter */}
-            <div className="w-full bg-[#0C0E12] h-1.5 rounded-full overflow-hidden border border-[#323846]">
+            <div className="w-full bg-theme-base h-1.5 rounded-full overflow-hidden border border-theme-border">
               <div 
                 className="h-full transition-all duration-300"
                 style={{ 
@@ -196,7 +196,7 @@ export const Sidebar: React.FC = () => {
         {/* 3. Navigation Links List */}
         <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
           {!isCollapsed && (
-            <div className="px-3 pb-1 text-[10px] font-mono uppercase font-bold text-[#8E95A5] tracking-wider">
+            <div className="px-3 pb-1 text-[10px] font-mono uppercase font-bold text-theme-muted tracking-wider">
               OPERATIONAL COMMAND
             </div>
           )}
@@ -211,8 +211,8 @@ export const Sidebar: React.FC = () => {
                   isCollapsed ? 'justify-center p-3' : 'px-3.5 py-2.5 space-x-3'
                 } ${
                   isActive
-                    ? 'bg-[#161920] border border-[#323846] font-bold text-white shadow'
-                    : 'text-[#8E95A5] hover:text-[#ECEFF4] hover:bg-[#161920]/60'
+                    ? 'bg-theme-surface border border-theme-border font-bold text-white shadow'
+                    : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface/60'
                 }`}
                 style={{
                   borderLeftColor: isActive ? activeThemeObj.primaryColor : undefined,
@@ -233,7 +233,7 @@ export const Sidebar: React.FC = () => {
 
                 {item.badge && (
                   <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase font-mono ${
-                    isCollapsed ? 'absolute top-1 right-1 w-2 h-2 p-0 rounded-full bg-[#8B0000]' : 'bg-[#8B0000] text-white'
+                    isCollapsed ? 'absolute top-1 right-1 w-2 h-2 p-0 rounded-full bg-theme-accent' : 'bg-theme-accent text-white'
                   }`}>
                     {!isCollapsed && item.badge}
                   </span>
@@ -244,19 +244,19 @@ export const Sidebar: React.FC = () => {
         </nav>
 
         {/* 4. Bottom Footer: Theme Switcher, User Profile & Expand Toggle */}
-        <div className="p-3 border-t border-[#323846] space-y-2 bg-[#0C0E12]">
+        <div className="p-3 border-t border-theme-border space-y-2 bg-theme-base">
           
           {/* Theme Switcher Button */}
           <button
             onClick={() => setIsThemeModalOpen(true)}
-            className={`w-full flex items-center rounded bg-[#161920] hover:bg-[#20242E] border border-[#323846] text-xs font-mono transition-colors ${
+            className={`w-full flex items-center rounded bg-theme-surface hover:bg-theme-elevated border border-theme-border text-xs font-mono transition-colors ${
               isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2.5'
             }`}
             title="Switch Visual Theme"
           >
             <Palette className="w-4 h-4 flex-shrink-0" style={{ color: activeThemeObj.primaryColor }} />
             {!isCollapsed && (
-              <span className="truncate flex-1 text-left text-[#ECEFF4]">
+              <span className="truncate flex-1 text-left text-theme-text">
             Theme: <strong style={{ color: activeThemeObj.primaryColor }}>{activeThemeObj.name.split(' ')[0]}</strong>
               </span>
             )}
@@ -265,12 +265,12 @@ export const Sidebar: React.FC = () => {
           {/* Bug Report Trigger */}
           <button
             onClick={() => setIsBugReportOpen(true)}
-            className={`w-full flex items-center rounded border border-[#8B0000]/60 hover:border-[#8B0000] bg-[#161920] hover:bg-[#20242E] text-xs font-mono text-[#E53935] transition-colors ${
+            className={`w-full flex items-center rounded border border-theme-accent/60 hover:border-theme-accent bg-theme-surface hover:bg-theme-elevated text-xs font-mono text-status-error transition-colors ${
               isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2.5'
             }`}
             title="Report a Bug / Feedback"
           >
-            <Bug className="w-4 h-4 text-[#E53935] flex-shrink-0" />
+            <Bug className="w-4 h-4 text-status-error flex-shrink-0" />
             {!isCollapsed && (
               <span className="font-bold tracking-wider uppercase text-[11px]">
                 Report a Bug
@@ -280,22 +280,22 @@ export const Sidebar: React.FC = () => {
 
           {/* User Auth Profile */}
           {session?.user ? (
-            <div className={`flex items-center rounded bg-[#161920] border border-[#323846] text-xs font-mono ${
+            <div className={`flex items-center rounded bg-theme-surface border border-theme-border text-xs font-mono ${
               isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 justify-between'
             }`}>
               <div className="flex items-center space-x-2 truncate">
                 {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
-                  <Crown className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
+                  <Crown className="w-4 h-4 text-theme-primary flex-shrink-0" />
                 ) : (
-                  <User className="w-4 h-4 text-[#8E95A5] flex-shrink-0" />
+                  <User className="w-4 h-4 text-theme-muted flex-shrink-0" />
                 )}
                 {!isCollapsed && (
                   <div className="truncate flex flex-col">
-                    <span className="font-bold text-[#ECEFF4] truncate text-[11px]">
+                    <span className="font-bold text-theme-text truncate text-[11px]">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
                     {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
-                      <span className="text-[8px] text-[#D4AF37] font-bold uppercase leading-none">
+                      <span className="text-[8px] text-theme-primary font-bold uppercase leading-none">
                         CRUSADE ADMIN
                       </span>
                     )}
@@ -306,7 +306,7 @@ export const Sidebar: React.FC = () => {
               {!isCollapsed && (
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="text-[#8E95A5] hover:text-white p-1"
+                  className="text-theme-muted hover:text-white p-1"
                   title="Account Details"
                 >
                   <User className="w-3.5 h-3.5" />
@@ -331,7 +331,7 @@ export const Sidebar: React.FC = () => {
           {isCollapsed && (
             <button
               onClick={toggleCollapse}
-              className="w-full flex justify-center p-2 rounded hover:bg-[#20242E] text-[#8E95A5] hover:text-white transition-colors"
+              className="w-full flex justify-center p-2 rounded hover:bg-theme-elevated text-theme-muted hover:text-white transition-colors"
               title="Expand Sidebar"
             >
               <ChevronRight className="w-4 h-4" />
