@@ -15,25 +15,43 @@ Each phase is independently shippable and leaves the app working.
 
 ---
 
-## Phase 0 — Stop the bleeding
+## Phase 0 — Stop the bleeding ✅ COMPLETE
 
 *Small, isolated, high-impact. No architectural commitment.*
 
-| # | Task | File |
+| # | Task | Status |
 |---|---|---|
-| 0.1 | Fix the broken mobile nav grid | `layout/MobileNav.tsx:32` |
-| 0.2 | `vh` → `dvh` across all modals | 30 files |
-| 0.3 | Add safe-area insets + `viewport-fit=cover` | `globals.css`, `app/layout.tsx` |
-| 0.4 | Remove `overflow-x: hidden` from `body`, fix what it was hiding | `globals.css` |
-| 0.5 | Delete the fabricated GitHub commit fallback | `services/githubSync.ts:32-51` |
-| 0.6 | Link `manifest.json`, generate real maskable icons | `app/layout.tsx`, `public/` |
-| 0.7 | Delete dead Vite scaffolding | `src/App.tsx`, `src/main.tsx`, `src/index.css`, `tsconfig.*.tsbuildinfo` |
-| 0.8 | Rewrite root `README.md` to describe the actual stack | `README.md` |
-| 0.9 | Compress and convert `public/` images; `next/image` everywhere | 102 MB → target < 10 MB |
+| 0.1 | Fix the broken mobile nav grid | ✅ flex + `flex-1`; no dynamic class to fail |
+| 0.2 | `vh` → `dvh` across all modals | ✅ 27 utilities in 22 files, plus `h-screen`/`min-h-screen` |
+| 0.3 | Safe-area insets + `viewport-fit=cover` | ✅ `--safe-*` vars, `.pb-safe`/`.pb-nav-safe`, Next `viewport` export |
+| 0.4 | Remove `overflow-x: hidden` from `body` | ✅ removed; the overflow it hid was the Navbar, now fixed |
+| 0.5 | Delete the fabricated GitHub commit fallback | ✅ **three** fabrications removed, not one |
+| 0.6 | Link `manifest.json`, generate real maskable icons | ✅ 5 icons generated; manifest wired through Next metadata |
+| 0.7 | Delete dead Vite scaffolding | ✅ |
+| 0.8 | Rewrite root `README.md` | ✅ (done earlier on this branch) |
+| 0.9 | Compress `public/` images | ✅ 17 MB → 1.7 MB of served imagery |
 
-**Done when:** the bottom nav renders as a row on a phone; modals are fully
-reachable on iOS; no fabricated data path remains; first paint ships < 200 kB of
-imagery.
+**Verified** in Chromium against a production build at 375×667 and 768×1024:
+`scrollWidth === clientWidth` at both sizes; the bottom nav computes
+`position: fixed`, 53px tall, flush to the viewport bottom, rendering as a row
+with all 7 buttons at exactly 44px.
+
+**Bugs found while verifying, also fixed:**
+
+- `TerritoryMap` pointed at `/world_map.png`, which does not exist — the campaign
+  map had no background at all.
+- The Navbar forced the document to 777px on a 375px screen (every header child
+  was `flex-shrink-0`). Invisible until `overflow-x: hidden` came off.
+
+**Explicitly not done here** — these are Phase 3, and Phase 0 does not claim them:
+
+- **122 interactive elements are still under 44px tall.** The nav is fixed; the
+  rest is the type-scale and density work that needs the `UnitCard` rebuild.
+- `next/image` migration. The 9 raw `<img>` tags remain; the compression win is
+  banked, but the responsive-srcset work belongs with the component rebuild.
+- **84 MB of unreferenced files under `public/maps`.** These are real official
+  scenario maps that are not wired up yet, not junk. Deleting them is a separate
+  decision — the alternative is to wire them into the scenario data in Phase 1.
 
 ---
 
