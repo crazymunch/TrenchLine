@@ -247,15 +247,47 @@ be the worse error.
 
 | # | Task |
 |---|---|
-| 3.1 | `src/components/ui/` primitives — `Modal`/`Sheet` (scroll lock, focus trap, `Escape`, safe areas), `Field`, `Stepper`, `DataTable` |
-| 3.2 | Migrate all 30 modals onto the primitive |
-| 3.3 | Rebuild `UnitCard` mobile-first — collapsed row, tap to expand, scrollable statline strip, actions in a sheet |
+| 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
+| 3.2 | 🟡 Migrate all 30 modals onto the primitive — 4 done (`LegalityStrip`, `RulesetSwitcher`, `ProvenanceTag`, `VariantPicker`) |
+| 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
 | 3.4 | Touch targets ≥44px and the type scale from [`MOBILE.md`](MOBILE.md) applied app-wide |
 | 3.5 | Replace 3,698 hardcoded hex values with theme tokens — makes the 7 themes real |
 | 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
 | 3.7 | Playwright E2E at 375×667 and 768×1024 |
 
 **Done when:** every view meets the [`MOBILE.md`](MOBILE.md) definition of done.
+
+### Where 3.1–3.4 got to
+
+`src/components/ui/` holds the four primitives, and each one owns a rule so the
+rule is enforced once instead of re-decided per component: `Sheet` takes body
+scroll lock, focus trap, `Escape`, `dvh` and safe areas; `Field` makes a 16px
+input non-negotiable; `Stepper` is 44px because it is what Play Mode is made of;
+`DataTable` scrolls itself rather than the page.
+
+The four modals that read the generated data are migrated onto `Sheet`, which
+deleted four copies of the same overlay scaffolding.
+
+**`UnitCard` header.** The badge, name, cost and action menu shared one row, so
+in a three-column grid a warrior called *Kasim bin Malik, The Living Engineer,
+Master of Construction* was left about 90px and wrapped one word per line. The
+header is now two rows — badge and actions, then the name full width. All 28 of
+the card's sub-12px sizes moved behind `sm:`, so the phone reads at 12px and the
+desktop density is unchanged.
+
+Measured in Chromium against a production build:
+
+| | 375×667 | 768×1024 | 1280×900 |
+|---|---|---|---|
+| horizontal page scroll | none | none | none |
+| page errors | 0 | 0 | 0 |
+| text under 12px | 31 | *by design* | *by design* |
+| targets under 44px | 116 | — | — |
+
+The phone numbers are the honest remaining backlog, all of it in components 3.2
+and 3.4 have not reached yet — the sidebar, the dashboard, and the twenty-six
+modals still hand-rolling their own overlay. They are counted here rather than
+described so the next pass has a number to drive down.
 
 ---
 

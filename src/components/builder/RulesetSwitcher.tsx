@@ -12,12 +12,13 @@
  * warband called out first → confirm. Nothing is applied before that.
  */
 import React, { useState } from 'react';
-import { Check, X, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
+import { Check, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
 
 import type { Dataset } from '@/types/catalogue';
 import { RULESETS } from '@/rules/rulesets';
 import { fetchDataset } from '@/rules/useDataset';
 import { diffDatasets, diffAffecting, type DatasetDiff, type EntityDiff } from '@/rules/diff';
+import { Sheet } from '@/components/ui';
 
 interface Props {
   current: string;
@@ -57,25 +58,30 @@ export const RulesetSwitcher: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-full sm:max-w-2xl max-h-[85dvh] bg-[#161920] border border-[#323846] sm:rounded-md flex flex-col overflow-hidden">
-        <header className="flex items-start justify-between gap-3 px-4 py-3 bg-[#20242E] border-b border-[#323846]">
-          <div>
-            <h2 className="font-gothic font-bold text-base text-[#ECEFF4]">Ruleset</h2>
-            <p className="text-[11px] font-mono text-[#8E95A5] mt-0.5">
-              Which rules this warband is built and checked against.
-            </p>
-          </div>
+    <Sheet
+      open
+      onClose={onClose}
+      title="Ruleset"
+      subtitle="Which rules this warband is built and checked against."
+      size="lg"
+      footer={diff && !busy && target ? (
+        <>
           <button
             onClick={onClose}
-            className="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center text-[#8E95A5] hover:text-[#ECEFF4]"
-            aria-label="Close"
+            className="flex-1 min-h-[44px] rounded-sm border border-[#323846] text-[#8E95A5] font-mono text-sm sm:text-xs font-bold uppercase tracking-wider hover:text-[#ECEFF4]"
           >
-            <X className="w-5 h-5" />
+            Cancel
           </button>
-        </header>
-
-        <div className="overflow-y-auto p-4 space-y-3">
+          <button
+            onClick={() => onApply(target)}
+            className="flex-1 min-h-[44px] rounded-sm bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-sm sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+          >
+            <Check className="w-4 h-4" /> Switch &amp; re-check
+          </button>
+        </>
+      ) : undefined}
+    >
+      <div className="space-y-3">
           {RULESETS.map((r) => {
             const active = r.id === current;
             const chosen = r.id === target;
@@ -95,31 +101,31 @@ export const RulesetSwitcher: React.FC<Props> = ({
                 <div className="flex items-center gap-2">
                   <span className="font-gothic font-bold text-sm text-[#ECEFF4]">{r.name}</span>
                   {active && (
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-[#D4AF37] text-black">
+                    <span className="text-xs sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-[#D4AF37] text-black">
                       IN USE
                     </span>
                   )}
                   {r.isDefault && !active && (
-                    <span className="text-[9px] font-mono text-[#8E95A5]">default</span>
+                    <span className="text-xs sm:text-[9px] font-mono text-[#8E95A5]">default</span>
                   )}
                 </div>
-                <p className="text-[11px] text-[#8E95A5] mt-1.5 leading-relaxed">{r.description}</p>
+                <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1.5 leading-relaxed">{r.description}</p>
               </button>
             );
           })}
 
           {busy && (
-            <div className="flex items-center gap-2 p-3 text-[11px] font-mono text-[#8E95A5]">
+            <div className="flex items-center gap-2 p-3 text-xs sm:text-[11px] font-mono text-[#8E95A5]">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Working out what changes…
             </div>
           )}
 
           {error && (
             <div className="p-3 rounded-sm bg-[#8B0000]/15 border border-[#8B0000]/50">
-              <p className="text-[11px] font-mono text-[#E53935] leading-relaxed">
+              <p className="text-xs sm:text-[11px] font-mono text-[#E53935] leading-relaxed">
                 Could not preview the switch: {error}
               </p>
-              <p className="text-[10px] font-mono text-[#8E95A5] mt-1.5">
+              <p className="text-xs sm:text-[10px] font-mono text-[#8E95A5] mt-1.5">
                 Nothing has changed. A ruleset is never applied without showing its effect first.
               </p>
             </div>
@@ -127,7 +133,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
 
           {diff && !busy && (
             <section className="space-y-3 pt-1">
-              <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5]">
+              <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5]">
                 Switching would change
               </h3>
 
@@ -141,7 +147,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
                 <div className="p-3 rounded-sm bg-[#FFB300]/10 border border-[#FFB300]/40 space-y-2">
                   <div className="flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 text-[#FFB300]" />
-                    <span className="text-[11px] font-mono font-bold text-[#FFB300]">
+                    <span className="text-xs sm:text-[11px] font-mono font-bold text-[#FFB300]">
                       {affecting.length} in this warband
                     </span>
                   </div>
@@ -162,26 +168,8 @@ export const RulesetSwitcher: React.FC<Props> = ({
               )}
             </section>
           )}
-        </div>
-
-        {diff && !busy && target && (
-          <footer className="flex gap-2 p-3 bg-[#20242E] border-t border-[#323846]">
-            <button
-              onClick={onClose}
-              className="flex-1 min-h-[44px] rounded-sm border border-[#323846] text-[#8E95A5] font-mono text-xs font-bold uppercase tracking-wider hover:text-[#ECEFF4]"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => onApply(target)}
-              className="flex-1 min-h-[44px] rounded-sm bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
-            >
-              <Check className="w-4 h-4" /> Switch &amp; re-check
-            </button>
-          </footer>
-        )}
       </div>
-    </div>
+    </Sheet>
   );
 };
 
@@ -201,7 +189,7 @@ const Entry: React.FC<{ entry: EntityDiff; muted?: boolean }> = ({ entry, muted 
   <div className={`p-2.5 rounded-sm border ${muted ? 'border-[#323846] bg-[#0C0E12]' : 'border-[#323846] bg-[#161920]'}`}>
     <div className="flex items-center gap-2">
       <span className="font-gothic font-bold text-xs text-[#ECEFF4]">{entry.name}</span>
-      <span className="text-[9px] font-mono text-[#8E95A5] uppercase">{entry.kind}</span>
+      <span className="text-xs sm:text-[9px] font-mono text-[#8E95A5] uppercase">{entry.kind}</span>
     </div>
     <div className="mt-1.5 space-y-1">
       {entry.changes.map((c, i) => (

@@ -17,7 +17,7 @@
  *     folded into a pass.
  */
 import React, { useMemo, useState } from 'react';
-import { ShieldCheck, AlertTriangle, X, ChevronRight, HelpCircle } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, ChevronRight, HelpCircle } from 'lucide-react';
 
 import type { Dataset } from '@/types/catalogue';
 import type { Warband } from '@/types/warband';
@@ -25,6 +25,7 @@ import { toRoster } from '@/rules/fromWarband';
 import { validateRoster, type Violation } from '@/rules/validate';
 import { variantById } from '@/rules/variants';
 import { ProvenanceTag } from './ProvenanceTag';
+import { Sheet } from '@/components/ui';
 
 interface Props {
   warband: Warband;
@@ -98,27 +99,14 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
         </button>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-full sm:max-w-2xl max-h-[85dvh] bg-[#161920] border border-[#323846] sm:rounded-md flex flex-col overflow-hidden">
-            <header className="flex items-start justify-between gap-3 px-4 py-3 bg-[#20242E] border-b border-[#323846]">
-              <div>
-                <h2 className="font-gothic font-bold text-base text-[#ECEFF4]">Legality</h2>
-                <p className="text-[11px] font-mono text-[#8E95A5] mt-0.5">
-                  {warband.factionId}
-                  {variant && ` · ${variant.name}`}
-                </p>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center text-[#8E95A5] hover:text-[#ECEFF4]"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </header>
-
-            <div className="overflow-y-auto p-4 space-y-5">
+      <Sheet
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Legality"
+        subtitle={`${warband.factionId}${variant ? ` · ${variant.name}` : ''}`}
+        size="lg"
+      >
+        <div className="space-y-5">
               <Group title="Errors" empty="Nothing blocking." items={errors} tone="error" />
               <Group
                 title="Check by hand"
@@ -129,17 +117,17 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
 
               {provisional && (
                 <section>
-                  <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
+                  <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
                     Not in this ruleset
                   </h3>
                   <div className="p-3 rounded-sm bg-[#8B0000]/10 border border-[#8B0000]/40 space-y-2">
-                    <p className="text-[11px] font-mono text-[#8E95A5] leading-relaxed">
+                    <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5] leading-relaxed">
                       These are in the warband but matched no entry, so they are not counted in
                       any check above. The verdict is provisional until they resolve.
                     </p>
                     <ul className="space-y-1">
                       {unmatched.map((u, i) => (
-                        <li key={i} className="text-[11px] font-mono text-[#E53935]">
+                        <li key={i} className="text-xs sm:text-[11px] font-mono text-[#E53935]">
                           {u.kind === 'unit' ? '◆' : '·'} {u.name}
                           {u.on && <span className="text-[#8E95A5]"> on {u.on}</span>}
                         </li>
@@ -151,7 +139,7 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
 
               {joined.length > 0 && (
                 <section>
-                  <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
+                  <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
                     Where these profiles come from
                   </h3>
                   <div className="space-y-1.5">
@@ -161,8 +149,8 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
                         className="flex items-center justify-between gap-3 p-2.5 rounded-sm bg-[#0C0E12] border border-[#323846]"
                       >
                         <div className="min-w-0">
-                          <div className="text-[11px] font-mono text-[#ECEFF4] truncate">{j.name}</div>
-                          <div className="text-[10px] font-mono text-[#8E95A5] truncate">{j.profileName}</div>
+                          <div className="text-xs sm:text-[11px] font-mono text-[#ECEFF4] truncate">{j.name}</div>
+                          <div className="text-xs sm:text-[10px] font-mono text-[#8E95A5] truncate">{j.profileName}</div>
                         </div>
                         <ProvenanceTag
                           entity={`unit:${j.profileId}`}
@@ -178,23 +166,21 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) 
 
               {variant?.specialRules?.length ? (
                 <section>
-                  <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
+                  <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
                     {variant.name} — rules in force
                   </h3>
                   <div className="space-y-1.5">
                     {variant.specialRules.map((r, i) => (
                       <div key={i} className="p-2.5 rounded-sm bg-[#0C0E12] border border-[#323846]">
-                        <div className="text-[11px] font-mono font-bold text-[#D4AF37]">{r.name}</div>
-                        <p className="text-[11px] text-[#8E95A5] mt-1 leading-relaxed">{r.description}</p>
+                        <div className="text-xs sm:text-[11px] font-mono font-bold text-[#D4AF37]">{r.name}</div>
+                        <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1 leading-relaxed">{r.description}</p>
                       </div>
                     ))}
                   </div>
                 </section>
               ) : null}
-            </div>
-          </div>
         </div>
-      )}
+      </Sheet>
     </>
   );
 };
@@ -206,12 +192,12 @@ const Group: React.FC<{
   tone: 'error' | 'warn';
 }> = ({ title, empty, items, tone }) => (
   <section>
-    <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
+    <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
       {title} {items.length > 0 && `(${items.length})`}
     </h3>
 
     {items.length === 0 ? (
-      <p className="text-[11px] font-mono text-[#4E9A6E]">{empty}</p>
+      <p className="text-xs sm:text-[11px] font-mono text-[#4E9A6E]">{empty}</p>
     ) : (
       <div className="space-y-1.5">
         {items.map((v, i) => (
@@ -223,7 +209,7 @@ const Group: React.FC<{
           >
             <div className="flex items-center gap-2 mb-1.5">
               <span
-                className={`text-[9px] font-mono px-1.5 py-0.5 rounded-sm border ${
+                className={`text-xs sm:text-[9px] font-mono px-1.5 py-0.5 rounded-sm border ${
                   tone === 'error'
                     ? 'text-[#E53935] border-[#8B0000]/60 bg-[#8B0000]/20'
                     : 'text-[#FFB300] border-[#FFB300]/40 bg-[#FFB300]/10'
@@ -237,7 +223,7 @@ const Group: React.FC<{
             {v.rule && (
               <div className="mt-2 flex gap-1.5 p-2 rounded-sm bg-[#0C0E12] border border-[#323846]">
                 <HelpCircle className="w-3 h-3 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                <p className="text-[10px] font-mono text-[#8E95A5] leading-relaxed">{v.rule}</p>
+                <p className="text-xs sm:text-[10px] font-mono text-[#8E95A5] leading-relaxed">{v.rule}</p>
               </div>
             )}
           </article>

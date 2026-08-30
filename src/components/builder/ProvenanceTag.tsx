@@ -12,7 +12,9 @@
  * always about the model on screen.
  */
 import React, { useState } from 'react';
-import { HelpCircle, Loader2, ShieldCheck, X } from 'lucide-react';
+import { HelpCircle, Loader2, ShieldCheck } from 'lucide-react';
+
+import { Sheet } from '@/components/ui';
 
 interface FieldSource {
   layer: string;
@@ -76,74 +78,62 @@ export const ProvenanceTag: React.FC<Props> = ({ entity, rulesetId, fields, labe
     <>
       <button
         onClick={show}
-        className="inline-flex items-center gap-1 text-[10px] font-mono text-[#8E95A5] hover:text-[#D4AF37] transition-colors"
+        className="inline-flex items-center gap-1 min-h-[44px] px-1 -my-2 text-xs sm:text-[10px] sm:min-h-0 sm:my-0 font-mono text-[#8E95A5] hover:text-[#D4AF37] transition-colors"
         title="Where these values came from"
       >
         <HelpCircle className="w-3 h-3" />
         {label}
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-full sm:max-w-lg max-h-[80dvh] bg-[#161920] border border-[#323846] sm:rounded-md flex flex-col overflow-hidden">
-            <header className="flex items-start justify-between gap-3 px-4 py-3 bg-[#20242E] border-b border-[#323846]">
-              <div>
-                <h3 className="font-gothic font-bold text-sm text-[#ECEFF4]">Where this comes from</h3>
-                <p className="text-[10px] font-mono text-[#8E95A5] mt-0.5 break-all">{entity}</p>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center text-[#8E95A5] hover:text-[#ECEFF4]"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </header>
-
-            <div className="overflow-y-auto p-4 space-y-2">
-              {busy && (
-                <div className="flex items-center gap-2 text-[11px] font-mono text-[#8E95A5]">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Looking it up…
-                </div>
-              )}
-
-              {error && (
-                <p className="text-[11px] font-mono text-[#E53935] leading-relaxed">{error}</p>
-              )}
-
-              {shown.map(([field, src]) => {
-                const { where, detail } = describe(src);
-                return (
-                  <div key={field} className="p-2.5 rounded-sm bg-[#0C0E12] border border-[#323846]">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono font-bold text-[#ECEFF4]">{field}</span>
-                      {src.verified && (
-                        <span
-                          className="inline-flex items-center gap-1 text-[9px] font-mono text-[#4E9A6E]"
-                          title={`Cross-checked against ${src.verified}`}
-                        >
-                          <ShieldCheck className="w-3 h-3" /> verified
-                        </span>
-                      )}
-                      {src.layer !== 'base' && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37]">
-                          {src.layer}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 text-[10px] font-mono text-[#8E95A5]">{where}</div>
-                    <div className="text-[10px] font-mono text-[#8E95A5] break-all">{detail}</div>
-                  </div>
-                );
-              })}
-
-              {!busy && !error && shown.length === 0 && (
-                <p className="text-[11px] font-mono text-[#8E95A5]">Nothing recorded for those fields.</p>
-              )}
+      <Sheet
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Where this comes from"
+        subtitle={<span className="break-all">{entity}</span>}
+        size="md"
+      >
+        <div className="space-y-2">
+          {busy && (
+            <div className="flex items-center gap-2 text-xs sm:text-[11px] font-mono text-[#8E95A5]">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Looking it up…
             </div>
-          </div>
+          )}
+
+          {error && (
+            <p className="text-xs sm:text-[11px] font-mono text-[#E53935] leading-relaxed">{error}</p>
+          )}
+
+          {shown.map(([field, src]) => {
+            const { where, detail } = describe(src);
+            return (
+              <div key={field} className="p-2.5 rounded-sm bg-[#0C0E12] border border-[#323846]">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-[11px] font-mono font-bold text-[#ECEFF4]">{field}</span>
+                  {src.verified && (
+                    <span
+                      className="inline-flex items-center gap-1 text-xs sm:text-[9px] font-mono text-[#4E9A6E]"
+                      title={`Cross-checked against ${src.verified}`}
+                    >
+                      <ShieldCheck className="w-3 h-3" /> verified
+                    </span>
+                  )}
+                  {src.layer !== 'base' && (
+                    <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37]">
+                      {src.layer}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 text-xs sm:text-[10px] font-mono text-[#8E95A5]">{where}</div>
+                <div className="text-xs sm:text-[10px] font-mono text-[#8E95A5] break-all">{detail}</div>
+              </div>
+            );
+          })}
+
+          {!busy && !error && shown.length === 0 && (
+            <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5]">Nothing recorded for those fields.</p>
+          )}
         </div>
-      )}
+      </Sheet>
     </>
   );
 };
