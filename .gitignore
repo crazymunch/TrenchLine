@@ -46,3 +46,4 @@ data-sources/rulebook/trench-crusade-digital-rulebook.pdf
 # Seeded design-canvas payload (2.5MB of bundled editor code). Regenerate from
 # design/canvas/*.dc.html — see design/canvas/README.md.
 /trenchline-interface.html
+trenchline-artboards.zip

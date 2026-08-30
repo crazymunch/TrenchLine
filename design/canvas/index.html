@@ -1,0 +1,1569 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrenchLine — interface artboards</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; background:#08090C; color:#ECEFF4;
+         font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:28px; }
+  h1 { font-size:20px; letter-spacing:.06em; margin:0 0 6px; }
+  .lede { max-width:70ch; color:#8E95A5; margin:0 0 28px; font-size:13px; }
+  .lede code { color:#D4AF37; }
+  .sheet { display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start; }
+  figure { margin:0; }
+  figcaption { font:12px/1.4 ui-monospace,monospace; color:#8E95A5;
+               letter-spacing:.05em; text-transform:uppercase; margin-bottom:8px; }
+  figcaption b { color:#D4AF37; display:block; font-size:13px; letter-spacing:.03em;
+                 text-transform:none; font-weight:600; }
+  iframe { border:1px solid #323846; background:#0C0E12; display:block; }
+</style>
+<h1>TrenchLine — interface artboards</h1>
+<p class="lede">Seven screens for a Trench Crusade warband builder. Every value shown is real:
+joined from a live NewRecruit roster export against the app's generated dataset. Colours, type,
+radii and control sizes are lifted from the running app's <code>globals.css</code> and components,
+not invented. Each frame below is one artboard; its source is the matching
+<code>.dc.html</code> file, plain HTML and CSS with no build step.</p>
+<div class="sheet">
+<figure>
+<figcaption><b>Roster — phone, above the fold</b>Main.dc.html &middot; 375&times;812</figcaption>
+<iframe width="375" height="812" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Oswald:wght@500;600&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .tl-root {
+    /* Lifted verbatim from src/app/globals.css — Iron Sanctum, the default theme. */
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5;
+    --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E; --elite:#7C4DFF; --merc:#00897B;
+    --gothic:&#x27;Cinzel&#x27;,serif; --head:&#x27;Oswald&#x27;,sans-serif;
+    --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:812px; position:relative; overflow:hidden;
+    background:var(--void); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* .bevel-container, globals.css */
+  .tl-root .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+                    border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+  .tl-root .mono { font-family:var(--mono); }
+
+  /* ---- app bar ---------------------------------------------------------- */
+  .tl-appbar { height:48px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 12px; background:var(--void); border-bottom:1px solid var(--line); }
+  .tl-brand { font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.14em; color:var(--gold); }
+  .tl-ruleset { display:flex; align-items:center; gap:5px; height:28px; padding:0 8px;
+    background:var(--elev); border:1px solid var(--line); border-radius:4px;
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--gold); }
+  .tl-ruleset .dot { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+
+  /* ---- scroll body ------------------------------------------------------ */
+  .tl-body { position:absolute; top:48px; bottom:53px; left:0; right:0; padding:10px 12px 12px; }
+
+  /* ---- warband header --------------------------------------------------- */
+  .tl-wb { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:11px 12px 12px; }
+  .tl-wb-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .tl-faction { display:flex; align-items:center; gap:6px; min-width:0; }
+  .tl-faction .swatch { width:9px; height:9px; border-radius:50%; background:#76D6D5; flex:none; }
+  .tl-faction span { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tl-legal { flex:none; display:flex; align-items:center; gap:4px; height:20px; padding:0 7px;
+    border-radius:3px; background:rgba(78,154,110,.16); border:1px solid rgba(78,154,110,.55);
+    font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.08em; color:var(--ok); }
+  .tl-name { font-family:var(--gothic); font-weight:700; font-size:22px; line-height:1.15;
+    letter-spacing:.02em; color:var(--text); margin-top:6px; }
+  .tl-motto { margin-top:6px; padding:4px 8px; background:var(--void); border-left:2px solid var(--gold);
+    border-radius:0 3px 3px 0; font-family:Georgia,serif; font-style:italic; font-size:11px;
+    line-height:1.35; color:var(--text); }
+
+  /* ---- the two currencies ----------------------------------------------- */
+  .tl-purse { margin-top:11px; padding-top:10px; border-top:1px solid var(--line); display:grid; gap:8px; }
+  .tl-cur-row { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; }
+  .tl-cur-label { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); width:76px; }
+  .tl-glyph { font-size:12px; line-height:1; }
+  .tl-meter { height:8px; border-radius:999px; background:var(--void); border:1px solid var(--line); overflow:hidden; }
+  .tl-meter i { display:block; height:100%; }
+  .tl-cur-val { font-family:var(--mono); font-size:11px; font-weight:700; white-space:nowrap; }
+
+  /* ---- filters ----------------------------------------------------------- */
+  .tl-filters { display:flex; gap:6px; margin-top:11px; }
+  .tl-chip { height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px;
+    border-radius:4px; background:var(--elev); border:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); }
+  .tl-chip b { color:var(--text); font-weight:700; }
+  .tl-chip.on { background:var(--gold); border-color:var(--gold); color:#000; }
+  .tl-chip.on b { color:#000; }
+
+  /* ---- warrior rows ------------------------------------------------------ */
+  .tl-roll { margin-top:10px; display:grid; gap:6px; }
+  .tl-row { background:var(--surface); border:1px solid var(--line); border-radius:5px;
+    padding:8px 9px; display:grid; gap:5px; }
+  .tl-row.lead { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); }
+  .tl-row-1 { display:flex; align-items:center; gap:6px; }
+  .tl-badge { flex:none; height:16px; padding:0 5px; display:inline-flex; align-items:center; gap:3px;
+    border-radius:3px; font-family:var(--mono); font-size:8.5px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; }
+  .tl-badge.lead { background:var(--gold); color:#000; }
+  .tl-badge.elite { background:var(--elite); color:#fff; }
+  .tl-badge.troop { background:var(--line); color:var(--text); }
+  .tl-badge.merc { background:var(--merc); color:#fff; }
+  .tl-row-name { flex:1; min-width:0; font-family:var(--gothic); font-weight:700; font-size:13px;
+    line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tl-row.lead .tl-row-name { color:var(--gold); }
+  .tl-row-cost { flex:none; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); }
+  .tl-row-cost .g { color:var(--gold-hi); }
+  .tl-row-sub { font-size:10px; line-height:1.25; color:var(--muted); white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; }
+  .tl-row-sub b { color:var(--text); font-weight:600; }
+  /* the statline is the most-read element on the card: mono, boxed, full width */
+  .tl-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:4px 2px; text-align:center; }
+  .tl-stats div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.06em;
+    color:var(--muted); }
+  .tl-stats div strong { display:block; font-family:var(--mono); font-size:11.5px; font-weight:700;
+    color:var(--text); line-height:1.3; }
+
+  .tl-more { margin-top:8px; text-align:center; font-family:var(--mono); font-size:9.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+
+  /* ---- bottom nav (MobileNav.tsx, verbatim geometry) --------------------- */
+  .tl-nav { position:absolute; left:0; right:0; bottom:0; height:53px; background:rgba(12,14,18,.95);
+    border-top:1px solid var(--line); padding:4px 4px 0; display:flex; align-items:stretch; gap:2px; }
+  .tl-nav button { flex:1; min-width:0; min-height:44px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; border:0; background:transparent;
+    border-radius:4px; color:var(--muted); font:inherit; }
+  .tl-nav button.on { background:var(--surface); color:var(--gold); }
+  .tl-nav svg { width:16px; height:16px; }
+  .tl-nav span { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; line-height:1.1; }
+  .tl-nav .live { position:relative; }
+  .tl-nav .live::after { content:&#x27;&#x27;; position:absolute; top:-3px; right:-6px; width:6px; height:6px;
+    border-radius:50%; background:var(--danger); }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;header class=&quot;tl-appbar&quot;&gt;
+    &lt;div class=&quot;tl-brand&quot;&gt;TRENCHLINE&lt;/div&gt;
+    &lt;div class=&quot;tl-ruleset&quot;&gt;&lt;i class=&quot;dot&quot;&gt;&lt;/i&gt;TrenchLine v1 ▾&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;tl-body&quot;&gt;
+
+    &lt;section class=&quot;tl-wb bevel&quot;&gt;
+      &lt;div class=&quot;tl-wb-top&quot;&gt;
+        &lt;div class=&quot;tl-faction&quot;&gt;&lt;i class=&quot;swatch&quot;&gt;&lt;/i&gt;&lt;span&gt;Iron Sultanate · House of Wisdom&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;tl-legal&quot;&gt;✓ LEGAL&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;h1 class=&quot;tl-name&quot;&gt;Al-Qarn Rihla&lt;/h1&gt;
+      &lt;div class=&quot;tl-motto&quot;&gt;“The Wall may forget, but the Copper remembers!”&lt;/div&gt;
+
+      &lt;div class=&quot;tl-purse&quot;&gt;
+        &lt;div class=&quot;tl-cur-row&quot;&gt;
+          &lt;div class=&quot;tl-cur-label&quot;&gt;&lt;i class=&quot;tl-glyph&quot;&gt;👑&lt;/i&gt;Ducats&lt;/div&gt;
+          &lt;div class=&quot;tl-meter&quot;&gt;&lt;i style=&quot;width:100%;background:var(--gold);&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class=&quot;tl-cur-val&quot; style=&quot;color:var(--gold);&quot;&gt;1320 / 1320&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-cur-row&quot;&gt;
+          &lt;div class=&quot;tl-cur-label&quot;&gt;&lt;i class=&quot;tl-glyph&quot; style=&quot;color:var(--gold-hi);&quot;&gt;☼&lt;/i&gt;Glory&lt;/div&gt;
+          &lt;div class=&quot;tl-meter&quot;&gt;&lt;i style=&quot;width:66.7%;background:var(--gold-hi);&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class=&quot;tl-cur-val&quot; style=&quot;color:var(--gold-hi);&quot;&gt;6 / 9&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;div class=&quot;tl-filters&quot;&gt;
+      &lt;div class=&quot;tl-chip on&quot;&gt;All &lt;b&gt;11&lt;/b&gt;&lt;/div&gt;
+      &lt;div class=&quot;tl-chip&quot;&gt;Elite &lt;b&gt;3&lt;/b&gt;&lt;/div&gt;
+      &lt;div class=&quot;tl-chip&quot;&gt;Troop &lt;b&gt;6&lt;/b&gt;&lt;/div&gt;
+      &lt;div class=&quot;tl-chip&quot;&gt;Merc &lt;b&gt;1&lt;/b&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;tl-roll&quot;&gt;
+
+      &lt;article class=&quot;tl-row lead&quot;&gt;
+        &lt;div class=&quot;tl-row-1&quot;&gt;
+          &lt;span class=&quot;tl-badge lead&quot;&gt;♛ Leader&lt;/span&gt;
+          &lt;div class=&quot;tl-row-name&quot;&gt;Kasim bin Malik&lt;/div&gt;
+          &lt;div class=&quot;tl-row-cost&quot;&gt;194 👑 &lt;span class=&quot;g&quot;&gt;2 ☼&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-row-sub&quot;&gt;&lt;b&gt;Jabirean Alchemist&lt;/b&gt; · The Living Engineer&lt;/div&gt;
+        &lt;div class=&quot;tl-stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+3&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−2&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;32&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+
+      &lt;article class=&quot;tl-row&quot;&gt;
+        &lt;div class=&quot;tl-row-1&quot;&gt;
+          &lt;span class=&quot;tl-badge elite&quot;&gt;Elite&lt;/span&gt;
+          &lt;div class=&quot;tl-row-name&quot;&gt;Al-Qahhar, the Crippled&lt;/div&gt;
+          &lt;div class=&quot;tl-row-cost&quot;&gt;250 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-row-sub&quot;&gt;&lt;b&gt;Favoured Brazen Bull&lt;/b&gt; · Lost Arm [26]&lt;/div&gt;
+        &lt;div class=&quot;tl-stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+2&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−3&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;60&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+
+      &lt;article class=&quot;tl-row&quot;&gt;
+        &lt;div class=&quot;tl-row-1&quot;&gt;
+          &lt;span class=&quot;tl-badge elite&quot;&gt;Elite&lt;/span&gt;
+          &lt;div class=&quot;tl-row-name&quot;&gt;Al-Masyukh&lt;/div&gt;
+          &lt;div class=&quot;tl-row-cost&quot;&gt;252 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-row-sub&quot;&gt;&lt;b&gt;Favoured Takwin Homunculus&lt;/b&gt; · 8 options&lt;/div&gt;
+        &lt;div class=&quot;tl-stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;60&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+
+      &lt;article class=&quot;tl-row&quot;&gt;
+        &lt;div class=&quot;tl-row-1&quot;&gt;
+          &lt;span class=&quot;tl-badge elite&quot;&gt;Elite&lt;/span&gt;
+          &lt;div class=&quot;tl-row-name&quot;&gt;Idris the Relic Hound&lt;/div&gt;
+          &lt;div class=&quot;tl-row-cost&quot;&gt;84 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-row-sub&quot;&gt;&lt;b&gt;Favoured Kavass&lt;/b&gt; · Fireteam: Mamluk-Guarded&lt;/div&gt;
+        &lt;div class=&quot;tl-stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−2&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;25&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+
+      &lt;article class=&quot;tl-row&quot;&gt;
+        &lt;div class=&quot;tl-row-1&quot;&gt;
+          &lt;span class=&quot;tl-badge merc&quot;&gt;Merc&lt;/span&gt;
+          &lt;div class=&quot;tl-row-name&quot;&gt;Jawhar al-Sari&lt;/div&gt;
+          &lt;div class=&quot;tl-row-cost&quot;&gt;&lt;span class=&quot;g&quot;&gt;4 ☼&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tl-row-sub&quot;&gt;&lt;b&gt;Mamluk Faris&lt;/b&gt; · The Gilded Blade&lt;/div&gt;
+        &lt;div class=&quot;tl-stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−3&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;32&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+
+      &lt;div class=&quot;tl-more&quot;&gt;▾ 6 more warriors&lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;tl-nav&quot;&gt;
+    &lt;button class=&quot;on&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Roster&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;div class=&quot;live&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 17.5 3 6V3h3l11.5 11.5&quot;/&gt;&lt;path d=&quot;m13 19 6-6&quot;/&gt;&lt;path d=&quot;M16 16l4 4&quot;/&gt;&lt;path d=&quot;M19 3h2v2l-9 9&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;span&gt;Play&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z&quot;/&gt;&lt;path d=&quot;M4 22v-7&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Camp&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M22 21v-2a4 4 0 0 0-3-3.87&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Dir&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 19.5A2.5 2.5 0 0 1 6.5 17H20&quot;/&gt;&lt;path d=&quot;M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Codex&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D4AF37&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;13.5&quot; cy=&quot;6.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;17.5&quot; cy=&quot;10.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;8.5&quot; cy=&quot;7.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;6.5&quot; cy=&quot;12.5&quot; r=&quot;1.5&quot;/&gt;&lt;path d=&quot;M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Theme&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button style=&quot;color:#E53935;&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#E53935&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m8 2 1.88 1.88M14.12 3.88 16 2&quot;/&gt;&lt;path d=&quot;M9 7.13V6a3 3 0 1 1 6 0v1.13&quot;/&gt;&lt;path d=&quot;M18 11a6 6 0 0 0-12 0v3a6 6 0 1 0 12 0z&quot;/&gt;&lt;path d=&quot;M3 13h4M17 13h4M3 6h1M20 6h1M3 20h1M20 20h1&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Bug&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/nav&gt;
+
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Recruit — limits enforced</b>AddUnit.dc.html &middot; 375&times;900</figcaption>
+<iframe width="375" height="900" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E; --merc:#00897B;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:900px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .hd { padding:12px; background:var(--void); border-bottom:1px solid var(--line);
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .hd h2 { font-family:var(--gothic); font-weight:700; font-size:16px; letter-spacing:.05em; }
+  .hd p { margin-top:3px; font-family:var(--mono); font-size:10px; color:var(--muted); line-height:1.4; }
+  .x { flex:none; width:44px; height:44px; margin:-8px -8px 0 0; display:flex; align-items:center;
+    justify-content:center; color:var(--muted); font-size:20px; }
+
+  /* the variant is stated once, at the top, because it governs everything below */
+  .variant { margin:10px 12px 0; padding:8px 10px; background:rgba(212,175,55,.08);
+    border:1px solid rgba(212,175,55,.35); border-radius:4px; display:flex; gap:8px; align-items:flex-start; }
+  .variant i { flex:none; font-style:normal; font-size:12px; line-height:1.3; }
+  .variant div { flex:1; min-width:0; }
+  .variant b { display:block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--gold); }
+  .variant span { display:block; margin-top:3px; font-size:10.5px; line-height:1.45; color:var(--muted); }
+
+  .search { margin:10px 12px 0; height:44px; display:flex; align-items:center; gap:8px; padding:0 11px;
+    background:var(--surface); border:1px solid var(--line); border-radius:4px; }
+  .search svg { width:15px; height:15px; color:var(--muted); flex:none; }
+  .search span { font-size:16px; color:var(--muted); } /* 16px: never zooms on iOS focus */
+
+  .tabs { margin:10px 12px 0; display:flex; gap:6px; }
+  .tab { height:32px; padding:0 11px; display:inline-flex; align-items:center; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .tab.on { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .list { margin:10px 12px 0; display:grid; gap:6px; }
+  .row { background:var(--surface); border:1px solid var(--line); border-radius:5px; padding:9px 10px;
+    display:grid; gap:6px; }
+  .row.blocked { background:rgba(22,25,32,.5); border-color:rgba(50,56,70,.6); }
+  .r1 { display:flex; align-items:center; gap:8px; }
+  .r1 h3 { flex:1; min-width:0; font-family:var(--gothic); font-weight:700; font-size:13.5px; line-height:1.2;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.blocked h3 { color:var(--muted); }
+  .r1 .c { flex:none; font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--gold); }
+  .row.blocked .r1 .c { color:var(--muted); }
+  .r1 .c.glory { color:var(--gold-hi); }
+
+  .lim { flex:none; height:17px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.05em; }
+  .lim.free { background:var(--elev); border:1px solid var(--line); color:var(--muted); }
+  .lim.max  { background:rgba(255,179,0,.15); border:1px solid rgba(255,179,0,.5); color:var(--warn); }
+  .lim.no   { background:rgba(139,0,0,.2); border:1px solid rgba(139,0,0,.55); color:var(--danger); }
+
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:4px 2px; text-align:center; }
+  .row.blocked .stats { opacity:.45; }
+  .stats div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.06em; color:var(--muted); }
+  .stats div strong { display:block; font-family:var(--mono); font-size:11.5px; font-weight:700; line-height:1.3; }
+
+  /* every block names the rule that blocked it — never a greyed row with no reason */
+  .why { display:flex; align-items:flex-start; gap:6px; padding:6px 8px; border-radius:4px;
+    background:rgba(139,0,0,.12); border:1px solid rgba(139,0,0,.35); }
+  .why.soft { background:rgba(255,179,0,.08); border-color:rgba(255,179,0,.3); }
+  .why i { flex:none; font-style:normal; font-size:10px; color:var(--danger); line-height:1.45; }
+  .why.soft i { color:var(--warn); }
+  .why p { flex:1; min-width:0; font-family:var(--mono); font-size:9px; line-height:1.5; color:var(--muted); }
+  .why p b { color:var(--text); font-weight:600; }
+
+  .add { flex:none; height:30px; padding:0 11px; display:inline-flex; align-items:center; gap:4px;
+    border-radius:4px; background:var(--gold); color:#000; font-family:var(--mono); font-size:10px;
+    font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+  .add.off { background:transparent; border:1px solid var(--line); color:var(--muted); }
+
+  .footbar { position:absolute; left:0; right:0; bottom:0; padding:10px 12px 14px; background:var(--void);
+    border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .footbar div { font-family:var(--mono); font-size:10px; line-height:1.5; color:var(--muted); }
+  .footbar div b { color:var(--gold); }
+  .footbar button { flex:none; height:44px; padding:0 18px; border:0; border-radius:4px; background:var(--gold);
+    color:#000; font-family:var(--mono); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;header class=&quot;hd&quot;&gt;
+    &lt;div&gt;
+      &lt;h2&gt;RECRUIT WARRIOR&lt;/h2&gt;
+      &lt;p&gt;Iron Sultanate · 1320 / 1320 👑 · 6 / 9 ☼&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;x&quot;&gt;✕&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;variant&quot;&gt;
+    &lt;i&gt;⚑&lt;/i&gt;
+    &lt;div&gt;
+      &lt;b&gt;Warband Variant · The House of Wisdom&lt;/b&gt;
+      &lt;span&gt;Seven special rules are live and filtering this list. Entries the variant forbids are shown, disabled, with the rule that forbids them — not hidden.&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;search&quot;&gt;
+    &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;
+    &lt;span&gt;Search 89 profiles…&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;tabs&quot;&gt;
+    &lt;div class=&quot;tab on&quot;&gt;All&lt;/div&gt;
+    &lt;div class=&quot;tab&quot;&gt;Elite&lt;/div&gt;
+    &lt;div class=&quot;tab&quot;&gt;Troop&lt;/div&gt;
+    &lt;div class=&quot;tab&quot;&gt;Merc&lt;/div&gt;
+    &lt;div class=&quot;tab&quot;&gt;★ Saved&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;list&quot;&gt;
+
+    &lt;article class=&quot;row&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Azeb&lt;/h3&gt;
+        &lt;span class=&quot;lim free&quot;&gt;2 taken&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;25 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stats&quot;&gt;
+        &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;−1&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−1&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;25&lt;/strong&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;font-family:var(--mono);font-size:9px;color:var(--muted);&quot;&gt;No limit · upgradeable to Kavass&lt;/div&gt;&lt;span class=&quot;add&quot;&gt;+ Recruit&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Lion of Jabir&lt;/h3&gt;
+        &lt;span class=&quot;lim free&quot;&gt;1 / 3&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;60 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stats&quot;&gt;
+        &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;8&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;N/A&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−1&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;50&lt;/strong&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why soft&quot;&gt;
+        &lt;i&gt;▲&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;Pride of Jabir&lt;/b&gt; — a House of Wisdom Warband can include 0–3 Lions of Jabir. The base Iron Sultanate limit is 0–2; the variant raised it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add&quot;&gt;+ Recruit&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row blocked&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Jabirean Alchemist&lt;/h3&gt;
+        &lt;span class=&quot;lim max&quot;&gt;2 / 2 · MAX&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;55 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why soft&quot;&gt;
+        &lt;i&gt;▲&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;Alchemists&lt;/b&gt; — a House of Wisdom Warband must include 1–2 Jabirean Alchemists. You have 2.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;At limit&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row blocked&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Brazen Bull&lt;/h3&gt;
+        &lt;span class=&quot;lim max&quot;&gt;1 / 1 · MAX&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;115 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why soft&quot;&gt;
+        &lt;i&gt;▲&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;0–1 Brazen Bull&lt;/b&gt; — Warbands of Trench Crusade, Iron Sultanate warband entries.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;At limit&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row blocked&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Yüzbaşı Captain&lt;/h3&gt;
+        &lt;span class=&quot;lim no&quot;&gt;FORBIDDEN&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;75 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why&quot;&gt;
+        &lt;i&gt;✕&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;Private Venture&lt;/b&gt; — a House of Wisdom Warband cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;Blocked&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row blocked&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Janissary&lt;/h3&gt;
+        &lt;span class=&quot;lim no&quot;&gt;FORBIDDEN&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;55 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why&quot;&gt;
+        &lt;i&gt;✕&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;Private Venture&lt;/b&gt; — same rule. Recruit a &lt;b&gt;Fāris&lt;/b&gt; instead: &lt;b&gt;Noble Guardians&lt;/b&gt; lets a House of Wisdom take 0–2, using the Janissary entry with ELITE at no cost.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;Blocked&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row blocked&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Sultanate Assassin&lt;/h3&gt;
+        &lt;span class=&quot;lim no&quot;&gt;FORBIDDEN&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;85 👑&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why&quot;&gt;
+        &lt;i&gt;✕&lt;/i&gt;
+        &lt;p&gt;&lt;b&gt;Private Venture&lt;/b&gt; — same rule.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;Blocked&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;row&quot;&gt;
+      &lt;div class=&quot;r1&quot;&gt;
+        &lt;h3&gt;Pairika&lt;/h3&gt;
+        &lt;span class=&quot;lim free&quot;&gt;Mercenary&lt;/span&gt;
+        &lt;span class=&quot;c glory&quot;&gt;7 ☼&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;why soft&quot;&gt;
+        &lt;i&gt;☼&lt;/i&gt;
+        &lt;p&gt;Priced in &lt;b&gt;Glory&lt;/b&gt;, not Ducats. You have &lt;b&gt;3 Glory&lt;/b&gt; left — this one does not fit.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;r1&quot;&gt;&lt;div style=&quot;flex:1;&quot;&gt;&lt;/div&gt;&lt;span class=&quot;add off&quot;&gt;Not affordable&lt;/span&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+  &lt;/div&gt;
+
+  &lt;div class=&quot;footbar&quot;&gt;
+    &lt;div&gt;Remaining &lt;b&gt;0 👑&lt;/b&gt; · &lt;b&gt;3 ☼&lt;/b&gt;&lt;br&gt;Recruiting costs from the current budget.&lt;/div&gt;
+    &lt;button&gt;Done&lt;/button&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Roster — illegal</b>Illegal.dc.html &middot; 375&times;812</figcaption>
+<iframe width="375" height="812" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:812px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .appbar { height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 12px;
+    background:var(--void); border-bottom:1px solid var(--line); }
+  .appbar .b { font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.14em; color:var(--gold); }
+  .appbar .r { display:flex; align-items:center; gap:5px; height:28px; padding:0 8px; background:var(--elev);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:10px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--gold); }
+  .appbar .r i { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+
+  .wrap { position:absolute; top:48px; bottom:53px; left:0; right:0; padding:12px; overflow:hidden; }
+
+  /* the verdict, stated once and unambiguously */
+  .verdict { background:rgba(139,0,0,.14); border:1px solid var(--danger); border-radius:6px; padding:11px 12px; }
+  .verdict-1 { display:flex; align-items:center; gap:8px; }
+  .verdict-1 i { flex:none; width:22px; height:22px; border-radius:50%; background:var(--danger); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-style:normal; font-weight:700; }
+  .verdict-1 h2 { flex:1; font-family:var(--gothic); font-weight:700; font-size:15px; letter-spacing:.05em; color:var(--danger); }
+  .verdict-1 span { flex:none; font-family:var(--mono); font-size:10px; font-weight:700; color:var(--muted); }
+  .verdict p { margin-top:6px; font-size:11px; line-height:1.5; color:var(--muted); }
+  .verdict p b { color:var(--text); }
+
+  .grp { margin-top:12px; display:flex; align-items:center; gap:7px; }
+  .grp span { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); }
+  .grp hr { flex:1; border:0; border-top:1px solid var(--line); }
+
+  .v { margin-top:6px; background:var(--surface); border:1px solid var(--line); border-radius:5px;
+    border-left:3px solid var(--danger); padding:9px 10px; display:grid; gap:5px; }
+  .v.warn { border-left-color:var(--warn); }
+  .v-1 { display:flex; align-items:center; gap:6px; }
+  .v-code { flex:none; height:16px; padding:0 5px; display:inline-flex; align-items:center; border-radius:2px;
+    background:rgba(139,0,0,.25); border:1px solid rgba(139,0,0,.5); color:var(--danger);
+    font-family:var(--mono); font-size:8.5px; font-weight:700; letter-spacing:.04em; }
+  .v.warn .v-code { background:rgba(255,179,0,.15); border-color:rgba(255,179,0,.45); color:var(--warn); }
+  .v-1 .who { flex:1; min-width:0; font-family:var(--mono); font-size:9.5px; color:var(--muted);
+    text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .v-msg { font-size:12px; line-height:1.4; font-weight:500; }
+  /* every violation cites the rule that produced it */
+  .v-rule { display:flex; gap:6px; padding:5px 7px; background:var(--void); border:1px solid var(--line);
+    border-radius:3px; }
+  .v-rule i { flex:none; font-style:normal; font-family:var(--mono); font-size:9px; color:var(--gold); }
+  .v-rule p { flex:1; min-width:0; font-family:var(--mono); font-size:9px; line-height:1.5; color:var(--muted); }
+  .v-fix { justify-self:start; height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px;
+    border-radius:4px; background:var(--elev); border:1px solid var(--line); color:var(--text);
+    font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+
+  .nav { position:absolute; left:0; right:0; bottom:0; height:53px; background:rgba(12,14,18,.95);
+    border-top:1px solid var(--line); padding:4px 4px 0; display:flex; gap:2px; }
+  .nav button { flex:1; min-height:44px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; border:0; background:transparent; border-radius:4px; color:var(--muted); }
+  .nav button.on { background:var(--surface); color:var(--gold); }
+  .nav svg { width:16px; height:16px; }
+  .nav span { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+  .nav .pip { position:absolute; top:6px; margin-left:16px; width:14px; height:14px; border-radius:50%;
+    background:var(--danger); color:#fff; font-family:var(--mono); font-size:8px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;header class=&quot;appbar&quot;&gt;
+    &lt;div class=&quot;b&quot;&gt;TRENCHLINE&lt;/div&gt;
+    &lt;div class=&quot;r&quot;&gt;&lt;i&gt;&lt;/i&gt;TrenchLine v1 ▾&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;wrap&quot;&gt;
+
+    &lt;section class=&quot;verdict&quot;&gt;
+      &lt;div class=&quot;verdict-1&quot;&gt;
+        &lt;i&gt;!&lt;/i&gt;
+        &lt;h2&gt;NOT LEGAL&lt;/h2&gt;
+        &lt;span&gt;5 errors · 1 warning&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;p&gt;&lt;b&gt;Al-Qarn Rihla&lt;/b&gt; · Iron Sultanate · The House of Wisdom · &lt;b&gt;1365 / 1320 👑&lt;/b&gt; · &lt;b&gt;11 / 9 ☼&lt;/b&gt;&lt;/p&gt;
+    &lt;/section&gt;
+
+    &lt;div class=&quot;grp&quot;&gt;&lt;span&gt;Errors&lt;/span&gt;&lt;hr&gt;&lt;/div&gt;
+
+    &lt;article class=&quot;v&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;over-budget-ducats&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;warband&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;Over budget by 45 Ducats (1365 of 1320).&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;v&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;over-budget-glory&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;warband&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;Over budget by 2 Glory (11 of 9).&lt;/div&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;v&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;variant-forbids&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;2 × Janissary&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;The House of Wisdom cannot include Janissaries.&lt;/div&gt;
+      &lt;div class=&quot;v-rule&quot;&gt;&lt;i&gt;§&lt;/i&gt;&lt;p&gt;&lt;b&gt;Private Venture&lt;/b&gt; — A House of Wisdom Warband cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins.&lt;/p&gt;&lt;/div&gt;
+      &lt;span class=&quot;v-fix&quot;&gt;Remove both →&lt;/span&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;v&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;unit-max&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;Lion of Jabir&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;Lion of Jabir: 4 taken, limit is 3.&lt;/div&gt;
+      &lt;div class=&quot;v-rule&quot;&gt;&lt;i&gt;§&lt;/i&gt;&lt;p&gt;&lt;b&gt;Pride of Jabir&lt;/b&gt; — 0–3 Lion of Jabir&lt;/p&gt;&lt;/div&gt;
+      &lt;span class=&quot;v-fix&quot;&gt;Show all 4 →&lt;/span&gt;
+    &lt;/article&gt;
+
+    &lt;article class=&quot;v&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;wargear-restricted&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;Nasir, the Inaccurate&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;Kavass cannot take Reinforced Armour — ELITE only.&lt;/div&gt;
+      &lt;div class=&quot;v-rule&quot;&gt;&lt;i&gt;§&lt;/i&gt;&lt;p&gt;Armoury Table — &lt;b&gt;ELITE only&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;
+      &lt;span class=&quot;v-fix&quot;&gt;Open warrior →&lt;/span&gt;
+    &lt;/article&gt;
+
+    &lt;div class=&quot;grp&quot;&gt;&lt;span&gt;Warnings&lt;/span&gt;&lt;hr&gt;&lt;/div&gt;
+
+    &lt;article class=&quot;v warn&quot;&gt;
+      &lt;div class=&quot;v-1&quot;&gt;&lt;span class=&quot;v-code&quot;&gt;unparsed-restriction&lt;/span&gt;&lt;span class=&quot;who&quot;&gt;Jawhar al-Sari&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;v-msg&quot;&gt;Combat Helmet: “Headgear” — check this by hand, TrenchLine cannot verify it yet.&lt;/div&gt;
+      &lt;div class=&quot;v-rule&quot;&gt;&lt;i&gt;§&lt;/i&gt;&lt;p&gt;A restriction we cannot read is still shown, verbatim — never silently dropped.&lt;/p&gt;&lt;/div&gt;
+    &lt;/article&gt;
+
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;nav&quot;&gt;
+    &lt;button class=&quot;on&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;Roster&lt;/span&gt;&lt;i class=&quot;pip&quot;&gt;5&lt;/i&gt;
+    &lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 17.5 3 6V3h3l11.5 11.5&quot;/&gt;&lt;path d=&quot;m13 19 6-6&quot;/&gt;&lt;path d=&quot;M19 3h2v2l-9 9&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Play&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z&quot;/&gt;&lt;path d=&quot;M4 22v-7&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Camp&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Dir&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 19.5A2.5 2.5 0 0 1 6.5 17H20&quot;/&gt;&lt;path d=&quot;M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Codex&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D4AF37&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;13.5&quot; cy=&quot;6.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;8.5&quot; cy=&quot;7.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;6.5&quot; cy=&quot;12.5&quot; r=&quot;1.5&quot;/&gt;&lt;path d=&quot;M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Theme&lt;/span&gt;&lt;/button&gt;
+    &lt;button style=&quot;color:#E53935;&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#E53935&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M18 11a6 6 0 0 0-12 0v3a6 6 0 1 0 12 0z&quot;/&gt;&lt;path d=&quot;M3 13h4M17 13h4&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Bug&lt;/span&gt;&lt;/button&gt;
+  &lt;/nav&gt;
+
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Play mode — table HUD</b>PlayHUD.dc.html &middot; 375&times;812</figcaption>
+<iframe width="375" height="812" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:812px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+           border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+
+  /* round bar — pinned, always answers &quot;whose turn, which round&quot; */
+  .round { height:52px; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--void);
+    border-bottom:1px solid var(--line); }
+  .round .rn { flex:none; display:grid; place-items:center; width:38px; height:38px; border-radius:4px;
+    background:var(--elev); border:1px solid var(--gold); }
+  .round .rn b { font-family:var(--mono); font-size:15px; font-weight:700; color:var(--gold); line-height:1; }
+  .round .rn span { font-family:var(--mono); font-size:7px; letter-spacing:.1em; color:var(--muted); margin-top:2px; }
+  .round .mid { flex:1; min-width:0; }
+  .round .mid b { display:block; font-family:var(--gothic); font-weight:700; font-size:13px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .round .mid span { display:block; margin-top:2px; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .round .end { flex:none; height:36px; padding:0 12px; display:flex; align-items:center; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); }
+
+  /* activation queue — who still has to act, one glance */
+  .queue { padding:9px 12px; border-bottom:1px solid var(--line); background:var(--surface); }
+  .queue h4 { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); }
+  .queue .strip { display:flex; gap:5px; margin-top:6px; }
+  .qc { flex:none; height:44px; min-width:44px; padding:0 9px; border-radius:4px; display:grid;
+    place-items:center; background:var(--void); border:1px solid var(--gold); }
+  .qc.done { border-color:var(--line); opacity:.5; }
+  .qc.now { background:var(--gold); border-color:var(--gold); }
+  .qc b { font-family:var(--gothic); font-size:11px; font-weight:700; line-height:1.1; }
+  .qc.now b { color:#000; }
+  .qc span { font-family:var(--mono); font-size:8px; color:var(--muted); margin-top:1px; }
+  .qc.now span { color:rgba(0,0,0,.65); }
+
+  .pad { padding:12px; }
+
+  .card { background:var(--surface); border:2px solid var(--gold); border-radius:6px; overflow:hidden; }
+  .c-hd { padding:11px 12px; background:var(--void); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:9px; }
+  .c-hd .who { flex:1; min-width:0; }
+  .c-hd .who b { display:flex; align-items:center; gap:6px; font-family:var(--gothic); font-weight:700;
+    font-size:15px; line-height:1.2; }
+  .tag { flex:none; height:16px; padding:0 5px; display:inline-flex; align-items:center; border-radius:2px;
+    background:#7C4DFF; color:#fff; font-family:var(--mono); font-size:8.5px; font-weight:800; letter-spacing:.05em; }
+  .c-hd .who span { display:block; margin-top:3px; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .act { flex:none; height:44px; padding:0 14px; display:flex; align-items:center; gap:6px; border-radius:4px;
+    background:var(--gold); color:#000; font-family:var(--mono); font-size:11px; font-weight:800;
+    letter-spacing:.07em; text-transform:uppercase; }
+
+  .c-bd { padding:12px; display:grid; gap:11px; }
+
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:7px 3px; text-align:center; }
+  .stats div span { display:block; font-family:var(--mono); font-size:8.5px; letter-spacing:.07em; color:var(--muted); }
+  .stats div strong { display:block; font-family:var(--mono); font-size:15px; font-weight:700; line-height:1.35; }
+
+  /* trackers — 44px controls, right-hand thumb column */
+  .track { background:rgba(32,36,46,.6); border:1px solid rgba(50,56,70,.7); border-radius:4px;
+    padding:10px 11px; display:grid; gap:10px; }
+  .tr { display:flex; align-items:center; gap:10px; }
+  .tr .lbl { flex:1; min-width:0; display:flex; align-items:center; gap:6px; font-family:var(--mono);
+    font-size:11px; font-weight:700; letter-spacing:.05em; }
+  .tr .lbl svg { width:16px; height:16px; flex:none; }
+  .stepper { flex:none; display:flex; align-items:center; gap:6px; }
+  .stepper .b { width:44px; height:44px; border-radius:4px; background:var(--surface);
+    border:1px solid var(--line); display:grid; place-items:center; font-size:20px; font-weight:600;
+    color:var(--text); line-height:1; }
+  .stepper .n { min-width:56px; text-align:center; font-family:var(--mono); font-size:17px; font-weight:700; }
+  .pips { display:flex; gap:4px; margin-top:-2px; }
+  .pips i { flex:1; height:6px; border-radius:2px; background:var(--void); border:1px solid var(--line); }
+  .pips i.on { background:var(--danger); border-color:var(--danger); }
+
+  /* status — segmented, 44px, one tap */
+  .status { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .status div { height:44px; display:grid; place-items:center; border-radius:4px; background:var(--void);
+    border:1px solid var(--line); font-family:var(--mono); font-size:10.5px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+  .status div.on { background:var(--ok); border-color:var(--ok); color:#fff; }
+
+  .attack { height:52px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:4px;
+    background:var(--elev); border:1px solid rgba(212,175,55,.5); color:var(--gold);
+    font-family:var(--mono); font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .attack svg { width:16px; height:16px; }
+
+  .dice { margin-top:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .dice div { height:44px; display:grid; place-items:center; border-radius:4px; background:var(--surface);
+    border:1px solid var(--line); font-family:var(--mono); font-size:11px; font-weight:700; color:var(--muted); }
+
+  .nav { position:absolute; left:0; right:0; bottom:0; height:53px; background:rgba(12,14,18,.95);
+    border-top:1px solid var(--line); padding:4px 4px 0; display:flex; gap:2px; }
+  .nav button { flex:1; min-height:44px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; border:0; background:transparent; border-radius:4px; color:var(--muted); }
+  .nav button.on { background:var(--surface); color:var(--gold); }
+  .nav svg { width:16px; height:16px; }
+  .nav span { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;div class=&quot;round&quot;&gt;
+    &lt;div class=&quot;rn&quot;&gt;&lt;b&gt;3&lt;/b&gt;&lt;span&gt;RND&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;mid&quot;&gt;
+      &lt;b&gt;Al-Qarn Rihla&lt;/b&gt;
+      &lt;span&gt;3 of 11 activated · 4 blood on the table&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;end&quot;&gt;End round&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;queue&quot;&gt;
+    &lt;h4&gt;To activate&lt;/h4&gt;
+    &lt;div class=&quot;strip&quot;&gt;
+      &lt;div class=&quot;qc now&quot;&gt;&lt;b&gt;Al-Qahhar&lt;/b&gt;&lt;span&gt;ELITE&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;qc&quot;&gt;&lt;b&gt;Kasim&lt;/b&gt;&lt;span&gt;LEADER&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;qc&quot;&gt;&lt;b&gt;Idris&lt;/b&gt;&lt;span&gt;ELITE&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;qc done&quot;&gt;&lt;b&gt;Rafiq&lt;/b&gt;&lt;span&gt;ACTED&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;qc done&quot;&gt;&lt;b&gt;Nasir&lt;/b&gt;&lt;span&gt;ACTED&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;pad&quot;&gt;
+    &lt;div class=&quot;card bevel&quot;&gt;
+
+      &lt;div class=&quot;c-hd&quot;&gt;
+        &lt;div class=&quot;who&quot;&gt;
+          &lt;b&gt;&lt;span class=&quot;tag&quot;&gt;Elite&lt;/span&gt;Al-Qahhar&lt;/b&gt;
+          &lt;span&gt;Favoured Brazen Bull · Lost Arm [26]&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;act&quot;&gt;✓ Activate&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;c-bd&quot;&gt;
+
+        &lt;div class=&quot;stats&quot;&gt;
+          &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+2&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−3&lt;/strong&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;60&lt;/strong&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;track&quot;&gt;
+          &lt;div class=&quot;tr&quot;&gt;
+            &lt;div class=&quot;lbl&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#E53935&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z&quot;/&gt;&lt;/svg&gt;
+              WOUNDS
+            &lt;/div&gt;
+            &lt;div class=&quot;stepper&quot;&gt;&lt;div class=&quot;b&quot;&gt;−&lt;/div&gt;&lt;div class=&quot;n&quot;&gt;2 / 3&lt;/div&gt;&lt;div class=&quot;b&quot;&gt;+&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;tr&quot;&gt;
+            &lt;div class=&quot;lbl&quot;&gt;
+              &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;#E53935&quot; stroke=&quot;#E53935&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z&quot;/&gt;&lt;/svg&gt;
+              BLOOD
+            &lt;/div&gt;
+            &lt;div class=&quot;stepper&quot;&gt;&lt;div class=&quot;b&quot;&gt;−&lt;/div&gt;&lt;div class=&quot;n&quot; style=&quot;color:var(--danger);&quot;&gt;3 / 6&lt;/div&gt;&lt;div class=&quot;b&quot;&gt;+&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;pips&quot;&gt;&lt;i class=&quot;on&quot;&gt;&lt;/i&gt;&lt;i class=&quot;on&quot;&gt;&lt;/i&gt;&lt;i class=&quot;on&quot;&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;status&quot;&gt;
+          &lt;div class=&quot;on&quot;&gt;Active&lt;/div&gt;
+          &lt;div&gt;Downed&lt;/div&gt;
+          &lt;div&gt;Out&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;attack&quot;&gt;
+          &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;6&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;
+          Attack &amp;amp; injury roll
+        &lt;/div&gt;
+
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;dice&quot;&gt;
+      &lt;div&gt;2D6&lt;/div&gt;&lt;div&gt;3D6&lt;/div&gt;&lt;div&gt;+1 DICE&lt;/div&gt;&lt;div&gt;RISKY&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;nav&quot;&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Roster&lt;/span&gt;&lt;/button&gt;
+    &lt;button class=&quot;on&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 17.5 3 6V3h3l11.5 11.5&quot;/&gt;&lt;path d=&quot;m13 19 6-6&quot;/&gt;&lt;path d=&quot;M19 3h2v2l-9 9&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Play&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z&quot;/&gt;&lt;path d=&quot;M4 22v-7&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Camp&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Dir&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 19.5A2.5 2.5 0 0 1 6.5 17H20&quot;/&gt;&lt;path d=&quot;M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Codex&lt;/span&gt;&lt;/button&gt;
+    &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D4AF37&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;13.5&quot; cy=&quot;6.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;8.5&quot; cy=&quot;7.5&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;6.5&quot; cy=&quot;12.5&quot; r=&quot;1.5&quot;/&gt;&lt;path d=&quot;M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Theme&lt;/span&gt;&lt;/button&gt;
+    &lt;button style=&quot;color:#E53935;&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#E53935&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M18 11a6 6 0 0 0-12 0v3a6 6 0 1 0 12 0z&quot;/&gt;&lt;path d=&quot;M3 13h4M17 13h4&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Bug&lt;/span&gt;&lt;/button&gt;
+  &lt;/nav&gt;
+
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Warrior card — expanded</b>UnitCard.dc.html &middot; 375&times;980</figcaption>
+<iframe width="375" height="980" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --ok:#4E9A6E;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:980px; overflow:hidden; background:var(--void);
+    color:var(--text); font-family:var(--sans); padding:12px; -webkit-font-smoothing:antialiased;
+  }
+  .tl-root .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+                    border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+  .card { background:var(--surface); border:1px solid var(--gold); border-radius:6px; overflow:hidden;
+    box-shadow:0 0 0 1px rgba(212,175,55,.3), 0 8px 24px rgba(0,0,0,.5); }
+
+  /* header — UnitCard.tsx p-3.5, bg #20242E, border-b #323846 */
+  .hd { padding:14px; background:var(--elev); border-bottom:1px solid rgba(212,175,55,.4);
+    display:flex; align-items:flex-start; gap:10px; }
+  .hd-l { flex:1; min-width:0; display:flex; gap:9px; }
+  .role { flex:none; margin-top:2px; height:17px; padding:0 6px; display:inline-flex; align-items:center;
+    gap:3px; border-radius:3px; background:var(--gold); color:#000; font-family:var(--mono);
+    font-size:9px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .who h3 { font-family:var(--gothic); font-weight:700; font-size:16px; line-height:1.25; color:var(--gold); }
+  .who p { margin-top:3px; font-family:var(--mono); font-size:10px; color:var(--muted); }
+  .who p b { color:var(--text); font-weight:600; }
+  .hd-r { flex:none; display:flex; align-items:center; gap:7px; }
+  .cost { display:grid; gap:2px; text-align:right; }
+  .cost b { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--gold); }
+  .cost i { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold-hi); font-style:normal; }
+  .kebab { width:30px; height:30px; border-radius:4px; background:var(--surface); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--text); }
+
+  .bd { padding:14px; display:grid; gap:11px; }
+
+  .titles { display:flex; flex-wrap:wrap; gap:4px; }
+  .title { height:19px; padding:0 6px; display:inline-flex; align-items:center; gap:4px; border-radius:3px;
+    background:var(--elev); border:1px solid rgba(212,175,55,.5); color:var(--gold);
+    font-family:var(--mono); font-size:9.5px; }
+  .quote { padding:6px 9px; background:var(--void); border-left:2px solid var(--gold); border-radius:0 3px 3px 0;
+    font-family:Georgia,serif; font-style:italic; font-size:11px; line-height:1.4; color:var(--muted); }
+
+  /* statline — the most-read element. Five cells; the app&#x27;s four plus base size. */
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:7px 4px; text-align:center; }
+  .stats div span { display:block; font-family:var(--mono); font-size:9px; letter-spacing:.07em; color:var(--muted); }
+  .stats div strong { display:block; font-family:var(--mono); font-size:16px; font-weight:700; line-height:1.35; }
+  .stats div em { display:block; font-family:var(--mono); font-size:8px; font-style:normal; color:var(--ok); margin-top:1px; }
+
+  /* provenance — new. Every number can say where it came from. */
+  .prov { display:flex; align-items:center; gap:7px; padding:6px 8px; background:rgba(78,154,110,.08);
+    border:1px solid rgba(78,154,110,.35); border-radius:4px; }
+  .prov .tick { flex:none; width:15px; height:15px; border-radius:50%; background:rgba(78,154,110,.2);
+    color:var(--ok); display:flex; align-items:center; justify-content:center; font-size:9px; }
+  .prov p { flex:1; min-width:0; font-family:var(--mono); font-size:9px; line-height:1.4; color:var(--muted); }
+  .prov p b { color:var(--ok); font-weight:600; }
+  .prov a { flex:none; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--ok); text-decoration:none; }
+
+  .sec { display:grid; gap:6px; }
+  .sec &gt; h4 { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .sec &gt; h4 svg { width:12px; height:12px; }
+
+  .gear { display:flex; align-items:center; gap:8px; padding:6px 8px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; }
+  .gear.glory { border-color:rgba(229,193,88,.55); background:rgba(229,193,88,.07); }
+  .gear-m { flex:1; min-width:0; }
+  .gear-m b { display:block; font-size:11.5px; font-weight:600; line-height:1.3; }
+  .gear-m span { display:block; margin-top:2px; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .gear-c { flex:none; font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--gold); }
+  .gear.glory .gear-c { color:var(--gold-hi); }
+  .kw { display:inline-block; margin-right:3px; padding:0 4px; border-radius:2px; background:var(--elev);
+    border:1px solid var(--line); font-family:var(--mono); font-size:8.5px; letter-spacing:.04em; color:var(--text); }
+
+  .abil { padding:7px 8px; background:rgba(32,36,46,.6); border:1px solid rgba(50,56,70,.6); border-radius:4px; }
+  .abil &gt; div { display:flex; align-items:center; justify-content:space-between; gap:6px;
+    font-family:var(--mono); font-size:11px; font-weight:600; color:var(--gold); }
+  .abil &gt; div em { font-family:var(--mono); font-size:9px; font-style:normal; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--muted); }
+  .abil p { margin-top:5px; padding-top:5px; border-top:1px solid rgba(50,56,70,.5);
+    font-size:10.5px; line-height:1.45; color:var(--muted); }
+
+  .pills { display:flex; flex-wrap:wrap; gap:4px; }
+  .pill { height:19px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    background:var(--void); border:1px solid var(--line); font-family:var(--mono); font-size:9.5px; }
+  .pill b { color:var(--gold); margin-left:3px; }
+
+  .scar { padding:8px; background:rgba(139,0,0,.12); border:1px solid rgba(139,0,0,.4); border-radius:4px; display:grid; gap:5px; }
+  .scar &gt; span { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.05em; color:var(--danger); }
+  .scar .pill { background:rgba(139,0,0,.2); border-color:rgba(139,0,0,.5); color:var(--danger); }
+
+  /* footer — UnitCard.tsx p-2, grid-cols-3, but at 44px so it is actually tappable */
+  .ft { padding:8px; background:var(--elev); border-top:1px solid var(--line);
+    display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .ft button { height:44px; display:flex; align-items:center; justify-content:center; gap:5px;
+    background:var(--surface); border:1px solid var(--line); border-radius:4px; color:var(--muted);
+    font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .ft button svg { width:13px; height:13px; }
+  .ft button.gold { color:var(--gold); border-color:rgba(212,175,55,.5); }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+  &lt;div class=&quot;card bevel&quot;&gt;
+
+    &lt;div class=&quot;hd&quot;&gt;
+      &lt;div class=&quot;hd-l&quot;&gt;
+        &lt;span class=&quot;role&quot;&gt;♛ Leader&lt;/span&gt;
+        &lt;div class=&quot;who&quot;&gt;
+          &lt;h3&gt;Kasim bin Malik&lt;/h3&gt;
+          &lt;p&gt;Base profile: &lt;b&gt;Jabirean Alchemist&lt;/b&gt; · 3 XP&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;hd-r&quot;&gt;
+        &lt;div class=&quot;cost&quot;&gt;&lt;b&gt;194 👑&lt;/b&gt;&lt;i&gt;2 ☼&lt;/i&gt;&lt;/div&gt;
+        &lt;div class=&quot;kebab&quot;&gt;⋮&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;bd&quot;&gt;
+
+      &lt;div class=&quot;titles&quot;&gt;
+        &lt;span class=&quot;title&quot;&gt;🏆 The Living Engineer&lt;/span&gt;
+        &lt;span class=&quot;title&quot;&gt;🏆 Master of Construction&lt;/span&gt;
+        &lt;span class=&quot;title&quot;&gt;🏆 Al-Sahir al-Nahas&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;quote&quot;&gt;“In these wastes, we use the tools we have. The Sultanate gave us a Wall; I gave us a monster made from those who tried to tear it down.”&lt;/div&gt;
+
+      &lt;div class=&quot;stats&quot;&gt;
+        &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;em&gt;Infantry&lt;/em&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong style=&quot;color:var(--gold);&quot;&gt;+3&lt;/strong&gt;&lt;em&gt;+1 skill&lt;/em&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−2&lt;/strong&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;32&lt;/strong&gt;&lt;em&gt;mm&lt;/em&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;prov&quot;&gt;
+        &lt;i class=&quot;tick&quot;&gt;✓&lt;/i&gt;
+        &lt;p&gt;Base &lt;b&gt;Fawkstrot11/TrenchCrusade @1b463a8&lt;/b&gt; · Iron Sultanate.cat — confirmed against &lt;b&gt;Warbands of Trench Crusade&lt;/b&gt; p.93&lt;/p&gt;
+        &lt;a href=&quot;#&quot;&gt;Why?&lt;/a&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sec&quot;&gt;
+        &lt;h4&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 17.5 3 6V3h3l11.5 11.5&quot;/&gt;&lt;path d=&quot;m13 19 6-6&quot;/&gt;&lt;path d=&quot;M19 3h2v2l-9 9&quot;/&gt;&lt;/svg&gt;Weapons (2)&lt;/h4&gt;
+        &lt;div class=&quot;gear&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Automatic Rifle&lt;/b&gt;
+            &lt;span&gt;2-Handed · 24&quot; · &lt;i class=&quot;kw&quot;&gt;ASSAULT&lt;/i&gt;&lt;i class=&quot;kw&quot;&gt;AUTOMATIC 2&lt;/i&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;40 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;gear&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Sword/Axe&lt;/b&gt;
+            &lt;span&gt;1-Handed · Melee · &lt;i class=&quot;kw&quot;&gt;CRITICAL&lt;/i&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;4 👑&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sec&quot;&gt;
+        &lt;h4&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;/svg&gt;Protection &amp;amp; Gear (4)&lt;/h4&gt;
+        &lt;div class=&quot;gear&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Alchemist Armour&lt;/b&gt;
+            &lt;span&gt;Armour · &lt;i class=&quot;kw&quot;&gt;−2 INJURY&lt;/i&gt;&lt;i class=&quot;kw&quot;&gt;NEGATE FIRE&lt;/i&gt;&lt;i class=&quot;kw&quot;&gt;NEGATE GAS&lt;/i&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;50 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;gear&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Cloak of Alamut&lt;/b&gt;
+            &lt;span&gt;Equipment · Blend In — worsens enemy Ranged Modifier&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;25 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;gear&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Secrets of Takwin&lt;/b&gt;
+            &lt;span&gt;Campaign · binds this Alchemist to a Takwin creature&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;20 👑&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;gear glory&quot;&gt;
+          &lt;div class=&quot;gear-m&quot;&gt;
+            &lt;b&gt;Sniper Scope &lt;span style=&quot;color:var(--gold-hi);font-family:var(--mono);font-size:9px;&quot;&gt;GLORY ITEM&lt;/span&gt;&lt;/b&gt;
+            &lt;span&gt;Equipment · Enhanced Accuracy&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;gear-c&quot;&gt;2 ☼&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sec&quot;&gt;
+        &lt;h4&gt;Innate Abilities (2)&lt;/h4&gt;
+        &lt;div class=&quot;abil&quot;&gt;
+          &lt;div&gt;&lt;span&gt;Mastery of the Elements&lt;/span&gt;&lt;em&gt;Hide ▲&lt;/em&gt;&lt;/div&gt;
+          &lt;p&gt;When this model is deployed for the first time, choose FIRE, GAS or SHRAPNEL. All its weapons gain that keyword until the Elemental Change action is taken.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;abil&quot;&gt;
+          &lt;div&gt;&lt;span&gt;Elemental Change&lt;/span&gt;&lt;em&gt;Rule ▼&lt;/em&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sec&quot;&gt;
+        &lt;h4&gt;Advancements (3)&lt;/h4&gt;
+        &lt;div class=&quot;pills&quot;&gt;
+          &lt;span class=&quot;pill&quot;&gt;Experience&lt;/span&gt;
+          &lt;span class=&quot;pill&quot;&gt;Ranged Proficiency &lt;b&gt;[7]&lt;/b&gt;&lt;/span&gt;
+          &lt;span class=&quot;pill&quot;&gt;Assassinate &lt;b&gt;[4]&lt;/b&gt;&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;scar&quot;&gt;
+        &lt;span&gt;⚠ Battle Scars &amp;amp; Trauma&lt;/span&gt;
+        &lt;div class=&quot;pills&quot;&gt;&lt;span class=&quot;pill&quot;&gt;Leg Wound &lt;b&gt;[31]&lt;/b&gt; — Movement reduced to 4&quot;&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;div class=&quot;ft&quot;&gt;
+      &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19 17V5a2 2 0 0 0-2-2H4&quot;/&gt;&lt;path d=&quot;M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H10a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2h4&quot;/&gt;&lt;/svg&gt;Bio&lt;/button&gt;
+      &lt;button&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D4AF37&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z&quot;/&gt;&lt;/svg&gt;Skills&lt;/button&gt;
+      &lt;button class=&quot;gold&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 12h14M12 5v14&quot;/&gt;&lt;/svg&gt;Equip&lt;/button&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Ruleset switch — reconciliation</b>Rulesets.dc.html &middot; 375&times;940</figcaption>
+<iframe width="375" height="940" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:375px; height:940px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); position:relative; -webkit-font-smoothing:antialiased;
+  }
+  .hd { padding:12px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start;
+    justify-content:space-between; gap:10px; }
+  .hd h2 { font-family:var(--gothic); font-weight:700; font-size:16px; letter-spacing:.05em; }
+  .hd p { margin-top:4px; font-size:11px; line-height:1.45; color:var(--muted); }
+  .x { flex:none; width:44px; height:44px; margin:-8px -8px 0 0; display:grid; place-items:center;
+    color:var(--muted); font-size:20px; }
+
+  .pad { padding:12px; display:grid; gap:10px; }
+
+  .rs { border-radius:6px; padding:12px; background:var(--surface); border:1px solid var(--line); display:grid; gap:9px; }
+  .rs.on { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); background:var(--elev); }
+  .rs-1 { display:flex; align-items:flex-start; gap:10px; }
+  .radio { flex:none; width:20px; height:20px; margin-top:1px; border-radius:50%; border:2px solid var(--line);
+    display:grid; place-items:center; }
+  .rs.on .radio { border-color:var(--gold); }
+  .rs.on .radio::after { content:&#x27;&#x27;; width:10px; height:10px; border-radius:50%; background:var(--gold); }
+  .rs-t { flex:1; min-width:0; }
+  .rs-t b { display:flex; align-items:center; gap:6px; font-family:var(--gothic); font-weight:700; font-size:15px; }
+  .rs.on .rs-t b { color:var(--gold); }
+  .tagd { height:16px; padding:0 5px; display:inline-flex; align-items:center; border-radius:2px;
+    background:var(--gold); color:#000; font-family:var(--mono); font-size:8px; font-weight:800; letter-spacing:.07em; }
+  .rs-t span { display:block; margin-top:4px; font-size:11px; line-height:1.45; color:var(--muted); }
+  .prov { display:grid; grid-template-columns:auto 1fr; gap:3px 9px; padding:8px 9px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:9px; }
+  .prov dt { color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .prov dd { color:var(--text); word-break:break-all; }
+
+  .sec { margin-top:2px; display:flex; align-items:center; gap:7px; }
+  .sec span { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--muted); }
+  .sec hr { flex:1; border:0; border-top:1px solid var(--line); }
+
+  /* the reconciliation: what actually changes, named, before you commit */
+  .diff { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .diff &gt; h4 { padding:9px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    font-family:var(--gothic); font-size:13px; font-weight:700; }
+  .diff &gt; h4 em { font-family:var(--mono); font-size:9px; font-style:normal; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); }
+  .diff &gt; div { padding:10px 11px; display:grid; gap:6px; }
+  .d { display:grid; grid-template-columns:66px 1fr; gap:9px; align-items:baseline; }
+  .d dt { font-family:var(--mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .d dd { font-family:var(--mono); font-size:10px; line-height:1.5; }
+  .old { color:var(--muted); text-decoration:line-through; }
+  .new { color:var(--gold); font-weight:700; }
+  .add { color:var(--ok); }
+  .rm  { color:var(--danger); }
+  .cite { margin-top:2px; padding:6px 8px; background:var(--void); border:1px solid var(--line);
+    border-radius:3px; font-family:var(--mono); font-size:9px; line-height:1.55; color:var(--muted); }
+  .cite b { color:var(--gold); }
+
+  .impact { padding:10px 11px; background:rgba(255,179,0,.08); border:1px solid rgba(255,179,0,.35);
+    border-radius:5px; display:flex; gap:9px; }
+  .impact i { flex:none; font-style:normal; color:var(--warn); font-size:12px; line-height:1.4; }
+  .impact div { flex:1; min-width:0; }
+  .impact b { display:block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--warn); }
+  .impact p { margin-top:4px; font-size:11px; line-height:1.5; color:var(--muted); }
+  .impact p em { color:var(--text); font-style:normal; font-weight:600; }
+
+  .foot { position:absolute; left:0; right:0; bottom:0; padding:11px 12px 14px; background:var(--void);
+    border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .foot div { height:48px; display:grid; place-items:center; border-radius:4px; font-family:var(--mono);
+    font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .foot .ghost { background:var(--elev); border:1px solid var(--line); color:var(--muted); }
+  .foot .go { background:var(--gold); color:#000; }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;header class=&quot;hd&quot;&gt;
+    &lt;div&gt;
+      &lt;h2&gt;RULESET&lt;/h2&gt;
+      &lt;p&gt;Which set of rules this warband is built and checked against. Switching never edits your roster — it re-derives it and shows you what moved.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;x&quot;&gt;✕&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;pad&quot;&gt;
+
+    &lt;section class=&quot;rs on&quot;&gt;
+      &lt;div class=&quot;rs-1&quot;&gt;
+        &lt;i class=&quot;radio&quot;&gt;&lt;/i&gt;
+        &lt;div class=&quot;rs-t&quot;&gt;
+          &lt;b&gt;TrenchLine v1 &lt;span class=&quot;tagd&quot;&gt;DEFAULT&lt;/span&gt;&lt;/b&gt;
+          &lt;span&gt;BattleScribe catalogues, cross-checked against the official rulebooks, then the Trench Dispatch applied on top. Every field records where it came from.&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;dl class=&quot;prov&quot;&gt;
+        &lt;dt&gt;Base&lt;/dt&gt;&lt;dd&gt;Fawkstrot11/TrenchCrusade @1b463a8&lt;/dd&gt;
+        &lt;dt&gt;Layers&lt;/dt&gt;&lt;dd&gt;dispatch-01 — Trench Dispatch #1, Apr 2026&lt;/dd&gt;
+        &lt;dt&gt;Verified&lt;/dt&gt;&lt;dd&gt;89 units · 389 weapons · 0 unresolved conflicts&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/section&gt;
+
+    &lt;section class=&quot;rs&quot;&gt;
+      &lt;div class=&quot;rs-1&quot;&gt;
+        &lt;i class=&quot;radio&quot;&gt;&lt;/i&gt;
+        &lt;div class=&quot;rs-t&quot;&gt;
+          &lt;b&gt;GitHub Latest&lt;/b&gt;
+          &lt;span&gt;The community catalogues exactly as published, with nothing layered on. Use this when your opponent or tournament plays to the public repo.&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;dl class=&quot;prov&quot;&gt;
+        &lt;dt&gt;Base&lt;/dt&gt;&lt;dd&gt;Fawkstrot11/TrenchCrusade @1b463a8&lt;/dd&gt;
+        &lt;dt&gt;Layers&lt;/dt&gt;&lt;dd&gt;(none)&lt;/dd&gt;
+      &lt;/dl&gt;
+    &lt;/section&gt;
+
+    &lt;div class=&quot;sec&quot;&gt;&lt;span&gt;Switching would change&lt;/span&gt;&lt;hr&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;impact&quot;&gt;
+      &lt;i&gt;▲&lt;/i&gt;
+      &lt;div&gt;
+        &lt;b&gt;11 units · 4 weapons&lt;/b&gt;
+        &lt;p&gt;One warrior in &lt;em&gt;Al-Qarn Rihla&lt;/em&gt; derives from a changed entry: &lt;em&gt;Al-Qahhar&lt;/em&gt; (Brazen Bull). Grenades lose the FUMBLE keyword and Incendiary Grenades drop from 10 👑 back to no listed cost.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;diff&quot;&gt;
+      &lt;h4&gt;Brazen Bull &lt;em&gt;TrenchLine → GitHub&lt;/em&gt;&lt;/h4&gt;
+      &lt;div&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Cost&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;new&quot;&gt;115 👑&lt;/span&gt; → &lt;span class=&quot;old&quot;&gt;100 👑&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Melee&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;new&quot;&gt;+2 DICE&lt;/span&gt; → &lt;span class=&quot;old&quot;&gt;+2 Dice&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Keywords&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;rm&quot;&gt;− FEAR&lt;/span&gt; · &lt;span class=&quot;rm&quot;&gt;− NEGATE SHRAPNEL&lt;/span&gt; · &lt;span class=&quot;add&quot;&gt;+ LIMITED POTENTIAL&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Abilities&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;rm&quot;&gt;− Living Battering Ram ACTION&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;div class=&quot;cite&quot;&gt;&lt;b&gt;§&lt;/b&gt; Trench Dispatch #1, p.10 — “0-1 Brazen Bull · Cost: 115” and “SULTANATE ARTIFICIAL FEAR NEGATE SHRAPNEL STRONG TOUGH”. The Dispatch supersedes the books and the public catalogues.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;diff&quot;&gt;
+      &lt;h4&gt;Yüzbaşı Captain &lt;em&gt;TrenchLine → GitHub&lt;/em&gt;&lt;/h4&gt;
+      &lt;div&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Cost&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;new&quot;&gt;75 👑&lt;/span&gt; → &lt;span class=&quot;old&quot;&gt;70 👑&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;dl class=&quot;d&quot;&gt;&lt;dt&gt;Keywords&lt;/dt&gt;&lt;dd&gt;&lt;span class=&quot;rm&quot;&gt;− ELITE&lt;/span&gt; · &lt;span class=&quot;rm&quot;&gt;− LEADER&lt;/span&gt; · &lt;span class=&quot;rm&quot;&gt;− NEGATE FEAR&lt;/span&gt; · &lt;span class=&quot;rm&quot;&gt;− STRONG&lt;/span&gt;&lt;/dd&gt;&lt;/dl&gt;
+        &lt;div class=&quot;cite&quot;&gt;&lt;b&gt;§&lt;/b&gt; Trench Dispatch #1, p.9. Not in your warband — &lt;em&gt;Private Venture&lt;/em&gt; forbids a Yüzbaşı in a House of Wisdom.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+  &lt;div class=&quot;foot&quot;&gt;
+    &lt;div class=&quot;ghost&quot;&gt;Cancel&lt;/div&gt;
+    &lt;div class=&quot;go&quot;&gt;Switch &amp;amp; re-check&lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+"></iframe>
+</figure>
+<figure>
+<figcaption><b>Desktop — roster + legality rail</b>Desktop.dc.html &middot; 1280&times;800</figcaption>
+<iframe width="1280" height="800" loading="lazy" srcdoc="&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+  .tl-root, .tl-root *, .tl-root *::before, .tl-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .tl-root {
+    --void:#0C0E12; --surface:#161920; --elev:#20242E; --line:#323846;
+    --gold:#D4AF37; --gold-hi:#E5C158; --blood:#8B0000;
+    --text:#ECEFF4; --muted:#8E95A5; --danger:#E53935; --warn:#FFB300; --ok:#4E9A6E;
+    --elite:#7C4DFF; --merc:#00897B;
+    --gothic:&#x27;Cinzel&#x27;,serif; --mono:&#x27;JetBrains Mono&#x27;,ui-monospace,monospace; --sans:&#x27;Inter&#x27;,system-ui,sans-serif;
+    width:1280px; height:800px; overflow:hidden; background:var(--void); color:var(--text);
+    font-family:var(--sans); display:grid; grid-template-rows:52px 1fr; -webkit-font-smoothing:antialiased;
+  }
+  .bevel { border-top:1px solid var(--line); border-left:1px solid var(--line);
+           border-bottom:1px solid var(--void); border-right:1px solid var(--void); }
+
+  .top { display:flex; align-items:center; gap:16px; padding:0 18px; background:var(--void);
+    border-bottom:1px solid var(--line); }
+  .top .brand { font-family:var(--gothic); font-weight:700; font-size:17px; letter-spacing:.16em; color:var(--gold); }
+  .top nav { flex:1; display:flex; gap:4px; }
+  .top nav a { height:34px; padding:0 13px; display:flex; align-items:center; border-radius:4px;
+    font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; }
+  .top nav a.on { background:var(--surface); color:var(--gold); }
+  .rules { display:flex; align-items:center; gap:7px; height:34px; padding:0 11px; background:var(--elev);
+    border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:11px;
+    font-weight:700; letter-spacing:.05em; color:var(--gold); }
+  .rules i { width:7px; height:7px; border-radius:50%; background:var(--ok); }
+  .rules em { font-style:normal; color:var(--muted); font-weight:400; font-size:10px; }
+
+  .cols { display:grid; grid-template-columns:216px 1fr 304px; min-height:0; }
+
+  /* left rail */
+  .side { border-right:1px solid var(--line); background:var(--void); padding:14px 12px; display:grid;
+    gap:8px; align-content:start; }
+  .side h5 { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+  .wbtn { padding:9px 10px; border-radius:4px; background:var(--surface); border:1px solid var(--line); }
+  .wbtn.on { border-color:var(--gold); background:var(--elev); }
+  .wbtn b { display:block; font-family:var(--gothic); font-size:12.5px; font-weight:700; line-height:1.25; }
+  .wbtn.on b { color:var(--gold); }
+  .wbtn span { display:block; margin-top:3px; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .newbtn { height:38px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:4px;
+    background:var(--gold); color:#000; font-family:var(--mono); font-size:10.5px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; margin-top:4px; }
+
+  /* centre */
+  .main { min-width:0; padding:14px 16px; overflow:hidden; }
+  .wbhead { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:14px 16px; }
+  .wbhead .t { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .wbhead .fac { display:flex; align-items:center; gap:7px; font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .wbhead .fac i { width:9px; height:9px; border-radius:50%; background:#76D6D5; }
+  .wbhead h1 { font-family:var(--gothic); font-weight:700; font-size:26px; line-height:1.15; margin-top:6px; }
+  .wbhead .motto { margin-top:7px; padding:4px 9px; background:var(--void); border-left:2px solid var(--gold);
+    border-radius:0 3px 3px 0; font-family:Georgia,serif; font-style:italic; font-size:12px; color:var(--text); }
+  .tools { display:flex; gap:7px; flex:none; }
+  .tools div { height:36px; padding:0 12px; display:flex; align-items:center; gap:6px; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10.5px;
+    font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text); }
+  .tools div.gold { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .purse { margin-top:14px; padding-top:12px; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .cur { display:grid; gap:6px; }
+  .cur .l { display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:11px; }
+  .cur .l span { color:var(--muted); letter-spacing:.06em; text-transform:uppercase; font-weight:700; }
+  .cur .l b { font-weight:700; }
+  .cur .m { height:9px; border-radius:999px; background:var(--void); border:1px solid var(--line); overflow:hidden; }
+  .cur .m i { display:block; height:100%; }
+
+  .filters { display:flex; gap:7px; margin-top:14px; }
+  .chip { height:30px; padding:0 11px; display:inline-flex; align-items:center; gap:5px; border-radius:4px;
+    background:var(--elev); border:1px solid var(--line); font-family:var(--mono); font-size:10px;
+    font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .chip.on { background:var(--gold); border-color:var(--gold); color:#000; }
+
+  .grid { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .u { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .u.lead { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.25); }
+  .u-h { padding:10px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:8px; }
+  .u-h .bg { flex:none; height:17px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    font-family:var(--mono); font-size:8.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .bg.lead { background:var(--gold); color:#000; } .bg.elite { background:var(--elite); color:#fff; }
+  .bg.troop { background:var(--line); color:var(--text); } .bg.merc { background:var(--merc); color:#fff; }
+  .u-h b { flex:1; min-width:0; font-family:var(--gothic); font-size:13.5px; font-weight:700;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .u.lead .u-h b { color:var(--gold); }
+  .u-h .c { flex:none; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); }
+  .u-b { padding:10px 11px; display:grid; gap:8px; }
+  .u-b &gt; p { font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+  .u-b &gt; p b { color:var(--text); }
+  .st { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; background:var(--void);
+    border:1px solid var(--line); border-radius:4px; padding:6px 3px; text-align:center; }
+  .st div span { display:block; font-family:var(--mono); font-size:8px; letter-spacing:.07em; color:var(--muted); }
+  .st div strong { display:block; font-family:var(--mono); font-size:13px; font-weight:700; line-height:1.35; }
+  .gp { display:flex; flex-wrap:wrap; gap:4px; }
+  .gp span { height:19px; padding:0 6px; display:inline-flex; align-items:center; border-radius:3px;
+    background:var(--void); border:1px solid var(--line); font-family:var(--mono); font-size:9px; }
+  .gp span.glory { border-color:rgba(229,193,88,.55); color:var(--gold-hi); }
+
+  /* right rail: the two things the old app never showed */
+  .rail { border-left:1px solid var(--line); background:var(--void); padding:14px 13px; display:grid;
+    gap:12px; align-content:start; }
+  .panel { background:var(--surface); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .panel &gt; h4 { padding:9px 11px; background:var(--elev); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .panel &gt; div { padding:11px; display:grid; gap:9px; }
+  .ok-line { display:flex; align-items:center; gap:8px; }
+  .ok-line i { flex:none; width:18px; height:18px; border-radius:50%; background:rgba(78,154,110,.18);
+    color:var(--ok); display:grid; place-items:center; font-size:10px; font-style:normal; }
+  .ok-line p { flex:1; min-width:0; font-family:var(--mono); font-size:9.5px; line-height:1.5; color:var(--muted); }
+  .ok-line p b { color:var(--text); font-weight:600; }
+  .warnline i { background:rgba(255,179,0,.15); color:var(--warn); }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:4px 9px; font-family:var(--mono); font-size:9.5px; }
+  .kv dt { color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .kv dd { color:var(--text); word-break:break-all; }
+  .swap { height:36px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:4px;
+    background:var(--elev); border:1px solid rgba(212,175,55,.45); color:var(--gold);
+    font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+&lt;/style&gt;
+
+&lt;div class=&quot;tl-root&quot;&gt;
+
+  &lt;header class=&quot;top&quot;&gt;
+    &lt;div class=&quot;brand&quot;&gt;TRENCHLINE&lt;/div&gt;
+    &lt;nav&gt;
+      &lt;a class=&quot;on&quot; href=&quot;#&quot;&gt;Roster&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Play&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Campaign&lt;/a&gt;
+      &lt;a href=&quot;#&quot;&gt;Directory&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Codex&lt;/a&gt;
+    &lt;/nav&gt;
+    &lt;div class=&quot;rules&quot;&gt;&lt;i&gt;&lt;/i&gt;TrenchLine v1 &lt;em&gt;· base 1b463a8 + dispatch-01&lt;/em&gt; ▾&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;cols&quot;&gt;
+
+    &lt;aside class=&quot;side&quot;&gt;
+      &lt;h5&gt;Warbands&lt;/h5&gt;
+      &lt;div class=&quot;wbtn on&quot;&gt;&lt;b&gt;Al-Qarn Rihla&lt;/b&gt;&lt;span&gt;Iron Sultanate · 1320 👑&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;wbtn&quot;&gt;&lt;b&gt;The Iron Crusade of Saint Lazarus&lt;/b&gt;&lt;span&gt;New Antioch · 880 👑&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;newbtn&quot;&gt;+ New warband&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;main class=&quot;main&quot;&gt;
+
+      &lt;section class=&quot;wbhead bevel&quot;&gt;
+        &lt;div class=&quot;t&quot;&gt;
+          &lt;div&gt;
+            &lt;div class=&quot;fac&quot;&gt;&lt;i&gt;&lt;/i&gt;Iron Sultanate · The House of Wisdom&lt;/div&gt;
+            &lt;h1&gt;Al-Qarn Rihla&lt;/h1&gt;
+            &lt;div class=&quot;motto&quot;&gt;“The Wall may forget, but the Copper remembers!”&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;tools&quot;&gt;
+            &lt;div&gt;Chronicle&lt;/div&gt;&lt;div&gt;Stash (2)&lt;/div&gt;&lt;div&gt;Export&lt;/div&gt;&lt;div class=&quot;gold&quot;&gt;+ Recruit&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;purse&quot;&gt;
+          &lt;div class=&quot;cur&quot;&gt;
+            &lt;div class=&quot;l&quot;&gt;&lt;span&gt;👑 Ducats&lt;/span&gt;&lt;b style=&quot;color:var(--gold);&quot;&gt;1320 / 1320&lt;/b&gt;&lt;/div&gt;
+            &lt;div class=&quot;m&quot;&gt;&lt;i style=&quot;width:100%;background:var(--gold);&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;cur&quot;&gt;
+            &lt;div class=&quot;l&quot;&gt;&lt;span&gt;☼ Glory&lt;/span&gt;&lt;b style=&quot;color:var(--gold-hi);&quot;&gt;6 / 9&lt;/b&gt;&lt;/div&gt;
+            &lt;div class=&quot;m&quot;&gt;&lt;i style=&quot;width:66.7%;background:var(--gold-hi);&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;div class=&quot;filters&quot;&gt;
+        &lt;div class=&quot;chip on&quot;&gt;All 11&lt;/div&gt;&lt;div class=&quot;chip&quot;&gt;Leader 1&lt;/div&gt;&lt;div class=&quot;chip&quot;&gt;Elite 3&lt;/div&gt;
+        &lt;div class=&quot;chip&quot;&gt;Troop 6&lt;/div&gt;&lt;div class=&quot;chip&quot;&gt;Merc 1&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;grid&quot;&gt;
+
+        &lt;article class=&quot;u lead&quot;&gt;
+          &lt;div class=&quot;u-h&quot;&gt;&lt;span class=&quot;bg lead&quot;&gt;♛ Leader&lt;/span&gt;&lt;b&gt;Kasim bin Malik&lt;/b&gt;&lt;span class=&quot;c&quot;&gt;194 👑 · 2 ☼&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;u-b&quot;&gt;
+            &lt;p&gt;Base &lt;b&gt;Jabirean Alchemist&lt;/b&gt; · The Living Engineer · 3 XP&lt;/p&gt;
+            &lt;div class=&quot;st&quot;&gt;
+              &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong style=&quot;color:var(--gold);&quot;&gt;+3&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−2&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;32&lt;/strong&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;gp&quot;&gt;
+              &lt;span&gt;Automatic Rifle 40&lt;/span&gt;&lt;span&gt;Sword/Axe 4&lt;/span&gt;&lt;span&gt;Alchemist Armour 50&lt;/span&gt;
+              &lt;span&gt;Cloak of Alamut 25&lt;/span&gt;&lt;span&gt;Secrets of Takwin 20&lt;/span&gt;&lt;span class=&quot;glory&quot;&gt;Sniper Scope 2 ☼&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;u&quot;&gt;
+          &lt;div class=&quot;u-h&quot;&gt;&lt;span class=&quot;bg elite&quot;&gt;Elite&lt;/span&gt;&lt;b&gt;Al-Qahhar, the Crippled&lt;/b&gt;&lt;span class=&quot;c&quot;&gt;250 👑&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;u-b&quot;&gt;
+            &lt;p&gt;Base &lt;b&gt;Favoured Brazen Bull&lt;/b&gt; · Lost Arm [26]&lt;/p&gt;
+            &lt;div class=&quot;st&quot;&gt;
+              &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+0&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+2&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−3&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;60&lt;/strong&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;gp&quot;&gt;
+              &lt;span&gt;Flame Cannon 60&lt;/span&gt;&lt;span&gt;Titan Zulfiqar 30&lt;/span&gt;&lt;span&gt;Machine Armour 50&lt;/span&gt;&lt;span&gt;Wind Amulet 10&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;u&quot;&gt;
+          &lt;div class=&quot;u-h&quot;&gt;&lt;span class=&quot;bg elite&quot;&gt;Elite&lt;/span&gt;&lt;b&gt;Al-Masyukh&lt;/b&gt;&lt;span class=&quot;c&quot;&gt;252 👑&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;u-b&quot;&gt;
+            &lt;p&gt;Base &lt;b&gt;Favoured Takwin Homunculus&lt;/b&gt; · 8 stacked options&lt;/p&gt;
+            &lt;div class=&quot;st&quot;&gt;
+              &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−1&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;60&lt;/strong&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;gp&quot;&gt;
+              &lt;span&gt;Massive Size 30&lt;/span&gt;&lt;span&gt;Additional Arm 15&lt;/span&gt;&lt;span&gt;Gargantuan 20&lt;/span&gt;
+              &lt;span&gt;Siege Jezzail 30&lt;/span&gt;&lt;span&gt;Fire Shield 20&lt;/span&gt;&lt;span&gt;+5 more&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;u&quot;&gt;
+          &lt;div class=&quot;u-h&quot;&gt;&lt;span class=&quot;bg merc&quot;&gt;Merc&lt;/span&gt;&lt;b&gt;Jawhar al-Sari&lt;/b&gt;&lt;span class=&quot;c&quot;&gt;4 ☼&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;u-b&quot;&gt;
+            &lt;p&gt;Base &lt;b&gt;Mamluk Faris&lt;/b&gt; · The Gilded Blade&lt;/p&gt;
+            &lt;div class=&quot;st&quot;&gt;
+              &lt;div&gt;&lt;span&gt;MOV&lt;/span&gt;&lt;strong&gt;6&quot;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;RNG&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;MEL&lt;/span&gt;&lt;strong&gt;+1&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;ARM&lt;/span&gt;&lt;strong&gt;−3&lt;/strong&gt;&lt;/div&gt;
+              &lt;div&gt;&lt;span&gt;BASE&lt;/span&gt;&lt;strong&gt;32&lt;/strong&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;gp&quot;&gt;
+              &lt;span&gt;Alchemical Jezzail&lt;/span&gt;&lt;span&gt;Polearm&lt;/span&gt;&lt;span&gt;Shield&lt;/span&gt;&lt;span&gt;Reinforced Armour&lt;/span&gt;&lt;span&gt;Combat Helmet&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+
+      &lt;/div&gt;
+    &lt;/main&gt;
+
+    &lt;aside class=&quot;rail&quot;&gt;
+
+      &lt;section class=&quot;panel&quot;&gt;
+        &lt;h4&gt;Legality &lt;span style=&quot;color:var(--ok);&quot;&gt;LEGAL&lt;/span&gt;&lt;/h4&gt;
+        &lt;div&gt;
+          &lt;div class=&quot;ok-line&quot;&gt;&lt;i&gt;✓&lt;/i&gt;&lt;p&gt;&lt;b&gt;Alchemists&lt;/b&gt; — must include 1–2 Jabirean Alchemists · 2 taken&lt;/p&gt;&lt;/div&gt;
+          &lt;div class=&quot;ok-line&quot;&gt;&lt;i&gt;✓&lt;/i&gt;&lt;p&gt;&lt;b&gt;Pride of Jabir&lt;/b&gt; — 0–3 Lions of Jabir · 1 taken&lt;/p&gt;&lt;/div&gt;
+          &lt;div class=&quot;ok-line&quot;&gt;&lt;i&gt;✓&lt;/i&gt;&lt;p&gt;&lt;b&gt;Private Venture&lt;/b&gt; — no Yüzbaşı, Janissaries or Sultanate Assassins&lt;/p&gt;&lt;/div&gt;
+          &lt;div class=&quot;ok-line&quot;&gt;&lt;i&gt;✓&lt;/i&gt;&lt;p&gt;&lt;b&gt;Budget&lt;/b&gt; — 1320 / 1320 👑 · 6 / 9 ☼&lt;/p&gt;&lt;/div&gt;
+          &lt;div class=&quot;ok-line warnline&quot;&gt;&lt;i&gt;!&lt;/i&gt;&lt;p&gt;&lt;b&gt;Combat Helmet&lt;/b&gt; — “Headgear” cannot be verified automatically. Check by hand.&lt;/p&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;panel&quot;&gt;
+        &lt;h4&gt;Provenance&lt;/h4&gt;
+        &lt;div&gt;
+          &lt;dl class=&quot;kv&quot;&gt;
+            &lt;dt&gt;Ruleset&lt;/dt&gt;&lt;dd&gt;TrenchLine v1 &lt;span style=&quot;color:var(--gold);&quot;&gt;(default)&lt;/span&gt;&lt;/dd&gt;
+            &lt;dt&gt;Base&lt;/dt&gt;&lt;dd&gt;Fawkstrot11/TrenchCrusade @1b463a8&lt;/dd&gt;
+            &lt;dt&gt;Layers&lt;/dt&gt;&lt;dd&gt;dispatch-01&lt;/dd&gt;
+            &lt;dt&gt;Verified&lt;/dt&gt;&lt;dd&gt;89 units · 0 unresolved conflicts&lt;/dd&gt;
+          &lt;/dl&gt;
+          &lt;div class=&quot;swap&quot;&gt;⇄ Compare with GitHub Latest&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+    &lt;/aside&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+"></iframe>
+</figure>
+</div>

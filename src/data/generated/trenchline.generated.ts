@@ -2010,11 +2010,6 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [
         {
-          "id": "8231-771f-29d7-e9cf",
-          "name": "Mubarizun",
-          "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword."
-        },
-        {
           "id": "dispatch01-mubarizun",
           "name": "Mubarizun",
           "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword."

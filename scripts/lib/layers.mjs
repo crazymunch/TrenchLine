@@ -61,8 +61,12 @@ function setPath(obj, dotted, value) {
  * Apply one layer. Returns the ops that could not be applied, so a layer
  * referring to something that no longer exists is reported rather than
  * silently ignored — the usual way an errata transcription rots.
+ *
+ * `notes` collects ops that applied but are worth a human's attention — an
+ * errata line the catalogues have since caught up with, say. Optional, so the
+ * caller that does not care need not pass one.
  */
-export function applyLayer(dataset, layer, provenance) {
+export function applyLayer(dataset, layer, provenance, notes = []) {
   const unresolved = [];
   const source = `${layer.id}:${layer.sourceRef ?? ''}`;
   const stamp = (ref, field) =>
@@ -114,11 +118,28 @@ export function applyLayer(dataset, layer, provenance) {
         stamp(op.target, 'keywords');
         break;
 
-      case 'addAbility':
+      case 'addAbility': {
         target.abilities ??= [];
-        target.abilities.push(op.ability);
+        const i = target.abilities.findIndex(
+          (a) => a.name?.toLowerCase() === op.ability?.name?.toLowerCase());
+        if (i >= 0) {
+          // The catalogues already carry an ability of this name, so the errata
+          // line has been absorbed upstream. Replace in place: the layer's text
+          // still wins, but two abilities of the same name on one profile is
+          // not a rule, it is a duplicate — which is what shipped on the
+          // Yüzbaşı Captain (Mubarizun, twice) before this check existed.
+          target.abilities[i] = op.ability;
+          notes.push({
+            op,
+            why: `addAbility '${op.ability.name}' on ${target.name}: the catalogues ` +
+                 `already carry it, so the op superseded in place rather than appending`,
+          });
+        } else {
+          target.abilities.push(op.ability);
+        }
         stamp(op.target, 'abilities');
         break;
+      }
 
       case 'replaceAbility': {
         target.abilities ??= [];
@@ -158,8 +179,9 @@ export function applyLayers(dataset, layers, provenance, { includeBeta = true } 
       report.push({ layer: layer.id, skipped: 'speculative layers are opt-in only' });
       continue;
     }
-    const unresolved = applyLayer(dataset, layer, provenance);
-    report.push({ layer: layer.id, ops: layer.ops.length, unresolved });
+    const notes = [];
+    const unresolved = applyLayer(dataset, layer, provenance, notes);
+    report.push({ layer: layer.id, ops: layer.ops.length, unresolved, notes });
   }
   return report;
 }

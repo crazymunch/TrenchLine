@@ -134,8 +134,9 @@ for (const ruleset of RULESETS) {
   const missingProv = findMissingProvenance(dataset, provenance);
 
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
+  const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
 
-  summaries.push({ ruleset, v, missingProv, unresolvedOps, layerReport, dataset });
+  summaries.push({ ruleset, v, missingProv, unresolvedOps, layerNotes, layerReport, dataset });
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
   console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}  variants ${variants.length}`);
@@ -147,6 +148,7 @@ for (const ruleset of RULESETS) {
   console.log(`    resolved    ${v.resolved.length}`);
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+  if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
   if (missingProv.length) console.log(`  fields with NO provenance: ${missingProv.length}`);
 
   if (v.conflicts.length) {
@@ -204,6 +206,13 @@ for (const ruleset of RULESETS) {
     lines.push('## Layer ops that could not be applied', '',
       'Usually the catalogues lag the source the layer was transcribed from.', '');
     for (const u of unresolvedOps) lines.push(`- ${u.why}`);
+    lines.push('');
+  }
+  if (layerNotes.length) {
+    lines.push('## Layer ops the catalogues have caught up with', '',
+      'These applied, but the base data already carried the change. Each is a',
+      'candidate for retirement from the layer once the base is confirmed current.', '');
+    for (const n of layerNotes) lines.push(`- ${n.why}`);
     lines.push('');
   }
   if (v.conflicts.length) {
