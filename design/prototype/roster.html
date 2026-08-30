@@ -1,0 +1,580 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrenchLine — roster prototype</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --iron-base:#16181C; --iron-raised:#1E2127; --iron-hover:#1A1D22; --iron-line:#2A2E36;
+  --iron-line-2:#23272F; --iron-stroke:#3A404C; --iron-text:#E9E4D7; --iron-text-2:#C9CDD4;
+  --iron-mute:#7A8290;
+  --paper:#E9E4D7; --paper-2:#DFD9C9; --paper-3:#E4DECE; --paper-row:#E2DCCC;
+  --paper-line:#C3BCA8; --paper-scroll:#B5AD98;
+  --ink:#191713; --ink-2:#4A443A; --ink-mute:#6E6757;
+  --oxblood:#8C201B; --oxblood-on:#F2ECE0; --oxblood-soft:#E3B7B2; --oxblood-rail:#C08A84;
+  --glory-track:#D8C9C4; --glory-dim:#A98A82;
+  --legal:#2C6152; --legal-chrome:#6FBF9B; --warn:#8A6A16; --warn-line:#C4A96A; --live:#C4342B;
+  --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Archivo',system-ui,sans-serif;
+  --serif:'Newsreader',Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0F1013;color:var(--iron-text);font-family:var(--sans);padding:24px;min-height:100vh}
+
+/* ---- prototype chrome (not part of the design) ---- */
+.harness{max-width:1180px;margin:0 auto 20px;font-family:var(--mono);font-size:12px;color:var(--iron-mute);line-height:1.6}
+.harness h1{font-family:var(--sans);font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--iron-text);margin-bottom:8px}
+.harness b{color:var(--oxblood-rail)}
+.switch{display:flex;gap:0;margin:14px 0 0;border:1px solid var(--iron-stroke);width:max-content}
+.switch button{padding:9px 16px;background:transparent;border:0;border-right:1px solid var(--iron-stroke);
+  color:var(--iron-mute);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.switch button:last-child{border-right:0}
+.switch button.on{background:var(--oxblood);color:var(--oxblood-on)}
+
+.stage{display:flex;justify-content:center;padding:8px 0 40px}
+.device{position:relative;overflow:hidden;background:var(--iron-base);border:1px solid var(--iron-line);
+  display:flex;flex-direction:column;transition:width .18s,height .18s}
+.device[data-d="phone"]{width:375px;height:812px}
+.device[data-d="tablet"]{width:1024px;height:768px}
+.device[data-d="desktop"]{width:1280px;height:800px}
+
+/* ---- app frame ---- */
+.topbar{flex:none;height:52px;display:flex;align-items:center;gap:14px;padding:0 16px;
+  background:var(--iron-base);border-bottom:1px solid var(--iron-line)}
+.brand{font-weight:700;font-size:15px;letter-spacing:.17em;text-transform:uppercase}
+.ruleset{margin-left:auto;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.06em;color:var(--iron-text-2);border:1px solid var(--iron-stroke);padding:7px 10px;cursor:pointer}
+.ruleset i{width:6px;height:6px;border-radius:50%;background:#4E9A6E;display:block}
+
+.cols{flex:1;display:flex;min-height:0}
+.rail{flex:none;width:216px;background:var(--iron-base);border-right:1px solid var(--iron-line);
+  padding:14px 12px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.device[data-d="phone"] .rail{display:none}
+.device[data-d="tablet"] .rail{width:76px;align-items:stretch;padding:14px 12px}
+.device[data-d="tablet"] .rail .lbl,.device[data-d="tablet"] .rail .wide{display:none}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--iron-mute)}
+/* Module navigation — the six views. Present in the current app's Sidebar.tsx
+   and dropped by the redesign; restored here because on desktop the rail is
+   the primary nav, not a warband panel. */
+.nav{display:flex;flex-direction:column;gap:1px;margin-top:8px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;color:var(--iron-text-2);
+  font-size:13px;cursor:pointer;border-left:2px solid transparent}
+.nav a:hover{background:var(--iron-hover)}
+.nav a.on{background:var(--iron-raised);border-left-color:var(--oxblood);color:var(--iron-text);font-weight:600}
+.nav a svg{width:16px;height:16px;flex:none}
+.nav a em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  padding:2px 5px;background:var(--live);color:#fff}
+.device[data-d="tablet"] .nav a{justify-content:center;padding:0;height:52px;border-left:0}
+.device[data-d="tablet"] .nav a span{display:none}
+.idmini{border-bottom:1px solid var(--iron-line);padding-bottom:12px}
+.idmini .f{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--oxblood-rail)}
+.idmini .f i{width:8px;height:8px;border-radius:50%;background:#76D6D5;display:block;flex:none}
+.idmini b{display:block;font-size:15px;font-weight:700;margin-top:6px;line-height:1.2}
+.idmini .pts{display:flex;gap:12px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--iron-mute)}
+.idmini .pts b{display:inline;font-size:12px;font-weight:400;color:var(--iron-text-2);margin:0}
+.idmini .pts s{color:var(--oxblood-rail);text-decoration:none}
+.device[data-d="tablet"] .idmini{display:none}
+.wbrow{padding:9px 10px;border-left:2px solid transparent;cursor:pointer}
+.wbrow.on{background:var(--iron-raised);border-left-color:var(--oxblood)}
+.wbrow b{display:block;font-size:13px;font-weight:600}
+.wbrow span{display:block;font-family:var(--mono);font-size:11px;color:var(--iron-mute);margin-top:3px}
+.railbtn{height:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--iron-stroke);
+  background:transparent;color:var(--iron-text-2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;width:100%}
+.railbtn:hover{border-color:var(--iron-mute)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-family:var(--mono);font-size:11px}
+.kv dt{color:var(--iron-mute);text-transform:uppercase;letter-spacing:.06em}
+.kv dd{color:var(--iron-text-2);word-break:break-all}
+.rulehdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.rulehdr span{color:var(--oxblood-rail);font-family:var(--mono);font-size:11px}
+.rulepanel{border:1px solid var(--iron-line);background:var(--iron-raised);margin-top:8px}
+.rulepanel div{display:flex;gap:8px;padding:8px 10px;border-bottom:1px solid var(--iron-line-2);
+  font-family:var(--mono);font-size:11px;align-items:center}
+.rulepanel div:last-child{border-bottom:0}
+.rulepanel i{color:var(--legal-chrome);font-style:normal}
+.rulepanel em{margin-left:auto;color:var(--iron-mute);font-style:normal}
+
+/* ---- the paper sheet ---- */
+.sheet{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--paper);color:var(--ink)}
+.pad{padding:15px 26px 13px}
+.device[data-d="phone"] .pad{padding:13px 16px 11px}
+.idrow{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid var(--paper-line)}
+.idrow>div:first-child{flex:1;min-width:0}
+.micro{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);
+  display:flex;align-items:center;gap:9px}
+.micro s{width:1px;height:11px;background:var(--paper-line);display:block}
+h1.wb{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.015em;margin-top:9px}
+.device[data-d="phone"] h1.wb{font-size:25px}
+.motto{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-2);margin-top:8px}
+.device[data-d="phone"] .motto{font-size:15px}
+
+.tools{display:flex;align-items:center;gap:8px;flex:none;padding-top:2px}
+.device[data-d="phone"] .tools{display:none}
+.btn{height:40px;padding:0 13px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink-mute)}
+.btn.fill{background:var(--oxblood);border-color:var(--oxblood);color:var(--paper)}
+.btn.sq{width:40px;padding:0;font-size:15px}
+.seg{display:flex;border:1px solid var(--paper-line);height:40px}
+.seg button{padding:0 13px;border:0;background:transparent;color:var(--ink-2);font-family:var(--mono);
+  font-size:12px;cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--paper)}
+
+/* two budgets */
+.purse{display:grid;grid-template-columns:1fr 1px 1fr;border-bottom:1px solid var(--paper-line)}
+.purse>s{background:var(--paper-line)}
+.cur{padding:13px 26px}
+.device[data-d="phone"] .cur{padding:12px 16px}
+.cur .k{font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mute)}
+.cur.glory .k{color:var(--oxblood)}
+.cur .v{display:flex;align-items:baseline;gap:9px;margin-top:7px}
+.cur .v b{font-family:var(--mono);font-weight:400;font-size:28px;line-height:1}
+.device[data-d="phone"] .cur .v b{font-size:23px}
+.cur.glory .v b{color:var(--oxblood)}
+.cur .v em{font-family:var(--mono);font-style:normal;font-size:14px;color:var(--ink-mute)}
+.cur.glory .v em{color:var(--glory-dim)}
+.cur .v span{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-left:10px}
+.meter{height:3px;background:var(--paper-line);margin-top:9px}
+.cur.glory .meter{background:var(--glory-track)}
+.meter i{display:block;height:100%;background:var(--ink)}
+.cur.glory .meter i{background:var(--oxblood)}
+
+.legal{height:38px;display:flex;align-items:center;gap:12px;padding:0 26px;background:var(--paper-2);
+  border-bottom:1px solid var(--paper-line);font-family:var(--mono);font-size:12px;color:var(--ink-mute)}
+.device[data-d="phone"] .legal{padding:0 16px;height:44px}
+.stamp{color:var(--legal);border:1px solid var(--legal);padding:3px 8px;letter-spacing:.1em;flex:none}
+.legal .amber{color:var(--warn)}
+.legal .review{margin-left:auto;color:var(--oxblood);cursor:pointer;background:none;border:0;
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+
+.filters{display:flex;gap:6px;padding:10px 26px 0;flex-wrap:wrap;align-items:center}
+.device[data-d="phone"] .filters{padding:10px 16px 0}
+.chip{height:32px;padding:0 11px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);
+  font-family:var(--mono);font-size:12px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filters .seg{height:32px;margin-left:auto}
+.filters .seg button{font-size:11px;padding:0 10px}
+
+.list{flex:1;min-height:0;overflow-y:auto;padding:14px 26px}
+.device[data-d="phone"] .list{padding:12px 16px}
+.list::-webkit-scrollbar{width:8px}
+.list::-webkit-scrollbar-track{background:var(--paper-2)}
+.list::-webkit-scrollbar-thumb{background:var(--paper-scroll)}
+
+.cards{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr}
+.device[data-d="tablet"] .cards{grid-template-columns:1fr 1fr}
+.device[data-d="phone"] .cards{grid-template-columns:1fr;gap:10px}
+.card{border:1px solid var(--paper-line);background:var(--paper-3);cursor:pointer}
+.card:hover{border-color:var(--ink-mute)}
+.card.lead{border-color:var(--oxblood)}
+.chd{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--paper-2);
+  border-bottom:1px solid var(--paper-line)}
+.card.lead .chd{background:var(--oxblood);border-bottom:0}
+.chd b{flex:1;min-width:0;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card.lead .chd b{color:var(--oxblood-on)}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.11em;color:var(--ink-mute);flex:none}
+.card.lead .tag{color:var(--oxblood-soft)}
+.chd .c{font-family:var(--mono);font-size:12px;flex:none}
+.card.lead .chd .c{color:var(--oxblood-on)}
+.kebab{flex:none;width:26px;height:26px;border:0;background:transparent;color:var(--ink-mute);
+  font-size:15px;cursor:pointer;line-height:1}
+.card.lead .kebab{color:var(--oxblood-soft)}
+.cbd{padding:9px 11px;display:flex;flex-direction:column;gap:8px}
+.bp{font-family:var(--serif);font-size:15px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);background:var(--paper);border:1px solid var(--paper-line)}
+.stats div{padding:6px 2px;text-align:center;border-right:1px solid var(--paper-line)}
+.stats div:last-child{border-right:0}
+.stats span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-mute)}
+.stats b{display:block;font-family:var(--mono);font-weight:400;font-size:16px;margin-top:2px}
+.gear{display:flex;flex-wrap:wrap;gap:5px}
+.gear i{font-style:normal;font-family:var(--mono);font-size:11px;border:1px solid var(--paper-line);padding:3px 6px;color:var(--ink-2)}
+.gear i.g{border-color:var(--oxblood);color:var(--oxblood)}
+.rules{font-family:var(--mono);font-size:11px;color:var(--ink-mute);line-height:1.5}
+.rules em{font-style:normal;color:var(--oxblood)}
+
+/* table layout */
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{position:sticky;top:0;background:var(--paper-2);font-family:var(--mono);font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:400;text-align:left;
+  padding:8px 6px;border-bottom:1px solid var(--paper-line)}
+thead th.n{text-align:right}
+tbody tr{border-bottom:1px solid var(--paper-line);cursor:pointer}
+tbody tr:hover{background:var(--paper-row)}
+tbody td{padding:9px 6px;vertical-align:top}
+tbody td.n{text-align:right;font-family:var(--mono);font-size:17px;font-weight:400}
+tbody .nm{font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px}
+tbody .sub{font-family:var(--mono);font-size:12px;color:var(--ink-mute);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+.tag.leadtag{background:var(--oxblood);color:var(--oxblood-on);padding:2px 6px}
+
+/* phone bottom nav */
+.bnav{flex:none;height:58px;display:none;background:var(--iron-base);border-top:1px solid var(--iron-line)}
+.device[data-d="phone"] .bnav{display:flex}
+.bnav button{flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;background:transparent;border:0;color:var(--iron-mute);font-family:var(--mono);font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;position:relative}
+.bnav button.on{color:var(--iron-text);box-shadow:inset 0 2px 0 var(--oxblood)}
+.bnav svg{width:18px;height:18px}
+.bnav .live{position:absolute;top:11px;right:22px;width:6px;height:6px;border-radius:50%;background:var(--live)}
+
+/* ---- disclosure layers ---- */
+.scrim{position:absolute;inset:0;background:rgba(10,11,13,.55);display:none;z-index:20}
+.scrim.on{display:block}
+.sheetpop{position:absolute;left:0;right:0;bottom:0;max-height:78%;background:var(--paper);
+  border-top:1px solid var(--paper-line);display:none;flex-direction:column;z-index:21;color:var(--ink)}
+.sheetpop.on{display:flex}
+.device[data-d="desktop"] .sheetpop,.device[data-d="tablet"] .sheetpop{
+  left:auto;right:0;top:0;bottom:0;width:420px;max-height:none;border-left:1px solid var(--paper-line);border-top:0}
+.sphd{flex:none;display:flex;align-items:flex-start;gap:10px;padding:14px 16px;background:var(--paper-2);
+  border-bottom:1px solid var(--paper-line)}
+.sphd .t{flex:1;min-width:0}
+.sphd h3{font-size:19px;font-weight:700;line-height:1.15}
+.sphd p{font-family:var(--serif);font-size:14px;color:var(--ink-2);margin-top:4px}
+.x{flex:none;width:44px;height:44px;margin:-10px -8px 0 0;border:0;background:transparent;
+  color:var(--ink-mute);font-size:19px;cursor:pointer}
+.spbd{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:16px}
+.sec>h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-mute);margin-bottom:8px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--paper-line);
+  background:var(--paper-3);margin-bottom:5px}
+.row .m{flex:1;min-width:0}
+.row .m b{display:block;font-size:14px;font-weight:600}
+.row .m span{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-mute);margin-top:2px}
+.row .c{font-family:var(--mono);font-size:12px;flex:none}
+.row .c.g{color:var(--oxblood)}
+.row .rm{flex:none;width:44px;height:44px;margin:-10px -8px -10px 0;border:0;background:transparent;
+  color:var(--ink-mute);font-size:15px;cursor:pointer}
+.row .rm:hover{color:var(--oxblood)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.acts button{min-height:44px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);
+  font-family:var(--mono);font-size:12px;letter-spacing:.05em;cursor:pointer;padding:0 10px;text-align:left}
+.acts button:hover{border-color:var(--ink-mute)}
+.acts button.danger{color:var(--oxblood);border-color:var(--oxblood)}
+.acts button.wide{grid-column:1/-1}
+
+.menu{position:absolute;background:var(--paper);border:1px solid var(--ink-mute);z-index:22;display:none;
+  min-width:212px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.menu.on{display:block}
+.menu button{display:block;width:100%;min-height:44px;padding:0 13px;border:0;border-bottom:1px solid var(--paper-line);
+  background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:12px;text-align:left;cursor:pointer}
+.menu button:last-child{border-bottom:0}
+.menu button:hover{background:var(--paper-2)}
+.menu button.danger{color:var(--oxblood)}
+.menu .hdr{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-mute);padding:8px 13px;background:var(--paper-2);border-bottom:1px solid var(--paper-line)}
+
+.toast{position:absolute;left:50%;transform:translateX(-50%);bottom:74px;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:12px;padding:10px 14px;z-index:30;opacity:0;transition:opacity .18s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+
+<div class="harness">
+  <h1>TrenchLine — roster prototype</h1>
+  <div>Interactive. Every value is joined from the real <b>Al-Qarn Rihla</b> export against <b>src/data/generated</b> — all 11 statlines resolve, so none of the amber “not in export” strips are needed.</div>
+  <div style="margin-top:6px">This keeps the Iron-Ledger visual language exactly and adds the missing layer: <b>where the existing app's options live</b>. Try — tap a warrior, the <b>⋯</b> on a card, the <b>⋯</b> in the toolbar, or <b>REVIEW</b> on the legality strip.</div>
+  <div class="switch" id="sw">
+    <button data-d="phone" class="on">Phone 375</button>
+    <button data-d="tablet">Tablet 1024</button>
+    <button data-d="desktop">Desktop 1280</button>
+  </div>
+</div>
+
+<div class="stage"><div class="device" data-d="phone" id="dev"></div></div>
+
+<script>
+const W = [
+ {n:"Kasim bin Malik",b:"Jabirean Alchemist",role:"LEADER",d:194,g:2,s:["6\"","+3","+1","−2","32"],
+  gear:[["Automatic Rifle",40],["Sword/Axe",4],["Alchemist Armour",50],["Cloak of Alamut",25],["Secrets of Takwin",20],["Sniper Scope",2,"g"]],
+  adv:["Experience","Ranged Proficiency [7]","Assassinate [4]"],inj:["Leg Wound [31]"],xp:3},
+ {n:"Al-Qahhar",b:"Favoured Brazen Bull",role:"ELITE",d:250,g:0,s:["6\"","+0","+2","−3","60"],
+  gear:[["Flame Cannon",60],["Titan Zulfiqar",30],["Machine Armour",50],["Wind Amulet",10]],
+  adv:["Elite Promotion","Experience","Strength of Samson [8]"],inj:["Lost Arm [26]"],xp:5},
+ {n:"Al-Masyukh",b:"Favoured Homunculus",role:"ELITE",d:252,g:0,s:["6\"","+1","+1","0","60"],
+  gear:[["Massive Size",30],["Additional Arm",15],["Gargantuan Size",20],["Siege Jezzail",30],["Titan Zulfiqar",30],["Great Sword/Axe",12],["Fire Shield",20],["Hypnotic Eyes",15],["Inhuman Strength",15],["Hawk Eyes",10],["Human Hands",10],["Two Heads",5]],
+  adv:["Elite Promotion","Experience"],inj:[],xp:2},
+ {n:"Idris the Relic Hound",b:"Favoured Kavass",role:"ELITE",d:84,g:0,s:["6\"","+0","+0","−2","25"],
+  gear:[["Jezzail",7],["Sword/Axe",4],["Reinforced Armour",40],["Alchemical Ammunition",3],["Studied Blade",5]],
+  adv:["Elite Promotion","Experience","Skill & Expertise [7]","Fireteam: Mamluk-Guarded"],inj:[],xp:4},
+ {n:"Zayd bin Tariq al-Nahas",b:"Jabirean Alchemist",role:"TROOP",d:130,g:0,s:["6\"","+2","+1","−2","32"],
+  gear:[["Sniper Rifle",35],["Reinforced Armour",40]],adv:[],inj:[],xp:0},
+ {n:"The Iron Needle",b:"Sultanate Sapper",role:"TROOP",d:101,g:0,s:["6\"","+1","0","−1","25"],
+  gear:[["Siege Jezzail",30],["Trench Club",3],["Standard Armour",15],["Alchemical Ammunition",3],["Shovel",0]],adv:[],inj:[],xp:1},
+ {n:"Al-Mudawwan",b:"Homunculus",role:"TROOP",d:100,g:0,s:["6\"","+1","+1","0","32"],
+  gear:[["Enslaved Mind",10],["Human Hands",10],["Inhuman Strength",15],["Additional Arm",15],["Hawk Eyes",10]],adv:[],inj:[],xp:0},
+ {n:"Dhi’b al-Nafud",b:"Lion of Jabir",role:"TROOP",d:90,g:0,s:["8\"","N/A","+1","−1","50"],
+  gear:[["Wind Amulet",10],["Fierce Lion",5],["Standard Armour",15]],adv:[],inj:[],xp:0},
+ {n:"Rafiq the Incinerator",b:"Kavass",role:"TROOP",d:71,g:0,s:["6\"","+0","−1","−1","25"],
+  gear:[["Flamethrower",30],["Trench Knife",1],["Standard Armour",15]],adv:[],inj:[],xp:0},
+ {n:"Nasir",b:"Kavass",role:"TROOP",d:48,g:0,s:["6\"","+0","−1","−1","25"],
+  gear:[["Jezzail",7],["Trench Knife",1],["Standard Armour",15]],adv:[],inj:[],xp:0},
+ {n:"Jawhar al-Sari",b:"Mamluk Faris",role:"MERC",d:0,g:4,s:["6\"","+1","+1","−3","32"],
+  gear:[["Alchemical Jezzail",0],["Polearm",0],["Shield",0],["Reinforced Armour",0],["Combat Helmet",0]],adv:[],inj:[],xp:0}
+];
+const S={layout:'cards',filter:'All',rules:false,dev:'phone'};
+const dev=document.getElementById('dev');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shown=()=>S.filter==='All'?W:W.filter(w=>w.role===S.filter);
+const cost=w=>[w.d?w.d:null,w.g?w.g+' ☼':null].filter(Boolean).join(' · ')||'—';
+
+function statsHtml(s){return `<div class="stats">${['MOV','RNG','MEL','ARM','BASE'].map((l,i)=>
+  `<div><span>${l}</span><b>${esc(s[i])}</b></div>`).join('')}</div>`;}
+
+function cardsHtml(){return `<div class="cards">${shown().map((w,i)=>`
+  <article class="card${w.role==='LEADER'?' lead':''}" data-i="${W.indexOf(w)}">
+    <div class="chd">
+      <b>${esc(w.n)}</b><span class="tag">${w.role}</span>
+      <span class="c">${cost(w)}</span>
+      <button class="kebab" data-kebab="${W.indexOf(w)}" title="Warrior actions">⋯</button>
+    </div>
+    <div class="cbd">
+      <div class="bp">${esc(w.b)}</div>
+      ${statsHtml(w.s)}
+      <div class="gear">${w.gear.slice(0,5).map(g=>`<i class="${g[2]==='g'?'g':''}">${esc(g[0])}${g[1]?' '+g[1]+(g[2]==='g'?' ☼':''):''}</i>`).join('')}${w.gear.length>5?`<i>+${w.gear.length-5} more</i>`:''}</div>
+      ${(w.inj.length||w.adv.length)?`<div class="rules">${w.adv.join(' · ')}${w.inj.length?(w.adv.length?' · ':'')+'<em>'+w.inj.join(' · ')+'</em>':''}</div>`:''}
+    </div>
+  </article>`).join('')}</div>`;}
+
+function tableHtml(){return `<table><thead><tr>
+  <th>Warrior</th><th class="n">Cost</th><th class="n">Mov</th><th class="n">Rng</th><th class="n">Mel</th><th class="n">Arm</th>
+  </tr></thead><tbody>${shown().map(w=>`
+  <tr data-i="${W.indexOf(w)}">
+    <td><div class="nm">${esc(w.n)}<span class="tag${w.role==='LEADER'?' leadtag':''}">${w.role}</span></div>
+        <div class="sub">${esc(w.b)} · ${w.gear.map(g=>esc(g[0])).join(', ')}</div></td>
+    <td class="n">${cost(w)}</td>
+    ${[0,1,2,3].map(i=>`<td class="n">${esc(w.s[i])}</td>`).join('')}
+  </tr>`).join('')}</tbody></table>`;}
+
+function render(){
+ const counts={All:W.length,LEADER:1,ELITE:3,TROOP:6,MERC:1};
+ dev.innerHTML=`
+ <div class="topbar">
+   <div class="brand">TrenchLine</div>
+   <div class="ruleset" data-act="ruleset"><i></i>TrenchLine v1 ▾</div>
+ </div>
+ <div class="cols">
+   <aside class="rail">
+     <div class="idmini wide">
+       <div class="f"><i></i>Iron Sultanate</div>
+       <b>Al-Qarn Rihla</b>
+       <div class="pts"><span>1320<b> / 1320</b></span><s>6 ☼<b style="color:var(--glory-dim)"> / 9</b></s></div>
+     </div>
+
+     <div>
+       <div class="lbl">Modules</div>
+       <div class="nav">
+         ${[['Warband Roster','M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',1,''],
+            ['Tabletop Combat','M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6',0,'LIVE'],
+            ['Crusade Campaign','M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7',0,''],
+            ['Roster Directory','M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',0,''],
+            ['Rules Codex','M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z',0,''],
+            ['Rules Customizer','M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',0,'ADMIN']]
+           .map(([l,d,on,badge])=>`
+           <a class="${on?'on':''}" data-act="nav" title="${l}">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>
+             <span>${l}</span>${badge?`<em style="${badge==='ADMIN'?'background:var(--iron-stroke)':''}">${badge}</em>`:''}
+           </a>`).join('')}
+       </div>
+     </div>
+
+     <div><div class="lbl">Warbands</div>
+       <div class="wbrow on" style="margin-top:8px"><b>Al-Qarn Rihla</b><span>Iron Sultanate · 1320</span></div>
+       <div class="wbrow"><b class="wide">Iron Crusade of St Lazarus</b><span class="wide">New Antioch · 880</span></div>
+       <button class="railbtn wide" style="margin-top:8px" data-act="newwb">+ New warband</button>
+     </div>
+     <div class="wide">
+       <div class="rulehdr" data-act="rules"><div class="lbl">Campaign rules</div><span>4 ${S.rules?'▴':'▾'}</span></div>
+       ${S.rules?`<div class="rulepanel">
+         ${['Book of Golems','Sublime Gate','Unleveraged Glory','Reroll'].map(r=>
+           `<div><i>✓</i>${r}<em>on</em></div>`).join('')}
+       </div>`:`<div class="lbl" style="margin-top:6px;text-transform:none;letter-spacing:0">Golems · Sublime Gate · Glory · Reroll</div>`}
+     </div>
+     <div class="wide">
+       <div class="lbl" style="margin-bottom:8px">Provenance</div>
+       <dl class="kv"><dt>Ruleset</dt><dd>TrenchLine v1</dd><dt>Base</dt><dd>1b463a8</dd>
+         <dt>Layers</dt><dd>dispatch-01</dd><dt>Joined</dt><dd>11 / 11 warriors</dd></dl>
+       <button class="railbtn" style="margin-top:10px" data-act="compare">⇄ Compare upstream</button>
+     </div>
+   </aside>
+
+   <main class="sheet">
+     <div class="pad idrow">
+       <div>
+         <div class="micro">Iron Sultanate<s></s>The House of Wisdom</div>
+         <h1 class="wb">Al-Qarn Rihla</h1>
+         <div class="motto">“The Wall may forget, but the Copper remembers!”</div>
+       </div>
+       <div class="tools">
+         <button class="btn" data-act="chronicle">Chronicle</button>
+         <button class="btn" data-act="stash">Stash 4</button>
+         <button class="btn fill" data-act="recruit">+ Recruit</button>
+         <button class="btn sq" data-act="more" title="More actions">⋯</button>
+       </div>
+     </div>
+
+     <div class="purse">
+       <div class="cur"><div class="k">Ducats</div>
+         <div class="v"><b>1320</b><em>/ 1320</em></div><div class="meter"><i style="width:100%"></i></div></div>
+       <s></s>
+       <div class="cur glory"><div class="k">☼ Glory</div>
+         <div class="v"><b>6</b><em>/ 9</em><span>· 3 free</span></div>
+         <div class="meter"><i style="width:66.7%"></i></div></div>
+     </div>
+
+     <div class="legal">
+       <span class="stamp">LEGAL</span>
+       <span class="wide">Alchemists 2/1–2 · Pride of Jabir 1/0–3 · Private Venture ✓</span>
+       <button class="review" data-act="review">REVIEW ▸</button>
+     </div>
+
+     <div class="filters">
+       ${['All','LEADER','ELITE','TROOP','MERC'].map(f=>
+         `<button class="chip${S.filter===f?' on':''}" data-filter="${f}">${f==='All'?'All':f} ${counts[f]}</button>`).join('')}
+       <div class="seg">
+         <button class="${S.layout==='cards'?'on':''}" data-layout="cards">Cards</button>
+         <button class="${S.layout==='table'?'on':''}" data-layout="table">Table</button>
+       </div>
+     </div>
+
+     <div class="list">${S.layout==='cards'?cardsHtml():tableHtml()}</div>
+   </main>
+ </div>
+
+ <nav class="bnav">
+   ${[['Roster',1],['Play',0],['Camp',0],['Codex',0],['More',0]].map(([l,on],i)=>`
+     <button class="${on?'on':''}" data-act="${l==='More'?'more':'nav'}">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       ${i===0?'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>':
+         i===1?'<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/>':
+         i===2?'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>':
+         i===3?'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>':
+         '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>'}
+       </svg><span>${l}</span>${i===1?'<i class="live"></i>':''}
+     </button>`).join('')}
+ </nav>
+
+ <div class="scrim" data-act="close"></div>
+ <div class="sheetpop" id="pop"></div>
+ <div class="menu" id="menu"></div>
+ <div class="toast" id="toast"></div>`;
+}
+
+/* ---------------- disclosure ---------------- */
+function openWarrior(i){
+ const w=W[i];
+ const pop=document.getElementById('pop');
+ pop.innerHTML=`
+  <div class="sphd">
+    <div class="t"><h3>${esc(w.n)}</h3><p>${esc(w.b)}${w.xp?` · ${w.xp} XP`:''}</p></div>
+    <button class="x" data-act="close">✕</button>
+  </div>
+  <div class="spbd">
+    <div class="sec">${statsHtml(w.s)}
+      <div class="rules" style="margin-top:8px">Base ${esc(w.s[4])}mm · Fawkstrot11@1b463a8 + dispatch-01 · <span style="color:var(--legal)">verified</span></div>
+    </div>
+    <div class="sec"><h4>Wargear (${w.gear.length}) — tap ✕ to unequip</h4>
+      ${w.gear.map(g=>`<div class="row"><div class="m"><b>${esc(g[0])}</b></div>
+        <span class="c${g[2]==='g'?' g':''}">${g[1]?g[1]+(g[2]==='g'?' ☼':''):'—'}</span>
+        <button class="rm" data-toast="Unequipped ${esc(g[0])}">✕</button></div>`).join('')}
+      <button class="acts" style="display:block;width:100%;min-height:44px;border:1px solid var(--paper-line);background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:12px;cursor:pointer;margin-top:6px" data-toast="Opens the Armoury (AddEquipmentModal)">+ Equip from armoury</button>
+    </div>
+    ${w.adv.length?`<div class="sec"><h4>Advancements</h4><div class="gear">${w.adv.map(a=>`<i>${esc(a)}</i>`).join('')}</div></div>`:''}
+    ${w.inj.length?`<div class="sec"><h4>Injuries</h4><div class="gear">${w.inj.map(a=>`<i class="g">${esc(a)}</i>`).join('')}</div></div>`:''}
+    <div class="sec"><h4>Actions</h4>
+      <div class="acts">
+        <button data-toast="Rename — inline edit">Rename</button>
+        <button data-toast="Change role: Leader / Elite / Trooper / Mercenary">Change role</button>
+        <button data-toast="Opens UnitAdvancementModal">Skills &amp; XP</button>
+        <button data-toast="Opens UnitLoreModal">Dossier &amp; bio</button>
+        <button data-toast="Duplicated ${esc(w.n)}">Duplicate</button>
+        <button data-toast="Saved to Favourites">Save favourite</button>
+        ${w.role!=='LEADER'?`<button class="wide" data-toast="${esc(w.n)} promoted to Leader">Make leader</button>`:''}
+        <button class="wide danger" data-toast="Dismiss — asks to confirm first">Dismiss warrior</button>
+      </div>
+    </div>
+  </div>`;
+ pop.classList.add('on');
+ dev.querySelector('.scrim').classList.add('on');
+}
+
+function openMenu(kind,x,y,i){
+ const m=document.getElementById('menu');
+ const items = kind==='kebab'
+  ? [['Rename',''],['Change role',''],['Make leader',''],['Duplicate',''],['Save favourite',''],['Dismiss','danger']]
+  : [['Growth history',''],['Campaign notes',''],['Export &amp; print',''],['Import warband',''],['Compare warbands',''],['Edit budget &amp; limit',''],['Theme',''],['Report a bug','']];
+ m.innerHTML=`<div class="hdr">${kind==='kebab'?esc(W[i].n):'Warband actions'}</div>`+
+   items.map(([l,c])=>`<button class="${c}" data-toast="${l.replace(/&amp;/g,'and')} — existing modal">${l}</button>`).join('');
+ m.classList.add('on');
+ const r=dev.getBoundingClientRect();
+ m.style.left=Math.min(x-r.left, dev.clientWidth-224)+'px';
+ m.style.top=Math.min(y-r.top+8, dev.clientHeight-330)+'px';
+ dev.querySelector('.scrim').classList.add('on');
+}
+
+function openReview(){
+ const pop=document.getElementById('pop');
+ pop.innerHTML=`
+  <div class="sphd"><div class="t"><h3>Legality</h3><p>The House of Wisdom · 5 rules checked</p></div>
+    <button class="x" data-act="close">✕</button></div>
+  <div class="spbd">
+    <div class="sec"><h4>Passing</h4>
+      ${[['Alchemists','must include 1–2 Jabirean Alchemists','2 taken'],
+         ['Pride of Jabir','0–3 Lions of Jabir','1 taken'],
+         ['Private Venture','no Yüzbaşı, Janissaries or Sultanate Assassins','0 taken'],
+         ['Budget','1320 / 1320 Ducats · 6 / 9 Glory','within']].map(([n,r,v])=>
+        `<div class="row"><div class="m"><b style="color:var(--legal)">✓ ${n}</b><span>${r}</span></div>
+         <span class="c">${v}</span></div>`).join('')}
+    </div>
+    <div class="sec"><h4>Needs a human</h4>
+      <div class="row" style="border-color:var(--warn-line);background:#EDE6D2">
+        <div class="m"><b style="color:var(--warn)">! Combat Helmet</b>
+        <span>“Headgear” — TrenchLine cannot verify this restriction yet. Check by hand.</span></div></div>
+    </div>
+  </div>`;
+ pop.classList.add('on');
+ dev.querySelector('.scrim').classList.add('on');
+}
+
+function closeAll(){
+ document.getElementById('pop')?.classList.remove('on');
+ document.getElementById('menu')?.classList.remove('on');
+ dev.querySelector('.scrim')?.classList.remove('on');
+}
+let tt;
+function toast(msg){
+ const t=document.getElementById('toast'); if(!t)return;
+ t.textContent=msg; t.classList.add('on'); clearTimeout(tt);
+ tt=setTimeout(()=>t.classList.remove('on'),1900);
+}
+
+dev.addEventListener('click',e=>{
+ const t=e.target;
+ const tst=t.closest('[data-toast]');
+ if(tst){e.stopPropagation();toast(tst.dataset.toast);closeAll();return;}
+ if(t.closest('[data-act="close"]')||t.classList.contains('scrim')){closeAll();return;}
+ const keb=t.closest('[data-kebab]');
+ if(keb){e.stopPropagation();const r=keb.getBoundingClientRect();openMenu('kebab',r.left,r.bottom,+keb.dataset.kebab);return;}
+ const act=t.closest('[data-act]')?.dataset.act;
+ if(act==='more'){const r=t.closest('[data-act]').getBoundingClientRect();openMenu('more',r.left-170,r.bottom,0);return;}
+ if(act==='review'){openReview();return;}
+ if(act==='rules'){S.rules=!S.rules;render();return;}
+ if(act==='recruit'){toast('Opens Recruit — limits enforced per variant');return;}
+ if(act==='chronicle'){toast('Opens the House Chronicle');return;}
+ if(act==='stash'){toast('Opens the Armoury Stash — 4 unassigned');return;}
+ if(act==='compare'){toast('Opens the GitHub 3-way diff');return;}
+ if(act==='ruleset'){toast('Switch ruleset — shows a diff before applying');return;}
+ if(act==='newwb'||act==='nav'){toast('Navigates');return;}
+ const f=t.closest('[data-filter]'); if(f){S.filter=f.dataset.filter;render();return;}
+ const l=t.closest('[data-layout]'); if(l){S.layout=l.dataset.layout;render();return;}
+ const row=t.closest('[data-i]'); if(row){openWarrior(+row.dataset.i);return;}
+});
+
+document.getElementById('sw').addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b)return;
+ S.dev=b.dataset.d; dev.dataset.d=S.dev;
+ [...e.currentTarget.children].forEach(c=>c.classList.toggle('on',c===b));
+ render();
+});
+render();
+</script>
