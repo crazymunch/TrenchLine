@@ -18581,7 +18581,9 @@ export const DATASET: Dataset = {
       "roles": [
         "Mercenary"
       ],
-      "keywords": [],
+      "keywords": [
+        "MERCENARY"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -18593,7 +18595,7 @@ export const DATASET: Dataset = {
       },
       "cost": {
         "ducats": 0,
-        "glory": 3
+        "glory": 5
       },
       "min": null,
       "max": 1,
@@ -18668,6 +18670,8 @@ export const DATASET: Dataset = {
         "Mercenary"
       ],
       "keywords": [
+        "MERCENARY",
+        "REGENERATE 1",
         "STRONG",
         "TOUGH"
       ],
@@ -18756,24 +18760,46 @@ export const DATASET: Dataset = {
         "Elite"
       ],
       "keywords": [
-        "NEGATE FEAR"
+        "MERCENARY",
+        "ELITE",
+        "FEAR",
+        "TOUGH",
+        "NEGATE DIFFICULT TERRAIN",
+        "NEGATE FIRE"
       ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
         "movementType": "Infantry",
-        "ranged": "0",
-        "melee": "1",
+        "ranged": "+0 DICE",
+        "melee": "+2 DICE",
         "armour": "-2",
         "base": "32mm"
       },
       "cost": {
         "ducats": 0,
-        "glory": 5
+        "glory": 6
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "name": "Dignified Conduct",
+          "description": "Witchburners are well aware of the dignity of their status. A Witchburner cannot take the Dash ACTION. In addition, do not halve the Movement Characteristic of a Witchburner when it stands up at the start of an Activation, and a Witchburner can never be moved by an ability or ACTION taken by an enemy model."
+        },
+        {
+          "name": "Divine Judgement ACTION",
+          "description": "A Witchburner can take a Divine Judgement ACTION. If you do so, the Witchburner can make a Ranged Attack with a Range of 18”. The attack has the FIRE, IGNORE COVER, and IGNORE LONG RANGE Keywords, and does not require Line of Sight. In addition, when a model suffers an Out of Action result on the Injury Table from an attack made with Divine Judgement, it is treated as a Down result instead."
+        },
+        {
+          "name": "Elitist",
+          "description": "Enemy models that do not have the ELITE Keyword are not allowed to make a Melee Attack when a Witchburner that is within 1” of them retreats. In addition, a Witchburner can make a Move or Charge ACTION if no enemy models within 1” of it have the ELITE Keyword."
+        },
+        {
+          "name": "Found Guilty",
+          "description": "After making an Injury Roll for an attack made with Divine Judgement or a Gavel of Justice, place 1 extra BLOOD MARKER next to the model if the model is part of a Fallen Warband (even if the Injury Roll result is No Effect)."
+        }
+      ],
       "options": [],
       "constraints": [
         {
@@ -18823,10 +18849,11 @@ export const DATASET: Dataset = {
         "Mercenary"
       ],
       "keywords": [
-        "HERETIC",
+        "MERCENARY",
+        "DEMONIC",
+        "FEAR",
         "STRONG",
-        "TOUGH",
-        "FEAR"
+        "TOUGH"
       ],
       "stats": {
         "movement": "6\"/Infantry",
@@ -18845,9 +18872,8 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [
         {
-          "id": "ed55-ebca-cfc0-4fda",
-          "name": "Devour the Guilty",
-          "description": "Devour the Guilty ACTION: A Sin Eater can take a Devour the Guilty ACTION. If they do so, pick 1 model (friend or foe) that is within 1\"of the Sin Eater and is mounted on a base that is 40mm or smaller. If the model is an enemy, take a Risky Success Roll for the Sin Eater. If the model is friendly, take a Success Roll for the Sin Eater with +1 DICE. If the roll is a Failure, the Sin Eater’s Activation ends, if it was a Risky Success Roll, and nothing happens if it was a normal Success Roll. If the roll is a Success or a Critical Success, the model you picked is devoured, and the following rules apply to it: Place the model to one side, along with any MARKERS it may have. It is inside the Sin Eater and cannot be affected in any way or carry out any ACTIONS except as described below. While it is in the Sin Eater it is considered to be Down for the purposes of Morale Checks. A Sin Eater can only have 1 devoured model at a time. When it is Activated, it can take a Fight ACTION and must target the Sin Eater. Add -3 DICE to the roll for the Melee Attack, and do not use any of the model’s abilities or any of the special rules for its weapons. If the Sin Eater is taken Out of Action, before removing them from the battlefield, deploy the devoured model within 1\" of the Sin Eater and place it Down. If this is impossible, the model is taken Out of Action. In either case, the Sin Eater is then removed from the battlefield. If a devoured model is still inside a Sin Eater when the game ends, it is considered to have been taken Out of Action. Each time the Sin Eater is Activated, place 1 BLOOD MARKER next to the devoured model. As soon as a devoured model has 6 BLOOD MARKERS, it is immediately taken Out of Action and is no longer considered to be inside the Sin Eater. A Sin Eater that has a devoured model inside it can take a Purge ACTION.If it does so, take a Success Roll for the Sin Eater with +4 DICE. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, deploy the devoured model within 1\" of the Sin Eater and place it Down. If this is impossible, the devoured model remains inside the Sin Eater. Once released the model can be Activated normally."
+          "name": "Devour the Guilty ACTION",
+          "description": "A Sin Eater can take a Devour the Guilty ACTION. If they do so, pick 1 model (friend or foe) that is within 1” of the Sin Eater and is mounted on a base that is 40mm or smaller. If the model is an enemy, take a Risky Success Roll for the Sin Eater. If the model is friendly, take a Success Roll for the Sin Eater with +1 DICE. If the roll is a Failure, nothing happens and the Sin Eater’s Activation ends. If the roll is a Success or a Critical Success, the model you picked is devoured, and the following rules apply to it: Place the model to one side, along with any MARKERS it may have. It is inside the Sin Eater and cannot be affected in any way or carry out any ACTIONS except as described below. However, BLOOD MARKERS on the devoured model can be removed to pay the cost of Goetic Spells. While it is in the Sin Eater, it is considered to be Down for the purposes of Morale Checks. A Sin Eater can only have 1 devoured model at a time. In addition, the Sin Eater has the REGENERATE 1 Keyword when it has a devoured model. When a Sin Eater suffers an Out of Action result on the Injury table (even if it becomes a Down result due to the TOUGH Keyword), deploy the devoured model within 1” of the Sin Eater and place it Down. Models deployed this way may be placed within 1” of enemy models. If this is impossible, the model is taken Out of Action. If the Sin Eater was taken Out of Action, remove it from the battlefield after deploying the devoured model. If a devoured model is still inside a Sin Eater when the game ends, it is considered to have been taken Out of Action. Each time the Sin Eater is Activated, place 1 BLOOD MARKER next to the devoured model. As soon as a devoured model has 6 BLOOD MARKERS, it is immediately taken Out of Action (even if the model has TOUGH or another rule that would prevent the model from being taken Out of Action) and is no longer considered to be inside the Sin Eater. A Sin Eater that has a devoured model inside it can take a Purge ACTION. If it does so, deploy the devoured model within 1” of the Sin Eater and place it Down. If you cannot deploy the devoured model within 1” of the Sin Eater due to terrain or other models, then it remains inside the Sin Eater. Note that unlike the normal rules for model placement, you can deploy the enemy model within 1” of the Sin Eater in such a manner that they would fall. Once released the model can be Activated normally. A Sin Eater may not target a model with the Devour the Guilty ACTION that it has purged in the same Activation."
         }
       ],
       "options": [],
@@ -18928,7 +18954,9 @@ export const DATASET: Dataset = {
       "roles": [
         "Mercenary"
       ],
-      "keywords": [],
+      "keywords": [
+        "MERCENARY"
+      ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
@@ -18946,9 +18974,8 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [
         {
-          "id": "a4d6-37b4-32e3-3cde",
-          "name": "The Ammunition Sacrement",
-          "description": "Ammunition Sacrament ACTION: A Mendelist Ammo Monk can take an Ammunition Sacrament ACTION. If they do so, take a Risky Success Roll for the Mendelist Ammo Monk. If the roll is a Failure, the Mendelist Ammo Monk’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model within 1\" of the Mendelist Ammo Monk and in their Line of Sight, and then pick one of the following Ammunition Sacraments. The Sacrament you pick applies to the model until the end of its next Activation. * Bullet of the Guided Path Sacrament: Add +1 DICE to rolls for Ranged Attacks made by the model. * Cartridge of his Wrath Sacrament: Add the BLAST 2\" and SHRAPNEL Keywords to Ranged Weapons used by the model that do not have the BLAST or FLAMETHROWER Keywords. * Echo of his Word Sacrament: Add +1 INJURY DICE to rolls for Ranged Attacks made by the model ."
+          "name": "Ammunition Sacrament ACTION",
+          "description": "A Mendelist Ammo Monk can take an Ammunition Sacrament ACTION. If they do so, take a Risky Success Roll for the Mendelist Ammo Monk. If the roll is a Failure, the Mendelist Ammo Monk’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model within 1\" of the Mendelist Ammo Monk and in their Line of Sight, and then pick one of the following Ammunition Sacraments. The Sacrament you pick applies to the model until the end of its next Activation. A model cannot have more than one Sacrament at any given time. Bullet of the Guided Path Sacrament: Add the IGNORE COVER and IGNORE LONG RANGE Keywords to Ranged Attacks made by Ranged Weapons used by the model. Cartridge of his Wrath Sacrament: Add the BLAST 2” and SHRAPNEL Keywords to Ranged Weapons used by the model that do not have the AUTOMATIC, BLAST, HEAVY, or FLAMETHROWER Keywords. Echo of his Word Sacrament: Add +1 INJURY DICE to rolls for Ranged Attacks made by the model."
         },
         {
           "id": "d1bd-c32a-6365-587a",
@@ -19527,7 +19554,10 @@ export const DATASET: Dataset = {
       "roles": [
         "Mercenary"
       ],
-      "keywords": [],
+      "keywords": [
+        "MERCENARY",
+        "NEGATE FEAR"
+      ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
@@ -19745,7 +19775,11 @@ export const DATASET: Dataset = {
       "roles": [
         "Mercenary"
       ],
-      "keywords": [],
+      "keywords": [
+        "MERCENARY",
+        "FIRETEAM (see Sworn Brethren)",
+        "IGNORE OFF-HAND WEAPON"
+      ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
@@ -19868,13 +19902,14 @@ export const DATASET: Dataset = {
         "Mercenary"
       ],
       "keywords": [
+        "MERCENARY",
         "GOLEM"
       ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
         "movementType": "Infantry",
-        "ranged": "+1 Dice",
+        "ranged": "+2 DICE",
         "melee": "+1 Dice",
         "armour": "-2",
         "base": "40mm"
@@ -19948,8 +19983,9 @@ export const DATASET: Dataset = {
         "Mercenary"
       ],
       "keywords": [
-        "DEMONIC",
+        "MERCENARY",
         "ARTIFICIAL",
+        "DEMONIC",
         "FEAR"
       ],
       "stats": {
@@ -19969,19 +20005,20 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [
         {
-          "id": "fa5c-f8eb-7439-8da9",
           "name": "Barbed Embrace",
-          "description": "An enemy model within 1\" of a Goetic Warlock cannot take a Retreat ACTION."
+          "description": "An enemy model within 1” of a Goetic Warlock cannot take a Retreat ACTION. In addition, place 1 BLOOD MARKER next to enemy models that Activate within 1” of a Goetic Warlock."
         },
         {
-          "id": "7e69-bf1d-40d7-7b3c",
-          "name": "Goetic Portal",
-          "description": "ACTION: A Goetic Warlock can take a Goetic Portal ACTION. If they do so, take a Risky Success Roll for the Goetic Warlock with +1 DICE. If the roll is a Failure, the Goetic Warlock’s Activation ends. If the roll is a Success or Critical Success, you can pick up the Goetic Warlock and deploy them on the battlefield anywhere within 6\" of the location they originally occupied (measured from the centre of its base to the centre of its base). If this is impossible for any reason, the Goetic Warlock must stay in their original position. Note that the Goetic Warlock can redeploy even if they are down or within 1\" of an enemy model (in which case the enemy model cannot make a Melee Attack before the Goetic Warlock is redeployed), and can deploy within 1\" of an enemy model. In addition, if the roll is a Success or Critical Success and the Goetic Warlock is within 1\" of any enemy models mounted on a 32mm base or smaller, then the Goetic Warlock can take 1 of the enemy models with them. If they do so, you must deploy the Goetic Warlock first and then deploy the enemy model within 1\" of the Goetic Warlock. If you cannot deploy the enemy model within 1\" of the Goetic Warlock, then the enemy model stays in its original position."
+          "name": "Goetic Portal | Spell (Cost 2) | Goetic Warlock only",
+          "description": "You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, pick up the Goetic Warlock and deploy it anywhere on the battlefield within 6” of the location it originally occupied (measured from the centre of its base to the centre of its base). This does not count as Moving or Retreating for the purposes of other rules. In addition, if the Goetic Warlock is within 1” of any enemy models on a base that is 32mm or smaller, then the Goetic Warlock can take 1 of the enemy models with it. If you do so, you must deploy the Goetic Warlock first and then deploy the enemy model within 1” of the Goetic Warlock. If you cannot deploy the enemy model within 1” of the Goetic Warlock due to terrain or other models, then the enemy model stays in its original location. Note that you can deploy the enemy model within 1” of the Goetic Warlock in such a manner that they would fall"
         },
         {
-          "id": "2aad-9b8c-b329-c74e",
-          "name": "Goetic Gaze",
-          "description": "ACTION: A Goetic Warlock can take a Goetic Gaze ACTION. If they do so, take a Success Roll for the Goetic Warlock. If the roll is a Failure, nothing happens. If the roll is a Success, place 1 BLOOD MARKER next to an enemy model within 24\" of the Goetic Warlock and in their Line of Sight. If the roll is a Critical Success, place 2 BLOOD MARKERS next to an enemy model within 24\" of the Goetic Warlock and in their Line of Sight instead of only 1."
+          "name": "Necrotic Gaze | Spell (Cost 0) | Goetic Warlock only",
+          "description": "You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, make a Ranged Attack with a Range of 24”. If the Success Roll for the Ranged Attack is a Success or Critical Success, do not make an Injury Roll. Instead, double the number of BLOOD MARKERS the target model has (a model still cannot have more than 6 BLOOD MARKERS). If the target model has no BLOOD MARKERS, place 1 BLOOD MARKER next to them."
+        },
+        {
+          "name": "Disturbing Presence",
+          "description": "Your opponent cannot remove BLOOD MARKERS from models they own whilst they are within 1” of a Goetic Warlock."
         }
       ],
       "options": [],
@@ -53432,7 +53469,7 @@ export const DATASET: Dataset = {
     {
       "name": "MERCENARY",
       "type": "Effect",
-      "description": "This model is a Mercenary and can be recruited by various Factions. Mercenaries do not benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated Attack rule, including Warband Variant special rules. They do count as friendly models for the purposes of other rules used by their Warband unless stated otherwise. In a campaign, this includes counting towards Threshold Limits and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out of Action, being Promoted and gaining Experience Points, and so on."
+      "description": "This model is a Mercenary and can be recruited by various Factions. Mercenaries do not benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated Attack rule, including Warband Variant special rules, such as the Éire Rangers Light Infantry rule. They do count as friendly models for the purposes of other rules used by their Warband, such as the Kingdom of Alba Assault Detachment Bagpipe rules, unless stated otherwise. In a campaign, this includes counting towards Threshold Limits and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out of Action, being Promoted and gaining Experience Points, and so on. A Mercenaries’ Battlekit cannot be removed or lost over the course of the campaign for any reason, and they cannot have any other Battlekit. Note that the Injury Modifier for any Armour they have has been included in the model’s Profile."
     }
   ],
   "scenarios": [

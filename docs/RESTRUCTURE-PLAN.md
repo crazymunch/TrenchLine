@@ -68,9 +68,42 @@ with all 7 buttons at exactly 44px.
 | 1.4a | Parse the rulebook's warband entries and variants | ✅ `scripts/lib/parse-warbands.mjs` |
 | 1.5 | New entity model | ✅ `src/types/catalogue.ts` |
 | 1.6 | Layer engine + provenance stamping | ✅ `scripts/lib/layers.mjs` |
-| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 the four Grail Strains done; Amalgam/Thrall entry replacements and the Mercenary keyword rewrites outstanding |
+| 1.7 | Transcribe `dispatch-01.layer.json` | ✅ 58 ops — Grail Strains, the Amalgam and Grail Thrall entry replacements, and the whole Mercenary section |
 | 1.7a | Parse the 14 Warband Variants | ✅ all 14, with their special rules |
 | 1.7b | Preserve the kept warband | ⬜ deferred to Phase 2 with the roster model |
+
+### 1.7 — the Mercenary section
+
+The Dispatch turns ten entries into MERCENARY units, and the section is the
+longest single piece of errata in the document: nine keyword rows, two costs,
+three statline corrections and eleven ability replacements or additions.
+
+**None of the rules text was retyped.** Every string is cut from
+`trench-dispatch-01-april-2026.txt` by line range and de-wrapped, and each op
+carries the range it came from in `_src`. That is the only way a transcription
+this size can be trusted — and the one place a range was picked by eye it was
+wrong: the MERCENARY glossary entry initially ran one line long and ended
+"…included in the model's Profile. **Combat Biologist**", swallowing the next
+heading. `src/rules/__tests__/dispatch.test.ts` now fails on any description
+that ends with a finished sentence followed by another entry's name, which is
+the signature of exactly that error anywhere in the dataset.
+
+**The costs did not need a maintainer ruling.** The PDF sets the currency as a
+glyph the extraction drops, which is why the Strains carry
+`_costCurrencyConfirmed`. Here it is *derived* instead: the catalogue prices
+every Mercenary in the section in Glory, and on the two entries the Dispatch
+reprints without changing the number — Scripture Guardian 7, Goetic Warlock 4 —
+it matches the catalogue's Glory value exactly. Two independent agreements fix
+the currency; the two numbers that differ are the errata. Those ops carry
+`_costCurrencyDerived`, reported under its own heading, because "confirmed
+against the printed page" is not true of them and a report that overstates how
+a value was established is the same failure as a value with no provenance.
+
+Three things are recorded rather than guessed: the Sister of Saint Cosmas has a
+keyword rewrite and no catalogue entry to target; the Battlekit sentences and
+the Goetic Warlock's Powers paragraph are constraints the entity model has no
+field for; and the recruitment sentences need no ops because the catalogues
+already express recruitment as per-warband visibility modifiers and agree.
 | 1.8 | `rules:verify` | ✅ `scripts/lib/verify.mjs`; fails on unresolved conflicts |
 | 1.9 | `rules:build` → `*.generated.ts` + provenance | ✅ |
 | 1.10 | Define the two rulesets | ✅ `scripts/lib/rulesets.mjs` |
@@ -135,7 +168,7 @@ All four are covered by regression tests.
 | 2.3 | ✅ `UnitOption` support — 315 options across 55 units in 22 groups. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
-| 2.5 | 🟡 Warband creation rules — force mode, Strongbox and the derived Threshold done; Exploration income blocked on AUDIT §1.13 |
+| 2.5 | ✅ Warband creation rules — force mode, Strongbox, the derived Threshold, and Exploration income paid from the derived tables |
 | 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
 | 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
 | 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
@@ -307,9 +340,16 @@ Two rules the old D66 model could not express, both now honoured:
 physical roll typed in produce identical records — which is what lets two
 players in the same battle each use whichever they prefer.
 
-**Still to do:** the post-battle wizard reads `officialRulesData.ts`, not this.
-Migrating it is the remaining half, and the four Skills tables there are still
-fabricated (AUDIT §1.13).
+**Both halves are wired now.** `PostBattleWizardModal` takes its dice count,
+its open tables and its result from `explorationDice` / `explorationTables` /
+`resolveExploration` against the dataset, and `UnitAdvancementModal` reads
+`dataset.campaign.skills`. `officialRulesData.ts` has no exports left — the
+seven tables that used to live there are deleted rather than moved, so an
+import cannot quietly reach for a fabricated one, and
+`npm run rules:audit:campaign` fails the build if any of their names reappears.
+
+The audit now reports `CONFLICT 0  UNBACKED 0` against the catalogue's Trauma
+entries, and 78 derived Exploration and Skills rows.
 - The four entries still unmatched on the seeded warband are all
   `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
   state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are

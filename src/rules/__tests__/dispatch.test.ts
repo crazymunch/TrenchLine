@@ -1,0 +1,152 @@
+import { describe, it, expect } from 'vitest';
+import { DATASET } from '@/data/generated/trenchline.generated';
+
+/**
+ * Trench Dispatch #1, Mercenaries (pp.11–16).
+ *
+ * The Dispatch turns ten entries into MERCENARY units, and the transcription
+ * is long enough — nine keyword rows, two costs, three statlines, eleven
+ * abilities — that spot-checking it by eye is not a check. These assert the
+ * shipped dataset, not the layer file, so they fail if an op stops applying as
+ * well as if it is transcribed wrong.
+ */
+
+const unit = (name: string) => {
+  const u = DATASET.units.find((x) => x.name === name);
+  if (!u) throw new Error(`no unit named ${name}`);
+  return u;
+};
+
+describe('Trench Dispatch #1 — Mercenaries', () => {
+  it('gives every rewritten entry the MERCENARY keyword', () => {
+    const names = [
+      'Combat Biologist', 'Communicant Anti-Tank Hunter', 'Mamluk Faris',
+      'Mendelist Ammo Monk', 'Observer', 'Sin Eater', 'Scripture Guardian',
+      'Goetic Warlock', 'Witchburner',
+    ];
+    const missing = names.filter((n) => !unit(n).keywords.includes('MERCENARY'));
+    expect(missing, 'entries the Dispatch made MERCENARY').toEqual([]);
+  });
+
+  it('drops the faction keyword the Dispatch row omits', () => {
+    // The Sin Eater's row is "MERCENARY, DEMONIC FEAR STRONG TOUGH" — no
+    // HERETIC. That is the change, not an omission: a Mercenary is recruitable
+    // beyond one faction, and no other Mercenary carries a faction keyword.
+    expect(unit('Sin Eater').keywords).toEqual(
+      ['MERCENARY', 'DEMONIC', 'FEAR', 'STRONG', 'TOUGH']);
+    expect(unit('Sin Eater').keywords).not.toContain('HERETIC');
+  });
+
+  it('carries the keyword rows that wrap across two lines', () => {
+    // Both of these lost their last keyword to the PDF's line break the first
+    // time they were read.
+    expect(unit('Mamluk Faris').keywords).toContain('IGNORE OFF-HAND WEAPON');
+    expect(unit('Witchburner').keywords).toContain('NEGATE FIRE');
+  });
+
+  it('prices the two changed Mercenaries in Glory, not Ducats', () => {
+    // The Dispatch prints a bare number; the currency is derived from the
+    // catalogue agreeing on the entries it does not change. Ducats staying 0
+    // is half the assertion — a number written to the wrong currency would
+    // show up here.
+    expect(unit('Observer').cost).toMatchObject({ glory: 5, ducats: 0 });
+    expect(unit('Witchburner').cost).toMatchObject({ glory: 6, ducats: 0 });
+  });
+
+  it('leaves the Mercenaries the Dispatch reprints unchanged', () => {
+    // These two are what fix the currency above: reprinted, same number.
+    expect(unit('Scripture Guardian').cost.glory).toBe(7);
+    expect(unit('Goetic Warlock').cost.glory).toBe(4);
+  });
+
+  it('replaces the statlines the catalogue holds as bare numbers', () => {
+    expect(unit('Witchburner').stats.ranged).toBe('+0 DICE');
+    expect(unit('Witchburner').stats.melee).toBe('+2 DICE');
+    expect(unit('Scripture Guardian').stats.ranged).toBe('+2 DICE');
+  });
+
+  it('gives the Witchburner the four abilities it had none of', () => {
+    expect(unit('Witchburner').abilities.map((a) => a.name)).toEqual(
+      ['Dignified Conduct', 'Divine Judgement ACTION', 'Elitist', 'Found Guilty']);
+  });
+
+  it('replaces the Goetic Warlock spells rather than adding beside them', () => {
+    const names = unit('Goetic Warlock').abilities.map((a) => a.name);
+    // The old names are gone: these are different rules, not rewordings.
+    expect(names).not.toContain('Goetic Gaze');
+    expect(names.some((n) => n.startsWith('Necrotic Gaze'))).toBe(true);
+    expect(names).toContain('Disturbing Presence');
+    expect(names).toHaveLength(4);
+  });
+
+  it('keeps the whole of a wrapped ability, not its first line', () => {
+    const devour = unit('Sin Eater').abilities.find((a) => a.name === 'Devour the Guilty ACTION');
+    expect(devour?.description).toContain('Purge ACTION');
+    expect(devour?.description.endsWith('.')).toBe(true);
+
+    const sacrament = unit('Mendelist Ammo Monk').abilities
+      .find((a) => a.name === 'Ammunition Sacrament ACTION');
+    // All three Sacraments, which are separate ✥ bullets in the source.
+    expect(sacrament?.description).toContain('Bullet of the Guided Path');
+    expect(sacrament?.description).toContain('Cartridge of his Wrath');
+    expect(sacrament?.description).toContain('Echo of his Word');
+  });
+
+  it('restores the MERCENARY glossary sentence the abridgement dropped', () => {
+    const kw = DATASET.keywords.find((k) => k.name === 'MERCENARY');
+    // A campaign rule with mechanical force, absent from the abridged entry.
+    expect(kw?.description).toContain('Battlekit cannot be removed or lost');
+    expect(kw?.description).toContain('cannot have any other Battlekit');
+  });
+});
+
+/**
+ * A guard for the whole class of error, not just the one instance.
+ *
+ * Rules prose is cut out of the PDF text by line range, and an off-by-one at
+ * the end of a block silently swallows the next heading — which is how the
+ * MERCENARY glossary entry first shipped ending "…included in the model's
+ * Profile. Combat Biologist". It reads as a typo and is actually a sign the
+ * extraction boundary is wrong, so the whole block may be suspect.
+ *
+ * Entity names are the headings in this document, so a description that ends
+ * with one is the signature to look for.
+ */
+describe('extracted prose does not swallow the next heading', () => {
+  it('leaves no description ending in a finished sentence plus another entry name', () => {
+    const names = [
+      ...DATASET.units.map((u) => u.name),
+      ...DATASET.weapons.map((w) => w.name),
+    ].filter((n) => n && n.length > 6);
+
+    const bad: string[] = [];
+
+    /*
+      Two conditions, both needed.
+
+      A terminal `.` before the name is what separates a swallowed heading from
+      an ordinary sentence: the MERCENARY entry ended "…in the model's Profile.
+      Combat Biologist", and a heading always follows a finished sentence
+      because it is the start of the next block.
+
+      And the name must belong to some OTHER entry. The Lion of Jabir's
+      Artificial Life reads "Add -1 INJURY DICE to Injury Rolls for a Lion of
+      Jabir" — an ability describing its own unit ends in that unit's name all
+      the time, and flagging those would make the guard noise.
+    */
+    const check = (what: string, owner: string, text?: string) => {
+      if (!text) return;
+      for (const n of names) {
+        if (n === owner) continue;
+        if (text.endsWith(`. ${n}`)) bad.push(`${what} ends with ". ${n}"`);
+      }
+    };
+
+    for (const k of DATASET.keywords) check(`keyword ${k.name}`, k.name, k.description);
+    for (const u of DATASET.units) {
+      for (const a of u.abilities ?? []) check(`${u.name} / ${a.name}`, u.name, a.description);
+    }
+
+    expect(bad, 'descriptions that ran into the next heading').toEqual([]);
+  });
+});

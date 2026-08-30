@@ -4134,8 +4134,7 @@
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "min": {
       "layer": "base",
@@ -4290,8 +4289,7 @@
     },
     "stats.melee": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "stats.armour": {
       "layer": "base",
@@ -4310,8 +4308,7 @@
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "min": {
       "layer": "base",
@@ -37708,6 +37705,96 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Combat Biologist": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Communicant Anti-Tank Hunter": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Mamluk Faris": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Mendelist Ammo Monk": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Observer": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "cost.glory": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Sin Eater": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Scripture Guardian": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.ranged": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Goetic Warlock": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Witchburner": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "cost.glory": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.ranged": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.melee": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
