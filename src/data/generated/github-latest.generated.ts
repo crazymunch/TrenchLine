@@ -50,7 +50,131 @@ export const DATASET: Dataset = {
           "description": "Take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "be7b-e976-b743-e039",
+          "name": "Unending Starvation",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5f9b-de73-1181-b57a",
+          "description": "Agonising Pangs: A model with this Battlekit adds +1” to their Movement Characteristic, and may target themselves with the Ravenous Infection Ability. In addition, if this model is more than 1” away from an enemy model, its first ACTION each Activation must be a Move, Charge or Dash ACTION, moving the maximum distance possible directly towards the nearest enemy model, and charging them if possible. Mutation: Once this Battlekit has been equipped, it cannot be removed or lost over the course of a campaign for any reason.",
+          "constraints": [
+            {
+              "id": "2b52-e347-53eb-0074",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "4ae9-6e62-b943-faeb",
+                    "childName": "The Great Hunger",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "any": [
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "ec39-f328-bad6-a586",
+                        "childName": "Grail Thrall"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "80e3-313d-1c13-05a0",
+                        "childName": "Lord of Tumours"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "43b9-c7fd-4680-3e7a",
+                        "childName": "Plague Knight"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "a6af-5458-9dbb-7dd4",
+                        "childName": "Cradle Thrall"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "stats.movement",
+              "value": "1",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "6c2f-a199-6888-a9bc",
+          "name": "Butcher King",
+          "group": "Butcher Knight Rank",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "ac68-983e-58cf-7e16",
+          "description": "At the end of a battle, if this Plague Knight is not Out of Action and it has taken at least one enemy model Out of Action with a Melee Attack, gain 1 Glory.",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "f807-b028-ccbb-62f2",
+          "name": "Knight Companion of the Feast",
+          "group": "Butcher Knight Rank",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "91d7-add3-1a56-27b5",
+          "description": "Add +1 DICE to Risky Success Roll for a Ravenous Infection ACTION (see Ravenous) if the model taking the ACTION is a friendly model within 3” of this Plague Knight.",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "baf9-ac30-ea10-a539",
+          "name": "Knight of Twin Cleavers",
+          "group": "Butcher Knight Rank",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "b111-b7fe-888e-3532",
+          "description": "This Plague Knight has the IGNORE OFF-HAND Keyword, and its Melee Attacks have the SHRAPNEL Keyword.",
+          "constraints": [],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "f025-ee7a-4125-ce80",
@@ -896,7 +1020,92 @@ export const DATASET: Dataset = {
           "description": "A Lord of Tumours can make a Crushing Blows Melee Attack even if it does not have any Melee Weapons, or instead of using any Melee Weapons that it has. If it does so, this Melee Attack has the CLEAVE 2 Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "be7b-e976-b743-e039",
+          "name": "Unending Starvation",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5f9b-de73-1181-b57a",
+          "description": "Agonising Pangs: A model with this Battlekit adds +1” to their Movement Characteristic, and may target themselves with the Ravenous Infection Ability. In addition, if this model is more than 1” away from an enemy model, its first ACTION each Activation must be a Move, Charge or Dash ACTION, moving the maximum distance possible directly towards the nearest enemy model, and charging them if possible. Mutation: Once this Battlekit has been equipped, it cannot be removed or lost over the course of a campaign for any reason.",
+          "constraints": [
+            {
+              "id": "2b52-e347-53eb-0074",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "4ae9-6e62-b943-faeb",
+                    "childName": "The Great Hunger",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "any": [
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "ec39-f328-bad6-a586",
+                        "childName": "Grail Thrall"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "80e3-313d-1c13-05a0",
+                        "childName": "Lord of Tumours"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "43b9-c7fd-4680-3e7a",
+                        "childName": "Plague Knight"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "a6af-5458-9dbb-7dd4",
+                        "childName": "Cradle Thrall"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "stats.movement",
+              "value": "1",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "14da-6cb8-f66e-7ad6",
@@ -1120,7 +1329,92 @@ export const DATASET: Dataset = {
           "description": "Your opponent cannot spend a Desiccated Husk’s INFECTION MARKERS, unless they are converting an Injury Roll into a Bloodbath Roll."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "be7b-e976-b743-e039",
+          "name": "Unending Starvation",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5f9b-de73-1181-b57a",
+          "description": "Agonising Pangs: A model with this Battlekit adds +1” to their Movement Characteristic, and may target themselves with the Ravenous Infection Ability. In addition, if this model is more than 1” away from an enemy model, its first ACTION each Activation must be a Move, Charge or Dash ACTION, moving the maximum distance possible directly towards the nearest enemy model, and charging them if possible. Mutation: Once this Battlekit has been equipped, it cannot be removed or lost over the course of a campaign for any reason.",
+          "constraints": [
+            {
+              "id": "2b52-e347-53eb-0074",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "4ae9-6e62-b943-faeb",
+                    "childName": "The Great Hunger",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "any": [
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "ec39-f328-bad6-a586",
+                        "childName": "Grail Thrall"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "80e3-313d-1c13-05a0",
+                        "childName": "Lord of Tumours"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "43b9-c7fd-4680-3e7a",
+                        "childName": "Plague Knight"
+                      },
+                      {
+                        "type": "instanceOf",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "model",
+                        "childId": "a6af-5458-9dbb-7dd4",
+                        "childName": "Cradle Thrall"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "stats.movement",
+              "value": "1",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "d823-e8a8-3761-c40e",
@@ -1357,7 +1651,250 @@ export const DATASET: Dataset = {
           "description": "Mother’s Call ACTION: A Matagot Hag can take a Mother’s Call ACTION. If it does so, you can remove any number of INFECTION MARKERS from any models (friend or foe) within 18” of the Matagot Hag. For each INFECTION MARKER you remove, you can then carry out one of the following Commands with a Ravenous that is within 8” of the Matagot Hag. A model cannot be given more than 1 Command each Turn, but carrying out a Command does not stop it from also being Activated in the same Turn (before or after the Command was issued). * Feast Command: The model carries out a Ravenous Infection ACTION (see Ravenous). Place an additional INFECTION MARKER next to the target if the Risky Success Roll is a Success or Critical Success. * Fight Command: The model carries out a Melee Attack, and adds +1 DICE to the Success Roll. * Follow Command: The model carries out a Move (it cannot Charge or Retreat)."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "6011-8b98-1e15-0b5a",
+          "name": "Devouring Jaws",
+          "group": "Strains",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "profileId": "f5c3-6c1d-c0b8-98ae",
+          "description": "Devour ACTION: If a model takes a Devour ACTION, it can make a Melee Attack against an enemy model within 1”. A Devour Melee Attack does not use a Melee Weapon and has the CRITICAL Keyword. In addition, if the Devour Melee Attack does not take the targeted model Out of Action, place 1 BLOOD MARKER next to the model taking the Devour ACTION.",
+          "constraints": [
+            {
+              "id": "e134-b94a-cefd-503b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "1203-b33c-33f4-90a1",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "d484-5f11-acd1-1aa9",
+          "name": "Grasping Maw",
+          "group": "Strains",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "3dd1-198c-9222-d273",
+          "description": "Grasp ACTION: If a model takes a Grasp ACTION, take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or Critical Success, pick 1 enemy model that is within 12” of the model taking the Grasp ACTION and in their Line of Sight. You can move the model 3”. The move must be in a straight line directly towards the model taking the Grasp ACTION, and can be used to make the model Jump Down, move within 1” of an enemy or retreat, but you cannot make Melee attacks with models within 1” of it before it retreats. The model stops if the model moves into contact with another model, Difficult, Dangerous or Impassable Terrain, or a terrain piece it cannot cross without having to Climb or Jump Across.",
+          "constraints": [
+            {
+              "id": "20bc-c313-7cdc-9e40",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "cb53-aa4b-07e7-ce87",
+          "name": "Hellfly Host",
+          "group": "Strains",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "222a-bcc4-64d3-9e3a",
+          "description": "A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "ec39-f328-bad6-a586",
+                "childName": "Grail Thrall"
+              }
+            }
+          ]
+        },
+        {
+          "id": "3c6d-4652-2b90-2eba",
+          "name": "Lockjaw Bite",
+          "group": "Strains",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "8e2f-6206-f002-ca2d",
+          "description": "When an enemy model takes a Retreat ACTION within 1” of a model with the Lockjaw Bite Strain, place 1 INFECTION MARKER next to the model taking the retreat (before any melee attacks are made against the retreating model).",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "4ccd-c6f5-49a7-2def",
+          "name": "Papillal Hide",
+          "group": "Strains",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "fa1f-dfd1-8a56-e3d7",
+          "description": "A model with the Papillal Hide Strain does not need to have Line of Sight to a target when it takes a Charge ACTION (other restrictions still apply).",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "5df2-ef54-85ea-adfe",
+                    "childName": "Hound of the Black Grail"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6d9c-b966-ac02-308d",
+          "name": "Rotten Cutters",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "996d-e33e-37da-be95",
+          "description": "A model with the Rotten Cutters Strain adds the CLEAVE 2 Keyword to Melee Attacks it makes.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a657-8944-aecd-713d",
+                    "childName": "Matagot Hag"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e562-cf16-fb43-a408",
+          "name": "Unending Starvation",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "3940-d73e-4b94-8caa",
+          "description": "A model with the Unending Starvation Strain adds +1” to their Movement Characteristic.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a657-8944-aecd-713d",
+                    "childName": "Matagot Hag"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "80e3-313d-1c13-05a0",
+                    "childName": "Lord of Tumours"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "43b9-c7fd-4680-3e7a",
+                    "childName": "Plague Knight"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "642a-ff71-0b2e-76db-min",
@@ -1548,7 +2085,250 @@ export const DATASET: Dataset = {
           "description": "Add -2 INJURY DICE to Injury Rolls for a Gregory Gula unless the attack as the FIRE Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "6011-8b98-1e15-0b5a",
+          "name": "Devouring Jaws",
+          "group": "Strains",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "profileId": "f5c3-6c1d-c0b8-98ae",
+          "description": "Devour ACTION: If a model takes a Devour ACTION, it can make a Melee Attack against an enemy model within 1”. A Devour Melee Attack does not use a Melee Weapon and has the CRITICAL Keyword. In addition, if the Devour Melee Attack does not take the targeted model Out of Action, place 1 BLOOD MARKER next to the model taking the Devour ACTION.",
+          "constraints": [
+            {
+              "id": "e134-b94a-cefd-503b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "1203-b33c-33f4-90a1",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "d484-5f11-acd1-1aa9",
+          "name": "Grasping Maw",
+          "group": "Strains",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "3dd1-198c-9222-d273",
+          "description": "Grasp ACTION: If a model takes a Grasp ACTION, take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or Critical Success, pick 1 enemy model that is within 12” of the model taking the Grasp ACTION and in their Line of Sight. You can move the model 3”. The move must be in a straight line directly towards the model taking the Grasp ACTION, and can be used to make the model Jump Down, move within 1” of an enemy or retreat, but you cannot make Melee attacks with models within 1” of it before it retreats. The model stops if the model moves into contact with another model, Difficult, Dangerous or Impassable Terrain, or a terrain piece it cannot cross without having to Climb or Jump Across.",
+          "constraints": [
+            {
+              "id": "20bc-c313-7cdc-9e40",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "cb53-aa4b-07e7-ce87",
+          "name": "Hellfly Host",
+          "group": "Strains",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "222a-bcc4-64d3-9e3a",
+          "description": "A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "ec39-f328-bad6-a586",
+                "childName": "Grail Thrall"
+              }
+            }
+          ]
+        },
+        {
+          "id": "3c6d-4652-2b90-2eba",
+          "name": "Lockjaw Bite",
+          "group": "Strains",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "8e2f-6206-f002-ca2d",
+          "description": "When an enemy model takes a Retreat ACTION within 1” of a model with the Lockjaw Bite Strain, place 1 INFECTION MARKER next to the model taking the retreat (before any melee attacks are made against the retreating model).",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "4ccd-c6f5-49a7-2def",
+          "name": "Papillal Hide",
+          "group": "Strains",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "fa1f-dfd1-8a56-e3d7",
+          "description": "A model with the Papillal Hide Strain does not need to have Line of Sight to a target when it takes a Charge ACTION (other restrictions still apply).",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "5df2-ef54-85ea-adfe",
+                    "childName": "Hound of the Black Grail"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6d9c-b966-ac02-308d",
+          "name": "Rotten Cutters",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "996d-e33e-37da-be95",
+          "description": "A model with the Rotten Cutters Strain adds the CLEAVE 2 Keyword to Melee Attacks it makes.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a657-8944-aecd-713d",
+                    "childName": "Matagot Hag"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e562-cf16-fb43-a408",
+          "name": "Unending Starvation",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "3940-d73e-4b94-8caa",
+          "description": "A model with the Unending Starvation Strain adds +1” to their Movement Characteristic.",
+          "constraints": [],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "ec39-f328-bad6-a586",
+                    "childName": "Grail Thrall"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a657-8944-aecd-713d",
+                    "childName": "Matagot Hag"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "80e3-313d-1c13-05a0",
+                    "childName": "Lord of Tumours"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "43b9-c7fd-4680-3e7a",
+                    "childName": "Plague Knight"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "7480-0914-6929-e8eb",
@@ -1618,7 +2398,451 @@ export const DATASET: Dataset = {
           "description": "Add -1 DICE to Injury Rolls for a Tawkin Homunculus."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "222e-037b-dbbc-151e",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "4c9e-062e-f51a-93be",
+          "description": "The Homunculus gains a new movement mode: 8”/Flying",
+          "constraints": [
+            {
+              "id": "ee47-fe1d-de03-55f1",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "ea83-289f-44de-19e1",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "98b7-cd9b-b5e0-545c",
+          "description": "Attacks made against the Homunculus that have the Keywords FIRE and/or GAS suffer a -1 DICE penalty to injure it. Also, the Homunculus does not suffer additional BLOOD MARKERS from attacks with Keywords FIRE and/or GAS.",
+          "constraints": [
+            {
+              "id": "7dab-7760-f51f-b28d",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "dc6d-d5d5-6323-e6c3",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "d4da-6045-8e7b-d72c",
+          "description": "The Homunculus can buy and wield any weapon allowed in the Iron Sultanate warband or House of Wisdom list, though they cannot select ELITE only items, grenades or items limited to specific units (such as Assassins). They can also carry a Trench Shield or a Fire Shield. This will apply to the Additional Arms formula as well. Cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "39d9-a297-d086-71e4",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "222e-037b-dbbc-151e",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "fe96-3446-f665-329f",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "d260-c66e-484b-69de",
+          "description": "The Homunculus gains the Keyword FIRETEAM along with one model of your choice in the Warband. The other model can only form a Fireteam with this Homunculi, not with any other models.",
+          "constraints": [
+            {
+              "id": "2bed-677c-850c-f1f1",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "2062-5f34-83d0-3e52",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "ba6f-897b-11b6-1d7f",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "d503-592f-a457-3393",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "222e-037b-dbbc-151e",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "2062-5f34-83d0-3e52",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "52dd-8148-fabf-d590",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "8c1c-31af-12e4-be07",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. It now has a base size of 32mm (or 50mm if it also has Massive size). The Homunculus gains +1 DICE to its Melee characteristic and the Keyword STRONG.",
+          "constraints": [
+            {
+              "id": "db14-193e-8eb7-911c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "101f-2c0b-c1a9-127e",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "ff75-8f71-1809-bbb1",
+          "description": "Whether by captivating beauty or a terrifying appearance, this Homunculus gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "184d-7b22-3cd4-8941",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "0b34-115a-118f-e8df",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "eb80-e167-6fdd-3bbd",
+          "description": "The Homunculus can perform an additional attack ACTION in Melee or Ranged combat without any penalty. Therefore, if making attacks with three melee weapons, only a single weapon would need to be declared an Off-Hand weapon (suffering the appropriate penalties). It has three hands to carry weapons if combined with Human Hands, and may equip weapons and a shield in any combination, as long as it has hands free to do so. In this case the Homunculi can make up to two Ranged Attack ACTIONS (if it has sufficient weapons and number of hands to carry them), and up to three Melee Attack ACTIONS (if armed with three one-handed weapons); or one Melee Attack ACTION with a two-handed weapon and one Melee Attack ACTION with a one-handed weapon.",
+          "constraints": [
+            {
+              "id": "a681-ac77-b7a4-4137",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "9666-fad2-78f1-665e",
+          "name": "Additional Head",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "dc7f-ce80-0d68-a846",
+          "description": "The Homunculus has two heads and therefore can have two sets of eyes via Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "2762-9edb-02a8-aaa5",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "82bd-3a8c-942f-00f1",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "df0e-8429-f220-7a6d",
+          "description": "The Homunculus adds +1 DICE to its Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "a95d-9570-631b-289e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "d0fc-afe3-d595-8b26",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "c497-c6e1-adda-b7a1",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. It can now buy and use Equipment from the Sultanate Warband Armoury as long as it is not limited to ELITE models. Note that one helmet protects a Homunculus with two heads normally and the Two Heads Formula does not allow the purchase of two different kinds of headgear.",
+          "constraints": [
+            {
+              "id": "f1a7-143c-e102-afb1",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "6de1-e878-02f0-d31c",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "90c0-4c5b-0304-32ff",
+          "description": "Can only be bought if the Homunculus already has the Human Hands, Inhuman Strength and Massive Size Formulas. The Homunculus now has a Base Size of 60mm and it can now use one Brazen Bull Only weapon.",
+          "constraints": [
+            {
+              "id": "73a2-7091-2c4e-248a",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc6d-d5d5-6323-e6c3",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "52dd-8148-fabf-d590",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2062-5f34-83d0-3e52",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "00dd-2b7f-8017-d689",
+          "name": "Regenerative",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "93ea-d8d0-111f-aac7",
+          "description": "The Homunculus has an astonishing healing factor and can remove one BLOOD MARKER every time it is Activated, if it has any.",
+          "constraints": [
+            {
+              "id": "786f-df11-723f-ff64",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "2dbd-0b65-e9f7-2a6d",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6684-f89f-290b-d793",
+          "description": "Enemies suffer -1 DICE to hit the Homunculus in Melee. Does not affect Sniper Priests or enemies with the keyword BLACK GRAIL. Cannot be combined with Hawk Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "718b-357a-b930-f06d",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "4074-5e11-5f6c-1982",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "eaa2-65f0-d6b2-4d22",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. It can add +1 DICE to its Ranged Attack characteristic. Cannot be combined with Hypnotic Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "b8b1-51b7-986f-09ad",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "df57-0935-69d8-9112",
@@ -1816,7 +3040,689 @@ export const DATASET: Dataset = {
       "min": null,
       "max": 1,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "62e8-2201-bf47-9ce4",
+          "name": "Proud Defiance",
+          "group": "Pride",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "dfb0-d9a0-c918-44a6",
+          "description": "You do not have to take Morale Checks if your Warband has at least 1 model with this Goetic Ability on the battlefield.",
+          "constraints": [
+            {
+              "id": "8ddf-d23f-076b-6408",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4d5b-7911-9dd5-c162",
+          "name": "Envious Eyes",
+          "group": "Envy",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a88f-3312-e953-2b75",
+          "description": "You can purchase 1 piece of Battlekit from the New Antioch, Trench Pilgrims, or Iron Sultanate Armouries for a model with this Goetic Ability. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason.",
+          "constraints": [
+            {
+              "id": "19bd-463a-8ae7-4d7f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4259-ef97-260c-09fd",
+          "name": "Belly of the Beast",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5976-ff11-d2d8-06e7",
+          "description": "After making a Melee Attack that targets a model with this Goetic Ability, place 1 BLOOD MARKER next to the attacking model as long as at least 1 BLOOD MARKER was placed on the model with this Goetic Ability as a result of the attack.",
+          "constraints": [
+            {
+              "id": "0c17-41a9-0313-f127",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c333-2591-5b6e-e20b",
+          "name": "Eater of the Flesh",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "17dd-a4f8-030e-69ce",
+          "description": "After making a Melee Attack for a model with this Goetic Ability, remove 1 BLOOD MARKER from the model for each BLOOD MARKER that is placed on the target model as a result of the attack. This Goetic Ability does not affect attacks that target an enemy model with the BLACK GRAIL or DEMONIC Keywords.",
+          "constraints": [
+            {
+              "id": "a49a-fca8-af5f-5de3",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8281-11c9-d2ce-7491",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "041a-6dec-d0f5-112f",
+          "name": "Forbidden Pleasures",
+          "group": "Lust",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bab7-f552-bd8e-ba33",
+          "description": "You can use this Goetic Ability at the start of each game, before deployment. For each model in your Warband that has this Goetic Ability, you can pick a model from your Warband that does not have the DEMONIC Keyword. Place 3 BLOOD MARKERS next to each model that you pick.",
+          "constraints": [
+            {
+              "id": "a4de-eddb-c98c-704f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ba1-8469-e3dc-4a0a",
+          "name": "Body of Gold",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a418-90fb-397f-0e0d",
+          "description": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means",
+          "constraints": [
+            {
+              "id": "b500-1d3a-7832-f43c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "96dd-3ff7-f98a-fa28",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            },
+            {
+              "op": "remove",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "scope": "model"
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "c15a-8839-8c4e-c312",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "c266-b78b-c656-aca7",
+          "name": "Greedy Hearts",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a406-a134-08b6-b9d1",
+          "description": "At the start of each game, after both sides have deployed, place 1 BLESSING MARKER next to a model with this Goetic Ability for each enemy model that is worth a total of 150 ducats or more (including the cost of their Battlekit, etc).",
+          "constraints": [
+            {
+              "id": "fb10-31b3-40c7-9f54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8541-dccf-a495-4044",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c456-4e7d-3c7a-50cc",
+          "name": "Charge of Hatred",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "92c7-67e1-2864-ce84",
+          "description": "When a model with this Goetic Ability makes a Charge it counts as having Movement Characteristic of 12\". Do not roll a D6 to determine its Charge Bonus, but in all other regards carry out the Charge normally (i.e. Difficult terrain will slow the model down, it will have to Jump across gaps, and so on). In addition, unless the target of the charge is the closest enemy model, you must take a Risky Success Roll for the model before making the charge move. If the roll is a Failure, the model cannot move and its Activation ends. If the roll is a Success, it can carry out the Charge normally.",
+          "constraints": [
+            {
+              "id": "c566-35f9-959d-af0e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "a754-16fe-b555-57f8",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "647a-a5b2-f767-2c3d",
+          "name": "Lesser Mark of Cain",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "c14a-132c-4527-0318",
+          "description": "A model with this Goetic Ability has the -1 INJURY DICE Keyword.",
+          "constraints": [
+            {
+              "id": "1565-112b-555a-2aaf",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "0cb2-79d3-6068-2460",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "2603-c881-7cca-44d9",
+          "name": "Blind Rage",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6e0c-74b8-b932-4a49",
+          "description": "Add +1 DICE to the Risky Success Roll for a model with this Goetic Ability that is taking a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "058e-4401-b033-7496",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "07ca-ae17-1468-32b9",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "5da1-9568-2d09-2030",
@@ -1991,7 +3897,689 @@ export const DATASET: Dataset = {
       "min": null,
       "max": 1,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "62e8-2201-bf47-9ce4",
+          "name": "Proud Defiance",
+          "group": "Pride",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "dfb0-d9a0-c918-44a6",
+          "description": "You do not have to take Morale Checks if your Warband has at least 1 model with this Goetic Ability on the battlefield.",
+          "constraints": [
+            {
+              "id": "8ddf-d23f-076b-6408",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4d5b-7911-9dd5-c162",
+          "name": "Envious Eyes",
+          "group": "Envy",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a88f-3312-e953-2b75",
+          "description": "You can purchase 1 piece of Battlekit from the New Antioch, Trench Pilgrims, or Iron Sultanate Armouries for a model with this Goetic Ability. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason.",
+          "constraints": [
+            {
+              "id": "19bd-463a-8ae7-4d7f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4259-ef97-260c-09fd",
+          "name": "Belly of the Beast",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5976-ff11-d2d8-06e7",
+          "description": "After making a Melee Attack that targets a model with this Goetic Ability, place 1 BLOOD MARKER next to the attacking model as long as at least 1 BLOOD MARKER was placed on the model with this Goetic Ability as a result of the attack.",
+          "constraints": [
+            {
+              "id": "0c17-41a9-0313-f127",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c333-2591-5b6e-e20b",
+          "name": "Eater of the Flesh",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "17dd-a4f8-030e-69ce",
+          "description": "After making a Melee Attack for a model with this Goetic Ability, remove 1 BLOOD MARKER from the model for each BLOOD MARKER that is placed on the target model as a result of the attack. This Goetic Ability does not affect attacks that target an enemy model with the BLACK GRAIL or DEMONIC Keywords.",
+          "constraints": [
+            {
+              "id": "a49a-fca8-af5f-5de3",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8281-11c9-d2ce-7491",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "041a-6dec-d0f5-112f",
+          "name": "Forbidden Pleasures",
+          "group": "Lust",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bab7-f552-bd8e-ba33",
+          "description": "You can use this Goetic Ability at the start of each game, before deployment. For each model in your Warband that has this Goetic Ability, you can pick a model from your Warband that does not have the DEMONIC Keyword. Place 3 BLOOD MARKERS next to each model that you pick.",
+          "constraints": [
+            {
+              "id": "a4de-eddb-c98c-704f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ba1-8469-e3dc-4a0a",
+          "name": "Body of Gold",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a418-90fb-397f-0e0d",
+          "description": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means",
+          "constraints": [
+            {
+              "id": "b500-1d3a-7832-f43c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "96dd-3ff7-f98a-fa28",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            },
+            {
+              "op": "remove",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "scope": "model"
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "c15a-8839-8c4e-c312",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "c266-b78b-c656-aca7",
+          "name": "Greedy Hearts",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a406-a134-08b6-b9d1",
+          "description": "At the start of each game, after both sides have deployed, place 1 BLESSING MARKER next to a model with this Goetic Ability for each enemy model that is worth a total of 150 ducats or more (including the cost of their Battlekit, etc).",
+          "constraints": [
+            {
+              "id": "fb10-31b3-40c7-9f54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8541-dccf-a495-4044",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c456-4e7d-3c7a-50cc",
+          "name": "Charge of Hatred",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "92c7-67e1-2864-ce84",
+          "description": "When a model with this Goetic Ability makes a Charge it counts as having Movement Characteristic of 12\". Do not roll a D6 to determine its Charge Bonus, but in all other regards carry out the Charge normally (i.e. Difficult terrain will slow the model down, it will have to Jump across gaps, and so on). In addition, unless the target of the charge is the closest enemy model, you must take a Risky Success Roll for the model before making the charge move. If the roll is a Failure, the model cannot move and its Activation ends. If the roll is a Success, it can carry out the Charge normally.",
+          "constraints": [
+            {
+              "id": "c566-35f9-959d-af0e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "a754-16fe-b555-57f8",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "647a-a5b2-f767-2c3d",
+          "name": "Lesser Mark of Cain",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "c14a-132c-4527-0318",
+          "description": "A model with this Goetic Ability has the -1 INJURY DICE Keyword.",
+          "constraints": [
+            {
+              "id": "1565-112b-555a-2aaf",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "0cb2-79d3-6068-2460",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "2603-c881-7cca-44d9",
+          "name": "Blind Rage",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6e0c-74b8-b932-4a49",
+          "description": "Add +1 DICE to the Risky Success Roll for a model with this Goetic Ability that is taking a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "058e-4401-b033-7496",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "07ca-ae17-1468-32b9",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "fbca-352e-df39-8dd7",
@@ -2151,7 +4739,237 @@ export const DATASET: Dataset = {
       "min": null,
       "max": 1,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "3ddf-9a2c-9351-f29c",
@@ -2341,7 +5159,563 @@ export const DATASET: Dataset = {
       "min": null,
       "max": 3,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "62e8-2201-bf47-9ce4",
+          "name": "Proud Defiance",
+          "group": "Pride",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "dfb0-d9a0-c918-44a6",
+          "description": "You do not have to take Morale Checks if your Warband has at least 1 model with this Goetic Ability on the battlefield.",
+          "constraints": [
+            {
+              "id": "8ddf-d23f-076b-6408",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4d5b-7911-9dd5-c162",
+          "name": "Envious Eyes",
+          "group": "Envy",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a88f-3312-e953-2b75",
+          "description": "You can purchase 1 piece of Battlekit from the New Antioch, Trench Pilgrims, or Iron Sultanate Armouries for a model with this Goetic Ability. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason.",
+          "constraints": [
+            {
+              "id": "19bd-463a-8ae7-4d7f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4259-ef97-260c-09fd",
+          "name": "Belly of the Beast",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5976-ff11-d2d8-06e7",
+          "description": "After making a Melee Attack that targets a model with this Goetic Ability, place 1 BLOOD MARKER next to the attacking model as long as at least 1 BLOOD MARKER was placed on the model with this Goetic Ability as a result of the attack.",
+          "constraints": [
+            {
+              "id": "0c17-41a9-0313-f127",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c333-2591-5b6e-e20b",
+          "name": "Eater of the Flesh",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "17dd-a4f8-030e-69ce",
+          "description": "After making a Melee Attack for a model with this Goetic Ability, remove 1 BLOOD MARKER from the model for each BLOOD MARKER that is placed on the target model as a result of the attack. This Goetic Ability does not affect attacks that target an enemy model with the BLACK GRAIL or DEMONIC Keywords.",
+          "constraints": [
+            {
+              "id": "a49a-fca8-af5f-5de3",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8281-11c9-d2ce-7491",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "041a-6dec-d0f5-112f",
+          "name": "Forbidden Pleasures",
+          "group": "Lust",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bab7-f552-bd8e-ba33",
+          "description": "You can use this Goetic Ability at the start of each game, before deployment. For each model in your Warband that has this Goetic Ability, you can pick a model from your Warband that does not have the DEMONIC Keyword. Place 3 BLOOD MARKERS next to each model that you pick.",
+          "constraints": [
+            {
+              "id": "a4de-eddb-c98c-704f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ba1-8469-e3dc-4a0a",
+          "name": "Body of Gold",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a418-90fb-397f-0e0d",
+          "description": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means",
+          "constraints": [
+            {
+              "id": "b500-1d3a-7832-f43c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "96dd-3ff7-f98a-fa28",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            },
+            {
+              "op": "remove",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "scope": "model"
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "c15a-8839-8c4e-c312",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "c266-b78b-c656-aca7",
+          "name": "Greedy Hearts",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a406-a134-08b6-b9d1",
+          "description": "At the start of each game, after both sides have deployed, place 1 BLESSING MARKER next to a model with this Goetic Ability for each enemy model that is worth a total of 150 ducats or more (including the cost of their Battlekit, etc).",
+          "constraints": [
+            {
+              "id": "fb10-31b3-40c7-9f54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8541-dccf-a495-4044",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c456-4e7d-3c7a-50cc",
+          "name": "Charge of Hatred",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "92c7-67e1-2864-ce84",
+          "description": "When a model with this Goetic Ability makes a Charge it counts as having Movement Characteristic of 12\". Do not roll a D6 to determine its Charge Bonus, but in all other regards carry out the Charge normally (i.e. Difficult terrain will slow the model down, it will have to Jump across gaps, and so on). In addition, unless the target of the charge is the closest enemy model, you must take a Risky Success Roll for the model before making the charge move. If the roll is a Failure, the model cannot move and its Activation ends. If the roll is a Success, it can carry out the Charge normally.",
+          "constraints": [
+            {
+              "id": "c566-35f9-959d-af0e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "a754-16fe-b555-57f8",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "647a-a5b2-f767-2c3d",
+          "name": "Lesser Mark of Cain",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "c14a-132c-4527-0318",
+          "description": "A model with this Goetic Ability has the -1 INJURY DICE Keyword.",
+          "constraints": [
+            {
+              "id": "1565-112b-555a-2aaf",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "0cb2-79d3-6068-2460",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "2603-c881-7cca-44d9",
+          "name": "Blind Rage",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6e0c-74b8-b932-4a49",
+          "description": "Add +1 DICE to the Risky Success Roll for a model with this Goetic Ability that is taking a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "058e-4401-b033-7496",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "07ca-ae17-1468-32b9",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "a095-835e-9689-f1ed",
@@ -2465,7 +5839,739 @@ export const DATASET: Dataset = {
           "description": "Cultists are treated as Yoke Fiends for the purposes of Equipment and the spell Slavemaster. Unlike Yoke Fiends, Cultists can be promoted to ELITE."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "8ba8-5e95-71aa-24e8",
+          "name": "Embraced by the Void",
+          "group": "Advancement",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "90f3-ace3-bdcc-dad4",
+          "description": "Void Cultists learn the Slavemaster Goetic Spell, and may purchase one more Goetic spell if it wishes to.",
+          "constraints": [
+            {
+              "id": "88ab-177a-be50-a62c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "1fda-e6a9-7628-9c49",
+                    "childName": "Fang of the Seething Black",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "30b2-e154-1911-8f5e",
+                    "childName": "Elite Promotion",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        },
+        {
+          "id": "62e8-2201-bf47-9ce4",
+          "name": "Proud Defiance",
+          "group": "Pride",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "dfb0-d9a0-c918-44a6",
+          "description": "You do not have to take Morale Checks if your Warband has at least 1 model with this Goetic Ability on the battlefield.",
+          "constraints": [
+            {
+              "id": "8ddf-d23f-076b-6408",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4d5b-7911-9dd5-c162",
+          "name": "Envious Eyes",
+          "group": "Envy",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a88f-3312-e953-2b75",
+          "description": "You can purchase 1 piece of Battlekit from the New Antioch, Trench Pilgrims, or Iron Sultanate Armouries for a model with this Goetic Ability. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason.",
+          "constraints": [
+            {
+              "id": "19bd-463a-8ae7-4d7f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4259-ef97-260c-09fd",
+          "name": "Belly of the Beast",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5976-ff11-d2d8-06e7",
+          "description": "After making a Melee Attack that targets a model with this Goetic Ability, place 1 BLOOD MARKER next to the attacking model as long as at least 1 BLOOD MARKER was placed on the model with this Goetic Ability as a result of the attack.",
+          "constraints": [
+            {
+              "id": "0c17-41a9-0313-f127",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c333-2591-5b6e-e20b",
+          "name": "Eater of the Flesh",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "17dd-a4f8-030e-69ce",
+          "description": "After making a Melee Attack for a model with this Goetic Ability, remove 1 BLOOD MARKER from the model for each BLOOD MARKER that is placed on the target model as a result of the attack. This Goetic Ability does not affect attacks that target an enemy model with the BLACK GRAIL or DEMONIC Keywords.",
+          "constraints": [
+            {
+              "id": "a49a-fca8-af5f-5de3",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8281-11c9-d2ce-7491",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "041a-6dec-d0f5-112f",
+          "name": "Forbidden Pleasures",
+          "group": "Lust",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bab7-f552-bd8e-ba33",
+          "description": "You can use this Goetic Ability at the start of each game, before deployment. For each model in your Warband that has this Goetic Ability, you can pick a model from your Warband that does not have the DEMONIC Keyword. Place 3 BLOOD MARKERS next to each model that you pick.",
+          "constraints": [
+            {
+              "id": "a4de-eddb-c98c-704f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ba1-8469-e3dc-4a0a",
+          "name": "Body of Gold",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a418-90fb-397f-0e0d",
+          "description": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means",
+          "constraints": [
+            {
+              "id": "b500-1d3a-7832-f43c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "96dd-3ff7-f98a-fa28",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            },
+            {
+              "op": "remove",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "scope": "model"
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "c15a-8839-8c4e-c312",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "c266-b78b-c656-aca7",
+          "name": "Greedy Hearts",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a406-a134-08b6-b9d1",
+          "description": "At the start of each game, after both sides have deployed, place 1 BLESSING MARKER next to a model with this Goetic Ability for each enemy model that is worth a total of 150 ducats or more (including the cost of their Battlekit, etc).",
+          "constraints": [
+            {
+              "id": "fb10-31b3-40c7-9f54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8541-dccf-a495-4044",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c456-4e7d-3c7a-50cc",
+          "name": "Charge of Hatred",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "92c7-67e1-2864-ce84",
+          "description": "When a model with this Goetic Ability makes a Charge it counts as having Movement Characteristic of 12\". Do not roll a D6 to determine its Charge Bonus, but in all other regards carry out the Charge normally (i.e. Difficult terrain will slow the model down, it will have to Jump across gaps, and so on). In addition, unless the target of the charge is the closest enemy model, you must take a Risky Success Roll for the model before making the charge move. If the roll is a Failure, the model cannot move and its Activation ends. If the roll is a Success, it can carry out the Charge normally.",
+          "constraints": [
+            {
+              "id": "c566-35f9-959d-af0e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "a754-16fe-b555-57f8",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "647a-a5b2-f767-2c3d",
+          "name": "Lesser Mark of Cain",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "c14a-132c-4527-0318",
+          "description": "A model with this Goetic Ability has the -1 INJURY DICE Keyword.",
+          "constraints": [
+            {
+              "id": "1565-112b-555a-2aaf",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "0cb2-79d3-6068-2460",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "2603-c881-7cca-44d9",
+          "name": "Blind Rage",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6e0c-74b8-b932-4a49",
+          "description": "Add +1 DICE to the Risky Success Roll for a model with this Goetic Ability that is taking a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "058e-4401-b033-7496",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "07ca-ae17-1468-32b9",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -2775,7 +6881,111 @@ export const DATASET: Dataset = {
           "description": "If an attack made by a Wretched takes an enemy model with the ELITE Keyword out of Action, the Wretched model gains its freedom and is immediately removed from the game. It no longer counts as being part of the Warband for the purposes of Morale Checks, and is removed from the Warband Roster."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "f823-9f28-5302-57af",
@@ -2890,7 +7100,63 @@ export const DATASET: Dataset = {
           "description": "A Pit Locust can make a Melee Attack with the CLEAVE 2 and SHRAPNEL Keywords even though it does not have a Melee Weapon."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "f133-7c3f-8861-2506",
@@ -3019,7 +7285,63 @@ export const DATASET: Dataset = {
           "description": "The rules for making more than one Melee Attack do not apply to a Desecrated Saint. Instead a Desecrated Saint can take 1 Fight ACTION per Activation with each Melee Weapon it is equipped with. The Off-hand Weapon modifier does not apply to any of its Melee Attacks."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "9b1b-be8d-d21d-90ae",
@@ -3225,7 +7547,689 @@ export const DATASET: Dataset = {
           "description": "A Faceless can take The Gift ACTION when it takes an enemy model Out of Action in Melee. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the Faceless’s Activation ends immediately. If the roll is a Success or Critical Success, create a new friendly Cultist armed with a trench club and the same number of Blood Markers on it as the deceased enemy model had. The new Cultist is not counted for the purposes of Morale or any Objectives in the Battle, and dies after the battle has ended."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        },
+        {
+          "id": "62e8-2201-bf47-9ce4",
+          "name": "Proud Defiance",
+          "group": "Pride",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "dfb0-d9a0-c918-44a6",
+          "description": "You do not have to take Morale Checks if your Warband has at least 1 model with this Goetic Ability on the battlefield.",
+          "constraints": [
+            {
+              "id": "8ddf-d23f-076b-6408",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4d5b-7911-9dd5-c162",
+          "name": "Envious Eyes",
+          "group": "Envy",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a88f-3312-e953-2b75",
+          "description": "You can purchase 1 piece of Battlekit from the New Antioch, Trench Pilgrims, or Iron Sultanate Armouries for a model with this Goetic Ability. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason.",
+          "constraints": [
+            {
+              "id": "19bd-463a-8ae7-4d7f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4259-ef97-260c-09fd",
+          "name": "Belly of the Beast",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "5976-ff11-d2d8-06e7",
+          "description": "After making a Melee Attack that targets a model with this Goetic Ability, place 1 BLOOD MARKER next to the attacking model as long as at least 1 BLOOD MARKER was placed on the model with this Goetic Ability as a result of the attack.",
+          "constraints": [
+            {
+              "id": "0c17-41a9-0313-f127",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c333-2591-5b6e-e20b",
+          "name": "Eater of the Flesh",
+          "group": "Gluttony",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "17dd-a4f8-030e-69ce",
+          "description": "After making a Melee Attack for a model with this Goetic Ability, remove 1 BLOOD MARKER from the model for each BLOOD MARKER that is placed on the target model as a result of the attack. This Goetic Ability does not affect attacks that target an enemy model with the BLACK GRAIL or DEMONIC Keywords.",
+          "constraints": [
+            {
+              "id": "a49a-fca8-af5f-5de3",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8281-11c9-d2ce-7491",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "041a-6dec-d0f5-112f",
+          "name": "Forbidden Pleasures",
+          "group": "Lust",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bab7-f552-bd8e-ba33",
+          "description": "You can use this Goetic Ability at the start of each game, before deployment. For each model in your Warband that has this Goetic Ability, you can pick a model from your Warband that does not have the DEMONIC Keyword. Place 3 BLOOD MARKERS next to each model that you pick.",
+          "constraints": [
+            {
+              "id": "a4de-eddb-c98c-704f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "322d-1a69-dc2a-2e26",
+                    "childName": "Sorcerer"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ba1-8469-e3dc-4a0a",
+          "name": "Body of Gold",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a418-90fb-397f-0e0d",
+          "description": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means",
+          "constraints": [
+            {
+              "id": "b500-1d3a-7832-f43c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "96dd-3ff7-f98a-fa28",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            },
+            {
+              "op": "remove",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "scope": "model"
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "c15a-8839-8c4e-c312",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "c266-b78b-c656-aca7",
+          "name": "Greedy Hearts",
+          "group": "Greed",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "a406-a134-08b6-b9d1",
+          "description": "At the start of each game, after both sides have deployed, place 1 BLESSING MARKER next to a model with this Goetic Ability for each enemy model that is worth a total of 150 ducats or more (including the cost of their Battlekit, etc).",
+          "constraints": [
+            {
+              "id": "fb10-31b3-40c7-9f54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "8541-dccf-a495-4044",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c456-4e7d-3c7a-50cc",
+          "name": "Charge of Hatred",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "92c7-67e1-2864-ce84",
+          "description": "When a model with this Goetic Ability makes a Charge it counts as having Movement Characteristic of 12\". Do not roll a D6 to determine its Charge Bonus, but in all other regards carry out the Charge normally (i.e. Difficult terrain will slow the model down, it will have to Jump across gaps, and so on). In addition, unless the target of the charge is the closest enemy model, you must take a Risky Success Roll for the model before making the charge move. If the roll is a Failure, the model cannot move and its Activation ends. If the roll is a Success, it can carry out the Charge normally.",
+          "constraints": [
+            {
+              "id": "c566-35f9-959d-af0e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "a754-16fe-b555-57f8",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "647a-a5b2-f767-2c3d",
+          "name": "Lesser Mark of Cain",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "c14a-132c-4527-0318",
+          "description": "A model with this Goetic Ability has the -1 INJURY DICE Keyword.",
+          "constraints": [
+            {
+              "id": "1565-112b-555a-2aaf",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "0cb2-79d3-6068-2460",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "2603-c881-7cca-44d9",
+          "name": "Blind Rage",
+          "group": "Wrath",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6e0c-74b8-b932-4a49",
+          "description": "Add +1 DICE to the Risky Success Roll for a model with this Goetic Ability that is taking a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "058e-4401-b033-7496",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "07ca-ae17-1468-32b9",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "c8a8-9e5b-ef7d-4d8f",
@@ -3414,7 +8418,237 @@ export const DATASET: Dataset = {
           "description": "Once per turn, whenever a model (friend or foe) is taken Out of Action, the Stalker may choose to instantly appear out of the Model’s corpse. Redeploy it and immediately place it so that the center of its base is at the location that was previously occupied by the center of the base of the removed model. If this is impossible for any reason, the Stalker remains at its original location. This ability can be used at any point during the Battle, even if it is outside of the Stalker’s Activation. Note that if the Stalker starts within 1\" of an enemy model, this is not treated as a Retreat, so the enemy model cannot make a Melee Attack before the Stalker uses that ability."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "e710-ce87-15d3-c8d5",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2809-f11b-4b11-d170",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "5ff9-cbe8-b504-1b2e",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:5ff9-cbe8-b504-1b2e",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        },
+        {
+          "id": "59c0-13d8-450a-c0b4",
+          "name": "Alchemist Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "68e2-bde3-19a9-2980",
+          "description": "Protection From Harm: Add- 1 INJURY DICE to Injury Rolls for attacks made by Weapons with the FIRE or GAS Keywords that target a model that has Alchemist Armour, even if the attacking weapon has the IGNORE ARMOUR Keyword.",
+          "constraints": [
+            {
+              "id": "393d-40f0-82b6-67e2",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "887a-fb7c-9db9-830d",
+                    "childName": "Alchemist Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f3ea-ddbb-b749-1952",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "a4a8-df8c-30ec-877d",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "c2d3-0190-0a94-13bc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            },
+            {
+              "op": "add",
+              "field": "error",
+              "value": "Cannot combine Machine Armor and Shield",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f3ea-ddbb-b749-1952",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64ea-216e-161f-7584",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "1234-6514-2ff2-5b93",
+          "name": "Crown of Hellfire",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "9e48-632e-20ab-14ad",
+          "description": "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword.",
+          "constraints": [
+            {
+              "id": "9e7d-3b38-73d0-12aa",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "d26e-4f50-5a77-99a3",
@@ -3593,7 +8827,107 @@ export const DATASET: Dataset = {
           "description": "Weapons with the FIRE keyword that this model has equipped gain +1 INJURY DICE."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "2daf-dded-85a2-f21a",
@@ -3798,7 +9132,181 @@ export const DATASET: Dataset = {
       "min": 1,
       "max": 1,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "da8a-c360-e7e1-47df",
+          "name": "Puppet Master",
+          "group": "Goetic Power",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "7b33-345f-cdc7-913e",
+          "description": "A Heretic Priest can take a Puppet Master ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the Heretic Priest’s Activation ends immediately. If the roll is a Success or Critical Success, pick 1 model (friend or foe) that is within 12” of the Heretic Priest and in their Line of Sight, apart from the Heretic Priest themselves. You can move the model D6”. The move must be in a straight line, but can be in any direction, and can be used to make the model move within 1” of an enemy, make a retreat move, Climb, Jump, or Jump Down. The model cannot make a Diving Charge and does not count as charging if it finishes the move within 1” of an enemy model.",
+          "constraints": [
+            {
+              "id": "e6dd-64ff-4da4-ade1",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "greaterThan",
+                "value": "0",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "1cb9-408c-58c2-68a9",
+          "name": "The Price of Greed",
+          "group": "Goetic Power",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "c458-b32e-be25-c274",
+          "description": "Worldly wealth becomes the target of this curse, gradually crushing its victim under its weight. A Knights of Avarice Heretic Priest can take a Price of Greed ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the Knights of Avarice Heretic Priest’s Activation ends immediately. If the roll is a Success or Critical Success, make an Injury Roll for an enemy model that is within 12\" of the model taking the Price of Greed ACTION and in its line of sight. Add +1 INJURY DICE to the roll if the Success Roll was a Critical Success, and add +1 DICE to the roll for each -1 INJURY MODIFIER that applies to the target (the -1 INJURY MODIFIER still applies). For example, if the target had Standard Armour with a -1 INJURY MODIFIER, you would add +1 INJURY DICE and a -1 INJURY MODIFIER to the roll.",
+          "constraints": [
+            {
+              "id": "d41b-148f-cbfe-c4f2",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "greaterThan",
+                "value": "0",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "e878-a54e-5461-5f68-min",
@@ -4043,7 +9551,107 @@ export const DATASET: Dataset = {
           "description": "A Death Commando can take a Hide ACTION if they are in contact with a terrain piece that is at least ½\" high. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, the Death Commando’s Activation ends immediately. If the roll is a Success or Critical Success, enemy models cannot choose the Death Commando as the target for a Ranged Attack or Charge until the Death Commando moves, charges, retreats, makes a Ranged Attack, or an enemy model moves within 1.5\" of them. The Death Commando can be hit if they are within the blast radius of a Weapon with the BLAST Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "154a-1d9d-959e-d915",
@@ -4206,7 +9814,107 @@ export const DATASET: Dataset = {
           "description": "All enemy models within 8” of the Chorister suffer an additional -1 DICE for all ACTIONS they attempt."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "a315-a1b6-dd13-ba1c",
@@ -4465,7 +10173,63 @@ export const DATASET: Dataset = {
           "description": "The War Hyena ignores the effects of barbed wire (both difficult and dangerous)."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "105c-8780-b389-2f18",
@@ -4694,7 +10458,107 @@ export const DATASET: Dataset = {
           "description": "Due to rubbing shoulders with their makers every day, Phosphor Witches cannot be promoted to ELITE, as their creators would never allow the indignity."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "ceb2-bf00-2a24-aa1d",
@@ -5031,7 +10895,63 @@ export const DATASET: Dataset = {
           "description": "In a campaign, Wretched can be sold in the Quartermaster Step for 25 ducats plus half the cost in ducats of any Battlekit they have."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "fdf2-72c7-8ada-82f0",
@@ -5087,7 +11007,107 @@ export const DATASET: Dataset = {
       "min": null,
       "max": null,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -5375,7 +11395,107 @@ export const DATASET: Dataset = {
           "description": "This Technomancer is the leader of the Warband."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "f63b-4911-cb7a-2a12",
+          "name": "Plutocracy",
+          "group": "Fireteams",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ab0a-9e55-2b79-c20b",
+          "description": "This model is in a fireteam with a Plutocratic Elite. When acting together, treat Risky Success Rolls as normal Success Rolls",
+          "constraints": [
+            {
+              "id": "7ee9-6695-25dd-e105",
+              "type": "max",
+              "value": 0,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "b264-96ca-b0aa-038c",
+                    "childName": "Plutocracy",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:7ee9-6695-25dd-e105",
+              "value": "1",
+              "origin": "entry"
+            }
+          ]
+        },
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "f9fd-f8bb-f0a6-e390",
@@ -5809,7 +11929,447 @@ export const DATASET: Dataset = {
           "description": "If a Takwin Homunculus is killed in the post-battle sequence, you do not have to remove it from your roster. Instead, you can spend 40 ducats in the following Quartermaster Step to leave it on the Roster."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "fb6e-4676-0313-a505",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "a846-fca2-5d42-8ed2",
+          "description": "The Homunculus gains a new movement mode: 8”/Flying",
+          "constraints": [
+            {
+              "id": "04d1-bcfc-5a44-a8c9",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "374e-def4-9fdd-58fa",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "be6c-be10-e7ae-c32d",
+          "description": "Attacks made against the Homunculus that have the Keywords FIRE and/or GAS suffer a -1 DICE penalty to injure it. Also, the Homunculus does not suffer additional BLOOD MARKERS from attacks with Keywords FIRE and/or GAS.",
+          "constraints": [
+            {
+              "id": "8014-d186-17a9-f1be",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "235c-d4e6-cd18-8574",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "569b-ae5c-dc00-2e64",
+          "description": "The Homunculus can buy and wield any weapon allowed in the Iron Sultanate warband or House of Wisdom list, though they cannot select ELITE only items, grenades or items limited to specific units (such as Assassins). They can also carry a Trench Shield or a Fire Shield. This will apply to the Additional Arms formula as well. Cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "24db-b4b0-4545-e6ec",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "fb6e-4676-0313-a505",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8501-9698-e3e4-1918",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "b146-999e-652c-37cd",
+          "description": "The Homunculus gains the Keyword FIRETEAM along with one model of your choice in the Warband. The other model can only form a Fireteam with this Homunculi, not with any other models.",
+          "constraints": [
+            {
+              "id": "1b1c-1888-61a8-ab4b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "3fb4-b607-7277-c486",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "5742-240c-13ea-02fc",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "c819-0878-6816-b29d",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "fb6e-4676-0313-a505",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3fb4-b607-7277-c486",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "e637-e915-600f-0ed5",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "70ac-7d7a-74d2-44f6",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. It now has a base size of 32mm (or 50mm if it also has Massive size). The Homunculus gains +1 DICE to its Melee characteristic and the Keyword STRONG.",
+          "constraints": [
+            {
+              "id": "1cbb-9998-0db8-d357",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "b210-a78b-2c43-8366",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "4908-d1d0-1e0b-742a",
+          "description": "Whether by captivating beauty or a terrifying appearance, this Homunculus gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "1812-97bb-92e9-6f25",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "6a11-3bd5-d303-dc2b",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "d419-9f55-0708-0571",
+          "description": "The Homunculus can perform an additional attack ACTION in Melee or Ranged combat without any penalty. Therefore, if making attacks with three melee weapons, only a single weapon would need to be declared an Off-Hand weapon (suffering the appropriate penalties). It has three hands to carry weapons if combined with Human Hands, and may equip weapons and a shield in any combination, as long as it has hands free to do so. In this case the Homunculi can make up to two Ranged Attack ACTIONS (if it has sufficient weapons and number of hands to carry them), and up to three Melee Attack ACTIONS (if armed with three one-handed weapons); or one Melee Attack ACTION with a two-handed weapon and one Melee Attack ACTION with a one-handed weapon.",
+          "constraints": [
+            {
+              "id": "aa62-abef-3b8c-5aea",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "c954-2ddb-f552-c976",
+          "name": "Additional Head",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "4792-d0b3-6bde-483c",
+          "description": "The Homunculus has two heads and therefore can have two sets of eyes via Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "b49d-c018-0172-5388",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "7f10-21b2-211e-85aa",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "2efe-624c-9d6a-b743",
+          "description": "The Homunculus adds +1 DICE to its Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "e72e-c9d2-5f43-b90b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "adcc-26c4-07e5-0372",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "52ca-ad85-c4f7-ba4b",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. It can now buy and use Equipment from the Sultanate Warband Armoury as long as it is not limited to ELITE models. Note that one helmet protects a Homunculus with two heads normally and the Two Heads Formula does not allow the purchase of two different kinds of headgear.",
+          "constraints": [
+            {
+              "id": "f769-6af6-fba7-760f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "29e1-35be-2c50-269a",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "baa0-2627-70b5-03b8",
+          "description": "Can only be bought if the Homunculus already has the Human Hands, Inhuman Strength and Massive Size Formulas. The Homunculus now has a Base Size of 60mm and it can now use one Brazen Bull Only weapon.",
+          "constraints": [
+            {
+              "id": "7f01-dfc4-a351-9193",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "235c-d4e6-cd18-8574",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "e637-e915-600f-0ed5",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "3fb4-b607-7277-c486",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ab92-d72f-4403-7943",
+          "name": "Regenerative",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "c7ba-dfeb-57fc-5ba9",
+          "description": "The Homunculus has an astonishing healing factor and can remove one BLOOD MARKER every time it is Activated, if it has any.",
+          "constraints": [
+            {
+              "id": "741b-a8b1-a977-df20",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "d76d-a2f2-be44-29e1",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "b3d5-d96b-24a2-cef6",
+          "description": "Enemies suffer -1 DICE to hit the Homunculus in Melee. Does not affect Sniper Priests or enemies with the keyword BLACK GRAIL. Cannot be combined with Hawk Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "e522-0f76-09a4-10a5",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "7db6-6b99-81a9-064e",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6604-5dbd-50cf-6083",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. It can add +1 DICE to its Ranged Attack characteristic. Cannot be combined with Hypnotic Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "e6ba-91b0-26e8-ed84",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "de31-881e-fc7e-2bf4",
+          "name": "Trench Shrine",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "76e2-0e5b-972a-0f69",
+          "description": "Shrine: After you deploy a model that has Field Shrine, you must set up a Field Shrine terrain piece in the model’s deployment zone. The Field Shrine terrain piece must be at least ½\" tall and mounted on a 40mm base. The Field Shrine is Impassable terrain and cannot be picked up or moved in any way. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and crossed off the Warband Roster (no Injury Roll is required).",
+          "constraints": [
+            {
+              "id": "afd5-4762-b455-6c98",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "035e-c926-5d74-2483",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "ae29-4ce7-8861-4020",
+                "childName": "Trench Shrine: Shrine",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "4c03-6abb-7900-2095",
@@ -6016,7 +12576,549 @@ export const DATASET: Dataset = {
           "description": "If a Takwin Homunculus is killed in the post-battle sequence, you do not have to remove it from your roster. Instead, you can spend 40 ducats in the following Quartermaster Step to leave it on the Roster."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "f5d7-6c47-430c-2666",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "dcc1-4b2d-69a9-224d",
+          "description": "Change this Takwin Homunculus’s Movement Characteristic to 8”/Flying and give it the FLYING Keyword. A Homunculus cannot have the Wings Alchemical Formula if it has the Massive Size Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "1674-62f2-c48d-e189",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "246c-e662-2f58-db1b",
+                "childName": "Massive Size"
+              }
+            }
+          ]
+        },
+        {
+          "id": "f500-e61c-b740-703c",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "a2be-ba4e-81e3-ee95",
+          "description": "Give this Takwin Homunculus the NEGATE FIRE and NEGATE GAS Keywords. In addition, add -1 INJURY DICE to Injury Rolls for attacks with the FIRE or GAS Keywords that target this Takwin Homunculus.",
+          "constraints": [
+            {
+              "id": "c36a-edea-b78a-5ba6",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "c251-4b5c-2ba0-82e0",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "4d8a-f815-3da6-f146",
+          "description": "This Takwin Homunculus can have Ranged and Melee Weapons from the Iron Sultanate Armoury. It can also have a Trench Shield or a Fire Shield. A Homunculus cannot have the Human Hands Alchemical Formula if it has the Wings Alchemical Formula. It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons. * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or two 1-Handed Melee Weapons and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or two 1-Handed Ranged Weapons and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield-combo rule cannot be used for any of its weapons. In addition, when it takes a Fight ACTION it can make 1 Melee Attack with each Melee Weapon that it has, one after the other. If it makes more than 1 attack, the Off-Hand Melee Modifier applies to the last Melee Attack that it makes. When it takes a Shoot ACTION it can make 1 Ranged Attack with up to two Ranged Weapons that it has, one after the other.",
+          "constraints": [
+            {
+              "id": "58b0-d51e-449e-2da5",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "f5d7-6c47-430c-2666",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "d832-e6aa-7c93-32e4",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "f071-7b84-eda1-d2b0",
+          "description": "Give this Takwin Homunculus and one other model in your Warband the FIRETEAM Keyword. The other model can only form a Fireteam with this Homunculus.",
+          "constraints": [
+            {
+              "id": "6ee3-a6d6-c5b7-0308",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "246c-e662-2f58-db1b",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "6dc3-94f4-c882-3834",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "88f5-dd59-4f09-528f",
+              "type": "max",
+              "value": 1,
+              "scope": "self",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "f5d7-6c47-430c-2666",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "246c-e662-2f58-db1b",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "6c4b-c577-6aca-f270",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "c21b-3605-9267-3fbb",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. Give this Takwin Homunculus the STRONG Keyword, change its Melee Characteristic to +1 DICE, and increase its base size to 32mm",
+          "constraints": [
+            {
+              "id": "8ffa-fc76-7c94-c195",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "ec42-1750-48bc-074c",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "bcc6-de73-31ae-56cf",
+          "description": "The formula bestows an alluring beauty or horrifying visage upon the Homunculus. Give this Takwin Homunculus FEAR Keyword",
+          "constraints": [
+            {
+              "id": "40d6-4962-8d70-50cc",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "5dc9-f57b-d3e0-5003",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "d227-b378-83da-84ac",
+          "description": "This Takwin Homunculus adds the CLEAVE 2 Keyword to attacks made with its Pummelling Blows Ability.",
+          "constraints": [
+            {
+              "id": "3daa-ac8f-7f92-fe30",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "7c26-046f-1b11-cf08",
+          "name": "Two Heads",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "a797-7607-858a-8c56",
+          "description": "This Takwin Homunculus can have both the Hawk Eyes and Hypnotic Eyes Alchemical Formulas.",
+          "constraints": [
+            {
+              "id": "affa-0d38-db47-4c8e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "4723-deed-e6a5-6b8f",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "f816-4ccd-1d94-171b",
+          "description": "Add +1 DICE to the Risky Success Roll for this Takwin Homunculus when it takes a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "1a85-9bc2-4c70-9986",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "e77a-39f7-7264-9008",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "1212-09b5-42dd-9a05",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. This Takwin Homunculus can have Equipment from the Iron Sultanate Armoury.",
+          "constraints": [
+            {
+              "id": "5b31-97eb-fe0d-fe2e",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "6603-2315-97b5-d845",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "8cb2-f9e6-e496-1153",
+          "description": "A Takwin Homunculus can only have this Alchemical Formula if it already has the Human Hands, Inhuman Strength, and Massive Size Alchemical Formulas. The Homunculus can use 1 Weapon that can usually only be taken by a Brazen Bull, and its base size is increased to 60mm.",
+          "constraints": [
+            {
+              "id": "2d86-4eb8-3e18-fb23",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "c251-4b5c-2ba0-82e0",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "6c4b-c577-6aca-f270",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "246c-e662-2f58-db1b",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "98cd-4186-8208-9b0e",
+          "name": "Regenerative Tissue",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "30b8-b72a-077c-fb93",
+          "description": "This Takwin Homunculus gains the REGENERATE 1 Keyword.",
+          "constraints": [
+            {
+              "id": "55f2-2e3e-5817-d4b5",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "db99-520c-11a3-a10a",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "7a49-17b2-a239-1d6c",
+          "description": "Add -1 DICE to Success Rolls for Melee Attacks that target this Takwin Homunculus, unless the attack is made by a Sniper Priest or a model with the BLACK GRAIL Keyword. A Homunculus cannot have the Hypnotic Eyes Alchemical Formula if it has the Hawk Eyes Alchemical Formula unless it also has the Two Heads Alchemical Formula",
+          "constraints": [
+            {
+              "id": "135d-1566-3fe0-3c0b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "387f-21f7-517f-003e",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "46f5-9ae0-66a3-e515",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. Change the Ranged Characteristic of this Takwin Homunculus to +1 DICE. A Homunculus cannot have the Hawk Eyes Alchemical Formula if it has the Hypnotic Eyes Alchemical Formula unless it also has the Two Heads Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "4e4d-360a-70b7-1e54",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -6306,7 +13408,139 @@ export const DATASET: Dataset = {
           "description": "A Sapper can take an Improvised Trap ACTION. If they do so, take a Success Roll with +2 DICE for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, the Sapper may place a single 2” trap marker within base contact of itself. When a unit comes within 1” of the marker they must immediately roll on the Injury chart. If the result of this roll is a Down, then the enemy unit is considered pinned, and cannot Stand or Move unless it succeeds on a Risky Success Roll at the start of its next Activation. Units with the keyword STRONG or on a 50mm or larger base make this roll with +1 DICE. A Sapper ignores the effects of its own set traps."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "b58f-20a0-c247-b933",
@@ -6587,7 +13821,139 @@ export const DATASET: Dataset = {
           "description": "ACTION: A Jabirean Alchemist can take an Elemental Change ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the Jabirean Alchemist’s Activation ends. If the roll is a Success or a Critical Success, you can change the Master of the Elements Keyword on all of the Jabirean Alchemist’s Weapons to one of the other two choices."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "f3ed-4f4b-c773-61a7",
@@ -6830,7 +14196,181 @@ export const DATASET: Dataset = {
           "description": "If the first ACTION a Janissary makes during their Activation is a Charge, they can add +1 DICE to their subsequent Melee Attack ACTIONS during this Activation"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "02ca-7278-92d9-ca01",
+          "name": "Counter-Charge",
+          "group": "Training Choice",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "c935-f60a-4054-7c36",
+          "description": "If the first ACTION the model makes during their Activation is a Charge, add +1 DICE to Melee Attacks made by this model for the rest of the Activation.",
+          "constraints": [
+            {
+              "id": "3005-ce8b-397b-d7ac",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "2c5e-e97c-3df7-39d4",
+          "name": "Shield Training",
+          "group": "Training Choice",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "dd72-6d1d-7ca8-874c",
+          "description": "A Siege Jezzail or Halberd-Gun equipped by the model gains the SHIELD COMBO keyword while they use them. If they do, the maximum cumulative armour they can have is -2.",
+          "constraints": [
+            {
+              "id": "76d9-ba5b-2da6-4686",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "a33e-7153-a9b3-e446",
@@ -7429,7 +14969,139 @@ export const DATASET: Dataset = {
           "description": "ACTION: A Brazen Bull can take a Trample ACTION. If it does so, it can make a Melee Attack that must target an enemy model that is Down. A Trample Melee Attack does not use a Melee Weapon and has the IGNORE ARMOUR Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "4796-111c-7f8d-fcad",
@@ -7682,7 +15354,223 @@ export const DATASET: Dataset = {
           "description": "If your opponent fails their Success Roll for an attack targeting a Sultanate Assassin, you can say the Sultanate Assassin will slip into a moment in the future. If you do so, you can redeploy it anywhere within 6” of its original location (measured from the centre of its base to the centre of its base), and more than 1” away from any enemy models. If the failed attack took place because the Sultanate Assassin is retreating, the retreat move ends after you redeploy the model."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7838-a950-3e01-4649",
+          "name": "Secret Paths",
+          "group": "Arts of Assassination",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "4a5d-ed21-5b9f-231f",
+          "description": "At the start of the game, before deployment, you can say that this Assassin is using Secret Paths. If you do so, the Assassin is not deployed at the start of the game, and cannot be Activated in the first Turn of the game. Starting from the second Turn, you can Activate the Assassin using the Secret Paths. To do so, deploy the Assassin in contact with any edge of the battlefield and more than 8\" away from all enemy models. You can then carry on with the rest of its Activation normally.",
+          "constraints": [
+            {
+              "id": "e859-dba1-adfc-eb78",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "b4c9-8bfb-931c-c648",
+          "name": "Hallucinogen Disguise",
+          "group": "Arts of Assassination",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "72b6-02cc-db0a-7b35",
+          "description": "If this Assassin is deployed using the INFILTRATOR Keyword, it must be deployed at least 8\" away from any enemy models but you may ignore any and all other restrictions that apply to deploying an INFILTRATOR. For example, the model can be deployed in the Line of Sight of an enemy model, enemy Guard Dogs do not affect how it is deployed, and so on.",
+          "constraints": [
+            {
+              "id": "7d13-44bd-f860-313f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "f066-7776-2591-48e3",
+          "name": "Thunderbolt of Alamut",
+          "group": "Arts of Assassination",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "a808-515b-bd90-4516",
+          "description": "Add 2\" to this Assassin’s Movement Characteristic, and add +1 DICE to the Risky Success Roll when this Assassin takes a Dash ACTION",
+          "constraints": [
+            {
+              "id": "f74e-5624-b9bf-725e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "9532-6ea3-ded2-bffe",
+          "name": "Mirage of Time",
+          "group": "Arts of Assassination",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "58b6-00de-abd0-501c",
+          "description": "Add -1 DICE to the Success Roll for attacks that target this Assassin.",
+          "constraints": [
+            {
+              "id": "6865-f726-fa0d-dd6e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "a7ba-73fe-fc91-ca18",
@@ -7944,7 +15832,181 @@ export const DATASET: Dataset = {
           "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "e736-2a48-1e3b-401c",
+          "name": "Mubarizun",
+          "group": "Upgrade",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "8455-9ad5-92b1-9906",
+          "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword.",
+          "constraints": [
+            {
+              "id": "09c3-fdd2-ca7e-b162",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "f3cc-630b-eea7-faef",
+          "name": "Snap Shot",
+          "group": "Upgrade",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "e9c1-9e78-07cb-c79a",
+          "description": "This model may shoot at opponents in melee without having to randomise between friendly and enemy models, if they are within 12”.",
+          "constraints": [
+            {
+              "id": "9a5a-74c9-e2f9-e81b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "1905-92a3-4759-3875-min",
@@ -8281,7 +16343,239 @@ export const DATASET: Dataset = {
       "min": null,
       "max": null,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "2bad-28de-8cb2-398d",
+          "name": "Studied Blade",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "bb07-9cca-8d96-9e4b",
+          "description": "This model has an additional +1 Dice to its Melee Characteristic, to a total of 0.",
+          "constraints": [
+            {
+              "id": "ab60-fac4-3b1f-8e57",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "b0cc-320e-5698-5d8b",
+              "type": "max",
+              "value": 3,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c2b1-d49e-937b-2f87",
+                "childName": "The House of Wisdom",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "d750-f089-b0e0-f53d",
+          "name": "Akinji",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "9306-6ffd-b3f0-a54e",
+          "description": "When an enemy model ends their activation within 8” of an Akinji, if the Akinji is not already in melee combat, it may move up to half of its movement speed in any direction as a reaction, once per round. In addition when this unit take the Retreat Action, Melee Attack Success Roll made against it are made with -1 DICE to their roll.",
+          "constraints": [
+            {
+              "id": "8bfe-8149-0ad6-033e",
+              "type": "max",
+              "value": 6,
+              "scope": "roster",
+              "includeChildSelections": true
+            },
+            {
+              "id": "f71c-f9f0-6fd6-efa9",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "5df2-4c17-7c8c-4f1e",
+                    "childName": "Ghazi of the Golden Path",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "bcd1-1771-9c7f-413c",
+                    "childName": "Light Skirmisher"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -8766,7 +17060,139 @@ export const DATASET: Dataset = {
           "description": "This model always counts as being on a 3” high platform when it makes a Ranged Attack, thus granting it the benefits of Elevated position against any enemy model on the same level as itself."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "1fd2-5dcc-0444-f4cc",
@@ -8840,7 +17266,139 @@ export const DATASET: Dataset = {
           "description": "This model Critically Succeeds on its Ranged Attacks on an 11+."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "16c4-da8e-b6ce-9859",
@@ -8910,7 +17468,139 @@ export const DATASET: Dataset = {
           "description": "This model may use a piece of battlekit that normally can only be used once per battle a second time."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "11f2-2b7a-289d-ebbe",
@@ -9005,7 +17695,178 @@ export const DATASET: Dataset = {
           "description": "When you first hire this model to your warband you may choose one of the listed Martial Disciplines for them. A Teğmen may only have one Martial Discipline and you may never change it out for any other."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "c9c1-1a6e-8bed-e375",
+          "name": "Mubarak",
+          "group": "Martial Disciplines",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "da85-0dae-dd72-6db2",
+          "description": "All Injury Rolls made against this model suffer -1 Dice to their roll.",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "97b6-93af-0240-795d",
+          "name": "Deliler",
+          "group": "Martial Disciplines",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "98d5-3dec-59a8-236f",
+          "description": "This unit adds +1 DICE to the Risky Success Roll when taking a Dash Action and the FEAR keyword.",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "508d-8edb-4c7f-2868",
+          "name": "Pahlavan",
+          "group": "Martial Disciplines",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "2ad4-248e-713b-7965",
+          "description": "This model gains the keyword STRONG. In addition, any BLOOD MARKER this model gains may not be used to incur penalties on Actions it may take. BLOOD MARKERS may still be used on Injury Rolls as standard.",
+          "constraints": [],
+          "modifiers": []
+        },
+        {
+          "id": "b749-592d-a7c0-aa2e",
+          "name": "Marid Shovel",
+          "group": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "20a6-1425-0331-7e02",
+          "description": "The Marid Shovel has the Keyword HEAVY which allows a Brazen Bull to use it. Otherwise, it works exactly like a normal shovel. Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
+          "constraints": [
+            {
+              "id": "d033-5263-2aa8-7122",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e62d-c06e-ce35-428b",
+                "childName": "Brazen Bull"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8a1e-a662-247a-2c2b",
+          "name": "Alchemical Ammunition",
+          "group": "Special Ammunitions",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "profileId": "c296-2021-0947-c6c7",
+          "description": "Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model.",
+          "constraints": [
+            {
+              "id": "fe0c-193c-db3f-46af",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc52-7d54-ed37-7b20",
+                    "childName": "Halberd-Gun"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2b27-3653-e972-8d5a",
+                    "childName": "Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "ab06-4025-36da-4e62",
+                    "childName": "Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "4f0f-a0cf-e8e8-b332",
+                    "childName": "Alaybozan"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "d039-5982-7011-334e",
+                    "childName": "Shield-Paired Siege Jezzail"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f5fe-26c3-c542-2bcb",
+                    "childName": "Shield-Paired Halberd-Gun"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "2084-47b2-7fbb-7862",
@@ -10689,7 +19550,37 @@ export const DATASET: Dataset = {
           "description": "If a Disciple of St. Roch is wearing Machine Armour, they gain the keyword STRONG and their base size changes to 40mm."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "a1a3-ab0f-8d5c-e5ff",
+          "name": "Machine Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "6d85-765b-aadb-1126",
+              "type": "max",
+              "value": 2,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "replace",
+              "field": "stats.base",
+              "value": "40",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -11181,7 +20072,403 @@ export const DATASET: Dataset = {
           "description": "If a Takwin Homunculus is killed in the post-battle sequence, you do not have to remove it from your roster. Instead, you can spend 40 ducats in the following Quartermaster Step to leave it on the Roster."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "3e05-5fa6-8b0c-e416",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "b253-bea1-c040-8fbe",
+          "description": "The Homunculus gains a new movement mode: 8”/Flying",
+          "constraints": [
+            {
+              "id": "ef94-d50e-83c5-e977",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "77ab-f422-a2ed-670c",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "01fa-6368-b830-7e70",
+          "description": "Attacks made against the Homunculus that have the Keywords FIRE and/or GAS suffer a -1 DICE penalty to injure it. Also, the Homunculus does not suffer additional BLOOD MARKERS from attacks with Keywords FIRE and/or GAS.",
+          "constraints": [
+            {
+              "id": "c8d1-8366-57a1-36a0",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "6a47-d2b0-de08-8ab8",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "ca7b-4a42-84cc-7c2b",
+          "description": "The Homunculus can buy and wield any weapon allowed in the Iron Sultanate warband or House of Wisdom list, though they cannot select ELITE only items, grenades or items limited to specific units (such as Assassins). They can also carry a Trench Shield or a Fire Shield. This will apply to the Additional Arms formula as well. Cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "d0f5-6522-c3e0-5a05",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "3e05-5fa6-8b0c-e416",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "155f-9854-c740-da37",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "870e-7e18-6f16-5f1a",
+          "description": "The Homunculus gains the Keyword FIRETEAM along with one model of your choice in the Warband. The other model can only form a Fireteam with this Homunculi, not with any other models.",
+          "constraints": [
+            {
+              "id": "2362-e749-699e-842a",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "8448-bccf-aac9-52a5",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "8112-b0c5-bc84-a46d",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "c0d8-d587-73d1-f93b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "3e05-5fa6-8b0c-e416",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "8448-bccf-aac9-52a5",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "2786-d139-8c2d-7a84",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "980a-a84d-b63a-a831",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. It now has a base size of 32mm (or 50mm if it also has Massive size). The Homunculus gains +1 DICE to its Melee characteristic and the Keyword STRONG.",
+          "constraints": [
+            {
+              "id": "ac9b-b3db-0288-dc28",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "50f3-c7bc-63ac-2adc",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6ecc-a4c3-a345-7a66",
+          "description": "Whether by captivating beauty or a terrifying appearance, this Homunculus gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "7c23-0cc3-0697-7473",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "4726-6351-efcd-87a1",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "300f-dc80-8959-8f8b",
+          "description": "The Homunculus can perform an additional attack ACTION in Melee or Ranged combat without any penalty. Therefore, if making attacks with three melee weapons, only a single weapon would need to be declared an Off-Hand weapon (suffering the appropriate penalties). It has three hands to carry weapons if combined with Human Hands, and may equip weapons and a shield in any combination, as long as it has hands free to do so. In this case the Homunculi can make up to two Ranged Attack ACTIONS (if it has sufficient weapons and number of hands to carry them), and up to three Melee Attack ACTIONS (if armed with three one-handed weapons); or one Melee Attack ACTION with a two-handed weapon and one Melee Attack ACTION with a one-handed weapon.",
+          "constraints": [
+            {
+              "id": "0167-314f-57fb-2c7b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "da46-52be-4bf3-aae5",
+          "name": "Additional Head",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "e3d2-7476-ea05-cf12",
+          "description": "The Homunculus has two heads and therefore can have two sets of eyes via Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "7fc7-4c5c-1a2d-2c92",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "70d8-3a09-3cf4-95e5",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "9215-f3d8-4c4c-0730",
+          "description": "The Homunculus adds +1 DICE to its Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "bb64-df61-0bd3-e87f",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "820b-8856-fb9c-e9d9",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6ab6-0b05-f1a5-a2ea",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. It can now buy and use Equipment from the Sultanate Warband Armoury as long as it is not limited to ELITE models. Note that one helmet protects a Homunculus with two heads normally and the Two Heads Formula does not allow the purchase of two different kinds of headgear.",
+          "constraints": [
+            {
+              "id": "ca82-544d-596a-6d43",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "f831-3c35-aebe-7d52",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "1e4b-61de-3566-2084",
+          "description": "Can only be bought if the Homunculus already has the Human Hands, Inhuman Strength and Massive Size Formulas. The Homunculus now has a Base Size of 60mm and it can now use one Brazen Bull Only weapon.",
+          "constraints": [
+            {
+              "id": "3d6e-91c7-95cf-b670",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "6a47-d2b0-de08-8ab8",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "2786-d139-8c2d-7a84",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "8448-bccf-aac9-52a5",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3fec-dfce-031d-0147",
+          "name": "Regenerative",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "fcfc-27c6-d4ee-b9cd",
+          "description": "The Homunculus has an astonishing healing factor and can remove one BLOOD MARKER every time it is Activated, if it has any.",
+          "constraints": [
+            {
+              "id": "6c02-5d6c-73a2-d0f4",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "a475-7b81-8681-720f",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "1f24-9418-3e62-fe3e",
+          "description": "Enemies suffer -1 DICE to hit the Homunculus in Melee. Does not affect Sniper Priests or enemies with the keyword BLACK GRAIL. Cannot be combined with Hawk Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "c27d-51bb-5ce4-3e15",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "5e49-cff8-3d14-cff5",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6cad-a94a-ab1c-12c8",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. It can add +1 DICE to its Ranged Attack characteristic. Cannot be combined with Hypnotic Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "6a17-2f3f-c6fc-1c7a",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "60b5-ee85-3103-d42e",
@@ -11394,7 +20681,45 @@ export const DATASET: Dataset = {
           "description": "ACTION: The Lieutenant orders their warband to stop shooting, forcing the enemy to move first. To represent this, a Lieutenant can take a Hold Your Fire! ACTION. If they do so, pick 1 enemy model that is in the Lieutenant’s Line of Sight and that the opponent is allowed to Activate. The Lieutenant’s Activation then ends, and the opponent must Activate the model you picked."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "3aa6-aa73-5787-6ce9",
+          "name": "Rapid Assault",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "51e6-6eb4-e8bd-8783",
+          "description": "Add +1 DICE to the Risky Success Roll when a model with the Rapid Assault ability takes a Dash ACTION.",
+          "constraints": [
+            {
+              "id": "6db9-c705-1d3b-4163",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "7f30-2514-baef-c492-min",
@@ -11747,7 +21072,80 @@ export const DATASET: Dataset = {
           "description": "ACTION: A Trench Cleric can take a God is With Us! ACTION. If they do so, take a Risky Success Roll for the Trench Cleric. If the roll is a Failure, nothing happens, and the Trench Cleric’s Activation ends. If the roll is a Success or a Critical Success, you can place 1 BLESSING MARKER next to the Trench Cleric or a friendly model within 6\" of the Trench Cleric."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "1da0-5c5c-ad5a-ae96",
+          "name": "Holy Warrior",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "b328-f955-5697-e18d",
+          "description": "As an ACTION, the Warrior removes one BLESSING MARKER it has and adds it to any other member of the warband. This ACTION succeeds automatically.",
+          "constraints": [
+            {
+              "id": "8be7-b4d7-471e-b2f8",
+              "type": "min",
+              "value": -1,
+              "scope": "roster",
+              "includeChildSelections": true
+            },
+            {
+              "id": "adfd-594f-10cd-e9f7",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            },
+            {
+              "id": "ea10-0efc-7795-e79c",
+              "type": "max",
+              "value": 2,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "constraint:8be7-b4d7-471e-b2f8",
+              "value": "-20",
+              "origin": "entry",
+              "when": {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "increment",
+              "field": "constraint:8be7-b4d7-471e-b2f8",
+              "value": "1",
+              "origin": "entry"
+            },
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "16e2-020d-1d3b-6a0f",
@@ -12473,7 +21871,45 @@ export const DATASET: Dataset = {
           "description": "Varangian Guards ignore the keyword HEAVY on all axes, and treat two-handed axes as having the Shield Combo indicator. They lose Shock Charge if they equip a shield together with a two-handed axe. They can still carry only one HEAVY item, unless they are STRONG."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "ee11-12c5-7320-c600",
+          "name": "Rapid Assault",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "2822-421a-3fd6-2e6a",
+          "description": "This model may add +1 DICE to all their Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "c23a-6bce-0981-2fb6",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "6995-3472-87b9-2803",
@@ -13204,7 +22640,58 @@ export const DATASET: Dataset = {
       "min": null,
       "max": 3,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "88f5-eec0-4e4f-c02c",
+          "name": "Machine Armour",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "2558-23f8-cfa8-40f4",
+          "description": "Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3\" instead of D6\". - Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+          "constraints": [
+            {
+              "id": "e65f-9222-dd1f-f553",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "a911-0ba3-a9f7-17b7",
+                    "childName": "Remnants of Byzantium",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "9b8f-4361-5f23-2e20",
+                    "childName": "Expeditionary Forces of Abyssinia",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "80cb-0666-30a3-5540",
@@ -13931,7 +23418,403 @@ export const DATASET: Dataset = {
           "description": "A Takwin Homunculus can make a Melee Attack even though it does not have any Melee Weapons."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "6fe0-553d-a4b4-ecd6",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "8b21-740b-b8c3-bdcd",
+          "description": "The Homunculus gains a new movement mode: 8”/Flying",
+          "constraints": [
+            {
+              "id": "41a2-1c20-d9b0-872c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "ea82-b4bb-2b0d-32de",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "4789-e30e-2064-0849",
+          "description": "Attacks made against the Homunculus that have the Keywords FIRE and/or GAS suffer a -1 DICE penalty to injure it. Also, the Homunculus does not suffer additional BLOOD MARKERS from attacks with Keywords FIRE and/or GAS.",
+          "constraints": [
+            {
+              "id": "3885-9f1f-4912-6fa7",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "e2e4-b449-4a68-acb5",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "eb7f-d438-e30f-30e9",
+          "description": "The Homunculus can buy and wield any weapon allowed in the Iron Sultanate warband or House of Wisdom list, though they cannot select ELITE only items, grenades or items limited to specific units (such as Assassins). They can also carry a Trench Shield or a Fire Shield. This will apply to the Additional Arms formula as well. Cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "8874-2b55-9f42-e6c0",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "6fe0-553d-a4b4-ecd6",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8f41-ebe0-81cb-6817",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "f36c-9989-8df3-e799",
+          "description": "The Homunculus gains the Keyword FIRETEAM along with one model of your choice in the Warband. The other model can only form a Fireteam with this Homunculi, not with any other models.",
+          "constraints": [
+            {
+              "id": "29ce-a9ae-f21b-077d",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "f9f7-089c-a38d-717f",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "a588-4275-e4f0-94d4",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "6103-d16f-3bcb-ad17",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "6fe0-553d-a4b4-ecd6",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "f9f7-089c-a38d-717f",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "26fd-9847-fe97-9aff",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48e1-7f8d-a4b7-ea90",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. It now has a base size of 32mm (or 50mm if it also has Massive size). The Homunculus gains +1 DICE to its Melee characteristic and the Keyword STRONG.",
+          "constraints": [
+            {
+              "id": "4e11-5bd3-1c60-3361",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "be50-69ba-0551-19c8",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "9b1f-1416-b4a5-244f",
+          "description": "Whether by captivating beauty or a terrifying appearance, this Homunculus gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "89f2-1bb9-e187-86ae",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "348d-c104-f4e4-257b",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "cc8f-6d80-2681-7e83",
+          "description": "The Homunculus can perform an additional attack ACTION in Melee or Ranged combat without any penalty. Therefore, if making attacks with three melee weapons, only a single weapon would need to be declared an Off-Hand weapon (suffering the appropriate penalties). It has three hands to carry weapons if combined with Human Hands, and may equip weapons and a shield in any combination, as long as it has hands free to do so. In this case the Homunculi can make up to two Ranged Attack ACTIONS (if it has sufficient weapons and number of hands to carry them), and up to three Melee Attack ACTIONS (if armed with three one-handed weapons); or one Melee Attack ACTION with a two-handed weapon and one Melee Attack ACTION with a one-handed weapon.",
+          "constraints": [
+            {
+              "id": "d814-5355-b8ea-e4bb",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "76ce-4dda-4fdb-75d3",
+          "name": "Additional Head",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "7bab-bc64-a8d2-65a2",
+          "description": "The Homunculus has two heads and therefore can have two sets of eyes via Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "b87e-fb2f-d9bf-d5cd",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "8e9e-f55a-cfc2-852c",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8914-c889-32e2-ad02",
+          "description": "The Homunculus adds +1 DICE to its Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "b5f1-4e74-9c01-267a",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "1deb-24f7-5d96-e98e",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "013b-b168-3905-4134",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. It can now buy and use Equipment from the Sultanate Warband Armoury as long as it is not limited to ELITE models. Note that one helmet protects a Homunculus with two heads normally and the Two Heads Formula does not allow the purchase of two different kinds of headgear.",
+          "constraints": [
+            {
+              "id": "b8de-e9d9-6537-532a",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "7006-0a35-7bbc-90c6",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "948b-1b20-3697-3be7",
+          "description": "A Takwin Homunculus can only have this Alchemical Formula if it already has the Human Hands, Inhuman Strength, and Massive Size Alchemical Formulas. The Homunculus can use 1 Weapon that can usually only be taken by a Brazen Bull, and its base size is increased to 60mm.",
+          "constraints": [
+            {
+              "id": "04ea-2091-0d12-b550",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "e2e4-b449-4a68-acb5",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "26fd-9847-fe97-9aff",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "f9f7-089c-a38d-717f",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3114-9038-867e-704a",
+          "name": "Regenerative",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "626f-7648-661f-63c1",
+          "description": "The Homunculus has an astonishing healing factor and can remove one BLOOD MARKER every time it is Activated, if it has any.",
+          "constraints": [
+            {
+              "id": "7e4f-f44e-aae0-3fef",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "7128-e3c5-7ebe-af37",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "45c4-790c-aeda-7f5c",
+          "description": "Enemies suffer -1 DICE to hit the Homunculus in Melee. Does not affect Sniper Priests or enemies with the keyword BLACK GRAIL. Cannot be combined with Hawk Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "1936-6d2c-3345-401c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "804f-e412-ea03-aa6d",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "d444-8cb8-a85b-04e8",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. It can add +1 DICE to its Ranged Attack characteristic. Cannot be combined with Hypnotic Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "63b1-873d-dbba-0226",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "d572-2703-5027-d31e",
@@ -14092,7 +23975,403 @@ export const DATASET: Dataset = {
           "description": "If a Takwin Homunculus is killed in the post-battle sequence, you do not have to remove it from your roster. Instead, you can spend 40 ducats in the following Quartermaster Step to leave it on the Roster."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "63e1-fd9c-3c8e-37bf",
+          "name": "Wings",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "c442-a749-bd36-0eb5",
+          "description": "The Homunculus gains a new movement mode: 8”/Flying",
+          "constraints": [
+            {
+              "id": "eb93-5c1a-cb2b-0bad",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "2af3-8cec-82f5-121c",
+          "name": "Elemental Resistance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "profileId": "9274-10da-b3e8-e389",
+          "description": "Attacks made against the Homunculus that have the Keywords FIRE and/or GAS suffer a -1 DICE penalty to injure it. Also, the Homunculus does not suffer additional BLOOD MARKERS from attacks with Keywords FIRE and/or GAS.",
+          "constraints": [
+            {
+              "id": "43be-bd63-9048-b863",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "dc0f-0e6f-1bc9-1261",
+          "name": "Human Hands",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "c714-c746-dc00-e534",
+          "description": "The Homunculus can buy and wield any weapon allowed in the Iron Sultanate warband or House of Wisdom list, though they cannot select ELITE only items, grenades or items limited to specific units (such as Assassins). They can also carry a Trench Shield or a Fire Shield. This will apply to the Additional Arms formula as well. Cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "4019-ba79-55d0-42ea",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "63e1-fd9c-3c8e-37bf",
+                "childName": "Wings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "1d5d-442e-78c9-6bd2",
+          "name": "Enslaved Mind",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "b1c8-50ec-d534-43ff",
+          "description": "The Homunculus gains the Keyword FIRETEAM along with one model of your choice in the Warband. The other model can only form a Fireteam with this Homunculi, not with any other models.",
+          "constraints": [
+            {
+              "id": "169d-0567-fe89-f927",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "5179-2836-214e-2286",
+          "name": "Massive Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "e300-5a3b-53af-da52",
+          "description": "The Homunculus’ size is increased to huge proportions. It now has a base size of 50mm and it gains the Keyword TOUGH. This formula cannot be combined with the Wings formula.",
+          "constraints": [
+            {
+              "id": "c9f2-b841-d11a-bc83",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "63e1-fd9c-3c8e-37bf",
+                "childName": "Wings"
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "914f-0020-0d97-e217",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "5179-2836-214e-2286",
+                "childName": "Massive Size",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "01e9-4879-e909-a64b",
+          "name": "Inhuman Strength",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "199e-6575-09a1-d52c",
+          "description": "The musculature of the Homunculus is reinforced, replaced and strengthened. It now has a base size of 32mm (or 50mm if it also has Massive size). The Homunculus gains +1 DICE to its Melee characteristic and the Keyword STRONG.",
+          "constraints": [
+            {
+              "id": "81e1-e609-df93-c307",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "aaa1-a1ca-519e-c2f9",
+          "name": "Terrifying Appearance",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "291c-616a-d3f1-501c",
+          "description": "Whether by captivating beauty or a terrifying appearance, this Homunculus gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "eaee-51e2-31e4-8790",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "3d23-53bb-1515-08eb",
+          "name": "Additional Arm",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "aa89-9e2f-f003-cc72",
+          "description": "The Homunculus can perform an additional attack ACTION in Melee or Ranged combat without any penalty. Therefore, if making attacks with three melee weapons, only a single weapon would need to be declared an Off-Hand weapon (suffering the appropriate penalties). It has three hands to carry weapons if combined with Human Hands, and may equip weapons and a shield in any combination, as long as it has hands free to do so. In this case the Homunculi can make up to two Ranged Attack ACTIONS (if it has sufficient weapons and number of hands to carry them), and up to three Melee Attack ACTIONS (if armed with three one-handed weapons); or one Melee Attack ACTION with a two-handed weapon and one Melee Attack ACTION with a one-handed weapon.",
+          "constraints": [
+            {
+              "id": "60c1-0e50-b2ba-b46b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "4f45-802c-eb6d-9d1e",
+          "name": "Additional Head",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "8d91-3799-73ce-424d",
+          "description": "The Homunculus has two heads and therefore can have two sets of eyes via Alchemical Formula.",
+          "constraints": [
+            {
+              "id": "2bc2-2608-b6ad-fcfe",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "c9be-5263-dd32-def6",
+          "name": "Startling Speed",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "6939-0d30-7d26-214a",
+          "description": "The Homunculus adds +1 DICE to its Dash ACTIONS.",
+          "constraints": [
+            {
+              "id": "ea04-3084-4304-62ad",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "c97f-dd97-35b1-86ab",
+          "name": "Seal of Solomon",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "3f21-5004-4d32-c6d1",
+          "description": "This Formula greatly enhances the intelligence of the Homunculus and makes it painfully aware of its artificial existence. It can now buy and use Equipment from the Sultanate Warband Armoury as long as it is not limited to ELITE models. Note that one helmet protects a Homunculus with two heads normally and the Two Heads Formula does not allow the purchase of two different kinds of headgear.",
+          "constraints": [
+            {
+              "id": "bce1-64be-b74c-ebcc",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "b2d3-2cbc-d328-4fe2",
+          "name": "Gargantuan Size",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "b71d-9997-2026-2bd9",
+          "description": "Can only be bought if the Homunculus already has the Human Hands, Inhuman Strength and Massive Size Formulas. The Homunculus now has a Base Size of 60mm and it can now use one Brazen Bull Only weapon.",
+          "constraints": [
+            {
+              "id": "8f43-e42a-ce4c-e419",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "dc0f-0e6f-1bc9-1261",
+                    "childName": "Human Hands"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "01e9-4879-e909-a64b",
+                    "childName": "Inhuman Strength"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "parent",
+                    "childId": "5179-2836-214e-2286",
+                    "childName": "Massive Size"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "87e9-c5a8-6da7-2a75",
+          "name": "Regenerative",
+          "group": "Alchemical Formulae",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "profileId": "15fa-4ea5-8e02-ae02",
+          "description": "The Homunculus has an astonishing healing factor and can remove one BLOOD MARKER every time it is Activated, if it has any.",
+          "constraints": [
+            {
+              "id": "d225-3ec8-f430-803d",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "fa11-4a87-00a2-b36e",
+          "name": "Hypnotic Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "2264-4f8b-b8de-fd4b",
+          "description": "Enemies suffer -1 DICE to hit the Homunculus in Melee. Does not affect Sniper Priests or enemies with the keyword BLACK GRAIL. Cannot be combined with Hawk Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "43cc-81ad-b5ce-0ba5",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        },
+        {
+          "id": "2546-a2d9-1305-5ce9",
+          "name": "Hawk Eyes",
+          "group": "Eye Options",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "72b5-4586-7a51-fe6a",
+          "description": "The eyesight of the Homunculus is based on that of a predatory bird. It can add +1 DICE to its Ranged Attack characteristic. Cannot be combined with Hypnotic Eyes without Two Heads.",
+          "constraints": [
+            {
+              "id": "635e-10ff-8565-55b0",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "constraints": [
         {
           "id": "e8d8-2095-d7db-78e8",
@@ -14295,7 +24574,353 @@ export const DATASET: Dataset = {
           "description": "At any point during its Activation, a Castigator may take a RISKY ACTION with +1 DICE. If successful, all friendly models that are Down and within 8” of the Castigator may immediately stand up at no penalty or cost."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "b90d-c191-26bd-76df",
@@ -14466,7 +25091,353 @@ export const DATASET: Dataset = {
           "description": "If a Trench Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 ducats. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -14721,7 +25692,57 @@ export const DATASET: Dataset = {
           "description": "A sacred cross is nailed on the face of the Communicant. This counts as an Iron Capirote, Combat Helmet and a Gas Mask (Immune to SHRAPNEL, GAS, and FEAR)."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "1aa1-9e86-d59f-f8be",
@@ -14937,7 +25958,57 @@ export const DATASET: Dataset = {
           "description": "A War Prophet can take a Laying on of Hands ACTION. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success, remove 1 BLOOD MARKER from a friendly model within 6\" of the War Prophet. If the roll is a Critical Success, remove 3 BLOOD MARKERS from a friendly model within 6\" of the War Prophet instead of only 1. The War Prophet can use this ACTION to heal themselves."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "8964-247e-4f1c-6eff-min",
@@ -15131,7 +26202,304 @@ export const DATASET: Dataset = {
           "description": "Ecclesiastic Prisoner can add +1 DICE to their Dash ACTION"
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [],
       "modifiers": [
         {
@@ -15204,7 +26572,353 @@ export const DATASET: Dataset = {
           "description": "Stigmatic Nuns may take any Dash ACTION or jump/climb/Diving Charge ACTION with +1 DICE."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "40e9-292f-3ade-d4f5",
@@ -15539,7 +27253,353 @@ export const DATASET: Dataset = {
           "description": "Your opponent cannot spend the BLOOD MARKERS on any model within 3” of the Chieftain (including the Chieftain themselves), except for Injury rolls."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "5d80-7b84-5e97-9b76",
+          "name": "Holy Icon Armour",
+          "group": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "profileId": "0b4c-42b8-cf94-e25f",
+          "description": "-",
+          "constraints": [
+            {
+              "id": "ebbe-1087-0fa8-011c",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "0d88-774c-22af-e2fc",
+                    "childName": "Procession of the Sacred Affliction",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "1aa4-9c3f-703d-8692",
@@ -15608,7 +27668,304 @@ export const DATASET: Dataset = {
           "description": "If a friendly PILGRIM model within 1\" of a Huscarl is hit by a Ranged Attack or Melee Attack, you can say that the Huscarl will take the hit. If you do so, make an Injury Roll for the Huscarl instead of the original target. This ability cannot be used against attacks that have the BLAST Keyword."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "b768-7b40-dd27-88ce",
@@ -15682,7 +28039,304 @@ export const DATASET: Dataset = {
           "description": "The Captive Giant runs through the following actions in the order they’re listed below: - Movement: The Giant must move towards the closest visible model (friend or foe), charging if it is able to reach them with a charge action, and attempting a dash action after its move if not. If it begins its Activation Down it must attempt to stand. - Frost Breath: If there is a visible model (friend or foe) within 8” of the Giant, it must attempt to use its Frost Breath action on the closest model. - Melee Attacks: If the Giant is in melee range (i.e, within 1”) of any model, it must use its melee action to attack it, regardless of whether it is friend or foe. If two more more models are exactly the same distance and visible to the Captive Giant, use a dice roll to randomly determine which model the Giant targets."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "0291-cf87-b71d-44db",
+          "name": "Giant Slayer",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "be8f-bf34-4737-dbd9",
+          "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+          "constraints": [
+            {
+              "id": "5757-ec2d-8533-a46b",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "force",
+                "childId": "0d82-443e-9dab-c2b3",
+                "childName": "Giant Slayer",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb47-e3bd-dd8e-d3c1",
+          "name": "Hold the Line",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "af44-7191-ec31-ac07",
+          "description": "This model gains the skill Hard as Nails.",
+          "constraints": [
+            {
+              "id": "54e2-caf8-e6c4-15eb",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5c15-8811-0649-288e",
+                "childName": "Hold the Line",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "30a8-187e-06ec-f7fb",
+          "name": "Flutterstring",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "profileId": "91f8-efec-4334-de8b",
+          "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+          "constraints": [
+            {
+              "id": "f85b-7f11-9ecd-2b2e",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "895c-2afb-09b7-c606",
+                "childName": "Flutterstring",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8ca1-fdb1-862f-667f",
+          "name": "Headhunter",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "4ef6-94e6-2339-505e",
+          "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+          "constraints": [
+            {
+              "id": "7f84-d144-76a8-c02f",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1d1e-67ff-4bec-460c",
+                "childName": "Headhunter",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3fa-7786-fe88-5809",
+          "name": "Eternal Onslaught",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "f01a-46f8-8063-d30c",
+          "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+          "constraints": [
+            {
+              "id": "2746-95c0-d67e-950a",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "04d9-3450-dc3a-c546",
+                "childName": "Eternal Onslaught",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ee-8526-0598-d8f2",
+          "name": "Old Reliable",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "48f8-fc2f-2cee-f7b2",
+          "description": "This model has a +1 DICE to the chosen action.",
+          "constraints": [
+            {
+              "id": "0fe8-0d8a-48d1-ff99",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "29f0-f033-ccb8-07eb",
+                "childName": "Old Reliable",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "8547-f934-c787-8ae4",
+          "name": "Storied",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "profileId": "6596-a39c-490e-e4ab",
+          "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+          "constraints": [
+            {
+              "id": "03eb-c982-3ca6-b8a6",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d7b6-a96f-44d2-9ed1",
+                "childName": "Storied",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "491e-da83-e1ba-f95c",
+          "name": "Fleet of Foot",
+          "group": "Sagas",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8cf0-1586-6c76-19ba",
+          "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+          "constraints": [
+            {
+              "id": "7f7b-f012-ad9a-0ddf",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7f4c-ccc9-6417-30c2",
+                "childName": "Fleet of Foot",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        }
+      ],
       "constraints": [
         {
           "id": "9a61-62c8-7422-11a3",

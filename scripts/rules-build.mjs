@@ -147,6 +147,10 @@ for (const ruleset of RULESETS) {
     .flatMap((e) => e.modifiers ?? []).filter((m) => m.rawField).length;
   console.log(`  conditional modifiers read: ${mods}` +
               (unmapped ? `  (${unmapped} with an unmapped field)` : ''));
+  const opts = dataset.units.reduce((n, u) => n + (u.options?.length ?? 0), 0);
+  const optUnits = dataset.units.filter((u) => u.options?.length).length;
+  const optGroups = new Set(dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.group)));
+  console.log(`  unit options: ${opts} across ${optUnits} units, ${optGroups.size} groups`);
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
   console.log(`  verified against the rulebook: ${v.compared} units`);
   console.log(`    confirmed   ${v.confirmed}`);

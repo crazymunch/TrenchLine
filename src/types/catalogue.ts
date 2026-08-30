@@ -78,19 +78,22 @@ export interface Constraint {
 export interface UnitOption {
   id: string;
   name: string;
-  kind:
-    | 'strain'
-    | 'vile-corpus'
-    | 'goetic-power'
-    | 'glory-item'
-    | 'upgrade'
-    | 'variant'
-    | 'unknown';
+  /**
+   * The catalogue's own group name — `Strains`, `Alchemical Formulae`,
+   * `Goetic Power`, `Sagas`, `Arts of Assassination`. Read from the source
+   * rather than mapped onto a fixed enum: the sets differ per faction and a
+   * new one arrives with every release, so a closed list would silently drop
+   * whatever it had not heard of.
+   */
+  group: string;
   cost: Cost;
   constraints: Constraint[];
   /** Rules text as published. */
-  effect: string;
-  modifies?: LayerOp[];
+  description: string;
+  /** The profile the rules text came from, used to tell an option from gear. */
+  profileId?: string;
+  /** Conditional rules attached to the option itself. */
+  modifiers?: Modifier[];
 }
 
 /* ----------------------------------------------------------------- rules */
