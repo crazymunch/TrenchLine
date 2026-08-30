@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { signIn } from 'next-auth/react';
 import { useStore } from '../../store/useStore';
 import { THEMES } from '../../types/theme';
@@ -24,6 +25,12 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { currentTheme } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  // `isOpen`, not `true`: this modal stays mounted and returns null when
+  // closed, so a hardcoded `true` would hold the body scroll lock for the
+  // life of the page — and it is mounted three times over.
+  const overlayRef = useOverlay(isOpen, onClose);
   const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
 
   const [email, setEmail] = useState('');
@@ -67,18 +74,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-2.5">
-            <Crown className="w-5 h-5 text-[#D4AF37]" />
-            <h3 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
+            <Crown className="w-5 h-5 text-theme-primary" />
+            <h3 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
               COMMANDER AUTHENTICATION
             </h3>
           </div>
-          <button onClick={onClose} className="text-[#8E95A5] hover:text-white p-1">
+          <button onClick={onClose} className="text-theme-muted hover:text-white p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -87,7 +94,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         <div className="p-6 space-y-5 font-mono text-xs">
           
           {error && (
-            <div className="p-3 bg-[#8B0000]/30 border border-[#8B0000] rounded text-[#E53935] flex items-center space-x-2">
+            <div className="p-3 bg-theme-accent/30 border border-theme-accent rounded text-status-error flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -123,53 +130,53 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </button>
 
             <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-[#323846]" />
-              <span className="flex-shrink mx-3 text-[#8E95A5] text-[10px] uppercase font-bold">or with commander credentials</span>
-              <div className="flex-grow border-t border-[#323846]" />
+              <div className="flex-grow border-t border-theme-border" />
+              <span className="flex-shrink mx-3 text-theme-muted text-[10px] uppercase font-bold">or with commander credentials</span>
+              <div className="flex-grow border-t border-theme-border" />
             </div>
           </div>
 
           {/* 2. Direct Credentials Form */}
           <form onSubmit={handleCredentialsSignIn} className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-[#8E95A5] block">Commander / Player Name:</label>
+              <label className="text-[10px] uppercase text-theme-muted block">Commander / Player Name:</label>
               <div className="relative">
-                <User className="w-3.5 h-3.5 text-[#8E95A5] absolute left-3 top-1/2 -translate-y-1/2" />
+                <User className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Commander Valerius"
                   value={commanderName}
                   onChange={(e) => setCommanderName(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-[#8E95A5] block">Email Address:</label>
+              <label className="text-[10px] uppercase text-theme-muted block">Email Address:</label>
               <div className="relative">
-                <Mail className="w-3.5 h-3.5 text-[#8E95A5] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Mail className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   placeholder="commander@trenchline.org"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-[#8E95A5] block">Password (Optional / Demo):</label>
+              <label className="text-[10px] uppercase text-theme-muted block">Password (Optional / Demo):</label>
               <div className="relative">
-                <Lock className="w-3.5 h-3.5 text-[#8E95A5] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded pl-9 pr-3 py-2 text-white placeholder-[#8E95A5] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                 />
               </div>
             </div>
@@ -177,7 +184,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors mt-2"
+              className="w-full py-2.5 px-4 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors mt-2"
             >
               <LogIn className="w-4 h-4" />
               <span>Enter the Crusade</span>

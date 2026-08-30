@@ -35,10 +35,10 @@ export const Field: React.FC<FieldProps> = ({ label, hint, error, required, chil
     <div className="space-y-1.5">
       <label
         htmlFor={id}
-        className="block text-xs sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#8E95A5]"
+        className="block text-xs sm:text-[11px] font-mono font-bold uppercase tracking-wider text-theme-muted"
       >
         {label}
-        {required && <span className="text-[#E53935] ml-1">*</span>}
+        {required && <span className="text-status-error ml-1">*</span>}
       </label>
 
       {children(id, help ? helpId : undefined)}
@@ -47,7 +47,7 @@ export const Field: React.FC<FieldProps> = ({ label, hint, error, required, chil
         <p
           id={helpId}
           className={`text-xs sm:text-[11px] font-mono leading-relaxed ${
-            error ? 'text-[#E53935]' : 'text-[#8E95A5]'
+            error ? 'text-status-error' : 'text-theme-muted'
           }`}
         >
           {help}
@@ -63,8 +63,8 @@ export const Field: React.FC<FieldProps> = ({ label, hint, error, required, chil
  */
 const CONTROL =
   'w-full min-h-[44px] px-3 py-2 rounded-sm text-base sm:text-sm ' +
-  'bg-[#0C0E12] border border-[#323846] text-[#ECEFF4] ' +
-  'focus:outline-none focus:border-[#D4AF37] transition-colors ' +
+  'bg-theme-base border border-theme-border text-theme-text ' +
+  'focus:outline-none focus:border-theme-primary transition-colors ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
 export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (

@@ -9,17 +9,29 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      /*
+        Channel triplets, not hex, so Tailwind's opacity modifier works:
+        `bg-theme-primary/40` needs `rgb(R G B / <alpha-value>)`. The app uses
+        257 such modifiers, so a plain `var(--x)` token would silently drop the
+        opacity on every one of them.
+      */
       colors: {
-        background: "var(--bg-base)",
-        foreground: "var(--color-primary)",
-        "theme-base": "var(--bg-base)",
-        "theme-surface": "var(--bg-surface)",
-        "theme-elevated": "var(--bg-elevated)",
-        "theme-card": "var(--bg-card)",
-        "theme-primary": "var(--color-primary)",
-        "theme-primary-hover": "var(--color-primary-hover)",
-        "theme-border": "var(--color-border)",
-        "theme-accent": "var(--color-accent)",
+        background: "rgb(var(--bg-base) / <alpha-value>)",
+        foreground: "rgb(var(--color-primary) / <alpha-value>)",
+        "theme-base": "rgb(var(--bg-base) / <alpha-value>)",
+        "theme-surface": "rgb(var(--bg-surface) / <alpha-value>)",
+        "theme-elevated": "rgb(var(--bg-elevated) / <alpha-value>)",
+        "theme-card": "rgb(var(--bg-card) / <alpha-value>)",
+        "theme-primary": "rgb(var(--color-primary) / <alpha-value>)",
+        "theme-primary-hover": "rgb(var(--color-primary-hover) / <alpha-value>)",
+        "theme-border": "rgb(var(--color-border) / <alpha-value>)",
+        "theme-accent": "rgb(var(--color-accent) / <alpha-value>)",
+        "theme-text": "rgb(var(--color-text) / <alpha-value>)",
+        "theme-muted": "rgb(var(--color-muted) / <alpha-value>)",
+        // Fixed across every theme. See the note in globals.css.
+        "status-error": "rgb(var(--status-error) / <alpha-value>)",
+        "status-warning": "rgb(var(--status-warning) / <alpha-value>)",
+        "status-legal": "rgb(var(--status-legal) / <alpha-value>)",
       },
     },
   },

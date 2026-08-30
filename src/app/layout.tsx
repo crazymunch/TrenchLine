@@ -44,7 +44,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0C0E12] text-[#ECEFF4] min-h-[100dvh] antialiased">
+      <body className="bg-theme-base text-theme-text min-h-[100dvh] antialiased">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

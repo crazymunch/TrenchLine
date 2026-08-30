@@ -221,16 +221,16 @@ export const CustomizerView: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 font-mono text-xs">
       
       {/* Header Banner */}
-      <div className="bg-[#161920] border-2 border-[#323846] rounded-md p-6 shadow-xl space-y-3 bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl space-y-3 bevel-container">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
-              <SlidersHorizontal className="w-6 h-6 text-[#D4AF37]" />
-              <h1 className="font-gothic font-bold text-2xl text-[#ECEFF4] tracking-wide">
+              <SlidersHorizontal className="w-6 h-6 text-theme-primary" />
+              <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
                 MASTER RULES & WARGEAR CUSTOMIZER
               </h1>
             </div>
-            <p className="text-xs text-[#8E95A5] pt-1">
+            <p className="text-xs text-theme-muted pt-1">
               Live statline editor and custom rule override engine. Adjust point costs, ranges, hands, and keywords without losing custom warband rosters.
             </p>
           </div>
@@ -239,9 +239,9 @@ export const CustomizerView: React.FC = () => {
             <button
               onClick={handleCheckSync}
               disabled={isCheckingSync}
-              className="flex items-center space-x-2 px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-bold uppercase transition-colors"
             >
-              <GitBranch className={`w-3.5 h-3.5 ${isCheckingSync ? 'animate-spin text-[#D4AF37]' : ''}`} />
+              <GitBranch className={`w-3.5 h-3.5 ${isCheckingSync ? 'animate-spin text-theme-primary' : ''}`} />
               <span>{isCheckingSync ? 'Checking Commits...' : 'Check GitHub Updates'}</span>
             </button>
           </div>
@@ -249,7 +249,7 @@ export const CustomizerView: React.FC = () => {
 
         {/* Upstream status. Reports what was actually read, or why it failed. */}
         {syncError && (
-          <div className="flex items-start gap-2 p-3 rounded border border-[#8B0000] bg-[#8B0000]/15 text-[#E53935]">
+          <div className="flex items-start gap-2 p-3 rounded border border-theme-accent bg-theme-accent/15 text-status-error">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
             <div className="min-w-0">
               <p className="font-bold uppercase">Upstream check failed</p>
@@ -259,13 +259,13 @@ export const CustomizerView: React.FC = () => {
         )}
 
         {latestCommit && !syncError && (
-          <div className="p-3 rounded border border-[#323846] bg-[#0C0E12] space-y-1">
-            <p className="uppercase font-bold text-[#8E95A5]">
+          <div className="p-3 rounded border border-theme-border bg-theme-base space-y-1">
+            <p className="uppercase font-bold text-theme-muted">
               Upstream head
-              <span className="ml-2 text-[#D4AF37]">{latestCommit.sha.slice(0, 8)}</span>
+              <span className="ml-2 text-theme-primary">{latestCommit.sha.slice(0, 8)}</span>
             </p>
-            <p className="text-[#ECEFF4] break-words">{latestCommit.message}</p>
-            <p className="text-[#8E95A5] opacity-80">
+            <p className="text-theme-text break-words">{latestCommit.message}</p>
+            <p className="text-theme-muted opacity-80">
               Profile comparison is unavailable until upstream profiles are parsed
               from the BattleScribe catalogues (Phase 1). This reports the commit only.
             </p>
@@ -273,7 +273,7 @@ export const CustomizerView: React.FC = () => {
         )}
 
         {/* Tab Navigation */}
-        <div className="flex border-t border-[#323846] pt-4 gap-2 overflow-x-auto">
+        <div className="flex border-t border-theme-border pt-4 gap-2 overflow-x-auto">
           {[
             { id: 'units', label: `Unit Profiles (${units.length})`, icon: <Sparkles className="w-3.5 h-3.5" /> },
             { id: 'weapons', label: `Weapons & Ballistics (${weapons.length})`, icon: <Swords className="w-3.5 h-3.5" /> },
@@ -285,8 +285,8 @@ export const CustomizerView: React.FC = () => {
               onClick={() => setActiveTab(t.id as any)}
               className={`px-4 py-2 rounded font-bold uppercase flex items-center space-x-1.5 transition-colors ${
                 activeTab === t.id
-                  ? 'bg-[#D4AF37] text-black shadow'
-                  : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                  ? 'bg-theme-primary text-black shadow'
+                  : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
               }`}
             >
               {t.icon}
@@ -300,8 +300,8 @@ export const CustomizerView: React.FC = () => {
       {activeTab === 'units' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Unit Selector List */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Unit to Modify:
             </span>
             <div className="space-y-1">
@@ -311,8 +311,8 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectUnit(u.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedUnit?.id === u.id
-                      ? 'bg-[#D4AF37] text-black font-bold shadow'
-                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
+                      ? 'bg-theme-primary text-black font-bold shadow'
+                      : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
                   <span className="truncate">{u.name}</span>
@@ -323,16 +323,16 @@ export const CustomizerView: React.FC = () => {
           </div>
 
           {/* Unit Edit Form */}
-          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
-            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+          <div className="lg:col-span-2 bg-theme-surface border border-theme-border rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedUnit?.name}</h2>
-                <span className="text-[10px] text-[#8E95A5]">Faction: {selectedUnit?.factionId} • Category: {selectedUnit?.category}</span>
+                <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedUnit?.name}</h2>
+                <span className="text-[10px] text-theme-muted">Faction: {selectedUnit?.factionId} • Category: {selectedUnit?.category}</span>
               </div>
               {selectedUnit?.isCustom && (
                 <button
                   onClick={() => deleteCustomUnit(selectedUnit.id)}
-                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                  className="px-3 py-1 bg-theme-accent/40 text-status-error hover:bg-theme-accent hover:text-white rounded border border-theme-accent text-xs font-bold uppercase flex items-center space-x-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Revert</span>
@@ -343,60 +343,60 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveUnit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Unit Name:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Unit Name:</label>
                   <input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Base Cost (Ducats):</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Base Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editCost}
                     onChange={(e) => setEditCost(Number(e.target.value))}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Movement:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Movement:</label>
                   <input
                     type="text"
                     value={editMov}
                     onChange={(e) => setEditMov(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Ranged:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Ranged:</label>
                   <input
                     type="text"
                     value={editRng}
                     onChange={(e) => setEditRng(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Melee:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Melee:</label>
                   <input
                     type="text"
                     value={editMelee}
                     onChange={(e) => setEditMelee(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Armour Mod:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Armour Mod:</label>
                   <input
                     type="text"
                     value={editArmour}
                     onChange={(e) => setEditArmour(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
               </div>
@@ -404,7 +404,7 @@ export const CustomizerView: React.FC = () => {
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedUnitSuccess ? '✓ Profile Saved!' : 'Save Custom Profile'}</span>
@@ -419,8 +419,8 @@ export const CustomizerView: React.FC = () => {
       {activeTab === 'weapons' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Weapon Selector List */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Weapon to Modify:
             </span>
             <div className="space-y-1">
@@ -430,8 +430,8 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectWeapon(w.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedWeapon?.id === w.id
-                      ? 'bg-[#D4AF37] text-black font-bold shadow'
-                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
+                      ? 'bg-theme-primary text-black font-bold shadow'
+                      : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
                   <span className="truncate">{w.name}</span>
@@ -442,16 +442,16 @@ export const CustomizerView: React.FC = () => {
           </div>
 
           {/* Weapon Edit Form */}
-          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
-            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+          <div className="lg:col-span-2 bg-theme-surface border border-theme-border rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedWeapon?.name}</h2>
-                <span className="text-[10px] text-[#8E95A5]">Type: {selectedWeapon?.type} • Faction: {selectedWeapon?.factionId || 'universal'}</span>
+                <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedWeapon?.name}</h2>
+                <span className="text-[10px] text-theme-muted">Type: {selectedWeapon?.type} • Faction: {selectedWeapon?.factionId || 'universal'}</span>
               </div>
               {selectedWeapon?.isCustom && (
                 <button
                   onClick={() => deleteCustomWeapon(selectedWeapon.id)}
-                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                  className="px-3 py-1 bg-theme-accent/40 text-status-error hover:bg-theme-accent hover:text-white rounded border border-theme-accent text-xs font-bold uppercase flex items-center space-x-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Revert</span>
@@ -462,32 +462,32 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveWeapon} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1 sm:col-span-2">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Weapon Name:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Weapon Name:</label>
                   <input
                     type="text"
                     value={editWepName}
                     onChange={(e) => setEditWepName(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Cost (Ducats):</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editWepCost}
                     onChange={(e) => setEditWepCost(Number(e.target.value))}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Type:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Type:</label>
                   <select
                     value={editWepType}
                     onChange={(e) => setEditWepType(e.target.value as any)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   >
                     <option value="Melee">Melee</option>
                     <option value="Ranged">Ranged</option>
@@ -495,29 +495,29 @@ export const CustomizerView: React.FC = () => {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Range:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Range:</label>
                   <input
                     type="text"
                     value={editWepRange}
                     onChange={(e) => setEditWepRange(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Modifiers:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Modifiers:</label>
                   <input
                     type="text"
                     value={editWepMod}
                     onChange={(e) => setEditWepMod(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Hands Required:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Hands Required:</label>
                   <select
                     value={editWepHands}
                     onChange={(e) => setEditWepHands(Number(e.target.value) as 1 | 2)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   >
                     <option value={1}>1-Handed</option>
                     <option value={2}>2-Handed</option>
@@ -528,7 +528,7 @@ export const CustomizerView: React.FC = () => {
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedWepSuccess ? '✓ Weapon Saved!' : 'Save Custom Weapon'}</span>
@@ -543,8 +543,8 @@ export const CustomizerView: React.FC = () => {
       {activeTab === 'armour' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Armour Selector List */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-[#8E95A5] block pb-1 border-b border-[#323846]">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
+            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Armour to Modify:
             </span>
             <div className="space-y-1">
@@ -554,8 +554,8 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectArmour(a.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedArmour?.id === a.id
-                      ? 'bg-[#D4AF37] text-black font-bold shadow'
-                      : 'hover:bg-[#20242E] text-[#ECEFF4]'
+                      ? 'bg-theme-primary text-black font-bold shadow'
+                      : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
                   <span className="truncate">{a.name}</span>
@@ -566,16 +566,16 @@ export const CustomizerView: React.FC = () => {
           </div>
 
           {/* Armour Edit Form */}
-          <div className="lg:col-span-2 bg-[#161920] border border-[#323846] rounded-md p-6 space-y-4 bevel-container">
-            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+          <div className="lg:col-span-2 bg-theme-surface border border-theme-border rounded-md p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">{selectedArmour?.name}</h2>
-                <span className="text-[10px] text-[#8E95A5]">Category: {selectedArmour?.category} • Faction: {selectedArmour?.factionId || 'universal'}</span>
+                <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedArmour?.name}</h2>
+                <span className="text-[10px] text-theme-muted">Category: {selectedArmour?.category} • Faction: {selectedArmour?.factionId || 'universal'}</span>
               </div>
               {selectedArmour?.isCustom && (
                 <button
                   onClick={() => deleteCustomArmour(selectedArmour.id)}
-                  className="px-3 py-1 bg-[#8B0000]/40 text-[#E53935] hover:bg-[#8B0000] hover:text-white rounded border border-[#8B0000] text-xs font-bold uppercase flex items-center space-x-1"
+                  className="px-3 py-1 bg-theme-accent/40 text-status-error hover:bg-theme-accent hover:text-white rounded border border-theme-accent text-xs font-bold uppercase flex items-center space-x-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Revert</span>
@@ -586,49 +586,49 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveArmour} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1 sm:col-span-2">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Armour Name:</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Armour Name:</label>
                   <input
                     type="text"
                     value={editArmName}
                     onChange={(e) => setEditArmName(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Cost (Ducats):</label>
+                  <label className="text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editArmCost}
                     onChange={(e) => setEditArmCost(Number(e.target.value))}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Protection Modifier:</label>
+                <label className="text-[10px] uppercase font-bold text-theme-muted">Protection Modifier:</label>
                 <input
                   type="text"
                   value={editArmMod}
                   onChange={(e) => setEditArmMod(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5]">Description & Rules:</label>
+                <label className="text-[10px] uppercase font-bold text-theme-muted">Description & Rules:</label>
                 <textarea
                   rows={3}
                   value={editArmDesc}
                   onChange={(e) => setEditArmDesc(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                 />
               </div>
 
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedArmSuccess ? '✓ Armour Saved!' : 'Save Custom Armour'}</span>

@@ -81,34 +81,34 @@ export const WarbandDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       
       {/* Top Header & Warband Management Strip */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#323846] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-border pb-4">
         <div>
-          <h2 className="font-gothic font-bold text-xl text-[#ECEFF4] tracking-wide">WARBAND COMMAND</h2>
-          <p className="text-xs font-mono text-[#8E95A5]">Select, build, import, and equip your holy or damned strike forces</p>
+          <h2 className="font-gothic font-bold text-xl text-theme-text tracking-wide">WARBAND COMMAND</h2>
+          <p className="text-xs font-mono text-theme-muted">Select, build, import, and equip your holy or damned strike forces</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {warbands.length > 1 && (
             <button
               onClick={() => setIsComparatorOpen(true)}
-              className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
+              className="flex items-center space-x-1.5 px-3.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border font-mono text-xs font-bold uppercase rounded transition-colors"
             >
-              <Scale className="w-4 h-4 text-[#D4AF37]" />
+              <Scale className="w-4 h-4 text-theme-primary" />
               <span>Compare Rosters</span>
             </button>
           )}
 
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded transition-colors"
+            className="flex items-center space-x-1.5 px-3.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border font-mono text-xs font-bold uppercase rounded transition-colors"
           >
-            <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+            <UploadCloud className="w-4 h-4 text-theme-primary" />
             <span>Import NewRecruit</span>
           </button>
 
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center space-x-1.5 px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
+            className="flex items-center space-x-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
           >
             <Plus className="w-4 h-4" />
             <span>New Warband</span>
@@ -118,13 +118,13 @@ export const WarbandDashboard: React.FC = () => {
 
       {/* When No Warbands Exist (Clean State) */}
       {displayedWarbands.length === 0 ? (
-        <div className="bg-[#161920] border-2 border-dashed border-[#323846] rounded-md p-12 text-center space-y-6 max-w-2xl mx-auto my-8 bevel-container">
-          <div className="w-16 h-16 rounded-full bg-[#0C0E12] border-2 border-[#D4AF37] flex items-center justify-center mx-auto text-[#D4AF37] shadow-glow">
+        <div className="bg-theme-surface border-2 border-dashed border-theme-border rounded-md p-12 text-center space-y-6 max-w-2xl mx-auto my-8 bevel-container">
+          <div className="w-16 h-16 rounded-full bg-theme-base border-2 border-theme-primary flex items-center justify-center mx-auto text-theme-primary shadow-glow">
             <Swords className="w-8 h-8" />
           </div>
           <div className="space-y-2">
-            <h3 className="font-gothic font-bold text-2xl text-[#ECEFF4]">NO WARBANDS ACTIVE</h3>
-            <p className="text-xs font-mono text-[#8E95A5] max-w-md mx-auto leading-relaxed">
+            <h3 className="font-gothic font-bold text-2xl text-theme-text">NO WARBANDS ACTIVE</h3>
+            <p className="text-xs font-mono text-theme-muted max-w-md mx-auto leading-relaxed">
               Your command ledger is currently empty. Muster a fresh Trench Crusade warband from scratch or import an existing roster from NewRecruit or BattleScribe.
             </p>
           </div>
@@ -132,7 +132,7 @@ export const WarbandDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="w-full sm:w-auto px-6 py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow-lg shadow-[#D4AF37]/20 flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow-lg shadow-theme-primary/20 flex items-center justify-center space-x-2"
             >
               <Plus className="w-4 h-4" />
               <span>Muster New Warband</span>
@@ -140,9 +140,9 @@ export const WarbandDashboard: React.FC = () => {
 
             <button
               onClick={() => setIsImportModalOpen(true)}
-              className="w-full sm:w-auto px-6 py-3 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] font-mono text-xs font-bold uppercase rounded flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-6 py-3 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border font-mono text-xs font-bold uppercase rounded flex items-center justify-center space-x-2"
             >
-              <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+              <UploadCloud className="w-4 h-4 text-theme-primary" />
               <span>Import from NewRecruit</span>
             </button>
           </div>
@@ -162,8 +162,8 @@ export const WarbandDashboard: React.FC = () => {
                   onClick={() => setActiveWarbandId(wb.id)}
                   className={`p-4 rounded-md border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between bevel-container ${
                     isActive
-                      ? 'bg-[#161920] border-[#D4AF37] shadow-lg shadow-black/60 ring-1 ring-[#D4AF37]'
-                      : 'bg-[#161920]/60 border-[#323846] hover:border-[#8E95A5]/60 hover:bg-[#161920]'
+                      ? 'bg-theme-surface border-theme-primary shadow-lg shadow-black/60 ring-1 ring-theme-primary'
+                      : 'bg-theme-surface/60 border-theme-border hover:border-theme-muted/60 hover:bg-theme-surface'
                   }`}
                 >
                   <div className="space-y-2">
@@ -173,28 +173,28 @@ export const WarbandDashboard: React.FC = () => {
                           className="w-2.5 h-2.5 rounded-full"
                           style={{ backgroundColor: faction?.color || '#D4AF37' }}
                         />
-                        <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-semibold">
+                        <span className="text-[10px] font-mono text-theme-primary uppercase font-semibold">
                           {faction?.name || wb.factionId}
                         </span>
                       </div>
                       {isActive && (
-                        <span className="text-[9px] font-mono font-bold bg-[#D4AF37] text-black px-1.5 py-0.2 rounded uppercase">
+                        <span className="text-[9px] font-mono font-bold bg-theme-primary text-black px-1.5 py-0.2 rounded uppercase">
                           ACTIVE
                         </span>
                       )}
                     </div>
 
-                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4] truncate">{wb.name}</h3>
+                    <h3 className="font-gothic font-bold text-base text-theme-text truncate">{wb.name}</h3>
 
-                    <div className="flex items-center justify-between text-xs font-mono text-[#8E95A5]">
+                    <div className="flex items-center justify-between text-xs font-mono text-theme-muted">
                       <span>{wb.units.length} Warriors</span>
-                      <span className="text-[#ECEFF4] font-bold">{totalCost} / {wb.ducatLimit} D</span>
+                      <span className="text-theme-text font-bold">{totalCost} / {wb.ducatLimit} D</span>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-4 pt-3 border-t border-[#323846]/60 flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-1 text-[#D4AF37] font-mono">
+                  <div className="mt-4 pt-3 border-t border-theme-border/60 flex items-center justify-between text-xs">
+                    <div className="flex items-center space-x-1 text-theme-primary font-mono">
                       <Sparkles className="w-3 h-3" />
                       <span>{wb.gloryPoints} Glory</span>
                     </div>
@@ -202,7 +202,7 @@ export const WarbandDashboard: React.FC = () => {
                     <div className="flex items-center space-x-1" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => cloneWarband(wb.id)}
-                        className="p-1 text-[#8E95A5] hover:text-[#ECEFF4] rounded transition-colors"
+                        className="p-1 text-theme-muted hover:text-theme-text rounded transition-colors"
                         title="Clone / Fork Warband"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export const WarbandDashboard: React.FC = () => {
                       {canManageWarband(wb) && (
                         <button
                           onClick={() => setWarbandToDelete({ id: wb.id, name: wb.name })}
-                          className="p-1 text-[#8E95A5] hover:text-[#E53935] rounded transition-colors"
+                          className="p-1 text-theme-muted hover:text-status-error rounded transition-colors"
                           title="Delete Warband"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -231,16 +231,16 @@ export const WarbandDashboard: React.FC = () => {
       {/* Create Warband Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#161920] border-2 border-[#323846] w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container">
             
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-2">
-                <Skull className="w-5 h-5 text-[#D4AF37]" />
-                <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">MUSTER NEW WARBAND</h3>
+                <Skull className="w-5 h-5 text-theme-primary" />
+                <h3 className="font-gothic font-bold text-lg text-theme-text">MUSTER NEW WARBAND</h3>
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-[#8E95A5] hover:text-white p-1"
+                className="text-theme-muted hover:text-white p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -248,7 +248,7 @@ export const WarbandDashboard: React.FC = () => {
 
             <form onSubmit={handleCreate} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
                   Warband Title
                 </label>
                 <input
@@ -257,21 +257,21 @@ export const WarbandDashboard: React.FC = () => {
                   placeholder="e.g. 7th Iron Vanguard, Heretics of Golgotha"
                   value={newWarbandName}
                   onChange={(e) => setNewWarbandName(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
                   Faction Allegiance
                 </label>
                 <select
                   value={newFactionId}
                   onChange={(e) => setNewFactionId(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                 >
                   {factions.map((f) => (
-                    <option key={f.id} value={f.id} className="bg-[#161920]">
+                    <option key={f.id} value={f.id} className="bg-theme-surface">
                       {f.name}
                     </option>
                   ))}
@@ -279,7 +279,7 @@ export const WarbandDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-2">
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-2">
                   Budget
                 </label>
                 <div className="space-y-2">
@@ -295,12 +295,12 @@ export const WarbandDashboard: React.FC = () => {
                       onClick={() => setNewForceMode(m.id)}
                       className={`w-full text-left p-3 min-h-[44px] rounded-sm border transition-colors ${
                         newForceMode === m.id
-                          ? 'border-[#D4AF37] bg-[#20242E]'
-                          : 'border-[#323846] hover:border-[#D4AF37]/50'
+                          ? 'border-theme-primary bg-theme-elevated'
+                          : 'border-theme-border hover:border-theme-primary/50'
                       }`}
                     >
-                      <span className="font-gothic font-bold text-sm text-[#ECEFF4]">{m.name}</span>
-                      <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1 leading-relaxed">{m.blurb}</p>
+                      <span className="font-gothic font-bold text-sm text-theme-text">{m.name}</span>
+                      <p className="text-xs sm:text-[11px] text-theme-muted mt-1 leading-relaxed">{m.blurb}</p>
                     </button>
                   ))}
                 </div>
@@ -310,7 +310,7 @@ export const WarbandDashboard: React.FC = () => {
                     how the app ended up with a hand-set limit in the first place. */}
                 {newForceMode === 'unrestricted' && (
                   <div className="mt-3">
-                    <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                    <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
                       Starting Ducats
                     </label>
                     <input
@@ -320,23 +320,23 @@ export const WarbandDashboard: React.FC = () => {
                       step="50"
                       value={newDucatLimit}
                       onChange={(e) => setNewDucatLimit(parseInt(e.target.value) || 700)}
-                      className="w-full min-h-[44px] bg-[#0C0E12] border border-[#323846] rounded p-2 text-base sm:text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                      className="w-full min-h-[44px] bg-theme-base border border-theme-border rounded p-2 text-base sm:text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                     />
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 border-t border-[#323846] flex items-center justify-end space-x-3">
+              <div className="pt-4 border-t border-theme-border flex items-center justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
+                  className="px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text font-mono text-xs font-bold uppercase rounded"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow"
                 >
                   Muster Roster
                 </button>

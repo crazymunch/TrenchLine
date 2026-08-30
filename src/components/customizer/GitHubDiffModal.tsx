@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { RuleDiffItem } from '../../types/diff';
 import { 
@@ -31,6 +32,9 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
 }) => {
   const { resolveDiff, units, saveCustomUnit } = useStore();
 
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
+
   const handleAcceptUpstream = (diff: RuleDiffItem) => {
     // Apply upstream changes to the unit
     const targetUnit = units.find((u) => u.id === diff.id);
@@ -57,35 +61,35 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-3">
-            <GitBranch className="w-6 h-6 text-[#D4AF37]" />
+            <GitBranch className="w-6 h-6 text-theme-primary" />
             <div>
-              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4] tracking-wide">
+              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
                 GITHUB RULE SYNC & 3-WAY DIFF RESOLVER
               </h2>
-              <p className="text-xs font-mono text-[#8E95A5]">
+              <p className="text-xs font-mono text-theme-muted">
                 Compare your custom in-app unit overrides against the latest upstream repository changes
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Commit Details Banner */}
-        <div className="p-4 bg-[#20242E] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+        <div className="p-4 bg-theme-elevated border-b border-theme-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
           <div className="flex items-center space-x-2">
-            <GitCommit className="w-4 h-4 text-[#D4AF37]" />
-            <span className="text-[#8E95A5]">Commit: <strong className="text-[#ECEFF4]">{commitSha.slice(0, 8)}</strong></span>
-            <span className="text-[#ECEFF4] truncate max-w-md italic">"{commitMessage}"</span>
+            <GitCommit className="w-4 h-4 text-theme-primary" />
+            <span className="text-theme-muted">Commit: <strong className="text-theme-text">{commitSha.slice(0, 8)}</strong></span>
+            <span className="text-theme-text truncate max-w-md italic">"{commitMessage}"</span>
           </div>
-          <div className="text-[#D4AF37] font-bold">
+          <div className="text-theme-primary font-bold">
             {diffs.length} Conflicting Profiles Found
           </div>
         </div>
@@ -93,25 +97,25 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
         {/* Diffs List */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
           {diffs.length === 0 ? (
-            <div className="p-8 text-center bg-[#0C0E12] rounded border border-[#323846] space-y-2">
-              <CheckCheck className="w-8 h-8 text-[#4E9A6E] mx-auto" />
-              <p className="text-sm font-gothic font-bold text-[#4E9A6E]">ALL RULES FULLY SYNCHRONIZED</p>
-              <p className="text-xs font-mono text-[#8E95A5]">No unresolved conflicts between local edits and GitHub upstream.</p>
+            <div className="p-8 text-center bg-theme-base rounded border border-theme-border space-y-2">
+              <CheckCheck className="w-8 h-8 text-status-legal mx-auto" />
+              <p className="text-sm font-gothic font-bold text-status-legal">ALL RULES FULLY SYNCHRONIZED</p>
+              <p className="text-xs font-mono text-theme-muted">No unresolved conflicts between local edits and GitHub upstream.</p>
             </div>
           ) : (
             diffs.map((diff) => (
               <div
                 key={diff.id}
-                className="bg-[#20242E] border border-[#323846] rounded-md p-5 space-y-4 shadow-lg"
+                className="bg-theme-elevated border border-theme-border rounded-md p-5 space-y-4 shadow-lg"
               >
-                <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+                <div className="flex items-center justify-between border-b border-theme-border pb-2">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-mono uppercase bg-[#8B0000] text-white px-2 py-0.5 rounded font-bold">
+                    <span className="text-[10px] font-mono uppercase bg-theme-accent text-white px-2 py-0.5 rounded font-bold">
                       {diff.type}
                     </span>
-                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{diff.name}</h3>
+                    <h3 className="font-gothic font-bold text-base text-theme-text">{diff.name}</h3>
                   </div>
-                  <span className="text-xs font-mono text-[#E53935] flex items-center space-x-1">
+                  <span className="text-xs font-mono text-status-error flex items-center space-x-1">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>Rule Discrepancy</span>
                   </span>
@@ -121,30 +125,30 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   
                   {/* Left: Your Custom Overrides */}
-                  <div className="p-3 bg-[#161920] border border-[#D4AF37]/50 rounded space-y-2">
-                    <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold block border-b border-[#323846] pb-1">
+                  <div className="p-3 bg-theme-surface border border-theme-primary/50 rounded space-y-2">
+                    <span className="text-[10px] font-mono uppercase text-theme-primary font-bold block border-b border-theme-border pb-1">
                       Your In-App Custom Value
                     </span>
                     <div className="space-y-1 text-xs font-mono">
                       {diff.diffFields.map((field, idx) => (
-                        <div key={idx} className="flex justify-between py-1 border-b border-[#323846]/40">
-                          <span className="text-[#8E95A5]">{field.fieldName}:</span>
-                          <strong className="text-[#D4AF37]">{String(field.userValue)}</strong>
+                        <div key={idx} className="flex justify-between py-1 border-b border-theme-border/40">
+                          <span className="text-theme-muted">{field.fieldName}:</span>
+                          <strong className="text-theme-primary">{String(field.userValue)}</strong>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Right: GitHub Upstream */}
-                  <div className="p-3 bg-[#0C0E12] border border-[#323846] rounded space-y-2">
-                    <span className="text-[10px] font-mono uppercase text-[#4E9A6E] font-bold block border-b border-[#323846] pb-1">
+                  <div className="p-3 bg-theme-base border border-theme-border rounded space-y-2">
+                    <span className="text-[10px] font-mono uppercase text-status-legal font-bold block border-b border-theme-border pb-1">
                       GitHub Upstream (Repo)
                     </span>
                     <div className="space-y-1 text-xs font-mono">
                       {diff.diffFields.map((field, idx) => (
-                        <div key={idx} className="flex justify-between py-1 border-b border-[#323846]/40">
-                          <span className="text-[#8E95A5]">{field.fieldName}:</span>
-                          <strong className="text-[#4E9A6E]">{String(field.upstreamValue)}</strong>
+                        <div key={idx} className="flex justify-between py-1 border-b border-theme-border/40">
+                          <span className="text-theme-muted">{field.fieldName}:</span>
+                          <strong className="text-status-legal">{String(field.upstreamValue)}</strong>
                         </div>
                       ))}
                     </div>
@@ -156,13 +160,13 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
                 <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
                   <button
                     onClick={() => handleKeepUser(diff)}
-                    className="px-4 py-2 bg-[#161920] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                    className="px-4 py-2 bg-theme-surface hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
                   >
                     Keep My Custom Values
                   </button>
                   <button
                     onClick={() => handleAcceptUpstream(diff)}
-                    className="px-4 py-2 bg-[#4E9A6E] hover:bg-[#3B7A57] text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+                    className="px-4 py-2 bg-status-legal hover:bg-[#3B7A57] text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow"
                   >
                     Accept Upstream Repo Patch
                   </button>
@@ -174,10 +178,10 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#323846] bg-[#0C0E12] flex justify-end">
+        <div className="px-6 py-4 border-t border-theme-border bg-theme-base flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
+            className="px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text font-mono text-xs font-bold uppercase rounded"
           >
             Close Diff Viewer
           </button>

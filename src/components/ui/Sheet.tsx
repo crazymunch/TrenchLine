@@ -26,8 +26,10 @@
  * from `sm:` up. Header and footer are sticky so the primary action stays put
  * while the body scrolls — the thing you cannot do with a plain centred div.
  */
-import React, { useCallback, useEffect, useRef } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
+
+import { useOverlay } from './useOverlay';
 
 export interface SheetProps {
   open: boolean;
@@ -54,63 +56,14 @@ const WIDTH: Record<NonNullable<SheetProps['size']>, string> = {
   xl: 'sm:max-w-4xl',
 };
 
-const FOCUSABLE =
-  'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
-  'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-
 export const Sheet: React.FC<SheetProps> = ({
   open, onClose, title, subtitle, footer, children,
   size = 'md', dismissible = true, label,
 }) => {
-  const panel = useRef<HTMLDivElement>(null);
-  const restoreFocus = useRef<HTMLElement | null>(null);
-
-  const close = useCallback(() => { if (dismissible) onClose(); }, [dismissible, onClose]);
-
-  // Body scroll lock. Reads the existing value and puts it back rather than
-  // assuming '' — two stacked sheets must not leave the page unlocked when the
-  // inner one closes.
-  useEffect(() => {
-    if (!open) return;
-    const body = document.body;
-    const previous = body.style.overflow;
-    body.style.overflow = 'hidden';
-    return () => { body.style.overflow = previous; };
-  }, [open]);
-
-  // Focus: move into the panel on open, and back to the opener on close, so
-  // keyboard and screen-reader users are not dropped at the top of the document.
-  useEffect(() => {
-    if (!open) return;
-    restoreFocus.current = document.activeElement as HTMLElement | null;
-    const first = panel.current?.querySelector<HTMLElement>(FOCUSABLE);
-    (first ?? panel.current)?.focus();
-    return () => restoreFocus.current?.focus?.();
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.stopPropagation(); close(); return; }
-      if (e.key !== 'Tab') return;
-
-      const items = [...(panel.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])]
-        .filter((el) => el.offsetParent !== null);
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      const active = document.activeElement;
-      // Wrap manually: without this, Tab walks out of the sheet and into the
-      // page behind it, which is still there and still focusable.
-      if (e.shiftKey && (active === first || !panel.current?.contains(active))) {
-        e.preventDefault(); last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault(); first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey, true);
-    return () => document.removeEventListener('keydown', onKey, true);
-  }, [open, close]);
+  // Scroll lock, focus trap and Escape live in `useOverlay`, so the thirty
+  // modals that have not moved to `Sheet` yet can have them too.
+  const panel = useOverlay(open, onClose, { dismissible });
+  const close = () => { if (dismissible) onClose(); };
 
   if (!open) return null;
 
@@ -127,29 +80,29 @@ export const Sheet: React.FC<SheetProps> = ({
         tabIndex={-1}
         // dvh, not vh. Bottom sheet on a phone, centred dialog from sm: up.
         className={`w-full ${WIDTH[size]} max-h-[90dvh] flex flex-col overflow-hidden
-                    bg-[#161920] border border-[#323846]
+                    bg-theme-surface border border-theme-border
                     rounded-t-xl sm:rounded-md outline-none`}
       >
         {(title || dismissible) && (
-          <header className="flex items-start justify-between gap-3 px-4 py-3 bg-[#20242E] border-b border-[#323846] flex-shrink-0">
+          <header className="flex items-start justify-between gap-3 px-4 py-3 bg-theme-elevated border-b border-theme-border flex-shrink-0">
             <div className="min-w-0">
               {/* Grab handle: a phone affordance, and it says "this came from
                   the bottom edge" before anything is read. */}
-              <div className="sm:hidden w-9 h-1 rounded-full bg-[#323846] mx-auto mb-2 -mt-1" />
+              <div className="sm:hidden w-9 h-1 rounded-full bg-theme-border mx-auto mb-2 -mt-1" />
               {title && (
-                <h2 className="font-gothic font-bold text-lg sm:text-base text-[#ECEFF4] truncate">
+                <h2 className="font-gothic font-bold text-lg sm:text-base text-theme-text truncate">
                   {title}
                 </h2>
               )}
               {subtitle && (
-                <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5] mt-0.5">{subtitle}</p>
+                <p className="text-xs sm:text-[11px] font-mono text-theme-muted mt-0.5">{subtitle}</p>
               )}
             </div>
             {dismissible && (
               <button
                 onClick={onClose}
                 className="min-w-[44px] min-h-[44px] -mr-2 -mt-2 flex items-center justify-center
-                           text-[#8E95A5] hover:text-[#ECEFF4] flex-shrink-0"
+                           text-theme-muted hover:text-theme-text flex-shrink-0"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -161,7 +114,7 @@ export const Sheet: React.FC<SheetProps> = ({
         <div className="overflow-y-auto overscroll-contain flex-1 p-4">{children}</div>
 
         {footer && (
-          <footer className="flex-shrink-0 flex gap-2 p-3 pb-safe sm:pb-3 bg-[#20242E] border-t border-[#323846]">
+          <footer className="flex-shrink-0 flex gap-2 p-3 pb-safe sm:pb-3 bg-theme-elevated border-t border-theme-border">
             {footer}
           </footer>
         )}

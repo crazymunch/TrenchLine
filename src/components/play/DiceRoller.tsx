@@ -91,22 +91,22 @@ export const DiceRoller: React.FC = () => {
       const isFumble = keptDice[0] === 1 && keptDice[1] === 1;
 
       let verdict = '';
-      let verdictColor = 'text-[#ECEFF4]';
+      let verdictColor = 'text-theme-text';
 
       if (isCrit) {
         verdict = '⭐ CRITICAL SUCCESS!';
-        verdictColor = 'text-[#D4AF37]';
+        verdictColor = 'text-theme-primary';
         soundEffects.playCathedralBell();
       } else if (isFumble) {
         verdict = '💀 FUMBLE / DISASTER!';
-        verdictColor = 'text-[#E53935]';
+        verdictColor = 'text-status-error';
         soundEffects.playGunfire();
       } else if (sum >= 7) {
         verdict = '✅ SUCCESS (Passed TN 7)';
-        verdictColor = 'text-[#4E9A6E]';
+        verdictColor = 'text-status-legal';
       } else {
         verdict = isRiskyAction ? '❌ FAILED (Activation Ends Immediately)' : '❌ FAILED (Missed TN 7)';
-        verdictColor = 'text-[#E53935]';
+        verdictColor = 'text-status-error';
       }
 
       const modStr = actionDiceModifier > 0 ? `+${actionDiceModifier} DICE` : actionDiceModifier < 0 ? `${actionDiceModifier} DICE` : 'Standard';
@@ -150,21 +150,21 @@ export const DiceRoller: React.FC = () => {
       const finalTotal = bestDie + injuryFlatModifier;
 
       let verdict = '';
-      let verdictColor = 'text-[#ECEFF4]';
+      let verdictColor = 'text-theme-text';
 
       if (finalTotal >= 9) {
         verdict = '💀 OUT OF ACTION! (Fatal/Incapacitated)';
-        verdictColor = 'text-[#E53935]';
+        verdictColor = 'text-status-error';
         soundEffects.playGunfire();
       } else if (finalTotal >= 7) {
         verdict = '🩸 SERIOUS INJURY (+1 Blood Marker)';
         verdictColor = 'text-[#FF6B6B]';
       } else if (finalTotal >= 4) {
         verdict = '⚠️ DOWNED (Knocked Off Feet)';
-        verdictColor = 'text-[#FFB300]';
+        verdictColor = 'text-status-warning';
       } else {
         verdict = '🛡️ FLESH WOUND / DEFLECTED BY ARMOUR';
-        verdictColor = 'text-[#4E9A6E]';
+        verdictColor = 'text-status-legal';
       }
 
       const modStr = injuryFlatModifier > 0 ? `+${injuryFlatModifier}` : injuryFlatModifier < 0 ? `${injuryFlatModifier}` : '';
@@ -215,7 +215,7 @@ export const DiceRoller: React.FC = () => {
         finalTotal: sum,
         label,
         verdict,
-        verdictColor: 'text-[#D4AF37]'
+        verdictColor: 'text-theme-primary'
       };
 
       setLastResult(res);
@@ -225,20 +225,20 @@ export const DiceRoller: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#161920] border-2 border-[#323846] rounded-md overflow-hidden shadow-xl bevel-container">
+    <div className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container">
       
       {/* Header Bar */}
       <div
-        className="px-4 py-3 bg-[#20242E] flex items-center justify-between cursor-pointer select-none border-b border-[#323846]"
+        className="px-4 py-3 bg-theme-elevated flex items-center justify-between cursor-pointer select-none border-b border-theme-border"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center space-x-2">
-          <Dices className="w-5 h-5 text-[#D4AF37]" />
-          <h3 className="font-gothic font-bold text-sm text-[#ECEFF4] uppercase tracking-wider">
+          <Dices className="w-5 h-5 text-theme-primary" />
+          <h3 className="font-gothic font-bold text-sm text-theme-text uppercase tracking-wider">
             TABLETOP COMBAT DICE ENGINE
           </h3>
           {lastResult && !isOpen && (
-            <span className="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded bg-[#0C0E12] text-[#D4AF37] border border-[#323846] truncate max-w-xs">
+            <span className="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border truncate max-w-xs">
               {lastResult.label}
             </span>
           )}
@@ -250,13 +250,13 @@ export const DiceRoller: React.FC = () => {
               e.stopPropagation();
               handleToggleMute();
             }}
-            className="p-1 text-[#8E95A5] hover:text-[#D4AF37] rounded"
+            className="p-1 text-theme-muted hover:text-theme-primary rounded"
             title={isMuted ? 'Unmute Sound FX' : 'Mute Sound FX'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-[#E53935]" /> : <Volume2 className="w-4 h-4 text-[#4E9A6E]" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-status-error" /> : <Volume2 className="w-4 h-4 text-status-legal" />}
           </button>
 
-          <button className="text-[#8E95A5] hover:text-white">
+          <button className="text-theme-muted hover:text-white">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
@@ -264,10 +264,10 @@ export const DiceRoller: React.FC = () => {
 
       {/* Expanded Combat Dice Console */}
       {isOpen && (
-        <div className="p-4 space-y-4 bg-[#0C0E12] animate-fade-in font-mono text-xs">
+        <div className="p-4 space-y-4 bg-theme-base animate-fade-in font-mono text-xs">
           
           {/* Mode Tabs */}
-          <div className="flex items-center space-x-2 border-b border-[#323846] pb-3">
+          <div className="flex items-center space-x-2 border-b border-theme-border pb-3">
             {[
               { id: 'action', label: 'Action & Success Test (2D6)', icon: <Zap className="w-3.5 h-3.5" /> },
               { id: 'injury', label: 'Injury & Bloodbath (Multi-D6)', icon: <Skull className="w-3.5 h-3.5" /> },
@@ -278,8 +278,8 @@ export const DiceRoller: React.FC = () => {
                 onClick={() => setActiveMode(tab.id as DiceMode)}
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded uppercase font-bold transition-all ${
                   activeMode === tab.id
-                    ? 'bg-[#D4AF37] text-black shadow'
-                    : 'bg-[#161920] text-[#8E95A5] hover:text-white border border-[#323846]'
+                    ? 'bg-theme-primary text-black shadow'
+                    : 'bg-theme-surface text-theme-muted hover:text-white border border-theme-border'
                 }`}
               >
                 {tab.icon}
@@ -290,20 +290,20 @@ export const DiceRoller: React.FC = () => {
 
           {/* MODE 1: ACTION / SUCCESS TEST */}
           {activeMode === 'action' && (
-            <div className="space-y-3 p-3 bg-[#161920] border border-[#323846] rounded-md">
+            <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 
                 {/* Dice Modifiers Selector */}
                 <div className="flex items-center space-x-1.5">
-                  <span className="text-[#8E95A5] uppercase font-bold text-[11px]">Dice Modifier:</span>
+                  <span className="text-theme-muted uppercase font-bold text-[11px]">Dice Modifier:</span>
                   {[-2, -1, 0, 1, 2].map((mod) => (
                     <button
                       key={mod}
                       onClick={() => setActionDiceModifier(mod)}
                       className={`px-2.5 py-1 rounded font-bold transition-all ${
                         actionDiceModifier === mod
-                          ? 'bg-[#D4AF37] text-black font-extrabold shadow'
-                          : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                          ? 'bg-theme-primary text-black font-extrabold shadow'
+                          : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
                       }`}
                     >
                       {mod > 0 ? `+${mod} DICE` : mod < 0 ? `${mod} DICE` : 'Standard'}
@@ -312,14 +312,14 @@ export const DiceRoller: React.FC = () => {
                 </div>
 
                 {/* Risky Action Toggle */}
-                <label className="flex items-center space-x-2 cursor-pointer bg-[#20242E] px-3 py-1 rounded border border-[#323846]">
+                <label className="flex items-center space-x-2 cursor-pointer bg-theme-elevated px-3 py-1 rounded border border-theme-border">
                   <input
                     type="checkbox"
                     checked={isRiskyAction}
                     onChange={(e) => setIsRiskyAction(e.target.checked)}
-                    className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                    className="rounded border-theme-border text-theme-primary focus:ring-0"
                   />
-                  <span className={`font-bold uppercase text-[11px] ${isRiskyAction ? 'text-[#FF6B6B]' : 'text-[#8E95A5]'}`}>
+                  <span className={`font-bold uppercase text-[11px] ${isRiskyAction ? 'text-[#FF6B6B]' : 'text-theme-muted'}`}>
                     Risky Action
                   </span>
                 </label>
@@ -330,7 +330,7 @@ export const DiceRoller: React.FC = () => {
               <button
                 onClick={rollActionTest}
                 disabled={isRolling}
-                className="w-full py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-[#D4AF37]/20 text-xs tracking-wider"
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-theme-primary/20 text-xs tracking-wider"
               >
                 <Zap className="w-4 h-4" />
                 <span>
@@ -342,12 +342,12 @@ export const DiceRoller: React.FC = () => {
 
           {/* MODE 2: INJURY & BLOODBATH */}
           {activeMode === 'injury' && (
-            <div className="space-y-3 p-3 bg-[#161920] border border-[#323846] rounded-md">
+            <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
                 {/* Dice Count */}
                 <div className="space-y-1.5">
-                  <span className="text-[#8E95A5] uppercase font-bold text-[11px] block">
+                  <span className="text-theme-muted uppercase font-bold text-[11px] block">
                     Injury Dice Pool:
                   </span>
                   <div className="flex space-x-1.5">
@@ -363,7 +363,7 @@ export const DiceRoller: React.FC = () => {
                         className={`flex-1 py-1.5 rounded font-bold uppercase text-[10px] transition-all ${
                           injuryDiceCount === btn.count
                             ? 'bg-[#B22222] text-white font-extrabold shadow'
-                            : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                            : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
                         }`}
                       >
                         {btn.label}
@@ -374,7 +374,7 @@ export const DiceRoller: React.FC = () => {
 
                 {/* Flat Modifiers (Armour vs Blood/AP) */}
                 <div className="space-y-1.5">
-                  <span className="text-[#8E95A5] uppercase font-bold text-[11px] block">
+                  <span className="text-theme-muted uppercase font-bold text-[11px] block">
                     Injury Modifier (Armour / Blood / AP):
                   </span>
                   <div className="flex space-x-1">
@@ -384,8 +384,8 @@ export const DiceRoller: React.FC = () => {
                         onClick={() => setInjuryFlatModifier(mod)}
                         className={`flex-1 py-1.5 rounded font-bold text-xs transition-all ${
                           injuryFlatModifier === mod
-                            ? 'bg-[#D4AF37] text-black font-extrabold shadow'
-                            : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                            ? 'bg-theme-primary text-black font-extrabold shadow'
+                            : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
                         }`}
                       >
                         {mod > 0 ? `+${mod}` : mod}
@@ -412,17 +412,17 @@ export const DiceRoller: React.FC = () => {
 
           {/* MODE 3: CUSTOM MULTI-D6 POOL */}
           {activeMode === 'pool' && (
-            <div className="space-y-3 p-3 bg-[#161920] border border-[#323846] rounded-md">
+            <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="flex items-center space-x-3">
-                <span className="text-[#8E95A5] uppercase font-bold text-[11px]">Number of D6s:</span>
+                <span className="text-theme-muted uppercase font-bold text-[11px]">Number of D6s:</span>
                 {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
                   <button
                     key={num}
                     onClick={() => setCustomPoolCount(num)}
                     className={`px-3 py-1 rounded font-bold transition-all ${
                       customPoolCount === num
-                        ? 'bg-[#D4AF37] text-black font-extrabold shadow'
-                        : 'bg-[#20242E] text-[#8E95A5] hover:text-white border border-[#323846]'
+                        ? 'bg-theme-primary text-black font-extrabold shadow'
+                        : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
                     }`}
                   >
                     {num}D6
@@ -433,7 +433,7 @@ export const DiceRoller: React.FC = () => {
               <button
                 onClick={rollCustomPool}
                 disabled={isRolling}
-                className="w-full py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg text-xs"
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg text-xs"
               >
                 <Dices className="w-4 h-4" />
                 <span>Roll {customPoolCount} D6 Pool</span>
@@ -443,10 +443,10 @@ export const DiceRoller: React.FC = () => {
 
           {/* Visual Interactive Result Box */}
           {lastResult && (
-            <div className="p-4 bg-[#161920] border-2 border-[#D4AF37]/60 rounded-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+            <div className="p-4 bg-theme-surface border-2 border-theme-primary/60 rounded-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
               
               <div className="space-y-2">
-                <span className="text-[10px] text-[#8E95A5] uppercase font-bold block">
+                <span className="text-[10px] text-theme-muted uppercase font-bold block">
                   {lastResult.type}
                 </span>
 
@@ -456,7 +456,7 @@ export const DiceRoller: React.FC = () => {
                   {lastResult.keptDice.map((d, idx) => (
                     <div
                       key={`kept-${idx}`}
-                      className="w-11 h-11 rounded bg-[#0C0E12] border-2 border-[#D4AF37] text-[#D4AF37] flex items-center justify-center font-mono font-bold text-lg shadow-lg ring-1 ring-[#D4AF37]/50"
+                      className="w-11 h-11 rounded bg-theme-base border-2 border-theme-primary text-theme-primary flex items-center justify-center font-mono font-bold text-lg shadow-lg ring-1 ring-theme-primary/50"
                       title="Kept Die"
                     >
                       {d}
@@ -467,7 +467,7 @@ export const DiceRoller: React.FC = () => {
                   {lastResult.discardedDice.map((d, idx) => (
                     <div
                       key={`disc-${idx}`}
-                      className="w-11 h-11 rounded bg-[#0C0E12] border border-[#323846] text-[#555E70] line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
+                      className="w-11 h-11 rounded bg-theme-base border border-theme-border text-[#555E70] line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
                       title="Discarded / Dropped Die"
                     >
                       {d}
@@ -475,13 +475,13 @@ export const DiceRoller: React.FC = () => {
                   ))}
 
                   {lastResult.modifier !== 0 && (
-                    <div className="px-2.5 py-1 rounded bg-[#20242E] text-[#D4AF37] border border-[#323846] font-bold text-sm">
+                    <div className="px-2.5 py-1 rounded bg-theme-elevated text-theme-primary border border-theme-border font-bold text-sm">
                       {lastResult.modifier > 0 ? `+${lastResult.modifier}` : lastResult.modifier} Mod
                     </div>
                   )}
 
-                  <span className="text-sm font-bold text-[#ECEFF4] px-1">=</span>
-                  <div className="px-3 py-1 rounded bg-[#D4AF37] text-black font-extrabold text-base shadow">
+                  <span className="text-sm font-bold text-theme-text px-1">=</span>
+                  <div className="px-3 py-1 rounded bg-theme-primary text-black font-extrabold text-base shadow">
                     {lastResult.finalTotal}
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export const DiceRoller: React.FC = () => {
 
               {/* Verdict Banner */}
               <div className="text-right">
-                <span className="text-[10px] text-[#8E95A5] uppercase block">Result & Effect</span>
+                <span className="text-[10px] text-theme-muted uppercase block">Result & Effect</span>
                 <span className={`font-gothic font-bold text-sm sm:text-base ${lastResult.verdictColor} block`}>
                   {lastResult.verdict}
                 </span>
@@ -500,13 +500,13 @@ export const DiceRoller: React.FC = () => {
 
           {/* Roll History Rollout */}
           {diceHistory.length > 0 && (
-            <div className="space-y-1 border-t border-[#323846] pt-2">
-              <span className="text-[9px] font-mono uppercase text-[#8E95A5] block">Recent Rolls:</span>
+            <div className="space-y-1 border-t border-theme-border pt-2">
+              <span className="text-[9px] font-mono uppercase text-theme-muted block">Recent Rolls:</span>
               <div className="flex flex-wrap gap-1.5">
                 {diceHistory.map((item, idx) => (
                   <span
                     key={idx}
-                    className="text-[10px] font-mono bg-[#161920] px-2 py-0.5 rounded text-[#8E95A5] border border-[#323846]/60"
+                    className="text-[10px] font-mono bg-theme-surface px-2 py-0.5 rounded text-theme-muted border border-theme-border/60"
                   >
                     {item}
                   </span>

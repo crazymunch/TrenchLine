@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { ActiveUnit, UnitTitleRecord } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
@@ -41,6 +42,9 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'titles' | 'deeds' | 'bio'>('titles');
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   
   // Clean base name
   const [baseName, setBaseName] = useState<string>(unit.customName || unit.profileSnapshot.name);
@@ -140,14 +144,14 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
     : safeBaseName;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] bevel-container">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
+      <div className="bg-theme-surface border-2 border-theme-primary rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] bevel-container">
         
         {/* Modal Header */}
-        <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+        <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
-              <Scroll className="w-4 h-4 text-[#D4AF37]" />
+            <div className="w-8 h-8 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
+              <Scroll className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -155,27 +159,27 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                   {fullPreviewName}
                 </h2>
               </div>
-              <p className="text-xs text-[#8E95A5] font-mono">
-                Base Profile: <strong className="text-[#ECEFF4]">{unit.profileSnapshot.name}</strong> • Titles, Heroic Feats & Dossier
+              <p className="text-xs text-theme-muted font-mono">
+                Base Profile: <strong className="text-theme-text">{unit.profileSnapshot.name}</strong> • Titles, Heroic Feats & Dossier
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="text-[#8E95A5] hover:text-white p-1 rounded transition-colors"
+            className="text-theme-muted hover:text-white p-1 rounded transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-[#323846] bg-[#161920] overflow-x-auto">
+        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
           <button
             onClick={() => setActiveTab('titles')}
             className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
               activeTab === 'titles' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
@@ -186,8 +190,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             onClick={() => setActiveTab('deeds')}
             className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
               activeTab === 'deeds' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <Award className="w-3.5 h-3.5" />
@@ -198,8 +202,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             onClick={() => setActiveTab('bio')}
             className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
               activeTab === 'bio' 
-                ? 'border-[#D4AF37] text-[#D4AF37] bg-[#20242E]/80 rounded-t' 
-                : 'border-transparent text-[#8E95A5] hover:text-white'
+                ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
+                : 'border-transparent text-theme-muted hover:text-white'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -215,8 +219,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             <div className="space-y-4">
               
               {/* Name Edit Card */}
-              <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
-                <label className="text-[11px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1.5">
+              <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3">
+                <label className="text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
                   <Edit3 className="w-3.5 h-3.5" />
                   <span>Warrior Base Name:</span>
                 </label>
@@ -226,24 +230,24 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                     value={baseName}
                     onChange={(e) => setBaseName(e.target.value)}
                     placeholder="Enter base warrior name (e.g. Kasim bin Malik)..."
-                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] font-gothic text-sm focus:outline-none focus:border-[#D4AF37]"
+                    className="flex-1 bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-text font-gothic text-sm focus:outline-none focus:border-theme-primary"
                   />
                   <button
                     onClick={() => handleSaveNameAndDossier()}
-                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1"
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Save Name</span>
                   </button>
                 </div>
-                <div className="text-[11px] text-[#8E95A5]">
-                  Full Display Name Preview: <strong className="text-[#ECEFF4]">{fullPreviewName}</strong>
+                <div className="text-[11px] text-theme-muted">
+                  Full Display Name Preview: <strong className="text-theme-text">{fullPreviewName}</strong>
                 </div>
               </div>
 
               {/* Add Custom Title Input */}
-              <div className="p-4 bg-[#0C0E12] rounded border border-[#323846] space-y-3">
-                <label className="text-[11px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1.5">
+              <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3">
+                <label className="text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Custom Title:</span>
                 </label>
@@ -254,12 +258,12 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                     value={newTitleInput}
                     onChange={(e) => setNewTitleInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddTitle()}
-                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="flex-1 bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                   />
                   <button
                     onClick={handleAddTitle}
                     disabled={!newTitleInput.trim()}
-                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Title</span>
@@ -270,16 +274,16 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               {/* Title Repository List */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  <span className="text-[10px] uppercase font-bold text-theme-muted block">
                     Warrior Title Repository ({titleRecords.length}):
                   </span>
-                  <span className="text-[10px] text-[#D4AF37]">
+                  <span className="text-[10px] text-theme-primary">
                     {titleRecords.filter(r => r.active).length} Active in Display Name
                   </span>
                 </div>
 
                 {titleRecords.length === 0 ? (
-                  <div className="p-6 bg-[#0C0E12] rounded border border-[#323846] text-center text-[#8E95A5] italic">
+                  <div className="p-6 bg-theme-base rounded border border-theme-border text-center text-theme-muted italic">
                     No titles in repository. Add custom titles above or earn special titles through trauma injuries and legendary exploration!
                   </div>
                 ) : (
@@ -292,30 +296,30 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                           className={`p-3 rounded border flex items-center justify-between gap-3 transition-all ${
                             rec.active
                               ? isEarned
-                                ? 'bg-[#20242E] border-[#D4AF37] ring-1 ring-[#D4AF37]/40'
-                                : 'bg-[#161920] border-[#D4AF37]/60'
-                              : 'bg-[#0C0E12] border-[#323846] opacity-75 hover:opacity-100'
+                                ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
+                                : 'bg-theme-surface border-theme-primary/60'
+                              : 'bg-theme-base border-theme-border opacity-75 hover:opacity-100'
                           }`}
                         >
                           {/* Title Info & Icon */}
                           <div className="flex items-center space-x-3 flex-1 min-w-0">
                             <div className="flex-shrink-0">
                               {isEarned ? (
-                                <div className="w-7 h-7 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]" title={rec.origin || 'Special Earned Title'}>
+                                <div className="w-7 h-7 rounded-full bg-theme-primary/20 border border-theme-primary flex items-center justify-center text-theme-primary" title={rec.origin || 'Special Earned Title'}>
                                   <Trophy className="w-3.5 h-3.5" />
                                 </div>
                               ) : (
-                                <div className="w-7 h-7 rounded-full bg-[#323846] flex items-center justify-center text-[#8E95A5]" title="User Added Title">
+                                <div className="w-7 h-7 rounded-full bg-theme-border flex items-center justify-center text-theme-muted" title="User Added Title">
                                   <Sparkles className="w-3.5 h-3.5" />
                                 </div>
                               )}
                             </div>
 
                             <div className="min-w-0">
-                              <strong className="text-xs text-[#ECEFF4] font-gothic text-sm block truncate">
+                              <strong className="text-xs text-theme-text font-gothic text-sm block truncate">
                                 {rec.title}
                               </strong>
-                              <span className="text-[10px] text-[#8E95A5] font-mono block truncate">
+                              <span className="text-[10px] text-theme-muted font-mono block truncate">
                                 {rec.origin || (isEarned ? 'Special Earned Title' : 'User Added Title')}
                               </span>
                             </div>
@@ -327,8 +331,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                               onClick={() => handleToggleTitleActive(idx)}
                               className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                                 rec.active
-                                  ? 'bg-[#D4AF37] text-black shadow'
-                                  : 'bg-[#20242E] text-[#8E95A5] border border-[#323846] hover:text-white'
+                                  ? 'bg-theme-primary text-black shadow'
+                                  : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-white'
                               }`}
                               title={rec.active ? 'Click to hide from display name' : 'Click to show in display name'}
                             >
@@ -347,7 +351,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
 
                             <button
                               onClick={() => handleRemoveTitleRecord(idx)}
-                              className="text-[#8E95A5] hover:text-[#E53935] p-1.5 rounded hover:bg-[#8B0000]/20 transition-colors"
+                              className="text-theme-muted hover:text-status-error p-1.5 rounded hover:bg-theme-accent/20 transition-colors"
                               title="Delete from repository"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -367,11 +371,11 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
           {activeTab === 'deeds' && (
             <div className="space-y-4">
               
-              <div className="p-3.5 bg-[#0C0E12] rounded border border-[#323846] space-y-1">
-                <strong className="text-xs uppercase text-[#D4AF37] font-bold block">
+              <div className="p-3.5 bg-theme-base rounded border border-theme-border space-y-1">
+                <strong className="text-xs uppercase text-theme-primary font-bold block">
                   Battlefield Feats & Glorious Deeds
                 </strong>
-                <p className="text-[11px] text-[#8E95A5] leading-relaxed">
+                <p className="text-[11px] text-theme-muted leading-relaxed">
                   Record permanent heroic achievements, critical match milestones, and post-battle Glorious Deeds awarded to this warrior.
                 </p>
               </div>
@@ -384,12 +388,12 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                   value={newDeedInput}
                   onChange={(e) => setNewDeedInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddDeed()}
-                  className="flex-1 bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="flex-1 bg-theme-base border border-theme-border rounded p-2 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 />
                 <button
                   onClick={handleAddDeed}
                   disabled={!newDeedInput.trim()}
-                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Record Feat</span>
@@ -399,22 +403,22 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               {/* Deeds List */}
               <div className="space-y-2">
                 {deeds.length === 0 ? (
-                  <p className="text-xs text-[#8E95A5] italic p-6 bg-[#0C0E12] rounded border border-[#323846] text-center">
+                  <p className="text-xs text-theme-muted italic p-6 bg-theme-base rounded border border-theme-border text-center">
                     No heroic feats recorded yet. Accomplish Glorious Deeds in Tabletop Combat or add manual battle entries above.
                   </p>
                 ) : (
                   deeds.map((deed, idx) => (
                     <div
                       key={idx}
-                      className="p-3 bg-[#0C0E12] rounded border border-[#323846] flex items-center justify-between gap-3 hover:border-[#D4AF37]/50 transition-colors"
+                      className="p-3 bg-theme-base rounded border border-theme-border flex items-center justify-between gap-3 hover:border-theme-primary/50 transition-colors"
                     >
                       <div className="flex items-center space-x-2.5 flex-1 min-w-0">
-                        <Award className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />
-                        <span className="text-xs text-[#ECEFF4]">{deed}</span>
+                        <Award className="w-4 h-4 text-theme-primary flex-shrink-0" />
+                        <span className="text-xs text-theme-text">{deed}</span>
                       </div>
                       <button
                         onClick={() => handleRemoveDeed(idx)}
-                        className="text-[#8E95A5] hover:text-[#E53935] p-1"
+                        className="text-theme-muted hover:text-status-error p-1"
                         title="Delete Feat"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -432,8 +436,8 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             <div className="space-y-4">
               
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
-                  <Quote className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <label className="text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
+                  <Quote className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Battle Cry / Iconic Quote:</span>
                 </label>
                 <input
@@ -441,13 +445,13 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                   value={quoteText}
                   onChange={(e) => setQuoteText(e.target.value)}
                   placeholder="e.g. 'By fire and brimstone, the Sultan's domain shall endure!'"
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] flex items-center space-x-1">
-                  <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <label className="text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
+                  <BookOpen className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Warrior Biography & Narrative Lore:</span>
                 </label>
                 <textarea
@@ -455,14 +459,14 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                   value={loreText}
                   onChange={(e) => setLoreText(e.target.value)}
                   placeholder="Record this warrior's origin, background, faith, and deeds in the trenches..."
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-3 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] leading-relaxed"
+                  className="w-full bg-theme-base border border-theme-border rounded p-3 text-xs text-theme-text focus:outline-none focus:border-theme-primary leading-relaxed"
                 />
               </div>
 
               <div className="flex items-center justify-end pt-2">
                 <button
                   onClick={() => handleSaveNameAndDossier()}
-                  className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
+                  className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5"
                 >
                   <Check className="w-4 h-4" />
                   <span>{isSaved ? '✓ Biography Saved!' : 'Save Dossier'}</span>
@@ -475,13 +479,13 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-[10px] text-[#8E95A5]">
-            Name: <strong className="text-[#D4AF37]">{fullPreviewName}</strong>
+        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
+          <span className="text-[10px] text-theme-muted">
+            Name: <strong className="text-theme-primary">{fullPreviewName}</strong>
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+            className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
           >
             Done
           </button>

@@ -226,36 +226,36 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-5xl max-h-[92dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-5xl max-h-[92dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center">
-              <Layers className="w-4 h-4 text-[#D4AF37]" />
+            <div className="w-8 h-8 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
+              <Layers className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="font-gothic font-bold text-base sm:text-lg text-[#ECEFF4] tracking-wide">
+                <h2 className="font-gothic font-bold text-base sm:text-lg text-theme-text tracking-wide">
                   ALL OUT WAR: MULTIPLAYER CARD & ALLIANCE ENGINE
                 </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-[#8B0000] text-white font-bold uppercase">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
                   52-Card System
                 </span>
               </div>
-              <p className="text-[11px] text-[#8E95A5]">
+              <p className="text-[11px] text-theme-muted">
                 Initiative card draws, secret betrayal hands, 3-minute alliance negotiations, and VP bribes.
               </p>
             </div>
           </div>
 
-          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation: Clean 4-Item Grid, No Horizontal Scroll */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2.5 border-b border-[#323846] bg-[#20242E] text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2.5 border-b border-theme-border bg-theme-elevated text-xs">
           {[
             { id: 'initiative', label: '1. Initiative', icon: Swords },
             { id: 'betrayal', label: '2. Betrayal Cards', icon: Sparkles },
@@ -270,8 +270,8 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 onClick={() => setActiveTab(t.id as any)}
                 className={`py-2 px-2 rounded font-bold uppercase flex items-center justify-center space-x-1.5 transition-all text-center ${
                   isSel
-                    ? 'bg-[#D4AF37] text-black shadow'
-                    : 'bg-[#161920] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                    ? 'bg-theme-primary text-black shadow'
+                    : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5 flex-shrink-0" />
@@ -285,16 +285,16 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
         {cardPlayBanner && (
           <div className={`p-3.5 border-b flex items-start justify-between animate-fade-in ${
             cardPlayBanner.type === 'coup' 
-              ? 'bg-[#8B0000]/30 border-[#8B0000] text-[#ECEFF4]' 
-              : 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#ECEFF4]'
+              ? 'bg-theme-accent/30 border-theme-accent text-theme-text' 
+              : 'bg-theme-primary/20 border-theme-primary text-theme-text'
           }`}>
             <div className="space-y-0.5">
-              <span className="font-gothic font-bold text-sm text-[#D4AF37] block">
+              <span className="font-gothic font-bold text-sm text-theme-primary block">
                 ⚡ {cardPlayBanner.title}
               </span>
-              <p className="text-xs text-[#ECEFF4] leading-relaxed">{cardPlayBanner.desc}</p>
+              <p className="text-xs text-theme-text leading-relaxed">{cardPlayBanner.desc}</p>
             </div>
-            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-[#8E95A5] hover:text-white ml-2">
+            <button onClick={() => setCardPlayBanner(null)} className="text-xs text-theme-muted hover:text-white ml-2">
               Dismiss
             </button>
           </div>
@@ -306,19 +306,19 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
           {/* TAB 1: INITIATIVE CARDS */}
           {activeTab === 'initiative' && (
             <div className="space-y-5 animate-fade-in">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
-                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                  <h3 className="font-gothic font-bold text-base text-theme-primary">
                     ROUND {round} MULTIPLAYER INITIATIVE ORDER
                   </h3>
-                  <p className="text-xs text-[#8E95A5]">
+                  <p className="text-xs text-theme-muted">
                     Compare card ranks (A &gt; K &gt; Q &gt; J &gt; 10...2) and suits (♠ &gt; ♥ &gt; ♦ &gt; ♣) to determine activation sequence.
                   </p>
                 </div>
 
                 <button
                   onClick={handleDealInitiative}
-                  className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow flex-shrink-0"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow flex-shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Deal Round {round} Cards</span>
@@ -332,38 +332,38 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                   return (
                     <div
                       key={p.warbandId}
-                      className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 relative bevel-container"
+                      className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-3 relative bevel-container"
                     >
-                      <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-                        <span className="text-[10px] font-bold text-[#D4AF37] uppercase">
+                      <div className="flex items-center justify-between border-b border-theme-border pb-2">
+                        <span className="text-[10px] font-bold text-theme-primary uppercase">
                           ACTIVATION #{idx + 1}
                         </span>
-                        <span className="text-[10px] text-[#8E95A5]">
+                        <span className="text-[10px] text-theme-muted">
                           {warbandScores[p.warbandId]?.vp || 0} VP
                         </span>
                       </div>
 
                       <div>
-                        <strong className="font-gothic text-sm text-[#ECEFF4] block">{p.warbandName}</strong>
-                        <span className="text-[10px] text-[#8E95A5] block">
-                          House Suit: <strong className="text-[#D4AF37] uppercase">{p.assignedAceSuit}</strong>
+                        <strong className="font-gothic text-sm text-theme-text block">{p.warbandName}</strong>
+                        <span className="text-[10px] text-theme-muted block">
+                          House Suit: <strong className="text-theme-primary uppercase">{p.assignedAceSuit}</strong>
                         </span>
                       </div>
 
                       {card ? (
-                        <div className="p-3 bg-[#161920] rounded border border-[#323846] flex items-center justify-between">
+                        <div className="p-3 bg-theme-surface rounded border border-theme-border flex items-center justify-between">
                           <div>
-                            <span className="text-[10px] text-[#8E95A5] block">DRAWN CARD:</span>
-                            <span className={`font-bold text-base ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>
+                            <span className="text-[10px] text-theme-muted block">DRAWN CARD:</span>
+                            <span className={`font-bold text-base ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-status-error' : 'text-theme-text'}`}>
                               {card.symbol} {card.label}
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-[#20242E] text-[#D4AF37] font-bold">
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-theme-elevated text-theme-primary font-bold">
                             Rank {card.value}
                           </span>
                         </div>
                       ) : (
-                        <div className="p-3 bg-[#161920] rounded border border-dashed border-[#323846] text-center text-[#8E95A5] italic text-[11px]">
+                        <div className="p-3 bg-theme-surface rounded border border-dashed border-theme-border text-center text-theme-muted italic text-[11px]">
                           No card dealt. Click &quot;Deal Round Cards&quot; above.
                         </div>
                       )}
@@ -373,10 +373,10 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Bottom Progression Bar */}
-              <div className="pt-3 border-t border-[#323846] flex justify-end">
+              <div className="pt-3 border-t border-theme-border flex justify-end">
                 <button
                   onClick={() => setActiveTab('betrayal')}
-                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 2: Betrayal Cards</span>
                   <ArrowRight className="w-4 h-4" />
@@ -388,12 +388,12 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
           {/* TAB 2: BETRAYAL CARDS */}
           {activeTab === 'betrayal' && (
             <div className="space-y-5 animate-fade-in">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
-                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                  <h3 className="font-gothic font-bold text-base text-theme-primary">
                     SECRET BETRAYAL HANDS (COUPS & RUSES)
                   </h3>
-                  <p className="text-xs text-[#8E95A5]">
+                  <p className="text-xs text-theme-muted">
                     Play as Coup if the card matches your assigned House Ace Suit. Play as Ruse if it matches any other suit.
                   </p>
                 </div>
@@ -401,7 +401,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setIsHandRevealed(!isHandRevealed)}
-                    className="px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-bold uppercase flex items-center space-x-1.5"
+                    className="px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-bold uppercase flex items-center space-x-1.5"
                   >
                     {isHandRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     <span>{isHandRevealed ? 'Hide Hand' : 'View Hand'}</span>
@@ -409,7 +409,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                   <button
                     onClick={handleDealBetrayalCards}
-                    className="px-4 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow"
                   >
                     <Gift className="w-3.5 h-3.5" />
                     <span>Draw Turn Cards</span>
@@ -418,7 +418,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Player Selector Bar */}
-              <div className="flex space-x-2 border-b border-[#323846] pb-3 overflow-x-auto">
+              <div className="flex space-x-2 border-b border-theme-border pb-3 overflow-x-auto">
                 {players.map((p, idx) => (
                   <button
                     key={p.warbandId}
@@ -428,8 +428,8 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     }}
                     className={`px-3 py-1.5 rounded font-bold uppercase flex items-center space-x-2 ${
                       selectedPlayerIdx === idx
-                        ? 'bg-[#D4AF37] text-black'
-                        : 'bg-[#0C0E12] text-[#8E95A5] border border-[#323846]'
+                        ? 'bg-theme-primary text-black'
+                        : 'bg-theme-base text-theme-muted border border-theme-border'
                     }`}
                   >
                     <span>{p.warbandName}</span>
@@ -442,14 +442,14 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
               {/* Selected Player Hand */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between bg-[#20242E] p-3 rounded border border-[#323846]">
+                <div className="flex items-center justify-between bg-theme-elevated p-3 rounded border border-theme-border">
                   <div>
-                    <span className="text-[#8E95A5] block text-[10px] uppercase">SELECTED COMMANDER</span>
-                    <strong className="text-[#ECEFF4] font-gothic text-sm">{selectedPlayer.warbandName}</strong>
+                    <span className="text-theme-muted block text-[10px] uppercase">SELECTED COMMANDER</span>
+                    <strong className="text-theme-text font-gothic text-sm">{selectedPlayer.warbandName}</strong>
                   </div>
                   <div className="text-right">
-                    <span className="text-[#8E95A5] block text-[10px] uppercase">ASSIGNED HOUSE SUIT</span>
-                    <strong className="text-[#D4AF37] text-sm uppercase">
+                    <span className="text-theme-muted block text-[10px] uppercase">ASSIGNED HOUSE SUIT</span>
+                    <strong className="text-theme-primary text-sm uppercase">
                       {selectedPlayer.assignedAceSuit} Ace
                     </strong>
                   </div>
@@ -467,30 +467,30 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                             key={card.id}
                             className={`p-4 rounded border-2 space-y-3 flex flex-col justify-between ${
                               isCoup
-                                ? 'bg-[#8B0000]/20 border-[#8B0000] ring-1 ring-[#8B0000]/50'
-                                : 'bg-[#0C0E12] border-[#323846]'
+                                ? 'bg-theme-accent/20 border-theme-accent ring-1 ring-theme-accent/50'
+                                : 'bg-theme-base border-theme-border'
                             }`}
                           >
                             <div className="space-y-2">
-                              <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-                                <span className={`font-bold text-sm ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>
+                              <div className="flex items-center justify-between border-b border-theme-border pb-2">
+                                <span className={`font-bold text-sm ${card.suit === 'hearts' || card.suit === 'diamonds' ? 'text-status-error' : 'text-theme-text'}`}>
                                   {card.symbol} {card.label}
                                 </span>
                                 <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
-                                  isCoup ? 'bg-[#8B0000] text-white' : 'bg-[#20242E] text-[#D4AF37]'
+                                  isCoup ? 'bg-theme-accent text-white' : 'bg-theme-elevated text-theme-primary'
                                 }`}>
                                   {isCoup ? 'COUP ACTION' : 'RUSE ACTION'}
                                 </span>
                               </div>
 
                               <div>
-                                <strong className="text-[#D4AF37] block font-gothic text-sm">
+                                <strong className="text-theme-primary block font-gothic text-sm">
                                   {isCoup ? effect?.coupTitle : effect?.ruseTitle}
                                 </strong>
-                                <span className="text-[10px] text-[#8E95A5] italic block pt-0.5">
+                                <span className="text-[10px] text-theme-muted italic block pt-0.5">
                                   {isCoup ? effect?.coupTiming : effect?.ruseTiming}
                                 </span>
-                                <p className="text-[#ECEFF4] text-[11px] leading-relaxed pt-1">
+                                <p className="text-theme-text text-[11px] leading-relaxed pt-1">
                                   {isCoup ? effect?.coupEffect : effect?.ruseEffect}
                                 </p>
                               </div>
@@ -500,8 +500,8 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                               onClick={() => handlePlayCard(selectedPlayerIdx, card.id)}
                               className={`w-full py-1.5 font-bold uppercase rounded text-xs transition-colors flex items-center justify-center space-x-1 ${
                                 isCoup
-                                  ? 'bg-[#8B0000] hover:bg-[#A30000] text-white'
-                                  : 'bg-[#D4AF37] hover:bg-[#E5C158] text-black'
+                                  ? 'bg-theme-accent hover:bg-[#A30000] text-white'
+                                  : 'bg-theme-primary hover:bg-theme-primary-hover text-black'
                               }`}
                             >
                               <Zap className="w-3.5 h-3.5" />
@@ -512,17 +512,17 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                       })}
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-[#8E95A5] bg-[#0C0E12] rounded border border-[#323846]">
+                    <div className="p-8 text-center text-theme-muted bg-theme-base rounded border border-theme-border">
                       No Betrayal Cards currently held. Click &quot;Draw Turn Cards&quot; to draw.
                     </div>
                   )
                 ) : (
-                  <div className="p-8 text-center bg-[#0C0E12] rounded border border-dashed border-[#323846] space-y-2">
-                    <EyeOff className="w-8 h-8 text-[#8E95A5] mx-auto" />
-                    <span className="text-xs text-[#ECEFF4] font-bold block">Hand Hidden for Privacy</span>
+                  <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">
+                    <EyeOff className="w-8 h-8 text-theme-muted mx-auto" />
+                    <span className="text-xs text-theme-text font-bold block">Hand Hidden for Privacy</span>
                     <button
                       onClick={() => setIsHandRevealed(true)}
-                      className="px-4 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs"
+                      className="px-4 py-1.5 bg-theme-primary text-black font-bold uppercase rounded text-xs"
                     >
                       Reveal Hand ({selectedPlayer.betrayalHand.length} Cards)
                     </button>
@@ -531,10 +531,10 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Bottom Progression Bar */}
-              <div className="pt-3 border-t border-[#323846] flex justify-end">
+              <div className="pt-3 border-t border-theme-border flex justify-end">
                 <button
                   onClick={() => setActiveTab('alliance')}
-                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 3: Alliance Period</span>
                   <ArrowRight className="w-4 h-4" />
@@ -546,34 +546,34 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
           {/* TAB 3: ALLIANCE PERIOD */}
           {activeTab === 'alliance' && (
             <div className="space-y-5 animate-fade-in">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
-                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+                  <h3 className="font-gothic font-bold text-base text-theme-primary">
                     THE 3-MINUTE ALLIANCE PERIOD
                   </h3>
-                  <p className="text-xs text-[#8E95A5]">
+                  <p className="text-xs text-theme-muted">
                     Negotiate secretly. Joint Alliances award +1 VP per turn and prevent friendly attacks. Double-dealing is allowed!
                   </p>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2 bg-[#20242E] px-3 py-1.5 rounded border border-[#323846]">
-                    <Clock className="w-4 h-4 text-[#D4AF37]" />
-                    <span className="font-bold text-sm text-[#ECEFF4]">
+                  <div className="flex items-center space-x-2 bg-theme-elevated px-3 py-1.5 rounded border border-theme-border">
+                    <Clock className="w-4 h-4 text-theme-primary" />
+                    <span className="font-bold text-sm text-theme-text">
                       {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')}
                     </span>
                   </div>
 
                   <button
                     onClick={() => setIsTimerRunning(!isTimerRunning)}
-                    className="px-3 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded"
+                    className="px-3 py-1.5 bg-theme-primary text-black font-bold uppercase rounded"
                   >
                     {isTimerRunning ? 'Pause Timer' : 'Start 3-Min Timer'}
                   </button>
 
                   <button
                     onClick={() => setTimerSeconds(180)}
-                    className="p-1.5 bg-[#20242E] text-[#8E95A5] hover:text-white rounded border border-[#323846]"
+                    className="p-1.5 bg-theme-elevated text-theme-muted hover:text-white rounded border border-theme-border"
                     title="Reset Timer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -584,11 +584,11 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               {/* Secret Choice Selector per Player */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {players.map((p, idx) => (
-                  <div key={p.warbandId} className="p-4 bg-[#0C0E12] border border-[#323846] rounded space-y-3">
-                    <strong className="font-gothic text-sm text-[#ECEFF4] block">{p.warbandName}</strong>
+                  <div key={p.warbandId} className="p-4 bg-theme-base border border-theme-border rounded space-y-3">
+                    <strong className="font-gothic text-sm text-theme-text block">{p.warbandName}</strong>
                     
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase text-[#8E95A5] block">Secret Chosen Ally:</label>
+                      <label className="text-[10px] uppercase text-theme-muted block">Secret Chosen Ally:</label>
                       <select
                         value={p.secretAllyWarbandId || ''}
                         onChange={(e) => {
@@ -597,7 +597,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                             prev.map((pl, i) => (i === idx ? { ...pl, secretAllyWarbandId: targetId } : pl))
                           );
                         }}
-                        className="w-full bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#D4AF37] focus:outline-none"
+                        className="w-full bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-primary focus:outline-none"
                       >
                         <option value="">-- No Alliance / Stand Alone --</option>
                         {players
@@ -611,18 +611,18 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                     </div>
 
                     {alliancesRevealed && (
-                      <div className="pt-2 border-t border-[#323846] text-[10px]">
-                        <span className="text-[#8E95A5] block">Alliance Status:</span>
+                      <div className="pt-2 border-t border-theme-border text-[10px]">
+                        <span className="text-theme-muted block">Alliance Status:</span>
                         {p.isJointAllianceWith ? (
-                          <span className="text-[#4E9A6E] font-bold block">
+                          <span className="text-status-legal font-bold block">
                             ✅ Joint Alliance (+1 VP)
                           </span>
                         ) : p.revealedAllyWarbandId ? (
-                          <span className="text-[#FFB300] font-bold block">
+                          <span className="text-status-warning font-bold block">
                             ⚠️ One-Way Alliance (Vulnerable)
                           </span>
                         ) : (
-                          <span className="text-[#8E95A5] italic block">Unallied (+1 Betrayal Card)</span>
+                          <span className="text-theme-muted italic block">Unallied (+1 Betrayal Card)</span>
                         )}
                       </div>
                     )}
@@ -633,7 +633,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <button
                   onClick={handleRevealAlliances}
-                  className="px-5 py-2.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
+                  className="px-5 py-2.5 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded shadow-lg flex items-center space-x-2"
                 >
                   <Users className="w-4 h-4" />
                   <span>Reveal Alliances & Calculate Joint VPs</span>
@@ -641,7 +641,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
 
                 <button
                   onClick={() => setActiveTab('bribes')}
-                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-2 shadow-lg"
                 >
                   <span>Proceed to Step 4: VP Bribes</span>
                   <ArrowRight className="w-4 h-4" />
@@ -653,11 +653,11 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
           {/* TAB 4: VP BRIBES & TRANSFERS */}
           {activeTab === 'bribes' && (
             <div className="space-y-5 animate-fade-in">
-              <div className="bg-[#0C0E12] p-4 rounded border border-[#323846] space-y-2">
-                <h3 className="font-gothic font-bold text-base text-[#D4AF37]">
+              <div className="bg-theme-base p-4 rounded border border-theme-border space-y-2">
+                <h3 className="font-gothic font-bold text-base text-theme-primary">
                   VICTORY POINT BRIBES & TRANSFERS
                 </h3>
-                <p className="text-xs text-[#8E95A5] leading-relaxed">
+                <p className="text-xs text-theme-muted leading-relaxed">
                   In All Out War, Victory Points can be traded freely as bribes to secure temporary ceasefires, buy attacks, or forge alliances. Transferred points are non-refundable!
                 </p>
               </div>
@@ -666,14 +666,14 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                 {players.map((fromPlayer) => {
                   const fromScore = warbandScores[fromPlayer.warbandId]?.vp || 0;
                   return (
-                    <div key={fromPlayer.warbandId} className="p-4 bg-[#0C0E12] border border-[#323846] rounded space-y-3">
-                      <div className="flex items-center justify-between border-b border-[#323846] pb-2">
-                        <strong className="font-gothic text-sm text-[#ECEFF4]">{fromPlayer.warbandName}</strong>
-                        <span className="text-xs font-bold text-[#D4AF37]">{fromScore} VP Available</span>
+                    <div key={fromPlayer.warbandId} className="p-4 bg-theme-base border border-theme-border rounded space-y-3">
+                      <div className="flex items-center justify-between border-b border-theme-border pb-2">
+                        <strong className="font-gothic text-sm text-theme-text">{fromPlayer.warbandName}</strong>
+                        <span className="text-xs font-bold text-theme-primary">{fromScore} VP Available</span>
                       </div>
 
                       <div className="space-y-2">
-                        <span className="text-[10px] text-[#8E95A5] block uppercase">Send 1 VP Bribe to:</span>
+                        <span className="text-[10px] text-theme-muted block uppercase">Send 1 VP Bribe to:</span>
                         <div className="flex flex-wrap gap-2">
                           {players
                             .filter((toPlayer) => toPlayer.warbandId !== fromPlayer.warbandId)
@@ -686,7 +686,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
                                   onAdjustVp(toPlayer.warbandId, 1);
                                   soundEffects.playDiceRoll();
                                 }}
-                                className="px-3 py-1.5 bg-[#20242E] hover:bg-[#323846] disabled:opacity-40 text-[#ECEFF4] rounded border border-[#323846] text-xs font-bold"
+                                className="px-3 py-1.5 bg-theme-elevated hover:bg-theme-border disabled:opacity-40 text-theme-text rounded border border-theme-border text-xs font-bold"
                               >
                                 💸 Give 1 VP to {toPlayer.warbandName}
                               </button>
@@ -699,13 +699,13 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Final Proceed to Turn Action */}
-              <div className="pt-4 border-t border-[#323846] flex items-center justify-between">
-                <span className="text-[11px] text-[#8E95A5]">
+              <div className="pt-4 border-t border-theme-border flex items-center justify-between">
+                <span className="text-[11px] text-theme-muted">
                   Pre-round negotiations complete.
                 </span>
                 <button
                   onClick={onClose}
-                  className="px-6 py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 flex items-center space-x-2"
+                  className="px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 flex items-center space-x-2"
                 >
                   <Swords className="w-4 h-4" />
                   <span>⚔️ Enter Round Turn Combat</span>

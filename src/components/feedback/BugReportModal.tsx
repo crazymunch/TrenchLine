@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { soundEffects } from '../../services/soundEffects';
@@ -36,6 +37,12 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
   } = useStore();
 
   const { data: session } = useSession();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  // `isOpen`, not `true`: this modal stays mounted and returns null when
+  // closed, so a hardcoded `true` would hold the body scroll lock for the
+  // life of the page — and it is mounted three times over.
+  const overlayRef = useOverlay(isOpen, onClose);
 
   const [category, setCategory] = useState<string>('Visual / Layout Issue');
   const [severity, setSeverity] = useState<string>('Minor / Visual');
@@ -130,20 +137,20 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded bg-[#8B0000]/30 border border-[#8B0000] text-[#E53935]">
+            <div className="p-1.5 rounded bg-theme-accent/30 border border-theme-accent text-status-error">
               <Bug className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-gothic font-bold text-base text-[#ECEFF4] tracking-wide">
+              <h3 className="font-gothic font-bold text-base text-theme-text tracking-wide">
                 REPORT A BUG / FEEDBACK
               </h3>
-              <p className="text-[10px] text-[#8E95A5]">
+              <p className="text-[10px] text-theme-muted">
                 Generate an instant diagnostic dump or submit feedback directly to the AI agent
               </p>
             </div>
@@ -151,7 +158,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
 
           <button
             onClick={onClose}
-            className="text-[#8E95A5] hover:text-white p-1"
+            className="text-theme-muted hover:text-white p-1"
           >
             <X className="w-5 h-5" />
           </button>
@@ -161,12 +168,12 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
         <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">
           
           {submittedSuccess ? (
-            <div className="p-8 text-center space-y-3 bg-[#0C0E12] rounded border border-[#4E9A6E]/50">
-              <div className="w-12 h-12 rounded-full bg-[#4E9A6E]/20 border border-[#4E9A6E] flex items-center justify-center mx-auto text-[#4E9A6E]">
+            <div className="p-8 text-center space-y-3 bg-theme-base rounded border border-status-legal/50">
+              <div className="w-12 h-12 rounded-full bg-status-legal/20 border border-status-legal flex items-center justify-center mx-auto text-status-legal">
                 <Check className="w-6 h-6" />
               </div>
-              <h4 className="font-gothic font-bold text-lg text-[#ECEFF4]">BUG TICKET LOGGED</h4>
-              <p className="text-xs text-[#8E95A5] max-w-sm mx-auto">
+              <h4 className="font-gothic font-bold text-lg text-theme-text">BUG TICKET LOGGED</h4>
+              <p className="text-xs text-theme-muted max-w-sm mx-auto">
                 Your report and diagnostics have been saved. You can also copy the markdown dump to paste directly into chat with the AI assistant!
               </p>
             </div>
@@ -175,13 +182,13 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
               {/* Category & Severity */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
                     Category:
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   >
                     <option value="Visual / Layout Issue">Visual / Layout / Responsive Issue</option>
                     <option value="Combat & Live Dice">Combat Mode & Dice Roller</option>
@@ -194,13 +201,13 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
                     Severity:
                   </label>
                   <select
                     value={severity}
                     onChange={(e) => setSeverity(e.target.value)}
-                    className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                   >
                     <option value="Minor / Visual">Minor (Text wrapping, styling)</option>
                     <option value="Feature Inconvenience">Moderate (Workflow inconvenience)</option>
@@ -211,7 +218,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
 
               {/* Description */}
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <label className="text-[10px] uppercase font-bold text-theme-muted block">
                   What happened? (Description):
                 </label>
                 <textarea
@@ -220,13 +227,13 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe the issue, what looked wrong, or what happened..."
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2.5 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] placeholder:text-[#8E95A5]/50"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2.5 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
                 />
               </div>
 
               {/* Steps to Reproduce */}
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <label className="text-[10px] uppercase font-bold text-theme-muted block">
                   Steps to Reproduce (Optional):
                 </label>
                 <textarea
@@ -234,13 +241,13 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                   value={stepsToReproduce}
                   onChange={(e) => setStepsToReproduce(e.target.value)}
                   placeholder="e.g. 1. Go to Codex -> Scenarios. 2. On iPad in portrait..."
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] placeholder:text-[#8E95A5]/50"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
                 />
               </div>
 
               {/* Auto-Captured Environment Box */}
-              <div className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-1.5 text-[11px] text-[#8E95A5]">
-                <div className="flex items-center justify-between text-[#D4AF37] font-bold pb-1 border-b border-[#323846]/60">
+              <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5 text-[11px] text-theme-muted">
+                <div className="flex items-center justify-between text-theme-primary font-bold pb-1 border-b border-theme-border/60">
                   <span className="flex items-center space-x-1.5">
                     {deviceType === 'Mobile Phone' ? <Smartphone className="w-3.5 h-3.5" /> :
                      deviceType === 'Tablet / iPad' ? <Tablet className="w-3.5 h-3.5" /> :
@@ -250,10 +257,10 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                   <span>{deviceType} ({width}x{height}px)</span>
                 </div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-1">
-                  <div>View: <strong className="text-[#ECEFF4]">{currentView}</strong></div>
-                  <div>Ruleset: <strong className="text-[#ECEFF4]">v{rulesetVersion}</strong></div>
-                  <div>Theme: <strong className="text-[#ECEFF4]">{currentTheme}</strong></div>
-                  <div>Warband: <strong className="text-[#ECEFF4] truncate">{activeWarband?.name || 'None'}</strong></div>
+                  <div>View: <strong className="text-theme-text">{currentView}</strong></div>
+                  <div>Ruleset: <strong className="text-theme-text">v{rulesetVersion}</strong></div>
+                  <div>Theme: <strong className="text-theme-text">{currentTheme}</strong></div>
+                  <div>Warband: <strong className="text-theme-text truncate">{activeWarband?.name || 'None'}</strong></div>
                 </div>
               </div>
             </>
@@ -262,17 +269,17 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
         </form>
 
         {/* Footer Actions */}
-        <div className="px-5 py-3 bg-[#0C0E12] border-t border-[#323846] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="px-5 py-3 bg-theme-base border-t border-theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <button
             type="button"
             onClick={handleCopyReport}
             className={`w-full sm:w-auto px-4 py-2 rounded font-bold uppercase flex items-center justify-center space-x-2 transition-all ${
               copied
-                ? 'bg-[#4E9A6E] text-white shadow-lg'
-                : 'bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846]'
+                ? 'bg-status-legal text-white shadow-lg'
+                : 'bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border'
             }`}
           >
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4 text-[#D4AF37]" />}
+            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4 text-theme-primary" />}
             <span>{copied ? '✓ Report Copied to Clipboard!' : '📋 Copy Report for AI Agent'}</span>
           </button>
 
@@ -280,7 +287,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 bg-[#161920] hover:bg-[#20242E] text-[#8E95A5] hover:text-white rounded uppercase font-bold"
+              className="px-3 py-2 bg-theme-surface hover:bg-theme-elevated text-theme-muted hover:text-white rounded uppercase font-bold"
             >
               Cancel
             </button>
@@ -289,7 +296,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !description.trim()}
-              className="px-5 py-2 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow transition-all disabled:opacity-50"
+              className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow transition-all disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{isSubmitting ? 'Submitting...' : 'Save Ticket'}</span>

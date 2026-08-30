@@ -118,9 +118,9 @@ export const PlayModeView: React.FC = () => {
   if (!viewingWarband) {
     return (
       <div className="p-8 text-center space-y-4 max-w-lg mx-auto">
-        <Skull className="w-12 h-12 text-[#D4AF37] mx-auto opacity-75" />
-        <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">NO WARBAND SELECTED</h3>
-        <p className="text-xs font-mono text-[#8E95A5]">Select or build a warband in the roster builder to enter Play Mode.</p>
+        <Skull className="w-12 h-12 text-theme-primary mx-auto opacity-75" />
+        <h3 className="font-gothic font-bold text-lg text-theme-text">NO WARBAND SELECTED</h3>
+        <p className="text-xs font-mono text-theme-muted">Select or build a warband in the roster builder to enter Play Mode.</p>
       </div>
     );
   }
@@ -287,16 +287,16 @@ export const PlayModeView: React.FC = () => {
         <div className="space-y-6">
           
           {/* Lobby Header */}
-          <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-5 sm:p-6 shadow-2xl space-y-4 bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-5 sm:p-6 shadow-2xl space-y-4 bevel-container">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center space-x-3">
-                  <Swords className="w-6 h-6 sm:w-7 sm:h-7 text-[#D4AF37]" />
-                  <h1 className="font-gothic font-bold text-xl sm:text-2xl text-[#ECEFF4] tracking-wide">
+                  <Swords className="w-6 h-6 sm:w-7 sm:h-7 text-theme-primary" />
+                  <h1 className="font-gothic font-bold text-xl sm:text-2xl text-theme-text tracking-wide">
                     TACTICAL MATCH DESIGNER & CRUSADE LOBBY
                   </h1>
                 </div>
-                <p className="text-xs text-[#8E95A5] pt-1">
+                <p className="text-xs text-theme-muted pt-1">
                   Configure scenario parameters, field strength, multiplayer participants (2 to 4 Players), and battle conditions before taking to the field.
                 </p>
               </div>
@@ -304,7 +304,7 @@ export const PlayModeView: React.FC = () => {
               {matchMode === 'single-device' && (
                 <button
                   onClick={handleStartCombat}
-                  className="flex items-center space-x-2 px-6 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all flex-shrink-0"
+                  className="flex items-center space-x-2 px-6 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all flex-shrink-0"
                 >
                   <Play className="w-4 h-4 fill-black" />
                   <span>COMMENCE MATCH</span>
@@ -313,13 +313,13 @@ export const PlayModeView: React.FC = () => {
             </div>
 
             {/* Mode Selector Tabs */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#323846]">
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-theme-border">
               <button
                 onClick={() => setMatchMode('single-device')}
                 className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
                   matchMode === 'single-device'
-                    ? 'bg-[#D4AF37] text-black shadow'
-                    : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                    ? 'bg-theme-primary text-black shadow'
+                    : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
                 <span>📱 Single Device Mode (Pass & Play)</span>
@@ -329,12 +329,12 @@ export const PlayModeView: React.FC = () => {
                 onClick={() => setMatchMode('multiplayer-live')}
                 className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-2 ${
                   matchMode === 'multiplayer-live'
-                    ? 'bg-[#8B0000] text-white shadow ring-1 ring-[#D4AF37]'
-                    : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                    ? 'bg-theme-accent text-white shadow ring-1 ring-theme-primary'
+                    : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
                 <span>🌐 Live Multi-Device Match Link</span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold uppercase tracking-wide">
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase tracking-wide">
                   Coming Soon
                 </span>
               </button>
@@ -343,21 +343,21 @@ export const PlayModeView: React.FC = () => {
 
           {/* MULTIPLAYER LIVE MODE: COMING SOON / ARCHITECTURE ROADMAP VIEW */}
           {matchMode === 'multiplayer-live' ? (
-            <div className="bg-[#161920] border-2 border-[#8B0000] rounded-md p-6 sm:p-8 space-y-6 shadow-2xl bevel-container animate-fade-in">
-              <div className="flex items-center space-x-3 border-b border-[#323846] pb-4">
-                <div className="w-10 h-10 rounded bg-[#8B0000]/20 border border-[#8B0000] flex items-center justify-center">
-                  <Users className="w-5 h-5 text-[#E53935]" />
+            <div className="bg-theme-surface border-2 border-theme-accent rounded-md p-6 sm:p-8 space-y-6 shadow-2xl bevel-container animate-fade-in">
+              <div className="flex items-center space-x-3 border-b border-theme-border pb-4">
+                <div className="w-10 h-10 rounded bg-theme-accent/20 border border-theme-accent flex items-center justify-center">
+                  <Users className="w-5 h-5 text-status-error" />
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">
-                    <h2 className="font-gothic font-bold text-lg sm:text-xl text-[#ECEFF4]">
+                    <h2 className="font-gothic font-bold text-lg sm:text-xl text-theme-text">
                       LIVE MULTI-DEVICE MATCH LINK (HOST & JOIN)
                     </h2>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37] text-black font-bold uppercase">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
                       In Development
                     </span>
                   </div>
-                  <p className="text-xs text-[#8E95A5]">
+                  <p className="text-xs text-theme-muted">
                     Play across multiple phones and tablets with central cloud synchronization.
                   </p>
                 </div>
@@ -367,48 +367,48 @@ export const PlayModeView: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {/* Host Role */}
-                <div className="bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md p-5 space-y-3">
+                <div className="bg-theme-base border-2 border-theme-primary rounded-md p-5 space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Crown className="w-5 h-5 text-[#D4AF37]" />
-                    <strong className="font-gothic font-bold text-sm text-[#ECEFF4] uppercase">
+                    <Crown className="w-5 h-5 text-theme-primary" />
+                    <strong className="font-gothic font-bold text-sm text-theme-text uppercase">
                       1. Match Host (Tabletop Director)
                     </strong>
                   </div>
-                  <ul className="space-y-2 text-xs text-[#8E95A5]">
+                  <ul className="space-y-2 text-xs text-theme-muted">
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
                       <span>Initiates match lobby & generates shareable 4-digit Match PIN (e.g. <code>TL-4091</code>) or QR Code.</span>
                     </li>
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
                       <span>Selects scenario, deployment rules, and environmental hazards.</span>
                     </li>
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
                       <span>Controls global actions: advances round turns, deals 52-card All Out War decks, and starts alliance timers.</span>
                     </li>
                   </ul>
                 </div>
 
                 {/* Player Role */}
-                <div className="bg-[#0C0E12] border-2 border-[#323846] rounded-md p-5 space-y-3">
+                <div className="bg-theme-base border-2 border-theme-border rounded-md p-5 space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Users className="w-5 h-5 text-[#4E9A6E]" />
-                    <strong className="font-gothic font-bold text-sm text-[#ECEFF4] uppercase">
+                    <Users className="w-5 h-5 text-status-legal" />
+                    <strong className="font-gothic font-bold text-sm text-theme-text uppercase">
                       2. Connected Players (Commanders)
                     </strong>
                   </div>
-                  <ul className="space-y-2 text-xs text-[#8E95A5]">
+                  <ul className="space-y-2 text-xs text-theme-muted">
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
                       <span>Join via phone or tablet from anywhere at the table using the Match PIN.</span>
                     </li>
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
                       <span>Controls only their own warband: tracks wounds, activations, and rolls attacks from their own screen.</span>
                     </li>
                     <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-[#4E9A6E] flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
                       <span>Real-time WebSocket sync: changes appear immediately on the Host and all opponents' devices without refreshing.</span>
                     </li>
                   </ul>
@@ -417,19 +417,19 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               {/* Status Banner */}
-              <div className="p-4 bg-[#20242E] rounded border border-[#D4AF37]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="p-4 bg-theme-elevated rounded border border-theme-primary/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <strong className="text-xs uppercase text-[#D4AF37] block font-bold">
+                  <strong className="text-xs uppercase text-theme-primary block font-bold">
                     🚀 Currently in Alpha Architecture Staging
                   </strong>
-                  <p className="text-[11px] text-[#8E95A5]">
+                  <p className="text-[11px] text-theme-muted">
                     Use the fully-featured <strong>Single Device Mode (Pass & Play)</strong> below to run local matches and multiplayer games on your iPad, phone, or laptop.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setMatchMode('single-device')}
-                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
+                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
                 >
                   Return to Single Device Mode
                 </button>
@@ -439,15 +439,15 @@ export const PlayModeView: React.FC = () => {
           ) : (
             <>
               {/* 1. Scenario Selection & Map Preview */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-5 sm:p-6 space-y-4 bevel-container">
-            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-5 sm:p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div className="flex items-center space-x-2">
-                <Compass className="w-5 h-5 text-[#D4AF37]" />
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                <Compass className="w-5 h-5 text-theme-primary" />
+                <h2 className="font-gothic font-bold text-lg text-theme-text">
                   1. OFFICIAL SCENARIO & DEPLOYMENT DIAGRAM
                 </h2>
               </div>
-              <span className="text-xs text-[#D4AF37] font-bold">
+              <span className="text-xs text-theme-primary font-bold">
                 Scenario {selectedScenario?.number || 'I'}
               </span>
             </div>
@@ -456,13 +456,13 @@ export const PlayModeView: React.FC = () => {
               
               {/* Scenario Picker & Map Card */}
               <div className="space-y-3">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <label className="text-[10px] uppercase font-bold text-theme-muted block">
                   Select Mission / Scenario:
                 </label>
                 <select
                   value={selectedScenarioId}
                   onChange={(e) => setSelectedScenarioId(e.target.value)}
-                  className="w-full bg-[#0C0E12] border-2 border-[#D4AF37] rounded p-2.5 text-xs text-[#ECEFF4] focus:outline-none"
+                  className="w-full bg-theme-base border-2 border-theme-primary rounded p-2.5 text-xs text-theme-text focus:outline-none"
                 >
                   {scenarios.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -475,7 +475,7 @@ export const PlayModeView: React.FC = () => {
                 {selectedScenario?.mapImage && (
                   <div 
                     onClick={() => setIsMapLightboxOpen(true)}
-                    className="bg-[#0C0E12] border-2 border-[#D4AF37]/50 hover:border-[#D4AF37] rounded p-2.5 space-y-1.5 text-center cursor-pointer group transition-all relative overflow-hidden shadow-lg"
+                    className="bg-theme-base border-2 border-theme-primary/50 hover:border-theme-primary rounded p-2.5 space-y-1.5 text-center cursor-pointer group transition-all relative overflow-hidden shadow-lg"
                   >
                     <div className="relative overflow-hidden rounded">
                       <img
@@ -484,14 +484,14 @@ export const PlayModeView: React.FC = () => {
                         className="w-full h-56 object-contain rounded transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="px-3 py-1.5 bg-[#D4AF37] text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5">
+                        <span className="px-3 py-1.5 bg-theme-primary text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-1.5">
                           <Search className="w-3.5 h-3.5" />
                           <span>Enlarge Official Map</span>
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-[#8E95A5] pt-0.5 px-1 font-mono">
-                      <span className="text-[#D4AF37] font-bold">🔍 Click to Expand Diagram</span>
+                    <div className="flex items-center justify-between text-[10px] text-theme-muted pt-0.5 px-1 font-mono">
+                      <span className="text-theme-primary font-bold">🔍 Click to Expand Diagram</span>
                       <span>{selectedScenario.tableSize || '48" x 48"'} Table</span>
                     </div>
                   </div>
@@ -499,12 +499,12 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               {/* Scenario Details & Rules */}
-              <div className="lg:col-span-2 space-y-4 bg-[#0C0E12] p-4 rounded border border-[#323846]">
+              <div className="lg:col-span-2 space-y-4 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
-                  <h3 className="font-gothic font-bold text-base text-[#D4AF37]">{selectedScenario?.name}</h3>
-                  <p className="text-xs text-[#8E95A5] italic pt-0.5">{selectedScenario?.tagline || selectedScenario?.flavor}</p>
+                  <h3 className="font-gothic font-bold text-base text-theme-primary">{selectedScenario?.name}</h3>
+                  <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline || selectedScenario?.flavor}</p>
                   
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#ECEFF4] pt-2 border-b border-[#323846] pb-2">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-theme-text pt-2 border-b border-theme-border pb-2">
                     <span>Table: <strong>{selectedScenario?.tableSize || '48" x 48"'}</strong></span>
                     <span>•</span>
                     <span>Game Length: <strong>{selectedScenario?.gameLength || '4-5 Turns'}</strong></span>
@@ -515,11 +515,11 @@ export const PlayModeView: React.FC = () => {
 
                 {/* Victory Conditions */}
                 <div className="space-y-1 text-xs">
-                  <span className="text-[10px] uppercase font-bold text-[#4E9A6E] block flex items-center space-x-1">
+                  <span className="text-[10px] uppercase font-bold text-status-legal block flex items-center space-x-1">
                     <Award className="w-3.5 h-3.5" />
                     <span>Victory Conditions:</span>
                   </span>
-                  <p className="text-[#ECEFF4] text-[11px] leading-relaxed whitespace-pre-line bg-[#161920] p-2.5 rounded border border-[#323846]/60">
+                  <p className="text-theme-text text-[11px] leading-relaxed whitespace-pre-line bg-theme-surface p-2.5 rounded border border-theme-border/60">
                     {selectedScenario?.victoryConditions}
                   </p>
                 </div>
@@ -527,15 +527,15 @@ export const PlayModeView: React.FC = () => {
                 {/* Glorious Deeds Preview */}
                 {scenarioDeeds.length > 0 && (
                   <div className="space-y-1.5 text-xs">
-                    <span className="text-[10px] uppercase font-bold text-[#D4AF37] block flex items-center space-x-1">
+                    <span className="text-[10px] uppercase font-bold text-theme-primary block flex items-center space-x-1">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Glorious Deeds Available ({scenarioDeeds.length}):</span>
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {scenarioDeeds.map((deed, dIdx) => (
-                        <div key={dIdx} className="p-2 bg-[#161920] rounded border border-[#323846] text-[10px]">
-                          <strong className="text-[#D4AF37] block">{deed.title}</strong>
-                          <span className="text-[#8E95A5]">{deed.desc}</span>
+                        <div key={dIdx} className="p-2 bg-theme-surface rounded border border-theme-border text-[10px]">
+                          <strong className="text-theme-primary block">{deed.title}</strong>
+                          <span className="text-theme-muted">{deed.desc}</span>
                         </div>
                       ))}
                     </div>
@@ -546,15 +546,15 @@ export const PlayModeView: React.FC = () => {
           </div>
 
           {/* 2. Multiplayer Match Integration (2 to 4 Players) */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-5 sm:p-6 space-y-4 bevel-container">
-            <div className="flex items-center justify-between border-b border-[#323846] pb-3">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-5 sm:p-6 space-y-4 bevel-container">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-[#D4AF37]" />
-                <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+                <Users className="w-5 h-5 text-theme-primary" />
+                <h2 className="font-gothic font-bold text-lg text-theme-text">
                   2. WARBAND INTEGRATION & SQUAD MUSTER (1 TO 4 PLAYERS)
                 </h2>
               </div>
-              <span className="text-xs text-[#8E95A5]">
+              <span className="text-xs text-theme-muted">
                 {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
               </span>
             </div>
@@ -566,15 +566,15 @@ export const PlayModeView: React.FC = () => {
                 const depCost = wb?.units.filter((u) => depIds.includes(u.id)).reduce((s, u) => s + u.totalCost, 0) || 0;
 
                 return (
-                  <div key={wbId} className="p-4 bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md space-y-3 relative">
+                  <div key={wbId} className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-3 relative">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold text-[#D4AF37]">
+                      <span className="text-[10px] uppercase font-bold text-theme-primary">
                         PLAYER {idx + 1} {idx === 0 ? '(YOU)' : ''}
                       </span>
                       {idx > 0 && (
                         <button
                           onClick={() => handleRemovePlayerWarband(wbId)}
-                          className="text-[#8E95A5] hover:text-[#E53935] text-xs"
+                          className="text-theme-muted hover:text-status-error text-xs"
                           title="Remove Player"
                         >
                           ✕
@@ -583,20 +583,20 @@ export const PlayModeView: React.FC = () => {
                     </div>
 
                     <div>
-                      <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">{wb?.name}</h3>
-                      <span className="text-[10px] text-[#8E95A5] block">
+                      <h3 className="font-gothic font-bold text-base text-theme-text">{wb?.name}</h3>
+                      <span className="text-[10px] text-theme-muted block">
                         Faction: {wb?.factionId}
                       </span>
                     </div>
 
-                    <div className="p-2.5 bg-[#161920] rounded border border-[#323846] text-xs space-y-1">
+                    <div className="p-2.5 bg-theme-surface rounded border border-theme-border text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-[#8E95A5]">Deployed Models:</span>
-                        <strong className="text-[#ECEFF4]">{depIds.length} / {wb?.units.length}</strong>
+                        <span className="text-theme-muted">Deployed Models:</span>
+                        <strong className="text-theme-text">{depIds.length} / {wb?.units.length}</strong>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#8E95A5]">Deployed Rating:</span>
-                        <strong className="text-[#D4AF37]">{depCost} D</strong>
+                        <span className="text-theme-muted">Deployed Rating:</span>
+                        <strong className="text-theme-primary">{depCost} D</strong>
                       </div>
                     </div>
 
@@ -605,9 +605,9 @@ export const PlayModeView: React.FC = () => {
                         setActivePlayerIndex(idx);
                         setIsSquadSelectOpen(true);
                       }}
-                      className="w-full py-1.5 bg-[#20242E] hover:bg-[#323846] border border-[#323846] text-[#ECEFF4] text-xs font-bold uppercase rounded flex items-center justify-center space-x-1.5 transition-colors"
+                      className="w-full py-1.5 bg-theme-elevated hover:bg-theme-border border border-theme-border text-theme-text text-xs font-bold uppercase rounded flex items-center justify-center space-x-1.5 transition-colors"
                     >
-                      <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Users className="w-3.5 h-3.5 text-theme-primary" />
                       <span>Select Squad ({depIds.length})</span>
                     </button>
                   </div>
@@ -616,9 +616,9 @@ export const PlayModeView: React.FC = () => {
 
               {/* Add Player Slot Button (up to 4) */}
               {matchWarbandIds.length < 4 && (
-                <div className="p-4 bg-[#0C0E12]/50 border-2 border-dashed border-[#323846] rounded-md flex flex-col items-center justify-center space-y-2 text-center">
-                  <Users className="w-6 h-6 text-[#8E95A5]" />
-                  <span className="text-xs text-[#8E95A5] font-bold uppercase">
+                <div className="p-4 bg-theme-base/50 border-2 border-dashed border-theme-border rounded-md flex flex-col items-center justify-center space-y-2 text-center">
+                  <Users className="w-6 h-6 text-theme-muted" />
+                  <span className="text-xs text-theme-muted font-bold uppercase">
                     Add Opponent / Ally ({matchWarbandIds.length + 1} of 4)
                   </span>
                   
@@ -629,7 +629,7 @@ export const PlayModeView: React.FC = () => {
                         e.target.value = '';
                       }
                     }}
-                    className="bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#D4AF37] focus:outline-none"
+                    className="bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-primary focus:outline-none"
                   >
                     <option value="">+ Add Warband to Match</option>
                     {warbands
@@ -646,23 +646,23 @@ export const PlayModeView: React.FC = () => {
           </div>
 
           {/* 3. Match Parameters & Environmental Conditions */}
-          <div className="bg-[#161920] border border-[#323846] rounded-md p-5 sm:p-6 space-y-4 bevel-container">
-            <div className="flex items-center space-x-2 border-b border-[#323846] pb-3">
-              <Sliders className="w-5 h-5 text-[#D4AF37]" />
-              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-5 sm:p-6 space-y-4 bevel-container">
+            <div className="flex items-center space-x-2 border-b border-theme-border pb-3">
+              <Sliders className="w-5 h-5 text-theme-primary" />
+              <h2 className="font-gothic font-bold text-lg text-theme-text">
                 3. TACTICAL RULES & ENVIRONMENTAL HAZARDS
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <label className="text-[10px] uppercase font-bold text-theme-muted block">
                   Environmental Condition / Battlefield Hazard:
                 </label>
                 <select
                   value={environmentalHazard}
                   onChange={(e) => setEnvironmentalHazard(e.target.value)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                 >
                   <option value="Standard (Clear)">Standard (Clear Weather)</option>
                   <option value="Heavy Trench Fog">Heavy Trench Fog (Max 18" Ranged Sight)</option>
@@ -673,10 +673,10 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-bold text-[#8E95A5] block">
+                <label className="text-[10px] uppercase font-bold text-theme-muted block">
                   Deployment Rules:
                 </label>
-                <div className="p-2.5 bg-[#0C0E12] border border-[#323846] rounded text-[#8E95A5] text-[11px]">
+                <div className="p-2.5 bg-theme-base border border-theme-border rounded text-theme-muted text-[11px]">
                   Infiltrators & Forward Positions deploy per official scenario diagram.
                 </div>
               </div>
@@ -684,12 +684,12 @@ export const PlayModeView: React.FC = () => {
           </div>
 
           {/* Bottom CTA Bar */}
-          <div className="bg-[#0C0E12] border-2 border-[#D4AF37] rounded-md p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-theme-base border-2 border-theme-primary rounded-md p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+              <h3 className="font-gothic font-bold text-lg text-theme-text">
                 READY TO ENTER THE TRENCHES?
               </h3>
-              <p className="text-xs text-[#8E95A5]">
+              <p className="text-xs text-theme-muted">
                 Scenario: <strong>{selectedScenario?.name}</strong> • {deployedUnits.length} Models ({deployedCost} D)
               </p>
             </div>
@@ -699,16 +699,16 @@ export const PlayModeView: React.FC = () => {
               {isAllOutWarScenario && (
                 <button
                   onClick={() => setIsCardConsoleOpen(true)}
-                  className="flex items-center space-x-2 px-5 py-3.5 bg-[#8B0000] hover:bg-[#A30000] text-white font-bold uppercase rounded text-sm shadow-xl transition-all"
+                  className="flex items-center space-x-2 px-5 py-3.5 bg-theme-accent hover:bg-[#A30000] text-white font-bold uppercase rounded text-sm shadow-xl transition-all"
                 >
-                  <Layers className="w-4 h-4 text-[#D4AF37]" />
+                  <Layers className="w-4 h-4 text-theme-primary" />
                   <span>🃏 CARD & BETRAYAL ENGINE</span>
                 </button>
               )}
 
               <button
                 onClick={handleStartCombat}
-                className="flex items-center space-x-2 px-8 py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/30 transition-all"
+                className="flex items-center space-x-2 px-8 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all"
               >
                 <Play className="w-4 h-4 fill-black" />
                 <span>⚔️ ENTER TABLETOP COMBAT</span>
@@ -726,20 +726,20 @@ export const PlayModeView: React.FC = () => {
         <div className="space-y-5">
           
           {/* Active Combat HUD Top Bar */}
-          <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-md p-4 shadow-2xl space-y-3 bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-4 shadow-2xl space-y-3 bevel-container">
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               
               {/* Left: Warband & Turn Info */}
               <div className="flex flex-wrap items-center gap-3">
-                <div className="bg-[#0C0E12] border border-[#D4AF37] px-3 py-1.5 rounded flex items-center space-x-2">
-                  <span className="text-[10px] uppercase font-bold text-[#8E95A5]">TURN</span>
-                  <span className="font-gothic font-bold text-lg text-[#D4AF37]">{playTurn}</span>
+                <div className="bg-theme-base border border-theme-primary px-3 py-1.5 rounded flex items-center space-x-2">
+                  <span className="text-[10px] uppercase font-bold text-theme-muted">TURN</span>
+                  <span className="font-gothic font-bold text-lg text-theme-primary">{playTurn}</span>
                 </div>
 
                 {/* Player Selector Tabs (if multiplayer) */}
                 {matchWarbandIds.length > 1 && (
-                  <div className="flex items-center space-x-1 bg-[#0C0E12] p-1 rounded border border-[#323846]">
+                  <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
                     {matchWarbandIds.map((wbId, pIdx) => {
                       const wb = warbands.find((w) => w.id === wbId);
                       const isSel = pIdx === activePlayerIndex;
@@ -750,8 +750,8 @@ export const PlayModeView: React.FC = () => {
                           onClick={() => setActivePlayerIndex(pIdx)}
                           className={`px-3 py-1 rounded text-xs font-mono font-bold uppercase transition-all flex items-center space-x-1.5 ${
                             isSel
-                              ? 'bg-[#D4AF37] text-black shadow'
-                              : 'text-[#8E95A5] hover:text-[#ECEFF4]'
+                              ? 'bg-theme-primary text-black shadow'
+                              : 'text-theme-muted hover:text-theme-text'
                           }`}
                         >
                           <span>P{pIdx + 1}: {wb?.name.slice(0, 10)}</span>
@@ -763,9 +763,9 @@ export const PlayModeView: React.FC = () => {
                 )}
 
                 <div>
-                  <h2 className="font-gothic font-bold text-base text-[#ECEFF4]">{viewingWarband.name}</h2>
-                  <span className="text-[10px] text-[#8E95A5] block">
-                    Scenario: <strong className="text-[#D4AF37]">{selectedScenario?.name}</strong> • {environmentalHazard}
+                  <h2 className="font-gothic font-bold text-base text-theme-text">{viewingWarband.name}</h2>
+                  <span className="text-[10px] text-theme-muted block">
+                    Scenario: <strong className="text-theme-primary">{selectedScenario?.name}</strong> • {environmentalHazard}
                   </span>
                 </div>
               </div>
@@ -782,23 +782,23 @@ export const PlayModeView: React.FC = () => {
                       key={wbId}
                       className={`flex items-center space-x-2 px-3 py-1.5 rounded border ${
                         isCurrent 
-                          ? 'bg-[#0C0E12] border-[#D4AF37] ring-1 ring-[#D4AF37]/30' 
-                          : 'bg-[#0C0E12]/60 border-[#323846]'
+                          ? 'bg-theme-base border-theme-primary ring-1 ring-theme-primary/30' 
+                          : 'bg-theme-base/60 border-theme-border'
                       }`}
                     >
-                      <span className={`text-[10px] uppercase font-bold ${isCurrent ? 'text-[#D4AF37]' : 'text-[#8E95A5]'}`}>
+                      <span className={`text-[10px] uppercase font-bold ${isCurrent ? 'text-theme-primary' : 'text-theme-muted'}`}>
                         {pIdx === 0 ? 'YOU' : `P${pIdx + 1}`}:
                       </span>
                       <button
                         onClick={() => handleAdjustVpForWarband(wbId, -1)}
-                        className="w-5 h-5 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] flex items-center justify-center font-bold text-xs"
+                        className="w-5 h-5 rounded bg-theme-elevated hover:bg-theme-border text-theme-text flex items-center justify-center font-bold text-xs"
                       >
                         -
                       </button>
-                      <span className="font-bold text-xs text-[#ECEFF4] px-0.5">{pScore} VP</span>
+                      <span className="font-bold text-xs text-theme-text px-0.5">{pScore} VP</span>
                       <button
                         onClick={() => handleAdjustVpForWarband(wbId, 1)}
-                        className="w-5 h-5 rounded bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] flex items-center justify-center font-bold text-xs"
+                        className="w-5 h-5 rounded bg-theme-elevated hover:bg-theme-border text-theme-text flex items-center justify-center font-bold text-xs"
                       >
                         +
                       </button>
@@ -811,10 +811,10 @@ export const PlayModeView: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setIsSquadSelectOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
                   title="Select which warriors are deployed in this match"
                 >
-                  <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Users className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Squad ({deployedUnits.length})</span>
                 </button>
 
@@ -822,17 +822,17 @@ export const PlayModeView: React.FC = () => {
                 {isAllOutWarScenario && (
                   <button
                     onClick={() => setIsCardConsoleOpen(true)}
-                    className="flex items-center space-x-1.5 px-3 py-2 bg-[#8B0000] hover:bg-[#A30000] text-white border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-2 bg-theme-accent hover:bg-[#A30000] text-white border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
                     title="All Out War 52-card deck, Betrayal hands, and 3-minute alliance console"
                   >
-                    <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <Layers className="w-3.5 h-3.5 text-theme-primary" />
                     <span>Cards & Alliances</span>
                   </button>
                 )}
 
                 <button
                   onClick={() => setIsMapLightboxOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
                   title="Inspect official scenario deployment diagram"
                 >
                   <Compass className="w-3.5 h-3.5" />
@@ -841,7 +841,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsQuickSearchOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
                   title="Lookup rules and keywords"
                 >
                   <Search className="w-3.5 h-3.5" />
@@ -850,7 +850,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={handleNextTurnWithWhistle}
-                  className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className="flex items-center space-x-1.5 px-3.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
                   title="Advance to next turn (Sounds Trench Command Whistle)"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -859,7 +859,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsPostBattleOpen(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[#8B0000] hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-[#8B0000]/40"
+                  className="flex items-center space-x-2 px-4 py-2 bg-theme-accent hover:bg-[#A30000] text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-theme-accent/40"
                 >
                   <Skull className="w-4 h-4" />
                   <span>End Match</span>
@@ -868,7 +868,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsAbortConfirmOpen(true)}
-                  className="p-2 text-[#8E95A5] hover:text-[#FF4D6D] bg-[#0C0E12] hover:bg-[#20242E] border border-[#323846] rounded transition-colors"
+                  className="p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors"
                   title="Cancel / Abort Match"
                 >
                   <XCircle className="w-4 h-4" />
@@ -878,15 +878,15 @@ export const PlayModeView: React.FC = () => {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex items-center space-x-2 border-t border-[#323846] pt-3 overflow-x-auto">
+            <div className="flex items-center space-x-2 border-t border-theme-border pt-3 overflow-x-auto">
               {['All', 'Active', 'Downed', 'Out of Action'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setFilterStatus(st)}
                   className={`px-3 py-1 rounded text-xs font-mono uppercase font-bold transition-all whitespace-nowrap ${
                     filterStatus === st
-                      ? 'bg-[#D4AF37] text-black shadow'
-                      : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border border-[#323846]'
+                      ? 'bg-theme-primary text-black shadow'
+                      : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                   }`}
                 >
                   {st}
@@ -897,25 +897,25 @@ export const PlayModeView: React.FC = () => {
           </div>
 
           {/* INTERACTIVE MISSION SCORING & GLORIOUS DEEDS CHECKLIST PANEL */}
-          <div className="bg-[#161920] border-2 border-[#323846] rounded-md overflow-hidden shadow-xl bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container">
             
             {/* Panel Header */}
             <div 
-              className="p-4 bg-[#20242E] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none"
+              className="p-4 bg-theme-elevated border-b border-theme-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none"
               onClick={() => setIsObjectivesPanelOpen(!isObjectivesPanelOpen)}
             >
               <div className="flex items-center space-x-3">
-                <Compass className="w-5 h-5 text-[#D4AF37]" />
+                <Compass className="w-5 h-5 text-theme-primary" />
                 <div>
                   <div className="flex items-center space-x-2">
-                    <h3 className="font-gothic font-bold text-base text-[#ECEFF4]">
+                    <h3 className="font-gothic font-bold text-base text-theme-text">
                       SCENARIO OBJECTIVES & GLORIOUS DEEDS TRACKER
                     </h3>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0C0E12] text-[#D4AF37] border border-[#323846] font-bold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
                       {selectedScenario?.name}
                     </span>
                   </div>
-                  <p className="text-xs font-mono text-[#8E95A5]">
+                  <p className="text-xs font-mono text-theme-muted">
                     Progressive victory points tally and warrior glorious feat checklist
                   </p>
                 </div>
@@ -927,13 +927,13 @@ export const PlayModeView: React.FC = () => {
                     e.stopPropagation();
                     setIsScoringHistoryOpen(!isScoringHistoryOpen);
                   }}
-                  className="px-2.5 py-1 bg-[#0C0E12] hover:bg-[#161920] text-[#D4AF37] border border-[#323846] rounded flex items-center space-x-1"
+                  className="px-2.5 py-1 bg-theme-base hover:bg-theme-surface text-theme-primary border border-theme-border rounded flex items-center space-x-1"
                 >
                   <History className="w-3.5 h-3.5" />
                   <span>Turn Score Breakdown</span>
                 </button>
 
-                <button className="text-[#8E95A5] hover:text-white p-1">
+                <button className="text-theme-muted hover:text-white p-1">
                   {isObjectivesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
               </div>
@@ -941,13 +941,13 @@ export const PlayModeView: React.FC = () => {
 
             {/* Turn by Turn Progressive Breakdown Card */}
             {isScoringHistoryOpen && (
-              <div className="p-4 bg-[#12151B] border-b border-[#323846] space-y-3 animate-fade-in">
+              <div className="p-4 bg-[#12151B] border-b border-theme-border space-y-3 animate-fade-in">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
+                  <span className="text-xs uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                     <TrendingUp className="w-4 h-4" />
                     <span>Progressive Turn-by-Turn VP Breakdown:</span>
                   </span>
-                  <span className="text-[10px] text-[#8E95A5]">Current Turn: {playTurn}</span>
+                  <span className="text-[10px] text-theme-muted">Current Turn: {playTurn}</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -957,17 +957,17 @@ export const PlayModeView: React.FC = () => {
                     const turns = [1, 2, 3, 4, 5];
 
                     return (
-                      <div key={wbId} className="p-3 bg-[#0C0E12] rounded border border-[#323846] space-y-2">
-                        <div className="flex items-center justify-between border-b border-[#323846] pb-1">
-                          <strong className="text-xs text-[#ECEFF4]">{wb?.name}</strong>
-                          <span className="text-xs font-bold text-[#D4AF37]">{scores.vp} Total VP</span>
+                      <div key={wbId} className="p-3 bg-theme-base rounded border border-theme-border space-y-2">
+                        <div className="flex items-center justify-between border-b border-theme-border pb-1">
+                          <strong className="text-xs text-theme-text">{wb?.name}</strong>
+                          <span className="text-xs font-bold text-theme-primary">{scores.vp} Total VP</span>
                         </div>
 
                         <div className="grid grid-cols-5 gap-1 text-center text-[10px]">
                           {turns.map((tNum) => (
-                            <div key={tNum} className={`p-1 rounded ${playTurn === tNum ? 'bg-[#D4AF37]/20 border border-[#D4AF37]' : 'bg-[#161920]'}`}>
-                              <span className="text-[9px] text-[#8E95A5] block">T{tNum}</span>
-                              <strong className="text-[#ECEFF4]">{scores.turnScores[tNum] || 0}</strong>
+                            <div key={tNum} className={`p-1 rounded ${playTurn === tNum ? 'bg-theme-primary/20 border border-theme-primary' : 'bg-theme-surface'}`}>
+                              <span className="text-[9px] text-theme-muted block">T{tNum}</span>
+                              <strong className="text-theme-text">{scores.turnScores[tNum] || 0}</strong>
                             </div>
                           ))}
                         </div>
@@ -980,32 +980,32 @@ export const PlayModeView: React.FC = () => {
 
             {/* Panel Body */}
             {isObjectivesPanelOpen && (
-              <div className="p-5 bg-[#0C0E12] space-y-4 font-mono text-xs animate-fade-in">
+              <div className="p-5 bg-theme-base space-y-4 font-mono text-xs animate-fade-in">
                 
                 {/* Scenario Selector & Victory Rules */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   
                   {/* Scenario Status: Locked during active match */}
                   <div className="space-y-1.5">
-                    <label className="text-[10px] uppercase font-bold text-[#8E95A5] block flex items-center space-x-1">
-                      <Lock className="w-3 h-3 text-[#D4AF37]" />
+                    <label className="text-[10px] uppercase font-bold text-theme-muted block flex items-center space-x-1">
+                      <Lock className="w-3 h-3 text-theme-primary" />
                       <span>Active Scenario (Locked for Match):</span>
                     </label>
-                    <div className="p-2.5 bg-[#161920] border border-[#323846] rounded text-[#D4AF37] font-bold">
+                    <div className="p-2.5 bg-theme-surface border border-theme-border rounded text-theme-primary font-bold">
                       {selectedScenario?.name}
                     </div>
                     {selectedScenario?.tagline && (
-                      <p className="text-[11px] text-[#8E95A5] italic pt-1">{selectedScenario.tagline}</p>
+                      <p className="text-[11px] text-theme-muted italic pt-1">{selectedScenario.tagline}</p>
                     )}
                   </div>
 
                   {/* Victory Conditions Rules */}
-                  <div className="md:col-span-2 p-3 bg-[#161920] border border-[#323846] rounded space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[#4E9A6E] flex items-center space-x-1.5">
+                  <div className="md:col-span-2 p-3 bg-theme-surface border border-theme-border rounded space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-status-legal flex items-center space-x-1.5">
                       <Award className="w-3.5 h-3.5" />
                       <span>Victory Conditions & Scoring Rules:</span>
                     </span>
-                    <p className="text-[11px] text-[#ECEFF4] leading-relaxed whitespace-pre-line">
+                    <p className="text-[11px] text-theme-text leading-relaxed whitespace-pre-line">
                       {selectedScenario?.victoryConditions}
                     </p>
                   </div>
@@ -1013,13 +1013,13 @@ export const PlayModeView: React.FC = () => {
                 </div>
 
                 {/* Glorious Deeds Checklist */}
-                <div className="space-y-2 pt-2 border-t border-[#323846]">
+                <div className="space-y-2 pt-2 border-t border-theme-border">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-[#D4AF37] flex items-center space-x-1.5">
+                    <span className="text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Glorious Deeds Checklist ({viewingWarband.name}):</span>
                     </span>
-                    <span className="text-[10px] text-[#8E95A5]">
+                    <span className="text-[10px] text-theme-muted">
                       {Object.keys(currentScoreObj.completedDeeds).length} Deeds Claimed
                     </span>
                   </div>
@@ -1034,8 +1034,8 @@ export const PlayModeView: React.FC = () => {
                           key={idx}
                           className={`p-3 rounded border transition-all space-y-2 ${
                             isChecked
-                              ? 'bg-[#161920] border-[#D4AF37] ring-1 ring-[#D4AF37]/30'
-                              : 'bg-[#161920]/60 border-[#323846]'
+                              ? 'bg-theme-surface border-theme-primary ring-1 ring-theme-primary/30'
+                              : 'bg-theme-surface/60 border-theme-border'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
@@ -1044,13 +1044,13 @@ export const PlayModeView: React.FC = () => {
                                 type="checkbox"
                                 checked={isChecked}
                                 onChange={() => handleToggleDeed(deed.title, deployedUnits[0]?.customName || 'Squad')}
-                                className="mt-0.5 rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                                className="mt-0.5 rounded border-theme-border text-theme-primary focus:ring-0"
                               />
                               <div>
-                                <strong className={`block text-xs ${isChecked ? 'text-[#D4AF37]' : 'text-[#ECEFF4]'}`}>
+                                <strong className={`block text-xs ${isChecked ? 'text-theme-primary' : 'text-theme-text'}`}>
                                   {deed.title}
                                 </strong>
-                                <p className="text-[11px] text-[#8E95A5] leading-relaxed pt-0.5">
+                                <p className="text-[11px] text-theme-muted leading-relaxed pt-0.5">
                                   {deed.desc}
                                 </p>
                               </div>
@@ -1059,12 +1059,12 @@ export const PlayModeView: React.FC = () => {
 
                           {/* Attaching warrior performer */}
                           {isChecked && (
-                            <div className="pt-2 border-t border-[#323846]/60 flex items-center justify-between gap-2 text-[11px]">
-                              <span className="text-[#8E95A5]">Achieved by:</span>
+                            <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between gap-2 text-[11px]">
+                              <span className="text-theme-muted">Achieved by:</span>
                               <select
                                 value={performer}
                                 onChange={(e) => handleSetDeedPerformer(deed.title, e.target.value)}
-                                className="bg-[#0C0E12] border border-[#323846] rounded px-2 py-1 text-xs text-[#D4AF37] focus:outline-none focus:border-[#D4AF37]"
+                                className="bg-theme-base border border-theme-border rounded px-2 py-1 text-xs text-theme-primary focus:outline-none focus:border-theme-primary"
                               >
                                 <option value="Entire Warband">Entire Warband</option>
                                 {deployedUnits.map((u) => (
@@ -1099,31 +1099,31 @@ export const PlayModeView: React.FC = () => {
               return (
                 <div 
                   key={unit.id}
-                  className={`bg-[#161920] border-2 rounded-md overflow-hidden shadow-xl flex flex-col justify-between transition-all bevel-container ${
+                  className={`bg-theme-surface border-2 rounded-md overflow-hidden shadow-xl flex flex-col justify-between transition-all bevel-container ${
                     isOOA
-                      ? 'border-[#8B0000]/60 opacity-60'
+                      ? 'border-theme-accent/60 opacity-60'
                       : isDowned
-                      ? 'border-[#FFB300] ring-1 ring-[#FFB300]/40'
+                      ? 'border-status-warning ring-1 ring-status-warning/40'
                       : unit.hasActedThisTurn
-                      ? 'border-[#323846] opacity-85'
-                      : 'border-[#D4AF37]'
+                      ? 'border-theme-border opacity-85'
+                      : 'border-theme-primary'
                   }`}
                 >
                   
                   {/* Card Header */}
-                  <div className="p-3 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+                  <div className="p-3 bg-theme-base border-b border-theme-border flex items-center justify-between">
                     <div>
                       <div className="flex items-center space-x-2">
                         {isLeader && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#D4AF37] text-black font-bold uppercase">
+                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
                             Leader
                           </span>
                         )}
-                        <h4 className="font-gothic font-bold text-sm text-[#ECEFF4] truncate">
+                        <h4 className="font-gothic font-bold text-sm text-theme-text truncate">
                           {unit.customName}
                         </h4>
                       </div>
-                      <span className="text-[10px] text-[#8E95A5] block">
+                      <span className="text-[10px] text-theme-muted block">
                         Base: {unit.profileSnapshot.name}
                       </span>
                     </div>
@@ -1132,8 +1132,8 @@ export const PlayModeView: React.FC = () => {
                       onClick={() => toggleUnitActed(viewingWarband.id, unit.id)}
                       className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                         unit.hasActedThisTurn
-                          ? 'bg-[#323846] text-[#8E95A5]'
-                          : 'bg-[#D4AF37] text-black shadow'
+                          ? 'bg-theme-border text-theme-muted'
+                          : 'bg-theme-primary text-black shadow'
                       }`}
                     >
                       <UserCheck className="w-3 h-3" />
@@ -1145,47 +1145,47 @@ export const PlayModeView: React.FC = () => {
                   <div className="p-3.5 space-y-3">
                     
                     {/* Stat Grid */}
-                    <div className="grid grid-cols-4 gap-1 text-center bg-[#0C0E12] p-1.5 rounded border border-[#323846] text-xs">
+                    <div className="grid grid-cols-4 gap-1 text-center bg-theme-base p-1.5 rounded border border-theme-border text-xs">
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">MOV</span>
-                        <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.movement}</strong>
+                        <span className="text-[9px] text-theme-muted block">MOV</span>
+                        <strong className="text-theme-text">{unit.profileSnapshot.stats.movement}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">RNG</span>
-                        <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.ranged}</strong>
+                        <span className="text-[9px] text-theme-muted block">RNG</span>
+                        <strong className="text-theme-text">{unit.profileSnapshot.stats.ranged}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">MEL</span>
-                        <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.melee}</strong>
+                        <span className="text-[9px] text-theme-muted block">MEL</span>
+                        <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-[9px] text-[#8E95A5] block">ARM</span>
-                        <strong className="text-[#ECEFF4]">{unit.profileSnapshot.stats.armour}</strong>
+                        <span className="text-[9px] text-theme-muted block">ARM</span>
+                        <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
 
                     {/* Interactive Wounds & Blood Marker Trackers */}
-                    <div className="space-y-2.5 font-mono text-xs bg-[#20242E]/60 p-3 rounded border border-[#323846]/60">
+                    <div className="space-y-2.5 font-mono text-xs bg-theme-elevated/60 p-3 rounded border border-theme-border/60">
                       
                       {/* Wounds Counter */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1.5 text-[#ECEFF4]">
-                          <Heart className="w-4 h-4 text-[#E53935]" />
+                        <div className="flex items-center space-x-1.5 text-theme-text">
+                          <Heart className="w-4 h-4 text-status-error" />
                           <span className="font-bold">WOUNDS:</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => updateUnitWounds(viewingWarband.id, unit.id, -1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                           >
                             -
                           </button>
-                          <span className="font-bold text-sm sm:text-base text-[#ECEFF4] min-w-[24px] text-center">
+                          <span className="font-bold text-sm sm:text-base text-theme-text min-w-[24px] text-center">
                             {unit.currentWounds} / {unit.maxWounds}
                           </span>
                           <button
                             onClick={() => updateUnitWounds(viewingWarband.id, unit.id, 1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                           >
                             +
                           </button>
@@ -1194,23 +1194,23 @@ export const PlayModeView: React.FC = () => {
 
                       {/* Blood Markers (Capped at 6) */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1.5 text-[#ECEFF4]">
-                          <Droplet className="w-4 h-4 text-[#E53935] fill-[#E53935]" />
+                        <div className="flex items-center space-x-1.5 text-theme-text">
+                          <Droplet className="w-4 h-4 text-status-error fill-status-error" />
                           <span className="font-bold">BLOOD MARKERS:</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, -1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                           >
                             -
                           </button>
-                          <span className="font-bold text-sm sm:text-base text-[#E53935] min-w-[24px] text-center">
+                          <span className="font-bold text-sm sm:text-base text-status-error min-w-[24px] text-center">
                             {unit.bloodMarkers} / 6
                           </span>
                           <button
                             onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, 1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-[#161920] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
                           >
                             +
                           </button>
@@ -1228,11 +1228,11 @@ export const PlayModeView: React.FC = () => {
                           className={`py-1.5 rounded font-bold uppercase transition-all select-none active:scale-95 ${
                             unit.status === st
                               ? st === 'Active'
-                                ? 'bg-[#4E9A6E] text-white shadow'
+                                ? 'bg-status-legal text-white shadow'
                                 : st === 'Downed'
-                                ? 'bg-[#FFB300] text-black shadow'
-                                : 'bg-[#E53935] text-white shadow'
-                              : 'bg-[#0C0E12] text-[#8E95A5] hover:text-white border border-[#323846]'
+                                ? 'bg-status-warning text-black shadow'
+                                : 'bg-status-error text-white shadow'
+                              : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
                           }`}
                         >
                           {st}
@@ -1243,7 +1243,7 @@ export const PlayModeView: React.FC = () => {
                     {/* Tactical Attack Trigger */}
                     <button
                       onClick={() => setAttackingUnit(unit)}
-                      className="w-full py-2 bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 rounded font-bold uppercase text-xs flex items-center justify-center space-x-1.5 transition-colors"
+                      className="w-full py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-bold uppercase text-xs flex items-center justify-center space-x-1.5 transition-colors"
                     >
                       <Crosshair className="w-3.5 h-3.5" />
                       <span>Tactical Attack & Injury Roll</span>
@@ -1261,32 +1261,32 @@ export const PlayModeView: React.FC = () => {
       {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
       {isSquadSelectOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85dvh]">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85dvh]">
             
-            <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
+            <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-[#D4AF37]" />
+                <Users className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-gothic font-bold text-base text-white">
                   SQUAD SELECTION & FIELD STRENGTH
                 </h3>
               </div>
               <button
                 onClick={() => setIsSquadSelectOpen(false)}
-                className="text-[#8E95A5] hover:text-white"
+                className="text-theme-muted hover:text-white"
               >
                 ✕
               </button>
             </div>
 
             <div className="p-5 overflow-y-auto space-y-4 text-xs">
-              <div className="flex items-center justify-between bg-[#0C0E12] p-3 rounded border border-[#323846]">
+              <div className="flex items-center justify-between bg-theme-base p-3 rounded border border-theme-border">
                 <div>
-                  <span className="text-[10px] text-[#8E95A5] block">DEPLOYED STRENGTH</span>
-                  <strong className="text-sm text-[#D4AF37]">{deployedUnits.length} Models ({deployedCost} D)</strong>
+                  <span className="text-[10px] text-theme-muted block">DEPLOYED STRENGTH</span>
+                  <strong className="text-sm text-theme-primary">{deployedUnits.length} Models ({deployedCost} D)</strong>
                 </div>
                 <button
                   onClick={handleSelectAllSquad}
-                  className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded text-[10px] font-bold uppercase"
+                  className="px-3 py-1 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded text-[10px] font-bold uppercase"
                 >
                   Deploy All
                 </button>
@@ -1301,8 +1301,8 @@ export const PlayModeView: React.FC = () => {
                       onClick={() => handleToggleDeployUnit(u.id)}
                       className={`p-3 rounded border flex items-center justify-between cursor-pointer transition-all ${
                         isDep
-                          ? 'bg-[#20242E] border-[#D4AF37] text-white'
-                          : 'bg-[#0C0E12] border-[#323846] text-[#8E95A5]'
+                          ? 'bg-theme-elevated border-theme-primary text-white'
+                          : 'bg-theme-base border-theme-border text-theme-muted'
                       }`}
                     >
                       <div className="flex items-center space-x-2.5">
@@ -1310,24 +1310,24 @@ export const PlayModeView: React.FC = () => {
                           type="checkbox"
                           checked={isDep}
                           onChange={() => {}}
-                          className="rounded border-[#323846] text-[#D4AF37] focus:ring-0"
+                          className="rounded border-theme-border text-theme-primary focus:ring-0"
                         />
                         <div>
                           <strong className="block text-xs">{u.customName}</strong>
-                          <span className="text-[10px] text-[#8E95A5]">{u.profileSnapshot.name}</span>
+                          <span className="text-[10px] text-theme-muted">{u.profileSnapshot.name}</span>
                         </div>
                       </div>
-                      <span className="text-xs font-bold text-[#D4AF37]">{u.totalCost} D</span>
+                      <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex justify-end">
+            <div className="p-3 bg-theme-base border-t border-theme-border flex justify-end">
               <button
                 onClick={() => setIsSquadSelectOpen(false)}
-                className="px-5 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+                className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
               >
                 Confirm Squad
               </button>
@@ -1384,43 +1384,43 @@ export const PlayModeView: React.FC = () => {
       {/* FULLSCREEN SCENARIO MAP LIGHTBOX MODAL (WORKS IN BOTH LOBBY & COMBAT) */}
       {isMapLightboxOpen && selectedScenario?.mapImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
-          <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Modal Header */}
-            <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">
+            <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Compass className="w-5 h-5 text-[#D4AF37]" />
+                <Compass className="w-5 h-5 text-theme-primary" />
                 <div>
                   <h3 className="font-gothic font-bold text-base sm:text-lg text-white">
                     OFFICIAL DEPLOYMENT DIAGRAM: {selectedScenario.name}
                   </h3>
-                  <span className="text-[10px] text-[#8E95A5] block">
+                  <span className="text-[10px] text-theme-muted block">
                     Table Size: {selectedScenario.tableSize || '48" x 48"'} • Vector Scenario Map
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setIsMapLightboxOpen(false)}
-                className="px-3 py-1 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded font-bold uppercase text-xs border border-[#323846]"
+                className="px-3 py-1 bg-theme-elevated hover:bg-theme-border text-theme-text rounded font-bold uppercase text-xs border border-theme-border"
               >
                 ✕ Close
               </button>
             </div>
 
             {/* Modal Body: Large Map Image */}
-            <div className="p-4 overflow-auto flex-1 flex items-center justify-center bg-[#0C0E12]/80">
+            <div className="p-4 overflow-auto flex-1 flex items-center justify-center bg-theme-base/80">
               <img
                 src={selectedScenario.mapImage}
                 alt={`${selectedScenario.name} Official Tactical Map`}
-                className="max-w-full max-h-[75dvh] object-contain rounded shadow-2xl border border-[#323846]"
+                className="max-w-full max-h-[75dvh] object-contain rounded shadow-2xl border border-theme-border"
               />
             </div>
 
             {/* Modal Footer */}
-            <div className="p-3 bg-[#161920] border-t border-[#323846] flex items-center justify-between text-xs text-[#8E95A5]">
+            <div className="p-3 bg-theme-surface border-t border-theme-border flex items-center justify-between text-xs text-theme-muted">
               <span>Scenario {selectedScenario.number || ''}: {selectedScenario.tagline || ''}</span>
               <button
                 onClick={() => setIsMapLightboxOpen(false)}
-                className="px-4 py-1.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-xs"
+                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
               >
                 Done
               </button>

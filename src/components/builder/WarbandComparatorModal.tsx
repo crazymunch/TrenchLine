@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { 
@@ -21,6 +22,9 @@ interface WarbandComparatorModalProps {
 
 export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ onClose }) => {
   const { warbands, activeWarbandId, factions } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
 
   const [wb1Id, setWb1Id] = useState<string>(activeWarbandId || warbands[0]?.id || '');
   const [wb2Id, setWb2Id] = useState<string>(
@@ -59,23 +63,23 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
   const s2 = calculateStats(wb2);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-3">
-            <Scale className="w-6 h-6 text-[#D4AF37]" />
+            <Scale className="w-6 h-6 text-theme-primary" />
             <div>
-              <h2 className="font-gothic font-bold text-lg text-[#ECEFF4]">
+              <h2 className="font-gothic font-bold text-lg text-theme-text">
                 WARBAND TACTICAL MATCHUP COMPARATOR
               </h2>
-              <p className="text-xs font-mono text-[#8E95A5]">
+              <p className="text-xs font-mono text-theme-muted">
                 Side-by-side roster balance, firepower, and faction doctrine comparison
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -87,14 +91,14 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Warband 1 Selector */}
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <label className="block text-xs font-mono uppercase text-[#D4AF37] font-bold">
+            <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
+              <label className="block text-xs font-mono uppercase text-theme-primary font-bold">
                 Warband A (Home Force):
               </label>
               <select
                 value={wb1Id}
                 onChange={(e) => setWb1Id(e.target.value)}
-                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-gothic text-[#ECEFF4] focus:outline-none"
+                className="w-full bg-theme-base border border-theme-border rounded p-2 text-xs font-gothic text-theme-text focus:outline-none"
               >
                 {warbands.map((w) => (
                   <option key={w.id} value={w.id}>{w.name} ({factions.find(f => f.id === w.factionId)?.name || w.factionId})</option>
@@ -103,14 +107,14 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
             </div>
 
             {/* Warband 2 Selector */}
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <label className="block text-xs font-mono uppercase text-[#E53935] font-bold">
+            <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
+              <label className="block text-xs font-mono uppercase text-status-error font-bold">
                 Warband B (Opposing Force):
               </label>
               <select
                 value={wb2Id}
                 onChange={(e) => setWb2Id(e.target.value)}
-                className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-xs font-gothic text-[#ECEFF4] focus:outline-none"
+                className="w-full bg-theme-base border border-theme-border rounded p-2 text-xs font-gothic text-theme-text focus:outline-none"
               >
                 {warbands.map((w) => (
                   <option key={w.id} value={w.id}>{w.name} ({factions.find(f => f.id === w.factionId)?.name || w.factionId})</option>
@@ -121,67 +125,67 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
           </div>
 
           {/* Metric Comparison Table */}
-          <div className="bg-[#0C0E12] border border-[#323846] rounded-md overflow-hidden">
+          <div className="bg-theme-base border border-theme-border rounded-md overflow-hidden">
             <table className="w-full text-center text-xs font-mono">
-              <thead className="bg-[#161920] text-[#8E95A5] uppercase text-[10px] border-b border-[#323846]">
+              <thead className="bg-theme-surface text-theme-muted uppercase text-[10px] border-b border-theme-border">
                 <tr>
-                  <th className="p-3 text-left w-1/3 font-gothic text-sm text-[#D4AF37]">{wb1?.name}</th>
+                  <th className="p-3 text-left w-1/3 font-gothic text-sm text-theme-primary">{wb1?.name}</th>
                   <th className="p-3 w-1/3">Tactical Metric</th>
-                  <th className="p-3 text-right w-1/3 font-gothic text-sm text-[#E53935]">{wb2?.name}</th>
+                  <th className="p-3 text-right w-1/3 font-gothic text-sm text-status-error">{wb2?.name}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#323846]/60">
+              <tbody className="divide-y divide-theme-border/60">
                 
                 {/* Total Cost */}
-                <tr className="hover:bg-[#161920]/40">
-                  <td className="p-3 text-left font-bold text-sm text-[#ECEFF4]">{s1.totalCost} / {wb1?.ducatLimit} D</td>
-                  <td className="p-3 text-[#8E95A5] flex items-center justify-center space-x-1">
+                <tr className="hover:bg-theme-surface/40">
+                  <td className="p-3 text-left font-bold text-sm text-theme-text">{s1.totalCost} / {wb1?.ducatLimit} D</td>
+                  <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
                     <span>Points (Ducats)</span>
                   </td>
-                  <td className="p-3 text-right font-bold text-sm text-[#ECEFF4]">{s2.totalCost} / {wb2?.ducatLimit} D</td>
+                  <td className="p-3 text-right font-bold text-sm text-theme-text">{s2.totalCost} / {wb2?.ducatLimit} D</td>
                 </tr>
 
                 {/* Warriors */}
-                <tr className="hover:bg-[#161920]/40">
-                  <td className="p-3 text-left font-bold text-[#ECEFF4]">{s1.warriorCount} Warriors</td>
-                  <td className="p-3 text-[#8E95A5]">Warband Size</td>
-                  <td className="p-3 text-right font-bold text-[#ECEFF4]">{s2.warriorCount} Warriors</td>
+                <tr className="hover:bg-theme-surface/40">
+                  <td className="p-3 text-left font-bold text-theme-text">{s1.warriorCount} Warriors</td>
+                  <td className="p-3 text-theme-muted">Warband Size</td>
+                  <td className="p-3 text-right font-bold text-theme-text">{s2.warriorCount} Warriors</td>
                 </tr>
 
                 {/* Tough & Multi-Wound */}
-                <tr className="hover:bg-[#161920]/40">
-                  <td className="p-3 text-left font-bold text-[#4E9A6E]">{s1.toughCount} Elite/Tough</td>
-                  <td className="p-3 text-[#8E95A5] flex items-center justify-center space-x-1">
-                    <Heart className="w-3 h-3 text-[#E53935]" />
+                <tr className="hover:bg-theme-surface/40">
+                  <td className="p-3 text-left font-bold text-status-legal">{s1.toughCount} Elite/Tough</td>
+                  <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
+                    <Heart className="w-3 h-3 text-status-error" />
                     <span>Multi-Wound Models</span>
                   </td>
-                  <td className="p-3 text-right font-bold text-[#4E9A6E]">{s2.toughCount} Elite/Tough</td>
+                  <td className="p-3 text-right font-bold text-status-legal">{s2.toughCount} Elite/Tough</td>
                 </tr>
 
                 {/* Ranged Armaments */}
-                <tr className="hover:bg-[#161920]/40">
-                  <td className="p-3 text-left font-bold text-[#ECEFF4]">{s1.rangedWeapons} Guns/Rifles</td>
-                  <td className="p-3 text-[#8E95A5] flex items-center justify-center space-x-1">
-                    <Crosshair className="w-3 h-3 text-[#D4AF37]" />
+                <tr className="hover:bg-theme-surface/40">
+                  <td className="p-3 text-left font-bold text-theme-text">{s1.rangedWeapons} Guns/Rifles</td>
+                  <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
+                    <Crosshair className="w-3 h-3 text-theme-primary" />
                     <span>Ranged Firepower</span>
                   </td>
-                  <td className="p-3 text-right font-bold text-[#ECEFF4]">{s2.rangedWeapons} Guns/Rifles</td>
+                  <td className="p-3 text-right font-bold text-theme-text">{s2.rangedWeapons} Guns/Rifles</td>
                 </tr>
 
                 {/* Melee Armaments */}
-                <tr className="hover:bg-[#161920]/40">
-                  <td className="p-3 text-left font-bold text-[#ECEFF4]">{s1.meleeWeapons} Blades/Maces</td>
-                  <td className="p-3 text-[#8E95A5] flex items-center justify-center space-x-1">
-                    <Swords className="w-3 h-3 text-[#E53935]" />
+                <tr className="hover:bg-theme-surface/40">
+                  <td className="p-3 text-left font-bold text-theme-text">{s1.meleeWeapons} Blades/Maces</td>
+                  <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
+                    <Swords className="w-3 h-3 text-status-error" />
                     <span>Close Combat Gear</span>
                   </td>
-                  <td className="p-3 text-right font-bold text-[#ECEFF4]">{s2.meleeWeapons} Blades/Maces</td>
+                  <td className="p-3 text-right font-bold text-theme-text">{s2.meleeWeapons} Blades/Maces</td>
                 </tr>
 
                 {/* Fire / Flame Weapons */}
-                <tr className="hover:bg-[#161920]/40">
+                <tr className="hover:bg-theme-surface/40">
                   <td className="p-3 text-left font-bold text-[#FF9800]">{s1.fireWeapons} Fire Weapons</td>
-                  <td className="p-3 text-[#8E95A5] flex items-center justify-center space-x-1">
+                  <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
                     <Flame className="w-3 h-3 text-[#FF9800]" />
                     <span>Incendiary Munitions</span>
                   </td>
@@ -194,29 +198,29 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
 
           {/* Faction Doctrines Comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold block">
+            <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
+              <span className="text-[10px] font-mono uppercase text-theme-primary font-bold block">
                 {faction1?.name} Special Rules:
               </span>
               <div className="space-y-1.5">
                 {(faction1?.specialRules || faction1?.rules || []).map((r, i) => (
-                  <div key={i} className="text-xs bg-[#161920] p-2 rounded border border-[#323846]">
-                    <strong className="text-[#D4AF37] block">{r.name}</strong>
-                    <span className="text-[#8E95A5] text-[11px]">{r.description}</span>
+                  <div key={i} className="text-xs bg-theme-surface p-2 rounded border border-theme-border">
+                    <strong className="text-theme-primary block">{r.name}</strong>
+                    <span className="text-theme-muted text-[11px]">{r.description}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="p-4 bg-[#20242E] rounded border border-[#323846] space-y-2">
-              <span className="text-[10px] font-mono uppercase text-[#E53935] font-bold block">
+            <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
+              <span className="text-[10px] font-mono uppercase text-status-error font-bold block">
                 {faction2?.name} Special Rules:
               </span>
               <div className="space-y-1.5">
                 {(faction2?.specialRules || faction2?.rules || []).map((r, i) => (
-                  <div key={i} className="text-xs bg-[#161920] p-2 rounded border border-[#323846]">
-                    <strong className="text-[#E53935] block">{r.name}</strong>
-                    <span className="text-[#8E95A5] text-[11px]">{r.description}</span>
+                  <div key={i} className="text-xs bg-theme-surface p-2 rounded border border-theme-border">
+                    <strong className="text-status-error block">{r.name}</strong>
+                    <span className="text-theme-muted text-[11px]">{r.description}</span>
                   </div>
                 ))}
               </div>
@@ -226,10 +230,10 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-[#323846] bg-[#0C0E12] flex justify-end">
+        <div className="px-6 py-3 border-t border-theme-border bg-theme-base flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] font-mono text-xs font-bold uppercase rounded"
+            className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text font-mono text-xs font-bold uppercase rounded"
           >
             Close Comparator
           </button>

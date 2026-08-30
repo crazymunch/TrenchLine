@@ -38,7 +38,7 @@ const ALIGN = { left: 'text-left', right: 'text-right', center: 'text-center' } 
 export function DataTable<T>({ columns, rows, rowKey, empty, caption }: Props<T>) {
   if (!rows.length) {
     return (
-      <p className="text-xs sm:text-[11px] font-mono text-[#8E95A5] py-3">
+      <p className="text-xs sm:text-[11px] font-mono text-theme-muted py-3">
         {empty ?? 'Nothing to show.'}
       </p>
     );
@@ -51,15 +51,15 @@ export function DataTable<T>({ columns, rows, rowKey, empty, caption }: Props<T>
       <table className="w-full min-w-max border-collapse">
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
-          <tr className="border-b border-[#323846]">
+          <tr className="border-b border-theme-border">
             {columns.map((c) => (
               <th
                 key={c.key}
                 scope="col"
                 className={`px-3 py-2 text-xs sm:text-[11px] font-mono font-bold uppercase
-                            tracking-wider text-[#8E95A5] whitespace-nowrap
+                            tracking-wider text-theme-muted whitespace-nowrap
                             ${ALIGN[c.align ?? 'left']}
-                            ${c.sticky ? 'sticky left-0 z-10 bg-[#161920]' : ''}`}
+                            ${c.sticky ? 'sticky left-0 z-10 bg-theme-surface' : ''}`}
               >
                 {c.header}
               </th>
@@ -68,13 +68,13 @@ export function DataTable<T>({ columns, rows, rowKey, empty, caption }: Props<T>
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={rowKey(r)} className="border-b border-[#323846]/50 last:border-0">
+            <tr key={rowKey(r)} className="border-b border-theme-border/50 last:border-0">
               {columns.map((c) => (
                 <td
                   key={c.key}
-                  className={`px-3 py-2.5 text-sm sm:text-xs text-[#ECEFF4] whitespace-nowrap
+                  className={`px-3 py-2.5 text-sm sm:text-xs text-theme-text whitespace-nowrap
                               ${ALIGN[c.align ?? 'left']}
-                              ${c.sticky ? 'sticky left-0 z-10 bg-[#161920]' : ''}`}
+                              ${c.sticky ? 'sticky left-0 z-10 bg-theme-surface' : ''}`}
                 >
                   {c.render(r)}
                 </td>

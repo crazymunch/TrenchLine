@@ -467,13 +467,11 @@
     },
     "stats.melee": {
       "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "stats.armour": {
       "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "stats.base": {
       "layer": "base",
@@ -482,8 +480,7 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "cost.glory": {
       "layer": "base",
@@ -37673,6 +37670,44 @@
   },
   "unit:Thrall": {
     "options": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "cost.ducats": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Amalgam": {
+    "cost.ducats": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.movement": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.melee": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "stats.armour": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "abilities": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }

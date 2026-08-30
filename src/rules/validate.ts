@@ -15,6 +15,7 @@ import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
 import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
+import { stockedAnywhere, variantArmoury } from './variantArmoury';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -156,7 +157,10 @@ function checkWargear(
   roster: Roster,
   profiles: Map<string, UnitProfile>,
   weapons: Map<string, { id: string; name: string; restrictions?: string[] }>,
-  armoury?: Armoury
+  armoury?: Armoury,
+  /** Needed to follow a variant's cross-faction armoury grants. */
+  dataset?: Dataset,
+  variant?: WarbandVariant
 ): Violation[] {
   const out: Violation[] = [];
   const rosterCounts = new Map<string, number>();
@@ -178,23 +182,35 @@ function checkWargear(
       // rule the old data could not express: the armoury *is* the list of what
       // is available, not merely what it costs.
       if (armoury && !stocks(armoury, w)) {
-        // Advisory, not blocking — deliberately. The rule is right: a faction
-        // can only buy from its own armoury. But our picture of that armoury is
-        // not yet complete, because a Warband Variant can extend it. The House
-        // of Wisdom's *Weapon Collections* grants an Automatic Rifle and an
-        // Anti-Tank Hammer that the standard Iron Sultanate table does not
-        // list, and those grants are not modelled yet.
-        //
-        // Blocking on an incomplete picture would tell a player their legal
-        // roster is illegal, which is worse than not checking: they cannot act
-        // on it and they stop trusting the rest. So it is raised as something
-        // to confirm, and it says why.
+        // A variant can extend the armoury, so the faction's own table is not
+        // the whole picture. Cross-faction grants are followed — Knights of
+        // Avarice's *Corrupt Merchants* buys from New Antioch and the Iron
+        // Sultanate — and an item a grant covers is simply legal.
+        const reach = dataset
+          ? stockedAnywhere(dataset, roster.factionId, variant, w)
+          : { stocked: false, via: null };
+        if (reach.stocked) continue;
+
+        // Still advisory rather than blocking, and now for a narrower reason.
+        // Two kinds of armoury rule remain unreadable: a variant with its own
+        // Armoury Table the pipeline does not parse, and price or restriction
+        // overrides stated in prose. Where a variant has one of those, the item
+        // may well be legal, so the warning names the rule to check.
+        const open = dataset && variant
+          ? variantArmoury(variant, roster.factionId,
+                           (dataset.armouries ?? []).map((a) => a.factionId)).unreadable
+          : [];
         out.push(warn({
           code: 'wargear-not-stocked',
-          message: `${w.name} is not in the ${armoury.faction} Armoury Table — ` +
-                   `check whether your variant grants it.`,
-          rule: `${armoury.faction} Armoury Table. Variant armoury grants ` +
-                `(e.g. Weapon Collections) are not modelled yet.`,
+          message: `${w.name} is not in the ${armoury.faction} Armoury Table` +
+                   (open.length
+                     ? ` — check ${open.map((o) => `“${o.rule}”`).join(' and ')}.`
+                     : ', and no rule this warband has grants it.'),
+          rule: open.length
+            ? `${armoury.faction} Armoury Table. ${variant?.name} has armoury rules ` +
+              `whose effect is stated in prose and not yet modelled.`
+            : `${armoury.faction} Armoury Table. A faction may only buy from an ` +
+              `armoury it can reach.`,
           unitId: u.id,
         }));
         continue;
@@ -487,7 +503,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
 
   violations.push(...checkRecruitmentLimits(roster, profiles, variant));
   const armoury = armouryFor(dataset, roster.factionId);
-  violations.push(...checkWargear(roster, profiles, weapons, armoury));
+  violations.push(...checkWargear(roster, profiles, weapons, armoury, dataset, variant));
   violations.push(...checkVariant(roster, variant, profiles));
 
   const faction = (dataset as unknown as { factions?: { id: string; name: string;

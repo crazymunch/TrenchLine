@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { ActiveUnit, EquippedWeapon } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -38,6 +39,9 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   const [targetArmourMod, setTargetArmourMod] = useState<number>(0); // e.g. Heavy Armour gives -1 to injury
   const [isCharging, setIsCharging] = useState<boolean>(false);
   const [hasElevation, setHasElevation] = useState<boolean>(false);
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [customDiceMod, setCustomDiceMod] = useState<number>(0); // e.g. +1 DICE or -1 DICE
 
   const [rollResult, setRollResult] = useState<{
@@ -165,25 +169,25 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] bevel-container">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] bevel-container">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#323846] bg-[#0C0E12]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-theme-border bg-theme-base">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-[#8B0000]/30 border border-[#8B0000] flex items-center justify-center">
-              <Crosshair className="w-4 h-4 text-[#E53935]" />
+            <div className="w-8 h-8 rounded bg-theme-accent/30 border border-theme-accent flex items-center justify-center">
+              <Crosshair className="w-4 h-4 text-status-error" />
             </div>
             <div>
-              <h3 className="font-gothic font-bold text-base text-[#ECEFF4] tracking-wide">
+              <h3 className="font-gothic font-bold text-base text-theme-text tracking-wide">
                 TACTICAL ASSAULT & COMBAT CALCULATOR
               </h3>
-              <p className="text-xs text-[#8E95A5]">
-                Attacker: <strong className="text-[#ECEFF4]">{attacker.customName}</strong> ({attacker.profileSnapshot.name})
+              <p className="text-xs text-theme-muted">
+                Attacker: <strong className="text-theme-text">{attacker.customName}</strong> ({attacker.profileSnapshot.name})
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-[#8E95A5] hover:text-white rounded">
+          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -193,7 +197,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
           
           {/* Weapon Selector */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] uppercase font-bold text-[#D4AF37]">
+            <label className="block text-[10px] uppercase font-bold text-theme-primary">
               1. Select Attacking Weapon:
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -205,17 +209,17 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                     onClick={() => setSelectedWeapon(w)}
                     className={`p-2.5 rounded text-left transition-all flex flex-col justify-between border ${
                       isSelected
-                        ? 'bg-[#20242E] text-[#D4AF37] border-[#D4AF37] ring-1 ring-[#D4AF37]/40 shadow'
-                        : 'bg-[#0C0E12] text-[#8E95A5] hover:text-[#ECEFF4] border-[#323846]'
+                        ? 'bg-theme-elevated text-theme-primary border-theme-primary ring-1 ring-theme-primary/40 shadow'
+                        : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <strong className="font-bold text-xs">{w.name}</strong>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#161920] border border-[#323846]">
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-surface border border-theme-border">
                         {w.type}
                       </span>
                     </div>
-                    <div className="text-[10px] text-[#8E95A5] flex items-center justify-between pt-1">
+                    <div className="text-[10px] text-theme-muted flex items-center justify-between pt-1">
                       <span>Range: {w.range}</span>
                       <span>Mod: {typeof w.modifiers === 'string' ? w.modifiers : '-'}</span>
                     </div>
@@ -226,15 +230,15 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
           </div>
 
           {/* Tactical Modifiers */}
-          <div className="space-y-2 pt-2 border-t border-[#323846]">
-            <label className="block text-[10px] uppercase font-bold text-[#8E95A5]">
+          <div className="space-y-2 pt-2 border-t border-theme-border">
+            <label className="block text-[10px] uppercase font-bold text-theme-muted">
               2. Tactical Battlefield Modifiers:
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Target Cover */}
               <div className="space-y-1">
-                <span className="text-[10px] text-[#8E95A5] block">Target Cover:</span>
+                <span className="text-[10px] text-theme-muted block">Target Cover:</span>
                 <div className="grid grid-cols-3 gap-1">
                   {(['None', 'Light', 'Heavy'] as const).map((cov) => (
                     <button
@@ -242,8 +246,8 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                       onClick={() => setTargetCover(cov)}
                       className={`py-1 text-center rounded text-[10px] font-bold border transition-all ${
                         targetCover === cov
-                          ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
-                          : 'bg-[#0C0E12] text-[#8E95A5] border-[#323846]'
+                          ? 'bg-theme-primary text-black border-theme-primary'
+                          : 'bg-theme-base text-theme-muted border-theme-border'
                       }`}
                     >
                       {cov}
@@ -254,11 +258,11 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
               {/* Defender Armour */}
               <div className="space-y-1">
-                <span className="text-[10px] text-[#8E95A5] block">Defender Armour Mod:</span>
+                <span className="text-[10px] text-theme-muted block">Defender Armour Mod:</span>
                 <select
                   value={targetArmourMod}
                   onChange={(e) => setTargetArmourMod(parseInt(e.target.value, 10))}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-1.5 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-theme-base border border-theme-border rounded p-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 >
                   <option value={0}>Standard (No Extra Armour)</option>
                   <option value={1}>Light / Standard Armour (-1 Injury)</option>
@@ -269,14 +273,14 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
               {/* Situational Toggles */}
               <div className="space-y-1">
-                <span className="text-[10px] text-[#8E95A5] block">Situational Bonuses:</span>
+                <span className="text-[10px] text-theme-muted block">Situational Bonuses:</span>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsCharging(!isCharging)}
                     className={`flex-1 py-1 text-center rounded text-[10px] font-bold border transition-all ${
                       isCharging
-                        ? 'bg-[#8B0000] text-white border-[#8B0000]'
-                        : 'bg-[#0C0E12] text-[#8E95A5] border-[#323846]'
+                        ? 'bg-theme-accent text-white border-theme-accent'
+                        : 'bg-theme-base text-theme-muted border-theme-border'
                     }`}
                   >
                     Charge (+1)
@@ -285,8 +289,8 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                     onClick={() => setHasElevation(!hasElevation)}
                     className={`flex-1 py-1 text-center rounded text-[10px] font-bold border transition-all ${
                       hasElevation
-                        ? 'bg-[#8B0000] text-white border-[#8B0000]'
-                        : 'bg-[#0C0E12] text-[#8E95A5] border-[#323846]'
+                        ? 'bg-theme-accent text-white border-theme-accent'
+                        : 'bg-theme-base text-theme-muted border-theme-border'
                     }`}
                   >
                     High Ground
@@ -299,7 +303,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
           {/* Roll CTA */}
           <button
             onClick={handleRollAttack}
-            className="w-full py-3 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-bold uppercase rounded text-sm shadow-xl shadow-[#D4AF37]/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
+            className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
           >
             <Dices className="w-4 h-4 fill-black" />
             <span>⚔️ RESOLVE 2D6 ATTACK & INJURY</span>
@@ -307,10 +311,10 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
           {/* Resolution Results Card */}
           {rollResult && (
-            <div className="p-4 bg-[#0C0E12] rounded-md border-2 border-[#D4AF37] space-y-3 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-[#323846] pb-2">
+            <div className="p-4 bg-theme-base rounded-md border-2 border-theme-primary space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-theme-border pb-2">
                 <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                  <Sparkles className="w-4 h-4 text-theme-primary" />
                   <strong className="font-gothic font-bold text-sm text-white">
                     COMBAT RESOLUTION RESULT
                   </strong>
@@ -318,12 +322,12 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
                 <span className={`px-2 py-0.5 rounded text-[11px] font-bold uppercase ${
                   rollResult.injuryOutcome === 'Out of Action'
-                    ? 'bg-[#E53935] text-white'
+                    ? 'bg-status-error text-white'
                     : rollResult.injuryOutcome === 'Downed'
-                    ? 'bg-[#FFB300] text-black'
+                    ? 'bg-status-warning text-black'
                     : rollResult.attackSuccess
-                    ? 'bg-[#4E9A6E] text-white'
-                    : 'bg-[#323846] text-[#8E95A5]'
+                    ? 'bg-status-legal text-white'
+                    : 'bg-theme-border text-theme-muted'
                 }`}>
                   {rollResult.isFumble 
                     ? 'CRITICAL FAILURE' 
@@ -334,7 +338,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
               </div>
 
               {/* Step by Step Breakdown Log */}
-              <div className="space-y-1 text-xs text-[#ECEFF4] font-mono bg-[#161920] p-3 rounded border border-[#323846]">
+              <div className="space-y-1 text-xs text-theme-text font-mono bg-theme-surface p-3 rounded border border-theme-border">
                 {rollResult.logLines.map((line, idx) => (
                   <div key={idx} className="leading-relaxed">
                     {line}
@@ -344,15 +348,15 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
               {/* Damage Summary */}
               {rollResult.attackSuccess && (
-                <div className="flex items-center justify-between text-xs bg-[#20242E] p-2.5 rounded border border-[#D4AF37]/50">
-                  <span className="text-[#8E95A5]">Damage Applied to Target:</span>
+                <div className="flex items-center justify-between text-xs bg-theme-elevated p-2.5 rounded border border-theme-primary/50">
+                  <span className="text-theme-muted">Damage Applied to Target:</span>
                   <div className="flex items-center space-x-3 font-bold">
-                    <span className="text-[#E53935] flex items-center space-x-1">
+                    <span className="text-status-error flex items-center space-x-1">
                       <Heart className="w-3.5 h-3.5" />
                       <span>{rollResult.woundsInflicted} Wound{rollResult.woundsInflicted !== 1 ? 's' : ''}</span>
                     </span>
-                    <span className="text-[#E53935] flex items-center space-x-1">
-                      <Droplet className="w-3.5 h-3.5 fill-[#E53935]" />
+                    <span className="text-status-error flex items-center space-x-1">
+                      <Droplet className="w-3.5 h-3.5 fill-status-error" />
                       <span>+{rollResult.bloodInflicted} Blood</span>
                     </span>
                   </div>
@@ -364,13 +368,13 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-[#0C0E12] border-t border-[#323846] flex items-center justify-between">
-          <span className="text-[10px] text-[#8E95A5]">
+        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
+          <span className="text-[10px] text-theme-muted">
             Attacker Blood Penalty: -{attacker.bloodMarkers}
           </span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] rounded uppercase font-bold text-xs border border-[#323846]"
+            className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded uppercase font-bold text-xs border border-theme-border"
           >
             Done
           </button>
