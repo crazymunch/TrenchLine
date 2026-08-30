@@ -60,8 +60,34 @@ deliberate, reviewed commit.
 
 **Source:** <https://www.trenchcrusade.com/rules/> (all PDFs linked there)
 **Reachable from CI:** **no.** The domain is blocked by the sandbox network
-policy (`CONNECT` returns 403), so the PDFs must be downloaded and committed to
-`data-sources/rulebook/` by hand.
+policy (`CONNECT` returns 403), so the PDFs must be supplied by the maintainer.
+
+Committed so far:
+
+| PDF | Pages | Extracted | What it gives us |
+|---|---|---|---|
+| `changelog-1.0.2.pdf` | 15 | ✅ | **Official errata table** (`Page \| Location \| Errata`) — transcribes directly to a layer. Carries new keyword definitions (`DEADLY`, `DEPLOYABLE`, `DIFFICULT TERRAIN`, `IMPASSABLE TERRAIN`, `REGENERATE (X)`) and rewritten core rules (Retreat, Line of Sight, Terrain Types, Model Placement). |
+| `rules-commentaries-1.0.2.pdf` | 8 | ✅ | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
+| `all-out-war.pdf` | 23 | ✅ | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
+
+Still needed: the **Core Rulebook** and **Warbands of Trench Crusade**. These are
+the ones that unblock statline verification and the full keyword glossary.
+
+### Getting large PDFs in
+
+The Warbands book exceeds the chat upload limit. Two routes, both verified to
+work from this environment:
+
+1. **GitHub release asset (preferred).** Attach the PDF to a release on this
+   repo; release downloads are reachable
+   (`https://github.com/<owner>/<repo>/releases/download/<tag>/<file>` returns
+   200 through the proxy). Up to 2 GB per asset, and it does **not** bloat git
+   history the way committing a 100 MB binary would. This is also the route for
+   future releases such as the Carcass Front drop.
+2. **Split the PDF** into per-faction chunks and attach them individually.
+
+Once fetched, run `npm run rules:extract` and commit the extracted text. Whether
+the PDF itself is committed is a size judgement; the extracted text always is.
 
 **Used for:** verifying the catalogues (§6 of `RULESET-MODEL.md`), keyword
 rules text, scenarios, injury/exploration/skill tables, and lore.
@@ -127,14 +153,7 @@ replace the 40 one-off scripts with the handful in `scripts/`, and leave
 
 ## Licensing
 
-The repository is public and already contains substantial verbatim rules text
-(`defaultRules.ts`, `officialRulesData.ts`, `warbandLore.ts`). Committing
-extracted source text under `data-sources/` is consistent with that, but it is
-worth a deliberate decision rather than drift. Options:
-
-1. **Keep as-is** — a personal/community tool, as the README states.
-2. **Private submodule** for `data-sources/`, public app repo.
-3. **Ship derived values plus citations only** — the app stores numbers and page
-   references, not rules prose. Highest friction, lowest exposure.
-
-No action taken; flagged for the maintainer.
+**Decided (Aug 2026): not a blocker.** The repository already contains
+substantial verbatim rules text, and this is a personal/community tool as the
+README states. Sources stay in `data-sources/`. Revisit only if the project is
+ever distributed more widely.

@@ -133,16 +133,30 @@ mutating saved data.
 Phase 1 is the bulk of the work and the only one that cannot be parallelised or
 skipped. Phases 0 and 4 can be picked up any time.
 
-## Decisions needed before Phase 1
+## Decisions — status
 
-1. **Rulebook PDFs.** The sandbox cannot reach `trenchcrusade.com` (403 at the
-   proxy). Download the PDFs from the rules page and add them to the repo, or
-   attach them here, and Phase 1.2/1.8 can proceed. Everything else in Phase 1
-   is unblocked — the catalogues and the Dispatch are both in hand.
-2. **Saved warbands.** Confirm the reconciliation-review approach
-   ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8) over automatic migration.
-3. **Licensing.** Decide the `data-sources/` question in
-   [`DATA-SOURCES.md`](DATA-SOURCES.md) before committing more rules text to a
-   public repo.
-4. **Faction rules.** `FACTIONS[].rules` is fabricated and will be deleted.
-   Replace with real rulebook faction rules, or nothing?
+| # | Decision | Status |
+|---|---|---|
+| 1 | Rulebook PDFs | **Partly resolved.** Changelog 1.0.2, Rules Commentaries 1.0.2 and All Out War are committed. **Still needed: Core Rulebook + Warbands of Trench Crusade** — the two that unblock statline verification. Delivery via GitHub release asset (verified reachable) or split uploads. |
+| 2 | Saved warbands | Open — confirm reconciliation-review over automatic migration ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8). |
+| 3 | Licensing | **Closed.** Not a blocker; sources stay in `data-sources/`. |
+| 4 | Fabricated data | **Closed.** Delete what is verifiably invented — but verify each file first rather than tossing wholesale. All Out War data turned out to be correct; see [`FEATURES.md`](FEATURES.md). |
+| 5 | Faction rules | Open — `FACTIONS[].rules` is fabricated and will be deleted. Replace with real rulebook faction rules, or drop the concept? |
+
+## Standing requirement: fast turnaround on new releases
+
+The community catalogues lag official releases by months. Getting new content
+into the app within a day of the PDF dropping is a **primary product goal**, not
+a nice-to-have — it is the main advantage over NewRecruit for this game.
+
+The Carcass Front release is the first test. The mechanism is a PDF-primary
+layer; see [`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
+Phase 1 must land with that path working end-to-end, not just the correction path.
+
+## Feature parity
+
+[`FEATURES.md`](FEATURES.md) is the checklist: everything NewRecruit does, plus
+everything the original draft attempted. Phase 2 is scoped by the ❌ rows in its
+NewRecruit-parity table — unit limits, required entries, wargear legality and
+roster legality are the four that do not exist today and are the reason the app
+cannot yet replace NewRecruit.

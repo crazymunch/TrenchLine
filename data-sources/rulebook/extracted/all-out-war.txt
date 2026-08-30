@@ -1,0 +1,849 @@
+ALL OUT WAR
+ScenARiO 	PAck
+
+-- 1 of 23 --
+
+All Out War	2
+inTRODUcTiOn
+The scenarios in the All Out War Scenario Pack allow three or more players to
+take part in a game of Trench Crusade.
+To play an All Out War scenario, you will need to recruit a Warband (▶ see page
+9 of Warbands of Trench Crusade), find at least two other opponents, and then
+decide which All Out War scenario you and your opponents want to play. If you're
+playing a campaign game, you can agree to use an All Out War scenario instead of
+a scenario from the Campaign Scenario table.
+You can either choose which All Out War scenario you want to play or roll a D6
+and refer to the All Out War Scenario Table that follows to pick out the scenario
+that will be used. Once you've selected the scenario, it is set up and played in the
+same way as a scenario from the Trench Crusade Rulebook or Digital Rulebook,
+unless stated otherwise in the following rules.
+All Out War Scenario Table
+Roll 	Scenario
+1-2 	The Looters
+3-4 	Brothers-In-Arms
+5-6 	Alliance & Betrayal
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Introduction
+
+-- 2 of 23 --
+
+All Out War	3
+Multiplayer Game Rules
+The following special rules apply in any game that has more than two players.
+THE PLAYING CARDS
+To play a multiplayer game, you will need a standard deck of cards. Remove the
+Jokers, so the deck has 52 cards. We recommend using smaller ”Patience”-sized
+cards, if you have access to them, to cut down on table clutter.
+At the start of the game, shuffle the deck and place it facedown within easy
+reach of all of the players. If the deck is ever exhausted, take all of the discarded
+cards, shuffle them together, and place them facedown to create a new deck to
+take cards from.
+The Draw
+The rules for roll-offs in the Trench Crusade Rulebook won't work in games with
+more than two players. Instead, when the players are called to make a roll-off, they
+must make a draw instead. To make a draw, each player draws a card from the deck
+and reveals it. The player with the highest card wins the draw, the player with the
+second-highest card is second, and so on.
+Card Ranks
+Card ranks from highest to lowest are Ace (A), King (K), Queen (Q), Jack ( J), 10,
+9, 8, 7, 6, 5, 4, 3, and 2. If cards are tied, then the higher-ranked card is determined
+by the card suit, in the following order of priority:
+♠ 	> 	♥ 	> 	♦ 	> 	♣
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Introduction
+
+-- 3 of 23 --
+
+All Out War	4
+GAME TURNS
+The way that Initiative works and the order in which the players Activate their
+models is different in a multiplayer game.
+Determining Initiative
+Do not count the number of models in the players’ Warbands to determine the
+Initiative. Instead, in the Initiative Phase, each player must draw a card. These cards
+are called Initiative cards. At the end of the Turn, the Initiative cards are discarded,
+and new cards will be drawn to replace them in the following Turn's Initiative Phase.
+Whenever during a Turn you need to determine which out of two or more players
+has the Initiative, simply compare the Initiative cards of each of the players. The
+player with the highest card has the Initiative.
+Activation Phase
+In the Activation Phase, the players Activate models one at a time, in order of the value
+of their Initiative cards. The player with the highest Initiative card Activates one model,
+then the player with the second-highest card, and so on. Once all the players have
+Activated a model, start the sequence again, beginning with the player with the highest
+Initiative card. Once a player has Activated all of their models, they drop out of the
+sequence. Once all the players have Activated their models, the Activation Phase ends.
+We recommend that you keep your Initiative card face-up in front of yourself
+when it is drawn, and then flip it face-down when you Activate a model. Once
+all the players have taken an Activation, you can turn your card face-up again,
+and a new sequence of Activations can begin.
+Enemy Models
+Unless stated otherwise, all the models from Warbands other than your own
+Warband are enemy models.
+Morale Phase
+If your Warband flees in a multiplayer scenario, then all of your surviving models
+are removed from the battlefield, and you are out of the game. Any remaining
+players can carry on with the game as normal. You win a multiplayer game if all the
+opposing Warbands have fled.
+Blood Markers
+If a model has any BLOOD MARKERS, then any enemy player can choose to
+spend them to add -1 DICE to a Success Roll that the model is trying to make.
+However, only a player that is making an attack on the model can spend BLOOD
+MARKERS to add +1 INJURY DICE to an Injury Roll or to change the Injury
+Roll into a Bloodbath Roll. If an Injury Roll is not caused by an attack (Falling,
+for example) then any enemy player can spend BLOOD MARKERS to add +1
+INJURY DICE to the roll.
+Note that only enemy players can spend BLOOD MARKERS that are beside
+a model; players that are part of the same Battle Team or an Alliance are not
+allowed to do so unless they are Court players using BLOOD MARKERS to cast
+a Goetic Spell.
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Introduction
+
+-- 4 of 23 --
+
+All Out War	5
+The LOOTeRS
+Introduction
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+The Looters
+
+-- 5 of 23 --
+
+All Out War	6
+The Looters
+Scattered crates laden with supplies litter the centre of the battlefield, and
+Warbands clash to capture as much of the loot as possible.
+9” 	9”	6” 	DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+DEPLOYMENT ZONE
+6” BY 12”
+MULTIPLAYER SCENARIO
+The Looters is a multiplayer scenario that can be played by three to eight players.
+FORCES
+No special restrictions apply to the models the players can include in their Forces
+in this scenario.
+THE BATTLEFIELD
+The players make a draw, and the winner sets up the terrain for the game. This
+scenario uses the No Man’s Land battlefield archetype and requires a battlefield
+that is 48” by 48”.
+DEPLOYMENT ZONE
+6” BY 12”
+36”
+36”
+Introduction
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+The Looters
+
+-- 6 of 23 --
+
+All Out War	7
+Supply Crate Markers
+After the terrain has been set up, the players must set up 2 Supply Crate Markers.
+The player who won the draw sets up 2 Markers first, then the player who came
+second sets up 2 Markers, and so on. Supply Crate Markers must be set up wholly
+within 12” of the centre of the battlefield and more than 1” away from any other
+Markers or Impassable terrain. In addition to these restrictions, each player must
+place the second Marker they set up more than 12” from the first Marker they set
+up. If it is impossible to set up a Supply Crate for any reason, then it is discarded
+and is not used.
+DEPLOYMENT
+First the players must divide their Warbands into two groups, one called the
+vanguard and the other called the reserve. There must be at least 1 model in
+each group, and there cannot be more models in the vanguard than there are
+in the reserve.
+The players then make a draw. The winner of the draw chooses which Deployment
+Zone will be theirs and then deploys their vanguard so all the models are wholly
+within the Deployment Zone. Then the player who came second in the draw
+chooses a Deployment Zone and deploys their vanguard, and so on. When all the
+players have deployed, the first Turn of the game can start.
+The Reserve
+Models from the reserve are placed off the battlefield. They cannot attack or be
+attacked and cannot use any Abilities, Battlekit, or Skills until they are deployed.
+Reserve models that have not yet been deployed are considered part of the
+Warband for the purposes of Morale Checks.
+Infiltrators
+Infiltrators must deploy normally (they cannot use their special deployment rules).
+THE DEATH ZONE
+Machine-gun batteries and snipers have been assigned to keep each Warband’s
+Deployment Zone free of enemy troops. To reflect this, models treat the battlefield
+and terrain within 1” of an enemy Deployment Zone as Impassable terrain.
+Introduction
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+The Looters
+
+-- 7 of 23 --
+
+All Out War	8
+THE SUPPLY CRATES
+A model within 1” of a Supply Crate Marker can take an Open Crate ACTION.
+** Open Crate ACTION. If it does so, choose one of the following three options
+for the model (you do not have to take a Success Roll):
+1. Carry Crate: Put the Supply Crate Marker in contact with the model’s base to
+show it is carrying it. The only ACTIONS a model carrying a crate can take are
+Move or Retreat ACTIONS.
+a. At the end of its Activation, you can say that a model that is carrying a crate
+will either drop it or hand it to a friendly model that is within 1”, or you can
+choose to Destroy Crate or Draw Supplies from the crate as described below.
+When a model drops the crate, place it within 1” of the model and not in
+contact with any other models. When a model hands the crate on, place the
+Supply Crate Marker in contact with the other model’s base.
+b. If a model carrying a crate is taken Down or Out of Action, or it is
+chosen as the target of a Melee Attack, it immediately drops the crate as
+described above.
+c. If a model carrying a crate finishes its Activation wholly within its own
+Deployment Zone, it can escape with the crate; remove the model and the
+Supply Crate Marker from the battlefield (see Victory Points). The model is
+still considered part of the Warband for the purposes of Morale Checks.
+2. Destroy Crate: Take a Success Roll for the model. If the roll is a Failure, nothing
+happens. If the roll is a Success or a Critical Success, the Supply Crate Marker is
+destroyed (remove it from the battlefield).
+3. Draw Supplies: Take a Success Roll for the model. If the roll is a Failure, nothing
+happens. If the roll is a Success or a Critical Success, place a BLESSING
+MARKER next to the model and the crate is emptied (remove it from
+the battlefield).
+REINFORCEMENTS
+Starting from the second Turn, after the Initiative has been determined, in order
+of Initiative each player can deploy up to 3 of their reserve models wholly within
+their own Deployment Zone.
+GAME LENGTH
+This scenario lasts four Turns.
+Introduction
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+The Looters
+
+-- 8 of 23 --
+
+All Out War	9
+VICTORY CONDITIONS
+A player wins this scenario immediately if all the opposing Warbands have fled
+(typically due to failing a Morale Check). Otherwise, the player with the most
+Victory Points at the end of the game is the winner.
+Victory Points
+** At the end of the game, each player scores:
+* 1 VP for each Glorious Deed they completed.
+* 1 VP for each crate a friendly model drew supplies from.
+* 2 VPs for each crate a friendly model destroyed.
+* 3 VPs for each crate a friendly model escaped with.
+GLORIOUS DEEDS
+** Lord of War: A friendly model takes 2 enemy models Out of Action with Melee
+Attacks in a single Turn.
+** Protect the Supplies: A friendly model causes an enemy model that is carrying or
+within 1” of a Supply Crate Marker to be taken Out of Action.
+** Rampage: A friendly model destroys two Supply Crate Markers.
+** Reaper: A friendly model takes 3 enemy models Out of Action.
+** Sniper: A friendly model takes an enemy ELITE model Out of Action with a
+Ranged Weapon Attack that has the Long Range and Cover modifiers.
+** Suicidal Bravery: A friendly model successfully charges 2 models with the
+same charge move.
+** Supply Run: Two friendly models escape with a crate. The model that escaped
+with the second crate is credited with completing this Glorious Deed.
+Introduction
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+The Looters
+
+-- 9 of 23 --
+
+All Out War	10
+BROTheRS 	in ARmS
+Introduction
+The Looters
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Brothers
+in Arms
+
+-- 10 of 23 --
+
+All Out War	11
+Brothers in Arms
+Two pairs of allied Warbands battle for control of an important stretch
+of No Man’s Land.
+MULTIPLAYER SCENARIO
+Brothers in Arms is a multiplayer scenario that can be played by four players.
+FORCES
+No special restrictions apply to the models the players can include in their Forces
+in this scenario.
+Battle Teams
+After the players have picked their Forces, they must split into two Battle Teams,
+each comprising two of the Warbands. At the end of the game, the players from
+the Battle Team that has the most Victory Points are the joint winners of the game,
+and their opponents are the joint losers.
+DEPLOYMENT ZONE
+6” BY 24”
+DEPLOYMENT ZONE
+6” BY 24”
+DEPLOYMENT ZONE
+6” BY 24”
+DEPLOYMENT ZONE
+6” BY 24”
+Introduction
+The Looters
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Brothers
+in Arms
+
+-- 11 of 23 --
+
+All Out War	12
+The players can either agree which Warbands will be in each Battle Team, or they
+can make a draw, and the Warbands for the player who wins and the player who
+comes second will go in one of the Battle Teams, while the players who come third
+and fourth go into the other Battle Team.
+Models belonging to the same Battle Team are treated as friendly models, while
+models belonging to the opposing Battle Team are enemy models. The only
+exception to this is that Abilities, Battlekit, and Skills that can be used to affect a
+friendly model can only be used on models that belong to the same Warband; they
+cannot be used to affect models from the other Warband on their Battle Team.
+Alignment (optional)
+Before the game starts, the players can agree that Battle Teams can only be formed
+between Warbands that have the same alignment.
+THE BATTLEFIELD
+The players make a draw, and the winner sets up the terrain for the game. This
+scenario uses the No Man’s Land battlefield archetype and requires a battlefield
+that is 48” by 48”.
+Objective Markers
+The Markers shown on the map represent important objectives. One Objective
+Marker is located at the centre of the battlefield and one is located at the centre
+of each of the four quarters of the battlefield, as shown on the map. When you set
+up the terrain pieces for this scenario, you must place the first 5 terrain pieces so
+that they are covering the locations where the Objective Markers will be set up. In
+addition, you must use Ruined Building terrain pieces if you have them available.
+The Objective Markers are set up after all the terrain. Place each Objective Marker
+anywhere on the terrain piece that covers its starting position; the whole of the
+terrain piece is treated as the Objective for this scenario.
+Controlling Objectives
+A Battle Team controls an Objective terrain piece if there are more friendly models
+than enemy models on, in, or within 1” of the terrain piece. If one Battle Team has
+any models on or in the terrain piece and the other Battle Teams does not, then
+the Battle Team with models on or in the terrain piece controls it even if the other
+Battle Team has more models within 1” of the Objective.
+Introduction
+The Looters
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Brothers
+in Arms
+
+-- 12 of 23 --
+
+All Out War	13
+DEPLOYMENT
+The players make a draw. The winner of the draw chooses which half of the
+battlefield their Battle Team will deploy in. The opposing Battle Team will deploy
+on the opposite pair of Deployment Zones.
+The player who won the draw then picks which of the two Deployment Zones
+in their half of the battlefield will be theirs and deploys their Warband so that
+all the models are wholly within the Deployment Zone. Then the player who
+came second in the draw chooses an empty Deployment Zone in their half of
+the battlefield and deploys their Warband, and so on. When all the players have
+deployed, the first Turn of the game can start.
+GAME LENGTH
+This scenario lasts four Turns.
+VICTORY CONDITIONS
+A Battle Team wins this scenario immediately if both opposing Warbands have
+fled (typically due to failing a Morale Check). Otherwise, the players from the
+Battle Team with more Victory Points at the end of the game are the winners.
+Victory Points
+* At the end of each Turn, each Battle Team scores 2 VPs for each
+Objective they control.
+* At the end of the game, each Battle Team scores 1 VP for each Glorious Deed
+they completed.
+GLORIOUS DEEDS
+** Bloodletting: An attack made by a friendly model results in the sixth BLOOD
+MARKER being placed beside an enemy model.
+** Cast Them Down: A friendly model causes an enemy model to Fall from a
+height of at least 3” (e.g. by taking the enemy model Down near a ledge, or by
+forcing it off a ledge in some way).
+** Hold Your Ground: A Warband is the first to pass a Morale Check in this game.
+You receive a Victory Point for achieving this Glorious Deed. In a campaign
+game you can award 1 Experience Point to 1 ELITE model from the Warband
+that has the LEADER Keyword if you have one available, and you receive Glory
+Points and an extra D6 for your Promotion Pool as you would normally.
+** Lord of War: A friendly model takes 2 enemy models Out of Action with Melee
+Attacks in a single Turn.
+** Resist and Bite: A friendly model that began its Activation Down takes an
+enemy model Out of Action in the same Activation.
+** Sniper: A friendly model takes an enemy ELITE model Out of Action with a
+Ranged Weapon Attack that has the Long Range and Cover modifiers.
+** Suicidal Bravery: A friendly model successfully charges 2 models with the
+same charge move.
+Introduction
+The Looters
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+Brothers
+in Arms
+
+-- 13 of 23 --
+
+All Out War	14
+ALLiAnce & BeTRAyAL
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 14 of 23 --
+
+All Out War	15
+Alliance & Betrayal
+Several Warbands converge on the same battlefield. Alliances are quickly formed
+and then broken as the Warbands try to dominate the heart of the battlefield.
+DEPLOYMENT ZONE
+12” BY 12”
+DEPLOYMENT ZONE
+12” BY 12”
+DEPLOYMENT ZONE
+12” BY 12”
+DEPLOYMENT ZONE
+12” BY 12”
+12”
+12”
+MULTIPLAYER SCENARIO
+Alliance & Betrayal is a multiplayer scenario that can be played by three
+or four players.
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 15 of 23 --
+
+All Out War	16
+CARD DECKS
+To play this scenario, you will need 2 decks of cards. Each deck will need to have a
+different-coloured back or be of a different shape or size so you can tell them apart.
+One of the decks is used when cards are used to make a draw or determine the
+Initiative, as described in the rules for Multiplayer Games on page @@. The other
+deck is called the Betrayal Deck.
+At the start of the game, take the Aces from the Betrayal Deck, shuffle them,
+and deal one face up to each player. This card shows the player's card suit. If
+you are playing a three-player game, discard the remaining Ace; it will not be
+used in this game.
+Then take the remaining cards from the Betrayal Deck, shuffle them, and place
+them face down in easy reach of all of the players. If the Betryal Deck is exhausted,
+take any discarded Betryal cards apart form the aces, shuffle them together, and
+place them facedown to create a new deck.
+FORCES
+No special restrictions apply to the models the players can include in their Forces
+in this scenario.
+THE BATTLEFIELD
+The players make a draw, and the winner sets up the terrain for the game. This
+scenario uses the Decimated Ruins battlefield archetype and requires a battlefield
+that is 48” by 48”. Impassable terrain cannot be set up within 6” of the centre of
+the battlefield.
+DEPLOYMENT
+The players make a draw. The winner of the draw chooses which Deployment
+Zone will be theirs and places the Ace they were given face-up beside it so that
+everyone knows the player's card suit. They then deploy their Warband so that all
+the models are wholly within the Deployment Zone. Then the player who came
+second chooses a Deployment Zone, reveals their card suit and deploys their
+Warband, and so on. When all the players have deployed, the first Turn of the
+game can start.
+Infiltrators
+Infiltrators must deploy normally (they cannot use their special deployment rules).
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 16 of 23 --
+
+All Out War	17
+BETRAYAL CARDS
+After the Initiative for the Turn has been determined, the players are allowed to
+draw Betrayal Cards. These cards allow a player to carry out nefarious coups and
+ruses during the game.
+Betrayal Cards are drawn from the Betrayal Deck. Players can look at the cards
+they draw and are allowed to keep them secret from the other players. The number
+of cards each player draws depends on the number of Victory Points they have
+scored so far in the game:
+** If they have more Victory Points than every other player, they get 1 card.
+** If they have fewer Victory Points than every other player, they get 3 cards.
+** Otherwise, they get 2 cards.
+Players can get extra Betrayal Cards during a Turn in the following circumstances:
+** A player gets 1 extra card at the end of the Alliance Period if they are not
+allied with any other players and no other players are allied with them (see the
+Alliance Period).
+** A player gets 1 extra card if they roll a 2 or a 12 for a Success Roll before any
+modifiers or re-rolls are taken.
+Using Betrayal Cards
+Betrayal Cards can be used in one of two ways; either to carry out a coup or a ruse.
+Cards that a player holds that match their card suit are used to carry out a coup;
+other cards can be used to carry out a ruse.
+For example, if your card suit is Clubs and you draw the 3 of Clubs, you can use
+the card to carry out a coup. If you had drawn the 3 of Diamonds, you could use
+the card to carry out a ruse.
+To determine exactly what each card allows you to do, look it up on the Betrayal
+Table that you can find at the end of this scenario. The table explains when you can
+use a card and what effect it has when it is used to either carry out a coup or a ruse.
+Trading Cards
+You can trade your Betrayal Cards with another player at any time. For example,
+you could swap a card with an opponent so that you each get a card that you
+want, or you could use them to bribe another player into forming an alliance, or
+you could give a card to another player to help the player with an attack they are
+making, and so on.
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 17 of 23 --
+
+All Out War	18
+THE ALLIANCE PERIOD
+After any Betrayal Cards are drawn at the start of the Turn, the players have a
+3-minute period of play to create and form alliances. At the end of the 3-minute
+period, each player can secretly write down the name of one other Warband (you
+can use the Warband's card suit if you wish). You do not have to write down
+anything if you do not wish to.
+Then, the names the players wrote down are all revealed simultaneously. A player
+who has written down a name is in an alliance with that Warband for the rest of
+the Turn. If two players allied with each other, then they are said to be in a ”joint
+alliance” for the rest of the Turn. Play then proceeds to the Betrayal Cards phase.
+Alliance Effects
+An alliance has the following effects:
+** A player cannot choose a model from a Warband they are allied with as the
+target for an attack (even if the other Warband is not allied with them in return).
+** Models that are from a Warband that are in a joint alliance can move within
+1” of each other.
+** Models that are in a joint alliance can treat models from the other Warband as
+friendly models when they use an Ability, Battlekit, or Skill.
+** A player who is not in an alliance receives 1 extra Betrayal Card at the end of the
+Alliance Period (see Betrayal Cards).
+** Each player in a joint alliance receives 1 Victory Point at the end of the Turn
+(see Victory Points).
+Alignment (optional)
+Before the game starts, the players can agree that alliances can only be formed
+between Warbands that have the same alignment. If even one player objects to
+this, or if the players forget to discuss alliances before the game has started, then
+alliances can be formed between any Warbands.
+Double-dealing
+You do not have to honour any verbal agreements you make during the
+discussions. This means you can trick an opponent into allying with your
+Warband but not allying back in return, which will mean they cannot attack
+your models, but you can attack theirs. Just keep in mind that anyone who is
+tricked in this way will try to get their revenge on you later in the game!
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 18 of 23 --
+
+All Out War	19
+GAME LENGTH
+This scenario lasts five Turns.
+VICTORY CONDITIONS
+A player wins this scenario immediately if all the opposing Warbands have fled
+(typically due to failing a Morale Check). Otherwise, the player with the most
+Victory Points at the end of the game is the winner.
+Victory Points
+** At the end of each Turn, each player scores:
+* 1 VP if they are in a joint alliance (see Alliance Period).
+* 1 VP for each attack made by a friendly model that took an enemy
+model Out of Action.
+* 2 VPs if they have any models within 6” of the centre of the battlefield.
+* 3 VPs if they have more models within 3” of the centre of the battlefield than
+any other players (in addition to the points for having any model within 6” of
+the centre of the battlefield).
+** At the end of the game, each player scores 1 VP for each Glorious Deed
+they completed.
+Victory Point Bribes
+In this scenario, players can give 1 or more of the Victory Points they have scored
+so far to another player. They can do this at any time and for any reason, but once
+the points have been transferred to another player, they do not have to be returned
+if the other player fails to deliver on any deals that have been made. Victory Points
+that are used as bribes in this way are removed from the player's score and added to
+the score of the player who they gave them to.
+You may want to keep track of Victory Points using poker chips or paper
+money from a game like Monopoly, so that players can easily hand over a bribe
+to another player.
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 19 of 23 --
+
+All Out War	20
+GLORIOUS DEEDS
+** Backstabber: A friendly model takes an enemy model Out of Action and the
+enemy model is currently allied with the attacking model's Warband.
+** Capture: A friendly model starts and ends a Turn standing at the centre of
+the battlefield.
+** Death From Above: A friendly model takes an enemy model Out of Action
+with a Melee Attack that has the Diving Charge modifier.
+** Lord of War: A friendly model takes 2 enemy models Out of Action with Melee
+Attacks in a single Turn.
+** No Escape: A friendly model successfully charges an enemy model that it did
+not have a Line of Sight to at the start of its Activation.
+** Reaper: A friendly model takes 3 enemy models Out of Action.
+** Sniper: A friendly model takes an enemy ELITE model Out of Action with a
+Ranged Weapon Attack that has the Long Range and Cover modifiers.
+** Suicidal Bravery: A friendly model successfully charges 2 models with the
+same charge move.
+** Trickster: A friendly model takes an enemy model Out of Action and a Betrayal
+Card was used to influence the outcome of the attack.
+Introduction
+The Looters
+Brothers
+in Arms
+Betrayal Table
+Credits
+Alliance &
+Betrayal
+
+-- 20 of 23 --
+
+All Out War	21
+BeTRAyAL 	TABLe
+Introduction
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Credits
+Betrayal Table
+
+-- 21 of 23 --
+
+All Out War	22
+THE BETRAYAL TABLE
+Betrayal Cards have the following effects. Use the Coup column if the suit of the card matches the player's
+card suit. Otherwise, use the Ruse column.
+Card
+Value
+COUP 	RUSE
+2
+Counter: Play this card when a friendly model
+is chosen as the target of a Melee Attack. The
+friendly model carries out the Attack instead of
+the enemy model.
+Misdirection: Play this card when a model is chosen
+as the target of a Ranged Attack. You pick a new
+target for the Ranged Attack (the target cannot be
+from the attacking model's own Warband).
+3
+Power Play: Play this card when a player
+announces an alliance. They must pick you as
+their ally instead.
+Tripwires: Play this card when an enemy model
+is about to move. Its Movement Characteristic is
+halved for the move.
+4
+Coup de Grâce: Play this card efore a friendly
+model takes a Melee Attack on a model that is
+down and has 3 or more BLOOD MARKERS.
+The target is taken Out of Action (do not take a
+Success Roll for the attack).
+Revenge: Play this card after a friendly model
+is taken Out of Action by an enemy attack. The
+attacking model becomes a prime target for all of
+your models. For the rest of the turn, add +2 DICE
+to Success Rolls and Risky Success Rolls for attacks
+made by friendly models on that model model.
+5
+Saboteur: Play this card when an enemy model
+is about to move. Its Movement Characteristic is
+halved for the move.
+Bad Luck: Play this card before a player takes
+a Success Roll or a Risky Success Roll. Add -1
+DICE to the roll.
+6
+Oh No You Don't: Play this card before an enemy
+model takes a Retreat ACTION. The ACTION is
+cancelled and the enemy model's Activation ends.
+Valuable Lives: Play this card at the end of a Turn.
+For every friendly model taken Out of Action on
+that Turn, your warband gains 10 Ducats.
+7
+Hesitation: Play this card when an enemy model
+takes a Charge ACTION. The ACTION is
+cancelled and the enemy model's Activation ends.
+Malediction: Play this card before you make an
+Injury Roll for an enemy model. Add +2 INJURY
+DICE to the roll.
+8
+Double-cross: Play this card at any time if you
+are in an alliance. You are no longer allied with the
+player you wrote down.
+Bribe: Play this card at any time to give another
+player 1 Victory Point.
+9
+Triple-cross: Play this card at any time if you are
+in an alliance. You are no longer allied with the
+player you wrote down. Then pick another player
+who is not in an alliance. You and that player are in
+a joint alliance for the rest of the Turn.
+Bribe: Play this card at any time to give another
+player 1 Victory Point.
+10
+Con: Play this card at any time if you are in a joint
+alliance with a player who has 1 or more Victory
+Points. You steal 1 of their Victory Points and the
+alliance is broken.
+Large Bribe: Play this card at any time to give
+another player 2 Victory Points.
+Jack
+Sure Thing: Play this card when a player takes
+a Success Roll or Risky Success Roll. Add +3
+DICE to the roll.
+Good Luck: Play this card when a player takes
+a Success Roll or Risky Success Roll. Add +1
+DICE to the roll.
+Queen
+Flee!: Play this card before a player takes a Morale
+Check. The Morale Check is failed (do not
+roll the dice).
+Hold On!: Play this card after a player you are
+allied with fails a Morale Check. They can re-roll
+the Morale Check.
+King
+Greedy Bastard: Play this card at the end of
+a Turn if you are in a joint alliance. You get 2
+Victory Points instead of 1 from this alliance, and
+the other player gets none.
+Inglorious: Pick an enemy model. That model
+cannot complete any Glorious Deeds for the
+rest of the game.
+Introduction
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Credits
+Betrayal Table
+
+-- 22 of 23 --
+
+All Out War	23
+Cover Art
+"Pilgrim Procession"
+John Blanche
+cReDiTS & 	cOPyRiGhT
+Art
+John Blanche
+Written
+Jervis Johnson
+Graphic Design
+Matteo Ceresa
+Edited
+Lyle Lowery and
+Alexander Winberg
+This book and all content herein, including but not limited to text, rules, characters, settings, artwork, and layout design, are the intellectual property of Factory
+Fortress Inc. and are protected by United States and international copyright laws.
+No portion of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or
+other electronic or mechanical methods, without the prior written permission of the copyright holder, except in the case of brief quotations embodied in
+critical reviews or articles. No part of this book may be used as data for “training” any large language model, or as part of any machine learning or neural
+network architecture.
+Human creativity is precious, and creatives deserve to be paid.
+Permission is granted to individual purchasers to make copies for personal, non-commercial use during play.
+Any commercial use, including but not limited to reproduction in products, publications, or digital platforms, is strictly prohibited without prior
+written authorization.
+All trademarks, service marks, product names, and logos appearing in this publication are the property of Factory Fortress Inc.
+This work is entirely a work of fiction. The names, characters and incidents portrayed in it are the work of the writers’ imagination. Any resemblance to actual
+persons, living or dead, events or localities is entirely coincidental.
+Published by Factory Fortress Inc
+www.trenchcrusade.com
+© [2026] Factory Fortress Inc. All rights reserved.
+Introduction
+The Looters
+Brothers
+in Arms
+Alliance &
+Betrayal
+Betrayal Table
+Credits
+
+-- 23 of 23 --
+

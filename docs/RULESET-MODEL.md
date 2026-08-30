@@ -173,13 +173,58 @@ human before it lands. It is not automatic.
 Extract → transcribe to `data-sources/dispatch/NN.layer.json` → append
 `'dispatch-NN'` to the `trenchline` ruleset. No dataset fork, no data rewrite.
 
+### Adding a brand-new faction (the Carcass Front case)
+
+**This is a first-class requirement, not an edge case.** The community
+catalogues typically lag a new release by months, so for new content the
+BattleScribe base has *nothing* to correct — the PDF is the only source.
+
+A layer can therefore be **PDF-primary**: an `add` op carrying whole entities
+rather than a patch to existing ones.
+
+```ts
+{
+  id: 'carcass-front',
+  name: 'The Carcass Front',
+  sourceRef: 'data-sources/rulebook/extracted/carcass-front.txt',
+  status: 'official',
+  ops: [
+    { op: 'add', collection: 'factions', entity: { id: 'carcass-front', … } },
+    { op: 'add', collection: 'units',    entity: { … } },  // one per warband entry
+  ],
+}
+```
+
+Nothing about the engine changes — `add` already exists because the Dispatch
+needs it (Strains, Glory Items, the Scripture Guardian). The only new work per
+release is transcription.
+
+When the catalogues eventually catch up, the base gains the same entries. The
+layer's `add` ops become redundant rather than conflicting: the pipeline reports
+"layer op is now a no-op" so they can be retired deliberately, and the
+provenance record shows the entity moved from PDF-sourced to catalogue-sourced.
+
+**Turnaround target: same day.** Extraction is already automated
+(`npm run rules:extract`); transcription of one faction is a few hours of
+careful work against the extracted text, and the verification pass catches
+transcription slips. This is the app's main advantage over NewRecruit for this
+game.
+
 ### Historical rulesets
 
-`1.0` and `1.0.2` are dropped. The current `src/data/rulesets/index.ts`
-describes them with unsourced changelogs (see [`AUDIT.md`](AUDIT.md) §1.9) and
-we have no way to reconstruct a genuine 1.0 dataset. Pinning `base.commit` to an
-older catalogue SHA is the honest way to offer historical rules if it is ever
-wanted.
+The app's existing `1.0` / `1.0.2` / `1.0.2TD` entries are deleted — their
+changelogs are unsourced (see [`AUDIT.md`](AUDIT.md) §1.9).
+
+**1.0.2 itself is real and now sourceable.** The official
+`Changelog 1.0.2` PDF is committed and is a structured errata table
+(`Page | Location | Errata`) written in exactly the same operation form as the
+Dispatch — *"Add the following sentence to the end of the Move rule"*,
+*"Change to:"*. It transcribes to a `changelog-1-0-2` layer like any other.
+
+Whether to *expose* 1.0.2 as a selectable ruleset is a separate question: the
+catalogues already track current rules, so 1.0.2 is mainly valuable as the
+authoritative text for keyword definitions and core-rules prose that the
+catalogues do not carry.
 
 ### What a ruleset selection affects
 

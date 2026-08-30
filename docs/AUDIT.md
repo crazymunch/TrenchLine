@@ -239,6 +239,19 @@ links, no shareable roster URLs, and the browser back button does nothing.
 
 ## 4. What is genuinely good
 
+### Verified correct: the All Out War data
+
+`src/data/allOutWarData.ts` was checked against the official All Out War PDF and
+is **correct** — the three scenarios and the full 52-card Betrayal Table match
+essentially word-for-word, including the Coup/Ruse split, card values and timing
+clauses.
+
+This matters for how the rest of the data is handled: **where the original build
+had the source PDF, the data is good; where it did not, it invented.** So each
+data file gets verified individually rather than deleted wholesale. See
+[`FEATURES.md`](FEATURES.md) for the file-by-file position.
+
+
 Worth stating, because the rebuild should preserve it:
 
 - The Next.js + Prisma + NextAuth + Zustand stack is a reasonable choice.

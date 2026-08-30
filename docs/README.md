@@ -19,6 +19,7 @@ no design documentation at all.
 | [`MOBILE.md`](MOBILE.md) | Mobile/tablet standards and the specific defects to fix. |
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
+| [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 
 ## The one-paragraph version
 
