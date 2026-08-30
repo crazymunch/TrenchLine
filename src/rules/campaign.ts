@@ -26,7 +26,7 @@
  * Both tables are read from the dataset, which derives them from the rulebook.
  * Nothing here hard-codes 700.
  */
-import type { Dataset } from '@/types/catalogue';
+import type { Dataset, ExplorationLocation, ExplorationTableName } from '@/types/catalogue';
 
 export interface ThresholdRow {
   game: number;
@@ -173,4 +173,109 @@ export function campaignGameOf(
   if (!warband.campaignId || !campaign || campaign.id !== warband.campaignId) return 1;
   const n = campaign.currentGame ?? campaign.currentTurn ?? 1;
   return Math.max(1, Math.floor(n) || 1);
+}
+
+
+/* ------------------------------------------------------------- exploration */
+
+/**
+ * The Exploration Step, which is where a campaign warband's money comes from.
+ *
+ * Four things happen and they are easy to conflate, so they are separate here:
+ *
+ *   1. **Dice.** How many D6 you roll depends on games played — 3, then 4, 5, 6.
+ *   2. **Roll.** Sum them. You may re-roll one die, and a second if you won.
+ *   3. **Discovery.** Look the total up on the table your games-played band
+ *      allows. The tables are *sparse*: a roll that is not listed discovers
+ *      nothing, and that is the rule, not a gap in the data.
+ *   4. **Loot.** The Ducats are the roll times 10, and they are collected
+ *      **whether or not anything was discovered**. This is the part the old
+ *      D66 model could not express at all.
+ */
+export interface ExplorationOutcome {
+  roll: number;
+  /** Ducats added to the Strongbox. Always the roll times 10. */
+  loot: number;
+  /** The table consulted, or null when the roll produced no discovery. */
+  table: ExplorationTableName | null;
+  location: ExplorationLocation | null;
+  /** Set when nothing was found, saying which of the two reasons applies. */
+  nothingBecause?: 'not-on-table' | 'already-discovered';
+}
+
+const explorationOf = (dataset: Dataset) =>
+  (dataset as { campaign?: { exploration?: Dataset['campaign']['exploration'] } })
+    .campaign?.exploration;
+
+const bandFor = <T,>(bands: { from: number; to: number | null; value: T }[], n: number) =>
+  bands.find((b) => n >= b.from && (b.to === null || n <= b.to))?.value;
+
+/** How many Exploration Dice, for a warband that has played `gamesPlayed` games. */
+export function explorationDice(dataset: Dataset, gamesPlayed: number): number | null {
+  const e = explorationOf(dataset);
+  if (!e) return null;
+  return bandFor(e.dice, Math.max(1, Math.floor(gamesPlayed) || 1)) ?? null;
+}
+
+/** Which Location tables this warband may consult, and whether it is a choice. */
+export function explorationTables(
+  dataset: Dataset,
+  gamesPlayed: number
+): { tables: ExplorationTableName[]; choose: boolean } | null {
+  const e = explorationOf(dataset);
+  if (!e) return null;
+  return bandFor(e.tables, Math.max(1, Math.floor(gamesPlayed) || 1)) ?? null;
+}
+
+/**
+ * Resolve an Exploration Roll.
+ *
+ * `roll` is the total the player actually got — rolled in the app or rolled on
+ * the table and typed in. Both routes come through here, so the two produce
+ * identical records and a physical roll is as well recorded as a digital one.
+ *
+ * `alreadyDiscovered` carries the Locations this warband has already found: "You
+ * can discover a Location only once during the campaign; if you discover it
+ * again, treat the roll as a Pillaged result instead." The loot is unaffected.
+ */
+export function resolveExploration(
+  dataset: Dataset,
+  roll: number,
+  table: ExplorationTableName,
+  alreadyDiscovered: string[] = []
+): ExplorationOutcome | null {
+  const e = explorationOf(dataset);
+  if (!e) return null;
+
+  const n = Math.max(0, Math.floor(roll) || 0);
+  const loot = n * e.lootPerPoint;
+
+  const found = (e.locations[table] ?? []).find((l) => l.roll === n);
+  if (!found) return { roll: n, loot, table, location: null, nothingBecause: 'not-on-table' };
+
+  const seen = new Set(alreadyDiscovered.map((s) => s.toLowerCase()));
+  if (seen.has(found.name.toLowerCase())) {
+    return { roll: n, loot, table, location: null, nothingBecause: 'already-discovered' };
+  }
+
+  return { roll: n, loot, table, location: found };
+}
+
+/** The ledger entry an Exploration outcome produces. Loot is always collected. */
+export function explorationLedgerEntry(
+  outcome: ExplorationOutcome,
+  game: number
+): LedgerEntry {
+  return {
+    id: `led-exp-${game}-${outcome.roll}-${Date.now()}`,
+    at: new Date().toISOString(),
+    reason: 'exploration',
+    ducats: outcome.loot,
+    glory: 0,
+    game,
+    note: outcome.location
+      ? `Exploration Roll ${outcome.roll}: ${outcome.location.name}.`
+      : `Exploration Roll ${outcome.roll}: no discovery ` +
+        `(${outcome.nothingBecause === 'already-discovered' ? 'already found' : 'not on the table'}).`,
+  };
 }

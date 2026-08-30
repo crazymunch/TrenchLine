@@ -106,3 +106,123 @@ export function parseStartingBudget(src = 'data-sources/rulebook/extracted/warba
     count: found.length,
   };
 }
+
+/* -------------------------------------------------------------- exploration */
+
+/**
+ * How many Exploration Dice, and which Location table, for a given number of
+ * games played. Both are banded the same way, and both are read rather than
+ * assumed.
+ */
+function parseBands(lines, heading, valueRe) {
+  // Matched loosely: the extraction's spacing around the tab is not consistent.
+  const start = lines.findIndex((l) => heading.test(l));
+  if (start < 0) return null;
+  const out = [];
+  for (let i = start + 1; i < Math.min(start + 12, lines.length); i++) {
+    // `1-2 \t 3 Exploration Dice` / `10+ \t Rare or Legendary Exploration Location Table*`
+    const m = /^\s*(\d+)\s*(?:[-–](\d+)|(\+))?\s*\t\s*(.+?)\s*$/.exec(lines[i]);
+    if (!m) { if (out.length) break; else continue; }
+    const value = valueRe(m[4]);
+    if (value == null) { if (out.length) break; else continue; }
+    out.push({ from: Number(m[1]), to: m[3] ? null : Number(m[2] ?? m[1]), value });
+  }
+  return out.length ? out : null;
+}
+
+/** A Location table row: `4 \t Moonshine Stash: You find …`, then its options. */
+const ROW_HEAD = /^\s*(\d{1,2})\s*\t\s*([^:]{2,60}):\s*(.*)$/;
+
+/**
+ * One Exploration Location table.
+ *
+ * The rolls are deliberately sparse — 4, 5, 6, 8, 9, 10, 11, 14… — and that is
+ * the rule, not a parse failure: "If you roll a number that is not included on
+ * the Exploration Table, then you discover nothing (but you still use the roll
+ * to determine how much Loot you collect)". So gaps are preserved rather than
+ * filled, and a lookup that misses is a real result.
+ *
+ * The description is kept verbatim, including the 👑 and ☼ glyphs, because the
+ * reward amounts live in it ("Sell (Any Warband): Add 30 👑 to your Strongbox").
+ */
+function parseLocationTable(lines, heading, endHeadings) {
+  const start = lines.findIndex((l) => l.trim().toUpperCase() === heading);
+  if (start < 0) throw new Error(`parse-campaign: no "${heading}" in the rulebook text.`);
+
+  let end = lines.length;
+  for (const h of endHeadings) {
+    const at = lines.findIndex((l, i) => i > start && l.trim().toUpperCase() === h);
+    if (at > start && at < end) end = at;
+  }
+
+  const rows = [];
+  let current = null;
+  for (let i = start + 1; i < end; i++) {
+    const line = lines[i];
+    const m = ROW_HEAD.exec(line);
+    if (m && !/^Roll\b/.test(m[2])) {
+      if (current) rows.push(current);
+      current = { roll: Number(m[1]), name: m[2].trim(), text: [m[3].trim()].filter(Boolean) };
+    } else if (current) {
+      const t = line.trim();
+      // Page furniture: running heads, the page counter, and the sidebar's list
+      // of step names. None of it is table content.
+      if (!t) continue;
+      if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(t)) continue;
+      if (/^\d+\s+Campaign Rules-\s+Trench Crusade$/.test(t)) continue;
+      if (/^(Campaign|Games|Phase|Patrons|Trauma Step|Exploration Step|Quartermaster|Step|Reinforcements|Glory Item|Cartulary|Introduction|The World|in Flames|Core Rules|Comprehensive|Rules|Keywords|Terrain|Battlekit|Scenarios|Promotions &|Experience Step)$/.test(t)) continue;
+      current.text.push(t);
+    }
+  }
+  if (current) rows.push(current);
+
+  if (!rows.length) throw new Error(`parse-campaign: "${heading}" produced no rows.`);
+  return rows.map((r) => ({ roll: r.roll, name: r.name, description: r.text.join(' ').replace(/\s+/g, ' ').trim() }));
+}
+
+/**
+ * The whole Exploration Step: dice, table selection, and the three tables.
+ *
+ * The app's hand-written version of this was fabricated end to end — wrong
+ * names, and D66 ranges against the book's summed-D6 roll (AUDIT §1.13). It is
+ * the Strongbox's only source of income, so it is derived here.
+ */
+export function parseExploration(src = RULEBOOK_TXT) {
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+
+  const dice = parseBands(lines, /^\s*Games Played\s*\t\s*Exploration Dice\s*$/,
+    (v) => { const m = /^(\d+)\s+Exploration Dice$/.exec(v); return m ? Number(m[1]) : null; });
+  const tables = parseBands(lines, /^\s*Games Played\s*\t\s*Possible Locations\s*$/,
+    (v) => {
+      const t = v.replace(/\*+$/, '').trim();
+      const names = [];
+      if (/\bCommon\b/.test(t)) names.push('common');
+      if (/\bRare\b/.test(t)) names.push('rare');
+      if (/\bLegendary\b/.test(t)) names.push('legendary');
+      // A row naming two tables is a player choice, and the book says so:
+      // "You must choose which of the two Exploration Tables to use before you roll."
+      return names.length ? { tables: names, choose: names.length > 1 } : null;
+    });
+
+  if (!dice || !tables) {
+    throw new Error(
+      'parse-campaign: could not read the Exploration Dice or table-selection bands. ' +
+      'Without them the Exploration Roll cannot be made, and loot is the roll times 10.');
+  }
+
+  const ENDS = ['RARE EXPLORATION LOCATION TABLE', 'LEGENDARY EXPLORATION LOCATION TABLE',
+                'QUARTERMASTER STEP'];
+  const locations = {
+    common: parseLocationTable(lines, 'COMMON EXPLORATION LOCATION TABLE', ENDS),
+    rare: parseLocationTable(lines, 'RARE EXPLORATION LOCATION TABLE', ENDS),
+    legendary: parseLocationTable(lines, 'LEGENDARY EXPLORATION LOCATION TABLE', ENDS),
+  };
+
+  return {
+    dice,
+    tables,
+    locations,
+    /** Loot is the Exploration Roll times 10, whatever the table says. */
+    lootPerPoint: 10,
+  };
+}

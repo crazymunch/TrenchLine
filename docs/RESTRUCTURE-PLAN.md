@@ -272,9 +272,28 @@ left on.
 Past game 12 the table holds at the last row and flags `extrapolated` rather
 than inventing a 13th, since the book gives no rule for a longer campaign.
 
-**Blocked:** the Strongbox has no *income* yet. Loot is the Exploration Roll
-times 10, and the Exploration tables are fabricated (AUDIT §1.13) — so until
-they are derived, the ledger is fed only by admin grants.
+**Income is derived now.** `parseExploration` reads the whole Exploration Step
+from the rulebook: the dice bands (3/4/5/6 D6 by games played), the table
+selection bands, and all 34 Locations across the three tables with their
+descriptions verbatim, since the reward amounts live in the prose.
+
+Two rules the old D66 model could not express, both now honoured:
+
+- **Loot is paid whether or not anything is found.** "If you roll a number that
+  is not included on the Exploration Table, then you discover nothing (but you
+  still use the roll to determine how much Loot you collect)." The tables are
+  sparse on purpose — Common runs 4, 5, 6, 8, 9, 10, 11, 14, 16, 18, 20 — so a
+  miss is a result, not a gap in the data.
+- **A Location is found once per player per campaign**; a repeat is Pillaged,
+  and the loot is still paid.
+
+`resolveExploration` takes the roll as a number, so a roll made in the app and a
+physical roll typed in produce identical records — which is what lets two
+players in the same battle each use whichever they prefer.
+
+**Still to do:** the post-battle wizard reads `officialRulesData.ts`, not this.
+Migrating it is the remaining half, and the four Skills tables there are still
+fabricated (AUDIT §1.13).
 - The four entries still unmatched on the seeded warband are all
   `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
   state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are

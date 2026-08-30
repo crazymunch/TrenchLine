@@ -340,6 +340,21 @@ export interface Armoury {
   rows: ArmouryRow[];
 }
 
+export type ExplorationTableName = 'common' | 'rare' | 'legendary';
+
+/**
+ * One row of an Exploration Location table.
+ *
+ * `roll` is a single number, not a range: the tables are sparse and a roll that
+ * is not listed discovers nothing. The description is verbatim because the
+ * reward amounts live in it.
+ */
+export interface ExplorationLocation {
+  roll: number;
+  name: string;
+  description: string;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -355,6 +370,17 @@ export interface Dataset {
     thresholds: { game: number; threshold: number; fieldStrength: number }[];
     /** What a new warband recruits on. 700, read from the faction entries. */
     startingBudget: number;
+    /** The Exploration Step: dice, table selection, and the three Location tables. */
+    exploration: {
+      /** Games played -> how many D6 to roll. `to: null` means "or more". */
+      dice: { from: number; to: number | null; value: number }[];
+      /** Games played -> which Location tables are available, and whether it is a choice. */
+      tables: { from: number; to: number | null;
+                value: { tables: ExplorationTableName[]; choose: boolean } }[];
+      locations: Record<ExplorationTableName, ExplorationLocation[]>;
+      /** Ducats per point of the Exploration Roll. */
+      lootPerPoint: number;
+    };
   };
   meta: {
     rulesetId: string;

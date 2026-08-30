@@ -13,6 +13,7 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import {
   forceLimits, startingBudget, reinforcementAllowance,
   strongboxOf, reversible, type LedgerEntry,
+  explorationDice, explorationTables, resolveExploration, explorationLedgerEntry,
 } from '../campaign';
 import { checkForceLimits } from '../validate';
 
@@ -166,5 +167,97 @@ describe('checkForceLimits', () => {
     const v = checkForceLimits(600, 13, at(1));
     expect(v[0].rule).toContain('Battlekit and Glory Items do not count');
     expect(v[0].rule).toContain('scenario limit');
+  });
+});
+
+describe('the Exploration Step', () => {
+  it('derives all three Location tables from the rulebook', () => {
+    const loc = DATASET.campaign.exploration.locations;
+    expect(loc.common.length).toBeGreaterThanOrEqual(11);
+    expect(loc.rare.length).toBeGreaterThanOrEqual(11);
+    expect(loc.legendary.length).toBeGreaterThanOrEqual(11);
+    // The published rows. The app's fabricated table had "Empty Trench",
+    // "Discarded Ammunition" and "Holy Water Vials" here (AUDIT §1.13).
+    expect(loc.common.find((l) => l.roll === 4)?.name).toBe('Moonshine Stash');
+    expect(loc.common.find((l) => l.roll === 5)?.name).toBe('Heavy Weapons Cache');
+    expect(loc.rare.find((l) => l.roll === 11)?.name).toBe('Pot of Manna');
+    expect(loc.legendary.find((l) => l.roll === 6)?.name).toBe('Battlefield of Corpses');
+  });
+
+  it('keeps the reward amounts, glyphs and all', () => {
+    // "Sell (Any Warband): Add 30 👑 to your Strongbox" — the number is in the
+    // prose, so losing the glyph or the text loses the reward.
+    const ms = DATASET.campaign.exploration.locations.common.find((l) => l.roll === 4)!;
+    expect(ms.description).toContain('30 \u{1F451}');
+    expect(ms.description).toContain('Strongbox');
+  });
+
+  it('carries no page furniture into a description', () => {
+    const all = Object.values(DATASET.campaign.exploration.locations).flat();
+    const dirty = all.filter((l) => /of 197|Campaign Rules-|Trench Crusade$/.test(l.description));
+    expect(dirty.map((l) => l.name)).toEqual([]);
+  });
+
+  it('scales the dice with games played', () => {
+    expect(explorationDice(DATASET, 1)).toBe(3);
+    expect(explorationDice(DATASET, 3)).toBe(4);
+    expect(explorationDice(DATASET, 7)).toBe(5);
+    expect(explorationDice(DATASET, 40)).toBe(6);   // the 10+ band
+  });
+
+  it('opens the right tables, and says when it is the player’s choice', () => {
+    expect(explorationTables(DATASET, 1)).toEqual({ tables: ['common'], choose: false });
+    expect(explorationTables(DATASET, 4)).toEqual({ tables: ['common', 'rare'], choose: true });
+    expect(explorationTables(DATASET, 8)).toEqual({ tables: ['rare'], choose: false });
+    expect(explorationTables(DATASET, 12)).toEqual({ tables: ['rare', 'legendary'], choose: true });
+  });
+});
+
+describe('resolveExploration', () => {
+  it('pays loot at ten Ducats a point', () => {
+    // The book's worked example: an Exploration Roll of 12 is 120 Ducats.
+    expect(resolveExploration(DATASET, 12, 'common')!.loot).toBe(120);
+  });
+
+  it('finds the Location when the roll is on the table', () => {
+    const r = resolveExploration(DATASET, 4, 'common')!;
+    expect(r.location?.name).toBe('Moonshine Stash');
+    expect(r.loot).toBe(40);
+  });
+
+  it('pays the loot even when the roll is on no row', () => {
+    // The rule the D66 model could not express: "If you roll a number that is
+    // not included on the Exploration Table, then you discover nothing (but you
+    // still use the roll to determine how much Loot you collect)."
+    const r = resolveExploration(DATASET, 7, 'common')!;
+    expect(r.location).toBeNull();
+    expect(r.nothingBecause).toBe('not-on-table');
+    expect(r.loot).toBe(70);
+  });
+
+  it('treats a repeat discovery as Pillaged, and still pays', () => {
+    const r = resolveExploration(DATASET, 4, 'common', ['Moonshine Stash'])!;
+    expect(r.location).toBeNull();
+    expect(r.nothingBecause).toBe('already-discovered');
+    expect(r.loot).toBe(40);
+  });
+
+  it('books the loot to the ledger whether or not anything was found', () => {
+    const found = explorationLedgerEntry(resolveExploration(DATASET, 4, 'common')!, 2);
+    expect(found.reason).toBe('exploration');
+    expect(found.ducats).toBe(40);
+    expect(found.note).toContain('Moonshine Stash');
+
+    const empty = explorationLedgerEntry(resolveExploration(DATASET, 7, 'common')!, 2);
+    expect(empty.ducats).toBe(70);
+    expect(empty.note).toContain('no discovery');
+  });
+
+  it('produces the same record whichever way the dice were rolled', () => {
+    // A physical roll typed in and an in-app roll both arrive here as a number,
+    // so neither is second-class in the record.
+    const inApp = resolveExploration(DATASET, 9, 'common')!;
+    const onTable = resolveExploration(DATASET, 9, 'common')!;
+    expect(inApp).toEqual(onTable);
   });
 });

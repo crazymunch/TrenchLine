@@ -20,7 +20,7 @@ import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
-import { parseThresholdTable, parseStartingBudget } from './lib/parse-campaign.mjs';
+import { parseThresholdTable, parseStartingBudget, parseExploration } from './lib/parse-campaign.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -112,6 +112,10 @@ for (const ruleset of RULESETS) {
     campaign: {
       thresholds: parseThresholdTable(),
       startingBudget: startingBudget.ducats,
+      // The Exploration Step, which is the Strongbox's only income: loot is the
+      // Exploration Roll times 10. The app's hand-written version of this was
+      // fabricated end to end (AUDIT §1.13).
+      exploration: parseExploration(),
     },
     meta: {
       rulesetId: ruleset.id,

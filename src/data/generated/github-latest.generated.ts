@@ -53111,7 +53111,254 @@ export const DATASET: Dataset = {
         "fieldStrength": 22
       }
     ],
-    "startingBudget": 700
+    "startingBudget": 700,
+    "exploration": {
+      "dice": [
+        {
+          "from": 1,
+          "to": 2,
+          "value": 3
+        },
+        {
+          "from": 3,
+          "to": 5,
+          "value": 4
+        },
+        {
+          "from": 6,
+          "to": 9,
+          "value": 5
+        },
+        {
+          "from": 10,
+          "to": null,
+          "value": 6
+        }
+      ],
+      "tables": [
+        {
+          "from": 1,
+          "to": 2,
+          "value": {
+            "tables": [
+              "common"
+            ],
+            "choose": false
+          }
+        },
+        {
+          "from": 3,
+          "to": 5,
+          "value": {
+            "tables": [
+              "common",
+              "rare"
+            ],
+            "choose": true
+          }
+        },
+        {
+          "from": 6,
+          "to": 9,
+          "value": {
+            "tables": [
+              "rare"
+            ],
+            "choose": false
+          }
+        },
+        {
+          "from": 10,
+          "to": null,
+          "value": {
+            "tables": [
+              "rare",
+              "legendary"
+            ],
+            "choose": true
+          }
+        }
+      ],
+      "locations": {
+        "common": [
+          {
+            "roll": 4,
+            "name": "Moonshine Stash",
+            "description": "You find a hidden stash of strong distilled alcohol, its origin uncertain and unsafe. Choose one of the following options: * Distribute (New Antioch and Trench Pilgrims only): Add +2 DICE to Morale Checks in your next game. * Destroy ( New Antioch, Trench Pilgrims, and Iron Sultanate only): Up to two models in your Warband with the ELITE Keyword earn +1 Experience Point each. If this entitles the model to an Advancement Roll, make the roll immediately. * Sell (Any Warband): Add 30 👑 to your Strongbox."
+          },
+          {
+            "roll": 5,
+            "name": "Heavy Weapons Cache",
+            "description": "You find a hidden weapons cache. Choose one of the following options: * Surplus: Choose one piece of Battlekit with the HEAVY Keyword from your Warband’s Armoury Tables and add it to your Arsenal. * Specialise: Choose one Glory Item with a Cost of up to 5 ☼, and add it to your Arsenal."
+          },
+          {
+            "roll": 6,
+            "name": "Trench Shrine",
+            "description": "You find a crude shrine erected by the soldiers of the Great War. Some are made from artillery shells or melted cannons, while a flag of the Sultanate can be used to indicate a place of prayer. Choose one of the following options: * Standard: Add a Troop Flag to your Warband’s Arsenal. * Shrine: Add a Field Shrine to your Warband’s Arsenal. * Return: Your Warband gains +2 ☼."
+          },
+          {
+            "roll": 8,
+            "name": "Ruined House",
+            "description": "This house has been obliterated by heavy weaponry, its inhabitants ripped apart. Choose one of the following options: * Rummage: Choose one or more pieces of Equipment from your Warband’s Armoury Tables that are worth a total of up to 30 👑 , and add them to your Arsenal. * Relic: Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal."
+          },
+          {
+            "roll": 9,
+            "name": "Survivor",
+            "description": "You find a soldier staggering in No Man’s Land; a deserter, perhaps, or a squaddie whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). * New Antioch: A Yeoman without a Ranged Weapon. * Trench Pilgrims: Ecclesiastical Prisoner. * Iron Sultanate: Azeb. * Heretic Legions: Wretched. * Black Grail: Grail Thrall. * The Court: Wretched. Glory Item Tables"
+          },
+          {
+            "roll": 10,
+            "name": "Fallen Soldier",
+            "description": "You find the body of a fallen soldier. Choose one Ranged Weapon from your Warband’s Armoury Tables worth up to 15 👑 , and add it to your Arsenal along with a Combat Helmet and suit of Standard Armour. Then roll a D6. On a 4+, you can add one of the following to your Arsenal: a Medi-kit or a Mountaineer’s Kit, or a Shovel."
+          },
+          {
+            "roll": 11,
+            "name": "Trench Merchant",
+            "description": "You establish contact with a Trench Merchant. Choose one of the following options: * Report: Your Warband gains 2 ☼. * Trade: From now on, in the Quartermaster Step, you can purchase Glory Items costing 5 ☼ or less."
+          },
+          {
+            "roll": 14,
+            "name": "Map & Document Bag",
+            "description": "Marked with carefully concealed signs, you find a hidden satchel containing maps and intelligence. Your Warband gains the Reroll Exploration Skill."
+          },
+          {
+            "roll": 16,
+            "name": "Sniper’s Lair",
+            "description": "You find the well-camouflaged position of a sniper. Add the Battlekit listed below for your Faction to your Arsenal. If there are any items you are not allowed to add to your Arsenal for any reason, add their Cost in 👑 to your Strongbox instead. * New Antioch or Trench Pilgrims: Sniper Rifle or a Sniper Scope. * Iron Sultanate: Siege Jezzail, Alchemical Ammunition, and a Cloak of Alamut. * Heretic Legions: Automatic Rifle. * Black Grail: Corruption Belcher and Field Shrine. * The Court: Ophidian Rifle."
+          },
+          {
+            "roll": 18,
+            "name": "Fallen Knight",
+            "description": "You find a fallen hero of past ages. Perhaps a baron from New Antioch, a great Faris of the Sultanate, or a Plague Knight of Beelzebub. Choose one of the following options: * Loot: Add a suit of Reinforced Armour, a Trench Shield, a Combat Helmet, and either a Sword or Polearm to your Warband’s Arsenal. * Memorialise: Your Warband gains 2 ☼."
+          },
+          {
+            "roll": 20,
+            "name": "Warband Strongbox",
+            "description": "You find the hidden strongbox of a Warband lost in the Great War. Choose one of the following options: * Trove: Choose one or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑 , and add them to your Arsenal. * Panoply: Choose one or more Glory Items worth a total of up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the Cost of any Weapons by 1 ☼ to a minimum of 1 ☼ . Glory Item Tables"
+          }
+        ],
+        "rare": [
+          {
+            "roll": 5,
+            "name": "Angelic Instrument",
+            "description": "Exploring the battlefield you discover an otherworldly instrument alongside the shattered remains of a lesser angel — fallen or divine. Add an Angelic Instrument to your Warband’s Arsenal. It counts as a Musical Instrument except its Effect has a range of 8” instead of 4”. If your Warband already has a Musical Instrument, you can replace it with the Angelic Instrument, but you do not get any 👑 for the instrument that was thrown away."
+          },
+          {
+            "roll": 9,
+            "name": "Abandoned Prophetic Radio Post",
+            "description": "You find a hastily-abandoned Synod of Strategic Prophecy station, with scribbled predictions and prophecies scattered amongst the disarray. Your Warband gains the Extra Dice Exploration Skill."
+          },
+          {
+            "roll": 11,
+            "name": "Pot of Manna",
+            "description": "You find a cup blessed by God that provides endless nourishment. Add 10 👑 to the amount of loot you receive each Exploration Step (including this one)."
+          },
+          {
+            "roll": 12,
+            "name": "Ransacked Alchemist Workshop",
+            "description": "Amidst the rubble, you find a few intact life-giving potions. Add Curative Fluids to your Warband’s Arsenal. Once, in any future Quartermaster Step, you can use the Curative Fluids to remove 1 Battle Scar (but not the effects of any Trauma) from a model in your Warband. Remove the Curative Fluids from your Warband Roster after they are used."
+          },
+          {
+            "roll": 15,
+            "name": "Black Market",
+            "description": "You discover a major underground trading post in No Man’s Land. From now on, in the Quartermaster Step, you can purchase Glory Items costing 8 ☼ or less."
+          },
+          {
+            "roll": 17,
+            "name": "Book of Golems",
+            "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add a Takwin Homunculus from The House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword, and replaces the SULTANATE Keyword with your Faction's Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas. Glory Item Tables"
+          },
+          {
+            "roll": 19,
+            "name": "Ruined Church/Masjid/Synagogue",
+            "description": "You find a great shrine, temple or other religious building of faith. Upon its altar rests an object of great power waiting for you. Choose one of the following options: * Report: Your Warband gains +4 ☼. * Keep: Choose one Glory Item worth up to 10 ☼, and add it to your Arsenal."
+          },
+          {
+            "roll": 21,
+            "name": "Stash of Drugs & Erotica",
+            "description": "You find a motherlode of forbidden objects and chemicals, highly sought after and in demand. Choose one of the following options: * Indulge: Add +1 DICE to Morale Checks for your Warband for the rest of the campaign. * Sell: Your Warband gains 120 👑 . * Confiscate: Your Warband gains +4 ☼. Trench Pilgrims must select the Confiscate option."
+          },
+          {
+            "roll": 23,
+            "name": "Saint’s Reliquary",
+            "description": "You discover the well-hidden reliquary of a fallen saint. Add a Saintly Relic to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model that has the ELITE Keyword. A model that has a Saintly Relic gains the TOUGH Keyword, but loses the INFILTRATOR Keyword if it has it, and the opposing player can ignore the Cover and Defended Obstacle modifiers for attacks that target the model."
+          },
+          {
+            "roll": 25,
+            "name": "High-Ranking Captive",
+            "description": "You capture a high-ranking enemy – an officer of New Antioch, a Sultanate sheik, a shard of a fallen Black Grail Hegemon, a Pilgrim Prophet, a Mammonite merchant, or some other important personage. Choose one of the following options: * Ransom: Your Warband gains 100 👑 . * Execute: Your Warband gains +4 ☼. * Imprison: Choose one Glory Item with a Cost of up to 8 ☼, and add it to your Arsenal. * Indenture: You keep the captive as a guide. Your Warband gains the Set Dice Exploration Skill."
+          },
+          {
+            "roll": 32,
+            "name": "Abandoned Resurrection Machines",
+            "description": "You find remnants of machines that were once used as part of the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and its corresponding Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used. Glory Item Tables"
+          }
+        ],
+        "legendary": [
+          {
+            "roll": 6,
+            "name": "Battlefield of Corpses",
+            "description": "You come across a scene of terrible slaughter. The remains of humans from various nations and Hellish creatures, fallen in battles over the past 800 years, lie torn and scattered across the horizon, while the trenches that criss-cross this scene are filled with blood. Choose up to 2 pieces of Battlekit from your Warband’s Armoury Tables worth up to 100 👑 in total, and add them to your Arsenal."
+          },
+          {
+            "roll": 8,
+            "name": "Esoteric Library",
+            "description": "You find a concealed collection of works on Goetic Magic, blood sacrifice rites, and grimoires on the summoning of demons. Choose one of the following options: * Burn (New Antioch, Trench Pilgrims, the Sultanate only): Your Warband gains 3+D3 ☼. * Release Plague (Black Grail only): A Black Grail Warband may unleash a Plague from the books. At the start of each game, after deployment, you can place 1 INFECTION MARKER next to 1 model of your choice (friend or foe). * Sell (Any Warband): Your Warband gains 6D6 x 10 👑 . * Study (The Court or Heretic Legions only): At the start of each game, after deployment, you can pick 1 model (friend or foe). Place 1 BLOOD MARKER next to the model that you pick."
+          },
+          {
+            "roll": 10,
+            "name": "Hidden Passages",
+            "description": "You uncover a hidden entrance to a vast underground network, perhaps dug by the Heretics to infiltrate the Great Iron Wall, or by refugees living in No Man’s Land. This allows you to explore the area you are in far more efficiently. Your Warband gains the Duplicate Exploration Skill."
+          },
+          {
+            "roll": 12,
+            "name": "Jabirean Alchemical Book",
+            "description": "You find one of the fabled books of the Jabirean Corpus, filled with the most wondrous secrets of the nature of the universe. Choose one of the following options: * Keep: From now on, in your Quartermaster Step, you can purchase Fire Shields from the House of Wisdom Armoury Tables & Battlekit section (▶ see the House of Wisdom variant in Warbands of Trench Crusade) * Sell: Your Warband gains 150 👑 or 5 ☼ (you can choose which). * Study (House of Wisdom only): Alchemical Formulae now cost your Warband 5 👑 less than they used to, to a minimum Cost of 5 👑 ."
+          },
+          {
+            "roll": 14,
+            "name": "Black Network Contact",
+            "description": "You make contact with one of the legendary Merchant Princes of the Black Network. From now on, in the Quartermaster Step, you can purchase Glory Items costing 12 ☼ or less. Glory Item Tables"
+          },
+          {
+            "roll": 16,
+            "name": "Treasure of the Holies",
+            "description": "You find a legendary feretory, be it the Tabernacle of the Hebrews, an altar to the Morning Star himself, a shrine founded by Saint Peter or a place where the Prophet visited. On its altar lies a treasure chest containing an object of great power waiting for you. You score D3 Campaign Victory Points and can add one Glory Item to your Arsenal for free. If you prefer you can take the treasure chest with you and choose the Glory Item in any future Quartermaster Step."
+          },
+          {
+            "roll": 18,
+            "name": "Skull of a Saint",
+            "description": "You find the skull of a saint martyred in ages past. The power of communion lingers in its holy remains. Choose one of the following options: * New Antioch, Trench Pilgrims, and Iron Sultanate: A saint guides your troops before battle. Add a Skull Relic to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. A model with the Skull Relic gains the INFILTRATOR Keyword. * Heretic Legions, Black Grail, or The Court: The skull screams as you mount it on a pole to mock God and paint it with blasphemous names. Add a Screaming Skull to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. Add +2 DICE to your Morale Checks while the model is on the battlefield and is not Down or Out of Action. In addition, you gain 1 ☼ at the end of any game in which the model is on the battlefield and is not Down or Out of Action."
+          },
+          {
+            "roll": 20,
+            "name": "Lock of Samson’s Hair",
+            "description": "You discover a lock of the legendary Samson’s hair, imbued with the essence of the strongest warrior to ever live. Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair."
+          },
+          {
+            "roll": 23,
+            "name": "Patron’s Visit",
+            "description": "Your Patron or their representative makes a surprise visit to your Warband. If you wish, you can immediately exchange up to 10 ☼ for an equal number of Campaign Victory Points."
+          },
+          {
+            "roll": 26,
+            "name": "Sample of Holy DNA",
+            "description": "You find a sample of Holy DNA. Pick 1 model in your Warband and note on your Warband Roster that they have been treated with Holy DNA. From then on, when you Activate the model, before you carry out any ACTIONS you can remove 1 BLOOD MARKER or INFECTION MARKER from the model and replace it with a BLESSING MARKER. Glory Item Tables"
+          },
+          {
+            "roll": 30,
+            "name": "Golgotha Tektites",
+            "description": "Golgotha Tektites are used to forge the armour of the mighty Paladins. Pick up to two suits of your Warband’s Armour and note on your Warband Roster that they have been treated with Golgotha Tektites. Suits of Armour treated with Golgotha Tektites gain the NEGATE FIRE, NEGATE GAS, and NEGATE SHRAPNEL Keywords unless they have them already. If you have a New Antioch Warband, you can hand the Golgotha Tektites over to the Church instead of treating suits of Armour with them. If you do so, you gain +15 ☼."
+          },
+          {
+            "roll": 36,
+            "name": "Fruit from the Tree of Good and Evil Knowledge",
+            "description": "Amongst the bones of giant humans unearthed by the ravages of war you discover a golden- hued fruit wrapped in spun cloth. Pick 1 model in your Warband. The model you pick eats the fruit you discovered. They gain the DEMONIC Keyword and you can give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Patron Skill (it does not have to be one from your own Patron), or any Exploration Skill. VM Glory Item Tables"
+          }
+        ]
+      },
+      "lootPerPoint": 10
+    }
   },
   "meta": {
     "rulesetId": "github-latest",

@@ -510,6 +510,14 @@ flagged as invented abilities, so this is the same fabrication surfacing twice.
 46 invented entries across seven tables. The Trauma Table can stay; the other
 six need deriving from the rulebook before anything reads them.
 
+**The three Exploration tables are now derived** (`parseExploration`), along with
+the mechanic the app never had: dice by games played (3/4/5/6 D6), table
+selection by the same bands, and loot at ten Ducats a point *whether or not
+anything is discovered*. 34 Locations across the three tables, descriptions
+verbatim so the reward amounts survive. The four Skills tables are still
+fabricated, and `officialRulesData.ts` still holds all seven — the post-battle
+wizard reads it, and migrating that is its own piece of work.
+
 ## 2. Mobile and tablet
 
 ### 2.1 The hard bug
