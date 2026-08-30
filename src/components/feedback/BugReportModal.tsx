@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { soundEffects } from '../../services/soundEffects';
@@ -38,11 +38,6 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
 
   const { data: session } = useSession();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  // `isOpen`, not `true`: this modal stays mounted and returns null when
-  // closed, so a hardcoded `true` would hold the body scroll lock for the
-  // life of the page — and it is mounted three times over.
-  const overlayRef = useOverlay(isOpen, onClose);
 
   const [category, setCategory] = useState<string>('Visual / Layout Issue');
   const [severity, setSeverity] = useState<string>('Minor / Visual');
@@ -51,8 +46,6 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
   const [copied, setCopied] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submittedSuccess, setSubmittedSuccess] = useState<boolean>(false);
-
-  if (!isOpen) return null;
 
   const activeWarband = getActiveWarband();
   const currentFaction = factions.find(f => f.id === activeWarband?.factionId);
@@ -137,174 +130,116 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded bg-theme-accent/30 border border-theme-accent text-status-error">
-              <Bug className="w-5 h-5" />
+    <Sheet
+      open={isOpen}
+      onClose={onClose}
+      size="md"
+      title="REPORT A BUG / FEEDBACK"
+      subtitle="Generate an instant diagnostic dump or submit feedback directly to the AI agent"
+    >
+      {/* Content Body */}
+      <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">
+  
+        {submittedSuccess ? (
+          <div className="p-8 text-center space-y-3 bg-theme-base rounded border border-status-legal/50">
+            <div className="w-12 h-12 rounded-full bg-status-legal/20 border border-status-legal flex items-center justify-center mx-auto text-status-legal">
+              <Check className="w-6 h-6" />
             </div>
-            <div>
-              <h3 className="font-gothic font-bold text-base text-theme-text tracking-wide">
-                REPORT A BUG / FEEDBACK
-              </h3>
-              <p className="text-xs sm:text-[10px] text-theme-muted">
-                Generate an instant diagnostic dump or submit feedback directly to the AI agent
-              </p>
-            </div>
+            <h4 className="font-gothic font-bold text-lg text-theme-text">BUG TICKET LOGGED</h4>
+            <p className="text-xs text-theme-muted max-w-sm mx-auto">
+              Your report and diagnostics have been saved. You can also copy the markdown dump to paste directly into chat with the AI assistant!
+            </p>
           </div>
-
-          <button
-            onClick={onClose}
-            className="tap text-theme-muted hover:text-white p-1"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Content Body */}
-        <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">
-          
-          {submittedSuccess ? (
-            <div className="p-8 text-center space-y-3 bg-theme-base rounded border border-status-legal/50">
-              <div className="w-12 h-12 rounded-full bg-status-legal/20 border border-status-legal flex items-center justify-center mx-auto text-status-legal">
-                <Check className="w-6 h-6" />
-              </div>
-              <h4 className="font-gothic font-bold text-lg text-theme-text">BUG TICKET LOGGED</h4>
-              <p className="text-xs text-theme-muted max-w-sm mx-auto">
-                Your report and diagnostics have been saved. You can also copy the markdown dump to paste directly into chat with the AI assistant!
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Category & Severity */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
-                    Category:
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
-                  >
-                    <option value="Visual / Layout Issue">Visual / Layout / Responsive Issue</option>
-                    <option value="Combat & Live Dice">Combat Mode & Dice Roller</option>
-                    <option value="Roster Builder & Wargear">Roster Builder & Equipment</option>
-                    <option value="Rules Codex & Scenarios">Rules Codex & Scenarios</option>
-                    <option value="Campaign Tracker">Campaign Tracker & World Map</option>
-                    <option value="Auth / Sync / Cloud">Auth, Cloud Sync & Preferences</option>
-                    <option value="Other">Other Suggestion / Rule Inquiry</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
-                    Severity:
-                  </label>
-                  <select
-                    value={severity}
-                    onChange={(e) => setSeverity(e.target.value)}
-                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
-                  >
-                    <option value="Minor / Visual">Minor (Text wrapping, styling)</option>
-                    <option value="Feature Inconvenience">Moderate (Workflow inconvenience)</option>
-                    <option value="Critical / Blocking">Critical (Blocks gameplay / game-breaking)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Description */}
+        ) : (
+          <>
+            {/* Category & Severity */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
-                  What happened? (Description):
+                  Category:
                 </label>
-                <textarea
-                  rows={3}
-                  required
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the issue, what looked wrong, or what happened..."
-                  className="w-full bg-theme-base border border-theme-border rounded p-2.5 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
-                />
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
+                >
+                  <option value="Visual / Layout Issue">Visual / Layout / Responsive Issue</option>
+                  <option value="Combat & Live Dice">Combat Mode & Dice Roller</option>
+                  <option value="Roster Builder & Wargear">Roster Builder & Equipment</option>
+                  <option value="Rules Codex & Scenarios">Rules Codex & Scenarios</option>
+                  <option value="Campaign Tracker">Campaign Tracker & World Map</option>
+                  <option value="Auth / Sync / Cloud">Auth, Cloud Sync & Preferences</option>
+                  <option value="Other">Other Suggestion / Rule Inquiry</option>
+                </select>
               </div>
 
-              {/* Steps to Reproduce */}
               <div className="space-y-1">
                 <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
-                  Steps to Reproduce (Optional):
+                  Severity:
                 </label>
-                <textarea
-                  rows={2}
-                  value={stepsToReproduce}
-                  onChange={(e) => setStepsToReproduce(e.target.value)}
-                  placeholder="e.g. 1. Go to Codex -> Scenarios. 2. On iPad in portrait..."
-                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
-                />
+                <select
+                  value={severity}
+                  onChange={(e) => setSeverity(e.target.value)}
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
+                >
+                  <option value="Minor / Visual">Minor (Text wrapping, styling)</option>
+                  <option value="Feature Inconvenience">Moderate (Workflow inconvenience)</option>
+                  <option value="Critical / Blocking">Critical (Blocks gameplay / game-breaking)</option>
+                </select>
               </div>
+            </div>
 
-              {/* Auto-Captured Environment Box */}
-              <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5 text-xs sm:text-[11px] text-theme-muted">
-                <div className="flex items-center justify-between text-theme-primary font-bold pb-1 border-b border-theme-border/60">
-                  <span className="flex items-center space-x-1.5">
-                    {deviceType === 'Mobile Phone' ? <Smartphone className="w-3.5 h-3.5" /> :
-                     deviceType === 'Tablet / iPad' ? <Tablet className="w-3.5 h-3.5" /> :
-                     <Monitor className="w-3.5 h-3.5" />}
-                    <span>Auto-Captured Environment Context</span>
-                  </span>
-                  <span>{deviceType} ({width}x{height}px)</span>
-                </div>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-1">
-                  <div>View: <strong className="text-theme-text">{currentView}</strong></div>
-                  <div>Ruleset: <strong className="text-theme-text">v{rulesetVersion}</strong></div>
-                  <div>Theme: <strong className="text-theme-text">{currentTheme}</strong></div>
-                  <div>Warband: <strong className="text-theme-text truncate">{activeWarband?.name || 'None'}</strong></div>
-                </div>
+            {/* Description */}
+            <div className="space-y-1">
+              <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
+                What happened? (Description):
+              </label>
+              <textarea
+                rows={3}
+                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe the issue, what looked wrong, or what happened..."
+                className="w-full bg-theme-base border border-theme-border rounded p-2.5 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
+              />
+            </div>
+
+            {/* Steps to Reproduce */}
+            <div className="space-y-1">
+              <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
+                Steps to Reproduce (Optional):
+              </label>
+              <textarea
+                rows={2}
+                value={stepsToReproduce}
+                onChange={(e) => setStepsToReproduce(e.target.value)}
+                placeholder="e.g. 1. Go to Codex -> Scenarios. 2. On iPad in portrait..."
+                className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary placeholder:text-theme-muted/50"
+              />
+            </div>
+
+            {/* Auto-Captured Environment Box */}
+            <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5 text-xs sm:text-[11px] text-theme-muted">
+              <div className="flex items-center justify-between text-theme-primary font-bold pb-1 border-b border-theme-border/60">
+                <span className="flex items-center space-x-1.5">
+                  {deviceType === 'Mobile Phone' ? <Smartphone className="w-3.5 h-3.5" /> :
+                   deviceType === 'Tablet / iPad' ? <Tablet className="w-3.5 h-3.5" /> :
+                   <Monitor className="w-3.5 h-3.5" />}
+                  <span>Auto-Captured Environment Context</span>
+                </span>
+                <span>{deviceType} ({width}x{height}px)</span>
               </div>
-            </>
-          )}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-1">
+                <div>View: <strong className="text-theme-text">{currentView}</strong></div>
+                <div>Ruleset: <strong className="text-theme-text">v{rulesetVersion}</strong></div>
+                <div>Theme: <strong className="text-theme-text">{currentTheme}</strong></div>
+                <div>Warband: <strong className="text-theme-text truncate">{activeWarband?.name || 'None'}</strong></div>
+              </div>
+            </div>
+          </>
+        )}
 
-        </form>
-
-        {/* Footer Actions */}
-        <div className="px-5 py-3 bg-theme-base border-t border-theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={handleCopyReport}
-            className={`w-full sm:w-auto px-4 py-2 rounded font-bold uppercase flex items-center justify-center space-x-2 transition-all ${
-              copied
-                ? 'bg-status-legal text-white shadow-lg'
-                : 'bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border'
-            }`}
-          >
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4 text-theme-primary" />}
-            <span>{copied ? '✓ Report Copied to Clipboard!' : '📋 Copy Report for AI Agent'}</span>
-          </button>
-
-          <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-3 py-2 bg-theme-surface hover:bg-theme-elevated text-theme-muted hover:text-white rounded uppercase font-bold"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isSubmitting || !description.trim()}
-              className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded flex items-center space-x-1.5 shadow transition-all disabled:opacity-50"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>{isSubmitting ? 'Submitting...' : 'Save Ticket'}</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
+      </form>
+    </Sheet>
   );
 };

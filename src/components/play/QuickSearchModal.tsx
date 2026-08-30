@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
@@ -25,8 +25,6 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
   // The derived twelve plus the All Out War pack.
   const { scenarios } = useScenarios();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [searchTerm, setSearchTerm] = useState('');
 
   const term = searchTerm.toLowerCase().trim();
@@ -57,29 +55,29 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
       i.roll.includes(term));
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
-        
-        {/* Search Header */}
-        <div className="p-4 border-b border-theme-border bg-theme-base flex items-center justify-between gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-theme-primary absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              autoFocus
-              placeholder="Quick search rules, keywords, scenarios, or D66 injury rolls..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-theme-surface border border-theme-border rounded pl-9 pr-3 py-2 text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
-            />
-          </div>
-          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
-            <X className="w-5 h-5" />
-          </button>
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      label="Quick rules search"
+      // The search field *is* the title: this sheet exists to be typed into,
+      // and a heading above the input would push it further from the thumb on
+      // the one screen where speed is the whole point.
+      title={
+        <div className="relative">
+          <Search className="w-4 h-4 text-theme-primary absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            autoFocus
+            placeholder="Search rules, keywords, scenarios, injuries…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-3 py-2 text-base sm:text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+          />
         </div>
-
-        {/* Results Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+      }
+    >
+      <div className="space-y-6">
           
           {/* Keywords Section */}
           {filteredKeywords.length > 0 && (
@@ -158,9 +156,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
             </div>
           )}
 
-        </div>
-
       </div>
-    </div>
+    </Sheet>
   );
 };

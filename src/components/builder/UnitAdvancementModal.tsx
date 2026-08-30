@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -103,8 +103,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
 
   const rulesetId = typeof window !== 'undefined'
     ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
@@ -186,41 +184,24 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const unitUpgrades = unit.specialUpgrades || [];
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
-        
-        {/* Header */}
-        <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-theme-primary" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="font-gothic font-bold text-base sm:text-lg text-white">
-                  {unit.customName}
-                </h2>
-                <span className="text-xs sm:text-[10px] font-mono px-1.5 py-0.5 rounded bg-theme-border text-theme-primary uppercase font-bold">
-                  {unit.profileSnapshot.name}
-                </span>
-                {unit.isElite && (
-                  <span className="text-xs sm:text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#7C4DFF] text-white uppercase font-bold">
-                    Elite
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-theme-muted font-mono">
-                Advancement, Compendium Skills, Trauma Scars & Faction Traits
-              </p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-theme-muted hover:text-white p-1 rounded transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      title={`Advancement: ${unit.customName}`}
+      label="Advancement"
+      footer={<div className="flex items-center justify-between w-full gap-3">
+            <span className="text-xs sm:text-[10px] text-theme-muted">
+              Warband Cost Adjusted: <strong className="text-theme-primary">{unit.totalCost} D</strong>
+            </span>
+            <button
+              onClick={onClose}
+              className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+            >
+              Done
+            </button>
+      </div>}
+    >
 
         {/* Tab Navigation */}
         <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
@@ -289,7 +270,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         </div>
 
         {/* Tab Content */}
-        <div className="p-5 overflow-y-auto space-y-4 flex-1">
           
           {/* TAB 0: HOMUNCULUS ALCHEMICAL FORMULAS */}
           {activeTab === 'formulas' && isHomunculus && (
@@ -697,22 +677,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             </div>
           )}
 
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
-          <span className="text-xs sm:text-[10px] text-theme-muted">
-            Warband Cost Adjusted: <strong className="text-theme-primary">{unit.totalCost} D</strong>
-          </span>
-          <button
-            onClick={onClose}
-            className="px-5 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
-          >
-            Done
-          </button>
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

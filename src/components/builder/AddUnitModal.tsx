@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
@@ -40,8 +40,6 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [customNameInput, setCustomNameInput] = useState<Record<string, string>>({});
 
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
@@ -76,45 +74,33 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
-        
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-3">
-            <UserPlus className="w-5 h-5 text-theme-primary" />
-            <div>
-              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">RECRUIT WARRIOR</h2>
-              <p className="text-xs font-mono text-theme-muted">Select a unit profile or induct a saved veteran from your Favourites</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-theme-muted hover:text-theme-text rounded hover:bg-theme-elevated transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
-                selectedCategory === cat
-                  ? 'bg-theme-primary text-black shadow-md'
-                  : 'bg-theme-elevated text-theme-muted hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Units Body */}
-        <div className="p-6 overflow-y-auto space-y-4 flex-1">
+    <Sheet
+      open
+      onClose={onClose}
+      size="xl"
+      title="RECRUIT WARRIOR"
+      subtitle="Select a unit profile or induct a saved veteran from your Favourites"
+      label="Recruit a warrior"
+    >
+      {/* The filter row stays with the content rather than the header:
+          Sheet's header is sticky, and a second sticky bar costs a
+          quarter of a phone screen before a single result is shown. */}
+    {/* Filter Tabs */}
+    <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
+      {categories.map((cat) => (
+        <button
+          key={cat}
+          onClick={() => setSelectedCategory(cat)}
+          className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
+            selectedCategory === cat
+              ? 'bg-theme-primary text-black shadow-md'
+              : 'bg-theme-elevated text-theme-muted hover:text-white'
+          }`}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
           
           {/* TAB: FAVOURITES HALL */}
           {isFavouritesTab ? (
@@ -308,9 +294,6 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
               );
             })
           )}
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

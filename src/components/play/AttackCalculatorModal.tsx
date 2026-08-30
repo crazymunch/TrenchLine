@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { ActiveUnit, EquippedWeapon } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -40,8 +40,6 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   const [isCharging, setIsCharging] = useState<boolean>(false);
   const [hasElevation, setHasElevation] = useState<boolean>(false);
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [customDiceMod, setCustomDiceMod] = useState<number>(0); // e.g. +1 DICE or -1 DICE
 
   const [rollResult, setRollResult] = useState<{
@@ -169,218 +167,187 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] bevel-container">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-theme-accent/30 border border-theme-accent flex items-center justify-center">
-              <Crosshair className="w-4 h-4 text-status-error" />
-            </div>
-            <div>
-              <h3 className="font-gothic font-bold text-base text-theme-text tracking-wide">
-                TACTICAL ASSAULT & COMBAT CALCULATOR
-              </h3>
-              <p className="text-xs text-theme-muted">
-                Attacker: <strong className="text-theme-text">{attacker.customName}</strong> ({attacker.profileSnapshot.name})
-              </p>
-            </div>
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      title="TACTICAL ASSAULT & COMBAT CALCULATOR"
+      subtitle={`Attacker: <strong className="text-theme-text">${attacker.customName}</strong> (${attacker.profileSnapshot.name})`}
+    >
+      {/* Body */}
+      <div className="p-5 overflow-y-auto space-y-4 text-xs">
+  
+        {/* Weapon Selector */}
+        <div className="space-y-1.5">
+          <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-primary">
+            1. Select Attacking Weapon:
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {attacker.equippedWeapons.map((w) => {
+              const isSelected = selectedWeapon?.instanceId === w.instanceId;
+              return (
+                <button
+                  key={w.instanceId}
+                  onClick={() => setSelectedWeapon(w)}
+                  className={`p-2.5 rounded text-left transition-all flex flex-col justify-between border ${
+                    isSelected
+                      ? 'bg-theme-elevated text-theme-primary border-theme-primary ring-1 ring-theme-primary/40 shadow'
+                      : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <strong className="font-bold text-xs">{w.name}</strong>
+                    <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-surface border border-theme-border">
+                      {w.type}
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-[10px] text-theme-muted flex items-center justify-between pt-1">
+                    <span>Range: {w.range}</span>
+                    <span>Mod: {typeof w.modifiers === 'string' ? w.modifiers : '-'}</span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
-          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
-            <X className="w-5 h-5" />
-          </button>
         </div>
 
-        {/* Body */}
-        <div className="p-5 overflow-y-auto space-y-4 text-xs">
-          
-          {/* Weapon Selector */}
-          <div className="space-y-1.5">
-            <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-primary">
-              1. Select Attacking Weapon:
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {attacker.equippedWeapons.map((w) => {
-                const isSelected = selectedWeapon?.instanceId === w.instanceId;
-                return (
+        {/* Tactical Modifiers */}
+        <div className="space-y-2 pt-2 border-t border-theme-border">
+          <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-muted">
+            2. Tactical Battlefield Modifiers:
+          </label>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Target Cover */}
+            <div className="space-y-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted block">Target Cover:</span>
+              <div className="grid grid-cols-3 gap-1">
+                {(['None', 'Light', 'Heavy'] as const).map((cov) => (
                   <button
-                    key={w.instanceId}
-                    onClick={() => setSelectedWeapon(w)}
-                    className={`p-2.5 rounded text-left transition-all flex flex-col justify-between border ${
-                      isSelected
-                        ? 'bg-theme-elevated text-theme-primary border-theme-primary ring-1 ring-theme-primary/40 shadow'
-                        : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <strong className="font-bold text-xs">{w.name}</strong>
-                      <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-surface border border-theme-border">
-                        {w.type}
-                      </span>
-                    </div>
-                    <div className="text-xs sm:text-[10px] text-theme-muted flex items-center justify-between pt-1">
-                      <span>Range: {w.range}</span>
-                      <span>Mod: {typeof w.modifiers === 'string' ? w.modifiers : '-'}</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Tactical Modifiers */}
-          <div className="space-y-2 pt-2 border-t border-theme-border">
-            <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-muted">
-              2. Tactical Battlefield Modifiers:
-            </label>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Target Cover */}
-              <div className="space-y-1">
-                <span className="text-xs sm:text-[10px] text-theme-muted block">Target Cover:</span>
-                <div className="grid grid-cols-3 gap-1">
-                  {(['None', 'Light', 'Heavy'] as const).map((cov) => (
-                    <button
-                      key={cov}
-                      onClick={() => setTargetCover(cov)}
-                      className={`py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
-                        targetCover === cov
-                          ? 'bg-theme-primary text-black border-theme-primary'
-                          : 'bg-theme-base text-theme-muted border-theme-border'
-                      }`}
-                    >
-                      {cov}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Defender Armour */}
-              <div className="space-y-1">
-                <span className="text-xs sm:text-[10px] text-theme-muted block">Defender Armour Mod:</span>
-                <select
-                  value={targetArmourMod}
-                  onChange={(e) => setTargetArmourMod(parseInt(e.target.value, 10))}
-                  className="w-full bg-theme-base border border-theme-border rounded p-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
-                >
-                  <option value={0}>Standard (No Extra Armour)</option>
-                  <option value={1}>Light / Standard Armour (-1 Injury)</option>
-                  <option value={2}>Heavy Reinforced Armour (-2 Injury)</option>
-                  <option value={3}>Infernal / Relic Carapace (-3 Injury)</option>
-                </select>
-              </div>
-
-              {/* Situational Toggles */}
-              <div className="space-y-1">
-                <span className="text-xs sm:text-[10px] text-theme-muted block">Situational Bonuses:</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setIsCharging(!isCharging)}
-                    className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
-                      isCharging
-                        ? 'bg-theme-accent text-white border-theme-accent'
+                    key={cov}
+                    onClick={() => setTargetCover(cov)}
+                    className={`py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
+                      targetCover === cov
+                        ? 'bg-theme-primary text-black border-theme-primary'
                         : 'bg-theme-base text-theme-muted border-theme-border'
                     }`}
                   >
-                    Charge (+1)
+                    {cov}
                   </button>
-                  <button
-                    onClick={() => setHasElevation(!hasElevation)}
-                    className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
-                      hasElevation
-                        ? 'bg-theme-accent text-white border-theme-accent'
-                        : 'bg-theme-base text-theme-muted border-theme-border'
-                    }`}
-                  >
-                    High Ground
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Roll CTA */}
-          <button
-            onClick={handleRollAttack}
-            className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
-          >
-            <Dices className="w-4 h-4 fill-black" />
-            <span>⚔️ RESOLVE 2D6 ATTACK & INJURY</span>
-          </button>
-
-          {/* Resolution Results Card */}
-          {rollResult && (
-            <div className="p-4 bg-theme-base rounded-md border-2 border-theme-primary space-y-3 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-theme-border pb-2">
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-theme-primary" />
-                  <strong className="font-gothic font-bold text-sm text-white">
-                    COMBAT RESOLUTION RESULT
-                  </strong>
-                </div>
-
-                <span className={`px-2 py-0.5 rounded text-xs sm:text-[11px] font-bold uppercase ${
-                  rollResult.injuryOutcome === 'Out of Action'
-                    ? 'bg-status-error text-white'
-                    : rollResult.injuryOutcome === 'Downed'
-                    ? 'bg-status-warning text-black'
-                    : rollResult.attackSuccess
-                    ? 'bg-status-legal text-white'
-                    : 'bg-theme-border text-theme-muted'
-                }`}>
-                  {rollResult.isFumble 
-                    ? 'CRITICAL FAILURE' 
-                    : rollResult.injuryOutcome 
-                    ? rollResult.injuryOutcome 
-                    : 'MISSED'}
-                </span>
-              </div>
-
-              {/* Step by Step Breakdown Log */}
-              <div className="space-y-1 text-xs text-theme-text font-mono bg-theme-surface p-3 rounded border border-theme-border">
-                {rollResult.logLines.map((line, idx) => (
-                  <div key={idx} className="leading-relaxed">
-                    {line}
-                  </div>
                 ))}
               </div>
-
-              {/* Damage Summary */}
-              {rollResult.attackSuccess && (
-                <div className="flex items-center justify-between text-xs bg-theme-elevated p-2.5 rounded border border-theme-primary/50">
-                  <span className="text-theme-muted">Damage Applied to Target:</span>
-                  <div className="flex items-center space-x-3 font-bold">
-                    <span className="text-status-error flex items-center space-x-1">
-                      <Heart className="w-3.5 h-3.5" />
-                      <span>{rollResult.woundsInflicted} Wound{rollResult.woundsInflicted !== 1 ? 's' : ''}</span>
-                    </span>
-                    <span className="text-status-error flex items-center space-x-1">
-                      <Droplet className="w-3.5 h-3.5 fill-status-error" />
-                      <span>+{rollResult.bloodInflicted} Blood</span>
-                    </span>
-                  </div>
-                </div>
-              )}
             </div>
-          )}
 
+            {/* Defender Armour */}
+            <div className="space-y-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted block">Defender Armour Mod:</span>
+              <select
+                value={targetArmourMod}
+                onChange={(e) => setTargetArmourMod(parseInt(e.target.value, 10))}
+                className="w-full bg-theme-base border border-theme-border rounded p-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+              >
+                <option value={0}>Standard (No Extra Armour)</option>
+                <option value={1}>Light / Standard Armour (-1 Injury)</option>
+                <option value={2}>Heavy Reinforced Armour (-2 Injury)</option>
+                <option value={3}>Infernal / Relic Carapace (-3 Injury)</option>
+              </select>
+            </div>
+
+            {/* Situational Toggles */}
+            <div className="space-y-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted block">Situational Bonuses:</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsCharging(!isCharging)}
+                  className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
+                    isCharging
+                      ? 'bg-theme-accent text-white border-theme-accent'
+                      : 'bg-theme-base text-theme-muted border-theme-border'
+                  }`}
+                >
+                  Charge (+1)
+                </button>
+                <button
+                  onClick={() => setHasElevation(!hasElevation)}
+                  className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
+                    hasElevation
+                      ? 'bg-theme-accent text-white border-theme-accent'
+                      : 'bg-theme-base text-theme-muted border-theme-border'
+                  }`}
+                >
+                  High Ground
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Footer */}
-        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
-          <span className="text-xs sm:text-[10px] text-theme-muted">
-            Attacker Blood Penalty: -{attacker.bloodMarkers}
-          </span>
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded uppercase font-bold text-xs border border-theme-border"
-          >
-            Done
-          </button>
-        </div>
+        {/* Roll CTA */}
+        <button
+          onClick={handleRollAttack}
+          className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
+        >
+          <Dices className="w-4 h-4 fill-black" />
+          <span>⚔️ RESOLVE 2D6 ATTACK & INJURY</span>
+        </button>
+
+        {/* Resolution Results Card */}
+        {rollResult && (
+          <div className="p-4 bg-theme-base rounded-md border-2 border-theme-primary space-y-3 animate-fade-in">
+            <div className="flex items-center justify-between border-b border-theme-border pb-2">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-4 h-4 text-theme-primary" />
+                <strong className="font-gothic font-bold text-sm text-white">
+                  COMBAT RESOLUTION RESULT
+                </strong>
+              </div>
+
+              <span className={`px-2 py-0.5 rounded text-xs sm:text-[11px] font-bold uppercase ${
+                rollResult.injuryOutcome === 'Out of Action'
+                  ? 'bg-status-error text-white'
+                  : rollResult.injuryOutcome === 'Downed'
+                  ? 'bg-status-warning text-black'
+                  : rollResult.attackSuccess
+                  ? 'bg-status-legal text-white'
+                  : 'bg-theme-border text-theme-muted'
+              }`}>
+                {rollResult.isFumble 
+                  ? 'CRITICAL FAILURE' 
+                  : rollResult.injuryOutcome 
+                  ? rollResult.injuryOutcome 
+                  : 'MISSED'}
+              </span>
+            </div>
+
+            {/* Step by Step Breakdown Log */}
+            <div className="space-y-1 text-xs text-theme-text font-mono bg-theme-surface p-3 rounded border border-theme-border">
+              {rollResult.logLines.map((line, idx) => (
+                <div key={idx} className="leading-relaxed">
+                  {line}
+                </div>
+              ))}
+            </div>
+
+            {/* Damage Summary */}
+            {rollResult.attackSuccess && (
+              <div className="flex items-center justify-between text-xs bg-theme-elevated p-2.5 rounded border border-theme-primary/50">
+                <span className="text-theme-muted">Damage Applied to Target:</span>
+                <div className="flex items-center space-x-3 font-bold">
+                  <span className="text-status-error flex items-center space-x-1">
+                    <Heart className="w-3.5 h-3.5" />
+                    <span>{rollResult.woundsInflicted} Wound{rollResult.woundsInflicted !== 1 ? 's' : ''}</span>
+                  </span>
+                  <span className="text-status-error flex items-center space-x-1">
+                    <Droplet className="w-3.5 h-3.5 fill-status-error" />
+                    <span>+{rollResult.bloodInflicted} Blood</span>
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
-    </div>
+    </Sheet>
   );
 };

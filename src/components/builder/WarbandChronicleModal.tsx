@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { Warband } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
@@ -28,8 +28,6 @@ interface WarbandChronicleModalProps {
 export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ warband, onClose }) => {
   const { updateWarbandLore, updateWarbandChronicleLog } = useStore();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
 
   const [loreText, setLoreText] = useState(warband.lore || '');
   const [mottoText, setMottoText] = useState(warband.motto || '');
@@ -86,235 +84,180 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-theme-surface border border-theme-primary/50 rounded-lg max-w-4xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
-        
-        {/* Modal Header */}
-        <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
-              <Scroll className="w-5 h-5 text-theme-primary" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="font-gothic font-bold text-lg text-white">
-                  {warband.name}
-                </h2>
-                <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
-                  House Chronicle
-                </span>
-              </div>
-              <p className="text-xs text-theme-muted font-mono">
-                Grand Warband Dossier, House Lineage, Oaths & Historical Timeline
-              </p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-theme-muted hover:text-white p-1 rounded transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Modal Body */}
-        <div className="p-5 overflow-y-auto space-y-5 flex-1 font-mono text-xs">
-          
-          {/* Top Grid: Motto & Patron */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            {/* Motto */}
-            <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
-              <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
-                <Quote className="w-3.5 h-3.5 text-theme-primary" />
-                <span>House Motto / Sacred Battle Cry:</span>
-              </label>
-              <input
-                type="text"
-                value={mottoText}
-                onChange={(e) => setMottoText(e.target.value)}
-                placeholder="e.g. The Wall may forget, but the Copper remembers!"
-                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
-              />
-            </div>
-
-            {/* Patron / Sect */}
-            <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
-              <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
-                <Landmark className="w-3.5 h-3.5 text-theme-primary" />
-                <span>Patronage, Sub-Sect & Lineage:</span>
-              </label>
-              <input
-                type="text"
-                value={patronText}
-                onChange={(e) => setPatronText(e.target.value)}
-                placeholder="e.g. House of Wisdom • Bayt al-Nahas al-Hamra (House of the Red Copper)"
-                className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
-              />
-            </div>
-
-          </div>
-
-          {/* Warband Lore & Narrative Overview */}
-          <div className="space-y-1.5">
+    <Sheet
+      open
+      onClose={onClose}
+      size="lg"
+      title={`${warband.name}`}
+      subtitle="Grand Warband Dossier, House Lineage, Oaths & Historical Timeline"
+    >
+      {/* Modal Body */}
+      <div className="p-5 overflow-y-auto space-y-5 flex-1 font-mono text-xs">
+  
+        {/* Top Grid: Motto & Patron */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+          {/* Motto */}
+          <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
             <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-theme-primary" />
-              <span>Warband Narrative Lore, Origins & Expedition Purpose (Markdown):</span>
+              <Quote className="w-3.5 h-3.5 text-theme-primary" />
+              <span>House Motto / Sacred Battle Cry:</span>
             </label>
-            <textarea
-              value={loreText}
-              onChange={(e) => setLoreText(e.target.value)}
-              placeholder="Record the origins of this warband, the circumstances of their expedition, lost ancestral claims in the salt wastes, and ideological doctrine..."
-              rows={12}
-              className="w-full bg-theme-base border border-theme-border rounded-md p-3.5 text-xs text-theme-text placeholder-theme-muted leading-relaxed focus:outline-none focus:border-theme-primary"
+            <input
+              type="text"
+              value={mottoText}
+              onChange={(e) => setMottoText(e.target.value)}
+              placeholder="e.g. The Wall may forget, but the Copper remembers!"
+              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
           </div>
 
-          {/* Timeline of Milestones & Campaign Discoveries */}
-          <div className="bg-theme-base border border-theme-border rounded-md p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
-                <Clock className="w-3.5 h-3.5 text-theme-primary" />
-                <span>Expedition Milestones & Campaign Chronicle Timeline</span>
-              </span>
-              <span className="text-xs sm:text-[10px] text-theme-muted">
-                {chronicleItems.length} Events Logged (Click pencil to edit wording)
-              </span>
-            </div>
-
-            {/* Add Milestone */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                value={newLogEntry}
-                onChange={(e) => setNewLogEntry(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') handleAddMilestone(); }}
-                placeholder="e.g. Turn 2: Discovered the ancient leather-bound Book of Golems in the salt wastes"
-                className="flex-1 bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
-              />
-              <button
-                onClick={handleAddMilestone}
-                className="px-3 py-2 bg-theme-primary hover:bg-[#C49F27] text-black font-bold uppercase rounded flex items-center space-x-1 flex-shrink-0 transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Log Event</span>
-              </button>
-            </div>
-
-            {/* Timeline List */}
-            {chronicleItems.length === 0 ? (
-              <p className="text-xs sm:text-[11px] text-theme-muted italic py-2">
-                No expedition milestones recorded yet. Add major campaign discoveries, treaty signatures, or historic victories above.
-              </p>
-            ) : (
-              <div className="space-y-2 pt-1">
-                {chronicleItems.map((log, idx) => (
-                  <div 
-                    key={idx}
-                    className="p-3 bg-theme-surface border border-theme-border rounded text-xs sm:text-[11px] leading-relaxed transition-all hover:border-theme-muted"
-                  >
-                    {editingIdx === idx ? (
-                      <div className="space-y-2">
-                        <textarea
-                          value={editText}
-                          onChange={(e) => setEditText(e.target.value)}
-                          rows={2}
-                          className="w-full bg-theme-base border border-theme-primary rounded p-2 text-xs text-white focus:outline-none"
-                        />
-                        <div className="flex items-center justify-end space-x-2">
-                          <button
-                            onClick={() => setEditingIdx(null)}
-                            className="px-2 py-1 rounded bg-theme-elevated hover:bg-theme-border text-theme-muted"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => saveEditMilestone(idx)}
-                            className="px-2.5 py-1 rounded bg-theme-primary hover:bg-[#C49F27] text-black font-bold flex items-center space-x-1"
-                          >
-                            <Check className="w-3 h-3" />
-                            <span>Save Event</span>
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start space-x-2.5 flex-1">
-                          <Sparkles className="w-3.5 h-3.5 text-theme-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-theme-text whitespace-pre-wrap">{log}</span>
-                        </div>
-                        <div className="flex items-center space-x-1 opacity-80 hover:opacity-100 flex-shrink-0">
-                          <button
-                            onClick={() => moveMilestone(idx, 'up')}
-                            disabled={idx === 0}
-                            className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
-                            title="Move Up"
-                          >
-                            <ArrowUp className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => moveMilestone(idx, 'down')}
-                            disabled={idx === chronicleItems.length - 1}
-                            className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
-                            title="Move Down"
-                          >
-                            <ArrowDown className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => startEditMilestone(idx)}
-                            className="p-1 text-theme-primary hover:text-white"
-                            title="Edit Milestone Wording"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteMilestone(idx)}
-                            className="p-1 text-status-error hover:text-red-400"
-                            title="Delete Milestone"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* Patron / Sect */}
+          <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
+            <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+              <Landmark className="w-3.5 h-3.5 text-theme-primary" />
+              <span>Patronage, Sub-Sect & Lineage:</span>
+            </label>
+            <input
+              type="text"
+              value={patronText}
+              onChange={(e) => setPatronText(e.target.value)}
+              placeholder="e.g. House of Wisdom • Bayt al-Nahas al-Hamra (House of the Red Copper)"
+              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+            />
           </div>
 
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-4 bg-theme-elevated border-t border-theme-border flex items-center justify-between">
-          <span className="text-xs text-theme-muted font-mono">
-            {isSaved ? (
-              <span className="text-[#4CAF50] font-bold flex items-center space-x-1">
-                <Check className="w-3.5 h-3.5" />
-                <span>House chronicle and lineage successfully preserved in the archives!</span>
-              </span>
-            ) : (
-              <span>All changes will be updated across your warband dossier.</span>
-            )}
-          </span>
-          <div className="flex items-center space-x-3">
+        {/* Warband Lore & Narrative Overview */}
+        <div className="space-y-1.5">
+          <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+            <BookOpen className="w-3.5 h-3.5 text-theme-primary" />
+            <span>Warband Narrative Lore, Origins & Expedition Purpose (Markdown):</span>
+          </label>
+          <textarea
+            value={loreText}
+            onChange={(e) => setLoreText(e.target.value)}
+            placeholder="Record the origins of this warband, the circumstances of their expedition, lost ancestral claims in the salt wastes, and ideological doctrine..."
+            rows={12}
+            className="w-full bg-theme-base border border-theme-border rounded-md p-3.5 text-xs text-theme-text placeholder-theme-muted leading-relaxed focus:outline-none focus:border-theme-primary"
+          />
+        </div>
+
+        {/* Timeline of Milestones & Campaign Discoveries */}
+        <div className="bg-theme-base border border-theme-border rounded-md p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+              <Clock className="w-3.5 h-3.5 text-theme-primary" />
+              <span>Expedition Milestones & Campaign Chronicle Timeline</span>
+            </span>
+            <span className="text-xs sm:text-[10px] text-theme-muted">
+              {chronicleItems.length} Events Logged (Click pencil to edit wording)
+            </span>
+          </div>
+
+          {/* Add Milestone */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="text"
+              value={newLogEntry}
+              onChange={(e) => setNewLogEntry(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddMilestone(); }}
+              placeholder="e.g. Turn 2: Discovered the ancient leather-bound Book of Golems in the salt wastes"
+              className="flex-1 bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+            />
             <button
-              onClick={onClose}
-              className="px-4 py-2 rounded bg-theme-surface hover:bg-theme-border text-theme-muted hover:text-white font-mono text-xs font-bold uppercase transition-colors"
+              onClick={handleAddMilestone}
+              className="px-3 py-2 bg-theme-primary hover:bg-[#C49F27] text-black font-bold uppercase rounded flex items-center space-x-1 flex-shrink-0 transition-colors"
             >
-              Close
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-5 py-2 rounded bg-[#4CAF50] hover:bg-[#43A047] text-black font-mono text-xs font-bold uppercase flex items-center space-x-1.5 transition-colors shadow"
-            >
-              <Check className="w-4 h-4" />
-              <span>Save Chronicle</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>Log Event</span>
             </button>
           </div>
+
+          {/* Timeline List */}
+          {chronicleItems.length === 0 ? (
+            <p className="text-xs sm:text-[11px] text-theme-muted italic py-2">
+              No expedition milestones recorded yet. Add major campaign discoveries, treaty signatures, or historic victories above.
+            </p>
+          ) : (
+            <div className="space-y-2 pt-1">
+              {chronicleItems.map((log, idx) => (
+                <div 
+                  key={idx}
+                  className="p-3 bg-theme-surface border border-theme-border rounded text-xs sm:text-[11px] leading-relaxed transition-all hover:border-theme-muted"
+                >
+                  {editingIdx === idx ? (
+                    <div className="space-y-2">
+                      <textarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        rows={2}
+                        className="w-full bg-theme-base border border-theme-primary rounded p-2 text-xs text-white focus:outline-none"
+                      />
+                      <div className="flex items-center justify-end space-x-2">
+                        <button
+                          onClick={() => setEditingIdx(null)}
+                          className="px-2 py-1 rounded bg-theme-elevated hover:bg-theme-border text-theme-muted"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => saveEditMilestone(idx)}
+                          className="px-2.5 py-1 rounded bg-theme-primary hover:bg-[#C49F27] text-black font-bold flex items-center space-x-1"
+                        >
+                          <Check className="w-3 h-3" />
+                          <span>Save Event</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start space-x-2.5 flex-1">
+                        <Sparkles className="w-3.5 h-3.5 text-theme-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-theme-text whitespace-pre-wrap">{log}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 opacity-80 hover:opacity-100 flex-shrink-0">
+                        <button
+                          onClick={() => moveMilestone(idx, 'up')}
+                          disabled={idx === 0}
+                          className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
+                          title="Move Up"
+                        >
+                          <ArrowUp className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => moveMilestone(idx, 'down')}
+                          disabled={idx === chronicleItems.length - 1}
+                          className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
+                          title="Move Down"
+                        >
+                          <ArrowDown className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => startEditMilestone(idx)}
+                          className="p-1 text-theme-primary hover:text-white"
+                          title="Edit Milestone Wording"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteMilestone(idx)}
+                          className="p-1 text-status-error hover:text-red-400"
+                          title="Delete Milestone"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>
-    </div>
+    </Sheet>
   );
 };

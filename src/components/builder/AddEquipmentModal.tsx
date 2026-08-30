@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { 
@@ -48,8 +48,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   const [tab, setTab] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
   const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'formulae' | 'headgear' | 'relic' | 'gear'>('all');
   const [filterLegalOnly, setFilterLegalOnly] = useState<boolean>(true);
@@ -248,49 +246,24 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl h-[88dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
-        
-        {/* Fixed Header */}
-        <div className="p-4 bg-theme-base border-b border-theme-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
-          <div>
-            <div className="flex items-center space-x-2">
-              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
-                EQUIP WARRIOR: <span className="text-theme-primary">{unitName}</span>
-              </h2>
-              {isHomunculus && (
-                <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
-                  🧪 Homunculus (Shields & Formulae Only)
-                </span>
-              )}
-            </div>
-            <p className="text-xs font-mono text-theme-muted">
-              Base Profile: <strong className="text-theme-text">{unitProfileName}</strong> ({factionId})
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-2 flex-shrink-0">
-            <button
-              onClick={() => setFilterLegalOnly(!filterLegalOnly)}
-              className={`px-3 py-1.5 rounded font-mono text-xs font-bold uppercase flex items-center space-x-1.5 border transition-all ${
-                filterLegalOnly
-                  ? 'bg-theme-elevated text-theme-primary border-theme-primary'
-                  : 'bg-theme-base text-theme-muted border-theme-border'
-              }`}
-              title="Toggle filter to only show legal wargear per official faction rules"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span>{filterLegalOnly ? 'Legal Gear Only' : 'All Armouries'}</span>
-            </button>
-
+    <Sheet
+      open
+      onClose={onClose}
+      size="xl"
+      title={<>EQUIP WARRIOR: <span className="text-theme-primary">{unitName}</span></>}
+      label="Equip warrior"
+      footer={<div className="flex items-center justify-between w-full gap-3">
+            <span>
+              {tab === 'weapons' ? `${displayedWeapons.length} weapons available` : tab === 'armour' ? `${displayedArmour.length} armour/shields available` : `${displayedEquipment.length} gear items & formulae available`}
+            </span>
             <button
               onClick={onClose}
-              className="p-1.5 text-theme-muted hover:text-white rounded bg-theme-elevated hover:bg-theme-border border border-theme-border"
+              className="px-5 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded uppercase font-bold text-xs border border-theme-border"
             >
-              <X className="w-5 h-5" />
+              Done
             </button>
-          </div>
-        </div>
+      </div>}
+    >
 
         {/* Loadout Status & Hand Limits Banner */}
         <div className="px-4 py-2 bg-theme-elevated border-b border-theme-border flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">
@@ -477,7 +450,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         </div>
 
         {/* Scrollable List Body */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
           
           {/* WEAPONS LIST */}
           {tab === 'weapons' && (
@@ -690,22 +662,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             </div>
           )}
 
-        </div>
-
-        {/* Fixed Footer */}
-        <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between text-xs text-theme-muted flex-shrink-0">
-          <span>
-            {tab === 'weapons' ? `${displayedWeapons.length} weapons available` : tab === 'armour' ? `${displayedArmour.length} armour/shields available` : `${displayedEquipment.length} gear items & formulae available`}
-          </span>
-          <button
-            onClick={onClose}
-            className="px-5 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded uppercase font-bold text-xs border border-theme-border"
-          >
-            Done
-          </button>
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };

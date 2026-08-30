@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useOverlay } from '../ui/useOverlay';
+import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
@@ -35,8 +35,6 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
   const { getActiveWarband, applyPostBattleResults, campaign } = useStore();
 
-  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
-  const overlayRef = useOverlay(true, onClose);
   const warband = getActiveWarband();
 
   // The post-battle tables come from the generated dataset. The hand-written
@@ -214,46 +212,70 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   // is worse than not opening at all.
   if (datasetLoading || datasetError || !dataset) {
     return (
-      <div ref={overlayRef} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm font-mono">
-        <div className="w-full sm:max-w-md bg-theme-surface border border-theme-border sm:rounded-md p-5 space-y-3">
-          <h2 className="font-gothic font-bold text-base text-theme-text">Post-battle sequence</h2>
-          <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-            {datasetError
-              ? `The rules tables could not be loaded: ${datasetError}. Nothing has been ` +
-                'recorded. The sequence writes permanent results, so it will not run without them.'
-              : 'Loading the Trauma and Exploration tables…'}
-          </p>
-          <button
-            onClick={onClose}
-            className="w-full min-h-[44px] rounded-sm border border-theme-border text-theme-muted text-xs font-bold uppercase tracking-wider hover:text-theme-text"
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      <Sheet
+        open
+        onClose={onClose}
+        size="sm"
+        title="Post-battle sequence"
+      >
+            <h2 className="font-gothic font-bold text-base text-theme-text">Post-battle sequence</h2>
+            <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+              {datasetError
+                ? `The rules tables could not be loaded: ${datasetError}. Nothing has been ` +
+                  'recorded. The sequence writes permanent results, so it will not run without them.'
+                : 'Loading the Trauma and Exploration tables…'}
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full min-h-[44px] rounded-sm border border-theme-border text-theme-muted text-xs font-bold uppercase tracking-wider hover:text-theme-text"
+            >
+              Close
+            </button>
+      </Sheet>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
-          <div className="flex items-center space-x-3">
-            <Award className="w-6 h-6 text-theme-primary" />
-            <div>
-              <h2 className="font-gothic font-bold text-lg text-theme-text tracking-wide">
-                OFFICIAL TRENCH CRUSADE POST-BATTLE SEQUENCE
-              </h2>
-              <p className="text-xs text-theme-muted">Step {step} of 4: Trauma, Experience, Scavenge & Chronicle</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+    <Sheet
+      open
+      onClose={onClose}
+      size="xl"
+      title="POST-BATTLE SEQUENCE"
+      subtitle={`Step ${step} of 4: Trauma, Experience, Scavenge & Chronicle`}
+      footer={<div className="flex items-center justify-between w-full gap-3">
+            {step > 1 ? (
+              <button
+                onClick={() => setStep(step - 1)}
+                className="flex items-center space-x-1 px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text text-xs font-bold uppercase rounded"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back</span>
+              </button>
+            ) : <div />}
+    
+            {step < 4 ? (
+              <button
+                onClick={() => setStep(step + 1)}
+                className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black text-xs font-bold uppercase rounded shadow"
+              >
+                <span>Next Step</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <button
+                onClick={handleFinalSubmit}
+                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
+              >
+                <Check className="w-4 h-4" />
+                <span>Commit to Campaign Chronicle</span>
+              </button>
+            )}
+      </div>}
+    >
+      {/* The step tabs scroll with the content. Sheet's header is
+          already sticky, and on a phone a second fixed bar plus a
+          fixed footer leaves about a third of the screen for the
+          step you are actually filling in. */}
         {/* Step Tabs */}
         <div className="grid grid-cols-4 border-b border-theme-border bg-theme-surface text-center text-xs">
           <div className={`py-2.5 ${step === 1 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
@@ -269,9 +291,6 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             4. Exploration & Report
           </div>
         </div>
-
-        {/* Modal Body */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
           
           {/* STEP 1: OUTCOME & SCENARIO */}
           {step === 1 && (
@@ -670,40 +689,6 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             </div>
           )}
 
-        </div>
-
-        {/* Footer Navigation */}
-        <div className="px-6 py-4 border-t border-theme-border bg-theme-base flex items-center justify-between">
-          {step > 1 ? (
-            <button
-              onClick={() => setStep(step - 1)}
-              className="flex items-center space-x-1 px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text text-xs font-bold uppercase rounded"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
-            </button>
-          ) : <div />}
-
-          {step < 4 ? (
-            <button
-              onClick={() => setStep(step + 1)}
-              className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black text-xs font-bold uppercase rounded shadow"
-            >
-              <span>Next Step</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          ) : (
-            <button
-              onClick={handleFinalSubmit}
-              className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
-            >
-              <Check className="w-4 h-4" />
-              <span>Commit to Campaign Chronicle</span>
-            </button>
-          )}
-        </div>
-
-      </div>
-    </div>
+    </Sheet>
   );
 };
