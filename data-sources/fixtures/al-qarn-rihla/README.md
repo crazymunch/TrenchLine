@@ -61,8 +61,21 @@ see [`AUDIT.md`](../../../docs/AUDIT.md) §1.10. Phase 1 splits it:
 Cross-checked `KNOWN_UNIT_LORES` against the current (August) roster:
 
 - **10 of 11 characters have a full lore entry** — biography, titles, quote, deeds.
-- **1 has none: `Al-Mudawwan, the Inscribed` (Homunculus).** Worth writing before
-  the fixture is frozen, or it will be the one gap in an otherwise complete set.
+- **1 has none: `Al-Mudawwan, the Inscribed` (Homunculus).** The one gap in an
+  otherwise complete set.
+
+  The raw material for it **does** exist in `lore-transcript.md`; it simply never
+  became a `KNOWN_UNIT_LORES` entry:
+
+  > *Al-Mudawwan (The Inscribed): refers to the secret runes from the Book of
+  > Golems etched directly into its clay skin alongside copper wiring.*
+  > *Clay Golem (Homunculus). A hulking vessel moulded from desert clay and
+  > inscribed with the ancient runes of the Book of Golems, bound together with
+  > copper filigree.*
+
+  Promoting that into a biography is the maintainer's call, not something to
+  generate — this is authored content, and inventing it is the exact failure the
+  project exists to prevent.
 
 ### Lore attaches by fuzzy string match — fix this in migration
 
