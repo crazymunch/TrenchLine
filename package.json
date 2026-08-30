@@ -19,7 +19,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "rules:extract": "node scripts/extract-pdf.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

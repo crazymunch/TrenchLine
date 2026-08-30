@@ -468,6 +468,48 @@ its sibling — never assume you know the whole of a source you did not enumerat
 
 ---
 
+### 1.13 The campaign tables are invented, and their roll mechanics are wrong
+
+Found by `npm run rules:audit:campaign`, run before wiring the campaign economy
+to them. These tables were never in the original audit, and they are the ones
+that would drive a **persistent** economy: an Exploration result adds Ducats to
+a Strongbox that survives for the rest of the campaign, so an error compounds
+rather than showing up once.
+
+**The Trauma Table is sound.** `Campaign Rules.cat` carries every injury as a
+real entry with its D66 roll in the name — `Lost an Eye [15]` — and 18 of the
+app's 22 rows match it exactly, roll number included. The other four (11 Dead,
+12 Captured, 36 Robbed, 41–63 Full Recovery) have no catalogue entry because
+they add nothing to a model, which is correct rather than missing. No conflicts.
+
+**The three Exploration Location tables are fabricated.** 22 entries, none of
+which appears anywhere in the rulebook. The real tables are legible in the
+extraction, so this is invention and not an extraction failure:
+
+| | app | rulebook |
+|---|---|---|
+| Common | 11-13 Empty Trench, 14-16 Discarded Ammunition, 21-23 Holy Water Vials… | 4 Moonshine Stash, 5 Heavy Weapons Cache, 6 Trench Shrine, 8 Ruined House, 9 Survivor… |
+| Rare | 11-16 Pristine Heavy Flamer, 21-26 Reinforced Gothic Plate… | 5 Angelic Instrument, 9 Abandoned Prophetic Radio Post, 11 Pot of Manna… |
+| Legendary | 11-25 The Book of Golems, 26-40 Holy Grail Splinter… | 6 Battlefield of Corpses, 8 Esoteric Library, 10 Hidden Passages… |
+
+**The roll mechanic is wrong too.** The app models these as D66 ranges. The book
+uses an Exploration Roll to pick *which* table (1–2 Common, 3–5 Common or Rare,
+6–9 Rare, 10+ Rare or Legendary) and single ascending thresholds to pick the
+row. The same roll also sets the income: *"The value of the Loot you find is
+equal to your Exploration Roll times 10 in 👑."* A D66 range cannot express
+either, so the app cannot compute loot at all.
+
+**The four Skills tables are fabricated.** 24 entries with no roll numbers,
+against real 2D6 tables of 11 rows each (2–12, with Patron Skill at both ends).
+Real: Stand Firm, Parry, Close Quarters Combat, Relentless Charge, Melee
+Proficiency, Strength of Samson, Hard as Nails, Surgical Strike, Champion.
+App: Berserk Rage, Weapon Master, Crushing Blow, Duelist, Shield Wall,
+Decapitating Strike — five of which the wargear-and-keyword sweep had already
+flagged as invented abilities, so this is the same fabrication surfacing twice.
+
+46 invented entries across seven tables. The Trauma Table can stay; the other
+six need deriving from the rulebook before anything reads them.
+
 ## 2. Mobile and tablet
 
 ### 2.1 The hard bug
