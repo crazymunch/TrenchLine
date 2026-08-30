@@ -62,29 +62,60 @@ deliberate, reviewed commit.
 **Reachable from CI:** **no.** The domain is blocked by the sandbox network
 policy (`CONNECT` returns 403), so the PDFs must be supplied by the maintainer.
 
-Committed so far:
+All five committed:
 
-| PDF | Pages | Extracted | What it gives us |
-|---|---|---|---|
-| `changelog-1.0.2.pdf` | 15 | ✅ | **Official errata table** (`Page \| Location \| Errata`) — transcribes directly to a layer. Carries new keyword definitions (`DEADLY`, `DEPLOYABLE`, `DIFFICULT TERRAIN`, `IMPASSABLE TERRAIN`, `REGENERATE (X)`) and rewritten core rules (Retreat, Line of Sight, Terrain Types, Model Placement). |
-| `rules-commentaries-1.0.2.pdf` | 8 | ✅ | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
-| `all-out-war.pdf` | 23 | ✅ | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
+| PDF | Pages | What it gives us |
+|---|---|---|
+| `warbands-of-trench-crusade.pdf` | 186 | **The statline authority.** 48 warband entries, each with recruitment limits, Ducat cost, full statline, keywords and abilities. Machine-parseable — see below. |
+| `trench-crusade-digital-rulebook.pdf` | 197 | Core + Comprehensive rules, keyword glossary, D66 trauma/exploration/skills tables, scenarios. |
+| `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — transcribes directly to a layer. Defines 12 keywords and rewrites core rules (Retreat, Line of Sight, Terrain Types, Model Placement). |
+| `rules-commentaries-1.0.2.pdf` | 8 | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
+| `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
 
-Still needed: the **Core Rulebook** and **Warbands of Trench Crusade**. These are
-the ones that unblock statline verification and the full keyword glossary.
+### The Warbands book is parseable, not just searchable
+
+This was the open risk in the original plan, and it resolved well. The official
+PDF extracts to a tab-delimited structure with correct line ordering:
+
+```
+0-2 Sniper Priests - Cost: 50
+Movement 	Ranged 	Melee 	Armour 	Base
+6"/Infantry 	+2 DICE 	-1 DICE 	0 	25mm
+Keywords 	NEW ANTIOCH, ELITE
+```
+
+`scripts/parse-warbands-pdf.mjs` reads **48 entries, 47 statlines and 48 keyword
+sets** from it. Two consequences:
+
+1. **Verification is structural, not fuzzy.** `rules:verify` can compare field
+   to field rather than grepping for a value near a name. (The earlier caveat
+   about column interleaving applies to the older `scratch/` extractions, not to
+   these — `pdf-parse` handles this document cleanly.)
+2. **The recruitment limits are in the entry headers.** `0-2 Sniper Priests`,
+   `1 Lieutenant`, `0-5 Shock Troopers` — the constraint data the app entirely
+   lacks, available from the book as well as the catalogues.
+
+It also proves the **Carcass Front path**: a new faction's PDF can be parsed the
+same way on the day it drops, months before the catalogues catch up.
 
 ### Getting large PDFs in
 
-The Warbands book exceeds the chat upload limit. Two routes, both verified to
-work from this environment:
+**Use a GitHub release asset.** Attach the PDF to a release on this repo — up to
+2 GB per asset, and it does **not** bloat git history the way committing a large
+binary would. This is the route for future drops such as Carcass Front.
 
-1. **GitHub release asset (preferred).** Attach the PDF to a release on this
-   repo; release downloads are reachable
-   (`https://github.com/<owner>/<repo>/releases/download/<tag>/<file>` returns
-   200 through the proxy). Up to 2 GB per asset, and it does **not** bloat git
-   history the way committing a 100 MB binary would. This is also the route for
-   future releases such as the Carcass Front drop.
-2. **Split the PDF** into per-faction chunks and attach them individually.
+⚠️ **This repository is private**, so the public
+`https://github.com/<owner>/<repo>/releases/download/<tag>/<file>` URL returns
+**404**. Fetch through the authenticated API endpoint instead:
+
+```bash
+# asset id comes from the release JSON
+curl -sSL -H "Accept: application/octet-stream" -o out.pdf \
+  "https://api.github.com/repos/<owner>/<repo>/releases/assets/<asset_id>"
+```
+
+The release JSON also publishes a `digest` (`sha256:…`) per asset — always check
+the download against it before extracting.
 
 Once fetched, run `npm run rules:extract` and commit the extracted text. Whether
 the PDF itself is committed is a size judgement; the extracted text always is.
@@ -92,12 +123,12 @@ the PDF itself is committed is a size judgement; the extracted text always is.
 **Used for:** verifying the catalogues (§6 of `RULESET-MODEL.md`), keyword
 rules text, scenarios, injury/exploration/skill tables, and lore.
 
-**A caveat on extraction:** the rulebooks are multi-column and `pdftotext`-style
-extraction interleaves columns and can reverse line order. Existing evidence in
-`scratch/core_rules_pages.txt` shows paragraphs reading bottom-to-top. This is
-why verification is a fuzzy matcher rather than a parser, and why an
-`unconfirmed` result never fails the build — it usually means extraction was
-unreliable, not that the value is wrong.
+**A caveat on extraction:** the *older* `scratch/` extractions interleave columns
+and reverse line order (see `scratch/core_rules_pages.txt`, which reads
+bottom-to-top). The current `scripts/extract-pdf.mjs` output does not have this
+problem on these documents — the Warbands book parses cleanly. Verification
+still treats an `unconfirmed` result as non-fatal, because prose sections of the
+Digital Rulebook are less regular than the warband entry tables.
 
 ## 3. Trench Dispatch — the patch layer
 

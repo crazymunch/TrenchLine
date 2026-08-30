@@ -111,6 +111,40 @@ already written in. Compare the source text to the ops it compiles to:
 Writing the Dispatch patch file is therefore transcription, not interpretation —
 which is exactly the property we want, because transcription is checkable.
 
+### `status: 'speculative'` — predicted rules
+
+A layer may be built from **community reporting rather than a published source**:
+previews, faction-focus articles and roundtables that appear months before a box
+drops. The Carcass Front is the first case — enough has been written publicly to
+reconstruct most of it before release, and being able to draft a warband early is
+genuinely useful.
+
+This is also, obviously, the exact shape of the failure this whole document
+exists to prevent. The difference between *predicted* and *invented* is not the
+confidence of the guess — it is whether the reader can tell. So a speculative
+layer carries hard constraints:
+
+1. **Never in a default ruleset.** It is its own opt-in ruleset
+   (`carcass-front-preview`), never a layer on `trenchline`.
+2. **Per-field sourcing is mandatory.** Every value cites the article and URL it
+   came from. A value nobody published is not "predicted", it is invented, and
+   it does not go in — the field is left absent and rendered as *unknown*, not
+   filled with a plausible number.
+3. **Confidence is part of the data.** `stated` (an article gives the number
+   outright) vs `inferred` (derived from comparable units or partial text).
+   Inferred values render differently.
+4. **The UI cannot be subtle about it.** Persistent banner on the roster,
+   speculative badge on every affected entry, and exports stamped
+   "PREDICTED RULES — NOT FOR ORGANISED PLAY".
+5. **It expires.** When the real PDF lands, the speculative layer is deleted and
+   replaced by a normal PDF-primary layer. It is never merged into `trenchline`.
+
+The verification pass treats a speculative layer inversely to a normal one: it
+does not check values against a rulebook (there is none), it checks that every
+field has a citation and a confidence, and fails the build otherwise.
+
+Recorded as a Phase 5 task; see [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md).
+
 ### `status: 'public-beta'`
 
 Most of Dispatch #1 is marked *Public Beta* in the source. The layer records

@@ -71,16 +71,59 @@ entries under another name or inventions. `Combat Engineer` is a known case of
 the *catalogue* being incomplete: it has a full profile in both the rulebook and
 the Dispatch.
 
-### 1.2 Ducat costs are mostly right; everything else is not
+### 1.2 Ducat costs are wrong about a fifth of the time
 
-Lieutenant is 70 Ducats in both app and rulebook. Sniper Priest is 50 in both.
-The generator evidently had access to real cost figures and then invented the
-statlines around them. Two systematic tells:
+Measured against the official Warbands book across every comparable entry:
+
+```
+Ducat costs comparable  28
+  correct               22
+  WRONG                  6   (21%)
+```
+
+| Unit | App | Rulebook |
+|---|---|---|
+| Shock Troopers | 40 | **45** |
+| Mechanized Heavy Infantry | 95 | **85** |
+| Communicant | 90 | **100** |
+| Castigator | 65 | **50** |
+| Stigmatic Nuns | 45 | **50** |
+| Anchorite Shrine | 120 | **140** |
+
+An earlier pass on this audit reported costs as "largely right" from a two-unit
+sample. With the full book parsed, 21% are wrong — enough to make a roster
+illegal at a tournament. Statlines are worse, but costs are not a safe area
+either.
+
+Two systematic tells in the surrounding data:
 
 - **Armour was filled in with a default.** 22 of 45 units carry `armour: '-1'`.
   Every unit checked should be `0`.
 - **Weapon costs are a generated ladder.** In `BASE_WEAPONS`, the first seven
   melee weapons cost 1, 2, 3, 4, 5, 6, 7 Ducats in file order.
+
+### 1.2a The two sources broadly agree with each other
+
+Running the same comparison between the **rulebook** and the **catalogues**
+(`npm run rules:threeway`):
+
+```
+rulebook vs catalogue  compared   41
+                       DISAGREE    7
+app      vs rulebook   DISAGREE   26
+```
+
+Of those 7, five are formatting rather than substance — `-` vs `N/A` for "no
+ranged attack", `30 by 60mm` vs `30x60mm`, `+1 DICE` vs `1`. Only two are real:
+the **Scripture Guardian**'s Ranged characteristic, and the **Mamluk Faris**,
+where the book records a conditional `-2 (-3)` that the catalogue flattens
+to `-2`.
+
+This is good news for the plan. The catalogues are a sound base; the rulebook
+layer is a light correction pass plus the constraint data, not a rewrite. It
+also means the normalisation rules in `rules:verify` matter as much as the
+comparison itself — five of seven "conflicts" are the tool's fault, not the
+sources'.
 
 ### 1.3 Keywords are partly fabricated
 

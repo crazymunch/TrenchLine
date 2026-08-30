@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "rules:fetch": "node scripts/rules-fetch.mjs",
+    "rules:pdfs": "node scripts/rules-fetch-pdfs.mjs",
     "rules:crosscheck": "node scripts/rules-crosscheck.mjs",
+    "rules:warbands": "node scripts/parse-warbands-pdf.mjs",
+    "rules:threeway": "node scripts/rules-threeway.mjs",
     "rules:extract": "node scripts/extract-pdf.mjs",
     "postinstall": "prisma generate"
   },

@@ -120,6 +120,34 @@ mutating saved data.
 
 ---
 
+## Phase 5 — Carcass Front preview (backburner)
+
+*Blocked on Phases 1–2. Do not start before the pipeline and rules engine work.*
+
+Build a **predicted** Carcass Front ruleset from published community reporting,
+so a warband can be drafted before the box ships. Sources so far:
+
+- `tabletopbattles.com/trench-crusade-carcass-front-box-roundtable`
+- `tabletopbattles.com/trench-crusade-faction-focus-naval-raiders`
+- `tabletopbattles.com/trench-crusade-faction-focus-procession-of-the-sacred-affliction`
+
+| # | Task |
+|---|---|
+| 5.1 | Archive each article to `data-sources/preview/carcass-front/` with fetch date and URL — articles get edited and deleted |
+| 5.2 | Widen the search: other previews, designer commentary, event reports |
+| 5.3 | Transcribe to `carcass-front.layer.json` with `status: 'speculative'`, per-field citation and `stated`/`inferred` confidence |
+| 5.4 | `carcass-front-preview` ruleset — opt-in only, never a layer on `trenchline` |
+| 5.5 | Speculative UI treatment: roster banner, per-entry badges, stamped exports |
+| 5.6 | `rules:verify` inverse mode — fail on any field lacking a citation or confidence |
+| 5.7 | On release: delete the speculative layer, replace with a PDF-primary layer |
+
+**The rule that makes this safe:** a value nobody published is left *absent and
+shown as unknown*, never filled with a plausible guess. See
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § `status: 'speculative'`.
+
+This is also a live rehearsal for 5.7 — the same-day turnaround that is the
+app's main advantage over NewRecruit.
+
 ## Rough shape
 
 | Phase | Relative size | Blocks |
@@ -129,6 +157,7 @@ mutating saved data.
 | 2 | Large | — |
 | 3 | Medium–large | — |
 | 4 | Medium | — |
+| 5 | Small–medium | blocked on 1, 2 |
 
 Phase 1 is the bulk of the work and the only one that cannot be parallelised or
 skipped. Phases 0 and 4 can be picked up any time.

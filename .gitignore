@@ -34,3 +34,8 @@ scratch/
 
 # Pipeline reports (regenerated)
 reports/
+
+# Large official PDFs — held as GitHub release assets, fetched via `npm run rules:pdfs`.
+# Their extracted text under data-sources/rulebook/extracted/ IS committed.
+data-sources/rulebook/warbands-of-trench-crusade.pdf
+data-sources/rulebook/trench-crusade-digital-rulebook.pdf
