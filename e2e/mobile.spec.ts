@@ -71,8 +71,13 @@ test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
   const tight = await page.evaluate(() =>
     [...document.querySelectorAll('nav.fixed button')]
       .flatMap((button) => {
-        const label = button.querySelector('span');
-        if (!label?.textContent) return [];
+        // The *labelled* span, not the first one: the Play tab's first span is
+        // its LIVE badge, which has no text — taking `querySelector('span')`
+        // silently skipped the only item with a badge, so the one nav item with
+        // an extra element in it was the one going unchecked.
+        const label = [...button.querySelectorAll('span')]
+          .find((s) => s.textContent?.trim());
+        if (!label) return [];
         const style = getComputedStyle(button);
         const room = button.clientWidth
           - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);

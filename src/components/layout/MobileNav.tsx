@@ -55,7 +55,7 @@ export const MobileNav: React.FC = () => {
           places you navigate to; their icons are unambiguous and they now take
           a fixed 44px each instead of a seventh of the bar.
         */}
-        <div className="flex items-stretch gap-0.5">
+        <div className="flex items-stretch gap-px">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (
@@ -85,7 +85,7 @@ export const MobileNav: React.FC = () => {
             onClick={() => setIsThemeModalOpen(true)}
             aria-label="Change theme"
             title="Change theme"
-            className="flex-none w-11 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
+            className="tap flex-none w-9 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
           >
             <Palette className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
           </button>
@@ -95,7 +95,7 @@ export const MobileNav: React.FC = () => {
             onClick={() => setIsBugReportOpen(true)}
             aria-label="Report a bug"
             title="Report a bug"
-            className="flex-none w-11 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
+            className="tap flex-none w-9 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
           >
             <Bug className="w-5 h-5 text-status-error" />
           </button>
