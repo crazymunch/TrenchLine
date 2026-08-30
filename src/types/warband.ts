@@ -121,6 +121,12 @@ export interface Warband {
    */
   ledger?: LedgerEntry[];
   /**
+   * Exploration Locations this warband has already found. "You can discover a
+   * Location only once during the campaign; if you discover it again, treat the
+   * roll as a Pillaged result instead." The loot is still collected.
+   */
+  explorationDiscoveries?: string[];
+  /**
    * Only meaningful for 'unrestricted'. A campaign warband's cap is derived, and
    * this is ignored — kept because existing saved warbands carry it.
    */

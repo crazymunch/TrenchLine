@@ -510,13 +510,30 @@ flagged as invented abilities, so this is the same fabrication surfacing twice.
 46 invented entries across seven tables. The Trauma Table can stay; the other
 six need deriving from the rulebook before anything reads them.
 
-**The three Exploration tables are now derived** (`parseExploration`), along with
-the mechanic the app never had: dice by games played (3/4/5/6 D6), table
-selection by the same bands, and loot at ten Ducats a point *whether or not
-anything is discovered*. 34 Locations across the three tables, descriptions
-verbatim so the reward amounts survive. The four Skills tables are still
-fabricated, and `officialRulesData.ts` still holds all seven — the post-battle
-wizard reads it, and migrating that is its own piece of work.
+**All seven tables are now derived, and the wizard reads them.**
+
+`parseExploration` supplies the three Location tables plus the mechanic the app
+never had: dice by games played (3/4/5/6 D6), table selection by the same bands,
+and loot at ten Ducats a point *whether or not anything is discovered*.
+`parseSkillsTables` supplies the four 2D6 Skills tables, 11 rows each, complete
+from 2 to 12 — a gap there fails the build, since these are dense where the
+Exploration tables are deliberately sparse. `parseTraumaTable` merges the
+catalogue's 18 injuries with the four rulebook-only results and records which
+source each row came from.
+
+Migrating `PostBattleWizardModal` and `UnitAdvancementModal` onto them fixed four
+further bugs that were nothing to do with the data:
+
+- Exploration rolled **D66** (two dice concatenated) rather than summing 3-6 D6.
+- It added a **flat 20 Ducats** rather than the roll times 10.
+- It **fell back to the first row** of the table when a roll matched nothing,
+  inventing a discovery where the rule is "you discover nothing".
+- The advancement modal **synthesised roll numbers from the array index**
+  (`1${i+1}` through `4${i+1}`), producing D66-looking values corresponding to
+  nothing at all.
+
+`officialRulesData.ts` still holds the fabricated copies, and `CodexView` still
+reads them for reference display.
 
 ## 2. Mobile and tablet
 

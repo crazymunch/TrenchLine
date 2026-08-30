@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { 
-  OFFICIAL_TRAUMA_TABLE, 
-  OFFICIAL_COMMON_EXPLORATION, 
-  OFFICIAL_RARE_EXPLORATION, 
-  OFFICIAL_LEGENDARY_EXPLORATION 
-} from '../../data/officialRulesData';
+import { useDataset } from '../../rules/useDataset';
+import {
+  explorationDice, explorationTables, resolveExploration, campaignGameOf,
+} from '../../rules/campaign';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import type { ExplorationTableName } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
 import { 
   X, 
@@ -31,8 +31,19 @@ interface PostBattleWizardModalProps {
 }
 
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
-  const { getActiveWarband, scenarios, applyPostBattleResults } = useStore();
+  const { getActiveWarband, scenarios, applyPostBattleResults, campaign } = useStore();
   const warband = getActiveWarband();
+
+  // The post-battle tables come from the generated dataset. The hand-written
+  // ones this used to read were fabricated: every Exploration Location and
+  // every Skill was invented, and the roll mechanics were wrong as well as the
+  // contents (AUDIT §1.13). There is deliberately no fallback to them — a
+  // wizard that silently resolved an injury from invented data would write that
+  // result permanently onto a warband.
+  const rulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
 
   const [step, setStep] = useState<number>(1);
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>(scenarios[0]?.id || 'claim-no-mans-land');
@@ -58,30 +69,54 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const [unitAdvancements, setUnitAdvancements] = useState<Record<string, string>>({});
 
   // Exploration roll
-  const [selectedExplorationTable, setSelectedExplorationTable] = useState<'common' | 'rare' | 'legendary'>('common');
+  const [selectedExplorationTable, setSelectedExplorationTable] = useState<ExplorationTableName>('common');
   const [explorationResult, setExplorationResult] = useState<{ roll?: string; title: string; reward: string; description: string } | null>(null);
 
   if (!warband) return null;
 
+  // Games already played drives both the dice count and which Location tables
+  // are open, so it is one less than the game being prepared for.
+  const gamesPlayed = Math.max(1, campaignGameOf(warband, campaign) - 1 || 1);
+  const openTables = dataset ? explorationTables(dataset, gamesPlayed) : null;
+  // A band change must not leave a table selected that is no longer open.
+  const explorationTable: ExplorationTableName =
+    openTables?.tables.includes(selectedExplorationTable)
+      ? selectedExplorationTable
+      : (openTables?.tables[0] ?? 'common');
+
   const scenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
-  // Resolve Trauma Table entry from a numeric roll
+  /**
+   * Look a D66 result up on the derived Trauma Table.
+   *
+   * The table covers every D66 result — 11 to 36 individually, 41-63 as one
+   * range, 64 to 66 individually — and the parser fails the build if any roll is
+   * uncovered. So a miss here is a bug, and it says so rather than defaulting to
+   * Full Recovery, which is what the old index-based fallback did: it turned an
+   * unrecognised roll into the most forgiving possible outcome.
+   */
   const resolveTraumaRoll = (unitId: string, rollNum: number) => {
-    let matched = OFFICIAL_TRAUMA_TABLE.find((t) => t.roll === `${rollNum}`);
-    if (!matched) {
-      if (rollNum >= 41 && rollNum <= 63) {
-        matched = OFFICIAL_TRAUMA_TABLE.find((t) => t.roll.includes('41')) || OFFICIAL_TRAUMA_TABLE[18];
-      } else {
-        matched = OFFICIAL_TRAUMA_TABLE[18]; // Full recovery default
+    const rows = dataset?.campaign.trauma ?? [];
+    const matched = rows.find((t) => {
+      if (t.roll.includes('-')) {
+        const [lo, hi] = t.roll.split('-').map(Number);
+        return rollNum >= lo && rollNum <= hi;
       }
-    }
+      return Number(t.roll) === rollNum;
+    });
 
     setCasualtyOutcomes((prev) => ({
       ...prev,
-      [unitId]: {
-        outcome: `D66: ${rollNum} - ${matched?.title}: ${matched?.description}`,
-        isDead: !!matched?.isDead
-      }
+      [unitId]: matched
+        ? {
+            outcome: `D66: ${rollNum} - ${matched.name}: ${matched.description}`,
+            isDead: /^dead$/i.test(matched.name),
+          }
+        : {
+            outcome: `D66: ${rollNum} - no row on the Trauma Table. This is a data bug; ` +
+                     `record the result by hand and report it.`,
+            isDead: false,
+          },
     }));
   };
 
@@ -93,36 +128,45 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     resolveTraumaRoll(unitId, rollNum);
   };
 
-  // Resolve Exploration Table entry from a numeric roll
+  /**
+   * Resolve an Exploration Roll.
+   *
+   * Three things the old version got wrong, all of which changed the money:
+   *
+   *   - It rolled D66 (two dice concatenated). The book sums 3 to 6 D6
+   *     depending on games played, so the range was wrong end to end.
+   *   - It added a flat 20 Ducats. Loot is the roll times 10.
+   *   - It fell back to the first row when a roll matched nothing, inventing a
+   *     discovery. The tables are sparse on purpose: an unlisted roll finds
+   *     nothing and still pays loot.
+   */
   const resolveExplorationRoll = (rollNum: number) => {
-    let table = OFFICIAL_COMMON_EXPLORATION;
-    if (selectedExplorationTable === 'rare') table = OFFICIAL_RARE_EXPLORATION;
-    if (selectedExplorationTable === 'legendary') table = OFFICIAL_LEGENDARY_EXPLORATION;
+    if (!dataset) return;
+    const found = warband.explorationDiscoveries ?? [];
+    const outcome = resolveExploration(dataset, rollNum, explorationTable, found);
+    if (!outcome) return;
 
-    let matched = table.find((e) => e.roll === `${rollNum}`);
-    if (!matched) {
-      for (const entry of table) {
-        if (entry.roll.includes('-')) {
-          const [low, high] = entry.roll.split('-').map(Number);
-          if (rollNum >= low && rollNum <= high) {
-            matched = entry;
-            break;
-          }
-        }
-      }
-    }
-    if (!matched) matched = table[0];
-
-    setExplorationResult({ ...matched, roll: `${rollNum}` });
-    setDucatsGained((prev) => prev + 20);
+    setExplorationResult({
+      roll: `${rollNum}`,
+      title: outcome.location?.name
+        ?? (outcome.nothingBecause === 'already-discovered'
+              ? 'Pillaged — already discovered'
+              : 'Nothing discovered'),
+      reward: `${outcome.loot} Ducats`,
+      description: outcome.location?.description
+        ?? 'No Location on this table matches the roll. You still collect the loot.',
+    });
+    // Loot replaces rather than accumulates: rolling again is a correction, not
+    // a second Exploration.
+    setDucatsGained(outcome.loot);
   };
 
-  // Roll D66 Exploration Table
+  /** Sum the Exploration Dice this warband is entitled to. */
   const handleRollExploration = () => {
-    const d1 = Math.floor(Math.random() * 6) + 1;
-    const d2 = Math.floor(Math.random() * 6) + 1;
-    const rollNum = parseInt(`${d1}${d2}`);
-    resolveExplorationRoll(rollNum);
+    const n = dataset ? explorationDice(dataset, gamesPlayed) ?? 3 : 3;
+    let total = 0;
+    for (let i = 0; i < n; i++) total += Math.floor(Math.random() * 6) + 1;
+    resolveExplorationRoll(total);
   };
 
   const handleFinalSubmit = () => {
@@ -154,6 +198,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       opponentWarbandName.trim().length > 0 ? opponentWarbandName : undefined
     );
   };
+
+  // The post-battle sequence writes permanent results onto a warband — an
+  // injury, an advancement, Ducats in the Strongbox. Without the tables it must
+  // refuse, not improvise: resolving an injury from absent data and recording it
+  // is worse than not opening at all.
+  if (datasetLoading || datasetError || !dataset) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm font-mono">
+        <div className="w-full sm:max-w-md bg-[#161920] border border-[#323846] sm:rounded-md p-5 space-y-3">
+          <h2 className="font-gothic font-bold text-base text-[#ECEFF4]">Post-battle sequence</h2>
+          <p className="text-xs sm:text-[11px] text-[#8E95A5] leading-relaxed">
+            {datasetError
+              ? `The rules tables could not be loaded: ${datasetError}. Nothing has been ` +
+                'recorded. The sequence writes permanent results, so it will not run without them.'
+              : 'Loading the Trauma and Exploration tables…'}
+          </p>
+          <button
+            onClick={onClose}
+            className="w-full min-h-[44px] rounded-sm border border-[#323846] text-[#8E95A5] text-xs font-bold uppercase tracking-wider hover:text-[#ECEFF4]"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
@@ -310,7 +380,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
           {step === 2 && (
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-[#0C0E12] border border-[#323846] rounded text-xs text-[#8E95A5]">
-                <span>Roll on the official <strong>D66 Trauma Table (Pages 102-103)</strong> for each Out of Action warrior:</span>
+                <span>Roll on the <strong>D66 Trauma Table</strong> for each Out of Action warrior:</span>
                 
                 {/* Digital vs Physical Roll Toggle */}
                 <div className="flex space-x-1.5 flex-shrink-0">
@@ -371,17 +441,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                         ) : (
                           <div className="flex items-center space-x-2 flex-shrink-0">
                             <span className="text-[11px] text-[#8E95A5]">D66:</span>
-                            <select
-                              onChange={(e) => resolveTraumaRoll(unit.id, parseInt(e.target.value))}
-                              className="bg-[#0C0E12] border border-[#323846] text-[#D4AF37] rounded px-2 py-1 text-xs"
-                            >
-                              <option value="">-- Physical Roll --</option>
-                              {OFFICIAL_TRAUMA_TABLE.map((t) => (
-                                <option key={t.roll} value={t.roll.includes('-') ? 41 : t.roll}>
-                                  {t.roll} — {t.title}
-                                </option>
-                              ))}
-                            </select>
+                            <input
+                              type="number"
+                              min={11}
+                              max={66}
+                              inputMode="numeric"
+                              placeholder="D66"
+                              aria-label={`D66 Trauma roll for ${unit.customName}`}
+                              onChange={(e) => {
+                                const n = parseInt(e.target.value, 10);
+                                if (n >= 11 && n <= 66) resolveTraumaRoll(unit.id, n);
+                              }}
+                              className="w-20 min-h-[44px] bg-[#0C0E12] border border-[#323846] text-[#D4AF37] rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-[#D4AF37]"
+                            />
                           </div>
                         )}
                       </div>
@@ -446,16 +518,22 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center space-x-2">
                     <span className="font-gothic font-bold text-sm text-[#D4AF37]">
-                      OFFICIAL EXPLORATION TABLE (D66)
+                      EXPLORATION — {explorationDice(dataset, gamesPlayed) ?? '?'}D6
                     </span>
+                    {/* Only the tables this warband's games-played band opens.
+                        Offering all three would let a first-game warband roll on
+                        the Legendary table, which the book does not allow. */}
                     <select
-                      value={selectedExplorationTable}
-                      onChange={(e) => setSelectedExplorationTable(e.target.value as any)}
-                      className="bg-[#0C0E12] border border-[#323846] text-[#D4AF37] text-xs rounded px-2 py-0.5"
+                      value={explorationTable}
+                      onChange={(e) => setSelectedExplorationTable(e.target.value as ExplorationTableName)}
+                      disabled={!openTables?.choose}
+                      className="bg-[#0C0E12] border border-[#323846] text-[#D4AF37] text-base sm:text-xs rounded px-2 py-1 min-h-[44px] sm:min-h-0 disabled:opacity-60"
                     >
-                      <option value="common">Common Table (Pages 116-117)</option>
-                      <option value="rare">Rare Table (Pages 118-119)</option>
-                      <option value="legendary">Legendary Table (Pages 120-122)</option>
+                      {(openTables?.tables ?? ['common']).map((t) => (
+                        <option key={t} value={t}>
+                          {t[0].toUpperCase() + t.slice(1)} Table
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -489,22 +567,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                         <span>Roll Scavenge</span>
                       </button>
                     ) : (
-                      <select
-                        onChange={(e) => resolveExplorationRoll(parseInt(e.target.value))}
-                        className="bg-[#0C0E12] border border-[#323846] text-[#D4AF37] rounded px-2 py-1 text-xs"
-                      >
-                        <option value="">-- Physical Roll --</option>
-                        {(selectedExplorationTable === 'rare'
-                          ? OFFICIAL_RARE_EXPLORATION
-                          : selectedExplorationTable === 'legendary'
-                          ? OFFICIAL_LEGENDARY_EXPLORATION
-                          : OFFICIAL_COMMON_EXPLORATION
-                        ).map((entry) => (
-                          <option key={entry.roll} value={entry.roll.includes('-') ? parseInt(entry.roll.split('-')[0]) : entry.roll}>
-                            {entry.roll} — {entry.title}
-                          </option>
-                        ))}
-                      </select>
+                      <input
+                        type="number"
+                        min={1}
+                        max={60}
+                        inputMode="numeric"
+                        placeholder="Roll"
+                        aria-label="Exploration Roll total"
+                        onChange={(e) => {
+                          const n = parseInt(e.target.value, 10);
+                          if (n > 0) resolveExplorationRoll(n);
+                        }}
+                        className="w-24 min-h-[44px] bg-[#0C0E12] border border-[#323846] text-[#D4AF37] rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-[#D4AF37]"
+                      />
                     )}
                   </div>
                 </div>
@@ -512,7 +587,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 {explorationResult && (
                   <div className="p-3 bg-[#0C0E12] border border-[#D4AF37] rounded space-y-1">
                     <span className="text-xs font-bold text-[#D4AF37]">
-                      {explorationResult.roll ? `D66: ${explorationResult.roll} - ` : ''}{explorationResult.title} ({explorationResult.reward})
+                      {/* Not D66: the Exploration Roll is 3 to 6 D6 summed. */}
+                      {explorationResult.roll ? `Roll ${explorationResult.roll} — ` : ''}{explorationResult.title} ({explorationResult.reward})
                     </span>
                     <p className="text-xs text-[#ECEFF4] leading-relaxed">{explorationResult.description}</p>
                   </div>

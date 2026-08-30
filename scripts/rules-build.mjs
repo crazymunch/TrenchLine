@@ -20,7 +20,8 @@ import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
-import { parseThresholdTable, parseStartingBudget, parseExploration } from './lib/parse-campaign.mjs';
+import { parseThresholdTable, parseStartingBudget, parseExploration,
+         parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -116,6 +117,11 @@ for (const ruleset of RULESETS) {
       // Exploration Roll times 10. The app's hand-written version of this was
       // fabricated end to end (AUDIT §1.13).
       exploration: parseExploration(),
+      // The other two post-battle tables. `officialRulesData.ts` still holds
+      // hand-written versions of both, and the four Skills tables there are
+      // fabricated (AUDIT §1.13) — these are what replaces them.
+      skills: parseSkillsTables(),
+      trauma: parseTraumaTable(),
     },
     meta: {
       rulesetId: ruleset.id,

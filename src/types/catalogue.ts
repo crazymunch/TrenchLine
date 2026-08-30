@@ -355,6 +355,28 @@ export interface ExplorationLocation {
   description: string;
 }
 
+export type SkillsTableName = 'melee' | 'ranged' | 'stealth' | 'wildcard';
+
+export interface SkillRow {
+  /** 2 to 12. Patron Skill sits at both ends. */
+  roll: number;
+  name: string;
+  description: string;
+}
+
+export interface TraumaRow {
+  /** A D66 result, or the one range the table has: `41-63`. */
+  roll: string;
+  name: string;
+  description: string;
+  /**
+   * Which source carried it. The catalogue is exact and machine-readable; the
+   * rulebook rows come off a two-column page whose extraction scrambles, so
+   * they were read individually. Recorded because the two are not equal.
+   */
+  source: 'catalogue' | 'rulebook' | 'catalogue+rulebook';
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -381,6 +403,10 @@ export interface Dataset {
       /** Ducats per point of the Exploration Roll. */
       lootPerPoint: number;
     };
+    /** The four Advancement Skills tables. 2D6, dense, 11 rows each. */
+    skills: Record<SkillsTableName, SkillRow[]>;
+    /** The Trauma Table. Sparse only in that 41-63 is one range. */
+    trauma: TraumaRow[];
   };
   meta: {
     rulesetId: string;
