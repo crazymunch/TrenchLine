@@ -4,6 +4,15 @@
 
 @layer base {
   :root {
+    /*
+      Safe-area insets. These resolve to 0px unless the viewport meta carries
+      `viewport-fit=cover` (set in app/layout.tsx) — so the fallback matters.
+    */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+
     --font-gothic: 'Cinzel', serif;
     --font-heading: 'Oswald', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -97,7 +106,11 @@
     font-family: var(--font-sans);
     background-color: var(--bg-base);
     color: #ECEFF4;
-    overflow-x: hidden;
+    /*
+      No `overflow-x: hidden` here. It hides layout bugs rather than fixing
+      them, and silently clips content on narrow screens. Wide content gets
+      its own `overflow-x-auto` container instead. See docs/MOBILE.md.
+    */
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 }
@@ -293,4 +306,33 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Safe-area utilities
+
+   The app has a fixed bottom nav and full-screen modals; both must clear the
+   iOS home indicator and notch. See docs/MOBILE.md.
+--------------------------------------------------------------------------- */
+
+.pb-safe {
+  padding-bottom: calc(0.25rem + var(--safe-bottom));
+}
+
+.pt-safe {
+  padding-top: calc(0.25rem + var(--safe-top));
+}
+
+/* For fixed overlays that span the viewport and need to clear both ends. */
+.inset-safe {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
+/* Main content must clear the fixed bottom nav plus the home indicator. */
+.pb-nav-safe {
+  padding-bottom: calc(4.5rem + var(--safe-bottom));
 }

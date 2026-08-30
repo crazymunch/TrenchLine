@@ -9,7 +9,7 @@ the repository or from the official sources listed in
 
 | Area | State |
 |---|---|
-| Build & typecheck | Passing (`next build` succeeds on a clean `.next`) |
+| Build & typecheck | Passing (`next build` needs `NODE_ENV=production`; see `CLAUDE.md`) |
 | Game data accuracy | **Critical** — 97% of checkable unit statlines are wrong |
 | Roster validation | **Missing** — the core builder feature does not exist |
 | Mobile / tablet | **Critical** — one hard bug plus systemic desktop-only layout |
@@ -148,11 +148,6 @@ decorative text.
 Keyword *descriptions* in `officialRulesData.ts` remain paraphrases rather than
 rules text. `COVER` is described as "subtract 1 or 2 from enemy ranged hit
 rolls", where Trench Crusade expresses cover as a DICE modifier.
-
-Real keywords do exist in the data (`ASSAULT`, `BLAST`, `CUMBERSOME`, `HEAVY`,
-`CRITICAL`), but their *descriptions* in `officialRulesData.ts` are paraphrases
-rather than rules text. `COVER` is described as "subtract 1 or 2 from enemy
-ranged hit rolls", where Trench Crusade expresses cover as a DICE modifier.
 
 ### 1.3a Claimed but not delivered
 

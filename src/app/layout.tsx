@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
 
@@ -6,6 +6,20 @@ export const metadata: Metadata = {
   title: 'TrenchLine | Trench Crusade Tactical Warband & Campaign Hub',
   description:
     'Tactical warband builder, tabletop combat HUD companion, multiplayer campaign manager, and rule customizer for Trench Crusade.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'TrenchLine',
+    statusBarStyle: 'black-translucent',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // Required for env(safe-area-inset-*) to report anything but 0 on iOS.
+  viewportFit: 'cover',
+  themeColor: '#0C0E12',
 };
 
 export default function RootLayout({
@@ -23,7 +37,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0C0E12] text-[#ECEFF4] min-h-screen antialiased">
+      <body className="bg-[#0C0E12] text-[#ECEFF4] min-h-[100dvh] antialiased">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

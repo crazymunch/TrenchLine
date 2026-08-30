@@ -29,7 +29,7 @@ export default function Home() {
   }, [currentTheme]);
 
   return (
-    <div className="min-h-screen bg-[#0C0E12] text-[#ECEFF4] flex flex-row selection:bg-[#8B0000] selection:text-white transition-colors duration-300">
+    <div className="min-h-[100dvh] bg-[#0C0E12] text-[#ECEFF4] flex flex-row selection:bg-[#8B0000] selection:text-white transition-colors duration-300">
       {/* Left Collapsible Desktop Sidebar */}
       <Sidebar />
 
@@ -39,7 +39,7 @@ export default function Home() {
         <Navbar />
 
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0 pb-20 lg:pb-6">
+        <main className="flex-1 min-w-0 pb-nav-safe lg:pb-6">
           {currentView === 'builder' && <WarbandDashboard />}
           {currentView === 'play' && <PlayModeView />}
           {currentView === 'campaign' && <CampaignHubView />}

@@ -141,7 +141,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] bevel-container">
         
         {/* Modal Header */}
         <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex items-center justify-between">

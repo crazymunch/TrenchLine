@@ -30,25 +30,25 @@ export const GITHUB_CATALOG_FILES = [
   'Trench%20Crusade.gst'
 ];
 
+/**
+ * Fetch the most recent upstream commit.
+ *
+ * Throws on failure. It previously returned a fabricated commit — sha, message
+ * and author invented — whenever the API call failed, and presented it to the
+ * user as a real upstream sync. Never substitute plausible-looking data for a
+ * failed fetch; surface the failure. See docs/AUDIT.md 1.8.
+ */
 export async function fetchLatestRepoCommit(repo = GITHUB_REPO): Promise<GitHubCommit | null> {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`);
-    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-    const commits = await res.json();
-    return commits[0] || null;
-  } catch (err) {
-    console.warn('Live GitHub API commit check fallback:', err);
-    return {
-      sha: 'a4f91e2b',
-      commit: {
-        message: 'v1.4.2 Community Errata: Updated Trench Pilgrim Martyr abilities & Ducat costs',
-        author: {
-          name: 'Fawkstrot11 (Maintainer)',
-          date: new Date().toISOString()
-        }
-      }
-    };
+  const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`);
+  if (!res.ok) {
+    throw new Error(
+      `Could not reach the GitHub API (HTTP ${res.status}). ` +
+        `Note that api.github.com is unreachable from some networks; ` +
+        `raw.githubusercontent.com is used for catalogue files for that reason.`
+    );
   }
+  const commits = await res.json();
+  return commits[0] ?? null;
 }
 
 export async function fetchRemoteCatalogFile(fileName: string): Promise<string | null> {

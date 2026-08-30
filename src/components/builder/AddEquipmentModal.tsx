@@ -245,7 +245,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl h-[88vh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-4xl h-[88dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Fixed Header */}
         <div className="p-4 bg-[#0C0E12] border-b border-[#323846] flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">

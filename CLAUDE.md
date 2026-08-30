@@ -73,10 +73,14 @@ npm run rules:extract     # PDF -> text
 ## Gotchas
 
 - `next build` fails with `<Html> should not be imported outside of
-  pages/_document` when `.next/` is stale. `rm -rf .next` fixes it; it is not a
-  real code error.
-- `src/App.tsx`, `src/main.tsx` and `src/index.css` are dead Vite scaffolding.
-  Don't edit them — they are scheduled for deletion (Phase 0.7).
+  pages/_document` when **`NODE_ENV` is not `production`**. This sandbox sets
+  `NODE_ENV=development`, so a bare `next build` always hits it — Next falls
+  back to the Pages Router `_error` page while prerendering `/404` and `/500`.
+  It is not a code error, and `rm -rf .next` does **not** fix it. Build with:
+
+  ```bash
+  NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... npx next build
+  ```
 - `src/store/useStore.ts` is 2,364 lines covering every domain. Scheduled to be
   split (Phase 4.2); until then, change it carefully.
 - Components carry ~3,700 hardcoded hex colours and use none of the theme

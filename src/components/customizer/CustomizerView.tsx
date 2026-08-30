@@ -4,11 +4,7 @@ import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { GitHubDiffModal } from './GitHubDiffModal';
-import { 
-  fetchLatestRepoCommit, 
-  generateDiffs, 
-  fetchAndParseAllRemoteCatalogs 
-} from '../../services/githubSync';
+import { fetchLatestRepoCommit } from '../../services/githubSync';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   SlidersHorizontal, 
@@ -85,12 +81,11 @@ export const CustomizerView: React.FC = () => {
 
   // Sync state
   const [isCheckingSync, setIsCheckingSync] = useState(false);
-  const [isDownloadingCatalogs, setIsDownloadingCatalogs] = useState(false);
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
-  const [latestCommit, setLatestCommit] = useState<{ sha: string; message: string }>({
-    sha: '8e4f1a9c',
-    message: 'Official Community Patch: Adjusted Shocktrooper base cost & Sniper profiles'
-  });
+  // Null until a real commit is fetched. This previously held an invented sha
+  // and message that were rendered as though upstream had been checked.
+  const [latestCommit, setLatestCommit] = useState<{ sha: string; message: string } | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
 
   const handleSelectUnit = (uId: string) => {
     setSelectedUnitId(uId);
@@ -198,28 +193,28 @@ export const CustomizerView: React.FC = () => {
 
   const handleCheckSync = async () => {
     setIsCheckingSync(true);
-    const commit = await fetchLatestRepoCommit();
-    if (commit) {
-      setLatestCommit({
-        sha: commit.sha,
-        message: commit.commit.message
-      });
+    setSyncError(null);
+    try {
+      const commit = await fetchLatestRepoCommit();
+      setLatestCommit(
+        commit ? { sha: commit.sha, message: commit.commit.message } : null
+      );
+    } catch (err) {
+      setLatestCommit(null);
+      setSyncError(err instanceof Error ? err.message : 'Upstream check failed.');
+    } finally {
+      setIsCheckingSync(false);
     }
 
-    const upstreamUnits: UnitProfile[] = units.map((u) => {
-      if (u.id === 'na-shocktrooper') {
-        return { ...u, baseCost: 40, stats: { ...u.stats, melee: '+2' } };
-      }
-      if (u.id === 'na-sniper') {
-        return { ...u, baseCost: 60 };
-      }
-      return u;
-    });
-
-    const diffs = generateDiffs(units, customUnits, upstreamUnits);
-    setPendingDiffs(diffs);
-    setIsCheckingSync(false);
-    setIsDiffModalOpen(true);
+    // The diff itself is deliberately not run here.
+    //
+    // It used to build its "upstream" by hand-editing two local units
+    // (na-shocktrooper -> 40 Ducats, na-sniper -> 60) and diffing against that,
+    // presenting invented changes as a real upstream comparison. A diff is only
+    // meaningful once upstream profiles are parsed from the BattleScribe
+    // catalogues — that is Phase 1 of docs/RESTRUCTURE-PLAN.md, and
+    // fetchAndParseAllRemoteCatalogs() in services/githubSync.ts is the
+    // starting point. Until then this reports the upstream commit only.
   };
 
   return (
@@ -251,6 +246,31 @@ export const CustomizerView: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Upstream status. Reports what was actually read, or why it failed. */}
+        {syncError && (
+          <div className="flex items-start gap-2 p-3 rounded border border-[#8B0000] bg-[#8B0000]/15 text-[#E53935]">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="font-bold uppercase">Upstream check failed</p>
+              <p className="break-words opacity-90">{syncError}</p>
+            </div>
+          </div>
+        )}
+
+        {latestCommit && !syncError && (
+          <div className="p-3 rounded border border-[#323846] bg-[#0C0E12] space-y-1">
+            <p className="uppercase font-bold text-[#8E95A5]">
+              Upstream head
+              <span className="ml-2 text-[#D4AF37]">{latestCommit.sha.slice(0, 8)}</span>
+            </p>
+            <p className="text-[#ECEFF4] break-words">{latestCommit.message}</p>
+            <p className="text-[#8E95A5] opacity-80">
+              Profile comparison is unavailable until upstream profiles are parsed
+              from the BattleScribe catalogues (Phase 1). This reports the commit only.
+            </p>
+          </div>
+        )}
 
         {/* Tab Navigation */}
         <div className="flex border-t border-[#323846] pt-4 gap-2 overflow-x-auto">
@@ -619,8 +639,8 @@ export const CustomizerView: React.FC = () => {
         </div>
       )}
 
-      {/* GitHub Diff Modal */}
-      {isDiffModalOpen && (
+      {/* GitHub Diff Modal — only meaningful once a real commit has been read. */}
+      {isDiffModalOpen && latestCommit && (
         <GitHubDiffModal
           diffs={pendingDiffs}
           commitSha={latestCommit.sha}

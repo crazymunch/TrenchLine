@@ -92,7 +92,7 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       <aside
-        className={`hidden lg:flex flex-col flex-shrink-0 bg-[#0C0E12] border-r border-[#323846] text-[#ECEFF4] transition-all duration-300 z-30 sticky top-0 h-screen select-none ${
+        className={`hidden lg:flex flex-col flex-shrink-0 bg-[#0C0E12] border-r border-[#323846] text-[#ECEFF4] transition-all duration-300 z-30 sticky top-0 h-[100dvh] select-none ${
           isCollapsed ? 'w-[72px]' : 'w-[260px]'
         }`}
       >

@@ -166,7 +166,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
-      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92vh] bevel-container">
+      <div className="bg-[#161920] border-2 border-[#D4AF37] w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] bevel-container">
         
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#323846] bg-[#0C0E12]">

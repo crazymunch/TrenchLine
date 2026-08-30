@@ -83,7 +83,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-[#161920] border border-[#D4AF37]/50 rounded-lg max-w-4xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-[#161920] border border-[#D4AF37]/50 rounded-lg max-w-4xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
         
         {/* Modal Header */}
         <div className="p-4 bg-[#20242E] border-b border-[#323846] flex items-center justify-between">
