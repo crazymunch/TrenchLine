@@ -68,7 +68,7 @@ with all 7 buttons at exactly 44px.
 | 1.4a | Parse the rulebook's warband entries and variants | ✅ `scripts/lib/parse-warbands.mjs` |
 | 1.5 | New entity model | ✅ `src/types/catalogue.ts` |
 | 1.6 | Layer engine + provenance stamping | ✅ `scripts/lib/layers.mjs` |
-| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 **partial** — see below |
+| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 the four Grail Strains done; Amalgam/Thrall entry replacements and the Mercenary keyword rewrites outstanding |
 | 1.7a | Parse the 14 Warband Variants | ✅ all 14, with their special rules |
 | 1.7b | Preserve the kept warband | ⬜ deferred to Phase 2 with the roster model |
 | 1.8 | `rules:verify` | ✅ `scripts/lib/verify.mjs`; fails on unresolved conflicts |
@@ -132,19 +132,41 @@ All four are covered by regression tests.
 |---|---|
 | 2.1 | `src/rules/validate.ts` — constraint evaluation (min/max, roster/parent scope, conditions) |
 | 2.2 | `src/rules/costs.ts` — Ducats **and** Glory, including options and Glory Items |
-| 2.3 | `UnitOption` support — Strains, Vile Corpus, Goetic Powers, Glory Items, variants. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
+| 2.3 | ✅ `UnitOption` support — 315 options across 55 units in 22 groups. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
-| 2.5a | Faction Special Rules as engine rules — e.g. New Antioch "up to 2 Fireteams", granting FIRETEAM at no cost |
-| 2.6 | Surface violations in the builder: per-unit, per-roster, blocking vs advisory |
-| 2.7 | Ruleset switcher + reconciliation review screen — needed for *Latest GitHub* ⇄ *TrenchLine* switching; no longer blocks Phase 1 |
-| 2.10 | **Warband Variants** — `variantId` on `Warband`, variant selection at creation, variant ops applied to roster validation ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). 14 official variants. **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
-| 2.8 | Provenance UI — "where does this number come from?" in the Codex |
+| 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
+| 2.6 | ⬜ Surface violations in the builder — blocked on the migration below |
+| 2.7 | ⬜ Ruleset switcher + reconciliation — blocked on the migration below |
+| 2.10 | ✅ **Warband Variants** — 17 variants, 16 with ops derived from catalogue modifiers; `validate.ts` uses them in preference to the prose reader. Roster-side `variantId` still needs the UI. ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
+| 2.8 | ⬜ Provenance UI — blocked on the migration below |
 | 2.9 | Comprehensive unit tests for `src/rules/*` |
+
+| 2.11 | ⬜ **Migrate the app onto the generated dataset** — the gate on 2.6-2.8 |
 
 **Done when:** an illegal roster cannot be silently built; every violation names
 the rule and cites its source; switching rulesets shows a diff rather than
 mutating saved data.
+
+### 2.11 — the migration, and what it turned up
+
+No UI file imports `src/rules/` or `src/data/generated/` yet;
+`defaultRules.ts` is still read in four places including `useStore.ts`. Two
+things found while starting it change the shape of the job:
+
+**Weapon pricing is per faction.** The catalogues leave shared weapon entries
+free — 363 of 543 came through at zero — because the price hangs off each
+faction's armoury link. The rulebook's Armoury Tables carry it, and the pipeline
+now applies them. But five names are priced two ways: an Automatic Rifle is
+**40 Ducats in one armoury and 2 Glory in another**. A single `cost` field
+cannot express that. The candidates are recorded as `priceOptions`, the cost is
+left unset, and the build names them every run. **Resolving this means pricing
+wargear per faction in the roster model, and it should be settled before the UI
+is wired to costs.**
+
+**The dataset is 1.6 MB per ruleset.** It cannot be a static import. It needs to
+be served (an API route or RSC) or code-split, and that decision shapes how the
+store is restructured.
 
 ---
 
