@@ -280,7 +280,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               Armour Slots: <strong className={`font-bold ${isOverArmourLimit ? 'text-status-error' : 'text-theme-text'}`}>{currentArmour.length} / 1</strong>
             </span>
             {isStrong && (
-              <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-primary text-black font-bold uppercase">
+              <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-primary text-theme-base font-bold uppercase">
                 STRONG (2H Melee = 1H)
               </span>
             )}
@@ -349,7 +349,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('all')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  weaponSubCategory === 'all' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  weaponSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 All
@@ -357,7 +357,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('melee')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  weaponSubCategory === 'melee' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  weaponSubCategory === 'melee' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 ⚔️ Melee
@@ -365,7 +365,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('ranged')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  weaponSubCategory === 'ranged' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  weaponSubCategory === 'ranged' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 🎯 Ranged
@@ -373,7 +373,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('shield')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  weaponSubCategory === 'shield' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  weaponSubCategory === 'shield' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 🛡️ Utility / Shields
@@ -381,7 +381,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setWeaponSubCategory('grenade')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  weaponSubCategory === 'grenade' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  weaponSubCategory === 'grenade' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 💣 Grenades
@@ -395,7 +395,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('all')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  equipmentSubCategory === 'all' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  equipmentSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 All
@@ -403,7 +403,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('formulae')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors flex items-center space-x-1 ${
-                  equipmentSubCategory === 'formulae' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  equipmentSubCategory === 'formulae' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 <FlaskConical className="w-3 h-3 text-status-error" />
@@ -412,7 +412,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('headgear')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  equipmentSubCategory === 'headgear' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  equipmentSubCategory === 'headgear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 🪖 Headgear
@@ -420,7 +420,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('relic')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  equipmentSubCategory === 'relic' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  equipmentSubCategory === 'relic' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 ✨ Relics & Icons
@@ -428,7 +428,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               <button
                 onClick={() => setEquipmentSubCategory('gear')}
                 className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
-                  equipmentSubCategory === 'gear' ? 'bg-theme-primary text-black font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-white'
+                  equipmentSubCategory === 'gear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
                 🎒 Gear & Ammo
@@ -502,7 +502,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       </span>
                       <button
                         onClick={() => handleEquipWeapon(w)}
-                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
+                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Equip</span>
@@ -570,7 +570,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       </span>
                       <button
                         onClick={() => handleEquipArmour(a)}
-                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
+                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Equip</span>
@@ -648,8 +648,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         onClick={() => handleEquipEquipment(e)}
                         className={`px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
                           isFormula
-                            ? 'bg-theme-accent hover:bg-[#A30000] text-white'
-                            : 'bg-theme-elevated hover:bg-theme-primary hover:text-black text-theme-text border border-theme-border'
+                            ? 'bg-theme-accent hover:bg-status-error text-white'
+                            : 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border'
                         }`}
                       >
                         <Plus className="w-3.5 h-3.5" />

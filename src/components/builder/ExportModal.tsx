@@ -92,7 +92,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
         <div className="flex items-center space-x-2">
           <button
             onClick={() => window.print()}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded font-mono text-xs font-bold uppercase transition-colors shadow"
           >
             <Printer className="w-4 h-4" />
             <span>Print Tactical Dossiers</span>

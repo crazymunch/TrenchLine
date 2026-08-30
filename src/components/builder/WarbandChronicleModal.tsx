@@ -108,7 +108,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
               value={mottoText}
               onChange={(e) => setMottoText(e.target.value)}
               placeholder="e.g. The Wall may forget, but the Copper remembers!"
-              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
           </div>
 
@@ -123,7 +123,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
               value={patronText}
               onChange={(e) => setPatronText(e.target.value)}
               placeholder="e.g. House of Wisdom • Bayt al-Nahas al-Hamra (House of the Red Copper)"
-              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+              className="w-full bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
           </div>
 
@@ -164,11 +164,11 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
               onChange={(e) => setNewLogEntry(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleAddMilestone(); }}
               placeholder="e.g. Turn 2: Discovered the ancient leather-bound Book of Golems in the salt wastes"
-              className="flex-1 bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+              className="flex-1 bg-theme-surface border border-theme-border rounded px-3 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
             <button
               onClick={handleAddMilestone}
-              className="px-3 py-2 bg-theme-primary hover:bg-[#C49F27] text-black font-bold uppercase rounded flex items-center space-x-1 flex-shrink-0 transition-colors"
+              className="px-3 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center space-x-1 flex-shrink-0 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Log Event</span>
@@ -193,7 +193,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                         value={editText}
                         onChange={(e) => setEditText(e.target.value)}
                         rows={2}
-                        className="w-full bg-theme-base border border-theme-primary rounded p-2 text-xs text-white focus:outline-none"
+                        className="w-full bg-theme-base border border-theme-primary rounded p-2 text-xs text-theme-text focus:outline-none"
                       />
                       <div className="flex items-center justify-end space-x-2">
                         <button
@@ -204,7 +204,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                         </button>
                         <button
                           onClick={() => saveEditMilestone(idx)}
-                          className="px-2.5 py-1 rounded bg-theme-primary hover:bg-[#C49F27] text-black font-bold flex items-center space-x-1"
+                          className="px-2.5 py-1 rounded bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold flex items-center space-x-1"
                         >
                           <Check className="w-3 h-3" />
                           <span>Save Event</span>
@@ -221,7 +221,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                         <button
                           onClick={() => moveMilestone(idx, 'up')}
                           disabled={idx === 0}
-                          className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
+                          className="p-1 text-theme-muted hover:text-theme-text disabled:opacity-30"
                           title="Move Up"
                         >
                           <ArrowUp className="w-3 h-3" />
@@ -229,14 +229,14 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                         <button
                           onClick={() => moveMilestone(idx, 'down')}
                           disabled={idx === chronicleItems.length - 1}
-                          className="p-1 text-theme-muted hover:text-white disabled:opacity-30"
+                          className="p-1 text-theme-muted hover:text-theme-text disabled:opacity-30"
                           title="Move Down"
                         >
                           <ArrowDown className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => startEditMilestone(idx)}
-                          className="p-1 text-theme-primary hover:text-white"
+                          className="p-1 text-theme-primary hover:text-theme-text"
                           title="Edit Milestone Wording"
                         >
                           <Edit2 className="w-3 h-3" />

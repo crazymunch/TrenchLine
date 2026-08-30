@@ -124,17 +124,23 @@ export const Navbar: React.FC = () => {
 
                 <div className="h-3 w-[1px] bg-theme-border" />
 
-                <div className="flex items-center space-x-1">
+                {/*
+                  `whitespace-nowrap` and `flex-shrink-0`: the pill shrinks, and
+                  without both the budget broke across two lines as `1045` /
+                  `1220 D`, which reads as a different number. A budget either
+                  fits on one line or the warband name gives up width for it.
+                */}
+                <div className="flex items-center space-x-1 whitespace-nowrap flex-shrink-0 tabular-nums">
                   <Coins className="w-3 h-3 text-theme-primary" />
                   <span className={totalSpent > activeWarband.ducatLimit ? 'text-status-error font-bold' : 'text-theme-text'}>
                     {totalSpent}
                   </span>
-                  <span className="text-theme-muted text-xs sm:text-[10px]">/{activeWarband.ducatLimit} D</span>
+                  <span className="text-theme-muted">/{activeWarband.ducatLimit} D</span>
                 </div>
 
-                <div className="hidden sm:flex items-center space-x-1 text-theme-primary">
+                <div className="hidden sm:flex items-center space-x-1 text-theme-primary whitespace-nowrap flex-shrink-0 tabular-nums">
                   <Sparkles className="w-3 h-3" />
-                  <span>{activeWarband.gloryPoints} ☼</span>
+                  <span>{activeWarband.gloryPoints}</span>
                 </div>
               </div>
             )}
@@ -208,7 +214,7 @@ export const Navbar: React.FC = () => {
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
                     {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
-                      <span className="text-[8px] px-1 py-0.2 rounded bg-theme-primary text-black font-bold font-mono">
+                      <span className="text-[8px] px-1 py-0.2 rounded bg-theme-primary text-theme-base font-bold font-mono">
                         ADMIN
                       </span>
                     )}
@@ -216,7 +222,7 @@ export const Navbar: React.FC = () => {
                 ) : (
                   <button
                     onClick={() => setIsAuthModalOpen(true)}
-                    className="flex items-center space-x-1 px-2.5 py-1.5 text-black font-mono text-xs font-bold uppercase rounded shadow transition-colors"
+                    className="flex items-center space-x-1 px-2.5 py-1.5 text-theme-base font-mono text-xs font-bold uppercase rounded shadow transition-colors"
                     style={{ backgroundColor: activeThemeObj.primaryColor }}
                   >
                     <LogIn className="w-3 h-3" />

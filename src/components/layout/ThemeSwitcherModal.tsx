@@ -103,7 +103,7 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
                       {getIcon(theme.iconName, theme.primaryColor)}
                     </div>
                     <div>
-                      <h3 className="font-gothic font-bold text-sm tracking-wide text-theme-text group-hover:text-white">
+                      <h3 className="font-gothic font-bold text-sm tracking-wide text-theme-text group-hover:text-theme-text">
                         {theme.name}
                       </h3>
                       <span 

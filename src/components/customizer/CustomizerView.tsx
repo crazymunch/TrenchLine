@@ -6,6 +6,7 @@ import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../../
 import { GitHubDiffModal } from './GitHubDiffModal';
 import { fetchLatestRepoCommit } from '../../services/githubSync';
 import { soundEffects } from '../../services/soundEffects';
+import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
   SlidersHorizontal, 
   GitBranch, 
@@ -222,20 +223,12 @@ export const CustomizerView: React.FC = () => {
       
       {/* Header Banner */}
       <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl space-y-3 bevel-container">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <SlidersHorizontal className="w-6 h-6 text-theme-primary" />
-              <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
-                MASTER RULES & WARGEAR CUSTOMIZER
-              </h1>
-            </div>
-            <p className="text-xs text-theme-muted pt-1">
-              Live statline editor and custom rule override engine. Adjust point costs, ranges, hands, and keywords without losing custom warband rosters.
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-3 flex-shrink-0">
+        <ViewMasthead
+          eyebrow="Overrides"
+          icon={<SlidersHorizontal className="w-4 h-4" />}
+          title="Rules & Wargear Customizer"
+          strapline="A live statline editor over the published rules. Adjust costs, ranges, hands and keywords without losing the rosters built against them."
+          actions={<>
             <button
               onClick={handleCheckSync}
               disabled={isCheckingSync}
@@ -244,8 +237,8 @@ export const CustomizerView: React.FC = () => {
               <GitBranch className={`w-3.5 h-3.5 ${isCheckingSync ? 'animate-spin text-theme-primary' : ''}`} />
               <span>{isCheckingSync ? 'Checking Commits...' : 'Check GitHub Updates'}</span>
             </button>
-          </div>
-        </div>
+          </>}
+        />
 
         {/* Upstream status. Reports what was actually read, or why it failed. */}
         {syncError && (
@@ -285,7 +278,7 @@ export const CustomizerView: React.FC = () => {
               onClick={() => setActiveTab(t.id as any)}
               className={`px-4 py-2 rounded font-bold uppercase flex items-center space-x-1.5 transition-colors ${
                 activeTab === t.id
-                  ? 'bg-theme-primary text-black shadow'
+                  ? 'bg-theme-primary text-theme-base shadow'
                   : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
               }`}
             >
@@ -311,7 +304,7 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectUnit(u.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedUnit?.id === u.id
-                      ? 'bg-theme-primary text-black font-bold shadow'
+                      ? 'bg-theme-primary text-theme-base font-bold shadow'
                       : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
@@ -404,7 +397,7 @@ export const CustomizerView: React.FC = () => {
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedUnitSuccess ? '✓ Profile Saved!' : 'Save Custom Profile'}</span>
@@ -430,7 +423,7 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectWeapon(w.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedWeapon?.id === w.id
-                      ? 'bg-theme-primary text-black font-bold shadow'
+                      ? 'bg-theme-primary text-theme-base font-bold shadow'
                       : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
@@ -528,7 +521,7 @@ export const CustomizerView: React.FC = () => {
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedWepSuccess ? '✓ Weapon Saved!' : 'Save Custom Weapon'}</span>
@@ -554,7 +547,7 @@ export const CustomizerView: React.FC = () => {
                   onClick={() => handleSelectArmour(a.id)}
                   className={`w-full p-2 rounded text-left flex items-center justify-between transition-colors ${
                     selectedArmour?.id === a.id
-                      ? 'bg-theme-primary text-black font-bold shadow'
+                      ? 'bg-theme-primary text-theme-base font-bold shadow'
                       : 'hover:bg-theme-elevated text-theme-text'
                   }`}
                 >
@@ -628,7 +621,7 @@ export const CustomizerView: React.FC = () => {
               <div className="flex items-center justify-end pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
+                  className="px-6 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-2 transition-all"
                 >
                   <Save className="w-4 h-4" />
                   <span>{savedArmSuccess ? '✓ Armour Saved!' : 'Save Custom Armour'}</span>

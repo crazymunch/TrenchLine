@@ -80,14 +80,19 @@ export const WarbandDashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       
-      {/* Top Header & Warband Management Strip */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-border pb-4">
-        <div>
-          <h2 className="font-gothic font-bold text-xl text-theme-text tracking-wide">WARBAND COMMAND</h2>
-          <p className="text-xs font-mono text-theme-muted">Select, build, import, and equip your holy or damned strike forces</p>
+      {/*
+        `lg:` and not `sm:` for the side-by-side turn. At 768px the strapline
+        already wraps to two lines, which leaves the action group about 250px
+        and breaks it into two ragged rows next to a squeezed heading. Stacked
+        is the better tablet layout; the row only earns its place on a desktop.
+      */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-theme-border pb-4">
+        <div className="min-w-0">
+          <h2 className="font-gothic text-2xl sm:text-3xl text-theme-text tracking-tight">Warband Command</h2>
+          <p className="eyebrow mt-1">Select, build, import and equip your strike forces</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
           {warbands.length > 1 && (
             <button
               onClick={() => setIsComparatorOpen(true)}
@@ -108,7 +113,7 @@ export const WarbandDashboard: React.FC = () => {
 
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center space-x-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded transition-colors shadow"
+            className="flex items-center space-x-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded transition-colors shadow"
           >
             <Plus className="w-4 h-4" />
             <span>New Warband</span>
@@ -132,7 +137,7 @@ export const WarbandDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="w-full sm:w-auto px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow-lg shadow-theme-primary/20 flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto px-6 py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow-lg shadow-theme-primary/20 flex items-center justify-center space-x-2"
             >
               <Plus className="w-4 h-4" />
               <span>Muster New Warband</span>
@@ -160,26 +165,26 @@ export const WarbandDashboard: React.FC = () => {
                 <div
                   key={wb.id}
                   onClick={() => setActiveWarbandId(wb.id)}
-                  className={`p-4 rounded-md border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between bevel-container ${
+                  className={`p-4 border border-l-2 transition-colors cursor-pointer relative flex flex-col justify-between ${
                     isActive
-                      ? 'bg-theme-surface border-theme-primary shadow-lg shadow-black/60 ring-1 ring-theme-primary'
-                      : 'bg-theme-surface/60 border-theme-border hover:border-theme-muted/60 hover:bg-theme-surface'
+                      ? 'bg-theme-surface border-theme-border border-l-theme-primary'
+                      : 'bg-transparent border-theme-border border-l-theme-border hover:bg-theme-surface hover:border-l-theme-muted'
                   }`}
                 >
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center space-x-2 min-w-0">
                         <div
                           className="w-2.5 h-2.5 rounded-full"
                           style={{ backgroundColor: faction?.color || '#D4AF37' }}
                         />
-                        <span className="text-xs sm:text-[10px] font-mono text-theme-primary uppercase font-semibold">
+                        <span className="eyebrow accent font-bold truncate">
                           {faction?.name || wb.factionId}
                         </span>
                       </div>
                       {isActive && (
-                        <span className="text-xs sm:text-[9px] font-mono font-bold bg-theme-primary text-black px-1.5 py-0.2 rounded uppercase">
-                          ACTIVE
+                        <span className="text-xs sm:text-[10px] font-mono font-bold bg-theme-primary text-theme-base px-1.5 py-0.5 uppercase tracking-wider flex-shrink-0">
+                          Active
                         </span>
                       )}
                     </div>
@@ -240,7 +245,7 @@ export const WarbandDashboard: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="tap text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -336,7 +341,7 @@ export const WarbandDashboard: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
                 >
                   Muster Roster
                 </button>

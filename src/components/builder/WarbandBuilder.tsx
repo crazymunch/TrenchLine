@@ -139,133 +139,144 @@ export const WarbandBuilder: React.FC = () => {
     <div className="space-y-6">
       
       {/* Warband Command Header */}
-      <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl relative overflow-hidden bevel-container">
-        
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <span 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: faction?.color || '#D4AF37' }} 
-              />
-              <span className="text-xs font-mono uppercase font-bold text-theme-primary tracking-wider">
-                {faction?.name}
-              </span>
-              {warband.patron && (
-                <>
-                  <span className="text-theme-muted">•</span>
-                  <span className="text-xs font-mono text-theme-muted truncate max-w-sm">
-                    {warband.patron}
-                  </span>
-                </>
-              )}
-            </div>
-            <h1 className="font-gothic font-bold text-2xl sm:text-3xl text-theme-text tracking-wide">
-              {warband.name}
-            </h1>
-            {warband.motto ? (
-              <div 
-                onClick={() => setIsChronicleOpen(true)}
-                className="inline-block p-1.5 bg-theme-base border-l-2 border-theme-primary rounded-r text-xs italic text-theme-text font-serif cursor-pointer hover:border-theme-primary-hover transition-colors"
-                title="Click to view full Warband Chronicle & Lore Dossier"
-              >
-                &quot;{warband.motto}&quot;
-              </div>
-            ) : (
-              <p className="text-xs text-theme-muted max-w-xl">{faction?.tagline}</p>
+      {/*
+        The warband masthead.
+
+        Three bands stacked, not a two-column header: an identity band, a
+        toolbar rail, and a ledger strip of numbers. The old header put the
+        identity and a seven-button toolbar side by side, which is a layout
+        that only has one good size — at 768px the buttons wrapped into three
+        ragged rows beside a squeezed title, and at 375px the faction name
+        broke over four lines.
+
+        Bands stack the same way at every width. The only thing that changes
+        with the viewport is how the middle band handles overflow: it scrolls
+        sideways on a phone rather than wrapping, because a toolbar that
+        reflows moves the button you were reaching for.
+      */}
+      <div className="bg-theme-surface border border-theme-border relative bevel-container">
+
+        {/* Identity */}
+        <div className="border-l-2 border-l-theme-primary p-4 sm:p-6 space-y-2.5">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: faction?.color || '#D4AF37' }}
+            />
+            <span className="eyebrow accent font-bold">{faction?.name}</span>
+            {warband.patron && (
+              <>
+                <span className="text-theme-muted text-xs" aria-hidden="true">/</span>
+                <span className="eyebrow truncate max-w-[14rem] sm:max-w-sm">{warband.patron}</span>
+              </>
             )}
           </div>
 
-          {/* Builder Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="font-gothic text-[1.75rem] leading-[1.05] sm:text-4xl lg:text-5xl text-theme-text tracking-tight break-words">
+            {warband.name}
+          </h1>
+
+          {warband.motto ? (
             <button
               onClick={() => setIsChronicleOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors shadow"
-              title="House Chronicle & Lore Dossier"
+              className="tap block text-left border-l-2 border-theme-border hover:border-theme-primary pl-2.5 py-0.5 flavour text-sm transition-colors"
+              title="Click to view full Warband Chronicle & Lore Dossier"
             >
-              <Scroll className="w-4 h-4" />
-              <span>House Chronicle</span>
+              &ldquo;{warband.motto}&rdquo;
             </button>
-
-            <button
-              onClick={() => setIsChangelogOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Warband Growth Chronicle & Changelog"
-            >
-              <History className="w-4 h-4 text-theme-primary" />
-              <span>Growth History ({warband.snapshots?.length || 1})</span>
-            </button>
-
-            <button
-              onClick={() => setIsStashOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/40 rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="View & manage unassigned munitions in Warband Stash"
-            >
-              <Archive className="w-4 h-4" />
-              <span>Stash ({totalStashItems})</span>
-            </button>
-
-            <button
-              onClick={() => setIsAddUnitOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>Recruit Warrior</span>
-            </button>
-
-            <button
-              onClick={() => setIsRulesetOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Which rules this warband is built and checked against"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-status-legal" />
-              <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
-            </button>
-
-            <button
-              onClick={() => setIsVariantOpen(true)}
-              disabled={!dataset}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              title="Which Warband Variant this warband is built as"
-            >
-              <Flag className="w-4 h-4" />
-              <span>{activeVariant?.name ?? 'Standard list'}</span>
-            </button>
-
-            <button
-              onClick={() => setIsExportOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Export & Print"
-            >
-              <Share2 className="w-4 h-4" />
-              <span>Export</span>
-            </button>
-
-            <button
-              onClick={() => setIsNotesOpen(!isNotesOpen)}
-              className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
-              title="Campaign Notes"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Notes</span>
-            </button>
-          </div>
+          ) : (
+            <p className="flavour text-sm max-w-xl">{faction?.tagline}</p>
+          )}
         </div>
 
-        {/* Roster legality, from the generated ruleset. */}
-        {datasetError ? (
-          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-theme-accent/15 border-t border-theme-accent/50 text-xs font-mono text-status-error">
-            Legality unavailable: {datasetError}
+        {/*
+          Toolbar rail.
+
+          One primary action and six secondary ones. `overflow-x-auto` with a
+          `min-w-max` track is the sanctioned way to carry a wide row on a
+          narrow screen (docs/MOBILE.md) — the alternative is wrapping, and a
+          wrapping toolbar is a toolbar whose buttons move.
+
+          The negative margins let the strip bleed to the container edge so the
+          last button is visibly cut off, which is what tells you it scrolls.
+        */}
+        <div className="border-t border-theme-border p-4 sm:p-6 space-y-3">
+          <button
+            onClick={() => setIsAddUnitOpen(true)}
+            className="w-full lg:w-auto flex items-center justify-center lg:justify-start space-x-2 px-4 py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase tracking-widest transition-colors"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Recruit Warrior</span>
+          </button>
+
+          <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto">
+            <div className="flex items-center gap-2 min-w-max">
+              <button
+                onClick={() => setIsChronicleOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-primary border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="House Chronicle & Lore Dossier"
+              >
+                <Scroll className="w-4 h-4" />
+                <span>Chronicle</span>
+              </button>
+
+              <button
+                onClick={() => setIsChangelogOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="Warband Growth Chronicle & Changelog"
+              >
+                <History className="w-4 h-4 text-theme-primary" />
+                <span>History ({warband.snapshots?.length || 1})</span>
+              </button>
+
+              <button
+                onClick={() => setIsStashOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-primary border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="View & manage unassigned munitions in Warband Stash"
+              >
+                <Archive className="w-4 h-4" />
+                <span>Stash ({totalStashItems})</span>
+              </button>
+
+              <button
+                onClick={() => setIsRulesetOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="Which rules this warband is built and checked against"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-status-legal" />
+                <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
+              </button>
+
+              <button
+                onClick={() => setIsVariantOpen(true)}
+                disabled={!dataset}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                title="Which Warband Variant this warband is built as"
+              >
+                <Flag className="w-4 h-4" />
+                <span>{activeVariant?.name ?? 'Standard list'}</span>
+              </button>
+
+              <button
+                onClick={() => setIsExportOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="Export & Print"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Export</span>
+              </button>
+
+              <button
+                onClick={() => setIsNotesOpen(!isNotesOpen)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="Campaign Notes"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Notes</span>
+              </button>
+            </div>
           </div>
-        ) : datasetLoading ? (
-          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-theme-elevated border-t border-theme-border text-xs font-mono text-theme-muted">
-            Checking legality…
-          </div>
-        ) : dataset ? (
-          <div className="mt-6 -mx-6 -mb-6">
-            <LegalityStrip warband={warband} dataset={dataset} rulesetId={rulesetId} />
-          </div>
-        ) : null}
+        </div>
 
         {isVariantOpen && dataset && (
           <VariantPicker
@@ -295,23 +306,31 @@ export const WarbandBuilder: React.FC = () => {
           />
         )}
 
-        {/* Budget Bar & Validation Stats */}
-        <div className="mt-6 pt-4 border-t border-theme-border grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-          
-          {/* Budget Meter with Edit Limit Trigger */}
-          <div className="md:col-span-2 space-y-1.5">
-            <div className="flex justify-between items-center text-xs font-mono">
-              <div className="flex items-center space-x-2">
-                <span className="text-theme-muted flex items-center space-x-1">
+        {/*
+          The ledger strip.
+
+          Budget over the full width, then treasury and composition beside each
+          other. The old grid went straight from one column to four at `md:`,
+          which is 768px — four cells of 180px each, and "TROOPERS" in a 9px
+          font because that was the only size it fitted at. Two columns at
+          `md:` and four only at `lg:` keeps every label at a readable 10px.
+        */}
+        <div className="border-t border-theme-border grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 divide-theme-border">
+
+          {/* Budget */}
+          <div className="md:col-span-2 lg:col-span-2 p-4 sm:p-5 space-y-2 md:border-b lg:border-b-0 md:border-theme-border lg:border-r lg:border-theme-border">
+            <div className="flex flex-wrap justify-between items-center gap-2 font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <span className="eyebrow flex items-center gap-1.5">
                   <Coins className="w-3.5 h-3.5 text-theme-primary" />
-                  <span>Ducat Point Limit:</span>
+                  <span>Ducat Limit</span>
                 </span>
                 {isCampaignForce ? (
                   /* Not editable, and it says why rather than just being absent:
                      a player who cannot find the button should learn that the
                      number is published, not that the app lost a feature. */
                   <span
-                    className="px-1.5 py-0.5 rounded bg-theme-elevated text-theme-muted border border-theme-border text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
+                    className="px-1.5 py-0.5 bg-theme-elevated text-theme-muted border border-theme-border text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
                     title={limits
                       ? `Game ${limits.game} of the campaign. Set by the Warband Threshold Table, not by hand.`
                       : 'Set by the Warband Threshold Table, not by hand.'}
@@ -322,75 +341,70 @@ export const WarbandBuilder: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleOpenBudgetModal}
-                    className="px-1.5 py-0.5 min-h-[44px] lg:min-h-0 rounded bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
+                    className="tap px-1.5 py-0.5 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
                     title="Manually adjust warband Ducat Point Limit"
                   >
                     <Edit2 className="w-2.5 h-2.5" />
-                    <span>Edit Limit</span>
+                    <span>Edit</span>
                   </button>
                 )}
               </div>
 
-              <span className={`font-bold ${isOverBudget ? 'text-status-error' : 'text-theme-text'}`}>
-                {totalCost} / {warband.ducatLimit} Ducats
+              <span className={`font-bold tabular-nums ${isOverBudget ? 'text-status-error' : 'text-theme-text'}`}>
+                {totalCost} / {warband.ducatLimit} D
               </span>
             </div>
 
-            <div className="w-full bg-theme-base h-2.5 rounded-full overflow-hidden border border-theme-border">
-              <div
-                className={`h-full transition-all duration-300 ${
-                  isOverBudget ? 'bg-status-error' : 'bg-theme-primary'
-                }`}
-                style={{ width: `${Math.min(100, (totalCost / warband.ducatLimit) * 100)}%` }}
+            <div className={`meter ${isOverBudget ? '' : 'accent'}`}>
+              <i
+                style={{
+                  width: `${Math.min(100, (totalCost / warband.ducatLimit) * 100)}%`,
+                  background: isOverBudget ? 'rgb(var(--status-error))' : undefined,
+                }}
               />
             </div>
           </div>
 
-          {/* Treasury & Glory (Clickable to Edit) */}
-          <div 
+          {/* Treasury & Glory (clickable to edit) */}
+          <button
             onClick={handleOpenBudgetModal}
-            className="flex items-center justify-around bg-theme-base hover:bg-theme-surface p-2 rounded border border-theme-border hover:border-theme-primary/60 font-mono text-xs cursor-pointer transition-colors group"
+            className="p-4 sm:p-5 text-left bg-transparent hover:bg-theme-elevated transition-colors group lg:border-r lg:border-theme-border"
             title="Click to adjust Treasury Ducats & Glory Points"
           >
-            <div className="text-center">
-              <span className="text-xs sm:text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
-                <span>TREASURY</span>
-                <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="eyebrow flex items-center gap-1.5">
+              <span>Stores</span>
+              <Edit2 className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </span>
+            <span className="mt-1.5 grid grid-cols-2 divide-x divide-theme-border font-mono">
+              <span className="block pr-3">
+                <span className="block text-xs sm:text-[10px] uppercase tracking-wider text-theme-muted">Treasury</span>
+                <span className="block font-bold text-theme-primary tabular-nums">{warband.treasuryDucats} D</span>
               </span>
-              <span className="font-bold text-theme-primary">{warband.treasuryDucats} D</span>
-            </div>
-            <div className="h-6 w-[1px] bg-theme-border" />
-            <div className="text-center">
-              <span className="text-xs sm:text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
-                <span>GLORY</span>
-                <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="block pl-3">
+                <span className="block text-xs sm:text-[10px] uppercase tracking-wider text-theme-muted">Glory</span>
+                <span className="flex items-center gap-1 font-bold text-theme-primary tabular-nums">
+                  <Sparkles className="w-3 h-3" />
+                  {warband.gloryPoints}
+                </span>
               </span>
-              <span className="font-bold text-theme-primary flex items-center justify-center space-x-1">
-                <Sparkles className="w-3 h-3" />
-                <span>{warband.gloryPoints}</span>
-              </span>
-            </div>
-          </div>
+            </span>
+          </button>
 
-          {/* Composition Badges */}
-          <div className="flex items-center justify-around bg-theme-base p-2 rounded border border-theme-border font-mono text-xs sm:text-[11px]">
-            <div className="text-center">
-              <span className="text-xs sm:text-[9px] text-theme-muted block">LEADER</span>
-              <span className={hasLeader ? 'text-status-legal font-bold' : 'text-status-error font-bold'}>
-                {hasLeader ? '1/1' : '0/1'}
-              </span>
-            </div>
-            <div className="text-center">
-              <span className="text-xs sm:text-[9px] text-theme-muted block">ELITES</span>
-              <span className="font-bold text-theme-text">{eliteCount}</span>
-            </div>
-            <div className="text-center">
-              <span className="text-xs sm:text-[9px] text-theme-muted block">TROOPERS</span>
-              <span className="font-bold text-theme-text">{trooperCount}</span>
-            </div>
-            <div className="text-center">
-              <span className="text-xs sm:text-[9px] text-theme-muted block">MERC</span>
-              <span className="font-bold text-theme-text">{mercenaryCount}</span>
+          {/* Composition */}
+          <div className="p-4 sm:p-5">
+            <span className="eyebrow block">Composition</span>
+            <div className="mt-1.5 grid grid-cols-4 divide-x divide-theme-border font-mono">
+              {([
+                ['Leader', hasLeader ? '1/1' : '0/1', hasLeader ? 'text-status-legal' : 'text-status-error'],
+                ['Elite', String(eliteCount), 'text-theme-text'],
+                ['Troop', String(trooperCount), 'text-theme-text'],
+                ['Merc', String(mercenaryCount), 'text-theme-text'],
+              ] as const).map(([label, value, tone], i) => (
+                <div key={label} className={i === 0 ? 'pr-2' : 'px-2 last:pr-0'}>
+                  <span className="block text-xs sm:text-[10px] uppercase tracking-wider text-theme-muted">{label}</span>
+                  <span className={`block font-bold tabular-nums ${tone}`}>{value}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -398,10 +412,10 @@ export const WarbandBuilder: React.FC = () => {
 
         {/* Validation Warnings */}
         {(!hasLeader || isOverBudget) && (
-          <div className="mt-4 p-3 bg-theme-accent/20 border border-theme-accent rounded text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-status-error">
-            <div className="flex items-center space-x-2">
-              <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-              <div>
+          <div className="border-t-2 border-status-error bg-status-error/10 p-4 text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-status-error">
+            <div className="flex items-start gap-2">
+              <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-px" />
+              <div className="space-y-1">
                 {!hasLeader && (
                   <p>
                     • Roster requires exactly 1 Leader warrior. Appoint below or click the crown <Crown className="w-3 h-3 inline text-theme-primary" /> on any warrior card.
@@ -417,13 +431,26 @@ export const WarbandBuilder: React.FC = () => {
             {isOverBudget && (
               <button
                 onClick={handleOpenBudgetModal}
-                className="px-3 py-1 bg-theme-accent text-white rounded uppercase font-bold text-xs hover:bg-[#A30000] flex-shrink-0 transition-colors"
+                className="px-3 py-2 bg-status-error text-theme-base uppercase font-bold text-xs tracking-wider flex-shrink-0 transition-colors hover:opacity-90"
               >
                 Adjust Limit
               </button>
             )}
           </div>
         )}
+
+        {/* Roster legality, from the generated ruleset. */}
+        {datasetError ? (
+          <div className="border-t-2 border-status-error bg-status-error/10 px-4 py-2.5 text-xs font-mono text-status-error">
+            Legality unavailable: {datasetError}
+          </div>
+        ) : datasetLoading ? (
+          <div className="border-t border-theme-border bg-theme-elevated px-4 py-2.5 text-xs font-mono text-theme-muted">
+            Checking legality…
+          </div>
+        ) : dataset ? (
+          <LegalityStrip warband={warband} dataset={dataset} rulesetId={rulesetId} />
+        ) : null}
 
       </div>
 
@@ -437,7 +464,7 @@ export const WarbandBuilder: React.FC = () => {
             </span>
             <button
               onClick={() => setIsNotesOpen(false)}
-              className="text-theme-muted hover:text-white text-xs"
+              className="text-theme-muted hover:text-theme-text text-xs"
             >
               ✕
             </button>
@@ -459,7 +486,7 @@ export const WarbandBuilder: React.FC = () => {
             onClick={() => setActiveCategoryFilter(cat)}
             className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all whitespace-nowrap ${
               activeCategoryFilter === cat
-                ? 'bg-theme-primary text-black shadow'
+                ? 'bg-theme-primary text-theme-base shadow'
                 : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
             }`}
           >
@@ -474,7 +501,7 @@ export const WarbandBuilder: React.FC = () => {
           <p className="text-xs font-mono text-theme-muted">No warriors in this category.</p>
           <button
             onClick={() => setIsAddUnitOpen(true)}
-            className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded"
+            className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded"
           >
             Recruit First Warrior
           </button>
@@ -543,7 +570,7 @@ export const WarbandBuilder: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsBudgetModalOpen(false)}
-                className="text-theme-muted hover:text-white"
+                className="text-theme-muted hover:text-theme-text"
               >
                 ✕
               </button>
@@ -590,7 +617,7 @@ export const WarbandBuilder: React.FC = () => {
                         onClick={() => setEditLimit(preset.value)}
                         className={`py-1.5 px-2 rounded text-xs sm:text-[10px] font-bold transition-all border ${
                           editLimit === preset.value
-                            ? 'bg-theme-primary text-black border-theme-primary'
+                            ? 'bg-theme-primary text-theme-base border-theme-primary'
                             : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
                         }`}
                       >
@@ -671,13 +698,13 @@ export const WarbandBuilder: React.FC = () => {
             <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
               <button
                 onClick={() => setIsBudgetModalOpen(false)}
-                className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-muted hover:text-white rounded uppercase font-bold text-xs"
+                className="px-4 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-muted hover:text-theme-text rounded uppercase font-bold text-xs"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveBudget}
-                className="px-6 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded uppercase font-bold text-xs shadow-lg flex items-center space-x-1.5"
+                className="px-6 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded uppercase font-bold text-xs shadow-lg flex items-center space-x-1.5"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Save Budget & Stats</span>

@@ -11,6 +11,8 @@ import { AVAILABLE_RULESETS } from '../../data/rulesets';
 import { soundEffects } from '../../services/soundEffects';
 import { MissionGenerator } from './MissionGenerator';
 import { DiceProbabilityModal } from './DiceProbabilityModal';
+import { RulesProse } from './RulesProse';
+import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
   BookOpen, 
   Search, 
@@ -46,26 +48,32 @@ import {
  * constructs and the text is rules, so a dependency that might reflow or
  * swallow something is a worse trade than fifteen lines.
  */
-const ScenarioBody: React.FC<{ body: string }> = ({ body }) => (
-  <div className="space-y-2">
-    {body.split('\n\n').map((para, i) => {
-      const heading = /^\*\*(.+)\*\*$/.exec(para);
-      if (heading) {
-        return (
-          <p key={i} className="font-bold text-theme-text pt-1">{heading[1]}</p>
-        );
-      }
-      if (para.startsWith('- ')) {
-        return (
-          <p key={i} className="text-theme-text leading-relaxed pl-4 -indent-4">
-            <span className="text-theme-primary">▪ </span>{para.slice(2)}
-          </p>
-        );
-      }
-      return <p key={i} className="text-theme-text leading-relaxed">{para}</p>;
-    })}
-  </div>
-);
+/**
+ * A chapter's extracted text repeats its own title as the first `###` line,
+ * because that heading is where the extractor cut the chapter. The card
+ * already shows the title, so printing it again wastes the first line of
+ * every one of them. Matched loosely — case and punctuation drift between the
+ * heading in the PDF and the title in the index — and only ever removed from
+ * the very first line, so no heading inside the body can be lost.
+ */
+const normaliseHeading = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+function stripLeadingHeading(body: string, title: string): string {
+  const lines = body.split('\n');
+  const first = lines.findIndex((l) => l.trim() !== '');
+  if (first === -1) return body;
+  const heading = /^#{1,6}\s+(.*)$/.exec(lines[first].trim());
+  if (!heading) return body;
+  const h = normaliseHeading(heading[1]);
+  const t = normaliseHeading(title);
+  // Prefix either way, not equality: the index title carries a parenthetical
+  // the heading in the PDF does not ("Success Rolls & Dice Mechanics (+/-
+  // Dice)" against "Success Rolls & Dice Mechanics"), and occasionally the
+  // reverse. A one-word heading is never matched this way, so a chapter whose
+  // body genuinely opens on a short heading keeps it.
+  if (h.length < 8 || (!t.startsWith(h) && !h.startsWith(t))) return body;
+  return lines.slice(first + 1).join('\n');
+}
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
@@ -204,19 +212,12 @@ export const CodexView: React.FC = () => {
       
       {/* Header Banner */}
       <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl space-y-4 bevel-container">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <BookOpen className="w-6 h-6 text-theme-primary" />
-              <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
-                OFFICIAL RULES COMPENDIUM & CODEX
-              </h1>
-            </div>
-            <p className="text-xs font-mono text-theme-muted">
-              Authentic Trench Crusade ruleset, 12 scenarios with extracted deployment maps, keywords glossary, and arsenal lore
-            </p>
-          </div>
-
+        <ViewMasthead
+          eyebrow="Reference"
+          icon={<BookOpen className="w-4 h-4" />}
+          title="Official Rules Codex"
+          strapline="The published Trench Crusade ruleset: twelve scenarios with their extracted deployment maps, the keyword glossary, and the arsenal."
+          actions={<>
           <button
             onClick={() => setIsProbabilityOpen(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-theme-elevated hover:bg-theme-border border border-theme-primary/50 text-theme-primary rounded font-mono text-xs font-bold uppercase transition-all shadow flex-shrink-0"
@@ -224,7 +225,8 @@ export const CodexView: React.FC = () => {
             <BarChart3 className="w-4 h-4" />
             <span>2D6 Probability Odds</span>
           </button>
-        </div>
+          </>}
+        />
 
         {/* Search Bar */}
         <div className="relative">
@@ -253,8 +255,8 @@ export const CodexView: React.FC = () => {
                 onClick={() => setActiveTab(t.id as any)}
                 className={`flex items-center justify-center space-x-2 px-3 py-2 rounded text-xs font-mono font-bold uppercase transition-all ${
                   activeTab === t.id
-                    ? 'bg-theme-primary text-black shadow font-extrabold'
-                    : 'bg-theme-elevated text-theme-muted hover:text-theme-text hover:bg-[#2A303D] border border-theme-border'
+                    ? 'bg-theme-primary text-theme-base shadow font-extrabold'
+                    : 'bg-theme-elevated text-theme-muted hover:text-theme-text hover:bg-theme-elevated border border-theme-border'
                 }`}
               >
                 {t.icon}
@@ -276,8 +278,8 @@ export const CodexView: React.FC = () => {
                 onClick={() => setActiveTab(t.id as any)}
                 className={`flex items-center justify-center space-x-2 px-3 py-2 rounded text-xs font-mono font-bold uppercase transition-all ${
                   activeTab === t.id
-                    ? 'bg-theme-primary text-black shadow font-extrabold'
-                    : 'bg-theme-elevated text-theme-muted hover:text-theme-text hover:bg-[#2A303D] border border-theme-border'
+                    ? 'bg-theme-primary text-theme-base shadow font-extrabold'
+                    : 'bg-theme-elevated text-theme-muted hover:text-theme-text hover:bg-theme-elevated border border-theme-border'
                 }`}
               >
                 {t.icon}
@@ -306,9 +308,7 @@ export const CodexView: React.FC = () => {
                     {chapter.category}
                   </span>
                 </div>
-                <div className="text-xs font-mono text-theme-text whitespace-pre-line leading-relaxed">
-                  {chapter.content}
-                </div>
+                <RulesProse source={stripLeadingHeading(chapter.content, chapter.title)} />
               </div>
             ))}
           </div>
@@ -383,7 +383,7 @@ export const CodexView: React.FC = () => {
                       }}
                       className={`w-full py-2 font-mono text-xs font-bold uppercase rounded transition-colors ${
                         isActive
-                          ? 'bg-theme-primary text-black font-extrabold'
+                          ? 'bg-theme-primary text-theme-base font-extrabold'
                           : 'bg-theme-surface text-theme-text border border-theme-border hover:bg-theme-elevated'
                       }`}
                     >
@@ -548,7 +548,7 @@ export const CodexView: React.FC = () => {
                               className="w-full max-h-[500px] object-contain rounded block mx-auto transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <span className="px-4 py-2 bg-theme-primary text-black font-bold uppercase rounded text-xs shadow flex items-center space-x-2">
+                              <span className="px-4 py-2 bg-theme-primary text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-2">
                                 <Search className="w-4 h-4" />
                                 <span>Inspect Full Resolution Diagram</span>
                               </span>
@@ -579,7 +579,7 @@ export const CodexView: React.FC = () => {
                               <Scroll className="w-3.5 h-3.5 flex-shrink-0" />
                               <span>{sec.heading}</span>
                             </span>
-                            <ScenarioBody body={sec.body} />
+                            <RulesProse source={sec.body} />
                           </div>
                         ))}
                       </div>
@@ -628,7 +628,7 @@ export const CodexView: React.FC = () => {
                   });
                   soundEffects.playDiceRoll();
                 }}
-                className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded flex items-center space-x-1.5 shadow"
+                className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded flex items-center space-x-1.5 shadow"
               >
                 <Dice6 className="w-4 h-4" />
                 <span>Roll D66 for Skill</span>
@@ -668,8 +668,8 @@ export const CodexView: React.FC = () => {
                 onClick={() => setSelectedSkillsCategory(cat.id as any)}
                 className={`px-4 py-2 rounded font-bold uppercase transition-all whitespace-nowrap ${
                   selectedSkillsCategory === cat.id
-                    ? 'bg-theme-primary text-black shadow'
-                    : 'bg-theme-surface text-theme-muted hover:text-white border border-theme-border'
+                    ? 'bg-theme-primary text-theme-base shadow'
+                    : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
                 {cat.label}
@@ -718,8 +718,8 @@ export const CodexView: React.FC = () => {
             </div>
           ) : (
             /* Tables View */
-            <div className="bg-theme-surface border border-theme-border rounded-md overflow-hidden font-mono text-xs">
-              <table className="w-full text-left border-collapse">
+            <div className="bg-theme-surface border border-theme-border overflow-x-auto font-mono text-xs">
+              <table className="w-full min-w-[34rem] text-left border-collapse">
                 <thead>
                   <tr className="bg-theme-base border-b border-theme-border text-theme-primary">
                     <th className="p-3 font-bold w-20">Roll</th>
@@ -781,7 +781,7 @@ export const CodexView: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setSelectedSkillModal(null)}
-                    className="p-1 text-theme-muted hover:text-white"
+                    className="p-1 text-theme-muted hover:text-theme-text"
                   >
                     ✕
                   </button>
@@ -805,7 +805,7 @@ export const CodexView: React.FC = () => {
                 <div className="flex justify-end pt-2 border-t border-theme-border">
                   <button
                     onClick={() => setSelectedSkillModal(null)}
-                    className="px-4 py-1.5 bg-theme-primary text-black font-bold uppercase rounded text-xs"
+                    className="px-4 py-1.5 bg-theme-primary text-theme-base font-bold uppercase rounded text-xs"
                   >
                     Close
                   </button>
@@ -843,8 +843,8 @@ export const CodexView: React.FC = () => {
                   onClick={() => setSelectedChartTable(cat.id as any)}
                   className={`px-3.5 py-2 rounded font-bold uppercase transition-all whitespace-nowrap ${
                     selectedChartTable === cat.id
-                      ? 'bg-theme-primary text-black shadow'
-                      : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
+                      ? 'bg-theme-primary text-theme-base shadow'
+                      : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                   }`}
                 >
                   {cat.label}
@@ -1163,7 +1163,7 @@ export const CodexView: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Compass className="w-5 h-5 text-theme-primary" />
                 <div>
-                  <h3 className="font-gothic font-bold text-lg text-white">
+                  <h3 className="font-gothic font-bold text-lg text-theme-text">
                     OFFICIAL DEPLOYMENT DIAGRAM: {lightboxMap.name}
                   </h3>
                   <span className="text-xs sm:text-[10px] text-theme-muted block">
@@ -1193,7 +1193,7 @@ export const CodexView: React.FC = () => {
               <span>Official Rulebook Scenario Diagram</span>
               <button
                 onClick={() => setLightboxMap(null)}
-                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+                className="px-4 py-1.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
               >
                 Done
               </button>

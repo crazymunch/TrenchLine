@@ -109,8 +109,8 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
         </div>
 
         {/* Metric Comparison Table */}
-        <div className="bg-theme-base border border-theme-border rounded-md overflow-hidden">
-          <table className="w-full text-center text-xs font-mono">
+        <div className="bg-theme-base border border-theme-border overflow-x-auto">
+          <table className="w-full min-w-[32rem] text-center text-xs font-mono">
             <thead className="bg-theme-surface text-theme-muted uppercase text-xs sm:text-[10px] border-b border-theme-border">
               <tr>
                 <th className="p-3 text-left w-1/3 font-gothic text-sm text-theme-primary">{wb1?.name}</th>
@@ -168,12 +168,12 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
 
               {/* Fire / Flame Weapons */}
               <tr className="hover:bg-theme-surface/40">
-                <td className="p-3 text-left font-bold text-[#FF9800]">{s1.fireWeapons} Fire Weapons</td>
+                <td className="p-3 text-left font-bold text-status-warning">{s1.fireWeapons} Fire Weapons</td>
                 <td className="p-3 text-theme-muted flex items-center justify-center space-x-1">
-                  <Flame className="w-3 h-3 text-[#FF9800]" />
+                  <Flame className="w-3 h-3 text-status-warning" />
                   <span>Incendiary Munitions</span>
                 </td>
-                <td className="p-3 text-right font-bold text-[#FF9800]">{s2.fireWeapons} Fire Weapons</td>
+                <td className="p-3 text-right font-bold text-status-warning">{s2.fireWeapons} Fire Weapons</td>
               </tr>
 
             </tbody>

@@ -74,7 +74,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
           </button>
           <button
             onClick={() => onApply(target)}
-            className="flex-1 min-h-[44px] rounded-sm bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-sm sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+            className="flex-1 min-h-[44px] rounded-sm bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-sm sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
           >
             <Check className="w-4 h-4" /> Switch &amp; re-check
           </button>
@@ -101,7 +101,7 @@ export const RulesetSwitcher: React.FC<Props> = ({
                 <div className="flex items-center gap-2">
                   <span className="font-gothic font-bold text-sm text-theme-text">{r.name}</span>
                   {active && (
-                    <span className="text-xs sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-theme-primary text-black">
+                    <span className="text-xs sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm bg-theme-primary text-theme-base">
                       IN USE
                     </span>
                   )}

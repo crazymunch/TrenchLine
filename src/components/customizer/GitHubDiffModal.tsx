@@ -149,7 +149,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
                 </button>
                 <button
                   onClick={() => handleAcceptUpstream(diff)}
-                  className="px-4 py-2 bg-status-legal hover:bg-[#3B7A57] text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+                  className="px-4 py-2 bg-status-legal hover:bg-status-legal text-white rounded font-mono text-xs font-bold uppercase transition-colors shadow"
                 >
                   Accept Upstream Repo Patch
                 </button>

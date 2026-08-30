@@ -93,8 +93,8 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
           onClick={() => setSelectedCategory(cat)}
           className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
             selectedCategory === cat
-              ? 'bg-theme-primary text-black shadow-md'
-              : 'bg-theme-elevated text-theme-muted hover:text-white'
+              ? 'bg-theme-primary text-theme-base shadow-md'
+              : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
           }`}
         >
           {cat}
@@ -123,7 +123,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                     >
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-theme-primary text-black">
+                          <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase bg-theme-primary text-theme-base">
                             {fav.profileSnapshot.category}
                           </span>
                           <h3 className="font-gothic font-bold text-base text-theme-text">
@@ -164,7 +164,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                         </button>
                         <button
                           onClick={() => handleInductFavourite(fav)}
-                          className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded shadow flex items-center space-x-1.5"
+                          className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-1.5"
                         >
                           <UserPlus className="w-4 h-4" />
                           <span>Induct Veteran</span>
@@ -214,11 +214,11 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <span
                         className={`text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
                           unit.category === 'Leader'
-                            ? 'bg-theme-primary text-black'
+                            ? 'bg-theme-primary text-theme-base'
                             : unit.category === 'Elite'
-                            ? 'bg-[#7C4DFF] text-white'
+                            ? 'bg-theme-primary text-white'
                             : unit.category === 'Mercenary'
-                            ? 'bg-[#00897B] text-white'
+                            ? 'bg-status-legal text-white'
                             : 'bg-theme-border text-theme-text'
                         }`}
                       >
@@ -226,7 +226,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       </span>
                       <h3 className="font-gothic font-bold text-base text-theme-text">{unit.name}</h3>
                       {isMercenary && (
-                        <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#00897B]/20 text-[#00897B] border border-[#00897B]/40 font-bold uppercase">
+                        <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-status-legal/15 text-status-legal border border-status-legal/40 font-bold uppercase">
                           Mercenary
                         </span>
                       )}
@@ -278,7 +278,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
 
                     <button
                       onClick={() => handleAdd(unit)}
-                      className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
+                      className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       {/* Both currencies. This read "0 D" for every Mercenary

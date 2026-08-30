@@ -256,7 +256,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             {step < 4 ? (
               <button
                 onClick={() => setStep(step + 1)}
-                className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black text-xs font-bold uppercase rounded shadow"
+                className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base text-xs font-bold uppercase rounded shadow"
               >
                 <span>Next Step</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -264,7 +264,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             ) : (
               <button
                 onClick={handleFinalSubmit}
-                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-[#A30000] text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
+                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-status-error text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
               >
                 <Check className="w-4 h-4" />
                 <span>Commit to Campaign Chronicle</span>
@@ -363,11 +363,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       className={`py-3 rounded text-sm font-bold uppercase transition-all ${
                         outcome === res
                           ? res === 'Victory'
-                            ? 'bg-theme-primary text-black shadow-lg'
+                            ? 'bg-theme-primary text-theme-base shadow-lg'
                             : res === 'Draw'
-                            ? 'bg-[#78909C] text-white shadow-lg'
+                            ? 'bg-theme-muted text-white shadow-lg'
                             : 'bg-theme-accent text-white shadow-lg'
-                          : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
+                          : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                       }`}
                     >
                       {res}
@@ -417,7 +417,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   <button
                     onClick={() => setTraumaRollMode('digital')}
                     className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
-                      traumaRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
+                      traumaRollMode === 'digital' ? 'bg-theme-primary text-theme-base' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
                     🎲 In-App Roll
@@ -425,7 +425,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   <button
                     onClick={() => setTraumaRollMode('manual')}
                     className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
-                      traumaRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
+                      traumaRollMode === 'manual' ? 'bg-theme-primary text-theme-base' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
                     ✍️ Physical Roll
@@ -463,7 +463,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                         {traumaRollMode === 'digital' ? (
                           <button
                             onClick={() => handleRollInjury(unit.id)}
-                            className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-accent hover:bg-[#A30000] text-white rounded text-xs font-bold uppercase transition-colors flex-shrink-0"
+                            className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-accent hover:bg-status-error text-white rounded text-xs font-bold uppercase transition-colors flex-shrink-0"
                           >
                             <Dices className="w-3.5 h-3.5" />
                             <span>Roll D66 Trauma</span>
@@ -524,8 +524,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                             }
                             className={`py-1 px-2 rounded font-semibold transition-all truncate text-xs sm:text-[11px] ${
                               isSelected
-                                ? 'bg-theme-primary text-black font-bold'
-                                : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
+                                ? 'bg-theme-primary text-theme-base font-bold'
+                                : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                             }`}
                           >
                             {adv}
@@ -573,7 +573,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       <button
                         onClick={() => setExplorationRollMode('digital')}
                         className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
-                          explorationRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
+                          explorationRollMode === 'digital' ? 'bg-theme-primary text-theme-base' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
                         🎲 In-App
@@ -581,7 +581,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       <button
                         onClick={() => setExplorationRollMode('manual')}
                         className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
-                          explorationRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
+                          explorationRollMode === 'manual' ? 'bg-theme-primary text-theme-base' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
                         ✍️ Physical
@@ -591,7 +591,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     {explorationRollMode === 'digital' ? (
                       <button
                         onClick={handleRollExploration}
-                        className="flex items-center space-x-1.5 px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-black rounded text-xs font-bold uppercase transition-colors"
+                        className="flex items-center space-x-1.5 px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded text-xs font-bold uppercase transition-colors"
                       >
                         <Dices className="w-3.5 h-3.5" />
                         <span>Roll Scavenge</span>
@@ -653,7 +653,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       value={opponentWarbandName}
                       onChange={(e) => setOpponentWarbandName(e.target.value)}
                       placeholder="e.g. Court of the Seven-Headed Serpent (Sorcerer Zortan)"
-                      className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                      className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                     />
                   </div>
 
@@ -662,7 +662,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     <select
                       value={mvpUnitName}
                       onChange={(e) => setMvpUnitName(e.target.value)}
-                      className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-theme-primary"
+                      className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                     >
                       <option value="">-- Select MVP Warrior --</option>
                       {warband.units.map((u) => (
@@ -681,7 +681,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     onChange={(e) => setBattleReportText(e.target.value)}
                     placeholder="Write a comprehensive tactical battle report: key charges, heroic saves, objective snatches, and narrative turning points..."
                     rows={4}
-                    className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-2 text-xs text-white placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+                    className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-2 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                   />
                 </div>
               </div>

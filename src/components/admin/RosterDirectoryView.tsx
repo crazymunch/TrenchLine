@@ -6,6 +6,7 @@ import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { WarbandChangelogModal } from '../builder/WarbandChangelogModal';
 import { useSession } from 'next-auth/react';
+import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
   Users, 
   Search, 
@@ -130,20 +131,12 @@ export const RosterDirectoryView: React.FC = () => {
       
       {/* Header Banner */}
       <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 shadow-xl space-y-4 bevel-container">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <Users className="w-6 h-6 text-theme-primary" />
-              <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
-                GLOBAL WARBAND DIRECTORY & CRUSADE ROSTER
-              </h1>
-            </div>
-            <p className="text-xs font-mono text-theme-muted">
-              Administrative command center to inspect all warbands in the system, oversee campaign enrollment, and audit warband growth.
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-3 flex-shrink-0">
+        <ViewMasthead
+          eyebrow="Registry"
+          icon={<Users className="w-4 h-4" />}
+          title="Warband Directory"
+          strapline="Every warband in the system: inspect a roster, oversee campaign enrolment, and audit how a warband grew."
+          actions={<>
             {isAdmin && (
               <button
                 onClick={async () => {
@@ -171,8 +164,8 @@ export const RosterDirectoryView: React.FC = () => {
               <RotateCw className={`w-3.5 h-3.5 ${isLoadingCloud ? 'animate-spin text-theme-primary' : ''}`} />
               <span>Refresh Cloud Database</span>
             </button>
-          </div>
-        </div>
+          </>}
+        />
 
         {/* Search & Filter Toolbar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
@@ -355,7 +348,7 @@ export const RosterDirectoryView: React.FC = () => {
 
                       <button
                         onClick={() => handleSelectActive(wb)}
-                        className="py-1.5 px-2 bg-theme-primary hover:bg-theme-primary-hover text-black rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
+                        className="py-1.5 px-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors shadow"
                       >
                         <Shield className="w-3.5 h-3.5" />
                         <span>Manage</span>
@@ -415,13 +408,13 @@ export const RosterDirectoryView: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => handleSelectActive(inspectingWarband)}
-                  className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow"
+                  className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
                 >
                   Set as Active
                 </button>
                 <button
                   onClick={() => setInspectingWarband(null)}
-                  className="tap text-theme-muted hover:text-white p-1"
+                  className="tap text-theme-muted hover:text-theme-text p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -486,10 +479,10 @@ export const RosterDirectoryView: React.FC = () => {
 
                       {/* Statline */}
                       <div className="grid grid-cols-4 gap-1 bg-theme-base p-1.5 rounded border border-theme-border text-center text-xs sm:text-[10px]">
-                        <div>MOV: <strong className="text-white">{u.profileSnapshot.stats.movement}</strong></div>
-                        <div>RNG: <strong className="text-white">{u.profileSnapshot.stats.ranged}</strong></div>
-                        <div>MEL: <strong className="text-white">{u.profileSnapshot.stats.melee}</strong></div>
-                        <div>ARM: <strong className="text-white">{u.profileSnapshot.stats.armour}</strong></div>
+                        <div>MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movement}</strong></div>
+                        <div>RNG: <strong className="text-theme-text">{u.profileSnapshot.stats.ranged}</strong></div>
+                        <div>MEL: <strong className="text-theme-text">{u.profileSnapshot.stats.melee}</strong></div>
+                        <div>ARM: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
                       </div>
 
                       {/* Wargear */}
@@ -558,7 +551,7 @@ export const RosterDirectoryView: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsBugListOpen(false)}
-                className="tap text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 ✕
               </button>
@@ -635,7 +628,7 @@ ${t.stepsToReproduce ? `- **Steps:** ${t.stepsToReproduce}` : ''}`).join('\n\n--
 
               <button
                 onClick={() => setIsBugListOpen(false)}
-                className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-xs"
+                className="px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
               >
                 Done
               </button>

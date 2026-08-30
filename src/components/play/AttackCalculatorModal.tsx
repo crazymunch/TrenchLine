@@ -228,7 +228,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                     onClick={() => setTargetCover(cov)}
                     className={`py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
                       targetCover === cov
-                        ? 'bg-theme-primary text-black border-theme-primary'
+                        ? 'bg-theme-primary text-theme-base border-theme-primary'
                         : 'bg-theme-base text-theme-muted border-theme-border'
                     }`}
                   >
@@ -285,9 +285,9 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
         {/* Roll CTA */}
         <button
           onClick={handleRollAttack}
-          className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-black font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
+          className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/20 flex items-center justify-center space-x-2 transition-transform active:scale-98"
         >
-          <Dices className="w-4 h-4 fill-black" />
+          <Dices className="w-4 h-4" />
           <span>⚔️ RESOLVE 2D6 ATTACK & INJURY</span>
         </button>
 
@@ -297,7 +297,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
             <div className="flex items-center justify-between border-b border-theme-border pb-2">
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 text-theme-primary" />
-                <strong className="font-gothic font-bold text-sm text-white">
+                <strong className="font-gothic font-bold text-sm text-theme-text">
                   COMBAT RESOLUTION RESULT
                 </strong>
               </div>
@@ -306,7 +306,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                 rollResult.injuryOutcome === 'Out of Action'
                   ? 'bg-status-error text-white'
                   : rollResult.injuryOutcome === 'Downed'
-                  ? 'bg-status-warning text-black'
+                  ? 'bg-status-warning text-theme-base'
                   : rollResult.attackSuccess
                   ? 'bg-status-legal text-white'
                   : 'bg-theme-border text-theme-muted'

@@ -109,8 +109,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
       <div 
         className={`bg-theme-surface border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${
           isLeader 
-            ? 'border-theme-primary shadow-theme-primary/10 shadow-lg ring-1 ring-theme-primary/30' 
-            : 'border-theme-border hover:border-theme-primary/50'
+            ? 'border-theme-primary'
+            : 'border-theme-border hover:border-theme-muted'
         }`}
       >
         
@@ -121,8 +121,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             about 90px in a three-column grid and wrapped a word per line.
             `contents` promotes the badge and the name to direct flex children
             so `order` and `basis-full` can place them without moving the JSX. */}
-        <div className={`p-3.5 border-b border-theme-border flex flex-wrap items-center gap-x-3 gap-y-2 ${
-          isLeader ? 'bg-theme-elevated border-b-theme-primary/40' : 'bg-theme-elevated'
+        <div className={`px-3 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 ${
+          isLeader
+            ? 'bg-theme-primary text-theme-base'
+            : 'bg-theme-elevated border-b border-theme-border'
         }`}>
           <div className="contents">
             
@@ -130,18 +132,14 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             <div className="relative flex-shrink-0 order-1">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className={`tap text-xs sm:text-[9px] font-mono px-2 py-0.5 rounded font-bold uppercase flex items-center space-x-1 cursor-pointer transition-all ${
+                className={`tap text-xs sm:text-[10px] font-mono tracking-[0.11em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
                   isLeader
-                    ? 'bg-theme-primary text-black shadow font-extrabold'
-                    : unit.profileSnapshot.category === 'Elite'
-                    ? 'bg-[#7C4DFF] text-white'
-                    : unit.profileSnapshot.category === 'Mercenary'
-                    ? 'bg-[#00897B] text-white'
-                    : 'bg-theme-border text-theme-text'
+                    ? 'text-theme-base font-semibold'
+                    : 'text-theme-muted hover:text-theme-text'
                 }`}
                 title="Click to change unit role"
               >
-                {isLeader && <Crown className="w-2.5 h-2.5 fill-black" />}
+                {isLeader && <Crown className="w-2.5 h-2.5" />}
                 <span>{unit.profileSnapshot.category}</span>
                 <ChevronDown className="w-2.5 h-2.5 opacity-70" />
               </button>
@@ -172,13 +170,13 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                   type="text"
                   value={nameVal}
                   onChange={(e) => setNameVal(e.target.value)}
-                  className="bg-theme-surface border border-theme-primary rounded px-2 py-1 text-xs text-white focus:outline-none w-full font-gothic"
+                  className="bg-theme-surface border border-theme-primary rounded px-2 py-1 text-xs text-theme-text focus:outline-none w-full font-gothic"
                   autoFocus
                 />
-                <button onClick={handleSaveName} className="text-status-legal hover:text-white min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
+                <button onClick={handleSaveName} className="text-status-legal hover:text-theme-text min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4" />
                 </button>
-                <button onClick={() => setIsEditingName(false)} className="text-status-error hover:text-white min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
+                <button onClick={() => setIsEditingName(false)} className="text-status-error hover:text-theme-text min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -189,8 +187,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                 title="Click to rename"
               >
                 <div className="flex items-center space-x-1.5">
-                  <h3 className={`font-gothic font-bold text-sm sm:text-base leading-snug break-words transition-colors ${
-                    isLeader ? 'text-theme-primary' : 'text-theme-text group-hover:text-theme-primary'
+                  <h3 className={`font-bold text-sm sm:text-base leading-snug break-words transition-colors ${
+                    isLeader ? 'text-theme-base' : 'text-theme-text group-hover:text-theme-primary'
                   }`}>
                     {fullDisplayName}
                   </h3>
@@ -208,7 +206,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           {/* Header Right: Rating Badge & 3-Dots Action Menu */}
           <div className="flex items-center space-x-2 flex-shrink-0 order-2 ml-auto">
             {/* Cost Badge */}
-            <div className="text-xs font-mono font-bold text-theme-primary bg-theme-surface px-2.5 py-1 rounded border border-theme-border shadow-sm">
+            <div className={`font-mono text-sm tabular-nums ${
+              isLeader ? 'text-theme-base' : 'text-theme-text'
+            }`}>
               {unit.totalCost} D
             </div>
 
@@ -216,7 +216,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             <div className="relative">
               <button
                 onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
-                className="min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center rounded bg-theme-surface hover:bg-theme-border border border-theme-border text-theme-text hover:text-theme-primary transition-colors"
+                className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
+                  isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+                }`}
                 title="Warrior Actions & Options"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -336,23 +338,27 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
           )}
 
           {/* Stat Block */}
-          <div className="grid grid-cols-4 gap-1.5 font-mono text-center text-xs bg-theme-base p-1.5 rounded border border-theme-border">
-            <div>
-              <span className="text-xs sm:text-[9px] text-theme-muted block">MOV</span>
-              <span className="font-bold text-theme-text">{unit.profileSnapshot.stats.movement}</span>
-            </div>
-            <div>
-              <span className="text-xs sm:text-[9px] text-theme-muted block">RNG</span>
-              <span className="font-bold text-theme-text">{unit.profileSnapshot.stats.ranged}</span>
-            </div>
-            <div>
-              <span className="text-xs sm:text-[9px] text-theme-muted block">MELEE</span>
-              <span className="font-bold text-theme-text">{unit.profileSnapshot.stats.melee}</span>
-            </div>
-            <div>
-              <span className="text-xs sm:text-[9px] text-theme-muted block">ARMOUR</span>
-              <span className="font-bold text-theme-text">{unit.profileSnapshot.stats.armour}</span>
-            </div>
+          {/*
+            The statline as the rulebook prints it: a ruled row of cells, not
+            four floating pairs. Divided by hairlines rather than by gaps, so
+            the numbers line up in a column across every card in the grid.
+          */}
+          <div className="grid grid-cols-4 bg-theme-base border border-theme-border divide-x divide-theme-border">
+            {([
+              ['MOV', unit.profileSnapshot.stats.movement],
+              ['RNG', unit.profileSnapshot.stats.ranged],
+              ['MELEE', unit.profileSnapshot.stats.melee],
+              ['ARM', unit.profileSnapshot.stats.armour],
+            ] as const).map(([label, value]) => (
+              <div key={label} className="px-1 py-1.5 text-center">
+                <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">
+                  {label}
+                </span>
+                <span className="block font-mono text-base sm:text-sm tabular-nums text-theme-text mt-0.5">
+                  {value}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Innate Abilities & Rules: Collapsed by Default with Expand Arrow */}

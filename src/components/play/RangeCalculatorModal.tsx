@@ -131,7 +131,7 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
 
                   <div className="flex items-center space-x-2">
                     {isPointBlank && (
-                      <span className="text-xs sm:text-[9px] bg-theme-primary text-black px-1.5 py-0.2 rounded font-bold uppercase">
+                      <span className="text-xs sm:text-[9px] bg-theme-primary text-theme-base px-1.5 py-0.2 rounded font-bold uppercase">
                         Point Blank (+1 Hit)
                       </span>
                     )}
@@ -150,7 +150,7 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
         {/* Terrain & Barbed Wire Modifiers */}
         <div className="p-3 bg-theme-base rounded border border-theme-border flex items-center justify-between text-xs font-mono">
           <span className="text-theme-muted flex items-center space-x-2">
-            <ShieldAlert className="w-4 h-4 text-[#FF9800]" />
+            <ShieldAlert className="w-4 h-4 text-status-warning" />
             <span>Crossing Barbed Wire / Difficult Mud:</span>
           </span>
           <span className="text-status-error font-bold">-2&quot; Movement penalty</span>
