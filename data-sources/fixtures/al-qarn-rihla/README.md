@@ -56,6 +56,30 @@ see [`AUDIT.md`](../../../docs/AUDIT.md) §1.10. Phase 1 splits it:
 - narrative → `data-sources/fixtures/al-qarn-rihla/lore.json`, preserved verbatim
 - `profileSnapshot` blocks → discarded, rebuilt from source
 
+## Lore coverage, checked
+
+Cross-checked `KNOWN_UNIT_LORES` against the current (August) roster:
+
+- **10 of 11 characters have a full lore entry** — biography, titles, quote, deeds.
+- **1 has none: `Al-Mudawwan, the Inscribed` (Homunculus).** Worth writing before
+  the fixture is frozen, or it will be the one gap in an otherwise complete set.
+
+### Lore attaches by fuzzy string match — fix this in migration
+
+`KnownUnitLore` binds to models with `matchPatterns`:
+
+```ts
+matchPatterns: ['kasim', 'living engineer', 'malik']
+```
+
+`enrichUnitWithLore` substring-matches these against a model's custom name. So
+renaming a warrior silently detaches their biography, and a short pattern can
+attach the wrong one. For content that cannot be regenerated, that is too
+fragile.
+
+The migration binds lore to stable unit IDs instead, keeping `matchPatterns`
+only as the one-time mechanism for the initial attach.
+
 `scripts/extract-warband-lore.mjs` performs that split and can re-attach the
 narrative to a rebuilt roster, matching units on identity and **reporting**
 anything it cannot match rather than dropping it.
