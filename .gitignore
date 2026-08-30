@@ -47,3 +47,9 @@ data-sources/rulebook/trench-crusade-digital-rulebook.pdf
 # design/canvas/*.dc.html — see design/canvas/README.md.
 /trenchline-interface.html
 trenchline-artboards.zip
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

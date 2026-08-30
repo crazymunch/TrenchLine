@@ -66,8 +66,13 @@ the stylesheet and `.tap` is the documented opt-out.
 **`.tap`** gives a control a 44px hit area as an invisible centred overlay,
 without changing how it looks. Use it for anything that must stay visually
 small: a remove cross beside a weapon name, a category chip, a modal's close
-button. The overlay is removed above `sm:`, where a mouse is pointing and 44px
-would only make neighbouring controls fight for clicks.
+button.
+
+**The touch rules run to 1023px, not 639px.** The tablet in the table above is
+"the common table device": it is touched, not moused, and iPad Safari zooms a
+sub-16px input exactly as iPhone Safari does. `sm:` is large phone *landscape*,
+which is still a thumb. Density is restored at `lg:`, where a laptop starts — so
+a touch-target override is `lg:min-h-0`, never `sm:min-h-0`.
 
 ```jsx
 /* a control that can afford to grow */

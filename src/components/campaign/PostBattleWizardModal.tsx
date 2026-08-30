@@ -557,7 +557,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       value={explorationTable}
                       onChange={(e) => setSelectedExplorationTable(e.target.value as ExplorationTableName)}
                       disabled={!openTables?.choose}
-                      className="bg-theme-base border border-theme-border text-theme-primary text-base sm:text-xs rounded px-2 py-1 min-h-[44px] sm:min-h-0 disabled:opacity-60"
+                      className="bg-theme-base border border-theme-border text-theme-primary text-base sm:text-xs rounded px-2 py-1 min-h-[44px] lg:min-h-0 disabled:opacity-60"
                     >
                       {(openTables?.tables ?? ['common']).map((t) => (
                         <option key={t} value={t}>

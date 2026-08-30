@@ -49,3 +49,26 @@ jobs:
           DATABASE_URL: postgresql://user:pass@localhost:5432/db
           NEXTAUTH_SECRET: ci-placeholder
           NODE_ENV: production
+
+      # Chromium only: the E2E projects pin it, so this is one download rather
+      # than three. See playwright.config.ts.
+      - name: Install Chromium for E2E
+        run: npx playwright install --with-deps chromium
+
+      # Runs against the production build above — the bugs these catch are
+      # production bugs (a Tailwind rule tree-shaken out of the compiled
+      # stylesheet, a layout that only overflows once real data has loaded) and
+      # none of them reproduce under `next dev`.
+      - name: End-to-end tests
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://user:pass@localhost:5432/db
+          NEXTAUTH_SECRET: ci-placeholder
+
+      - name: Upload E2E traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

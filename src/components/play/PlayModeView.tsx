@@ -110,6 +110,15 @@ export const PlayModeView: React.FC = () => {
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
   const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
+  /**
+   * Whether the phone HUD is showing its secondary controls.
+   *
+   * Sticky, the full HUD is 391px of a 667px screen — 59% of the viewport
+   * permanently spent on chrome while you are trying to read a model's card.
+   * Collapsed it is the four things you touch every turn; the rest is one tap
+   * away. Above `sm:` there is no collapse: the whole HUD fits.
+   */
+  const [isHudExpanded, setIsHudExpanded] = useState(false);
   const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
   const [isCardConsoleOpen, setIsCardConsoleOpen] = useState(false);
   const [isMapLightboxOpen, setIsMapLightboxOpen] = useState(false);
@@ -729,8 +738,54 @@ export const PlayModeView: React.FC = () => {
             ---------------------------------------------------------------------------- */
         <div className="space-y-5">
           
-          {/* Active Combat HUD Top Bar */}
-          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-4 shadow-2xl space-y-3 bevel-container">
+          {/*
+            Phone combat strip — the four controls you touch every turn (3.6).
+
+            The combat screen is about 6,300px tall with nine models deployed:
+            nine and a half phone screens. Turn, Next Turn and End Match all
+            lived at the very top of it, so after the second model a player was
+            scrolling the length of the match to touch any of them, one-handed,
+            at a table.
+
+            Making the whole HUD sticky was the obvious fix and the wrong one:
+            it is 323px even collapsed, and a bar that permanently owns half a
+            667px screen is not a fix for a scrolling problem. This carries the
+            turn number and the three actions in 56px, and the full HUD below
+            keeps everything else and scrolls with the page.
+
+            `top-14` clears the app header, which is itself sticky. Phone only:
+            above `sm:` the HUD is on screen anyway.
+          */}
+          <div className="sm:hidden sticky top-14 z-30 -mx-3 px-3 py-1.5 bg-theme-base/95 backdrop-blur border-y border-theme-primary/60 flex items-center gap-2">
+            <span className="font-gothic font-bold text-base text-theme-primary flex-shrink-0">
+              T{playTurn}
+            </span>
+            <button
+              onClick={() => setIsQuickSearchOpen(true)}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-elevated text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase"
+              title="Lookup rules and keywords"
+            >
+              <Search className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">Rules</span>
+            </button>
+            <button
+              onClick={handleNextTurnWithWhistle}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-elevated text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase"
+            >
+              <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">Turn</span>
+            </button>
+            <button
+              onClick={() => setIsPostBattleOpen(true)}
+              className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-accent text-white rounded font-mono text-xs font-bold uppercase"
+            >
+              <Skull className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">End</span>
+            </button>
+          </div>
+
+          {/* Active Combat HUD — the full set, scrolling with the page. */}
+          <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-3 sm:p-4 shadow-2xl space-y-3 bevel-container">
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               
@@ -766,7 +821,7 @@ export const PlayModeView: React.FC = () => {
                   </div>
                 )}
 
-                <div>
+                <div className={isHudExpanded ? 'block' : 'hidden sm:block'}>
                   <h2 className="font-gothic font-bold text-base text-theme-text">{viewingWarband.name}</h2>
                   <span className="text-xs sm:text-[10px] text-theme-muted block">
                     Scenario: <strong className="text-theme-primary">{selectedScenario?.name}</strong> • {environmentalHazard}
@@ -815,7 +870,7 @@ export const PlayModeView: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setIsSquadSelectOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors`}
                   title="Select which warriors are deployed in this match"
                 >
                   <Users className="w-3.5 h-3.5 text-theme-primary" />
@@ -836,7 +891,7 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsMapLightboxOpen(true)}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center space-x-1.5 px-3 py-2 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 rounded font-mono text-xs font-bold uppercase transition-colors`}
                   title="Inspect official scenario deployment diagram"
                 >
                   <Compass className="w-3.5 h-3.5" />
@@ -872,10 +927,19 @@ export const PlayModeView: React.FC = () => {
 
                 <button
                   onClick={() => setIsAbortConfirmOpen(true)}
-                  className="p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors"
+                  className={`${isHudExpanded ? 'flex' : 'hidden sm:flex'} items-center justify-center p-2 text-theme-muted hover:text-[#FF4D6D] bg-theme-base hover:bg-theme-elevated border border-theme-border rounded transition-colors`}
                   title="Cancel / Abort Match"
                 >
                   <XCircle className="w-4 h-4" />
+                </button>
+
+                {/* Phone only: the rest of the HUD, one tap away. */}
+                <button
+                  onClick={() => setIsHudExpanded((v) => !v)}
+                  className="sm:hidden flex items-center justify-center px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-muted border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+                  aria-expanded={isHudExpanded}
+                >
+                  {isHudExpanded ? 'Less' : 'More'}
                 </button>
               </div>
 

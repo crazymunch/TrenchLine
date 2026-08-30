@@ -322,7 +322,7 @@ export const WarbandBuilder: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleOpenBudgetModal}
-                    className="px-1.5 py-0.5 min-h-[44px] sm:min-h-0 rounded bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
+                    className="px-1.5 py-0.5 min-h-[44px] lg:min-h-0 rounded bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
                     title="Manually adjust warband Ducat Point Limit"
                   >
                     <Edit2 className="w-2.5 h-2.5" />

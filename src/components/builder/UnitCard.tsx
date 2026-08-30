@@ -175,10 +175,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                   className="bg-theme-surface border border-theme-primary rounded px-2 py-1 text-xs text-white focus:outline-none w-full font-gothic"
                   autoFocus
                 />
-                <button onClick={handleSaveName} className="text-status-legal hover:text-white min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-1 flex items-center justify-center flex-shrink-0">
+                <button onClick={handleSaveName} className="text-status-legal hover:text-white min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4" />
                 </button>
-                <button onClick={() => setIsEditingName(false)} className="text-status-error hover:text-white min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-1 flex items-center justify-center flex-shrink-0">
+                <button onClick={() => setIsEditingName(false)} className="text-status-error hover:text-white min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1 flex items-center justify-center flex-shrink-0">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -216,7 +216,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             <div className="relative">
               <button
                 onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
-                className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-1.5 flex items-center justify-center rounded bg-theme-surface hover:bg-theme-border border border-theme-border text-theme-text hover:text-theme-primary transition-colors"
+                className="min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center rounded bg-theme-surface hover:bg-theme-border border border-theme-border text-theme-text hover:text-theme-primary transition-colors"
                 title="Warrior Actions & Options"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -364,7 +364,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
                   <div key={ab.id} className="text-xs bg-theme-elevated/60 p-1.5 rounded border border-theme-border/60">
                     <button
                       onClick={() => toggleAbilityExpand(ab.id)}
-                      className="w-full flex items-center justify-between text-left font-semibold text-theme-primary font-mono text-xs sm:text-[11px] hover:text-theme-text transition-colors min-h-[44px] sm:min-h-0"
+                      className="w-full flex items-center justify-between text-left font-semibold text-theme-primary font-mono text-xs sm:text-[11px] hover:text-theme-text transition-colors min-h-[44px] lg:min-h-0"
                     >
                       <span className="truncate">{ab.name}</span>
                       <div className="flex items-center space-x-1 text-theme-muted flex-shrink-0">
@@ -557,7 +557,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
         <div className="p-2 bg-theme-elevated border-t border-theme-border grid grid-cols-3 gap-1.5 text-xs font-mono">
           <button
             onClick={() => setIsLoreModalOpen(true)}
-            className="flex items-center justify-center space-x-1 min-h-[44px] sm:min-h-0 sm:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-muted hover:text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
+            className="flex items-center justify-center space-x-1 min-h-[44px] lg:min-h-0 lg:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-muted hover:text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
           >
             <Scroll className="w-3 h-3" />
             <span>Bio</span>
@@ -565,7 +565,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
 
           <button
             onClick={() => setIsAdvancementModalOpen(true)}
-            className="flex items-center justify-center space-x-1 min-h-[44px] sm:min-h-0 sm:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-muted hover:text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
+            className="flex items-center justify-center space-x-1 min-h-[44px] lg:min-h-0 lg:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-muted hover:text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
             title="Skills, XP & Faction Upgrades"
           >
             <Sparkles className="w-3 h-3 text-theme-primary" />
@@ -574,7 +574,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
 
           <button
             onClick={() => setIsEquipModalOpen(true)}
-            className="flex items-center justify-center space-x-1 min-h-[44px] sm:min-h-0 sm:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
+            className="flex items-center justify-center space-x-1 min-h-[44px] lg:min-h-0 lg:py-1.5 bg-theme-surface hover:bg-theme-border border border-theme-border rounded font-bold text-theme-primary uppercase text-xs sm:text-[10px] tracking-wider transition-colors"
           >
             <Plus className="w-3 h-3" />
             <span>Equip</span>

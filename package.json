@@ -20,7 +20,9 @@
     "typecheck": "tsc --noEmit",
     "rules:extract": "node scripts/extract-pdf.mjs",
     "postinstall": "prisma generate",
-    "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs"
+    "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:phone": "playwright test --project=phone"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -41,6 +43,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.0.9",
     "@types/bcryptjs": "^2.4.6",
     "@types/diff": "^7.0.0",

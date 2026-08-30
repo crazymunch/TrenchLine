@@ -324,12 +324,12 @@ fabricated (AUDIT §1.13).
 | # | Task |
 |---|---|
 | 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
-| 3.2 | 🟡 4 modals fully on `Sheet`; the other 20 get scroll lock, focus trap and Escape via `useOverlay`. Structural migration outstanding. |
+| 3.2 | ✅ All 24 modals on `Sheet` — behaviour *and* layout |
 | 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
 | 3.4 | ✅ Touch targets ≥44px and the type scale applied app-wide, both **enforced in `globals.css`** rather than per component |
 | 3.5 | ✅ 3,815 hex values tokenised, and two bugs that stopped the themes working at all |
-| 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
-| 3.7 | Playwright E2E at 375×667 and 768×1024 |
+| 3.6 | ✅ Play Mode phone pass — a 58px sticky combat strip through a 6,300px screen |
+| 3.7 | ✅ Playwright E2E at 375×667 and 768×1024 — 31 tests, in CI |
 
 **Done when:** every view meets the [`MOBILE.md`](MOBILE.md) definition of done.
 
@@ -428,16 +428,55 @@ Measured: switching theme moves the body ground across all six, and 324 of the
 358 elements carrying the default gold follow it. The 34 that do not are
 remaining one-off hexes.
 
-### 3.2 — behaviour first
+### 3.2 — behaviour first, then layout
 
 Across the thirty un-migrated modals there was **one** Escape handler, **one**
 body scroll lock and **one** focus trap, all three inside `Sheet`. `useOverlay`
-extracts that implementation so a modal still rendering its own overlay gets the
-guarantees from one hook; `Sheet` delegates to it. Applied to 20; `KeywordPopover`
-and `ConfirmModal` take no `onClose` and are named rather than skipped silently.
+extracted that implementation so a modal still rendering its own overlay got the
+guarantees from one hook. That bought the correctness; the remaining 20 have now
+moved structurally too, so they also get `dvh`, a bottom sheet on a phone, a
+sticky header and footer, and safe-area padding.
 
-Structural migration to `<Sheet>` is still outstanding for those 20 — this buys
-the correctness, not the layout.
+Seven carried a footer whose only content duplicated the header's close button;
+those are dropped, each one named in the commit rather than vanishing quietly.
+Three needed their own shape: the quick search makes the search field its title,
+and the recruit sheet and post-battle wizard keep their tab strips in the
+scrolling body — `Sheet`'s header is already sticky, and a second fixed bar plus
+a fixed footer leaves about a third of a phone screen for the step you are
+filling in.
+
+### 3.6 — Play Mode on a phone
+
+The combat screen is about **6,300px tall** with nine models deployed: nine and
+a half phone screens. Turn, Next Turn and End Match all lived at the top of it,
+so after the second model a player was scrolling the length of the match to
+touch any of them, one-handed, at a table.
+
+Making the whole HUD sticky was the obvious fix and the wrong one — it is 323px
+even collapsed, and a bar that permanently owns half a 667px screen is not a fix
+for a scrolling problem. A **58px strip** carries the turn number and the three
+actions instead, and the full HUD scrolls with the page.
+
+### 3.7 — end-to-end
+
+31 tests across two viewports, against a **production build**: the bugs they
+exist to catch are production bugs (a Tailwind rule tree-shaken out of the
+compiled stylesheet, a layout that only overflows once real data has loaded) and
+none of them reproduce under `next dev`.
+
+They assert the mobile definition of done **per view**, because that is exactly
+how the desktop header overflow survived an earlier measurement pass: it was
+only wrong on views whose title was long. And they assert the *data on screen* —
+"this scenario lasts four Turns", "Infiltrators must deploy normally",
+`ARMOUR PIERCING` present and `HEAVY COVER` absent — because unit tests covering
+the dataset are what let the Codex display invented Glorious Deeds for as long
+as it did.
+
+Running them exposed a real gap: the 44px and 16px rules stopped at 639px, so
+the 768px tablet — which [`MOBILE.md`](MOBILE.md) itself calls "the common table
+device" — was exempt. A finger is a finger at 768px, and iPad Safari zooms a
+sub-16px input exactly as iPhone Safari does. Both rules now run to 1023px,
+where a laptop starts.
 
 ---
 
