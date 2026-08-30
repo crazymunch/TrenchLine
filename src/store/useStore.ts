@@ -33,7 +33,14 @@ interface AppState {
   warbands: Warband[];
   activeWarbandId: string | null;
   getActiveWarband: () => Warband | null;
-  createWarband: (name: string, factionId: string, ducatLimit?: number) => Warband;
+  /**
+   * `forceMode` decides how the budget is governed for the warband's whole life.
+   * 'campaign' takes the book's published economy — the starting allowance and a
+   * per-game cap from the Warband Threshold Table. 'unrestricted' lets the
+   * player set both, for one-off games, imports and testing a list.
+   */
+  createWarband: (name: string, factionId: string, ducatLimit?: number,
+                  forceMode?: 'campaign' | 'unrestricted') => Warband;
   deleteWarband: (id: string) => void;
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
@@ -491,7 +498,7 @@ export const useStore = create<AppState>((set, get) => {
       return state.warbands.find((w) => w.id === state.activeWarbandId) || null;
     },
 
-    createWarband: (name, factionId, ducatLimit = 700) => {
+    createWarband: (name, factionId, ducatLimit = 700, forceMode = 'campaign') => {
       const foundingSnapshot: WarbandSnapshot = {
         id: `snap-${Date.now()}`,
         timestamp: new Date().toISOString(),
@@ -506,18 +513,34 @@ export const useStore = create<AppState>((set, get) => {
         changesSummary: ['Warband established and ready for initial recruitment.']
       };
 
+      const now = new Date().toISOString();
       const newWarband: Warband = {
         id: `wb-${Date.now()}`,
         name,
         factionId,
+        forceMode,
+        // A campaign warband opens its ledger with the founding allowance, so
+        // the Strongbox is the sum of a history from the first Ducat rather than
+        // a number that was set and is later edited.
+        ledger: forceMode === 'campaign'
+          ? [{
+              id: `led-${Date.now()}`,
+              at: now,
+              reason: 'founding' as const,
+              ducats: ducatLimit,
+              glory: 0,
+              game: 1,
+              note: 'Starting allowance.',
+            }]
+          : [],
         ducatLimit,
         treasuryDucats: 0,
         gloryPoints: 0,
         units: [],
         armoryStash: [],
         snapshots: [foundingSnapshot],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        createdAt: now,
+        updatedAt: now
       };
 
       set((state) => {

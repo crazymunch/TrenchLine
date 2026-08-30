@@ -14,6 +14,7 @@ import { RulesetSwitcher } from './RulesetSwitcher';
 import { VariantPicker } from './VariantPicker';
 import { useDataset } from '../../rules/useDataset';
 import { variantById } from '../../rules/variants';
+import { forceLimits, campaignGameOf } from '../../rules/campaign';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { 
   UserPlus, 
@@ -38,6 +39,7 @@ import {
   Minus,
   Settings,
   Flag,
+  Lock,
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -50,7 +52,8 @@ export const WarbandBuilder: React.FC = () => {
     updateWarbandDucatLimit,
     updateWarbandTreasury,
     updateWarbandGlory,
-    updateWarbandVariant
+    updateWarbandVariant,
+    campaign
   } = useStore();
   
   const warband = getActiveWarband();
@@ -92,6 +95,14 @@ export const WarbandBuilder: React.FC = () => {
   const faction = factions.find((f) => f.id === warband.factionId);
   // Matched by id or name, so a warband saved with either spelling resolves.
   const activeVariant = dataset ? variantById(dataset, warband.variantId) : undefined;
+
+  // A campaign warband's limit is published, not chosen: it comes from the
+  // Warband Threshold Table for the game being prepared for. Only an
+  // unrestricted warband has a number the player owns.
+  const isCampaignForce = warband.forceMode !== 'unrestricted';
+  const limits = dataset && isCampaignForce
+    ? forceLimits(dataset, campaignGameOf(warband, campaign))
+    : null;
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
   const isOverBudget = totalCost > warband.ducatLimit;
 
@@ -295,14 +306,29 @@ export const WarbandBuilder: React.FC = () => {
                   <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <span>Ducat Point Limit:</span>
                 </span>
-                <button
-                  onClick={handleOpenBudgetModal}
-                  className="px-1.5 py-0.5 rounded bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
-                  title="Manually adjust warband Ducat Point Limit"
-                >
-                  <Edit2 className="w-2.5 h-2.5" />
-                  <span>Edit Limit</span>
-                </button>
+                {isCampaignForce ? (
+                  /* Not editable, and it says why rather than just being absent:
+                     a player who cannot find the button should learn that the
+                     number is published, not that the app lost a feature. */
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-[#20242E] text-[#8E95A5] border border-[#323846] text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
+                    title={limits
+                      ? `Game ${limits.game} of the campaign. Set by the Warband Threshold Table, not by hand.`
+                      : 'Set by the Warband Threshold Table, not by hand.'}
+                  >
+                    <Lock className="w-2.5 h-2.5" />
+                    <span>{limits ? `Game ${limits.game}` : 'Campaign'}</span>
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleOpenBudgetModal}
+                    className="px-1.5 py-0.5 min-h-[44px] sm:min-h-0 rounded bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
+                    title="Manually adjust warband Ducat Point Limit"
+                  >
+                    <Edit2 className="w-2.5 h-2.5" />
+                    <span>Edit Limit</span>
+                  </button>
+                )}
               </div>
 
               <span className={`font-bold ${isOverBudget ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>

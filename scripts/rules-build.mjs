@@ -20,6 +20,7 @@ import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
+import { parseThresholdTable, parseStartingBudget } from './lib/parse-campaign.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -73,6 +74,16 @@ const summaries = [];
 for (const ruleset of RULESETS) {
   if (onlyRuleset && ruleset.id !== onlyRuleset) continue;
 
+  // The starting allowance is read from every faction entry rather than assumed.
+  // If two factions ever disagree, that is a rules change or a parse failure and
+  // either way it must not be silently averaged into one number.
+  const startingBudget = parseStartingBudget();
+  if (!startingBudget || startingBudget.ducats == null) {
+    throw new Error(
+      'rules-build: the starting Ducat allowance could not be read from the Warbands ' +
+      `book, or the faction entries disagree (${startingBudget?.seen?.join(', ') ?? 'none found'}).`);
+  }
+
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
   const dataset = {
@@ -90,6 +101,18 @@ for (const ruleset of RULESETS) {
       noSpecialRules: Boolean(f.explicitlyNone),
     })),
     keywords: [],
+    /**
+     * The campaign economy's published numbers.
+     *
+     * `thresholds` caps the Force you field, not the roster you own, and rises
+     * with the game number; `startingBudget` is what a new warband recruits on.
+     * Both are derived, because the app's editable `ducatLimit` is exactly the
+     * hand-set number this table replaces.
+     */
+    campaign: {
+      thresholds: parseThresholdTable(),
+      startingBudget: startingBudget.ducats,
+    },
     meta: {
       rulesetId: ruleset.id,
       // Deliberately no build timestamp: the output must be reproducible so CI

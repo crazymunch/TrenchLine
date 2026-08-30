@@ -349,6 +349,13 @@ export interface Dataset {
   armouries: Armoury[];
   /** Every Warband Variant, with its rules and its derived ops. */
   variants: WarbandVariant[];
+  /** The campaign economy's published numbers, derived from the rulebook. */
+  campaign: {
+    /** The Warband Threshold Table: game -> Force cost cap and model cap. */
+    thresholds: { game: number; threshold: number; fieldStrength: number }[];
+    /** What a new warband recruits on. 700, read from the faction entries. */
+    startingBudget: number;
+  };
   meta: {
     rulesetId: string;
     /** The pinned catalogue commit. No build timestamp — output is reproducible. */

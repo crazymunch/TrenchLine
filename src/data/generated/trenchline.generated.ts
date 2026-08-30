@@ -53120,6 +53120,71 @@ export const DATASET: Dataset = {
       "description": "This model is a Mercenary and can be recruited by various Factions. Mercenaries do not benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated Attack rule, including Warband Variant special rules. They do count as friendly models for the purposes of other rules used by their Warband unless stated otherwise. In a campaign, this includes counting towards Threshold Limits and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out of Action, being Promoted and gaining Experience Points, and so on."
     }
   ],
+  "campaign": {
+    "thresholds": [
+      {
+        "game": 1,
+        "threshold": 700,
+        "fieldStrength": 10
+      },
+      {
+        "game": 2,
+        "threshold": 800,
+        "fieldStrength": 11
+      },
+      {
+        "game": 3,
+        "threshold": 900,
+        "fieldStrength": 12
+      },
+      {
+        "game": 4,
+        "threshold": 1000,
+        "fieldStrength": 13
+      },
+      {
+        "game": 5,
+        "threshold": 1100,
+        "fieldStrength": 14
+      },
+      {
+        "game": 6,
+        "threshold": 1200,
+        "fieldStrength": 15
+      },
+      {
+        "game": 7,
+        "threshold": 1300,
+        "fieldStrength": 16
+      },
+      {
+        "game": 8,
+        "threshold": 1400,
+        "fieldStrength": 17
+      },
+      {
+        "game": 9,
+        "threshold": 1500,
+        "fieldStrength": 18
+      },
+      {
+        "game": 10,
+        "threshold": 1600,
+        "fieldStrength": 19
+      },
+      {
+        "game": 11,
+        "threshold": 1700,
+        "fieldStrength": 20
+      },
+      {
+        "game": 12,
+        "threshold": 1800,
+        "fieldStrength": 22
+      }
+    ],
+    "startingBudget": 700
+  },
   "meta": {
     "rulesetId": "trenchline",
     "baseCommit": "1b463a8e2eaafc9d6722ae6eeda93e296fb7012b",

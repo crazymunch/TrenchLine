@@ -135,6 +135,7 @@ All four are covered by regression tests.
 | 2.3 | ✅ `UnitOption` support — 315 options across 55 units in 22 groups. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
+| 2.5 | 🟡 Warband creation rules — force mode, Strongbox and the derived Threshold done; Exploration income blocked on AUDIT §1.13 |
 | 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
 | 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
 | 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
@@ -232,8 +233,48 @@ be the worse error.
 - **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
   Collections* extends the faction armoury; nothing reads that yet, so
   `wargear-not-stocked` is advisory rather than blocking (2.4).
-- **2.5 budget presets** — required entries are enforced through variant ops;
-  per-faction starting budgets exist, but presets are not surfaced in the UI.
+### 2.5 — the campaign economy
+
+"Budget presets" was the wrong name for this. The rulebook keeps **three**
+numbers apart that the app had collapsed into one editable `ducatLimit`:
+
+| | what it caps | where it comes from |
+|---|---|---|
+| **Threshold Value** | the total Cost of the **Force** you field | Warband Threshold Table, +100 a game |
+| **Field Strength** | the **number** of models in that Force | the same table, +1 a game |
+| **Strongbox** | nothing — it is a balance | Exploration in, Quartermaster out |
+
+The load-bearing distinction is that **the Threshold caps the Force, not the
+roster**. The book is explicit that a roster may exceed it and the surplus
+models sit the game out, so telling a player to delete a model they are entitled
+to own is wrong. `checkForceLimits` therefore reports how much must sit out, as
+a warning, and never as a roster error.
+
+Derived, not typed: `parse-campaign.mjs` reads the Threshold Table from the
+rulebook (12 rows, 700/10 to 1800/22) and the 700-Ducat starting allowance from
+every faction entry, requiring that they agree. The build fails if either is
+unreadable, because a missing limit reads as "unlimited" rather than as a
+failure.
+
+`forceMode` is chosen at creation — **Campaign Force** takes the published
+economy, **Unrestricted** lets the player set both. A campaign warband's limit
+is no longer editable; the control shows the game number and says why.
+
+The Strongbox is the **sum of a ledger**, never a stored total, so a purchase
+can be reversed until the next game is played and an admin's catch-up allotment
+records who granted it. Admin entries are never player-reversible.
+
+`campaignGameOf` reads the game number from the *campaign*, not from each
+warband's games played: a player who misses games rejoins at the campaign's
+current level with an agreed top-up, rather than being held at the limit they
+left on.
+
+Past game 12 the table holds at the last row and flags `extrapolated` rather
+than inventing a 13th, since the book gives no rule for a longer campaign.
+
+**Blocked:** the Strongbox has no *income* yet. Loot is the Exploration Roll
+times 10, and the Exploration tables are fabricated (AUDIT §1.13) — so until
+they are derived, the ledger is fed only by admin grants.
 - The four entries still unmatched on the seeded warband are all
   `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
   state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are

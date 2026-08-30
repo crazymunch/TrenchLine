@@ -33,6 +33,8 @@ export interface Violation {
     | 'unknown-profile'
     | 'faction-rule'
     | 'wargear-not-stocked'
+    | 'force-over-threshold'
+    | 'force-over-field-strength'
     | 'unparsed-restriction';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
@@ -504,3 +506,59 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
 
 /** Per-model cost, exposed so the UI need not import costs.ts separately. */
 export { unitCost, budgetState };
+
+
+/* ------------------------------------------------------------------ force */
+
+/**
+ * Whether the Force you would field is legal for this game of the campaign.
+ *
+ * Kept apart from `validateRoster` because it asks a different question. The
+ * roster is what you *own* and it has no cap; the Force is what you *field* and
+ * it has two. The book is explicit that the roster may exceed both:
+ *
+ *   "Your Warband's Threshold Value and/or its Field Strength may mean that you
+ *    cannot take all of the models that are on your Warband Roster. When this is
+ *    the case any models you do not use will have to sit the game out."
+ *
+ * So these are never errors against the roster. They say how much has to sit
+ * out, which is a thing the player acts on, rather than telling them to delete a
+ * model they are entitled to own.
+ */
+export function checkForceLimits(
+  totalCost: number,
+  modelCount: number,
+  limits: { game: number; threshold: number; fieldStrength: number; extrapolated: boolean }
+): Violation[] {
+  const out: Violation[] = [];
+  const past = limits.extrapolated
+    ? ` The published table stops at game 12, so game ${limits.game} holds at the last row — set a campaign override if your group continues past it.`
+    : '';
+
+  if (totalCost > limits.threshold) {
+    out.push({
+      severity: 'warning',
+      code: 'force-over-threshold',
+      message:
+        `Force costs ${totalCost} Ducats against a Threshold Value of ${limits.threshold} ` +
+        `for game ${limits.game}. ${totalCost - limits.threshold} Ducats' worth must sit this game out.`,
+      rule: 'Warband Threshold Table. The Threshold caps the Force you field, not the roster you own.' + past,
+    });
+  }
+
+  if (modelCount > limits.fieldStrength) {
+    out.push({
+      severity: 'warning',
+      code: 'force-over-field-strength',
+      message:
+        `${modelCount} models against a Field Strength of ${limits.fieldStrength} for game ` +
+        `${limits.game}. ${modelCount - limits.fieldStrength} must sit this game out.`,
+      rule:
+        'Warband Threshold Table. Field Strength counts only models with a Warband Entry — ' +
+        'Battlekit and Glory Items do not count. A scenario limit lower than Field Strength ' +
+        'takes precedence over it.' + past,
+    });
+  }
+
+  return out;
+}
