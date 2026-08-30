@@ -179,6 +179,62 @@ but a **claim of completeness that the code does not honour**. It is why
 [`FEATURES.md`](FEATURES.md) records status verified by reading the code rather
 than by trusting the UI or the changelog text.
 
+### 1.3b Wargear: 38% of it does not exist
+
+Full sweep of every hand-written weapon, armour and equipment entry against the
+BattleScribe catalogues (389 profiles) and the rulebook Armoury Tables (206
+rows, 348 distinct names). Reproduce with `npm run rules:audit -- --full`.
+
+| Array | Entries | Real | Renamed | **Invented** |
+|---|---|---|---|---|
+| `BASE_WEAPONS` | 58 | 31 | 5 | **22 (38%)** |
+| `BASE_ARMOUR` | 12 | 5 | 1 | **6 (50%)** |
+| `BASE_EQUIPMENT` | 30 | 7 | 9 | **14 (47%)** |
+| `OFFICIAL_WEAPONS` | 24 | 14 | 3 | **7 (29%)** |
+| `OFFICIAL_ARMOUR` | 4 | 3 | 0 | **1** |
+| `OFFICIAL_EQUIPMENT` | 6 | 3 | 2 | **1** |
+| **Total** | **134** | **63** | **20** | **51 (38%)** |
+
+*Renamed* means the entry decorates a real item — "Holy Water Phial" for the
+book's "Holy Water of Lalibela". *Invented* means no source contains the name,
+or any stem of it, under any spelling.
+
+A representative sample of the inventions, none of which appear anywhere in the
+rulebooks, the Dispatch or the catalogues:
+
+> Executioner Blade · Two-Handed Morningstar · Alchemical Scimitar · Blessed
+> Halberd · Holy Reliquary Mace · Sacred Flail of Flagellation · Corrupted
+> Chainblade · Daemonic Cleaver · Rusted Scythe of Pestilence · Bile Spewer ·
+> Virulent Spore Projector · Heavy Machine Gun · Sawed-Off Shotgun · Smoke
+> Grenades · Wire Cutters · Entrenching Shovel · Spiked Shield of the Damned ·
+> Daemon-Forged Plate · Plague-Hardened Carapace · Horn of Gabriel
+
+The pattern is decoration of something real: the game has a **Machine Gun**, so
+the data invented a **Heavy Machine Gun**; it has a **Shovel**, so the data
+invented an **Entrenching Shovel**. Both look plausible on a roster and neither
+is legal.
+
+The whole `Formula of …` / `Essence of …` alchemical equipment family — nine
+entries — is invented. The real Sultanate equivalents are the Dispatch's
+Al-inbīq Kit, Alchemical Fire and Corrosive Ammunition.
+
+### 1.3c Keywords: 36 of 116 exist in no source
+
+The same sweep over the keyword glossary. Against 95 keywords found across the
+rulebooks, the Changelog, the Dispatch and the catalogues, **36 of the app's 116
+entries appear in no source**, including a run of invented abilities —
+`Berserk Rage`, `Weapon Master`, `Duelist`, `Shield Wall`, `Decapitating
+Strike`, `Eagle Eye`, `Crack Shot`, `Rapid Reload`, `Shadow Step`, `Trench
+Stalker`, `Unshakable Faith`, `Field Medic`, `Tough as Nails`, `Demolitions
+Expert`, `Tactical Genius`, `Blessed Aura`.
+
+Some are parameter-form spellings of real keywords (`AUTOMATIC X` for
+`AUTOMATIC (X)`, `BLAST X`, `BLESSED X`, `REACH X`) and are a formatting
+problem rather than an invention. The named abilities are not.
+
+Taken with §1.3a — where 7 of 11 advertised 1.0.2 keywords are missing — the
+glossary both **omits real keywords and contains invented ones**.
+
 ### 1.4 Faction special rules: right concept, invented content
 
 `FACTIONS[].rules` contains "Voice of Command", "Ecstatic Zeal", "Prophetic

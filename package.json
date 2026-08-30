@@ -12,6 +12,7 @@
     "rules:crosscheck": "node scripts/rules-crosscheck.mjs",
     "rules:warbands": "node scripts/parse-warbands-pdf.mjs",
     "rules:threeway": "node scripts/rules-threeway.mjs",
+    "rules:audit": "node scripts/audit-wargear.mjs",
     "rules:build": "node scripts/rules-build.mjs",
     "rules:check": "node scripts/rules-build.mjs --check",
     "test": "vitest run",

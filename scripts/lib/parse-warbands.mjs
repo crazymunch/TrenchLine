@@ -102,3 +102,59 @@ export function parseVariants(src = WARBANDS_TXT) {
   }
   return out;
 }
+
+/**
+ * The faction Armoury Tables.
+ *
+ * Rows are `Name \t [restrictions] \t cost glyph`, e.g.
+ *
+ *     Automatic Rifle \t Bayonet Lug, Limit: 1 \t 40 👑
+ *     Sword/Axe \t 4 👑
+ *
+ * This is the authoritative list of what wargear legally exists, and the
+ * restriction column ("ELITE only", "Limit: 2", "Combat Medic only") is the
+ * wargear-legality data the roster validator needs.
+ */
+const SECTIONS = new Set([
+  'Ranged Weapons', 'Melee Weapons', 'Grenades', 'Armour', 'Equipment',
+  'Battlekit', 'Glory Items', 'Relics',
+]);
+
+export function parseArmouryTables(src = WARBANDS_TXT) {
+  if (!fs.existsSync(src)) return [];
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const out = [];
+  let section = null;
+
+  for (const raw of lines) {
+    const line = raw.replace(/\s+$/, '');
+    const bare = line.trim();
+
+    if (SECTIONS.has(bare)) { section = bare; continue; }
+    if (!section) continue;
+    if (!line.includes('\t')) {
+      // A run of non-row lines means the table has ended.
+      if (bare && !/^[•·]/.test(bare)) section = null;
+      continue;
+    }
+
+    const cells = line.split('\t').map((c) => c.trim()).filter(Boolean);
+    if (cells.length < 2) continue;
+
+    const costCell = cells.at(-1);
+    const m = costCell.match(/^(\d+)\s*(\S)?/);
+    if (!m) continue;
+
+    const name = cells[0].replace(/^[•·]\s*/, '').trim();
+    if (!name || /^\d/.test(name)) continue;
+
+    out.push({
+      name,
+      section,
+      restrictions: cells.length > 2 ? cells.slice(1, -1).join(', ') : '',
+      ducats: m[2] === GLORY_GLYPH ? 0 : Number(m[1]),
+      glory: m[2] === GLORY_GLYPH ? Number(m[1]) : 0,
+    });
+  }
+  return out;
+}
