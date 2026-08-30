@@ -127,9 +127,27 @@ sources'.
 
 ### 1.3 Keywords are partly fabricated
 
-`Slashing`, `Concussive`, `Fast Strike` and `Bayonet Lug` appear **zero times**
-in the extracted rulebook text and zero times across all ten BattleScribe
-catalogues. They are inventions.
+Checked against the full official texts (an earlier pass used only the partial
+`scratch/` extraction and got two of these wrong):
+
+| Term | Warbands book | Digital Rulebook | Verdict |
+|---|---|---|---|
+| `Bayonet Lug` | 30 | 0 | **Real** — a weapon property in the Armoury Tables |
+| `Shield Combo` | 48 | 3 | **Real** — a weapon property |
+| `Slashing` | 1 | 0 | Real *as a word*, but not a keyword: "Slashing Attack" is a named ability on the Assassin's Dagger. The app applies it as a keyword on a generic Sword/Axe, which is wrong. |
+| `Concussive` | 0 | 0 | **Invented** |
+| `Fast Strike` | 0 | 0 | **Invented** |
+
+So the fabrication here is narrower than first reported: two invented keywords
+and one misapplied ability name, not four inventions. The real problem is that
+`Bayonet Lug` and `Shield Combo` are attached to the wrong weapons and carry no
+enforcement — they are restriction markers in the Armoury Tables
+(`Automatic Rifle — Bayonet Lug, Limit: 1 — 40 👑`), and the app treats them as
+decorative text.
+
+Keyword *descriptions* in `officialRulesData.ts` remain paraphrases rather than
+rules text. `COVER` is described as "subtract 1 or 2 from enemy ranged hit
+rolls", where Trench Crusade expresses cover as a DICE modifier.
 
 Real keywords do exist in the data (`ASSAULT`, `BLAST`, `CUMBERSOME`, `HEAVY`,
 `CRITICAL`), but their *descriptions* in `officialRulesData.ts` are paraphrases
@@ -166,12 +184,28 @@ but a **claim of completeness that the code does not honour**. It is why
 [`FEATURES.md`](FEATURES.md) records status verified by reading the code rather
 than by trusting the UI or the changelog text.
 
-### 1.4 Faction special rules are invented
+### 1.4 Faction special rules: right concept, invented content
 
 `FACTIONS[].rules` contains "Voice of Command", "Ecstatic Zeal", "Prophetic
-Vision", "Infernal Blood Tithe" and others. None correspond to published
-faction rules. Trench Crusade expresses faction identity through warband
-composition and unit abilities, not through a per-faction rules block.
+Vision", "Infernal Blood Tithe" and others. None of these are published rules.
+
+But the **concept is legitimate** — the Warbands book gives each faction a
+"Special Rules" section. New Antioch's is:
+
+> **New Antioch Fireteams:** A New Antioch Warband can include up to 2 Fireteams.
+> Each Fireteam consists of any two models from the Warband… given the FIRETEAM
+> Keyword at no additional cost.
+> **Concentrated Attack:** If a model from a Fireteam hits a target that had been
+> hit by the other member of their Fireteam earlier in the same joint Activation,
+> you can spend 3 BLOOD MARKERS to convert the Injury Roll for the second attack
+> to a Bloodbath Roll, even if the target is not Down.
+
+(Independently corroborated: the Trench Dispatch refers to "the New Antioch
+Concentrated Attack rule" when defining `MERCENARY`.)
+
+**Resolution: keep the field, replace the content** from each faction's Special
+Rules section. These are not flavour text — Fireteams change roster construction
+and are enforceable, so they belong in the rules engine, not just the Codex.
 
 ### 1.5 Rosters are incomplete, and one faction is orphaned
 

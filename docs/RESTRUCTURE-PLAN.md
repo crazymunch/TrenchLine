@@ -47,6 +47,7 @@ imagery.
 | 1.2 | `scripts/extract-pdf.mjs` — deterministic, page-delimited PDF → text |
 | 1.3 | `rules:fetch` — pin the catalogue SHA, write `MANIFEST.json` with checksums, fail loudly |
 | 1.4 | `rules:parse` — BattleScribe XML → normalised entities (shared entries, category links, cost types, constraints) |
+| 1.4a | `rules:warbands` — extend the PDF parser to the Armoury Tables (`Automatic Rifle \| Bayonet Lug, Limit: 1 \| 40 👑`) and faction Special Rules sections |
 | 1.5 | New entity model in `src/types/rules.ts` — Glory cost, base size, movement type, constraints, `UnitOption` |
 | 1.6 | `rules:layer` — layer op engine + provenance stamping |
 | 1.7 | Transcribe `dispatch-01.layer.json` from the extracted Dispatch text |
@@ -77,6 +78,7 @@ DICE`, Melee `+2 DICE`, Armour `0`, Base `32mm`, 70 Ducats — each traceable to
 | 2.3 | `UnitOption` support — Strains, Vile Corpus, Goetic Powers, Glory Items, variants |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
+| 2.5a | Faction Special Rules as engine rules — e.g. New Antioch "up to 2 Fireteams", granting FIRETEAM at no cost |
 | 2.6 | Surface violations in the builder: per-unit, per-roster, blocking vs advisory |
 | 2.7 | Ruleset switcher + the reconciliation review screen ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8) |
 | 2.8 | Provenance UI — "where does this number come from?" in the Codex |
@@ -170,7 +172,7 @@ skipped. Phases 0 and 4 can be picked up any time.
 | 2 | Saved warbands | Open — confirm reconciliation-review over automatic migration ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8). |
 | 3 | Licensing | **Closed.** Not a blocker; sources stay in `data-sources/`. |
 | 4 | Fabricated data | **Closed.** Delete what is verifiably invented — but verify each file first rather than tossing wholesale. All Out War data turned out to be correct; see [`FEATURES.md`](FEATURES.md). |
-| 5 | Faction rules | Open — `FACTIONS[].rules` is fabricated and will be deleted. Replace with real rulebook faction rules, or drop the concept? |
+| 5 | Faction rules | **Closed.** Keep the field, replace the content. The Warbands book gives each faction a real Special Rules section (New Antioch Fireteams / Concentrated Attack). They affect roster construction, so they belong in the rules engine, not only the Codex. See [`AUDIT.md`](AUDIT.md) §1.4. |
 
 ## Standing requirement: fast turnaround on new releases
 

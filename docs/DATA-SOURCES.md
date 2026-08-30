@@ -94,6 +94,19 @@ sets** from it. Two consequences:
 2. **The recruitment limits are in the entry headers.** `0-2 Sniper Priests`,
    `1 Lieutenant`, `0-5 Shock Troopers` — the constraint data the app entirely
    lacks, available from the book as well as the catalogues.
+3. **The Armoury Tables are equally structured**, and carry the wargear legality
+   rules directly:
+
+   ```
+   Automatic Pistol 	ELITE only, Limit: 3 	20 👑
+   Automatic Rifle 	Bayonet Lug, Limit: 1 	40 👑
+   Pistol 	6 👑
+   ```
+
+   Name, restrictions, cost — the exact inputs the roster validator needs.
+4. **Faction Special Rules sections parse too** (New Antioch Fireteams /
+   Concentrated Attack), and some of them constrain roster construction rather
+   than being flavour.
 
 It also proves the **Carcass Front path**: a new faction's PDF can be parsed the
 same way on the day it drops, months before the catalogues catch up.
