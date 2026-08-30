@@ -295,7 +295,7 @@ export const DiceRoller: React.FC = () => {
                 
                 {/* Dice Modifiers Selector */}
                 <div className="flex items-center space-x-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-[11px]">Dice Modifier:</span>
+                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px]">Dice Modifier:</span>
                   {[-2, -1, 0, 1, 2].map((mod) => (
                     <button
                       key={mod}
@@ -319,7 +319,7 @@ export const DiceRoller: React.FC = () => {
                     onChange={(e) => setIsRiskyAction(e.target.checked)}
                     className="rounded border-theme-border text-theme-primary focus:ring-0"
                   />
-                  <span className={`font-bold uppercase text-[11px] ${isRiskyAction ? 'text-[#FF6B6B]' : 'text-theme-muted'}`}>
+                  <span className={`font-bold uppercase text-xs sm:text-[11px] ${isRiskyAction ? 'text-[#FF6B6B]' : 'text-theme-muted'}`}>
                     Risky Action
                   </span>
                 </label>
@@ -347,7 +347,7 @@ export const DiceRoller: React.FC = () => {
                 
                 {/* Dice Count */}
                 <div className="space-y-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-[11px] block">
+                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px] block">
                     Injury Dice Pool:
                   </span>
                   <div className="flex space-x-1.5">
@@ -360,7 +360,7 @@ export const DiceRoller: React.FC = () => {
                       <button
                         key={btn.count}
                         onClick={() => setInjuryDiceCount(btn.count)}
-                        className={`flex-1 py-1.5 rounded font-bold uppercase text-[10px] transition-all ${
+                        className={`flex-1 py-1.5 rounded font-bold uppercase text-xs sm:text-[10px] transition-all ${
                           injuryDiceCount === btn.count
                             ? 'bg-[#B22222] text-white font-extrabold shadow'
                             : 'bg-theme-elevated text-theme-muted hover:text-white border border-theme-border'
@@ -374,7 +374,7 @@ export const DiceRoller: React.FC = () => {
 
                 {/* Flat Modifiers (Armour vs Blood/AP) */}
                 <div className="space-y-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-[11px] block">
+                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px] block">
                     Injury Modifier (Armour / Blood / AP):
                   </span>
                   <div className="flex space-x-1">
@@ -414,7 +414,7 @@ export const DiceRoller: React.FC = () => {
           {activeMode === 'pool' && (
             <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="flex items-center space-x-3">
-                <span className="text-theme-muted uppercase font-bold text-[11px]">Number of D6s:</span>
+                <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px]">Number of D6s:</span>
                 {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
                   <button
                     key={num}
@@ -446,7 +446,7 @@ export const DiceRoller: React.FC = () => {
             <div className="p-4 bg-theme-surface border-2 border-theme-primary/60 rounded-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
               
               <div className="space-y-2">
-                <span className="text-[10px] text-theme-muted uppercase font-bold block">
+                <span className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">
                   {lastResult.type}
                 </span>
 
@@ -489,7 +489,7 @@ export const DiceRoller: React.FC = () => {
 
               {/* Verdict Banner */}
               <div className="text-right">
-                <span className="text-[10px] text-theme-muted uppercase block">Result & Effect</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted uppercase block">Result & Effect</span>
                 <span className={`font-gothic font-bold text-sm sm:text-base ${lastResult.verdictColor} block`}>
                   {lastResult.verdict}
                 </span>
@@ -501,12 +501,12 @@ export const DiceRoller: React.FC = () => {
           {/* Roll History Rollout */}
           {diceHistory.length > 0 && (
             <div className="space-y-1 border-t border-theme-border pt-2">
-              <span className="text-[9px] font-mono uppercase text-theme-muted block">Recent Rolls:</span>
+              <span className="text-xs sm:text-[9px] font-mono uppercase text-theme-muted block">Recent Rolls:</span>
               <div className="flex flex-wrap gap-1.5">
                 {diceHistory.map((item, idx) => (
                   <span
                     key={idx}
-                    className="text-[10px] font-mono bg-theme-surface px-2 py-0.5 rounded text-theme-muted border border-theme-border/60"
+                    className="text-xs sm:text-[10px] font-mono bg-theme-surface px-2 py-0.5 rounded text-theme-muted border border-theme-border/60"
                   >
                     {item}
                   </span>

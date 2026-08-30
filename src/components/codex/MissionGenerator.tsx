@@ -269,7 +269,7 @@ export const MissionGenerator: React.FC = () => {
           {/* Template Selector Bar */}
           <div className="p-4 bg-theme-base rounded border border-theme-border flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 space-y-1">
-              <label className="text-[10px] text-theme-muted uppercase font-bold block">
+              <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">
                 Load Existing Scenario as Template:
               </label>
               <select
@@ -300,7 +300,7 @@ export const MissionGenerator: React.FC = () => {
             {/* Title & Tagline */}
             <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
               <div className="space-y-1">
-                <label className="text-[10px] text-theme-muted uppercase font-bold block">Scenario Title:</label>
+                <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Scenario Title:</label>
                 <input
                   type="text"
                   value={customTitle}
@@ -310,7 +310,7 @@ export const MissionGenerator: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] text-theme-muted uppercase font-bold block">Briefing / Tagline:</label>
+                <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Briefing / Tagline:</label>
                 <input
                   type="text"
                   value={customTagline}
@@ -321,7 +321,7 @@ export const MissionGenerator: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] text-theme-muted uppercase font-bold block">Table Size:</label>
+                  <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Table Size:</label>
                   <input
                     type="text"
                     value={customTableSize}
@@ -330,7 +330,7 @@ export const MissionGenerator: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] text-theme-muted uppercase font-bold block">Game Length:</label>
+                  <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Game Length:</label>
                   <input
                     type="text"
                     value={customGameLength}
@@ -344,7 +344,7 @@ export const MissionGenerator: React.FC = () => {
             {/* Battlefield & Deployment */}
             <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
               <div className="space-y-1">
-                <label className="text-[10px] text-theme-muted uppercase font-bold block">Battlefield Archetype & Terrain:</label>
+                <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Battlefield Archetype & Terrain:</label>
                 <textarea
                   rows={3}
                   value={customBattlefield}
@@ -354,7 +354,7 @@ export const MissionGenerator: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] text-theme-muted uppercase font-bold block">Deployment Rules:</label>
+                <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Deployment Rules:</label>
                 <textarea
                   rows={2}
                   value={customDeployment}
@@ -366,7 +366,7 @@ export const MissionGenerator: React.FC = () => {
 
             {/* Victory Conditions */}
             <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
-              <label className="text-[10px] text-theme-muted uppercase font-bold block">Victory Conditions & Scoring:</label>
+              <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Victory Conditions & Scoring:</label>
               <textarea
                 rows={4}
                 value={customVictory}
@@ -377,7 +377,7 @@ export const MissionGenerator: React.FC = () => {
 
             {/* Glorious Deeds */}
             <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
-              <label className="text-[10px] text-theme-muted uppercase font-bold block">Glorious Deeds (Markdown list):</label>
+              <label className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Glorious Deeds (Markdown list):</label>
               <textarea
                 rows={4}
                 value={customGloriousDeeds}
@@ -431,11 +431,11 @@ export const MissionGenerator: React.FC = () => {
                 {/* Weather Condition */}
                 <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase text-theme-muted flex items-center space-x-1">
+                    <span className="text-xs sm:text-[10px] uppercase text-theme-muted flex items-center space-x-1">
                       <CloudRain className="w-3.5 h-3.5 text-theme-primary" />
                       <span>Atmospheric Weather</span>
                     </span>
-                    <span className="text-[9px] uppercase bg-theme-surface text-theme-primary px-2 py-0.5 rounded border border-theme-border">
+                    <span className="text-xs sm:text-[9px] uppercase bg-theme-surface text-theme-primary px-2 py-0.5 rounded border border-theme-border">
                       {proceduralMission.weather.badge}
                     </span>
                   </div>
@@ -448,11 +448,11 @@ export const MissionGenerator: React.FC = () => {
                 {/* Battlefield Complication */}
                 <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase text-theme-muted flex items-center space-x-1">
+                    <span className="text-xs sm:text-[10px] uppercase text-theme-muted flex items-center space-x-1">
                       <AlertTriangle className="w-3.5 h-3.5 text-status-error" />
                       <span>Sector Hazard / Complication</span>
                     </span>
-                    <span className="text-[9px] uppercase bg-theme-surface text-status-error px-2 py-0.5 rounded border border-theme-border">
+                    <span className="text-xs sm:text-[9px] uppercase bg-theme-surface text-status-error px-2 py-0.5 rounded border border-theme-border">
                       {proceduralMission.complication.type}
                     </span>
                   </div>

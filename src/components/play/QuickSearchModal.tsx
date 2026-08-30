@@ -73,7 +73,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
               className="w-full bg-theme-surface border border-theme-border rounded pl-9 pr-3 py-2 text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -94,7 +94,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
                     <div className="flex items-center justify-between">
                       <span className="font-gothic font-bold text-sm text-theme-text">{k.name}</span>
                       {k.type && (
-                        <span className="text-[9px] font-mono uppercase bg-theme-elevated text-theme-primary px-1.5 py-0.2 rounded">
+                        <span className="text-xs sm:text-[9px] font-mono uppercase bg-theme-elevated text-theme-primary px-1.5 py-0.2 rounded">
                           {k.type}
                         </span>
                       )}

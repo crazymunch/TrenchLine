@@ -79,7 +79,7 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded text-theme-muted hover:text-theme-text hover:bg-theme-elevated transition-colors"
+            className="tap p-1.5 rounded text-theme-muted hover:text-theme-text hover:bg-theme-elevated transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -135,7 +135,7 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
                           {theme.name}
                         </h3>
                         <span 
-                          className="text-[10px] font-mono font-bold uppercase tracking-wider block"
+                          className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-wider block"
                           style={{ color: theme.primaryColor }}
                         >
                           {theme.primaryColor}
@@ -144,12 +144,12 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
                     </div>
 
                     {isSelected ? (
-                      <span className="flex items-center space-x-1 px-2 py-0.5 rounded bg-theme-primary/20 border border-theme-primary text-theme-primary text-[10px] font-mono font-bold uppercase tracking-widest">
+                      <span className="flex items-center space-x-1 px-2 py-0.5 rounded bg-theme-primary/20 border border-theme-primary text-theme-primary text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest">
                         <Check className="w-3 h-3" />
                         <span>Active</span>
                       </span>
                     ) : (
-                      <span className="text-[10px] font-mono text-theme-muted uppercase group-hover:text-theme-text">
+                      <span className="text-xs sm:text-[10px] font-mono text-theme-muted uppercase group-hover:text-theme-text">
                         Select
                       </span>
                     )}
@@ -163,7 +163,7 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
 
                 {/* Color Palette Swatches */}
                 <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-theme-muted uppercase">Palette</span>
+                  <span className="text-xs sm:text-[10px] font-mono text-theme-muted uppercase">Palette</span>
                   <div className="flex items-center space-x-1.5">
                     <div 
                       className="w-4 h-4 rounded-full border border-black/40 shadow-sm"

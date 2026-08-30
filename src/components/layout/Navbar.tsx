@@ -94,7 +94,7 @@ export const Navbar: React.FC = () => {
               the mobile header in Phase 0: a flex row whose children refuse to
               shrink is as wide as its contents, not as wide as the screen.
             */}
-            <div className="hidden lg:flex items-center space-x-3 min-w-0">
+            <div className="hidden lg:flex items-center space-x-3 min-w-0 flex-1">
               <div 
                 className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-inner flex-shrink-0"
                 style={{ borderColor: activeThemeObj.primaryColor, color: activeThemeObj.primaryColor }}
@@ -105,7 +105,7 @@ export const Navbar: React.FC = () => {
                 <h2 className="font-gothic font-bold text-sm tracking-wide text-theme-text truncate">
                   {currentViewInfo.title}
                 </h2>
-                <p className="text-[10px] font-mono text-theme-muted leading-none truncate">
+                <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-none truncate">
                   {currentViewInfo.subtitle}
                 </p>
               </div>
@@ -129,7 +129,7 @@ export const Navbar: React.FC = () => {
                   <span className={totalSpent > activeWarband.ducatLimit ? 'text-status-error font-bold' : 'text-theme-text'}>
                     {totalSpent}
                   </span>
-                  <span className="text-theme-muted text-[10px]">/{activeWarband.ducatLimit} D</span>
+                  <span className="text-theme-muted text-xs sm:text-[10px]">/{activeWarband.ducatLimit} D</span>
                 </div>
 
                 <div className="hidden sm:flex items-center space-x-1 text-theme-primary">
@@ -140,7 +140,16 @@ export const Navbar: React.FC = () => {
             )}
 
             {/* 3. Right: Quick Actions (Theme & Auth) */}
-            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            {/*
+              The actions never shrink; the title does.
+
+              `min-w-0` here let this group shrink below its own content, and its
+              children are `flex-shrink-0`, so they simply spilled past its right
+              edge — 26px of sideways page scroll on every view whose title is
+              long. Shrinking is the *title's* job: it truncates, and these are
+              controls that stop being usable the moment they are clipped.
+            */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               
               {/* Ruleset Version Switcher */}
               <div className="relative">
@@ -164,7 +173,7 @@ export const Navbar: React.FC = () => {
                 className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-accent/60 hover:border-theme-accent text-status-error text-xs font-mono transition-colors"
               >
                 <Bug className="w-3.5 h-3.5" />
-                <span className="hidden md:inline text-[11px] font-bold">Bug Report</span>
+                <span className="hidden md:inline text-xs sm:text-[11px] font-bold">Bug Report</span>
               </button>
 
               {/* Theme Trigger */}
@@ -178,7 +187,7 @@ export const Navbar: React.FC = () => {
                   style={{ backgroundColor: activeThemeObj.primaryColor }}
                 />
                 <Palette className="w-3.5 h-3.5 text-theme-muted" />
-                <span className="hidden sm:inline text-[11px] font-bold" style={{ color: activeThemeObj.primaryColor }}>
+                <span className="hidden sm:inline text-xs sm:text-[11px] font-bold" style={{ color: activeThemeObj.primaryColor }}>
                   {activeThemeObj.name.split(' ')[0]}
                 </span>
               </button>

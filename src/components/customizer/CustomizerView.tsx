@@ -301,7 +301,7 @@ export const CustomizerView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Unit Selector List */}
           <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
+            <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Unit to Modify:
             </span>
             <div className="space-y-1">
@@ -316,7 +316,7 @@ export const CustomizerView: React.FC = () => {
                   }`}
                 >
                   <span className="truncate">{u.name}</span>
-                  <span className="text-[10px]">{u.baseCost} D</span>
+                  <span className="text-xs sm:text-[10px]">{u.baseCost} D</span>
                 </button>
               ))}
             </div>
@@ -327,7 +327,7 @@ export const CustomizerView: React.FC = () => {
             <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
                 <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedUnit?.name}</h2>
-                <span className="text-[10px] text-theme-muted">Faction: {selectedUnit?.factionId} • Category: {selectedUnit?.category}</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted">Faction: {selectedUnit?.factionId} • Category: {selectedUnit?.category}</span>
               </div>
               {selectedUnit?.isCustom && (
                 <button
@@ -343,7 +343,7 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveUnit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Unit Name:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Unit Name:</label>
                   <input
                     type="text"
                     value={editName}
@@ -352,7 +352,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Base Cost (Ducats):</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Base Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editCost}
@@ -364,7 +364,7 @@ export const CustomizerView: React.FC = () => {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Movement:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Movement:</label>
                   <input
                     type="text"
                     value={editMov}
@@ -373,7 +373,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Ranged:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Ranged:</label>
                   <input
                     type="text"
                     value={editRng}
@@ -382,7 +382,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Melee:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Melee:</label>
                   <input
                     type="text"
                     value={editMelee}
@@ -391,7 +391,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Armour Mod:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Armour Mod:</label>
                   <input
                     type="text"
                     value={editArmour}
@@ -420,7 +420,7 @@ export const CustomizerView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Weapon Selector List */}
           <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
+            <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Weapon to Modify:
             </span>
             <div className="space-y-1">
@@ -435,7 +435,7 @@ export const CustomizerView: React.FC = () => {
                   }`}
                 >
                   <span className="truncate">{w.name}</span>
-                  <span className="text-[10px]">{w.cost} D</span>
+                  <span className="text-xs sm:text-[10px]">{w.cost} D</span>
                 </button>
               ))}
             </div>
@@ -446,7 +446,7 @@ export const CustomizerView: React.FC = () => {
             <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
                 <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedWeapon?.name}</h2>
-                <span className="text-[10px] text-theme-muted">Type: {selectedWeapon?.type} • Faction: {selectedWeapon?.factionId || 'universal'}</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted">Type: {selectedWeapon?.type} • Faction: {selectedWeapon?.factionId || 'universal'}</span>
               </div>
               {selectedWeapon?.isCustom && (
                 <button
@@ -462,7 +462,7 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveWeapon} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1 sm:col-span-2">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Weapon Name:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Weapon Name:</label>
                   <input
                     type="text"
                     value={editWepName}
@@ -471,7 +471,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editWepCost}
@@ -483,7 +483,7 @@ export const CustomizerView: React.FC = () => {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Type:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Type:</label>
                   <select
                     value={editWepType}
                     onChange={(e) => setEditWepType(e.target.value as any)}
@@ -495,7 +495,7 @@ export const CustomizerView: React.FC = () => {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Range:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Range:</label>
                   <input
                     type="text"
                     value={editWepRange}
@@ -504,7 +504,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Modifiers:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Modifiers:</label>
                   <input
                     type="text"
                     value={editWepMod}
@@ -513,7 +513,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Hands Required:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Hands Required:</label>
                   <select
                     value={editWepHands}
                     onChange={(e) => setEditWepHands(Number(e.target.value) as 1 | 2)}
@@ -544,7 +544,7 @@ export const CustomizerView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Armour Selector List */}
           <div className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container max-h-[600px] overflow-y-auto">
-            <span className="text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
+            <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block pb-1 border-b border-theme-border">
               Select Armour to Modify:
             </span>
             <div className="space-y-1">
@@ -559,7 +559,7 @@ export const CustomizerView: React.FC = () => {
                   }`}
                 >
                   <span className="truncate">{a.name}</span>
-                  <span className="text-[10px]">{a.cost} D</span>
+                  <span className="text-xs sm:text-[10px]">{a.cost} D</span>
                 </button>
               ))}
             </div>
@@ -570,7 +570,7 @@ export const CustomizerView: React.FC = () => {
             <div className="flex items-center justify-between border-b border-theme-border pb-3">
               <div>
                 <h2 className="font-gothic font-bold text-lg text-theme-text">{selectedArmour?.name}</h2>
-                <span className="text-[10px] text-theme-muted">Category: {selectedArmour?.category} • Faction: {selectedArmour?.factionId || 'universal'}</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted">Category: {selectedArmour?.category} • Faction: {selectedArmour?.factionId || 'universal'}</span>
               </div>
               {selectedArmour?.isCustom && (
                 <button
@@ -586,7 +586,7 @@ export const CustomizerView: React.FC = () => {
             <form onSubmit={handleSaveArmour} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1 sm:col-span-2">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Armour Name:</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Armour Name:</label>
                   <input
                     type="text"
                     value={editArmName}
@@ -595,7 +595,7 @@ export const CustomizerView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Cost (Ducats):</label>
                   <input
                     type="number"
                     value={editArmCost}
@@ -606,7 +606,7 @@ export const CustomizerView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted">Protection Modifier:</label>
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Protection Modifier:</label>
                 <input
                   type="text"
                   value={editArmMod}
@@ -616,7 +616,7 @@ export const CustomizerView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted">Description & Rules:</label>
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">Description & Rules:</label>
                 <textarea
                   rows={3}
                   value={editArmDesc}

@@ -170,7 +170,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
               >
                 <div className="flex items-center justify-between border-b border-theme-border pb-2 print:border-gray-400">
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-theme-base text-theme-primary print:bg-gray-200 print:text-black">
+                    <span className="text-xs sm:text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-theme-base text-theme-primary print:bg-gray-200 print:text-black">
                       {unit.profileSnapshot.category}
                     </span>
                     <h3 className="font-gothic font-bold text-base text-theme-text print:text-black mt-1">
@@ -184,18 +184,18 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
 
                 {/* Stats */}
                 <div className="grid grid-cols-4 gap-1 text-center font-mono text-xs bg-theme-surface p-1.5 rounded border border-theme-border print:bg-gray-100 print:border-gray-400">
-                  <div><span className="text-[9px] text-gray-400 block">MOV</span><strong>{unit.profileSnapshot.stats.movement}</strong></div>
-                  <div><span className="text-[9px] text-gray-400 block">RNG</span><strong>{unit.profileSnapshot.stats.ranged}</strong></div>
-                  <div><span className="text-[9px] text-gray-400 block">MELEE</span><strong>{unit.profileSnapshot.stats.melee}</strong></div>
-                  <div><span className="text-[9px] text-gray-400 block">ARMOUR</span><strong>{unit.profileSnapshot.stats.armour}</strong></div>
+                  <div><span className="text-xs sm:text-[9px] text-gray-400 block">MOV</span><strong>{unit.profileSnapshot.stats.movement}</strong></div>
+                  <div><span className="text-xs sm:text-[9px] text-gray-400 block">RNG</span><strong>{unit.profileSnapshot.stats.ranged}</strong></div>
+                  <div><span className="text-xs sm:text-[9px] text-gray-400 block">MELEE</span><strong>{unit.profileSnapshot.stats.melee}</strong></div>
+                  <div><span className="text-xs sm:text-[9px] text-gray-400 block">ARMOUR</span><strong>{unit.profileSnapshot.stats.armour}</strong></div>
                 </div>
 
                 {/* Weapons */}
                 {unit.equippedWeapons.length > 0 && (
                   <div className="text-xs space-y-1">
-                    <span className="text-[10px] font-mono text-gray-400 uppercase font-bold">Armament:</span>
+                    <span className="text-xs sm:text-[10px] font-mono text-gray-400 uppercase font-bold">Armament:</span>
                     {unit.equippedWeapons.map((w) => (
-                      <div key={w.instanceId} className="flex justify-between font-mono text-[11px]">
+                      <div key={w.instanceId} className="flex justify-between font-mono text-xs sm:text-[11px]">
                         <span>{w.name}</span>
                         <span className="text-gray-400">{w.range} | Mod: {w.modifiers} | {w.damage}</span>
                       </div>
@@ -205,15 +205,15 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
 
                 {/* Armour & Gear */}
                 {(unit.equippedArmour.length > 0 || unit.equippedEquipment.length > 0) && (
-                  <div className="text-xs font-mono text-[11px] text-gray-300 print:text-gray-700">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 block">Protection & Gear:</span>
+                  <div className="text-xs font-mono text-xs sm:text-[11px] text-gray-300 print:text-gray-700">
+                    <span className="text-xs sm:text-[10px] uppercase font-bold text-gray-400 block">Protection & Gear:</span>
                     {[...unit.equippedArmour.map(a => a.name), ...unit.equippedEquipment.map(e => e.name)].join(', ')}
                   </div>
                 )}
 
                 {/* Injuries */}
                 {unit.injuries.length > 0 && (
-                  <div className="text-[10px] font-mono text-status-error print:text-red-700 border-t border-theme-border pt-1">
+                  <div className="text-xs sm:text-[10px] font-mono text-status-error print:text-red-700 border-t border-theme-border pt-1">
                     Scars: {unit.injuries.join(', ')}
                   </div>
                 )}

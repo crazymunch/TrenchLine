@@ -249,7 +249,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
               <p className="text-xs text-theme-muted">Step {step} of 4: Trauma, Experience, Scavenge & Chronicle</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -307,13 +307,13 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   )}
                   <div className="text-xs space-y-1">
                     <span className="text-theme-primary font-bold block">{scenario.name}</span>
-                    <p className="text-theme-muted text-[11px] italic">{scenario.tagline}</p>
+                    <p className="text-theme-muted text-xs sm:text-[11px] italic">{scenario.tagline}</p>
                     {/* No `|| '5 Turns'` fallback. That default is what hid the
                         hand-written game lengths being wrong for all twelve —
                         every one fell through to it, so the app showed five
                         Turns for scenarios the book plays over four. */}
                     {scenario.gameLength && (
-                      <p className="text-[10px] text-theme-text pt-1">{scenario.gameLength}</p>
+                      <p className="text-xs sm:text-[10px] text-theme-text pt-1">{scenario.gameLength}</p>
                     )}
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <div className="flex space-x-1.5 flex-shrink-0">
                   <button
                     onClick={() => setTraumaRollMode('digital')}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition-all ${
+                    className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
                       traumaRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
@@ -405,7 +405,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   </button>
                   <button
                     onClick={() => setTraumaRollMode('manual')}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition-all ${
+                    className={`px-2.5 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-all ${
                       traumaRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-elevated text-theme-muted'
                     }`}
                   >
@@ -451,7 +451,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                           </button>
                         ) : (
                           <div className="flex items-center space-x-2 flex-shrink-0">
-                            <span className="text-[11px] text-theme-muted">D66:</span>
+                            <span className="text-xs sm:text-[11px] text-theme-muted">D66:</span>
                             <input
                               type="number"
                               min={11}
@@ -503,7 +503,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                                 [unit.id]: isSelected ? '' : adv
                               })
                             }
-                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-[11px] ${
+                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-xs sm:text-[11px] ${
                               isSelected
                                 ? 'bg-theme-primary text-black font-bold'
                                 : 'bg-theme-base text-theme-muted hover:text-white border border-theme-border'
@@ -553,7 +553,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     <div className="flex space-x-1">
                       <button
                         onClick={() => setExplorationRollMode('digital')}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                        className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
                           explorationRollMode === 'digital' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
@@ -561,7 +561,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       </button>
                       <button
                         onClick={() => setExplorationRollMode('manual')}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                        className={`px-2 py-0.5 rounded text-xs sm:text-[10px] font-bold uppercase transition-all ${
                           explorationRollMode === 'manual' ? 'bg-theme-primary text-black' : 'bg-theme-base text-theme-muted'
                         }`}
                       >
@@ -608,7 +608,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
               {/* Payout Summary */}
               <div className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-2 text-xs">
-                <span className="text-[10px] uppercase font-bold text-theme-muted block">Post-Battle Payout:</span>
+                <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">Post-Battle Payout:</span>
                 <div className="flex justify-between text-sm">
                   <span>Glory Points Gained:</span>
                   <strong className="text-theme-primary">+{gloryGained} Glory</strong>
@@ -621,14 +621,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
               {/* Narrative Battle Report Section */}
               <div className="p-4 bg-theme-elevated border border-theme-border rounded-md space-y-3 text-xs">
-                <span className="text-[11px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
+                <span className="text-xs sm:text-[11px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
                   <Award className="w-3.5 h-3.5" />
                   <span>Battlefield Chronicle & Narrative Report</span>
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
+                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
                     <input
                       type="text"
                       value={opponentWarbandName}
@@ -639,7 +639,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase text-theme-muted block">Match MVP (Awards Heroic Deed):</label>
+                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Match MVP (Awards Heroic Deed):</label>
                     <select
                       value={mvpUnitName}
                       onChange={(e) => setMvpUnitName(e.target.value)}
@@ -656,7 +656,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase text-theme-muted block">Battle Narrative / Turning Points (Markdown):</label>
+                  <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Battle Narrative / Turning Points (Markdown):</label>
                   <textarea
                     value={battleReportText}
                     onChange={(e) => setBattleReportText(e.target.value)}

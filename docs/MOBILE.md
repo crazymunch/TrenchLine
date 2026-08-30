@@ -53,17 +53,33 @@ today.
 
 Add `viewport-fit=cover` to the viewport meta, or the insets always report `0`.
 
-### 3. Touch targets
+### 3. Touch targets — enforced in `globals.css`
 
-**44×44px minimum** for anything tappable. `UnitCard`'s action buttons are
-currently ~26px (`py-1.5` + `text-[10px]`).
+**44×44px minimum** for anything tappable. This is no longer a convention to
+remember: on the phone, `button:not(.tap)` has `min-height: 44px`, and form
+controls have `min-height: 44px` and `font-size: 16px !important`.
+
+Fixing 150 buttons one at a time fixes them once — the next toolbar button
+someone writes is 30px again, because nothing says otherwise. So the rule is in
+the stylesheet and `.tap` is the documented opt-out.
+
+**`.tap`** gives a control a 44px hit area as an invisible centred overlay,
+without changing how it looks. Use it for anything that must stay visually
+small: a remove cross beside a weapon name, a category chip, a modal's close
+button. The overlay is removed above `sm:`, where a mouse is pointing and 44px
+would only make neighbouring controls fight for clicks.
 
 ```jsx
-/* wrong */  className="py-1.5 text-[10px]"
-/* right */  className="min-h-[44px] px-3 text-sm sm:min-h-0 sm:py-1.5 sm:text-xs"
+/* a control that can afford to grow */
+className="min-h-[44px] sm:min-h-0 sm:py-1.5"
+/* a control that cannot */
+className="tap p-1 text-theme-muted hover:text-status-error"
 ```
 
-Icon-only buttons get an invisible expanded hit area, not a bigger icon.
+Both rules live **outside `@layer`**, for the reason the theme variables do:
+Tailwind drops `@layer base` rules whose selectors it cannot find in the content
+globs, which is exactly how all six theme blocks vanished from the compiled
+stylesheet in 3.5.
 
 ### 4. Type scale
 
@@ -80,7 +96,16 @@ painted model, that is unreadable.
 Inputs below 16px make iOS Safari zoom the page on focus and never zoom back.
 This is non-negotiable regardless of visual density.
 
-`text-[9px]` and `text-[10px]` are banned outside `sm:`-and-up prefixes.
+`text-[9px]`, `text-[10px]` and `text-[11px]` are banned outside `sm:`-and-up
+prefixes. The app had 397 of them; they are now all `text-xs sm:text-[Npx]`, so
+the phone reads at 12px and the desktop keeps its density.
+
+**Raising the type can break a layout, and a clipped label is worse than a small
+one.** Raising the bottom nav's labels to 12px clipped `Campaign` to `Campaig…`
+at every phone width. The fix was to give the labels room — the theme switcher
+and bug reporter became icon-only, since they are utilities rather than
+destinations — and to use the view's own shorter name, `Crusade`. Check for
+clipping after a type change, not just for size.
 
 ### 5. No dynamic Tailwind class names
 

@@ -100,7 +100,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -123,7 +123,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             >
               <UploadCloud className="w-8 h-8 text-theme-primary mb-1" />
               <span className="font-bold text-theme-text">Click to upload NewRecruit exported file</span>
-              <span className="text-[10px] text-theme-muted">Supports .json, .ros, .rosz, .txt</span>
+              <span className="text-xs sm:text-[10px] text-theme-muted">Supports .json, .ros, .rosz, .txt</span>
             </label>
           </div>
 
@@ -158,7 +158,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             <div className="p-4 bg-theme-elevated border-2 border-theme-primary rounded-md space-y-3 shadow-lg">
               <div className="flex items-center justify-between border-b border-theme-border pb-2">
                 <div>
-                  <span className="text-[10px] font-mono text-theme-primary uppercase font-bold">Parsed Warband Preview</span>
+                  <span className="text-xs sm:text-[10px] font-mono text-theme-primary uppercase font-bold">Parsed Warband Preview</span>
                   <h3 className="font-gothic font-bold text-lg text-theme-text">{parsedWarband.name}</h3>
                   <span className="text-xs font-mono text-theme-muted">
                     Faction: {faction?.name || parsedWarband.factionId}

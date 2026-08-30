@@ -67,7 +67,7 @@ export const CampaignHubView: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-1.5">
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
+              <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary text-black font-bold uppercase">
                 CRUSADE TURN {campaign.currentTurn}
               </span>
               <span className="text-xs font-mono text-theme-muted">Admin: {campaign.adminName}</span>
@@ -84,12 +84,12 @@ export const CampaignHubView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3">
             <div className="bg-theme-base border border-theme-border p-2.5 rounded-md flex items-center space-x-3">
               <div>
-                <span className="text-[9px] font-mono text-theme-muted uppercase tracking-wider block">Invite Code</span>
+                <span className="text-xs sm:text-[9px] font-mono text-theme-muted uppercase tracking-wider block">Invite Code</span>
                 <span className="text-sm font-mono font-bold text-theme-primary">{campaign.inviteCode}</span>
               </div>
               <button
                 onClick={handleCopyInvite}
-                className="p-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border transition-colors"
+                className="tap p-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border transition-colors"
                 title="Copy Invite Code"
               >
                 {copied ? <Check className="w-4 h-4 text-status-legal" /> : <Copy className="w-4 h-4" />}
@@ -164,7 +164,7 @@ export const CampaignHubView: React.FC = () => {
       {activeTab === 'leaderboard' && (
         <div className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-theme-base text-theme-muted uppercase text-[10px] border-b border-theme-border">
+            <thead className="bg-theme-base text-theme-muted uppercase text-xs sm:text-[10px] border-b border-theme-border">
               <tr>
                 <th className="p-4">Rank</th>
                 <th className="p-4">Warband & Commander</th>
@@ -202,11 +202,11 @@ export const CampaignHubView: React.FC = () => {
                       <div className="font-gothic font-bold text-base text-theme-text">
                         {member.warbandName}
                       </div>
-                      <div className="text-[11px] text-theme-muted">{member.playerName}</div>
+                      <div className="text-xs sm:text-[11px] text-theme-muted">{member.playerName}</div>
                     </td>
 
                     <td className="p-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-theme-base text-theme-primary border border-theme-border">
+                      <span className="px-2 py-0.5 rounded text-xs sm:text-[10px] uppercase font-bold bg-theme-base text-theme-primary border border-theme-border">
                         {faction?.name || member.factionId}
                       </span>
                     </td>
@@ -251,7 +251,7 @@ export const CampaignHubView: React.FC = () => {
                 key={log.id}
                 className="p-3 bg-theme-base rounded border border-theme-border flex items-start space-x-3 text-xs font-mono"
               >
-                <span className="text-[10px] text-theme-muted min-w-[70px] uppercase block mt-0.5">
+                <span className="text-xs sm:text-[10px] text-theme-muted min-w-[70px] uppercase block mt-0.5">
                   {log.timestamp}
                 </span>
                 <div className="h-4 w-[1px] bg-theme-border" />
@@ -282,7 +282,7 @@ export const CampaignHubView: React.FC = () => {
                         {match.scenarioName}
                       </h3>
                       {match.opponentWarbandName && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold">
+                        <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold">
                           vs. {match.opponentWarbandName}
                         </span>
                       )}
@@ -292,7 +292,7 @@ export const CampaignHubView: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     {match.mvpUnitName && (
-                      <span className="text-[11px] font-mono bg-theme-primary/15 text-theme-primary px-2.5 py-1 rounded border border-theme-primary/40 font-bold flex items-center space-x-1">
+                      <span className="text-xs sm:text-[11px] font-mono bg-theme-primary/15 text-theme-primary px-2.5 py-1 rounded border border-theme-primary/40 font-bold flex items-center space-x-1">
                         <Trophy className="w-3.5 h-3.5" />
                         <span>MVP: {match.mvpUnitName}</span>
                       </span>
@@ -319,7 +319,7 @@ export const CampaignHubView: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <strong className="font-gothic text-base text-theme-text">{p.warbandName}</strong>
                         <span
-                          className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
+                          className={`font-bold px-2 py-0.5 rounded text-xs sm:text-[10px] uppercase ${
                             p.result === 'Victory'
                               ? 'bg-status-legal text-white'
                               : p.result === 'Defeat'
@@ -331,9 +331,9 @@ export const CampaignHubView: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="text-[11px] text-theme-muted">Commander: {p.playerName}</div>
+                      <div className="text-xs sm:text-[11px] text-theme-muted">Commander: {p.playerName}</div>
 
-                      <div className="flex justify-between border-t border-theme-border pt-1.5 text-[11px]">
+                      <div className="flex justify-between border-t border-theme-border pt-1.5 text-xs sm:text-[11px]">
                         <span>Glory: <strong className="text-theme-primary">+{p.gloryGained}</strong></span>
                         <span>Ducats: <strong className="text-theme-primary">+{p.ducatsGained} D</strong></span>
                         <span>Casualties: <strong className={p.casualties.length > 0 ? 'text-status-error' : 'text-status-legal'}>{p.casualties.length}</strong></span>
@@ -342,9 +342,9 @@ export const CampaignHubView: React.FC = () => {
                       {/* Casualty Breakdown */}
                       {p.casualties.length > 0 && (
                         <div className="border-t border-theme-border pt-1.5 space-y-1">
-                          <span className="text-[10px] text-theme-muted uppercase font-bold block">Casualty Roll Details:</span>
+                          <span className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Casualty Roll Details:</span>
                           {p.casualties.map((cas, cIdx) => (
-                            <div key={cIdx} className="text-[10px] text-status-error flex items-center justify-between">
+                            <div key={cIdx} className="text-xs sm:text-[10px] text-status-error flex items-center justify-between">
                               <span>• {cas.unitName}:</span>
                               <span className="italic">{cas.outcome}</span>
                             </div>
@@ -365,11 +365,11 @@ export const CampaignHubView: React.FC = () => {
                 {/* Notable Moments Bullets */}
                 {match.notableMoments && match.notableMoments.length > 0 && (
                   <div className="p-3 bg-theme-base border border-theme-border rounded text-xs font-mono space-y-1.5">
-                    <span className="text-[10px] font-bold uppercase text-theme-primary flex items-center space-x-1">
+                    <span className="text-xs sm:text-[10px] font-bold uppercase text-theme-primary flex items-center space-x-1">
                       <Sparkles className="w-3 h-3 text-theme-primary" />
                       <span>Decisive Battlefield Moments:</span>
                     </span>
-                    <ul className="list-disc list-inside space-y-1 text-theme-text text-[11px]">
+                    <ul className="list-disc list-inside space-y-1 text-theme-text text-xs sm:text-[11px]">
                       {match.notableMoments.map((moment, mIdx) => (
                         <li key={mIdx}>{moment}</li>
                       ))}
@@ -417,7 +417,7 @@ export const CampaignHubView: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsNewCampaignModalOpen(false)}
-                className="text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-white p-1"
               >
                 <X className="w-5 h-5" />
               </button>

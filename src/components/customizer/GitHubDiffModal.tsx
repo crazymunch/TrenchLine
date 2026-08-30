@@ -77,7 +77,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -110,7 +110,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
               >
                 <div className="flex items-center justify-between border-b border-theme-border pb-2">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-mono uppercase bg-theme-accent text-white px-2 py-0.5 rounded font-bold">
+                    <span className="text-xs sm:text-[10px] font-mono uppercase bg-theme-accent text-white px-2 py-0.5 rounded font-bold">
                       {diff.type}
                     </span>
                     <h3 className="font-gothic font-bold text-base text-theme-text">{diff.name}</h3>
@@ -126,7 +126,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
                   
                   {/* Left: Your Custom Overrides */}
                   <div className="p-3 bg-theme-surface border border-theme-primary/50 rounded space-y-2">
-                    <span className="text-[10px] font-mono uppercase text-theme-primary font-bold block border-b border-theme-border pb-1">
+                    <span className="text-xs sm:text-[10px] font-mono uppercase text-theme-primary font-bold block border-b border-theme-border pb-1">
                       Your In-App Custom Value
                     </span>
                     <div className="space-y-1 text-xs font-mono">
@@ -141,7 +141,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
 
                   {/* Right: GitHub Upstream */}
                   <div className="p-3 bg-theme-base border border-theme-border rounded space-y-2">
-                    <span className="text-[10px] font-mono uppercase text-status-legal font-bold block border-b border-theme-border pb-1">
+                    <span className="text-xs sm:text-[10px] font-mono uppercase text-status-legal font-bold block border-b border-theme-border pb-1">
                       GitHub Upstream (Repo)
                     </span>
                     <div className="space-y-1 text-xs font-mono">

@@ -251,26 +251,26 @@ export const RosterDirectoryView: React.FC = () => {
                         className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ backgroundColor: faction?.color || '#D4AF37' }}
                       />
-                      <span className="text-[10px] font-mono uppercase font-bold text-theme-muted">
+                      <span className="text-xs sm:text-[10px] font-mono uppercase font-bold text-theme-muted">
                         {faction?.name || wb.factionId}
                       </span>
                     </div>
                     <h3 className="font-gothic font-bold text-lg text-theme-text mt-0.5 tracking-wide">
                       {wb.name}
                     </h3>
-                    <span className="text-[11px] font-mono text-theme-muted block">
+                    <span className="text-xs sm:text-[11px] font-mono text-theme-muted block">
                       Commander: <strong className="text-theme-text">{wb.creatorName || 'Crusade Commander'}</strong>
                     </span>
                   </div>
 
                   {/* Campaign Status Badge */}
                   {isEnrolled ? (
-                    <span className="px-2 py-0.5 rounded bg-theme-elevated border border-status-legal/50 text-status-legal text-[10px] font-mono font-bold uppercase flex items-center space-x-1 flex-shrink-0">
+                    <span className="px-2 py-0.5 rounded bg-theme-elevated border border-status-legal/50 text-status-legal text-xs sm:text-[10px] font-mono font-bold uppercase flex items-center space-x-1 flex-shrink-0">
                       <CheckCircle className="w-3 h-3" />
                       <span>CRUSADE</span>
                     </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded bg-theme-base border border-theme-border text-theme-muted text-[10px] font-mono font-bold uppercase flex-shrink-0">
+                    <span className="px-2 py-0.5 rounded bg-theme-base border border-theme-border text-theme-muted text-xs sm:text-[10px] font-mono font-bold uppercase flex-shrink-0">
                       UNENROLLED
                     </span>
                   )}
@@ -279,15 +279,15 @@ export const RosterDirectoryView: React.FC = () => {
                 {/* Warband Stats Row */}
                 <div className="grid grid-cols-3 gap-2 bg-theme-base p-2.5 rounded border border-theme-border text-xs font-mono text-center">
                   <div>
-                    <span className="text-[9px] uppercase text-theme-muted block">Points</span>
+                    <span className="text-xs sm:text-[9px] uppercase text-theme-muted block">Points</span>
                     <strong className="text-theme-primary">{totalPoints} D</strong>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase text-theme-muted block">Treasury</span>
+                    <span className="text-xs sm:text-[9px] uppercase text-theme-muted block">Treasury</span>
                     <strong className="text-theme-text">{wb.treasuryDucats} D</strong>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase text-theme-muted block">Warriors</span>
+                    <span className="text-xs sm:text-[9px] uppercase text-theme-muted block">Warriors</span>
                     <strong className="text-theme-text">{wb.units.length}</strong>
                   </div>
                 </div>
@@ -303,7 +303,7 @@ export const RosterDirectoryView: React.FC = () => {
                     <span>{eliteCount} Elites • {trooperCount} Troopers</span>
                   </div>
                   {wb.snapshots && wb.snapshots.length > 0 && (
-                    <div className="flex justify-between text-theme-primary text-[11px] pt-1">
+                    <div className="flex justify-between text-theme-primary text-xs sm:text-[11px] pt-1">
                       <span>History Milestones:</span>
                       <strong>{wb.snapshots.length} Snapshots</strong>
                     </div>
@@ -421,7 +421,7 @@ export const RosterDirectoryView: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setInspectingWarband(null)}
-                  className="text-theme-muted hover:text-white p-1"
+                  className="tap text-theme-muted hover:text-white p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -440,7 +440,7 @@ export const RosterDirectoryView: React.FC = () => {
                     </p>
                   )}
                   {inspectingWarband.patron && (
-                    <div className="text-[11px] text-theme-muted">
+                    <div className="text-xs sm:text-[11px] text-theme-muted">
                       Patron Sovereign: <strong className="text-theme-text">{inspectingWarband.patron}</strong>
                     </div>
                   )}
@@ -477,7 +477,7 @@ export const RosterDirectoryView: React.FC = () => {
                               {u.customName}
                             </h4>
                           </div>
-                          <span className="text-[10px] text-theme-muted">
+                          <span className="text-xs sm:text-[10px] text-theme-muted">
                             {u.profileSnapshot.name} ({u.profileSnapshot.category})
                           </span>
                         </div>
@@ -485,7 +485,7 @@ export const RosterDirectoryView: React.FC = () => {
                       </div>
 
                       {/* Statline */}
-                      <div className="grid grid-cols-4 gap-1 bg-theme-base p-1.5 rounded border border-theme-border text-center text-[10px]">
+                      <div className="grid grid-cols-4 gap-1 bg-theme-base p-1.5 rounded border border-theme-border text-center text-xs sm:text-[10px]">
                         <div>MOV: <strong className="text-white">{u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-white">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-white">{u.profileSnapshot.stats.melee}</strong></div>
@@ -493,7 +493,7 @@ export const RosterDirectoryView: React.FC = () => {
                       </div>
 
                       {/* Wargear */}
-                      <div className="space-y-1 text-[11px]">
+                      <div className="space-y-1 text-xs sm:text-[11px]">
                         <div className="text-theme-muted">
                           Weapons: <strong className="text-theme-text">{u.equippedWeapons.map((w) => w.name).join(', ') || 'None'}</strong>
                         </div>
@@ -509,12 +509,12 @@ export const RosterDirectoryView: React.FC = () => {
 
                       {/* Injuries & Deeds */}
                       {u.injuries && u.injuries.length > 0 && (
-                        <div className="text-[10px] text-status-error pt-1">
+                        <div className="text-xs sm:text-[10px] text-status-error pt-1">
                           Injuries: {u.injuries.join(' • ')}
                         </div>
                       )}
                       {u.deeds && u.deeds.length > 0 && (
-                        <div className="text-[10px] text-theme-primary pt-0.5">
+                        <div className="text-xs sm:text-[10px] text-theme-primary pt-0.5">
                           Deeds: {u.deeds[0]}
                         </div>
                       )}
@@ -551,14 +551,14 @@ export const RosterDirectoryView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-base text-theme-text">
                     COMMUNITY BUG TICKETS & FEEDBACK LOG
                   </h3>
-                  <span className="text-[10px] text-theme-muted block">
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">
                     {bugTickets.length} report{bugTickets.length === 1 ? '' : 's'} collected across phones, iPads, and desktops
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setIsBugListOpen(false)}
-                className="text-theme-muted hover:text-white p-1"
+                className="tap text-theme-muted hover:text-white p-1"
               >
                 ✕
               </button>
@@ -576,14 +576,14 @@ export const RosterDirectoryView: React.FC = () => {
                   <div key={ticket.id || idx} className="p-4 bg-theme-base rounded border border-theme-border space-y-2">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-border/60 pb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="px-2 py-0.5 rounded bg-theme-accent/40 text-status-error font-bold text-[10px] uppercase">
+                        <span className="px-2 py-0.5 rounded bg-theme-accent/40 text-status-error font-bold text-xs sm:text-[10px] uppercase">
                           {ticket.category}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-theme-elevated text-theme-primary text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-theme-elevated text-theme-primary text-xs sm:text-[10px]">
                           {ticket.severity}
                         </span>
                       </div>
-                      <span className="text-[10px] text-theme-muted">
+                      <span className="text-xs sm:text-[10px] text-theme-muted">
                         {ticket.timestamp ? new Date(ticket.timestamp).toLocaleString() : 'Recent'}
                       </span>
                     </div>
@@ -593,12 +593,12 @@ export const RosterDirectoryView: React.FC = () => {
                     </p>
 
                     {ticket.stepsToReproduce && (
-                      <div className="text-[11px] text-theme-muted bg-theme-surface p-2 rounded border border-theme-border/40">
+                      <div className="text-xs sm:text-[11px] text-theme-muted bg-theme-surface p-2 rounded border border-theme-border/40">
                         <strong>Steps:</strong> {ticket.stepsToReproduce}
                       </div>
                     )}
 
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-theme-muted pt-1 border-t border-theme-border/40">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-[10px] text-theme-muted pt-1 border-t border-theme-border/40">
                       <span>Reporter: <strong className="text-theme-text">{ticket.submittedBy || ticket.userEmail || 'Anonymous'}</strong></span>
                       <span>Device: <strong>{ticket.deviceType} ({ticket.screenResolution})</strong></span>
                       <span>View: <strong>{ticket.currentView}</strong></span>

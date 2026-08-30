@@ -310,7 +310,7 @@ fabricated (AUDIT §1.13).
 | 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
 | 3.2 | 🟡 4 modals fully on `Sheet`; the other 20 get scroll lock, focus trap and Escape via `useOverlay`. Structural migration outstanding. |
 | 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
-| 3.4 | Touch targets ≥44px and the type scale from [`MOBILE.md`](MOBILE.md) applied app-wide |
+| 3.4 | ✅ Touch targets ≥44px and the type scale applied app-wide, both **enforced in `globals.css`** rather than per component |
 | 3.5 | ✅ 3,815 hex values tokenised, and two bugs that stopped the themes working at all |
 | 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
 | 3.7 | Playwright E2E at 375×667 and 768×1024 |
@@ -335,18 +335,52 @@ header is now two rows — badge and actions, then the name full width. All 28 o
 the card's sub-12px sizes moved behind `sm:`, so the phone reads at 12px and the
 desktop density is unchanged.
 
-Measured in Chromium against a production build:
+Measured in Chromium against a production build, across all five views and the
+modals reachable from them:
 
-| | 375×667 | 768×1024 | 1280×900 |
-|---|---|---|---|
-| horizontal page scroll | none | none | none |
-| page errors | 0 | 0 | 0 |
-| text under 12px | 30 | *by design* | *by design* |
-| targets under 44px | 115 | — | — |
+| | before 3.4 | after 3.4 |
+|---|---|---|
+| text under 12px (375px) | 106 | **0** |
+| targets under 44px (375px) | 153 | **0** |
+| form controls under 16px | 12 | **0** |
+| horizontal page scroll | none | none |
 
-The phone numbers are the honest remaining backlog. They have barely moved,
-because 3.5 was about *colour* and these are about *size* — 3.4 is the pass that
-drives them down, and it has only touched `UnitCard` so far.
+Desktop density is unchanged: 413 sub-12px strings remain at 1280px, which is
+the `sm:` restoration working as intended.
+
+### 3.4 — the rules moved into the stylesheet
+
+Two thirds of the backlog was one class of mistake repeated: `py-1.5` on a
+button, `text-xs` on a select. Fixing 150 of those by hand fixes them once — the
+next toolbar button is 30px again, because nothing says otherwise. So `phone
+buttons are 44px` and `phone form controls are 16px and 44px` are now rules in
+`globals.css`, with `.tap` as the documented opt-out for controls that must stay
+visually small (a remove cross, a chip, a modal close button) and get their 44px
+as an invisible hit overlay instead.
+
+Both sit **outside `@layer`** for the reason the theme variables do: Tailwind
+drops `@layer base` rules whose selectors are not in the content globs, which is
+how the six theme blocks vanished in 3.5.
+
+The type scale was mechanical — 397 occurrences of `text-[9|10|11]px` became
+`text-xs sm:text-[Npx]` — but it was not free. At 12px the bottom nav clipped
+`Campaign` to `Campaig…` at every phone width, which is worse than the 10px
+label it replaced. The nav gave the labels room instead: the theme switcher and
+bug reporter are utilities rather than destinations, so they became icon-only at
+a fixed 44px, and `Campaign` became `Crusade`, which is what the view calls
+itself anyway.
+
+**Two layout bugs found while measuring**, both in the desktop header and both
+invisible until a view with a long title was measured rather than the default
+one:
+
+- The title block had no `min-w-0`, so it sized to its longest subtitle.
+- The actions group had `min-w-0` *and* `flex-shrink-0` children, so it shrank
+  below its own content and the children spilled out of it.
+
+Together they put 26px of sideways scroll on four of five views at 1280px. The
+fix is the priority the layout always wanted: the title truncates, the controls
+never shrink.
 
 ### 3.5 — and the two bugs behind the dead theme switcher
 

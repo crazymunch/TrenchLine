@@ -85,7 +85,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               COMMANDER AUTHENTICATION
             </h3>
           </div>
-          <button onClick={onClose} className="text-theme-muted hover:text-white p-1">
+          <button onClick={onClose} className="tap text-theme-muted hover:text-white p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -131,7 +131,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <div className="relative flex py-2 items-center">
               <div className="flex-grow border-t border-theme-border" />
-              <span className="flex-shrink mx-3 text-theme-muted text-[10px] uppercase font-bold">or with commander credentials</span>
+              <span className="flex-shrink mx-3 text-theme-muted text-xs sm:text-[10px] uppercase font-bold">or with commander credentials</span>
               <div className="flex-grow border-t border-theme-border" />
             </div>
           </div>
@@ -139,7 +139,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* 2. Direct Credentials Form */}
           <form onSubmit={handleCredentialsSignIn} className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-theme-muted block">Commander / Player Name:</label>
+              <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Commander / Player Name:</label>
               <div className="relative">
                 <User className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
@@ -153,7 +153,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-theme-muted block">Email Address:</label>
+              <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Email Address:</label>
               <div className="relative">
                 <Mail className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
@@ -168,7 +168,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase text-theme-muted block">Password (Optional / Demo):</label>
+              <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Password (Optional / Demo):</label>
               <div className="relative">
                 <Lock className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input

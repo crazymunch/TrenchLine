@@ -100,7 +100,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                 <h2 className="font-gothic font-bold text-lg text-white">
                   {warband.name}
                 </h2>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
+                <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-accent text-white font-bold uppercase">
                   House Chronicle
                 </span>
               </div>
@@ -125,7 +125,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
             
             {/* Motto */}
             <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
-              <label className="text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+              <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
                 <Quote className="w-3.5 h-3.5 text-theme-primary" />
                 <span>House Motto / Sacred Battle Cry:</span>
               </label>
@@ -140,7 +140,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
 
             {/* Patron / Sect */}
             <div className="bg-theme-base border border-theme-border rounded-md p-3.5 space-y-1.5">
-              <label className="text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+              <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
                 <Landmark className="w-3.5 h-3.5 text-theme-primary" />
                 <span>Patronage, Sub-Sect & Lineage:</span>
               </label>
@@ -157,7 +157,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
 
           {/* Warband Lore & Narrative Overview */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+            <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
               <BookOpen className="w-3.5 h-3.5 text-theme-primary" />
               <span>Warband Narrative Lore, Origins & Expedition Purpose (Markdown):</span>
             </label>
@@ -173,11 +173,11 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
           {/* Timeline of Milestones & Campaign Discoveries */}
           <div className="bg-theme-base border border-theme-border rounded-md p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
+              <span className="text-xs sm:text-[11px] uppercase font-bold text-theme-muted flex items-center space-x-1.5">
                 <Clock className="w-3.5 h-3.5 text-theme-primary" />
                 <span>Expedition Milestones & Campaign Chronicle Timeline</span>
               </span>
-              <span className="text-[10px] text-theme-muted">
+              <span className="text-xs sm:text-[10px] text-theme-muted">
                 {chronicleItems.length} Events Logged (Click pencil to edit wording)
               </span>
             </div>
@@ -203,7 +203,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
 
             {/* Timeline List */}
             {chronicleItems.length === 0 ? (
-              <p className="text-[11px] text-theme-muted italic py-2">
+              <p className="text-xs sm:text-[11px] text-theme-muted italic py-2">
                 No expedition milestones recorded yet. Add major campaign discoveries, treaty signatures, or historic victories above.
               </p>
             ) : (
@@ -211,7 +211,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
                 {chronicleItems.map((log, idx) => (
                   <div 
                     key={idx}
-                    className="p-3 bg-theme-surface border border-theme-border rounded text-[11px] leading-relaxed transition-all hover:border-theme-muted"
+                    className="p-3 bg-theme-surface border border-theme-border rounded text-xs sm:text-[11px] leading-relaxed transition-all hover:border-theme-muted"
                   >
                     {editingIdx === idx ? (
                       <div className="space-y-2">

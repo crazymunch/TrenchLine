@@ -220,7 +220,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               
               {/* Name Edit Card */}
               <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3">
-                <label className="text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
+                <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
                   <Edit3 className="w-3.5 h-3.5" />
                   <span>Warrior Base Name:</span>
                 </label>
@@ -240,14 +240,14 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                     <span>Save Name</span>
                   </button>
                 </div>
-                <div className="text-[11px] text-theme-muted">
+                <div className="text-xs sm:text-[11px] text-theme-muted">
                   Full Display Name Preview: <strong className="text-theme-text">{fullPreviewName}</strong>
                 </div>
               </div>
 
               {/* Add Custom Title Input */}
               <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3">
-                <label className="text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
+                <label className="text-xs sm:text-[11px] uppercase font-bold text-theme-primary block flex items-center space-x-1.5">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Custom Title:</span>
                 </label>
@@ -274,10 +274,10 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               {/* Title Repository List */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase font-bold text-theme-muted block">
+                  <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                     Warrior Title Repository ({titleRecords.length}):
                   </span>
-                  <span className="text-[10px] text-theme-primary">
+                  <span className="text-xs sm:text-[10px] text-theme-primary">
                     {titleRecords.filter(r => r.active).length} Active in Display Name
                   </span>
                 </div>
@@ -319,7 +319,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                               <strong className="text-xs text-theme-text font-gothic text-sm block truncate">
                                 {rec.title}
                               </strong>
-                              <span className="text-[10px] text-theme-muted font-mono block truncate">
+                              <span className="text-xs sm:text-[10px] text-theme-muted font-mono block truncate">
                                 {rec.origin || (isEarned ? 'Special Earned Title' : 'User Added Title')}
                               </span>
                             </div>
@@ -329,7 +329,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                           <div className="flex items-center space-x-2 flex-shrink-0">
                             <button
                               onClick={() => handleToggleTitleActive(idx)}
-                              className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
+                              className={`px-2.5 py-1 rounded text-xs sm:text-[10px] font-bold uppercase transition-all flex items-center space-x-1 ${
                                 rec.active
                                   ? 'bg-theme-primary text-black shadow'
                                   : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-white'
@@ -375,7 +375,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
                 <strong className="text-xs uppercase text-theme-primary font-bold block">
                   Battlefield Feats & Glorious Deeds
                 </strong>
-                <p className="text-[11px] text-theme-muted leading-relaxed">
+                <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                   Record permanent heroic achievements, critical match milestones, and post-battle Glorious Deeds awarded to this warrior.
                 </p>
               </div>
@@ -436,7 +436,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
             <div className="space-y-4">
               
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
                   <Quote className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Battle Cry / Iconic Quote:</span>
                 </label>
@@ -450,7 +450,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted flex items-center space-x-1">
                   <BookOpen className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Warrior Biography & Narrative Lore:</span>
                 </label>
@@ -480,7 +480,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
 
         {/* Footer */}
         <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
-          <span className="text-[10px] text-theme-muted">
+          <span className="text-xs sm:text-[10px] text-theme-muted">
             Name: <strong className="text-theme-primary">{fullPreviewName}</strong>
           </span>
           <button

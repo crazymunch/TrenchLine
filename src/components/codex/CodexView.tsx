@@ -302,7 +302,7 @@ export const CodexView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-base text-theme-text">
                     {chapter.title}
                   </h3>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold uppercase">
+                  <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold uppercase">
                     {chapter.category}
                   </span>
                 </div>
@@ -356,7 +356,7 @@ export const CodexView: React.FC = () => {
                           <CheckCircle2 className="w-5 h-5 text-status-legal" />
                         )}
                       </div>
-                      <span className="text-[10px] font-mono text-theme-primary block font-bold uppercase">
+                      <span className="text-xs sm:text-[10px] font-mono text-theme-primary block font-bold uppercase">
                         {meta.releaseDate}
                       </span>
                       <p className="text-xs font-mono text-theme-muted leading-relaxed">
@@ -365,8 +365,8 @@ export const CodexView: React.FC = () => {
                     </div>
 
                     <div className="space-y-2 pt-2 border-t border-theme-border">
-                      <span className="text-[10px] font-mono font-bold uppercase text-theme-text block">Key Mechanics:</span>
-                      <ul className="space-y-1 text-[11px] font-mono text-theme-muted">
+                      <span className="text-xs sm:text-[10px] font-mono font-bold uppercase text-theme-text block">Key Mechanics:</span>
+                      <ul className="space-y-1 text-xs sm:text-[11px] font-mono text-theme-muted">
                         {meta.keyChanges.map((change, idx) => (
                           <li key={idx} className="flex items-start space-x-1.5">
                             <span className="text-theme-primary">•</span>
@@ -478,7 +478,7 @@ export const CodexView: React.FC = () => {
               <div className="flex items-center justify-between border-b border-theme-border pb-2">
                 <span className="font-gothic font-bold text-base text-theme-primary">{kw.name}</span>
                 {kw.type && (
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-muted uppercase">
+                  <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-muted uppercase">
                     {kw.type}
                   </span>
                 )}
@@ -536,7 +536,7 @@ export const CodexView: React.FC = () => {
                               <Compass className="w-4 h-4" />
                               <span>Official Deployment Diagram: {scen.name}</span>
                             </span>
-                            <span className="text-[10px] text-theme-muted flex items-center space-x-1">
+                            <span className="text-xs sm:text-[10px] text-theme-muted flex items-center space-x-1">
                               <Search className="w-3 h-3 text-theme-primary" />
                               <span>Click to Enlarge</span>
                             </span>
@@ -703,14 +703,14 @@ export const CodexView: React.FC = () => {
                         {skill.name}
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
+                    <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
                       Roll {idx + 1}
                     </span>
                   </div>
                   <p className="text-xs font-mono text-theme-text leading-relaxed">
                     {skill.description}
                   </p>
-                  <span className="text-[10px] font-mono text-theme-muted italic block pt-1">
+                  <span className="text-xs sm:text-[10px] font-mono text-theme-muted italic block pt-1">
                     Click to view acquisition & promotion rules ➔
                   </span>
                 </div>
@@ -751,7 +751,7 @@ export const CodexView: React.FC = () => {
                               howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${idx + 1}). Awarded when an Elite warrior spends 5 XP or when a Troop model is Promoted.`
                             });
                           }}
-                          className="px-2.5 py-1 bg-theme-elevated hover:bg-theme-border text-theme-primary rounded border border-theme-border text-[10px] font-bold uppercase"
+                          className="px-2.5 py-1 bg-theme-elevated hover:bg-theme-border text-theme-primary rounded border border-theme-border text-xs sm:text-[10px] font-bold uppercase"
                         >
                           Details
                         </button>
@@ -774,7 +774,7 @@ export const CodexView: React.FC = () => {
                       <h3 className="font-gothic font-bold text-lg text-theme-text">
                         {selectedSkillModal.name}
                       </h3>
-                      <span className="text-[10px] text-theme-primary uppercase font-bold">
+                      <span className="text-xs sm:text-[10px] text-theme-primary uppercase font-bold">
                         {selectedSkillModal.category} • Roll {selectedSkillModal.d66Roll}
                       </span>
                     </div>
@@ -789,12 +789,12 @@ export const CodexView: React.FC = () => {
 
                 <div className="space-y-3 text-xs">
                   <div className="p-3.5 bg-theme-base rounded border border-theme-border space-y-1">
-                    <span className="text-[10px] text-theme-muted uppercase font-bold block">Rules & Effects:</span>
+                    <span className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">Rules & Effects:</span>
                     <p className="text-theme-text leading-relaxed">{selectedSkillModal.description}</p>
                   </div>
 
                   <div className="p-3.5 bg-theme-elevated rounded border border-theme-primary/40 space-y-1">
-                    <span className="text-[10px] text-theme-primary uppercase font-bold block flex items-center space-x-1">
+                    <span className="text-xs sm:text-[10px] text-theme-primary uppercase font-bold block flex items-center space-x-1">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>How to Obtain in Campaign:</span>
                     </span>
@@ -863,7 +863,7 @@ export const CodexView: React.FC = () => {
               <p className="text-theme-text leading-relaxed">
                 After any match, every model that was taken <strong>Out of Action</strong> must roll on this D66 Trauma Table:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs sm:text-[11px]">
                 <div className="p-2 bg-theme-surface rounded border border-status-error/40 text-status-error">
                   <strong>Rolls 11–16: Dead / Slain</strong>
                   <p className="text-theme-muted pt-0.5">Model is permanently removed from the warband roster. Battlekit returns to Arsenal stash.</p>
@@ -888,7 +888,7 @@ export const CodexView: React.FC = () => {
                 During Step 3 of the Post-Battle Campaign Phase, participating warbands search the battlefield for lost treasures, ammo caches, and holy relics.
                 The winner of the match rolls on the <strong>{selectedChartTable === 'common' ? 'Common' : selectedChartTable === 'rare' ? 'Rare' : 'Legendary'} Exploration Table</strong>.
               </p>
-              <ul className="list-disc list-inside text-theme-muted space-y-0.5 text-[11px]">
+              <ul className="list-disc list-inside text-theme-muted space-y-0.5 text-xs sm:text-[11px]">
                 <li><strong>Trench Merchant:</strong> Allows purchasing items costing up to 5 Glory from the Armory.</li>
                 <li><strong>Ducat / Glory Discoveries:</strong> Added immediately to your Warband Treasury and Glory counter.</li>
                 <li><strong>Unique Relics & Battlekit:</strong> Placed in your Armory Stash or assigned to warriors in the Quartermaster Step.</li>
@@ -918,11 +918,11 @@ export const CodexView: React.FC = () => {
                         book puts it — "Sell (Any Warband): Add 30 👑 to your
                         Strongbox" is a number in a sentence. */}
                   </div>
-                  <span className="px-2.5 py-0.5 rounded bg-theme-base text-theme-primary font-bold text-[11px] border border-theme-border">
+                  <span className="px-2.5 py-0.5 rounded bg-theme-base text-theme-primary font-bold text-xs sm:text-[11px] border border-theme-border">
                     Roll {entry.roll}
                   </span>
                 </div>
-                <p className="text-theme-text text-[11px] leading-relaxed pt-1">
+                <p className="text-theme-text text-xs sm:text-[11px] leading-relaxed pt-1">
                   {entry.description}
                 </p>
               </div>
@@ -947,13 +947,13 @@ export const CodexView: React.FC = () => {
                 <div>
                   <div className="border-b border-theme-border pb-2">
                     <span className="font-gothic font-bold text-base text-theme-text block">{wep.name}</span>
-                    <span className="text-[11px] font-mono text-theme-muted">
+                    <span className="text-xs sm:text-[11px] font-mono text-theme-muted">
                       {stockedLabel(wep)}
                       {offersDiffer(wep) && <span className="text-status-warning"> · prices differ</span>}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-theme-muted pt-2">
+                  <div className="grid grid-cols-2 gap-1 text-xs sm:text-[11px] font-mono text-theme-muted pt-2">
                     <div>Type: <strong className="text-theme-text">{wep.type ?? '—'}</strong></div>
                     <div>Range: <strong className="text-theme-text">{wep.range ?? '—'}</strong></div>
                   </div>
@@ -961,7 +961,7 @@ export const CodexView: React.FC = () => {
                   {wep.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-2">
                       {wep.keywords.map((k) => (
-                        <span key={k} className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
+                        <span key={k} className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
                           {k}
                         </span>
                       ))}
@@ -969,13 +969,13 @@ export const CodexView: React.FC = () => {
                   )}
 
                   {wep.description && (
-                    <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
+                    <p className="text-xs sm:text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
                       &quot;{wep.description}&quot;
                     </p>
                   )}
                 </div>
 
-                <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-[10px] font-mono text-theme-primary">
+                <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-xs sm:text-[10px] font-mono text-theme-primary">
                   <span>Click to inspect full dossier</span>
                   <ExternalLink className="w-3 h-3" />
                 </div>
@@ -1001,7 +1001,7 @@ export const CodexView: React.FC = () => {
                 <div>
                   <div className="border-b border-theme-border pb-2">
                     <span className="font-gothic font-bold text-base text-theme-text block">{arm.name}</span>
-                    <span className="text-[11px] font-mono text-theme-muted">
+                    <span className="text-xs sm:text-[11px] font-mono text-theme-muted">
                       {arm.section} · {stockedLabel(arm)}
                       {offersDiffer(arm) && <span className="text-status-warning"> · prices differ</span>}
                     </span>
@@ -1010,7 +1010,7 @@ export const CodexView: React.FC = () => {
                   {arm.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-1.5">
                       {arm.keywords.map((k) => (
-                        <span key={k} className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
+                        <span key={k} className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
                           {k}
                         </span>
                       ))}
@@ -1018,13 +1018,13 @@ export const CodexView: React.FC = () => {
                   )}
 
                   {arm.description && (
-                    <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
+                    <p className="text-xs sm:text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
                       &quot;{arm.description}&quot;
                     </p>
                   )}
                 </div>
 
-                <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-[10px] font-mono text-theme-primary">
+                <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-xs sm:text-[10px] font-mono text-theme-primary">
                   <span>Click to inspect full dossier</span>
                   <ExternalLink className="w-3 h-3" />
                 </div>
@@ -1166,7 +1166,7 @@ export const CodexView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-lg text-white">
                     OFFICIAL DEPLOYMENT DIAGRAM: {lightboxMap.name}
                   </h3>
-                  <span className="text-[10px] text-theme-muted block">
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">
                     Table Size: {lightboxMap.tableSize || '48" x 48"'} • Official Rulebook Diagram
                   </span>
                 </div>

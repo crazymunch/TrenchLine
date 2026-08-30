@@ -150,7 +150,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
               <h3 className="font-gothic font-bold text-base text-theme-text tracking-wide">
                 REPORT A BUG / FEEDBACK
               </h3>
-              <p className="text-[10px] text-theme-muted">
+              <p className="text-xs sm:text-[10px] text-theme-muted">
                 Generate an instant diagnostic dump or submit feedback directly to the AI agent
               </p>
             </div>
@@ -158,7 +158,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
 
           <button
             onClick={onClose}
-            className="text-theme-muted hover:text-white p-1"
+            className="tap text-theme-muted hover:text-white p-1"
           >
             <X className="w-5 h-5" />
           </button>
@@ -182,7 +182,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
               {/* Category & Severity */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                     Category:
                   </label>
                   <select
@@ -201,7 +201,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                     Severity:
                   </label>
                   <select
@@ -218,7 +218,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
 
               {/* Description */}
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   What happened? (Description):
                 </label>
                 <textarea
@@ -233,7 +233,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
 
               {/* Steps to Reproduce */}
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Steps to Reproduce (Optional):
                 </label>
                 <textarea
@@ -246,7 +246,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
               </div>
 
               {/* Auto-Captured Environment Box */}
-              <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5 text-[11px] text-theme-muted">
+              <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1.5 text-xs sm:text-[11px] text-theme-muted">
                 <div className="flex items-center justify-between text-theme-primary font-bold pb-1 border-b border-theme-border/60">
                   <span className="flex items-center space-x-1.5">
                     {deviceType === 'Mobile Phone' ? <Smartphone className="w-3.5 h-3.5" /> :

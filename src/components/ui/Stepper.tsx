@@ -5,7 +5,7 @@
  *
  * This is the control Play Mode is made of — blood markers, ammo, Glory, the
  * Ducat limit — and it is used mid-game, one-handed, with dice in the other.
- * The existing buttons are around 26px (`py-1.5` + `text-[10px]`), which is
+ * The existing buttons are around 26px (`py-1.5` + `text-xs sm:text-[10px]`), which is
  * roughly half the 44px minimum and misses often enough to matter when the
  * thing being counted is a model's remaining wounds.
  *

@@ -20,7 +20,10 @@ export const MobileNav: React.FC = () => {
   const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
     { id: 'builder', label: 'Roster', icon: <Shield className="w-4 h-4" /> },
     { id: 'play', label: 'Play', icon: <Swords className="w-4 h-4" />, badge: 'LIVE' },
-    { id: 'campaign', label: 'Campaign', icon: <Flag className="w-4 h-4" /> },
+    // "Crusade", not "Campaign": at 12px in a 375px bar the longer word clips
+    // to "Campaig…", and this is what the view calls itself anyway — the
+    // sidebar reads "Crusade Campaign" and the header "CRUSADE CAMPAIGN HUB".
+    { id: 'campaign', label: 'Crusade', icon: <Flag className="w-4 h-4" /> },
     { id: 'directory', label: 'Directory', icon: <Users className="w-4 h-4" /> },
     { id: 'codex', label: 'Codex', icon: <BookOpen className="w-4 h-4" /> },
     ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }] : [])
@@ -34,6 +37,17 @@ export const MobileNav: React.FC = () => {
           template-literal `grid-cols-${n}` is never compiled by Tailwind's
           static scanner — which silently collapsed this nav to one column.
           `flex-1` needs no class per count and cannot fail the same way.
+        */}
+        {/*
+          Five destinations that carry a label, two utilities that do not.
+
+          3.4 raised every sub-12px string in the app to 12px, and at 12px
+          "Campaign" and "Directory" clipped to "Campai…" in a seven-way split
+          of a 375px screen — a clipped label is worse than the 10px one it
+          replaced, so the nav had to give the destinations more room rather
+          than the type less size. Theme and the bug reporter are utilities, not
+          places you navigate to; their icons are unambiguous and they now take
+          a fixed 44px each instead of a seventh of the bar.
         */}
         <div className="flex items-stretch gap-0.5">
           {navItems.map((item) => {
@@ -55,7 +69,7 @@ export const MobileNav: React.FC = () => {
                     <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-status-error animate-ping" />
                   )}
                 </div>
-                <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold truncate max-w-full leading-tight">{item.label}</span>
+                <span className="text-xs sm:text-[10px] mt-0.5 font-semibold tracking-tighter truncate max-w-full leading-tight">{item.label}</span>
               </button>
             );
           })}
@@ -63,23 +77,21 @@ export const MobileNav: React.FC = () => {
           {/* Theme switcher button on mobile */}
           <button
             onClick={() => setIsThemeModalOpen(true)}
-            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-theme-muted hover:text-theme-text"
+            aria-label="Change theme"
+            title="Change theme"
+            className="flex-none w-11 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
           >
-            <div className="relative">
-              <Palette className="w-4 h-4" style={{ color: activeThemeObj.primaryColor }} />
-            </div>
-            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold truncate max-w-full leading-tight">Theme</span>
+            <Palette className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
           </button>
 
           {/* Bug report button on mobile */}
           <button
             onClick={() => setIsBugReportOpen(true)}
-            className="flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0.5 rounded transition-colors text-status-error/80 hover:text-status-error"
+            aria-label="Report a bug"
+            title="Report a bug"
+            className="flex-none w-11 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
           >
-            <div className="relative">
-              <Bug className="w-4 h-4 text-status-error" />
-            </div>
-            <span className="text-[10px] font-mono mt-0.5 uppercase font-semibold text-status-error truncate max-w-full leading-tight">Bug</span>
+            <Bug className="w-5 h-5 text-status-error" />
           </button>
         </div>
       </nav>

@@ -53,7 +53,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <p className="leading-relaxed whitespace-pre-line">
             {message}
           </p>
-          <div className="p-2.5 bg-theme-base border border-theme-border rounded text-[11px] text-theme-muted">
+          <div className="p-2.5 bg-theme-base border border-theme-border rounded text-xs sm:text-[11px] text-theme-muted">
             ⚠️ This operation is permanent and cannot be undone.
           </div>
         </div>

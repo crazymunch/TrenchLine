@@ -353,7 +353,7 @@ export const WarbandBuilder: React.FC = () => {
             title="Click to adjust Treasury Ducats & Glory Points"
           >
             <div className="text-center">
-              <span className="text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
                 <span>TREASURY</span>
                 <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
               </span>
@@ -361,7 +361,7 @@ export const WarbandBuilder: React.FC = () => {
             </div>
             <div className="h-6 w-[1px] bg-theme-border" />
             <div className="text-center">
-              <span className="text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted block flex items-center justify-center space-x-1">
                 <span>GLORY</span>
                 <Edit2 className="w-2.5 h-2.5 text-theme-muted opacity-0 group-hover:opacity-100 transition-opacity" />
               </span>
@@ -373,23 +373,23 @@ export const WarbandBuilder: React.FC = () => {
           </div>
 
           {/* Composition Badges */}
-          <div className="flex items-center justify-around bg-theme-base p-2 rounded border border-theme-border font-mono text-[11px]">
+          <div className="flex items-center justify-around bg-theme-base p-2 rounded border border-theme-border font-mono text-xs sm:text-[11px]">
             <div className="text-center">
-              <span className="text-[9px] text-theme-muted block">LEADER</span>
+              <span className="text-xs sm:text-[9px] text-theme-muted block">LEADER</span>
               <span className={hasLeader ? 'text-status-legal font-bold' : 'text-status-error font-bold'}>
                 {hasLeader ? '1/1' : '0/1'}
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-theme-muted block">ELITES</span>
+              <span className="text-xs sm:text-[9px] text-theme-muted block">ELITES</span>
               <span className="font-bold text-theme-text">{eliteCount}</span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-theme-muted block">TROOPERS</span>
+              <span className="text-xs sm:text-[9px] text-theme-muted block">TROOPERS</span>
               <span className="font-bold text-theme-text">{trooperCount}</span>
             </div>
             <div className="text-center">
-              <span className="text-[9px] text-theme-muted block">MERC</span>
+              <span className="text-xs sm:text-[9px] text-theme-muted block">MERC</span>
               <span className="font-bold text-theme-text">{mercenaryCount}</span>
             </div>
           </div>
@@ -555,10 +555,10 @@ export const WarbandBuilder: React.FC = () => {
               {/* Ducat Limit Control */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-theme-primary block">
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary block">
                     1. Ducat Point Limit (Match Budget):
                   </label>
-                  <span className="text-theme-muted text-[11px]">Current: {warband.ducatLimit} D</span>
+                  <span className="text-theme-muted text-xs sm:text-[11px]">Current: {warband.ducatLimit} D</span>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -576,7 +576,7 @@ export const WarbandBuilder: React.FC = () => {
 
                 {/* Preset Quick Limit Buttons */}
                 <div className="space-y-1 pt-1">
-                  <span className="text-[10px] text-theme-muted block uppercase">Standard Rulebook Limits:</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block uppercase">Standard Rulebook Limits:</span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                     {[
                       { label: '700 D (Standard Skirmish)', value: 700 },
@@ -588,7 +588,7 @@ export const WarbandBuilder: React.FC = () => {
                       <button
                         key={preset.value}
                         onClick={() => setEditLimit(preset.value)}
-                        className={`py-1.5 px-2 rounded text-[10px] font-bold transition-all border ${
+                        className={`py-1.5 px-2 rounded text-xs sm:text-[10px] font-bold transition-all border ${
                           editLimit === preset.value
                             ? 'bg-theme-primary text-black border-theme-primary'
                             : 'bg-theme-base text-theme-muted hover:text-theme-text border-theme-border'
@@ -604,10 +604,10 @@ export const WarbandBuilder: React.FC = () => {
               {/* Treasury Ducats */}
               <div className="space-y-2 pt-3 border-t border-theme-border">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                     2. Unspent Treasury Ducats:
                   </label>
-                  <span className="text-theme-muted text-[11px]">Unspent Cash</span>
+                  <span className="text-theme-muted text-xs sm:text-[11px]">Unspent Cash</span>
                 </div>
                 
                 <div className="flex items-center space-x-2">
@@ -620,13 +620,13 @@ export const WarbandBuilder: React.FC = () => {
                   />
                   <button
                     onClick={() => setEditTreasury((prev) => prev + 50)}
-                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-[10px] font-bold"
+                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-xs sm:text-[10px] font-bold"
                   >
                     +50 D
                   </button>
                   <button
                     onClick={() => setEditTreasury((prev) => prev + 100)}
-                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-[10px] font-bold"
+                    className="px-2.5 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text rounded border border-theme-border text-xs sm:text-[10px] font-bold"
                   >
                     +100 D
                   </button>
@@ -636,10 +636,10 @@ export const WarbandBuilder: React.FC = () => {
               {/* Glory Points */}
               <div className="space-y-2 pt-3 border-t border-theme-border">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-theme-muted block">
+                  <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                     3. Campaign Glory Points:
                   </label>
-                  <span className="text-theme-muted text-[11px]">Glory Level</span>
+                  <span className="text-theme-muted text-xs sm:text-[11px]">Glory Level</span>
                 </div>
 
                 <div className="flex items-center space-x-2">

@@ -65,7 +65,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -145,14 +145,14 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                         </span>
                         <div>
                           <strong className="text-theme-text font-gothic text-sm">{item.name}</strong>
-                          <span className="text-[10px] text-theme-muted block">Type: {item.type} | Value: {item.cost} D</span>
+                          <span className="text-xs sm:text-[10px] text-theme-muted block">Type: {item.type} | Value: {item.cost} D</span>
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleAssign(item.id)}
-                          className="px-3 py-1.5 bg-status-legal hover:bg-[#5BAE7E] text-white rounded font-bold uppercase text-[10px] flex items-center space-x-1"
+                          className="px-3 py-1.5 bg-status-legal hover:bg-[#5BAE7E] text-white rounded font-bold uppercase text-xs sm:text-[10px] flex items-center space-x-1"
                           title="Equip to selected warrior"
                         >
                           <UserCheck className="w-3.5 h-3.5" />
@@ -161,7 +161,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
 
                         <button
                           onClick={() => handleSell(item.id)}
-                          className="px-3 py-1.5 bg-theme-surface hover:bg-theme-accent text-theme-text border border-theme-border rounded font-bold uppercase text-[10px]"
+                          className="px-3 py-1.5 bg-theme-surface hover:bg-theme-accent text-theme-text border border-theme-border rounded font-bold uppercase text-xs sm:text-[10px]"
                           title="Sell for 50% Ducats"
                         >
                           Sell (+{Math.floor(item.cost / 2)} D)
@@ -202,7 +202,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   <div key={w.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
                     <div>
                       <strong className="text-theme-text">{w.name}</strong>
-                      <span className="text-[10px] text-theme-muted block">{w.range} | {w.damage}</span>
+                      <span className="text-xs sm:text-[10px] text-theme-muted block">{w.range} | {w.damage}</span>
                     </div>
                     <button
                       onClick={() => handleBuy({ id: w.id, name: w.name, type: 'Weapon', cost: w.cost })}
@@ -217,7 +217,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   <div key={a.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
                     <div>
                       <strong className="text-theme-text">{a.name}</strong>
-                      <span className="text-[10px] text-theme-muted block">{a.armourModifier}</span>
+                      <span className="text-xs sm:text-[10px] text-theme-muted block">{a.armourModifier}</span>
                     </div>
                     <button
                       onClick={() => handleBuy({ id: a.id, name: a.name, type: 'Armour', cost: a.cost })}
@@ -232,7 +232,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   <div key={e.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
                     <div>
                       <strong className="text-theme-text">{e.name}</strong>
-                      <span className="text-[10px] text-theme-muted block">{e.effect}</span>
+                      <span className="text-xs sm:text-[10px] text-theme-muted block">{e.effect}</span>
                     </div>
                     <button
                       onClick={() => handleBuy({ id: e.id, name: e.name, type: 'Equipment', cost: e.cost })}

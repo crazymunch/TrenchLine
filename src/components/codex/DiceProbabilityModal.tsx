@@ -66,7 +66,7 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -92,7 +92,7 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
               className="w-full accent-theme-primary cursor-pointer"
             />
 
-            <div className="flex justify-between text-[10px] font-mono text-theme-muted">
+            <div className="flex justify-between text-xs sm:text-[10px] font-mono text-theme-muted">
               <span>-4 (Heavy Trench + Blood)</span>
               <span>0 (Neutral)</span>
               <span>+4 (Point Blank + Elite)</span>
@@ -118,13 +118,13 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
 
                 return (
                   <div key={item.tn} className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
-                    <span className="text-[10px] text-theme-muted block uppercase font-bold">{item.label}</span>
+                    <span className="text-xs sm:text-[10px] text-theme-muted block uppercase font-bold">{item.label}</span>
                     <span className={`text-xl font-bold block ${
                       rateNum >= 70 ? 'text-status-legal' : rateNum >= 50 ? 'text-theme-primary' : 'text-status-error'
                     }`}>
                       {rate}%
                     </span>
-                    <span className="text-[9px] text-theme-muted block">Target {item.tn}</span>
+                    <span className="text-xs sm:text-[9px] text-theme-muted block">Target {item.tn}</span>
                   </div>
                 );
               })}
@@ -138,7 +138,7 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
               <span className="text-xs font-mono uppercase text-theme-muted font-bold block">
                 2D6 Probability Bell Curve (With {modifier >= 0 ? `+${modifier}` : modifier} Modifier):
               </span>
-              <span className="text-[10px] font-mono text-theme-primary">
+              <span className="text-xs sm:text-[10px] font-mono text-theme-primary">
                 Standard TN 7 Pass: {calcSuccessRate(7)}%
               </span>
             </div>
@@ -186,11 +186,11 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
                       />
                     </div>
 
-                    <span className={`w-28 text-right text-[10px] ${tagColor}`}>
+                    <span className={`w-28 text-right text-xs sm:text-[10px] ${tagColor}`}>
                       {tagLabel}
                     </span>
 
-                    <span className="w-12 text-right text-[11px] text-theme-muted font-mono">{o.baseProb}%</span>
+                    <span className="w-12 text-right text-xs sm:text-[11px] text-theme-muted font-mono">{o.baseProb}%</span>
                   </div>
                 );
               })}

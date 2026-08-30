@@ -187,7 +187,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -197,7 +197,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
           
           {/* Weapon Selector */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] uppercase font-bold text-theme-primary">
+            <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-primary">
               1. Select Attacking Weapon:
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -215,11 +215,11 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                   >
                     <div className="flex items-center justify-between">
                       <strong className="font-bold text-xs">{w.name}</strong>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-theme-surface border border-theme-border">
+                      <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-surface border border-theme-border">
                         {w.type}
                       </span>
                     </div>
-                    <div className="text-[10px] text-theme-muted flex items-center justify-between pt-1">
+                    <div className="text-xs sm:text-[10px] text-theme-muted flex items-center justify-between pt-1">
                       <span>Range: {w.range}</span>
                       <span>Mod: {typeof w.modifiers === 'string' ? w.modifiers : '-'}</span>
                     </div>
@@ -231,20 +231,20 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
           {/* Tactical Modifiers */}
           <div className="space-y-2 pt-2 border-t border-theme-border">
-            <label className="block text-[10px] uppercase font-bold text-theme-muted">
+            <label className="block text-xs sm:text-[10px] uppercase font-bold text-theme-muted">
               2. Tactical Battlefield Modifiers:
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Target Cover */}
               <div className="space-y-1">
-                <span className="text-[10px] text-theme-muted block">Target Cover:</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted block">Target Cover:</span>
                 <div className="grid grid-cols-3 gap-1">
                   {(['None', 'Light', 'Heavy'] as const).map((cov) => (
                     <button
                       key={cov}
                       onClick={() => setTargetCover(cov)}
-                      className={`py-1 text-center rounded text-[10px] font-bold border transition-all ${
+                      className={`py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
                         targetCover === cov
                           ? 'bg-theme-primary text-black border-theme-primary'
                           : 'bg-theme-base text-theme-muted border-theme-border'
@@ -258,7 +258,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
               {/* Defender Armour */}
               <div className="space-y-1">
-                <span className="text-[10px] text-theme-muted block">Defender Armour Mod:</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted block">Defender Armour Mod:</span>
                 <select
                   value={targetArmourMod}
                   onChange={(e) => setTargetArmourMod(parseInt(e.target.value, 10))}
@@ -273,11 +273,11 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
               {/* Situational Toggles */}
               <div className="space-y-1">
-                <span className="text-[10px] text-theme-muted block">Situational Bonuses:</span>
+                <span className="text-xs sm:text-[10px] text-theme-muted block">Situational Bonuses:</span>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsCharging(!isCharging)}
-                    className={`flex-1 py-1 text-center rounded text-[10px] font-bold border transition-all ${
+                    className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
                       isCharging
                         ? 'bg-theme-accent text-white border-theme-accent'
                         : 'bg-theme-base text-theme-muted border-theme-border'
@@ -287,7 +287,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                   </button>
                   <button
                     onClick={() => setHasElevation(!hasElevation)}
-                    className={`flex-1 py-1 text-center rounded text-[10px] font-bold border transition-all ${
+                    className={`flex-1 py-1 text-center rounded text-xs sm:text-[10px] font-bold border transition-all ${
                       hasElevation
                         ? 'bg-theme-accent text-white border-theme-accent'
                         : 'bg-theme-base text-theme-muted border-theme-border'
@@ -320,7 +320,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
                   </strong>
                 </div>
 
-                <span className={`px-2 py-0.5 rounded text-[11px] font-bold uppercase ${
+                <span className={`px-2 py-0.5 rounded text-xs sm:text-[11px] font-bold uppercase ${
                   rollResult.injuryOutcome === 'Out of Action'
                     ? 'bg-status-error text-white'
                     : rollResult.injuryOutcome === 'Downed'
@@ -369,7 +369,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
 
         {/* Footer */}
         <div className="p-3 bg-theme-base border-t border-theme-border flex items-center justify-between">
-          <span className="text-[10px] text-theme-muted">
+          <span className="text-xs sm:text-[10px] text-theme-muted">
             Attacker Blood Penalty: -{attacker.bloodMarkers}
           </span>
           <button

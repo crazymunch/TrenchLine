@@ -83,7 +83,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -113,7 +113,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
 
               <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-xs">
                 <div>
-                  <span className="text-[10px] text-theme-muted block">Glory Won</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">Glory Won</span>
                   <input
                     type="number"
                     min="0"
@@ -124,7 +124,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] text-theme-muted block">Ducats Looted</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">Ducats Looted</span>
                   <input
                     type="number"
                     min="0"
@@ -157,7 +157,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
 
               <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-xs">
                 <div>
-                  <span className="text-[10px] text-theme-muted block">Glory Won</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">Glory Won</span>
                   <input
                     type="number"
                     min="0"
@@ -168,7 +168,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] text-theme-muted block">Ducats Looted</span>
+                  <span className="text-xs sm:text-[10px] text-theme-muted block">Ducats Looted</span>
                   <input
                     type="number"
                     min="0"

@@ -51,7 +51,7 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
               <p className="text-xs font-mono text-theme-muted">Warrior: {unit.customName} (Base MOV: {unit.profileSnapshot.stats.movement})</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-theme-muted hover:text-white rounded">
+          <button onClick={onClose} className="tap p-1 text-theme-muted hover:text-white rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -63,30 +63,30 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
           <div className="grid grid-cols-3 gap-3 font-mono text-center text-xs">
             
             <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
-              <span className="text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
                 <Footprints className="w-3 h-3 text-status-legal" />
                 <span>Standard Move</span>
               </span>
               <span className="text-xl font-bold text-status-legal">{standardMove}&quot;</span>
-              <span className="text-[10px] text-theme-muted block">1 Action (Shoot allowed)</span>
+              <span className="text-xs sm:text-[10px] text-theme-muted block">1 Action (Shoot allowed)</span>
             </div>
 
             <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
-              <span className="text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
                 <Zap className="w-3 h-3 text-theme-primary" />
                 <span>Dash / Run</span>
               </span>
               <span className="text-xl font-bold text-theme-primary">{dashMove}&quot;</span>
-              <span className="text-[10px] text-theme-muted block">2 Actions (Double Move)</span>
+              <span className="text-xs sm:text-[10px] text-theme-muted block">2 Actions (Double Move)</span>
             </div>
 
             <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
-              <span className="text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
+              <span className="text-xs sm:text-[10px] text-theme-muted uppercase block flex items-center justify-center space-x-1">
                 <Crosshair className="w-3 h-3 text-status-error" />
                 <span>Charge Range</span>
               </span>
               <span className="text-xl font-bold text-status-error">{baseMovInches}&quot; + D6&quot;</span>
-              <span className="text-[10px] text-theme-muted block">Max {chargeDistanceMax}&quot;</span>
+              <span className="text-xs sm:text-[10px] text-theme-muted block">Max {chargeDistanceMax}&quot;</span>
             </div>
 
           </div>
@@ -107,7 +107,7 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
               className="w-full accent-theme-primary cursor-pointer"
             />
 
-            <div className="flex justify-between text-[10px] font-mono text-theme-muted">
+            <div className="flex justify-between text-xs sm:text-[10px] font-mono text-theme-muted">
               <span>Point Blank (6&quot;)</span>
               <span>Short Range (12&quot;)</span>
               <span>Medium (24&quot;)</span>
@@ -138,16 +138,16 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
                   >
                     <div>
                       <strong className="text-theme-text">{wep.name}</strong>
-                      <span className="text-[10px] text-theme-muted ml-2">Max Range: {wep.range}</span>
+                      <span className="text-xs sm:text-[10px] text-theme-muted ml-2">Max Range: {wep.range}</span>
                     </div>
 
                     <div className="flex items-center space-x-2">
                       {isPointBlank && (
-                        <span className="text-[9px] bg-theme-primary text-black px-1.5 py-0.2 rounded font-bold uppercase">
+                        <span className="text-xs sm:text-[9px] bg-theme-primary text-black px-1.5 py-0.2 rounded font-bold uppercase">
                           Point Blank (+1 Hit)
                         </span>
                       )}
-                      <span className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
+                      <span className={`font-bold px-2 py-0.5 rounded text-xs sm:text-[10px] uppercase ${
                         inRange ? 'bg-status-legal text-white' : 'bg-theme-accent text-white'
                       }`}>
                         {inRange ? 'IN RANGE' : 'OUT OF RANGE'}
