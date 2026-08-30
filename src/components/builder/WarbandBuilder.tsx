@@ -10,7 +10,9 @@ import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { soundEffects } from '../../services/soundEffects';
 import { LegalityStrip } from './LegalityStrip';
+import { RulesetSwitcher } from './RulesetSwitcher';
 import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { 
   UserPlus, 
   Coins, 
@@ -50,7 +52,15 @@ export const WarbandBuilder: React.FC = () => {
   const warband = getActiveWarband();
   // The generated ruleset, served rather than bundled. Legality is the first
   // thing in the app to read it; nothing else has migrated yet.
-  const { dataset, loading: datasetLoading, error: datasetError } = useDataset();
+  // Which ruleset this session is building against. Persisted per browser, so
+  // it survives a reload; the reconciliation screen is what makes changing it
+  // safe (docs/RULESET-MODEL.md §8).
+  const [rulesetId, setRulesetId] = useState<string>(() => {
+    if (typeof window === 'undefined') return DEFAULT_RULESET_ID;
+    return window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
+  });
+  const [isRulesetOpen, setIsRulesetOpen] = useState(false);
+  const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -186,6 +196,15 @@ export const WarbandBuilder: React.FC = () => {
             </button>
 
             <button
+              onClick={() => setIsRulesetOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Which rules this warband is built and checked against"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4E9A6E]" />
+              <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
+            </button>
+
+            <button
               onClick={() => setIsExportOpen(true)}
               className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Export & Print"
@@ -219,6 +238,20 @@ export const WarbandBuilder: React.FC = () => {
             <LegalityStrip warband={warband} dataset={dataset} />
           </div>
         ) : null}
+
+        {isRulesetOpen && dataset && (
+          <RulesetSwitcher
+            current={rulesetId}
+            currentDataset={dataset}
+            rosterUnitNames={warband.units.map((u) => u.profileSnapshot?.name ?? u.customName)}
+            onApply={(id) => {
+              setRulesetId(id);
+              window.localStorage.setItem('trenchline_ruleset', id);
+              setIsRulesetOpen(false);
+            }}
+            onClose={() => setIsRulesetOpen(false)}
+          />
+        )}
 
         {/* Budget Bar & Validation Stats */}
         <div className="mt-6 pt-4 border-t border-[#323846] grid grid-cols-1 md:grid-cols-4 gap-4 items-center">

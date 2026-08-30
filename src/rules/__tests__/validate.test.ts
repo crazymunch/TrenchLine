@@ -5,6 +5,7 @@ import { validateRoster, factionMatches, fireteamCap } from '../validate';
 import { armouryFor, priceOf, restrictionsFor, stocks } from '../armoury';
 import { RULESETS, RULESET_IDS, DEFAULT_RULESET_ID } from '../rulesets';
 import { toRoster } from '../fromWarband';
+import { diffDatasets, diffAffecting } from '../diff';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -460,5 +461,70 @@ describe('toRoster — joining a saved warband to the dataset', () => {
     const { roster } = toRoster(
       warband({ variantId: 'house-of-wisdom', units: [model('Jabirean Alchemist')] }), ds);
     expect(roster.variantId).toBe('house-of-wisdom');
+  });
+});
+
+/* --------------------------------------------------------------- ruleset diff */
+
+/**
+ * Switching ruleset shows a diff rather than mutating saved data. These read
+ * the two real generated datasets, so the diff is the one a player would see.
+ */
+describe('diffDatasets', () => {
+  const load = (f: string) => {
+    const s = fs.readFileSync(`src/data/generated/${f}.generated.ts`, 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  };
+  const trenchline = load('trenchline');
+  const github = load('github-latest');
+
+  it('finds the Dispatch changes between the two shipped rulesets', () => {
+    const d = diffDatasets(trenchline, github);
+    expect(d.changed.length).toBeGreaterThan(0);
+
+    const bull = d.changed.find((c) => c.name === 'Brazen Bull');
+    expect(bull, 'the Brazen Bull is the headline Dispatch change').toBeTruthy();
+    const cost = bull!.changes.find((c) => c.field === 'Cost');
+    expect(cost).toEqual({ field: 'Cost', from: '115 Ducats', to: '100 Ducats' });
+  });
+
+  it('is empty against itself', () => {
+    const d = diffDatasets(trenchline, trenchline);
+    expect(d.changed).toEqual([]);
+    expect(d.added).toEqual([]);
+    expect(d.removed).toEqual([]);
+  });
+
+  // Direction matters: the fields are "from -> to", not a symmetric set.
+  it('reverses cleanly', () => {
+    const forward = diffDatasets(trenchline, github);
+    const back = diffDatasets(github, trenchline);
+    const f = forward.changed.find((c) => c.name === 'Brazen Bull')!
+      .changes.find((c) => c.field === 'Cost')!;
+    const b = back.changed.find((c) => c.name === 'Brazen Bull')!
+      .changes.find((c) => c.field === 'Cost')!;
+    expect(b.from).toBe(f.to);
+    expect(b.to).toBe(f.from);
+  });
+
+  /**
+   * The global diff is long; what a player needs first is the part that touches
+   * their own roster.
+   */
+  it('narrows to the entries actually in a warband', () => {
+    const d = diffDatasets(trenchline, github);
+    const mine = diffAffecting(d, ['Brazen Bull', 'Jabirean Alchemist']);
+    expect(mine.map((m) => m.name)).toContain('Brazen Bull');
+    expect(diffAffecting(d, ['Nothing At All'])).toEqual([]);
+  });
+
+  it('reports only fields a player would recognise as a rules change', () => {
+    const d = diffDatasets(trenchline, github);
+    const fields = new Set(d.changed.flatMap((c) => c.changes.map((x) => x.field)));
+    // ids, source files and provenance differ for reasons that are not rules.
+    for (const noise of ['id', 'sourceFile', 'entryId', 'modifiers']) {
+      expect(fields.has(noise)).toBe(false);
+    }
   });
 });
