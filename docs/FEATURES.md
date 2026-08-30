@@ -92,7 +92,7 @@ the execution is the problem.
 | Betrayal card engine (52-card) | ✅ | **Verified word-for-word** against All Out War |
 | Scenario compendium + maps | ✅ | |
 | Mission designer / generator | ✅ | |
-| Keyword glossary | 🟡 | Incomplete and paraphrased |
+| Keyword glossary | 🟡 | 116 entries, paraphrased; **missing 7 of the 12 keywords the 1.0.2 changelog defines**, including `CLEAVE (X)` and `DEADLY` (`AUDIT.md` §1.3a) |
 | Armoury / weapon / armour tables | 🟡 | Present, values invented |
 | Rules customizer (local overrides) | ✅ | |
 | GitHub 3-way diff resolver | ✅ | Wired up and functional |
@@ -139,7 +139,7 @@ Each needs checking against the now-committed PDFs before it can be trusted:
 
 | Data | Source to check against |
 |---|---|
-| Keyword glossary | 1.0.2 Changelog + Core Rules |
+| Keyword glossary | 1.0.2 Changelog ✅ available — **7 gaps already confirmed** |
 | D66 Trauma table | Core Rulebook |
 | Exploration tables | Core Rulebook |
 | Skills tables | Core Rulebook |

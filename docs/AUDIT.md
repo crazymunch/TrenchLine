@@ -93,6 +93,36 @@ Real keywords do exist in the data (`ASSAULT`, `BLAST`, `CUMBERSOME`, `HEAVY`,
 rather than rules text. `COVER` is described as "subtract 1 or 2 from enemy
 ranged hit rolls", where Trench Crusade expresses cover as a DICE modifier.
 
+### 1.3a Claimed but not delivered
+
+`src/data/rulesets/index.ts:36` advertises the 1.0.2 update as adding:
+
+> *"New Keywords: CLEAVE (X), DEADLY, DEPLOYABLE, DANGEROUS TERRAIN, DIFFICULT
+> TERRAIN, FLYING, IMPASSABLE TERRAIN, MINED, REGENERATE (X), SCATTER,
+> SKIRMISHER."*
+
+Checked against the 116-keyword glossary the app actually ships
+(`officialRulesData.ts`), **7 of the 11 are absent** — not under a variant name,
+absent entirely:
+
+| Claimed | In the glossary? |
+|---|---|
+| DEPLOYABLE, FLYING, MINED, SCATTER | present |
+| **CLEAVE (X), DEADLY, DANGEROUS TERRAIN, DIFFICULT TERRAIN, IMPASSABLE TERRAIN, REGENERATE (X), SKIRMISHER** | **absent** |
+
+`CLEAVE (X)` and `DEADLY` are core combat keywords — both are used repeatedly in
+the Trench Dispatch (`CLEAVE 3` on the Gluttonous Arsenal, `CLEAVE 2` on the
+Flaying Iron Claws, `DEADLY` on the M.U.R.A.D. Bombard). A player looking either
+up in the Codex gets nothing.
+
+Cross-checked against the official `Changelog 1.0.2` PDF, which defines 12
+keywords in total; the app is missing 7 of those 12.
+
+This is the failure mode to guard against most carefully: not invented data,
+but a **claim of completeness that the code does not honour**. It is why
+[`FEATURES.md`](FEATURES.md) records status verified by reading the code rather
+than by trusting the UI or the changelog text.
+
 ### 1.4 Faction special rules are invented
 
 `FACTIONS[].rules` contains "Voice of Command", "Ecstatic Zeal", "Prophetic
