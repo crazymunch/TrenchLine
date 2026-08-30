@@ -118,13 +118,58 @@ for (const ruleset of RULESETS) {
     if (!armouryByName.has(k)) armouryByName.set(k, new Set());
     if (row.restrictions) armouryByName.get(k).add(row.restrictions);
   }
+  // The Armoury Tables also carry the prices. The catalogues mostly do not:
+  // a shared weapon entry costs 0 there because the price hangs off each
+  // faction's armoury link, so 363 of 543 weapons came through free. A roster
+  // built on that data would silently under-count by hundreds of Ducats.
+  //
+  // Pricing is per faction: an Automatic Rifle is 40 Ducats in one armoury and
+  // 2 Glory in another. A single `cost` cannot say that, so where the tables
+  // disagree the candidates are recorded on the weapon and reported, and the
+  // cost is left alone. Picking one silently would put a wrong number in front
+  // of a player with nothing to show it was a guess.
+  const priceByName = new Map();
+  for (const row of armoury) {
+    const k = row.name.toLowerCase();
+    if (!priceByName.has(k)) priceByName.set(k, new Set());
+    priceByName.get(k).add(`${row.ducats}/${row.glory}`);
+  }
+
   let restricted = 0;
+  let priced = 0;
+  const pricingConflicts = [];
   for (const w of dataset.weapons) {
     const hit = armouryByName.get(w.name.toLowerCase());
-    if (!hit || !hit.size) continue;
-    w.restrictions = [...hit];
-    restricted++;
-    provenance.stamp('weapon', w.id, 'restrictions', {
+    if (hit && hit.size) {
+      w.restrictions = [...hit];
+      restricted++;
+      provenance.stamp('weapon', w.id, 'restrictions', {
+        layer: 'base',
+        source: 'rulebook:warbands-of-trench-crusade#armoury',
+        verified: 'rulebook:warbands-of-trench-crusade',
+      });
+    }
+
+    if (w.cost.ducats || w.cost.glory) continue;      // catalogue priced it
+    const prices = priceByName.get(w.name.toLowerCase());
+    if (!prices || !prices.size) continue;
+    if (prices.size > 1) {
+      w.priceOptions = [...prices].map((p) => {
+        const [d, g] = p.split('/').map(Number);
+        return { ducats: d, glory: g };
+      });
+      provenance.stamp('weapon', w.id, 'priceOptions', {
+        layer: 'base',
+        source: 'rulebook:warbands-of-trench-crusade#armoury',
+      });
+      pricingConflicts.push(`${w.name}: ${[...prices].join(' vs ')}`);
+      continue;
+    }
+    const [d, g] = [...prices][0].split('/').map(Number);
+    if (!d && !g) continue;
+    w.cost = { ducats: d, glory: g };
+    priced++;
+    provenance.stamp('weapon', w.id, 'cost.ducats', {
       layer: 'base',
       source: 'rulebook:warbands-of-trench-crusade#armoury',
       verified: 'rulebook:warbands-of-trench-crusade',
@@ -232,6 +277,13 @@ for (const ruleset of RULESETS) {
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
   console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}`);
   console.log(`  weapons carrying armoury restrictions: ${restricted}`);
+  console.log(`  weapons priced from the Armoury Tables: ${priced}` +
+              (pricingConflicts.length ? `  (${pricingConflicts.length} priced per faction, left unset)` : ''));
+  if (pricingConflicts.length) {
+    for (const c of pricingConflicts) console.log(`      ${c}`);
+    console.log('      Armoury pricing is per faction; a single cost cannot express it.');
+    console.log('      Candidates recorded on the weapon as priceOptions.');
+  }
   const mods = [...dataset.units, ...dataset.weapons]
     .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
   const unmapped = [...dataset.units, ...dataset.weapons]

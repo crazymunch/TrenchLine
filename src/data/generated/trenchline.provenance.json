@@ -21822,7 +21822,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -21873,7 +21874,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -21973,7 +21975,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22024,7 +22027,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22075,7 +22079,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22176,7 +22181,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22226,7 +22232,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22326,7 +22333,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22377,7 +22385,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22500,6 +22509,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "priceOptions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury"
     }
   },
   "weapon:cb36-de41-f960-6526": {
@@ -22579,7 +22592,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22630,7 +22644,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22681,7 +22696,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22832,7 +22848,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22883,7 +22900,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -22933,7 +22951,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27735,7 +27754,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27786,7 +27806,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27837,7 +27858,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27887,7 +27909,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27937,7 +27960,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -27987,7 +28011,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -28038,7 +28063,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -28089,7 +28115,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -28139,7 +28166,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -28189,7 +28217,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32339,7 +32368,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32412,6 +32442,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "priceOptions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury"
     }
   },
   "weapon:5b1a-ebaa-4d59-f2d7": {
@@ -32441,7 +32475,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32492,7 +32527,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32543,7 +32579,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32594,7 +32631,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32645,7 +32683,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32696,7 +32735,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32747,7 +32787,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32820,6 +32861,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "priceOptions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury"
     }
   },
   "weapon:86be-7c29-216e-66b8": {
@@ -32849,7 +32894,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32900,7 +32946,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -32951,7 +32998,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33002,7 +33050,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33053,7 +33102,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33125,6 +33175,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "priceOptions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury"
     }
   },
   "weapon:f536-9890-8f44-99d7": {
@@ -33176,6 +33230,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "priceOptions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury"
     }
   },
   "weapon:00d3-c557-3993-f094": {
@@ -33205,7 +33263,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33255,7 +33314,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33356,7 +33416,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
@@ -33406,7 +33467,8 @@
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",

@@ -40640,7 +40640,7 @@ export const DATASET: Dataset = {
         "-2 INJURY MODIFIER"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 40,
         "glory": 0
       },
       "constraints": [
@@ -40671,7 +40671,7 @@ export const DATASET: Dataset = {
         "-1 INJURY MODIFIER"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -40717,7 +40717,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Survey the Land**: Enemy models cannot use the INFILTRATOR Keyword to deploy within 16” of a model with this Keyword unless they are in their own side’s deployment zone.",
       "cost": {
-        "ducats": 0,
+        "ducats": 10,
         "glory": 0
       },
       "constraints": [
@@ -40747,7 +40747,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Talisman**: Once during a game, when a Risky Success Roll for a model with a Blessed Icon is a Failure, you can say that the model will use its Talisman. If you do, the model’s Activation does not end.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -40776,7 +40776,7 @@ export const DATASET: Dataset = {
         "NEGATE SHRAPNEL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [
@@ -40827,7 +40827,7 @@ export const DATASET: Dataset = {
       "rules": "A Field Shrine is represented by a terrain piece that is at least ½” high and which is mounted on a 40mm base. It is Impassable terrain. - **Site of Worship**: After you deploy a model that has Field Shrine, you can also deploy their Field Shrine anywhere wholly within their deployment zone. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Once deployed, the model that had the Field Shrine is not considered to be carrying it for the rest of the game. - **Tear It Down!**: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and is removed from the Warband Roster (no Injury Roll is required).",
       "cost": {
         "ducats": 0,
-        "glory": 0
+        "glory": 2
       },
       "constraints": [
         {
@@ -40853,7 +40853,7 @@ export const DATASET: Dataset = {
         "NEGATE GAS"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [
@@ -40907,7 +40907,7 @@ export const DATASET: Dataset = {
       ],
       "cost": {
         "ducats": 0,
-        "glory": 0
+        "glory": 2
       },
       "constraints": [
         {
@@ -40936,7 +40936,7 @@ export const DATASET: Dataset = {
         "CONSUMABLE"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],
@@ -41003,7 +41003,17 @@ export const DATASET: Dataset = {
         "Consumable, Limit: 3"
       ],
       "factionId": "Equipment",
-      "sourceFile": "Equipment.cat"
+      "sourceFile": "Equipment.cat",
+      "priceOptions": [
+        {
+          "ducats": 0,
+          "glory": 1
+        },
+        {
+          "ducats": 20,
+          "glory": 0
+        }
+      ]
     },
     {
       "id": "cb36-de41-f960-6526",
@@ -41040,7 +41050,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Ropes and Pitons**: Add +1 DICE to Risky Success Rolls for friendly models with this special rule that are attempting to climb a sheer surface.",
       "cost": {
-        "ducats": 0,
+        "ducats": 3,
         "glory": 0
       },
       "constraints": [
@@ -41072,7 +41082,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Fanfare**: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 4” of one or more models with a Musical Instrument.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -41100,7 +41110,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Dug In**: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.",
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [
@@ -41176,7 +41186,7 @@ export const DATASET: Dataset = {
       ],
       "cost": {
         "ducats": 0,
-        "glory": 0
+        "glory": 1
       },
       "constraints": [
         {
@@ -41204,7 +41214,7 @@ export const DATASET: Dataset = {
         "FEAR"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -41232,7 +41242,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Talisman**: Once during a game, when a Risky Success Roll for a model with an Unholy Trinket is a Failure, you can say that the model will use it. If you do, the model’s Activation does not end.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -45269,7 +45279,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Dangerous**: Place 1 BLOOD MARKER next to the model using this Weapon if it makes a Melee Attack and the Success Roll is a Success or a Critical Success.",
       "cost": {
-        "ducats": 0,
+        "ducats": 35,
         "glory": 0
       },
       "constraints": [],
@@ -45290,7 +45300,7 @@ export const DATASET: Dataset = {
         "CUMBERSOME"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 2,
         "glory": 0
       },
       "constraints": [
@@ -45320,7 +45330,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Unwieldy**: The +1 DICE Keyword does not apply when this Weapon is used as an Off- Hand Weapon.",
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [],
@@ -45340,7 +45350,7 @@ export const DATASET: Dataset = {
         "HEAVY"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 10,
         "glory": 0
       },
       "constraints": [],
@@ -45361,7 +45371,7 @@ export const DATASET: Dataset = {
         "HEAVY"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 12,
         "glory": 0
       },
       "constraints": [],
@@ -45379,7 +45389,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "**Despatch**: This weapon has the IGNORE ARMOUR Keyword if the target is Down.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],
@@ -45402,7 +45412,7 @@ export const DATASET: Dataset = {
         "CUMBERSOME"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 7,
         "glory": 0
       },
       "constraints": [],
@@ -45423,7 +45433,7 @@ export const DATASET: Dataset = {
         "CRITICAL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 4,
         "glory": 0
       },
       "constraints": [],
@@ -45440,7 +45450,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 0,
+        "ducats": 3,
         "glory": 0
       },
       "constraints": [],
@@ -45459,7 +45469,7 @@ export const DATASET: Dataset = {
         "-1 DICE"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 1,
         "glory": 0
       },
       "constraints": [],
@@ -49076,7 +49086,7 @@ export const DATASET: Dataset = {
         "PISTOL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 20,
         "glory": 0
       },
       "constraints": [],
@@ -49110,7 +49120,17 @@ export const DATASET: Dataset = {
         "Bayonet Lug, Limit: 2"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat"
+      "sourceFile": "Ranged Weapons.cat",
+      "priceOptions": [
+        {
+          "ducats": 40,
+          "glory": 0
+        },
+        {
+          "ducats": 0,
+          "glory": 2
+        }
+      ]
     },
     {
       "id": "5b1a-ebaa-4d59-f2d7",
@@ -49124,7 +49144,7 @@ export const DATASET: Dataset = {
         "SHOTGUN"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],
@@ -49146,7 +49166,7 @@ export const DATASET: Dataset = {
         "SHRAPNEL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [],
@@ -49165,7 +49185,7 @@ export const DATASET: Dataset = {
       "range": "24\"",
       "keywords": [],
       "cost": {
-        "ducats": 0,
+        "ducats": 10,
         "glory": 0
       },
       "constraints": [],
@@ -49189,7 +49209,7 @@ export const DATASET: Dataset = {
         "IGNORE ARMOUR"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 30,
         "glory": 0
       },
       "constraints": [],
@@ -49214,7 +49234,7 @@ export const DATASET: Dataset = {
         "SHRAPNEL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 30,
         "glory": 0
       },
       "constraints": [],
@@ -49240,7 +49260,7 @@ export const DATASET: Dataset = {
         "IGNORE ARMOUR"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 55,
         "glory": 0
       },
       "constraints": [],
@@ -49266,7 +49286,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Tungsten-orichalcum Alloy Shot**: Add +1 INJURY DICE to rolls for Ranged Attacks made by this Weapon at Short Range.",
       "cost": {
-        "ducats": 0,
+        "ducats": 20,
         "glory": 0
       },
       "constraints": [],
@@ -49300,7 +49320,17 @@ export const DATASET: Dataset = {
         "Amalgam only, Limit: 1"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat"
+      "sourceFile": "Ranged Weapons.cat",
+      "priceOptions": [
+        {
+          "ducats": 50,
+          "glory": 0
+        },
+        {
+          "ducats": 0,
+          "glory": 2
+        }
+      ]
     },
     {
       "id": "86be-7c29-216e-66b8",
@@ -49312,7 +49342,7 @@ export const DATASET: Dataset = {
         "-1 INJURY DICE"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [],
@@ -49335,7 +49365,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Silent**: Add +1 DICE to the roll if the attacker is in contact with a terrain piece that is at least 1/2\" tall and that lies in between it and the target model.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],
@@ -49356,7 +49386,7 @@ export const DATASET: Dataset = {
         "ASSAULT"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],
@@ -49378,7 +49408,7 @@ export const DATASET: Dataset = {
         "SHOTGUN"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 10,
         "glory": 0
       },
       "constraints": [],
@@ -49400,7 +49430,7 @@ export const DATASET: Dataset = {
         "PISTOL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 6,
         "glory": 0
       },
       "constraints": [],
@@ -49432,7 +49462,17 @@ export const DATASET: Dataset = {
         "ELITE & Janissaries only, Limit: 2"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat"
+      "sourceFile": "Ranged Weapons.cat",
+      "priceOptions": [
+        {
+          "ducats": 35,
+          "glory": 0
+        },
+        {
+          "ducats": 0,
+          "glory": 2
+        }
+      ]
     },
     {
       "id": "f536-9890-8f44-99d7",
@@ -49456,7 +49496,17 @@ export const DATASET: Dataset = {
         "Bayonet Lug, Shield Combo, Limit: 1"
       ],
       "factionId": "Ranged Weapons",
-      "sourceFile": "Ranged Weapons.cat"
+      "sourceFile": "Ranged Weapons.cat",
+      "priceOptions": [
+        {
+          "ducats": 30,
+          "glory": 0
+        },
+        {
+          "ducats": 0,
+          "glory": 2
+        }
+      ]
     },
     {
       "id": "00d3-c557-3993-f094",
@@ -49472,7 +49522,7 @@ export const DATASET: Dataset = {
         "SHRAPNEL"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 7,
         "glory": 0
       },
       "constraints": [
@@ -49505,7 +49555,7 @@ export const DATASET: Dataset = {
         "IGNORE LONG RANGE"
       ],
       "cost": {
-        "ducats": 0,
+        "ducats": 10,
         "glory": 0
       },
       "constraints": [
@@ -49536,7 +49586,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [
@@ -49571,7 +49621,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
-        "ducats": 0,
+        "ducats": 5,
         "glory": 0
       },
       "constraints": [
@@ -49605,7 +49655,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "**Heavy Explosive**: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack.",
       "cost": {
-        "ducats": 0,
+        "ducats": 15,
         "glory": 0
       },
       "constraints": [],

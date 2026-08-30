@@ -189,6 +189,12 @@ export interface WeaponProfile {
   restrictions: string[];
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];
+  /**
+   * Set when the Armoury Tables price this weapon differently per faction — an
+   * Automatic Rifle is 40 Ducats in one and 2 Glory in another. `cost` is left
+   * unset in that case; the roster's faction decides which of these applies.
+   */
+  priceOptions?: Cost[];
   factionId?: string;
 }
 
