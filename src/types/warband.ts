@@ -90,6 +90,12 @@ export interface Warband {
   id: string;
   name: string;
   factionId: string;
+  /**
+   * The Warband Variant, e.g. 'the-house-of-wisdom'. Seventeen exist and the
+   * app previously had no field for one at all, so every variant rule went
+   * unenforced. See docs/RULESET-MODEL.md §7a.
+   */
+  variantId?: string;
   campaignId?: string;
   creatorId?: string;
   creatorName?: string;

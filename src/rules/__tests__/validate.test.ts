@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { validateRoster, factionMatches, fireteamCap } from '../validate';
 import { armouryFor, priceOf, restrictionsFor, stocks } from '../armoury';
 import { RULESETS, RULESET_IDS, DEFAULT_RULESET_ID } from '../rulesets';
+import { toRoster } from '../fromWarband';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -383,5 +384,81 @@ describe('ruleset registry', () => {
       expect(r.name.length).toBeGreaterThan(0);
       expect(r.description.length).toBeGreaterThan(20);
     }
+  });
+});
+
+/* ------------------------------------------- the saved warband, end to end */
+
+/**
+ * The vertical slice: a saved `Warband` in the app's own shape, joined against
+ * the generated dataset, priced from the faction armoury, and validated.
+ *
+ * This is what 2.6 puts on screen, so it is worth testing the join itself —
+ * particularly that a name which does not resolve is reported rather than
+ * quietly dropped, since a dropped model makes an illegal roster look legal.
+ */
+describe('toRoster — joining a saved warband to the dataset', () => {
+  const ds = (() => {
+    const s = fs.readFileSync('src/data/generated/trenchline.generated.ts', 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  })();
+
+  const warband = (over = {}) => ({
+    id: 'w1', name: 'Test', factionId: 'Iron Sultanate',
+    ducatLimit: 1320, treasuryDucats: 0, gloryPoints: 9,
+    units: [], armoryStash: [], createdAt: '', updatedAt: '',
+    ...over,
+  }) as unknown as Parameters<typeof toRoster>[0];
+
+  const model = (profileName: string, gear: string[] = []) => ({
+    id: `u-${profileName}`, customName: profileName,
+    profileSnapshot: { name: profileName },
+    equippedWeapons: gear.map((n) => ({ name: n })),
+    equippedArmour: [], equippedEquipment: [],
+  });
+
+  it('joins by name and prices from the faction armoury', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Jabirean Alchemist', ['Sword/Axe'])] }), ds);
+
+    expect(unmatched).toEqual([]);
+    expect(roster.units).toHaveLength(1);
+    expect(roster.units[0].cost.ducats).toBe(55);
+    // 4 Ducats from the Iron Sultanate Armoury Table, not the catalogue's 0.
+    expect(roster.units[0].items[0].cost).toEqual({ ducats: 4, glory: 0 });
+  });
+
+  /**
+   * NewRecruit prefixes an elite-promoted model. A saved warband can hold that
+   * printed name while the dataset holds the base entry.
+   */
+  it('resolves a name carrying an elite-promotion title', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Favoured Brazen Bull')] }), ds);
+    expect(unmatched).toEqual([]);
+    expect(roster.units[0].cost.ducats).toBe(115);
+  });
+
+  // The important one: silence here would be a false LEGAL.
+  it('reports a model it cannot join rather than dropping it', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Entirely Fictional Warrior')] }), ds);
+    expect(roster.units).toHaveLength(0);
+    expect(unmatched).toEqual([{ kind: 'unit', name: 'Entirely Fictional Warrior' }]);
+  });
+
+  it('reports wargear it cannot join, naming the model it was on', () => {
+    const { unmatched } = toRoster(
+      warband({ units: [model('Jabirean Alchemist', ['Plasma Halberd'])] }), ds);
+    expect(unmatched).toEqual([
+      { kind: 'wargear', name: 'Plasma Halberd', on: 'Jabirean Alchemist' },
+    ]);
+  });
+
+  it('carries the variant through so its rules are enforced', () => {
+    const { roster } = toRoster(
+      warband({ variantId: 'house-of-wisdom', units: [model('Jabirean Alchemist')] }), ds);
+    expect(roster.variantId).toBe('house-of-wisdom');
   });
 });

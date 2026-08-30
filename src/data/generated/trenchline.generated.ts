@@ -40682,7 +40682,9 @@ export const DATASET: Dataset = {
         }
       ],
       "modifiers": [],
-      "restrictions": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -51500,6 +51502,30 @@ export const DATASET: Dataset = {
           "restrictions": []
         },
         {
+          "name": "Holy Icon Shield",
+          "weaponId": null,
+          "section": "Shields",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only, Shield Combo"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
           "name": "Reinforced Armour",
           "weaponId": "33ed-6314-e75f-8982",
           "section": "Armour",
@@ -51945,6 +51971,18 @@ export const DATASET: Dataset = {
           },
           "restrictions": [
             "Jabirean Alchemist Only"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
           ]
         },
         {
@@ -52454,6 +52492,18 @@ export const DATASET: Dataset = {
           "restrictions": []
         },
         {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
           "name": "Reinforced Armour",
           "weaponId": "33ed-6314-e75f-8982",
           "section": "Armour",
@@ -52752,6 +52802,30 @@ export const DATASET: Dataset = {
           "restrictions": []
         },
         {
+          "name": "Black Grail Shield",
+          "weaponId": null,
+          "section": "Shields",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Shield Combo"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
           "name": "Reinforced Armour",
           "weaponId": "33ed-6314-e75f-8982",
           "section": "Armour",
@@ -53011,6 +53085,18 @@ export const DATASET: Dataset = {
           },
           "restrictions": [
             "Limit: 2"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
           ]
         },
         {

@@ -9,6 +9,8 @@ import { ArmoryStashModal } from './ArmoryStashModal';
 import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { soundEffects } from '../../services/soundEffects';
+import { LegalityStrip } from './LegalityStrip';
+import { useDataset } from '../../rules/useDataset';
 import { 
   UserPlus, 
   Coins, 
@@ -46,6 +48,9 @@ export const WarbandBuilder: React.FC = () => {
   } = useStore();
   
   const warband = getActiveWarband();
+  // The generated ruleset, served rather than bundled. Legality is the first
+  // thing in the app to read it; nothing else has migrated yet.
+  const { dataset, loading: datasetLoading, error: datasetError } = useDataset();
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -199,6 +204,21 @@ export const WarbandBuilder: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Roster legality, from the generated ruleset. */}
+        {datasetError ? (
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#8B0000]/15 border-t border-[#8B0000]/50 text-xs font-mono text-[#E53935]">
+            Legality unavailable: {datasetError}
+          </div>
+        ) : datasetLoading ? (
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#20242E] border-t border-[#323846] text-xs font-mono text-[#8E95A5]">
+            Checking legality…
+          </div>
+        ) : dataset ? (
+          <div className="mt-6 -mx-6 -mb-6">
+            <LegalityStrip warband={warband} dataset={dataset} />
+          </div>
+        ) : null}
 
         {/* Budget Bar & Validation Stats */}
         <div className="mt-6 pt-4 border-t border-[#323846] grid grid-cols-1 md:grid-cols-4 gap-4 items-center">

@@ -137,8 +137,13 @@ export function parseVariants(src = WARBANDS_TXT) {
  * restriction column ("ELITE only", "Limit: 2", "Combat Medic only") is the
  * wargear-legality data the roster validator needs.
  */
+// Every section heading the Armoury Tables actually use. `Shields` was missing,
+// so every shield in every faction's armoury was dropped — and once the armoury
+// became the legality authority, that read as "this faction does not stock a
+// Trench Shield", which is false. Derived by scanning the armoury blocks, not
+// guessed.
 const SECTIONS = new Set([
-  'Ranged Weapons', 'Melee Weapons', 'Grenades', 'Armour', 'Equipment',
+  'Ranged Weapons', 'Melee Weapons', 'Grenades', 'Shields', 'Armour', 'Equipment',
   'Battlekit', 'Glory Items', 'Relics',
 ]);
 

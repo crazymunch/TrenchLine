@@ -31,6 +31,7 @@ export interface Violation {
     | 'variant-requires'
     | 'unknown-profile'
     | 'faction-rule'
+    | 'wargear-not-stocked'
     | 'unparsed-restriction';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
@@ -174,10 +175,23 @@ function checkWargear(
       // rule the old data could not express: the armoury *is* the list of what
       // is available, not merely what it costs.
       if (armoury && !stocks(armoury, w)) {
-        out.push(err({
-          code: 'wargear-restricted',
-          message: `${armoury.faction} does not stock ${w.name}.`,
-          rule: `${armoury.faction} Armoury Table`,
+        // Advisory, not blocking — deliberately. The rule is right: a faction
+        // can only buy from its own armoury. But our picture of that armoury is
+        // not yet complete, because a Warband Variant can extend it. The House
+        // of Wisdom's *Weapon Collections* grants an Automatic Rifle and an
+        // Anti-Tank Hammer that the standard Iron Sultanate table does not
+        // list, and those grants are not modelled yet.
+        //
+        // Blocking on an incomplete picture would tell a player their legal
+        // roster is illegal, which is worse than not checking: they cannot act
+        // on it and they stop trusting the rest. So it is raised as something
+        // to confirm, and it says why.
+        out.push(warn({
+          code: 'wargear-not-stocked',
+          message: `${w.name} is not in the ${armoury.faction} Armoury Table — ` +
+                   `check whether your variant grants it.`,
+          rule: `${armoury.faction} Armoury Table. Variant armoury grants ` +
+                `(e.g. Weapon Collections) are not modelled yet.`,
           unitId: u.id,
         }));
         continue;

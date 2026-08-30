@@ -92,8 +92,12 @@ export interface BudgetState {
 export function budgetState(r: Roster): BudgetState {
   const spent = rosterCost(r);
   const remaining = { ducats: r.budget.ducats - spent.ducats, glory: r.budget.glory - spent.glory };
-  const overDucats = remaining.ducats < 0;
-  const overGlory = remaining.glory < 0;
+  // A budget of 0 means "no limit published", not "may not spend any". Only the
+  // Papal States Intervention Force has a Glory allowance in the book; every
+  // other faction has none, and treating that as a ceiling of zero reported
+  // every Glory-priced item as overspend.
+  const overDucats = r.budget.ducats > 0 && remaining.ducats < 0;
+  const overGlory = r.budget.glory > 0 && remaining.glory < 0;
   return { spent, budget: r.budget, remaining, overDucats, overGlory, over: overDucats || overGlory };
 }
 
