@@ -68,7 +68,7 @@ with all 7 buttons at exactly 44px.
 | 1.4a | Parse the rulebook's warband entries and variants | ✅ `scripts/lib/parse-warbands.mjs` |
 | 1.5 | New entity model | ✅ `src/types/catalogue.ts` |
 | 1.6 | Layer engine + provenance stamping | ✅ `scripts/lib/layers.mjs` |
-| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 **partial** — see below |
+| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 the four Grail Strains done; Amalgam/Thrall entry replacements and the Mercenary keyword rewrites outstanding |
 | 1.7a | Parse the 14 Warband Variants | ✅ all 14, with their special rules |
 | 1.7b | Preserve the kept warband | ⬜ deferred to Phase 2 with the roster model |
 | 1.8 | `rules:verify` | ✅ `scripts/lib/verify.mjs`; fails on unresolved conflicts |
@@ -132,19 +132,172 @@ All four are covered by regression tests.
 |---|---|
 | 2.1 | `src/rules/validate.ts` — constraint evaluation (min/max, roster/parent scope, conditions) |
 | 2.2 | `src/rules/costs.ts` — Ducats **and** Glory, including options and Glory Items |
-| 2.3 | `UnitOption` support — Strains, Vile Corpus, Goetic Powers, Glory Items, variants. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
+| 2.3 | ✅ `UnitOption` support — 315 options across 55 units in 22 groups. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
-| 2.5a | Faction Special Rules as engine rules — e.g. New Antioch "up to 2 Fireteams", granting FIRETEAM at no cost |
-| 2.6 | Surface violations in the builder: per-unit, per-roster, blocking vs advisory |
-| 2.7 | Ruleset switcher + reconciliation review screen — needed for *Latest GitHub* ⇄ *TrenchLine* switching; no longer blocks Phase 1 |
-| 2.10 | **Warband Variants** — `variantId` on `Warband`, variant selection at creation, variant ops applied to roster validation ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). 14 official variants. **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
-| 2.8 | Provenance UI — "where does this number come from?" in the Codex |
-| 2.9 | Comprehensive unit tests for `src/rules/*` |
+| 2.5 | 🟡 Warband creation rules — force mode, Strongbox and the derived Threshold done; Exploration income blocked on AUDIT §1.13 |
+| 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
+| 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
+| 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
+| 2.10 | ✅ **Warband Variants** — 17 variants, 16 with ops derived from catalogue modifiers; `validate.ts` uses them in preference to the prose reader. `VariantPicker` writes `variantId`, and the roster join follows the variant's renames. ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
+| 2.8 | ✅ Provenance UI — `ProvenanceTag`, per field, served per entity from `/api/dataset/provenance` |
+| 2.9 | ✅ 124 tests, including the real 1,320-Ducat roster against the real dataset |
+
+| 2.11 | 🟡 **Migrate the app onto the generated dataset** — legality is migrated; **recruitment is not**. See below. |
 
 **Done when:** an illegal roster cannot be silently built; every violation names
 the rule and cites its source; switching rulesets shows a diff rather than
 mutating saved data.
+
+Two of those three hold. The third does not yet: recruitment still runs on
+`defaultRules.ts`, so an illegal roster can still be *built* — it just cannot
+be built *silently*. See 2.11 below.
+
+### 2.11 — the migration: what moved, and what did not
+
+**Both blockers are resolved.** Weapon pricing is per faction, so the Armoury
+Table became its own entity (`src/rules/armoury.ts`) and is the pricing and
+legality authority: 6 armouries, 213 rows. The 1.6 MB dataset is served from
+`GET /api/dataset` rather than imported, and First Load JS stayed at 103 kB.
+
+**What is migrated: checking.** `LegalityStrip`, `RulesetSwitcher` and
+`ProvenanceTag` all read the generated dataset through `useDataset`, and
+`fromWarband.toRoster` joins the saved warband to it by name, re-pricing from
+the armoury.
+
+**What is not: recruiting.** `useStore.ts` still builds its unit list as
+`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts`, and `AddUnitModal`
+reads it. So the models a player can *add* still come from the hand-written
+data the audit measured as 97% wrong on statlines, with 38% of its wargear
+invented. `QuickSearchModal`, `newRecruitImporter` and `warbandLore` read it too.
+
+This is the gap between the two halves of Phase 2's own acceptance test. A
+finished roster is now checked against sourced data and told exactly what is
+wrong with it — but it is still *assembled* from unsourced data, so the check
+fires after the fact rather than preventing the mistake. Until the recruit path
+moves, **"an illegal roster cannot be silently built" is not true**; only "an
+illegal roster does not stay silent" is.
+
+Moving it is a store restructure, not a data change, and `useStore.ts` is the
+2,364-line file Phase 4.2 exists to split — so it is sequenced with that work
+rather than bolted on ahead of it.
+
+### 2.10 — picking a variant, and the joins it exposed
+
+`VariantPicker` writes `variantId`, and with it the House of Wisdom's twelve
+derived ops finally fire. The seeded Al-Qarn Rihla warband went from **1 error
+and 13 unmatched entries to 0 errors and 4**. Three separate join bugs stood
+between the two, each of which failed silently:
+
+**The dataset stores base names; a warband records printed ones.** BattleScribe
+renames `Azeb` to `Kavass` with a modifier conditioned on the variant, so the
+three Kavasses in the warband matched no entry. `variantRenames` reads the
+variant's own `set name` ops, so the join follows the rename instead of guessing.
+
+**Diacritics were stripped, not folded.** `Fāris` normalised to `fris` and
+matched nothing. `nameKey` now decomposes and drops the combining mark, keeping
+the letter, with an explicit fold for the two characters that do not decompose
+(Turkish ı, German ß — the only two that occur across every name in the data).
+One normaliser now serves all five modules that had their own copy.
+
+**A faction is spelled three ways** — `black-grail` in the app,
+`cult-of-the-black-grail` from the rulebook parser, `Black Grail` in the
+catalogues. Comparisons were ad-hoc, so the Black Grail silently resolved to no
+faction record and read no published budget. `factionKey` canonicalises, and a
+test asserts every faction the app offers still resolves.
+
+### 1.4 — the parser was skipping linked gear
+
+Found by asking why the Armoury Table priced a Jezzail the dataset did not
+carry. The catalogues let an entry either inline its profile or reach it through
+an `infoLink`, and the gear walk read only inline profiles — so every linked
+weapon was invisible. `optionsOf` had been taught this for options; the gear
+path never was.
+
+    weapons 543 -> 599, weapons carrying armoury restrictions 35 -> 72
+
+Deliberately narrowed to `Weapon`-typed links. Resolving `Battlekit` links too
+recovers more rows but costs more than it gains: the post-pass lets gear win
+over a unit option, so a Black Grail Strain — a Battlekit reached by link —
+stops being an option on the units allowed to take it and becomes equipment
+anyone can buy, losing the restriction. Options dropped 315 -> 245 when tried.
+
+Twenty Armoury rows still have no profile behind them for that reason. They are
+not treated as missing: the row itself prices the item and says the faction
+stocks it, and the profile only adds range and keywords, so `toRoster` prices
+from the row. Reporting a legally-equipped model as "not in this ruleset" would
+be the worse error.
+
+### Also outstanding in Phase 2
+
+- **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
+  Collections* extends the faction armoury; nothing reads that yet, so
+  `wargear-not-stocked` is advisory rather than blocking (2.4).
+### 2.5 — the campaign economy
+
+"Budget presets" was the wrong name for this. The rulebook keeps **three**
+numbers apart that the app had collapsed into one editable `ducatLimit`:
+
+| | what it caps | where it comes from |
+|---|---|---|
+| **Threshold Value** | the total Cost of the **Force** you field | Warband Threshold Table, +100 a game |
+| **Field Strength** | the **number** of models in that Force | the same table, +1 a game |
+| **Strongbox** | nothing — it is a balance | Exploration in, Quartermaster out |
+
+The load-bearing distinction is that **the Threshold caps the Force, not the
+roster**. The book is explicit that a roster may exceed it and the surplus
+models sit the game out, so telling a player to delete a model they are entitled
+to own is wrong. `checkForceLimits` therefore reports how much must sit out, as
+a warning, and never as a roster error.
+
+Derived, not typed: `parse-campaign.mjs` reads the Threshold Table from the
+rulebook (12 rows, 700/10 to 1800/22) and the 700-Ducat starting allowance from
+every faction entry, requiring that they agree. The build fails if either is
+unreadable, because a missing limit reads as "unlimited" rather than as a
+failure.
+
+`forceMode` is chosen at creation — **Campaign Force** takes the published
+economy, **Unrestricted** lets the player set both. A campaign warband's limit
+is no longer editable; the control shows the game number and says why.
+
+The Strongbox is the **sum of a ledger**, never a stored total, so a purchase
+can be reversed until the next game is played and an admin's catch-up allotment
+records who granted it. Admin entries are never player-reversible.
+
+`campaignGameOf` reads the game number from the *campaign*, not from each
+warband's games played: a player who misses games rejoins at the campaign's
+current level with an agreed top-up, rather than being held at the limit they
+left on.
+
+Past game 12 the table holds at the last row and flags `extrapolated` rather
+than inventing a 13th, since the book gives no rule for a longer campaign.
+
+**Income is derived now.** `parseExploration` reads the whole Exploration Step
+from the rulebook: the dice bands (3/4/5/6 D6 by games played), the table
+selection bands, and all 34 Locations across the three tables with their
+descriptions verbatim, since the reward amounts live in the prose.
+
+Two rules the old D66 model could not express, both now honoured:
+
+- **Loot is paid whether or not anything is found.** "If you roll a number that
+  is not included on the Exploration Table, then you discover nothing (but you
+  still use the roll to determine how much Loot you collect)." The tables are
+  sparse on purpose — Common runs 4, 5, 6, 8, 9, 10, 11, 14, 16, 18, 20 — so a
+  miss is a result, not a gap in the data.
+- **A Location is found once per player per campaign**; a repeat is Pillaged,
+  and the loot is still paid.
+
+`resolveExploration` takes the roll as a number, so a roll made in the app and a
+physical roll typed in produce identical records — which is what lets two
+players in the same battle each use whichever they prefer.
+
+**Still to do:** the post-battle wizard reads `officialRulesData.ts`, not this.
+Migrating it is the remaining half, and the four Skills tables there are still
+fabricated (AUDIT §1.13).
+- The four entries still unmatched on the seeded warband are all
+  `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
+  state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are
+  hand-written composites. They resolve when recruitment moves (2.11).
 
 ---
 
@@ -154,15 +307,47 @@ mutating saved data.
 
 | # | Task |
 |---|---|
-| 3.1 | `src/components/ui/` primitives — `Modal`/`Sheet` (scroll lock, focus trap, `Escape`, safe areas), `Field`, `Stepper`, `DataTable` |
-| 3.2 | Migrate all 30 modals onto the primitive |
-| 3.3 | Rebuild `UnitCard` mobile-first — collapsed row, tap to expand, scrollable statline strip, actions in a sheet |
+| 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
+| 3.2 | 🟡 Migrate all 30 modals onto the primitive — 4 done (`LegalityStrip`, `RulesetSwitcher`, `ProvenanceTag`, `VariantPicker`) |
+| 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
 | 3.4 | Touch targets ≥44px and the type scale from [`MOBILE.md`](MOBILE.md) applied app-wide |
 | 3.5 | Replace 3,698 hardcoded hex values with theme tokens — makes the 7 themes real |
 | 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
 | 3.7 | Playwright E2E at 375×667 and 768×1024 |
 
 **Done when:** every view meets the [`MOBILE.md`](MOBILE.md) definition of done.
+
+### Where 3.1–3.4 got to
+
+`src/components/ui/` holds the four primitives, and each one owns a rule so the
+rule is enforced once instead of re-decided per component: `Sheet` takes body
+scroll lock, focus trap, `Escape`, `dvh` and safe areas; `Field` makes a 16px
+input non-negotiable; `Stepper` is 44px because it is what Play Mode is made of;
+`DataTable` scrolls itself rather than the page.
+
+The four modals that read the generated data are migrated onto `Sheet`, which
+deleted four copies of the same overlay scaffolding.
+
+**`UnitCard` header.** The badge, name, cost and action menu shared one row, so
+in a three-column grid a warrior called *Kasim bin Malik, The Living Engineer,
+Master of Construction* was left about 90px and wrapped one word per line. The
+header is now two rows — badge and actions, then the name full width. All 28 of
+the card's sub-12px sizes moved behind `sm:`, so the phone reads at 12px and the
+desktop density is unchanged.
+
+Measured in Chromium against a production build:
+
+| | 375×667 | 768×1024 | 1280×900 |
+|---|---|---|---|
+| horizontal page scroll | none | none | none |
+| page errors | 0 | 0 | 0 |
+| text under 12px | 31 | *by design* | *by design* |
+| targets under 44px | 116 | — | — |
+
+The phone numbers are the honest remaining backlog, all of it in components 3.2
+and 3.4 have not reached yet — the sidebar, the dashboard, and the twenty-six
+modals still hand-rolling their own overlay. They are counted here rather than
+described so the next pass has a number to drive down.
 
 ---
 

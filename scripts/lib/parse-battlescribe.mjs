@@ -101,6 +101,90 @@ function constraintsOf(node) {
   }));
 }
 
+/* --------------------------------------------------------------- options */
+
+/**
+ * A unit's own upgrade choices: the Takwin Homunculus's `Massive Size` and
+ * `Additional Arm`, the Black Grail's Strains and Vile Corpus, Goetic Powers,
+ * Glory Items.
+ *
+ * They are `selectionEntry type="upgrade"` carrying an Ability profile, nested
+ * in a `selectionEntryGroup` *inline on the unit entry*. The first parser only
+ * emitted entries with a Unit, Weapon or Battlekit profile, so an upgrade whose
+ * only profile is an Ability produced nothing at all and every one of them was
+ * dropped — `options[]` was empty on all 89 units.
+ *
+ * Only inline groups are read. The unit's `entryLinks` point at the shared
+ * Weapons / Armour / Equipment groups, which are already parsed into
+ * `weapons`; following them here would staple all 543 gear entries onto every
+ * unit.
+ */
+function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
+  const out = [];
+  const seen = new Set();
+
+  const fromGroup = (g, groupName) => {
+    for (const e of arr(g?.selectionEntries?.selectionEntry)) {
+      if (attr(e, 'type') !== 'upgrade') continue;
+      // An entry may inline its profile or reach it through an infoLink, and
+      // the catalogues use both freely — the Black Grail Strains all link.
+      // Resolve links before classifying, or every linked option is invisible.
+      const profiles = [
+        ...arr(e?.profiles?.profile),
+        ...arr(e?.infoLinks?.infoLink)
+          .filter((l) => attr(l, 'type') === 'profile')
+          .map((l) => resolve(attr(l, 'targetId')))
+          .filter(Boolean),
+      ];
+      const ability = profiles.find((pr) => attr(pr, 'typeName') === 'Ability');
+
+      // Profile type does not separate an option from gear: the catalogues type
+      // a Black Grail Strain as `Battlekit`, exactly like a piece of equipment.
+      // So take anything that carries rules text and is not a weapon, then drop
+      // whatever the pipeline already emits as gear in the post-pass below —
+      // "already represented elsewhere" is the reliable test, not the label.
+      const rules = ability
+        ?? profiles.find((pr) => attr(pr, 'typeName') === 'Battlekit');
+      if (!rules) continue;
+      if (profiles.some((pr) => ['Weapon', 'Unit'].includes(attr(pr, 'typeName')))) continue;
+
+      if (seen.has(attr(e, 'id'))) continue;
+      seen.add(attr(e, 'id'));
+      out.push({
+        id: attr(e, 'id'),
+        name: clean(attr(e, 'name')),
+        group: groupName,
+        cost: costsOf(e),
+        // The id of the profile carrying the rules, so the gear post-pass can
+        // recognise an option that is really an armoury entry.
+        profileId: attr(rules, 'id'),
+        description: clean(charMap(rules).Description || charMap(rules).Rules),
+        constraints: constraintsOf(e),
+        modifiers: modifiersOf(e, nameOf, fieldNameOf, isConstraint),
+      });
+    }
+    // Groups nest: "Vile Corpus" sits inside a wrapper group.
+    for (const inner of arr(g?.selectionEntryGroups?.selectionEntryGroup)) {
+      fromGroup(inner, clean(attr(inner, 'name')) || groupName);
+    }
+  };
+
+  for (const g of arr(node?.selectionEntryGroups?.selectionEntryGroup)) {
+    fromGroup(g, clean(attr(g, 'name')));
+  }
+
+  // Shared groups reached by entryLink. The Black Grail's Strains and Vile
+  // Corpus live here rather than inline, so reading only inline groups missed
+  // them entirely. Gear groups resolve to nothing because `fromGroup` skips
+  // anything carrying a Weapon or Battlekit profile.
+  for (const l of arr(node?.entryLinks?.entryLink)) {
+    if (attr(l, 'type') !== 'selectionEntryGroup') continue;
+    const g = resolve(attr(l, 'targetId'));
+    if (g) fromGroup(g, clean(attr(l, 'name')) || clean(attr(g, 'name')));
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------- modifiers */
 
 /**
@@ -365,11 +449,85 @@ export function parseCatalogues(dir) {
   const weapons = [];
   const abilitiesSeen = new Map();
 
+  // The authoritative list of Warband Variants: the children of each faction's
+  // "Warband Variant" group. Reading them here rather than inferring from
+  // modifier conditions matters — a roster-scope condition can name a unit, a
+  // campaign setting or one of the Court's seven sins, none of which are
+  // variants, and inferring produced 44 "variants" for 14 real ones.
+  //
+  // Their special rules come with them, as Ability profiles carrying the full
+  // published text — the same rules the Warbands PDF states as prose.
+  const variantEntries = [];
+  for (const { file, doc } of docs) {
+    walk(doc, (n) => {
+      // "Warband Variant" is a selectionEntry, not a group: the variants are
+      // selectionEntries nested in the groups beneath it.
+      for (const holder of arr(n?.selectionEntries?.selectionEntry)) {
+        if (clean(attr(holder, 'name')) !== 'Warband Variant') continue;
+        // Direct children only. A full walk descends into each variant's own
+        // equipment list and returns the armoury as "variants".
+        const kids = [
+          ...arr(holder?.selectionEntries?.selectionEntry),
+          ...arr(holder?.selectionEntryGroups?.selectionEntryGroup)
+            .flatMap((g) => arr(g?.selectionEntries?.selectionEntry)),
+        ];
+        for (const e of kids) {
+          if (attr(e, 'id') === attr(holder, 'id')) continue;
+          // A Warband Variant states its special rules as Ability profiles.
+          // An entry with none is something else that happens to sit here.
+          const rules = arr(e?.profiles?.profile)
+            .filter((pr) => attr(pr, 'typeName') === 'Ability');
+          if (!rules.length) continue;
+          variantEntries.push({
+            id: attr(e, 'id'),
+            name: clean(attr(e, 'name')),
+            factionId: path.basename(file, path.extname(file)),
+            specialRules: arr(e?.profiles?.profile)
+              .filter((pr) => attr(pr, 'typeName') === 'Ability')
+              .map((pr) => ({
+                name: clean(attr(pr, 'name')),
+                description: clean(charMap(pr).Description),
+              })),
+          });
+        }
+      }
+    });
+  }
+  // The same variant is reachable more than once through links.
+  {
+    const seen = new Set();
+    for (let i = variantEntries.length - 1; i >= 0; i--) {
+      const id = variantEntries[i].id;
+      if (seen.has(id)) variantEntries.splice(i, 1);
+      else seen.add(id);
+    }
+  }
+
   for (const { file, doc } of docs) {
     const faction = factionOf(file);
 
     walk(doc, (node) => {
-      const profiles = arr(node?.profiles?.profile);
+      // An entry may inline its profile or reach it through an infoLink, and the
+      // catalogues use both freely for gear as well as for options: the
+      // Sultanate's Jezzail, Siege Jezzail, Wind Amulet, Alchemist Armour and
+      // Titan Zulfiqar all link. Reading only inline profiles skipped every one
+      // of them, so the rulebook priced them in the Armoury Table and the
+      // pipeline had no profile to attach — 14 of 41 Iron Sultanate rows came
+      // through with weaponId null, and a warband carrying one reported it as
+      // "not in this ruleset".
+      // Only Weapon-typed links are pulled in. Resolving Battlekit links here
+      // too would be wrong, because the post-pass below lets gear win over a
+      // unit option, and a Black Grail Strain is a Battlekit reached by link —
+      // so it would stop being an option on the units allowed to take it and
+      // become equipment anyone can buy, losing the restriction entirely.
+      // Battlekit rows the catalogues only reach by link therefore still have
+      // no profile; `fromWarband` prices those from the Armoury Table instead.
+      const linkedProfiles = arr(node?.infoLinks?.infoLink)
+        .filter((l) => attr(l, 'type') === 'profile')
+        .map((l) => byId.get(attr(l, 'targetId')))
+        .filter(Boolean)
+        .filter((pr) => attr(pr, 'typeName') === 'Weapon');
+      const profiles = [...arr(node?.profiles?.profile), ...linkedProfiles];
       if (!profiles.length) return;
 
       const unitProfile = profiles.find((p) => attr(p, 'typeName') === 'Unit');
@@ -425,7 +583,7 @@ export function parseCatalogues(dir) {
           min,
           max,
           abilities,
-          options: [],
+          options: optionsOf(node, nameOf, fieldNameOf, isConstraint, (id) => byId.get(id)),
           constraints,
           modifiers,
           sourceFile: file,
@@ -468,10 +626,26 @@ export function parseCatalogues(dir) {
     return [...seen.values()];
   };
 
+  // An upgrade reachable both as a unit option and as an armoury entry is one
+  // thing, not two. Gear wins: it is already priced and restriction-checked in
+  // `weapons`, and duplicating it would double-count the cost.
+  const gearProfileIds = new Set(weapons.map((w) => w.id));
+  // Match on name as well: the same piece of armour is declared per faction, so
+  // a unit's option can point at a different profile id for the identical item.
+  const gearNames = new Set(weapons.map((w) => w.name.toLowerCase()));
+  for (const u of units) {
+    u.options = u.options.filter((o) =>
+      !gearProfileIds.has(o.profileId) &&
+      !gearNames.has(o.name.toLowerCase()) &&
+      // An option with no rules text states no rule; it is a grouping stub.
+      o.description.length > 0);
+  }
+
   return {
     units: dedupe(units),
     weapons: dedupe(weapons),
     abilities: [...abilitiesSeen.values()],
+    variantEntries,
     links,
     files,
   };

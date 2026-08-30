@@ -317,3 +317,120 @@ describe('catalogue modifiers', () => {
     expect(azeb.entryId).not.toBe(azeb.id);
   });
 });
+
+/* ------------------------------------------------------------------ options */
+
+// An option is an upgrade that changes a model's rules — a Strain, a Goetic
+// Power, an Alchemical Formula. The first parser emitted only entries carrying
+// a Unit, Weapon or Battlekit profile, so every one of these was dropped and
+// `options[]` was empty on all 89 units.
+describe('unit options', () => {
+  const ds = parseCatalogues('data-sources/battlescribe');
+  const unit = (name) => ds.units.find((u) => u.name === name);
+  const allOptions = ds.units.flatMap((u) => u.options);
+
+  it('reads options off real catalogue entries', () => {
+    expect(ds.units.filter((u) => u.options.length).length).toBeGreaterThan(30);
+    expect(allOptions.length).toBeGreaterThan(150);
+  });
+
+  it('carries the Takwin upgrades the preserved roster uses', () => {
+    const h = unit('Homunculus');
+    const names = h.options.map((o) => o.name);
+    for (const n of ['Massive Size', 'Additional Arm', 'Hawk Eyes', 'Human Hands']) {
+      expect(names, `Homunculus should offer ${n}`).toContain(n);
+    }
+    expect(h.options.find((o) => o.name === 'Massive Size').cost.ducats).toBe(30);
+  });
+
+  // These live in a *shared* group reached by entryLink, not inline on the
+  // unit, which is why reading only inline groups missed them.
+  it('follows shared groups, so the Black Grail Strains are present', () => {
+    const strains = allOptions.filter((o) => o.group === 'Strains');
+    expect(strains.length).toBeGreaterThan(3);
+    expect(strains.map((o) => o.name)).toContain('Hellfly Host');
+  });
+
+  it('keeps Glory-priced options priced in Glory', () => {
+    const glory = allOptions.filter((o) => o.cost.glory > 0);
+    expect(glory.length).toBeGreaterThan(0);
+    for (const o of glory) expect(o.cost.ducats).toBe(0);
+  });
+
+  it('every option carries the rules text that makes it an option', () => {
+    for (const o of allOptions) expect(o.description.length).toBeGreaterThan(0);
+  });
+
+  // Gear is already in `weapons`; duplicating the armoury onto every unit that
+  // can reach it would inflate the dataset and double-count costs.
+  it('does not pull gear in as an option', () => {
+    const names = new Set(allOptions.map((o) => o.name));
+    for (const gear of ['Standard Armour', 'Reinforced Armour', 'Machine Gun', 'Polearm and Shield']) {
+      expect(names, `${gear} is gear, not an option`).not.toContain(gear);
+    }
+  });
+});
+
+/* --------------------------------------------------------- dispatch strains */
+
+describe('the Trench Dispatch Grail Strains', () => {
+  const layer = JSON.parse(fs.readFileSync('data-sources/dispatch/dispatch-01.layer.json', 'utf8'));
+  const strainOps = layer.ops.filter((o) => o.op === 'addOption' && o.option?.group === 'Strains');
+
+  it('transcribes all four Strains the Dispatch publishes', () => {
+    expect(strainOps.map((o) => o.option.name).sort())
+      .toEqual(['Bolgias Gut', 'Hellfly Host', 'Leech Grip', 'Tapeworm Throng']);
+  });
+
+  it('cites the source line for each', () => {
+    for (const o of strainOps) expect(o._src).toMatch(/Grail Strains/);
+  });
+
+  it('carries the published rules text, not a summary', () => {
+    for (const o of strainOps) expect(o.option.description.length).toBeGreaterThan(40);
+  });
+
+  /**
+   * The Dispatch prints costs with a currency glyph that the PDF text
+   * extraction drops, so a bare number is all that survives. Recording one as
+   * Ducats without saying so would be exactly the kind of plausible-but-unbacked
+   * value this pipeline exists to prevent.
+   *
+   * The maintainer has since confirmed all three against the printed page, so
+   * the requirement is no longer a caveat but an attribution: the number is
+   * unreadable in `data-sources/`, and the only thing standing behind it is a
+   * person who looked. Dropping that note would leave a bare 10 that nothing
+   * in the repository can justify — so the test still insists on one or the
+   * other, and never neither.
+   */
+  it('never carries a cost whose currency is neither readable nor attributed', () => {
+    const priced = strainOps.filter((o) => o.option.cost.ducats > 0 || o.option.cost.glory > 0);
+    for (const o of priced) {
+      // Hellfly Host is free, and the catalogues corroborate the rest by name.
+      if (o.option.name === 'Hellfly Host') continue;
+      expect(
+        o._costCurrencyUnresolved || o._costCurrencyConfirmed,
+        `${o.option.name} must either flag the unread currency or say who confirmed it`
+      ).toBeTruthy();
+    }
+  });
+
+  it('attributes the confirmed currencies to the printed page, not the extraction', () => {
+    const confirmed = strainOps.filter((o) => o._costCurrencyConfirmed);
+    expect(confirmed.length).toBe(3);
+    for (const o of confirmed) {
+      expect(o._costCurrencyConfirmed).toMatch(/maintainer/i);
+      expect(o._costCurrencyConfirmed).toMatch(/p\.9/);
+      // Ducats is the ruling; a Strain silently flipped to Glory later should fail.
+      expect(o.option.cost.glory, `${o.option.name} was ruled Ducats`).toBe(0);
+      expect(o.option.cost.ducats).toBeGreaterThan(0);
+    }
+  });
+
+  it('targets the entry by the name the catalogues use, and says why', () => {
+    for (const o of strainOps) {
+      expect(o.target.id).toBe('Thrall');
+      expect(o._targetNote).toMatch(/Grail Thrall/);
+    }
+  });
+});

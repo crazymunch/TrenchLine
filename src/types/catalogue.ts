@@ -78,19 +78,22 @@ export interface Constraint {
 export interface UnitOption {
   id: string;
   name: string;
-  kind:
-    | 'strain'
-    | 'vile-corpus'
-    | 'goetic-power'
-    | 'glory-item'
-    | 'upgrade'
-    | 'variant'
-    | 'unknown';
+  /**
+   * The catalogue's own group name — `Strains`, `Alchemical Formulae`,
+   * `Goetic Power`, `Sagas`, `Arts of Assassination`. Read from the source
+   * rather than mapped onto a fixed enum: the sets differ per faction and a
+   * new one arrives with every release, so a closed list would silently drop
+   * whatever it had not heard of.
+   */
+  group: string;
   cost: Cost;
   constraints: Constraint[];
   /** Rules text as published. */
-  effect: string;
-  modifies?: LayerOp[];
+  description: string;
+  /** The profile the rules text came from, used to tell an option from gear. */
+  profileId?: string;
+  /** Conditional rules attached to the option itself. */
+  modifiers?: Modifier[];
 }
 
 /* ----------------------------------------------------------------- rules */
@@ -182,7 +185,12 @@ export interface WeaponProfile {
   rules?: string;
   cost: Cost;
   constraints: Constraint[];
-  /** Restriction text from the Armoury Tables, e.g. 'ELITE only'. */
+  /**
+   * The union of every faction's armoury restrictions on this weapon — a quick
+   * "restricted somewhere" signal only. What actually governs a warband is its
+   * own faction's armoury row (`src/rules/armoury.ts`), because the same weapon
+   * is restricted differently by different factions.
+   */
   restrictions: string[];
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];
@@ -220,8 +228,12 @@ export interface FactionSpecialRule {
 /** Papal States Intervention Force, House of Wisdom, Trench Ghosts, … */
 export interface WarbandVariant {
   id: string;
+  /** The catalogue entry a roster selects to take this variant. */
+  entryId?: string;
   factionId: string;
   name: string;
+  /** Which sources carry it: 'catalogue', 'rulebook', or both. */
+  sources?: string[];
   lore?: string;
   specialRules: FactionSpecialRule[];
   /** Papal States starts on a different budget, for example. */
@@ -234,6 +246,13 @@ export interface Faction {
   id: string;
   name: string;
   specialRules: FactionSpecialRule[];
+  /**
+   * True when the book states this faction has no special rules — distinct from
+   * an empty `specialRules`, which would also mean "we failed to find any".
+   */
+  noSpecialRules?: boolean;
+  /** The published starting budget, where the book gives one. */
+  budget?: Partial<Cost>;
   variants: WarbandVariant[];
   /** Presentation only; never rules. */
   color?: string;
@@ -298,11 +317,97 @@ export interface Ruleset {
 
 /* ------------------------------------------------------------- the bundle */
 
+/** One priced offer of one piece of wargear in one faction's Armoury Table. */
+export interface ArmouryRow {
+  name: string;
+  /** Null where the rulebook lists Battlekit the catalogues do not carry. */
+  weaponId: string | null;
+  /** 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Armour' | 'Equipment' */
+  section: string;
+  cost: Cost;
+  restrictions: string[];
+}
+
+/**
+ * A faction's Armoury Table: the pricing and legality authority for wargear.
+ *
+ * Pricing is per faction — an Automatic Rifle is 40 Ducats in one armoury and
+ * 2 Glory in another — so this cannot collapse into `WeaponProfile.cost`.
+ */
+export interface Armoury {
+  factionId: string;
+  faction: string;
+  rows: ArmouryRow[];
+}
+
+export type ExplorationTableName = 'common' | 'rare' | 'legendary';
+
+/**
+ * One row of an Exploration Location table.
+ *
+ * `roll` is a single number, not a range: the tables are sparse and a roll that
+ * is not listed discovers nothing. The description is verbatim because the
+ * reward amounts live in it.
+ */
+export interface ExplorationLocation {
+  roll: number;
+  name: string;
+  description: string;
+}
+
+export type SkillsTableName = 'melee' | 'ranged' | 'stealth' | 'wildcard';
+
+export interface SkillRow {
+  /** 2 to 12. Patron Skill sits at both ends. */
+  roll: number;
+  name: string;
+  description: string;
+}
+
+export interface TraumaRow {
+  /** A D66 result, or the one range the table has: `41-63`. */
+  roll: string;
+  name: string;
+  description: string;
+  /**
+   * Which source carried it. The catalogue is exact and machine-readable; the
+   * rulebook rows come off a two-column page whose extraction scrambles, so
+   * they were read individually. Recorded because the two are not equal.
+   */
+  source: 'catalogue' | 'rulebook' | 'catalogue+rulebook';
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
   weapons: WeaponProfile[];
   keywords: Keyword[];
+  /** One per faction that publishes an Armoury Table. */
+  armouries: Armoury[];
+  /** Every Warband Variant, with its rules and its derived ops. */
+  variants: WarbandVariant[];
+  /** The campaign economy's published numbers, derived from the rulebook. */
+  campaign: {
+    /** The Warband Threshold Table: game -> Force cost cap and model cap. */
+    thresholds: { game: number; threshold: number; fieldStrength: number }[];
+    /** What a new warband recruits on. 700, read from the faction entries. */
+    startingBudget: number;
+    /** The Exploration Step: dice, table selection, and the three Location tables. */
+    exploration: {
+      /** Games played -> how many D6 to roll. `to: null` means "or more". */
+      dice: { from: number; to: number | null; value: number }[];
+      /** Games played -> which Location tables are available, and whether it is a choice. */
+      tables: { from: number; to: number | null;
+                value: { tables: ExplorationTableName[]; choose: boolean } }[];
+      locations: Record<ExplorationTableName, ExplorationLocation[]>;
+      /** Ducats per point of the Exploration Roll. */
+      lootPerPoint: number;
+    };
+    /** The four Advancement Skills tables. 2D6, dense, 11 rows each. */
+    skills: Record<SkillsTableName, SkillRow[]>;
+    /** The Trauma Table. Sparse only in that 41-63 is one range. */
+    trauma: TraumaRow[];
+  };
   meta: {
     rulesetId: string;
     /** The pinned catalogue commit. No build timestamp — output is reproducible. */

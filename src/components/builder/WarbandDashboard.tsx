@@ -57,12 +57,22 @@ export const WarbandDashboard: React.FC = () => {
   const [newWarbandName, setNewWarbandName] = useState('');
   const [newFactionId, setNewFactionId] = useState(factions[0]?.id || 'new-antioch');
   const [newDucatLimit, setNewDucatLimit] = useState(700);
+  // How the budget is governed. 'campaign' is the published economy and is the
+  // default, because it is what the book describes and what a campaign needs.
+  const [newForceMode, setNewForceMode] = useState<'campaign' | 'unrestricted'>('campaign');
   const [warbandToDelete, setWarbandToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newWarbandName.trim()) return;
-    createWarband(newWarbandName.trim(), newFactionId, newDucatLimit);
+    createWarband(
+      newWarbandName.trim(),
+      newFactionId,
+      // A campaign warband always starts on the book's allowance; the field is
+      // only the player's to set in unrestricted mode.
+      newForceMode === 'campaign' ? 700 : newDucatLimit,
+      newForceMode,
+    );
     setNewWarbandName('');
     setIsCreateModalOpen(false);
   };
@@ -269,21 +279,51 @@ export const WarbandDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
-                  Starting Ducat Limit
+                <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-2">
+                  Budget
                 </label>
-                <input
-                  type="number"
-                  min="300"
-                  max="2000"
-                  step="50"
-                  value={newDucatLimit}
-                  onChange={(e) => setNewDucatLimit(parseInt(e.target.value) || 700)}
-                  className="w-full bg-[#0C0E12] border border-[#323846] rounded p-2 text-sm text-[#ECEFF4] focus:outline-none"
-                />
-                <span className="text-[10px] font-mono text-[#8E95A5] mt-1 block">
-                  Standard Trench Crusade skirmishes use 700 Ducats.
-                </span>
+                <div className="space-y-2">
+                  {([
+                    { id: 'campaign' as const, name: 'Campaign Force',
+                      blurb: "The published economy. Starts on 700 Ducats and 0 Glory; the per-game limit comes from the Warband Threshold Table and is not edited by hand." },
+                    { id: 'unrestricted' as const, name: 'Unrestricted',
+                      blurb: 'You set the Ducats and Glory. For one-off games, imports, and trying a list out.' },
+                  ]).map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setNewForceMode(m.id)}
+                      className={`w-full text-left p-3 min-h-[44px] rounded-sm border transition-colors ${
+                        newForceMode === m.id
+                          ? 'border-[#D4AF37] bg-[#20242E]'
+                          : 'border-[#323846] hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <span className="font-gothic font-bold text-sm text-[#ECEFF4]">{m.name}</span>
+                      <p className="text-xs sm:text-[11px] text-[#8E95A5] mt-1 leading-relaxed">{m.blurb}</p>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Only an unrestricted warband has a number to set: a campaign
+                    warband's allowance is published, and offering to edit it is
+                    how the app ended up with a hand-set limit in the first place. */}
+                {newForceMode === 'unrestricted' && (
+                  <div className="mt-3">
+                    <label className="block text-xs font-mono uppercase text-[#8E95A5] mb-1">
+                      Starting Ducats
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="5000"
+                      step="50"
+                      value={newDucatLimit}
+                      onChange={(e) => setNewDucatLimit(parseInt(e.target.value) || 700)}
+                      className="w-full min-h-[44px] bg-[#0C0E12] border border-[#323846] rounded p-2 text-base sm:text-sm text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-[#323846] flex items-center justify-end space-x-3">

@@ -1,6 +1,16 @@
 export interface CampaignMember {
   userId: string;
   playerName: string;
+  /**
+   * May edit any member's Ducats, Glory and XP, and grant catch-up allotments.
+   *
+   * A player who misses a game rejoins at the campaign's current Threshold, and
+   * the group agrees a top-up so they can field to it — that is a real decision
+   * a person makes, not something the app can derive, so it needs someone
+   * authorised to record it. The campaign's creator is an admin by default and
+   * can promote others.
+   */
+  isAdmin?: boolean;
   warbandId: string;
   warbandName: string;
   factionId: string;
@@ -68,6 +78,15 @@ export interface Campaign {
   adminName: string;
   status: 'active' | 'archived';
   currentTurn: number;
+  /**
+   * Which game of the campaign is being prepared for. Drives the Threshold
+   * Value and Field Strength for everyone, which is why it lives here and not
+   * on each warband: a player who missed games still plays at the campaign's
+   * current level, topped up by an admin grant rather than held back.
+   */
+  currentGame?: number;
+  /** Set only where a campaign deviates from the published Threshold Table. */
+  thresholdOverride?: number;
   maxWarbandDucats: number;
   gloryVictoryThreshold: number;
   members: CampaignMember[];

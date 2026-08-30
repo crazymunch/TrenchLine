@@ -9,6 +9,13 @@ import { ArmoryStashModal } from './ArmoryStashModal';
 import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { soundEffects } from '../../services/soundEffects';
+import { LegalityStrip } from './LegalityStrip';
+import { RulesetSwitcher } from './RulesetSwitcher';
+import { VariantPicker } from './VariantPicker';
+import { useDataset } from '../../rules/useDataset';
+import { variantById } from '../../rules/variants';
+import { forceLimits, campaignGameOf } from '../../rules/campaign';
+import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { 
   UserPlus, 
   Coins, 
@@ -30,7 +37,9 @@ import {
   Check,
   Plus,
   Minus,
-  Settings
+  Settings,
+  Flag,
+  Lock,
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -42,10 +51,24 @@ export const WarbandBuilder: React.FC = () => {
     setUnitAsLeader,
     updateWarbandDucatLimit,
     updateWarbandTreasury,
-    updateWarbandGlory
+    updateWarbandGlory,
+    updateWarbandVariant,
+    campaign
   } = useStore();
   
   const warband = getActiveWarband();
+  // The generated ruleset, served rather than bundled. Legality is the first
+  // thing in the app to read it; nothing else has migrated yet.
+  // Which ruleset this session is building against. Persisted per browser, so
+  // it survives a reload; the reconciliation screen is what makes changing it
+  // safe (docs/RULESET-MODEL.md §8).
+  const [rulesetId, setRulesetId] = useState<string>(() => {
+    if (typeof window === 'undefined') return DEFAULT_RULESET_ID;
+    return window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
+  });
+  const [isRulesetOpen, setIsRulesetOpen] = useState(false);
+  const [isVariantOpen, setIsVariantOpen] = useState(false);
+  const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -70,6 +93,16 @@ export const WarbandBuilder: React.FC = () => {
   }
 
   const faction = factions.find((f) => f.id === warband.factionId);
+  // Matched by id or name, so a warband saved with either spelling resolves.
+  const activeVariant = dataset ? variantById(dataset, warband.variantId) : undefined;
+
+  // A campaign warband's limit is published, not chosen: it comes from the
+  // Warband Threshold Table for the game being prepared for. Only an
+  // unrestricted warband has a number the player owns.
+  const isCampaignForce = warband.forceMode !== 'unrestricted';
+  const limits = dataset && isCampaignForce
+    ? forceLimits(dataset, campaignGameOf(warband, campaign))
+    : null;
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
   const isOverBudget = totalCost > warband.ducatLimit;
 
@@ -181,6 +214,25 @@ export const WarbandBuilder: React.FC = () => {
             </button>
 
             <button
+              onClick={() => setIsRulesetOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
+              title="Which rules this warband is built and checked against"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4E9A6E]" />
+              <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
+            </button>
+
+            <button
+              onClick={() => setIsVariantOpen(true)}
+              disabled={!dataset}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              title="Which Warband Variant this warband is built as"
+            >
+              <Flag className="w-4 h-4" />
+              <span>{activeVariant?.name ?? 'Standard list'}</span>
+            </button>
+
+            <button
               onClick={() => setIsExportOpen(true)}
               className="flex items-center space-x-1.5 px-3 py-2 bg-[#20242E] hover:bg-[#323846] text-[#ECEFF4] border border-[#323846] rounded font-mono text-xs font-bold uppercase transition-colors"
               title="Export & Print"
@@ -200,6 +252,49 @@ export const WarbandBuilder: React.FC = () => {
           </div>
         </div>
 
+        {/* Roster legality, from the generated ruleset. */}
+        {datasetError ? (
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#8B0000]/15 border-t border-[#8B0000]/50 text-xs font-mono text-[#E53935]">
+            Legality unavailable: {datasetError}
+          </div>
+        ) : datasetLoading ? (
+          <div className="mt-6 -mx-6 -mb-6 px-4 py-2.5 bg-[#20242E] border-t border-[#323846] text-xs font-mono text-[#8E95A5]">
+            Checking legality…
+          </div>
+        ) : dataset ? (
+          <div className="mt-6 -mx-6 -mb-6">
+            <LegalityStrip warband={warband} dataset={dataset} rulesetId={rulesetId} />
+          </div>
+        ) : null}
+
+        {isVariantOpen && dataset && (
+          <VariantPicker
+            dataset={dataset}
+            factionId={warband.factionId}
+            factionName={faction?.name}
+            current={warband.variantId}
+            onPick={(id) => {
+              updateWarbandVariant(warband.id, id);
+              setIsVariantOpen(false);
+            }}
+            onClose={() => setIsVariantOpen(false)}
+          />
+        )}
+
+        {isRulesetOpen && dataset && (
+          <RulesetSwitcher
+            current={rulesetId}
+            currentDataset={dataset}
+            rosterUnitNames={warband.units.map((u) => u.profileSnapshot?.name ?? u.customName)}
+            onApply={(id) => {
+              setRulesetId(id);
+              window.localStorage.setItem('trenchline_ruleset', id);
+              setIsRulesetOpen(false);
+            }}
+            onClose={() => setIsRulesetOpen(false)}
+          />
+        )}
+
         {/* Budget Bar & Validation Stats */}
         <div className="mt-6 pt-4 border-t border-[#323846] grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
           
@@ -211,14 +306,29 @@ export const WarbandBuilder: React.FC = () => {
                   <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <span>Ducat Point Limit:</span>
                 </span>
-                <button
-                  onClick={handleOpenBudgetModal}
-                  className="px-1.5 py-0.5 rounded bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
-                  title="Manually adjust warband Ducat Point Limit"
-                >
-                  <Edit2 className="w-2.5 h-2.5" />
-                  <span>Edit Limit</span>
-                </button>
+                {isCampaignForce ? (
+                  /* Not editable, and it says why rather than just being absent:
+                     a player who cannot find the button should learn that the
+                     number is published, not that the app lost a feature. */
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-[#20242E] text-[#8E95A5] border border-[#323846] text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1"
+                    title={limits
+                      ? `Game ${limits.game} of the campaign. Set by the Warband Threshold Table, not by hand.`
+                      : 'Set by the Warband Threshold Table, not by hand.'}
+                  >
+                    <Lock className="w-2.5 h-2.5" />
+                    <span>{limits ? `Game ${limits.game}` : 'Campaign'}</span>
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleOpenBudgetModal}
+                    className="px-1.5 py-0.5 min-h-[44px] sm:min-h-0 rounded bg-[#20242E] hover:bg-[#323846] text-[#D4AF37] border border-[#D4AF37]/50 text-xs sm:text-[10px] uppercase font-bold flex items-center space-x-1 transition-colors"
+                    title="Manually adjust warband Ducat Point Limit"
+                  >
+                    <Edit2 className="w-2.5 h-2.5" />
+                    <span>Edit Limit</span>
+                  </button>
+                )}
               </div>
 
               <span className={`font-bold ${isOverBudget ? 'text-[#E53935]' : 'text-[#ECEFF4]'}`}>

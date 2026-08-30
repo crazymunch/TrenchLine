@@ -5,12 +5,10 @@ import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  OFFICIAL_MELEE_SKILLS, 
-  OFFICIAL_RANGED_SKILLS, 
-  OFFICIAL_STEALTH_SKILLS, 
-  OFFICIAL_WILDCARD_SKILLS,
   OFFICIAL_TRAUMA_TABLE 
 } from '../../data/officialRulesData';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
   Sparkles, 
   Award, 
@@ -107,12 +105,32 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
 
-  const allSkillsList = [
-    ...OFFICIAL_MELEE_SKILLS.map((s, i) => ({ ...s, category: 'Melee', roll: `1${i + 1}` })),
-    ...OFFICIAL_RANGED_SKILLS.map((s, i) => ({ ...s, category: 'Ranged', roll: `2${i + 1}` })),
-    ...OFFICIAL_STEALTH_SKILLS.map((s, i) => ({ ...s, category: 'Stealth', roll: `3${i + 1}` })),
-    ...OFFICIAL_WILDCARD_SKILLS.map((s, i) => ({ ...s, category: 'Wildcard', roll: `4${i + 1}` }))
-  ];
+  const rulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset, error: datasetError } = useDataset(rulesetId);
+
+  /**
+   * The Advancement Skills, from the derived tables.
+   *
+   * The hand-written version was wrong twice over. Its six entries per category
+   * were invented — five of them (Berserk Rage, Weapon Master, Duelist, Shield
+   * Wall, Decapitating Strike) had already been flagged as invented abilities by
+   * the wargear and keyword sweep. And it *synthesised* the roll numbers from
+   * the array index, `1${i + 1}` through `4${i + 1}`, producing D66-looking
+   * values that correspond to nothing: the real tables are 2D6, eleven rows
+   * each, with Patron Skill at 2 and 12.
+   */
+  const CATEGORY_LABEL = { melee: 'Melee', ranged: 'Ranged', stealth: 'Stealth', wildcard: 'Wildcard' } as const;
+  const allSkillsList = dataset
+    ? (Object.keys(CATEGORY_LABEL) as (keyof typeof CATEGORY_LABEL)[]).flatMap((key) =>
+        (dataset.campaign.skills[key] ?? []).map((row) => ({
+          name: row.name,
+          description: row.description,
+          category: CATEGORY_LABEL[key],
+          roll: String(row.roll),
+        })))
+    : [];
 
   const currentCategorySkills = allSkillsList.filter(s => s.category.toLowerCase() === selectedSkillCategory.toLowerCase());
 
@@ -411,16 +429,27 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   Learn Skill from {selectedSkillCategory.toUpperCase()} Discipline
                 </strong>
 
+                {/* An empty list must not read as "this category has no skills".
+                    Say the tables are missing, and why nothing can be added. */}
+                {currentCategorySkills.length === 0 && (
+                  <p className="text-xs sm:text-[11px] font-mono text-[#E53935] leading-relaxed mb-2">
+                    {datasetError
+                      ? `The Skills tables could not be loaded: ${datasetError}. No Skill can be added until they are.`
+                      : 'Loading the Skills tables…'}
+                  </p>
+                )}
+
                 <div className="flex gap-2">
                   <select
                     value={selectedSkillName}
                     onChange={(e) => setSelectedSkillName(e.target.value)}
-                    className="flex-1 bg-[#161920] border border-[#323846] rounded p-2 text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37]"
+                    disabled={currentCategorySkills.length === 0}
+                    className="flex-1 min-h-[44px] bg-[#161920] border border-[#323846] rounded p-2 text-base sm:text-xs text-[#ECEFF4] focus:outline-none focus:border-[#D4AF37] disabled:opacity-50"
                   >
                     <option value="">-- Select Skill --</option>
                     {currentCategorySkills.map((s) => (
-                      <option key={s.name} value={s.name}>
-                        [{s.roll}] {s.name} - {s.description.slice(0, 50)}...
+                      <option key={`${s.roll}-${s.name}`} value={s.name}>
+                        [2D6 {s.roll}] {s.name} — {s.description.slice(0, 50)}…
                       </option>
                     ))}
                   </select>

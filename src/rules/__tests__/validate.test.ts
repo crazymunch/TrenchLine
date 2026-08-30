@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 
-import { validateRoster, factionMatches } from '../validate';
+import { validateRoster, factionMatches, fireteamCap } from '../validate';
+import { armouryFor, priceOf, restrictionsFor, stocks } from '../armoury';
+import { RULESETS, RULESET_IDS, DEFAULT_RULESET_ID } from '../rulesets';
+import { toRoster } from '../fromWarband';
+import { diffDatasets, diffAffecting } from '../diff';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
@@ -272,5 +276,255 @@ describe.skipIf(!haveReal)('Al-Qarn Rihla — the real roster', () => {
     const glory = all.filter((s) => s.costs?.some((c) => c.name === 'Glory Points' && c.value > 0));
     expect(glory.length).toBeGreaterThan(0);
     expect(glory.map((g) => g.name)).toContain('Sniper Scope');
+  });
+});
+
+/* ------------------------------------------------------- faction-level rules */
+
+describe('faction special rules', () => {
+  const antioch = {
+    id: 'new-antioch', name: 'New Antioch',
+    specialRules: [{
+      name: 'New Antioch Fireteams',
+      description: 'A New Antioch Warband can include up to 2 Fireteams. Each Fireteam ' +
+                   'consists of any two models from the Warband.',
+    }],
+  };
+
+  it('reads the Fireteam cap out of the published rule text', () => {
+    expect(fireteamCap(antioch, undefined)).toBe(2);
+  });
+
+  it('lets a variant raise the cap it states', () => {
+    const stoss = {
+      id: 'x', name: 'Stoßtruppen', factionId: '', ops: [],
+      specialRules: [{
+        name: 'Expert Fireteams',
+        description: 'A Stosstruppen of the Free State of Prussia Warband can include ' +
+                     'up to 3 Fireteams instead of only 2.',
+      }],
+    } as unknown as Parameters<typeof fireteamCap>[1];
+    expect(fireteamCap(antioch, stoss)).toBe(3);
+  });
+
+  it('is absent for a faction the book says has no special rules', () => {
+    expect(fireteamCap({ specialRules: [] }, undefined)).toBeNull();
+  });
+});
+
+/* ------------------------------------------------------------- the armoury */
+
+/**
+ * The Armoury Table is the pricing and legality authority, and it is per
+ * faction. Every assertion here reads the real generated data.
+ */
+describe('faction armouries', () => {
+  const load = () => {
+    const s = fs.readFileSync('src/data/generated/trenchline.generated.ts', 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  };
+  const ds = load();
+
+  it('carries one armoury per faction', () => {
+    expect(ds.armouries.length).toBe(6);
+    for (const a of ds.armouries) expect(a.rows.length).toBeGreaterThan(20);
+  });
+
+  /**
+   * The case that forced this model. Same weapon, three armouries, two
+   * currencies and two different limits — no single `cost` field can say it.
+   */
+  it('prices the Automatic Rifle per faction, currency and limit included', () => {
+    const rifle = { name: 'Automatic Rifle' };
+
+    const antioch = armouryFor(ds, 'new-antioch');
+    expect(priceOf(antioch, rifle)).toEqual({ ducats: 40, glory: 0 });
+    expect(restrictionsFor(antioch, rifle).join()).toMatch(/Limit: 1/);
+
+    const heretic = armouryFor(ds, 'heretic-legions');
+    expect(priceOf(heretic, rifle)).toEqual({ ducats: 0, glory: 2 });
+    expect(restrictionsFor(heretic, rifle).join()).toMatch(/Limit: 2/);
+  });
+
+  it('matches a slug faction id against the book\'s prose name', () => {
+    expect(armouryFor(ds, 'iron-sultanate')?.faction).toBe('Iron Sultanate');
+    expect(armouryFor(ds, 'cult-of-the-black-grail')?.faction).toBe('Cult of the Black Grail');
+  });
+
+  // Never shop from someone else's list because a name did not match.
+  it('returns nothing for a faction it cannot match, rather than guessing', () => {
+    expect(armouryFor(ds, 'not-a-faction-at-all')).toBeUndefined();
+    expect(priceOf(undefined, { name: 'Automatic Rifle' })).toBeNull();
+  });
+
+  // "Not stocked" is a legality answer, not a free item.
+  it('distinguishes an item a faction does not stock from a free one', () => {
+    const sultanate = armouryFor(ds, 'iron-sultanate');
+    expect(stocks(sultanate, { name: 'Jezzail' })).toBe(true);
+    expect(stocks(sultanate, { name: 'Not A Real Weapon' })).toBe(false);
+    expect(priceOf(sultanate, { name: 'Not A Real Weapon' })).toBeNull();
+  });
+});
+
+/* --------------------------------------------------------- ruleset registry */
+
+describe('ruleset registry', () => {
+  it('declares exactly the two rulesets the pipeline builds', () => {
+    expect(RULESET_IDS.sort()).toEqual(['github-latest', 'trenchline']);
+  });
+
+  it('has TrenchLine as the default', () => {
+    expect(DEFAULT_RULESET_ID).toBe('trenchline');
+  });
+
+  // It is imported by both the API route and the client precisely so that
+  // neither ends up bundling a 1.6 MB dataset to find out what exists.
+  it('describes every ruleset without importing any dataset', () => {
+    for (const r of RULESETS) {
+      expect(r.name.length).toBeGreaterThan(0);
+      expect(r.description.length).toBeGreaterThan(20);
+    }
+  });
+});
+
+/* ------------------------------------------- the saved warband, end to end */
+
+/**
+ * The vertical slice: a saved `Warband` in the app's own shape, joined against
+ * the generated dataset, priced from the faction armoury, and validated.
+ *
+ * This is what 2.6 puts on screen, so it is worth testing the join itself —
+ * particularly that a name which does not resolve is reported rather than
+ * quietly dropped, since a dropped model makes an illegal roster look legal.
+ */
+describe('toRoster — joining a saved warband to the dataset', () => {
+  const ds = (() => {
+    const s = fs.readFileSync('src/data/generated/trenchline.generated.ts', 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  })();
+
+  const warband = (over = {}) => ({
+    id: 'w1', name: 'Test', factionId: 'Iron Sultanate',
+    ducatLimit: 1320, treasuryDucats: 0, gloryPoints: 9,
+    units: [], armoryStash: [], createdAt: '', updatedAt: '',
+    ...over,
+  }) as unknown as Parameters<typeof toRoster>[0];
+
+  const model = (profileName: string, gear: string[] = []) => ({
+    id: `u-${profileName}`, customName: profileName,
+    profileSnapshot: { name: profileName },
+    equippedWeapons: gear.map((n) => ({ name: n })),
+    equippedArmour: [], equippedEquipment: [],
+  });
+
+  it('joins by name and prices from the faction armoury', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Jabirean Alchemist', ['Sword/Axe'])] }), ds);
+
+    expect(unmatched).toEqual([]);
+    expect(roster.units).toHaveLength(1);
+    expect(roster.units[0].cost.ducats).toBe(55);
+    // 4 Ducats from the Iron Sultanate Armoury Table, not the catalogue's 0.
+    expect(roster.units[0].items[0].cost).toEqual({ ducats: 4, glory: 0 });
+  });
+
+  /**
+   * NewRecruit prefixes an elite-promoted model. A saved warband can hold that
+   * printed name while the dataset holds the base entry.
+   */
+  it('resolves a name carrying an elite-promotion title', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Favoured Brazen Bull')] }), ds);
+    expect(unmatched).toEqual([]);
+    expect(roster.units[0].cost.ducats).toBe(115);
+  });
+
+  // The important one: silence here would be a false LEGAL.
+  it('reports a model it cannot join rather than dropping it', () => {
+    const { roster, unmatched } = toRoster(
+      warband({ units: [model('Entirely Fictional Warrior')] }), ds);
+    expect(roster.units).toHaveLength(0);
+    expect(unmatched).toEqual([{ kind: 'unit', name: 'Entirely Fictional Warrior' }]);
+  });
+
+  it('reports wargear it cannot join, naming the model it was on', () => {
+    const { unmatched } = toRoster(
+      warband({ units: [model('Jabirean Alchemist', ['Plasma Halberd'])] }), ds);
+    expect(unmatched).toEqual([
+      { kind: 'wargear', name: 'Plasma Halberd', on: 'Jabirean Alchemist' },
+    ]);
+  });
+
+  it('carries the variant through so its rules are enforced', () => {
+    const { roster } = toRoster(
+      warband({ variantId: 'house-of-wisdom', units: [model('Jabirean Alchemist')] }), ds);
+    expect(roster.variantId).toBe('house-of-wisdom');
+  });
+});
+
+/* --------------------------------------------------------------- ruleset diff */
+
+/**
+ * Switching ruleset shows a diff rather than mutating saved data. These read
+ * the two real generated datasets, so the diff is the one a player would see.
+ */
+describe('diffDatasets', () => {
+  const load = (f: string) => {
+    const s = fs.readFileSync(`src/data/generated/${f}.generated.ts`, 'utf8');
+    const start = s.indexOf('{', s.indexOf('DATASET: Dataset ='));
+    return JSON.parse(s.slice(start, s.lastIndexOf('} as unknown') + 1));
+  };
+  const trenchline = load('trenchline');
+  const github = load('github-latest');
+
+  it('finds the Dispatch changes between the two shipped rulesets', () => {
+    const d = diffDatasets(trenchline, github);
+    expect(d.changed.length).toBeGreaterThan(0);
+
+    const bull = d.changed.find((c) => c.name === 'Brazen Bull');
+    expect(bull, 'the Brazen Bull is the headline Dispatch change').toBeTruthy();
+    const cost = bull!.changes.find((c) => c.field === 'Cost');
+    expect(cost).toEqual({ field: 'Cost', from: '115 Ducats', to: '100 Ducats' });
+  });
+
+  it('is empty against itself', () => {
+    const d = diffDatasets(trenchline, trenchline);
+    expect(d.changed).toEqual([]);
+    expect(d.added).toEqual([]);
+    expect(d.removed).toEqual([]);
+  });
+
+  // Direction matters: the fields are "from -> to", not a symmetric set.
+  it('reverses cleanly', () => {
+    const forward = diffDatasets(trenchline, github);
+    const back = diffDatasets(github, trenchline);
+    const f = forward.changed.find((c) => c.name === 'Brazen Bull')!
+      .changes.find((c) => c.field === 'Cost')!;
+    const b = back.changed.find((c) => c.name === 'Brazen Bull')!
+      .changes.find((c) => c.field === 'Cost')!;
+    expect(b.from).toBe(f.to);
+    expect(b.to).toBe(f.from);
+  });
+
+  /**
+   * The global diff is long; what a player needs first is the part that touches
+   * their own roster.
+   */
+  it('narrows to the entries actually in a warband', () => {
+    const d = diffDatasets(trenchline, github);
+    const mine = diffAffecting(d, ['Brazen Bull', 'Jabirean Alchemist']);
+    expect(mine.map((m) => m.name)).toContain('Brazen Bull');
+    expect(diffAffecting(d, ['Nothing At All'])).toEqual([]);
+  });
+
+  it('reports only fields a player would recognise as a rules change', () => {
+    const d = diffDatasets(trenchline, github);
+    const fields = new Set(d.changed.flatMap((c) => c.changes.map((x) => x.field)));
+    // ids, source files and provenance differ for reasons that are not rules.
+    for (const noise of ['id', 'sourceFile', 'entryId', 'modifiers']) {
+      expect(fields.has(noise)).toBe(false);
+    }
   });
 });

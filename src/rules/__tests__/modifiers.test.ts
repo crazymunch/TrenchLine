@@ -6,7 +6,8 @@ import {
   evaluateCondition, adjustNumeric, applyModifiers, effectiveUnit,
   contributedModifiers, emptyContext, type SelectionContext,
 } from '../modifiers';
-import type { Modifier, Condition, UnitProfile } from '@/types/catalogue';
+import { variantLimits, variantForbids } from '../validate';
+import type { Modifier, Condition, UnitProfile, WarbandVariant } from '@/types/catalogue';
 
 /* ------------------------------------------------------------------ helpers */
 
@@ -301,5 +302,58 @@ describe('the Al-Qarn Rihla roster, replayed', () => {
     const baked = (ds.units as UnitProfile[]).filter(
       (u) => /^(Favoured|Ascendant|Blasphemous|Putrid|Exalted|Commissioned Officer) /.test(u.name));
     expect(baked).toEqual([]);
+  });
+
+  /**
+   * The variant's mechanical effect, derived rather than transcribed. Every
+   * assertion below is a rule the Warbands book states as prose on p.94; none
+   * of it is written down anywhere in this repository.
+   */
+  describe('The House of Wisdom, derived from the catalogues', () => {
+    const hw = () => (load().variants as WarbandVariant[])
+      .find((v) => /house of wisdom/i.test(v.name))!;
+    const unitNamed = (n: string) => (load().units as UnitProfile[]).find((u) => u.name === n)!;
+
+    it('raises the Alchemist bound to "must include 1-2" (Alchemists)', () => {
+      const alch = unitNamed('Jabirean Alchemist');
+      expect(alch.min).toBe(0);
+      expect(alch.max).toBe(1);
+      const { min, max } = variantLimits(alch, hw());
+      expect({ min, max }).toEqual({ min: 1, max: 2 });
+    });
+
+    it('raises the Lion bound from 0-2 to 0-3 (Pride of Jabir)', () => {
+      const lion = unitNamed('Lion of Jabir');
+      expect(lion.max).toBe(2);
+      expect(variantLimits(lion, hw()).max).toBe(3);
+    });
+
+    it('forbids the Yüzbaşı and the Sultanate Assassin (Private Venture)', () => {
+      const forbidden = variantForbids(hw());
+      expect(forbidden.has(unitNamed('Yüzbaşı Captain').entryId!)).toBe(true);
+      expect(forbidden.has(unitNamed('Sultanate Assassin').entryId!)).toBe(true);
+    });
+
+    /**
+     * Private Venture also says "no Janissaries" — but the catalogue caps the
+     * Janissary entry at 2 and renames it, rather than hiding it. That is
+     * Noble Guardians: "a House of Wisdom can include 0-2 Fāris. The Fāris use
+     * the Janissary Warband Entry, but have the ELITE Keyword at no additional
+     * cost." Both rules, expressed as one mechanism.
+     */
+    it('turns the Janissary entry into 0-2 Fāris with ELITE (Noble Guardians)', () => {
+      const jan = unitNamed('Janissary');
+      expect(jan.max).toBe(6);
+      expect(variantLimits(jan, hw()).max).toBe(2);
+
+      const ops = hw().ops as { field: string; value: string; target?: { id: string } }[];
+      const onJanissary = ops.filter((o) => o.target?.id === jan.entryId);
+      expect(onJanissary.some((o) => o.field === 'name' && o.value === 'Fāris')).toBe(true);
+      expect(onJanissary.some((o) => o.field === 'category')).toBe(true);
+    });
+
+    it('has no rulebook prose to fall back on, and does not need any', () => {
+      expect(hw().ops.length).toBeGreaterThan(8);
+    });
   });
 });

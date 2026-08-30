@@ -7545,6 +7545,512 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
+  "weapon:ddce-6e00-e451-7281": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:c403-778c-1c4f-ec6e": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:6c2c-bd2c-d794-fb34": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:7490-f22e-68ff-79d3": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:a595-aa3e-986e-edf0": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:088f-02cb-55b8-4bda": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:7428-8c1b-d5a5-bae5": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:801f-50a4-1ea2-7b92": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:e476-2dae-7eb7-f469": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:f342-1a5a-726e-8782": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
   "weapon:d488-9020-4ba3-a3a2": {
     "entryId": {
       "layer": "base",
@@ -10046,6 +10552,56 @@
     }
   },
   "weapon:5f11-5881-a15c-9100": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:1063-b1d1-807f-91ec": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -15495,6 +16051,56 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
+  "weapon:36d4-9b55-fd0a-150f": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    }
+  },
   "weapon:4c95-f212-101f-f07f": {
     "entryId": {
       "layer": "base",
@@ -18489,6 +19095,310 @@
     "restrictions": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:29cd-71a7-a9f8-a828": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:f41a-17c4-1d59-abac": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:6f4c-3af9-620f-9988": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:39a3-6b2f-e1cf-8775": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:651a-d454-07bf-a7fa": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:d8fe-561c-9243-f9b8": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21788,7 +22698,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -24707,7 +25618,108 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
+  "weapon:0999-4c6b-539f-d1b2": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
   "weapon:4e92-442c-e2fc-4583": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:fb1b-45a3-5dd0-bba1": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -25157,6 +26169,107 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
+  "weapon:d82e-4c7b-28ac-1413": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:f469-b712-2233-ac79": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
   "weapon:0da4-88a6-6cc3-bcd8": {
     "entryId": {
       "layer": "base",
@@ -25501,6 +26614,108 @@
     "restrictions": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:6efb-9e82-7136-f983": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:1459-550f-ed53-b276": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -26158,6 +27373,107 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
+  "weapon:4549-32db-4b08-2bdf": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:c035-9cfd-250c-73bc": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
   "weapon:f9a1-ea01-d4b8-e52f": {
     "entryId": {
       "layer": "base",
@@ -26408,6 +27724,107 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
+  "weapon:556c-7009-6fc2-d658": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:ac5c-14a9-8462-8ddd": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
   "weapon:1bff-0694-c7a5-a7f8": {
     "entryId": {
       "layer": "base",
@@ -26552,6 +27969,57 @@
     "restrictions": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:6dbb-ba95-c903-3c8c": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -27408,6 +28876,208 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
+  "weapon:aa9b-a7a1-69a4-05f4": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:c403-4b36-5fd6-5c95": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:6d28-673b-5fe7-849e": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:59d6-227d-0859-a162": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
   "weapon:4038-bef2-1da5-b69b": {
     "entryId": {
       "layer": "base",
@@ -27552,6 +29222,972 @@
     "restrictions": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:1d82-fcc9-aeda-b03a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:517c-652f-100e-71d6": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:9b21-3223-c112-c65f": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:77ea-665d-7ac6-58ef": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:408d-d56e-71c4-f3c4": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:6eb2-c600-98e7-16d3": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:f366-4889-0ac5-375d": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:2540-a186-5024-be0a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:8ac5-3721-e679-7c6e": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:8df3-f372-20a0-4a59": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:2d02-94a4-2493-186f": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:b16a-e1fa-433f-efc0": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:3113-d133-1726-05a0": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:c35c-a506-683d-6c3f": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:2fc0-bc43-b366-5b95": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:c5ac-8d24-4060-8655": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:a19d-90ab-da9f-95ff": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:3bfd-2c1d-2d6b-a36c": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:744d-f4d2-f8d5-064a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -28513,6 +31149,207 @@
     }
   },
   "weapon:9c1c-2178-d6c0-cf6a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:50eb-2990-0b48-1a8d": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:e938-b0dc-418c-0924": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:ae18-4990-fc3c-78ce": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:2257-4155-dd7d-8641": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -34824,6 +37661,18 @@
   },
   "weapon:Holy Grenade": {
     "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:Parasite Grenades": {
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "unit:Thrall": {
+    "options": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }

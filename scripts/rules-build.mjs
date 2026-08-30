@@ -19,7 +19,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
-import { parseWarbandEntries, parseVariants, parseArmouryTables } from './lib/parse-warbands.mjs';
+import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
+import { parseThresholdTable, parseStartingBudget, parseExploration,
+         parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -55,6 +57,7 @@ function loadLayer(id) {
 const bookEntries = parseWarbandEntries();
 const variants = parseVariants();
 const armoury = parseArmouryTables();
+const factionRules = parseFactionRules();
 const resolutions = loadResolutions();
 
 if (!bookEntries.length) {
@@ -72,13 +75,54 @@ const summaries = [];
 for (const ruleset of RULESETS) {
   if (onlyRuleset && ruleset.id !== onlyRuleset) continue;
 
+  // The starting allowance is read from every faction entry rather than assumed.
+  // If two factions ever disagree, that is a rules change or a parse failure and
+  // either way it must not be silently averaged into one number.
+  const startingBudget = parseStartingBudget();
+  if (!startingBudget || startingBudget.ducats == null) {
+    throw new Error(
+      'rules-build: the starting Ducat allowance could not be read from the Warbands ' +
+      `book, or the faction entries disagree (${startingBudget?.seen?.join(', ') ?? 'none found'}).`);
+  }
+
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
   const dataset = {
     units: base.units,
     weapons: base.weapons,
-    factions: [],
+    factions: factionRules.map((f) => ({
+      id: f.faction.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      name: f.faction,
+      // Every faction starts on 700 Ducats; kept per-faction because the
+      // variants change it and a future faction need not match.
+      budget: { ducats: f.budget ?? 0, glory: 0 },
+      specialRules: f.specialRules,
+      // Distinguishes "the book says this faction has no special rules" from
+      // "we failed to find any" — only the first is a fact about the game.
+      noSpecialRules: Boolean(f.explicitlyNone),
+    })),
     keywords: [],
+    /**
+     * The campaign economy's published numbers.
+     *
+     * `thresholds` caps the Force you field, not the roster you own, and rises
+     * with the game number; `startingBudget` is what a new warband recruits on.
+     * Both are derived, because the app's editable `ducatLimit` is exactly the
+     * hand-set number this table replaces.
+     */
+    campaign: {
+      thresholds: parseThresholdTable(),
+      startingBudget: startingBudget.ducats,
+      // The Exploration Step, which is the Strongbox's only income: loot is the
+      // Exploration Roll times 10. The app's hand-written version of this was
+      // fabricated end to end (AUDIT §1.13).
+      exploration: parseExploration(),
+      // The other two post-battle tables. `officialRulesData.ts` still holds
+      // hand-written versions of both, and the four Skills tables there are
+      // fabricated (AUDIT §1.13) — these are what replaces them.
+      skills: parseSkillsTables(),
+      trauma: parseTraumaTable(),
+    },
     meta: {
       rulesetId: ruleset.id,
       // Deliberately no build timestamp: the output must be reproducible so CI
@@ -98,18 +142,59 @@ for (const ruleset of RULESETS) {
     includeBeta: ruleset.includeBeta,
   });
 
-  // Attach the Armoury Table restrictions ("ELITE only", "Limit: 2") to the
-  // weapons they govern. The catalogues carry the profiles; the rulebook
-  // carries the legality rules, and the roster validator needs both.
-  const armouryByName = new Map();
+  // ------------------------------------------------------------- armouries
+  //
+  // The Armoury Table is the pricing and legality authority, and it is per
+  // faction. An Automatic Rifle is 40 Ducats with "Limit: 1" in the New Antioch
+  // and Trench Pilgrims armouries, and 2 Glory with "Limit: 2" in the Heretic
+  // Legions one — the price and the restriction both differ.
+  //
+  // So the armoury is modelled as itself rather than flattened onto the weapon.
+  // A weapon entry is a profile: what it does. An armoury row is an offer: what
+  // this faction pays for it and under what condition. A warband buys from its
+  // faction's armoury, which is exactly how the book reads.
+  const slug = (n) => String(n).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const weaponByName = new Map();
+  for (const w of dataset.weapons) {
+    const k = w.name.toLowerCase();
+    if (!weaponByName.has(k)) weaponByName.set(k, w);
+  }
+
+  const armouryByFaction = new Map();
+  let unmatchedRows = 0;
   for (const row of armoury) {
+    if (!row.faction) continue;
+    const id = slug(row.faction);
+    if (!armouryByFaction.has(id)) {
+      armouryByFaction.set(id, { factionId: id, faction: row.faction, rows: [] });
+    }
+    const w = weaponByName.get(row.name.toLowerCase());
+    if (!w) unmatchedRows++;
+    armouryByFaction.get(id).rows.push({
+      name: row.name,
+      // Null where the rulebook lists Battlekit the catalogues do not carry.
+      // Recorded rather than dropped: it is a real offer the player can take.
+      weaponId: w?.id ?? null,
+      section: row.section,
+      cost: { ducats: row.ducats, glory: row.glory },
+      restrictions: row.restrictions ? [row.restrictions] : [],
+    });
+  }
+  dataset.armouries = [...armouryByFaction.values()];
+
+  // The weapon keeps the union of every armoury's restrictions as a quick
+  // "this is restricted somewhere" signal, stamped so it can say where from.
+  // The per-faction row above is what actually governs a roster.
+  const restrictionsByName = new Map();
+  for (const row of armoury) {
+    if (!row.restrictions) continue;
     const k = row.name.toLowerCase();
-    if (!armouryByName.has(k)) armouryByName.set(k, new Set());
-    if (row.restrictions) armouryByName.get(k).add(row.restrictions);
+    if (!restrictionsByName.has(k)) restrictionsByName.set(k, new Set());
+    restrictionsByName.get(k).add(row.restrictions);
   }
   let restricted = 0;
   for (const w of dataset.weapons) {
-    const hit = armouryByName.get(w.name.toLowerCase());
+    const hit = restrictionsByName.get(w.name.toLowerCase());
     if (!hit || !hit.size) continue;
     w.restrictions = [...hit];
     restricted++;
@@ -120,18 +205,107 @@ for (const ruleset of RULESETS) {
     });
   }
 
-  // Variants ride along as data; their ops apply per-roster, not here.
-  dataset.variants = variants.map((v) => ({
-    id: v.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-    name: v.name,
-    factionId: '',
-    specialRules: v.specialRules,
-    ops: [],
-  }));
+  // ------------------------------------------------------------- variants
+  //
+  // A Warband Variant's mechanical effect is not prose to be transcribed: it is
+  // already in the catalogues, as modifiers conditioned on that variant being
+  // selected at roster scope. "Pride of Jabir: a House of Wisdom Warband can
+  // include 0-3 Lions of Jabir" is an `increment` on the Lion's roster max.
+  //
+  // Ops are matched to a variant by its entry id, never by name. Matching on a
+  // roster-scope condition's name alone also catches units, campaign settings
+  // and the Court's seven sins — 44 "variants" for 17 real ones.
+  const conditionLeaves = (c, out = []) => {
+    if (!c) return out;
+    if (c.all) c.all.forEach((x) => conditionLeaves(x, out));
+    else if (c.any) c.any.forEach((x) => conditionLeaves(x, out));
+    else out.push(c);
+    return out;
+  };
+
+  const opsByVariantId = new Map();
+  for (const u of dataset.units) {
+    for (const m of u.modifiers ?? []) {
+      for (const leaf of conditionLeaves(m.when)) {
+        if (leaf.scope !== 'roster' && leaf.scope !== 'force') continue;
+        if (!leaf.childId) continue;
+        if (!opsByVariantId.has(leaf.childId)) opsByVariantId.set(leaf.childId, []);
+        opsByVariantId.get(leaf.childId).push({
+          op: m.op,
+          target: { kind: 'unit', id: u.entryId ?? u.id, name: u.name },
+          field: m.field,
+          value: m.value,
+          ...(m.constraintBound ? { constraintBound: m.constraintBound } : {}),
+        });
+      }
+    }
+  }
+
+  // The rulebook parse is kept as the cross-check on the prose, not the source:
+  // the catalogues carry the same special rules with full published text, and
+  // three variants the Warbands PDF extraction never produced.
+  // The PDF prints variant headings in caps and drops articles, so "THE HOUSE
+  // OF WISDOM" and "TRENCH GHOST" have to reach "The House of Wisdom" and
+  // "Trench Ghosts". Normalise case and punctuation, drop a leading article,
+  // and treat one name containing the other as the same variant — otherwise
+  // every heading looks like a variant the catalogues are missing.
+  const variantKey = (n) => String(n).toLowerCase()
+    // The PDF transliterates: Stoßtruppen prints as STOSSTRUPPEN. NFKD leaves
+    // ß alone, so spell it out before normalising.
+    .replace(/ß/g, 'ss').normalize('NFKD')
+    .replace(/[^a-z0-9 ]+/g, '').replace(/^the /, '').replace(/\s+/g, '');
+  const sameVariant = (a, b) => {
+    const [x, y] = [variantKey(a), variantKey(b)];
+    return x === y || x.startsWith(y) || y.startsWith(x);
+  };
+  const bookFor = (name) => variants.find((v) => sameVariant(v.name, name));
+
+  dataset.variants = base.variantEntries.map((v) => {
+    const book = bookFor(v.name);
+    return {
+      id: variantKey(v.name),
+      entryId: v.id,
+      name: v.name,
+      factionId: v.factionId,
+      specialRules: v.specialRules,
+      ops: opsByVariantId.get(v.id) ?? [],
+      sources: book ? ['catalogue', 'rulebook'] : ['catalogue'],
+    };
+  });
+
+  // A variant the book describes but the catalogues do not carry is a real
+  // finding, not something to paper over.
+  const bookOnly = variants.filter(
+    (v) => !base.variantEntries.some((c) => sameVariant(c.name, v.name)));
+  for (const v of bookOnly) {
+    dataset.variants.push({
+      id: variantKey(v.name), name: v.name, factionId: '',
+      specialRules: v.specialRules, ops: [], sources: ['rulebook'],
+    });
+  }
+
+  const withOps = dataset.variants.filter((v) => v.ops.length).length;
+  const bookOnlyCount = bookOnly.length;
 
   // 3. verify
   const v = verify(dataset, bookEntries, provenance, resolutions);
   const missingProv = findMissingProvenance(dataset, provenance);
+
+  // Ops whose cost currency could not be read from the source. Reported every
+  // build, loudly, because a Ducat silently read as Glory is exactly the kind
+  // of wrong-but-plausible value this pipeline exists to prevent.
+  //
+  // A maintainer ruling clears the flag but does not make the value ordinary
+  // source data: it is unreadable in the extraction and only a person holding
+  // the printed page can supply it, so those ops are listed separately rather
+  // than falling silent.
+  const unresolvedCurrency = layers.flatMap((l) =>
+    (l.ops ?? []).filter((o) => o._costCurrencyUnresolved)
+      .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
+
+  const confirmedCurrency = layers.flatMap((l) =>
+    (l.ops ?? []).filter((o) => o._costCurrencyConfirmed)
+      .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
 
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
   const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
@@ -139,14 +313,25 @@ for (const ruleset of RULESETS) {
   summaries.push({ ruleset, v, missingProv, unresolvedOps, layerNotes, layerReport, dataset });
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
-  console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}  variants ${variants.length}`);
+  console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}`);
   console.log(`  weapons carrying armoury restrictions: ${restricted}`);
+  const rows = dataset.armouries.reduce((n, a) => n + a.rows.length, 0);
+  console.log(`  armouries: ${dataset.armouries.length} factions, ${rows} priced rows` +
+              (unmatchedRows ? `  (${unmatchedRows} row(s) name Battlekit the catalogues lack)` : ''));
   const mods = [...dataset.units, ...dataset.weapons]
     .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
   const unmapped = [...dataset.units, ...dataset.weapons]
     .flatMap((e) => e.modifiers ?? []).filter((m) => m.rawField).length;
   console.log(`  conditional modifiers read: ${mods}` +
               (unmapped ? `  (${unmapped} with an unmapped field)` : ''));
+  const opts = dataset.units.reduce((n, u) => n + (u.options?.length ?? 0), 0);
+  const optUnits = dataset.units.filter((u) => u.options?.length).length;
+  const optGroups = new Set(dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.group)));
+  console.log(`  unit options: ${opts} across ${optUnits} units, ${optGroups.size} groups`);
+  const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
+  console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
+  console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +
+              (bookOnlyCount ? `, ${bookOnlyCount} in the rulebook only` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
   console.log(`  verified against the rulebook: ${v.compared} units`);
   console.log(`    confirmed   ${v.confirmed}`);
@@ -155,6 +340,17 @@ for (const ruleset of RULESETS) {
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
+  if (unresolvedCurrency.length) {
+    console.log(`\n  ⚠ ${unresolvedCurrency.length} cost(s) with an UNCONFIRMED CURRENCY:`);
+    for (const u of unresolvedCurrency) console.log(`      ${u}`);
+    console.log('      The Dispatch prints currency as a glyph the text extraction drops.');
+    console.log('      Recorded as Ducats. Confirm against the PDF before relying on them.');
+  }
+  if (confirmedCurrency.length) {
+    console.log(`\n  ${confirmedCurrency.length} cost(s) whose currency rests on a maintainer ruling:`);
+    for (const u of confirmedCurrency) console.log(`      ${u}`);
+    console.log('      Unreadable in data-sources/ — confirmed against the printed page.');
+  }
   if (missingProv.length) console.log(`  fields with NO provenance: ${missingProv.length}`);
 
   if (v.conflicts.length) {

@@ -1,3 +1,5 @@
+import type { LedgerEntry } from '@/rules/campaign';
+
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rules';
 
 export interface EquippedWeapon extends WeaponProfile {
@@ -90,9 +92,44 @@ export interface Warband {
   id: string;
   name: string;
   factionId: string;
+  /**
+   * The Warband Variant, e.g. 'the-house-of-wisdom'. Seventeen exist and the
+   * app previously had no field for one at all, so every variant rule went
+   * unenforced. See docs/RULESET-MODEL.md §7a.
+   */
+  variantId?: string;
   campaignId?: string;
   creatorId?: string;
   creatorName?: string;
+  /**
+   * How this warband's budget is governed.
+   *
+   *   'campaign'     — the published economy. Starts on the book's 700 Ducats
+   *                    and 0 Glory, and the per-game cap comes from the Warband
+   *                    Threshold Table rather than from a field anyone edits.
+   *   'unrestricted' — the player sets Ducats and Glory. For one-off games,
+   *                    imports, and testing a list.
+   *
+   * Either kind may join a campaign, so this records how the warband was
+   * founded, not whether it is allowed in.
+   */
+  forceMode?: 'campaign' | 'unrestricted';
+  /**
+   * Every movement of Ducats and Glory, with a reason. The Strongbox is the sum
+   * of this rather than a stored total, so a purchase can be reversed before the
+   * next game and an admin's catch-up allotment says who granted it.
+   */
+  ledger?: LedgerEntry[];
+  /**
+   * Exploration Locations this warband has already found. "You can discover a
+   * Location only once during the campaign; if you discover it again, treat the
+   * roll as a Pillaged result instead." The loot is still collected.
+   */
+  explorationDiscoveries?: string[];
+  /**
+   * Only meaningful for 'unrestricted'. A campaign warband's cap is derived, and
+   * this is ignored — kept because existing saved warbands carry it.
+   */
   ducatLimit: number;
   treasuryDucats: number;
   gloryPoints: number;
