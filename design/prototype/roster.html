@@ -49,17 +49,29 @@
    `--accent-paper` is its accentColor, used only where that colour is dark
    enough to carry text on cream.
 
-   Two factions have no dark colour in their theme — Iron Sultanate (teal
-   #76D6D5 / gold #E9C349) and Principality of Hell (#FF5540 / #DDB7FF). Both
-   are illegible as text on paper. They fall back to the mock's oxblood and are
-   marked below: picking a dark accent for them is a maintainer's call, not
-   something to invent here.                                                  */
+   Two factions have no colour in their theme dark enough to carry text on
+   cream — Iron Sultanate (teal #76D6D5 / gold #E9C349) and Principality of Hell
+   (flame #FF5540 / lilac #DDB7FF). Both needed a paper accent chosen rather
+   than derived, so each is the theme's own hue taken down to the tonal band the
+   other four already sit in:
+
+     Iron Sultanate       #0F4C5C   7.49:1 on paper, 6.75:1 on the banded row
+     Principality of Hell #73215F   7.83:1 on paper, 7.06:1 on the banded row
+
+   Both are the faction's identity, not a new colour: #0F4C5C is the dark end of
+   the same lapis as #76D6D5, and #73215F is the Tyrian purple the Court of the
+   Seven-Headed Serpent is named for. Contrast is measured against the darker
+   `--paper-2` row as well as the sheet, because that is the worse case.
+
+   They also do real work for the palette. Four of the six paper accents were
+   reds or browns and hard to tell apart at a glance; a teal and a purple mean
+   hue separates the factions, which is the point of having six themes.        */
 .device[data-faction="antioch"]  {--accent-iron:#D4AF37; --accent-paper:#8B0000; --swatch:#D4AF37}
 .device[data-faction="heretic"]  {--accent-iron:#FF5625; --accent-paper:#920703; --swatch:#FF5625}
 .device[data-faction="pilgrims"] {--accent-iron:#E4E4CC; --accent-paper:#8F191D; --swatch:#E4E4CC}
 .device[data-faction="grail"]    {--accent-iron:#8BC34A; --accent-paper:#795548; --swatch:#8BC34A}
-.device[data-faction="sultanate"]{--accent-iron:#76D6D5; --accent-paper:#8C201B; --swatch:#76D6D5} /* paper: needs a dark accent */
-.device[data-faction="hell"]     {--accent-iron:#FF5540; --accent-paper:#8C201B; --swatch:#FF5540} /* paper: needs a dark accent */
+.device[data-faction="sultanate"]{--accent-iron:#76D6D5; --accent-paper:#0F4C5C; --swatch:#76D6D5}
+.device[data-faction="hell"]     {--accent-iron:#FF5540; --accent-paper:#73215F; --swatch:#FF5540}
 
 .device[data-surface="paper"]{--accent:var(--accent-paper); --accent-2:var(--accent-paper)}
 .device[data-surface="iron"] {--accent:var(--accent-iron);  --accent-2:var(--accent-iron)}
