@@ -1,0 +1,31 @@
+{
+  "_comment": [
+    "Human decisions where the sources genuinely disagree.",
+    "",
+    "The build FAILS on any conflict not listed here, so this file is the",
+    "project's record of why the data says what it says — the thing the",
+    "original build never had. Every entry needs a written reason.",
+    "",
+    "A layer superseding the rulebook is NOT a conflict and does not belong",
+    "here: the pipeline resolves that by precedence (Dispatch > rulebook >",
+    "catalogue). Only add an entry when two sources of the same standing",
+    "state different things, or when one is more precise than the model can",
+    "currently express."
+  ],
+
+  "Mamluk Faris.stats.armour": {
+    "chose": "battlescribe",
+    "value": "-2",
+    "because": "The Warbands book prints '-2 (-3)' — the parenthesised value is a conditional the entity model cannot yet express (it applies only in specific circumstances). The catalogue's flat -2 is the base value and is correct for roster building. Revisit when Statline gains conditional modifiers; tracked as a Phase 2 item.",
+    "reviewed": "2026-08-30",
+    "reviewer": "claude, pending maintainer confirmation"
+  },
+
+  "Scripture Guardian.stats.ranged": {
+    "chose": "rulebook",
+    "value": "-",
+    "because": "The book gives the Scripture Guardian no Ranged characteristic ('-'); the catalogue lists '+1 Dice'. The book is authoritative over the community catalogue, and the entry's own text supports it — the Guardian attacks with Vengeful Scripture, a Special-type weapon with its own profile, rather than a normal Ranged characteristic. Flagged for upstream correction.",
+    "reviewed": "2026-08-30",
+    "reviewer": "claude, pending maintainer confirmation"
+  }
+}

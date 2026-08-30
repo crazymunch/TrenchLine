@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # Verifies the dataset against the sources without writing anything.
+      # Fails on an unresolved source conflict or a field with no provenance —
+      # see docs/RULESET-MODEL.md §6. The BattleScribe catalogues and the
+      # extracted rulebook text are committed, so this needs no network.
+      - name: Verify game data
+        run: npm run rules:check
+
+      # Catches a generated file that has drifted from data-sources/, which
+      # would mean someone hand-edited build output.
+      - name: Generated data is up to date
+        run: |
+          npm run rules:build
+          if ! git diff --quiet -- src/data/generated; then
+            echo "::error::src/data/generated is stale. Run 'npm run rules:build' and commit the result."
+            git diff --stat -- src/data/generated
+            exit 1
+          fi
+
+      - name: Build
+        run: npm run build
+        env:
+          # Prisma needs a URL to generate against; nothing connects at build time.
+          DATABASE_URL: postgresql://user:pass@localhost:5432/db
+          NEXTAUTH_SECRET: ci-placeholder
+          NODE_ENV: production

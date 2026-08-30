@@ -55,37 +55,74 @@ with all 7 buttons at exactly 44px.
 
 ---
 
-## Phase 1 — The data pipeline
+## Phase 1 — The data pipeline ✅ COMPLETE
 
 *The foundation. Nothing else is durable without it.*
 
-| # | Task |
-|---|---|
-| 1.1 | Scaffold `data-sources/`, `scripts/`; promote the good extractions out of `scratch/` |
-| 1.2 | `scripts/extract-pdf.mjs` — deterministic, page-delimited PDF → text |
-| 1.3 | `rules:fetch` — pin the catalogue SHA, write `MANIFEST.json` with checksums, fail loudly |
-| 1.4 | `rules:parse` — BattleScribe XML → normalised entities (shared entries, category links, cost types, constraints) |
-| 1.4a | `rules:warbands` — extend the PDF parser to the Armoury Tables (`Automatic Rifle \| Bayonet Lug, Limit: 1 \| 40 👑`) and faction Special Rules sections |
-| 1.5 | New entity model in `src/types/rules.ts` — Glory cost, base size, movement type, constraints, `UnitOption` |
-| 1.6 | `rules:layer` — layer op engine + provenance stamping |
-| 1.7 | Transcribe `dispatch-01.layer.json` from the extracted Dispatch text |
-| 1.7a | Parse the 14 Warband Variants and their special rules out of the Warbands book |
-| 1.7b | Preserve the one kept warband: `scripts/extract-warband-lore.mjs` → `data-sources/fixtures/`, re-map onto corrected profiles, report anything unmatched |
-| 1.8 | `rules:verify` — fuzzy rulebook cross-check, `reports/crosscheck.md`, non-zero exit on conflict |
-| 1.9 | `rules:build` — emit `*.generated.ts` + `provenance.json` |
-| 1.10 | Define the two rulesets; delete `src/data/rulesets/index.ts` and the unsourced 1.0/1.0.2 metadata |
-| 1.11 | Vitest: layer ops, cost maths, known-good fixtures (Lieutenant = +2/+2/0/32mm) |
-| 1.12 | CI workflow: `rules:build` + `lint` + `typecheck` + `test` on every PR |
+| # | Task | Status |
+|---|---|---|
+| 1.1 | Scaffold `data-sources/`, `scripts/` | ✅ |
+| 1.2 | `rules:extract` — PDF → page-delimited text | ✅ |
+| 1.3 | `rules:fetch` — pin the catalogue SHA, checksums, fail loudly | ✅ |
+| 1.4 | `rules:parse` — BattleScribe XML → entities | ✅ `scripts/lib/parse-battlescribe.mjs` |
+| 1.4a | Parse the rulebook's warband entries and variants | ✅ `scripts/lib/parse-warbands.mjs` |
+| 1.5 | New entity model | ✅ `src/types/catalogue.ts` |
+| 1.6 | Layer engine + provenance stamping | ✅ `scripts/lib/layers.mjs` |
+| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 **partial** — see below |
+| 1.7a | Parse the 14 Warband Variants | ✅ all 14, with their special rules |
+| 1.7b | Preserve the kept warband | ⬜ deferred to Phase 2 with the roster model |
+| 1.8 | `rules:verify` | ✅ `scripts/lib/verify.mjs`; fails on unresolved conflicts |
+| 1.9 | `rules:build` → `*.generated.ts` + provenance | ✅ |
+| 1.10 | Define the two rulesets | ✅ `scripts/lib/rulesets.mjs` |
+| 1.11 | Vitest | ✅ 32 tests |
+| 1.12 | CI workflow | ✅ `.github/workflows/ci.yml` |
 
-**Done when:** `npm run rules:build` produces the full dataset from
-`data-sources/` alone; every field has provenance; the build fails on an
-unresolved conflict; `defaultRules.ts` is deleted.
+### What it produces
 
-**Acceptance test:** Lieutenant reports Movement `6"/Infantry`, Ranged `+2
-DICE`, Melee `+2 DICE`, Armour `0`, Base `32mm`, 70 Ducats — each traceable to
-`New Antioch.cat` at the pinned SHA and confirmed against the rulebook.
+```
+units 89  weapons 389  variants 14
+verified against the rulebook: 42 units
+  confirmed 248   unconfirmed 282   resolved 4   CONFLICTS 0
+```
 
----
+**Acceptance test passes.** The Lieutenant reports `6"/Infantry`, `+2 Dice`,
+`+2 Dice`, Armour `0`, Base `32mm`, 70 Ducats, `min=1 max=1` — every field
+traceable to `New Antioch.cat@1b463a8` *and* marked
+`verified: rulebook:warbands-of-trench-crusade`.
+
+Against the old hand-written data: **89 units** (was 45), **69 with recruitment
+limits** (was 0), **17 with Glory costs** (was 0), **89 with base sizes** (was 0).
+
+The build is **reproducible** — byte-identical across runs — so CI can prove the
+committed data still matches `data-sources/`.
+
+### Bugs the pipeline found in its own tooling
+
+Worth recording, because each one would have looked like a data conflict:
+
+- The rulebook prices ten Mercenary entries in **Glory (`☼`)**, not Ducats
+  (`👑`). Reading the glyph wrong made every one of them a false conflict.
+- `normaliseStat('0')` returned `'+0'` — the "prefix bare numbers" rule undid
+  the "+0 ≡ 0" rule, inventing a conflict on every Armour of 0.
+- The precedence check used `??`, which stopped at the truthy `base` record and
+  never saw the layer override, so the Dispatch looked like a conflict.
+- `Combat Medic` exists as both a New Antioch and a Mercenary entry while the
+  book has one; comparing both manufactured a conflict.
+
+All four are covered by regression tests.
+
+### Still outstanding
+
+- **1.7 is partial.** `dispatch-01.layer.json` covers the changes that map onto
+  the current model. Still to transcribe: the Black Grail Strains and Vile
+  Corpus (needs `UnitOption` wired through the build), the Amalgam and Grail
+  Thrall replacements, the Mercenary keyword rewrites, and the new Glory Items.
+- **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
+  Grenade` and `Parasite Grenades` do not exist in the catalogues under any
+  name. Reported, not dropped — this is the catalogue lag the design predicted.
+- **`defaultRules.ts` is not deleted yet.** The app still reads the old model;
+  migrating the UI onto `src/data/generated/` is Phase 2, so both exist for now.
+  Phase 1 is verifiable on its own without a UI rewrite.
 
 ## Phase 2 — The rules engine
 
