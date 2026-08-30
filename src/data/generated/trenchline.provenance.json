@@ -34827,5 +34827,11 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
+  },
+  "unit:Thrall": {
+    "options": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
   }
 }

@@ -370,3 +370,45 @@ describe('unit options', () => {
     }
   });
 });
+
+/* --------------------------------------------------------- dispatch strains */
+
+describe('the Trench Dispatch Grail Strains', () => {
+  const layer = JSON.parse(fs.readFileSync('data-sources/dispatch/dispatch-01.layer.json', 'utf8'));
+  const strainOps = layer.ops.filter((o) => o.op === 'addOption' && o.option?.group === 'Strains');
+
+  it('transcribes all four Strains the Dispatch publishes', () => {
+    expect(strainOps.map((o) => o.option.name).sort())
+      .toEqual(['Bolgias Gut', 'Hellfly Host', 'Leech Grip', 'Tapeworm Throng']);
+  });
+
+  it('cites the source line for each', () => {
+    for (const o of strainOps) expect(o._src).toMatch(/Grail Strains/);
+  });
+
+  it('carries the published rules text, not a summary', () => {
+    for (const o of strainOps) expect(o.option.description.length).toBeGreaterThan(40);
+  });
+
+  /**
+   * The Dispatch prints costs with a currency glyph that the PDF text
+   * extraction drops, so a bare number is all that survives. Recording one as
+   * Ducats without saying so would be exactly the kind of plausible-but-unbacked
+   * value this pipeline exists to prevent.
+   */
+  it('flags every cost whose currency could not be read from the source', () => {
+    const priced = strainOps.filter((o) => o.option.cost.ducats > 0 || o.option.cost.glory > 0);
+    for (const o of priced) {
+      // Hellfly Host is free, and the catalogues corroborate the rest by name.
+      if (o.option.name === 'Hellfly Host') continue;
+      expect(o._costCurrencyUnresolved, `${o.option.name} should carry the caveat`).toBeTruthy();
+    }
+  });
+
+  it('targets the entry by the name the catalogues use, and says why', () => {
+    for (const o of strainOps) {
+      expect(o.target.id).toBe('Thrall');
+      expect(o._targetNote).toMatch(/Grail Thrall/);
+    }
+  });
+});

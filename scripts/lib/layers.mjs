@@ -151,6 +151,22 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
         break;
       }
 
+      case 'addOption': {
+        target.options ??= [];
+        const i = target.options.findIndex(
+          (o) => o.name?.toLowerCase() === op.option?.name?.toLowerCase());
+        if (i >= 0) {
+          // The catalogues have caught up with this errata line.
+          target.options[i] = { ...target.options[i], ...op.option };
+          notes.push({ op, why: `addOption '${op.option.name}' on ${target.name}: ` +
+                                `already in the catalogues, superseded in place` });
+        } else {
+          target.options.push(op.option);
+        }
+        stamp(op.target, 'options');
+        break;
+      }
+
       case 'setCost':
         target.cost ??= { ducats: 0, glory: 0 };
         target.cost[op.currency] = op.value;

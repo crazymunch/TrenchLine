@@ -15,54 +15,97 @@
     "status: public-beta, which a ruleset can exclude.",
     "",
     "INCOMPLETE. This covers the mechanical changes that map cleanly onto the",
-    "current entity model. Still to transcribe: the Black Grail Strains and Vile",
-    "Corpus (needs UnitOption), the Amalgam and Grail Thrall replacements, the",
-    "Mercenary keyword rewrites, and the new Glory Items."
+    "",
+    "Grail Strains transcribed (4). Their rules text is verbatim from the extracted",
+    "Dispatch. Their COSTS carry a caveat: the PDF prints the currency as a glyph and",
+    "the text extraction drops it, so a bare number is all that survives. Ops whose",
+    "currency could not be confirmed carry _costCurrencyUnresolved and the build",
+    "reports them. Still to transcribe: the Amalgam and Grail Thrall entry",
+    "replacements (full statlines), and the Mercenary keyword rewrites.",
+    "",
+    "The Dispatch's 'Grail Thrall' is the catalogues' 'Thrall'. The Strains ops target",
+    "the catalogue name. Note the Dispatch extends Strains to Thralls, which the",
+    "catalogues currently offer only to the Matagot Hag and Gregori Gula."
   ],
   "ops": [
     {
       "op": "setCost",
-      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
+      "target": {
+        "kind": "unit",
+        "id": "Yüzbaşı Captain"
+      },
       "currency": "ducats",
       "value": 75,
       "_src": "p.9 — '1 Yüzbaşı - Cost: 75'"
     },
     {
       "op": "setCost",
-      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "target": {
+        "kind": "unit",
+        "id": "Brazen Bull"
+      },
       "currency": "ducats",
       "value": 115,
       "_src": "p.10 — '0-1 Brazen Bull - Cost: 115'"
     },
     {
       "op": "set",
-      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "target": {
+        "kind": "unit",
+        "id": "Brazen Bull"
+      },
       "field": "stats.melee",
       "value": "+2 DICE",
       "_src": "p.10 — Brazen Bull profile: Melee +2 DICE"
     },
     {
       "op": "set",
-      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "target": {
+        "kind": "unit",
+        "id": "Brazen Bull"
+      },
       "field": "stats.base",
       "value": "60mm",
       "_src": "p.10 — Brazen Bull profile: Base 60mm"
     },
     {
       "op": "setKeywords",
-      "target": { "kind": "unit", "id": "Brazen Bull" },
-      "keywords": ["SULTANATE", "ARTIFICIAL", "FEAR", "NEGATE SHRAPNEL", "STRONG", "TOUGH"],
+      "target": {
+        "kind": "unit",
+        "id": "Brazen Bull"
+      },
+      "keywords": [
+        "SULTANATE",
+        "ARTIFICIAL",
+        "FEAR",
+        "NEGATE SHRAPNEL",
+        "STRONG",
+        "TOUGH"
+      ],
       "_src": "p.10 — 'SULTANATE ARTIFICIAL FEAR NEGATE SHRAPNEL STRONG TOUGH'"
     },
     {
       "op": "setKeywords",
-      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
-      "keywords": ["SULTANATE", "ELITE", "LEADER", "NEGATE FEAR", "STRONG", "TOUGH"],
+      "target": {
+        "kind": "unit",
+        "id": "Yüzbaşı Captain"
+      },
+      "keywords": [
+        "SULTANATE",
+        "ELITE",
+        "LEADER",
+        "NEGATE FEAR",
+        "STRONG",
+        "TOUGH"
+      ],
       "_src": "p.9 — 'SULTANATE ELITE LEADER NEGATE FEAR STRONG TOUGH'"
     },
     {
       "op": "addAbility",
-      "target": { "kind": "unit", "id": "Yüzbaşı Captain" },
+      "target": {
+        "kind": "unit",
+        "id": "Yüzbaşı Captain"
+      },
       "ability": {
         "id": "dispatch01-mubarizun",
         "name": "Mubarizun",
@@ -72,7 +115,10 @@
     },
     {
       "op": "addAbility",
-      "target": { "kind": "unit", "id": "Brazen Bull" },
+      "target": {
+        "kind": "unit",
+        "id": "Brazen Bull"
+      },
       "ability": {
         "id": "dispatch01-living-battering-ram",
         "name": "Living Battering Ram ACTION",
@@ -102,52 +148,159 @@
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Frag Grenades" },
+      "target": {
+        "kind": "weapon",
+        "id": "Frag Grenades"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: Frag Grenades …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Gas Grenades" },
+      "target": {
+        "kind": "weapon",
+        "id": "Gas Grenades"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Gas Grenades …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Incendiary Grenades" },
+      "target": {
+        "kind": "weapon",
+        "id": "Incendiary Grenades"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Incendiary Grenades …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Molotov Cocktail" },
+      "target": {
+        "kind": "weapon",
+        "id": "Molotov Cocktail"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Molotov Cocktail …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Demonic Aura Grenade" },
+      "target": {
+        "kind": "weapon",
+        "id": "Demonic Aura Grenade"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Demonic Aura Grenade …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Holy Grenade" },
+      "target": {
+        "kind": "weapon",
+        "id": "Holy Grenade"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Holy Grenade …'"
     },
     {
       "op": "addKeyword",
-      "target": { "kind": "weapon", "id": "Parasite Grenades" },
+      "target": {
+        "kind": "weapon",
+        "id": "Parasite Grenades"
+      },
       "keyword": "FUMBLE",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Parasite Grenades'"
     },
     {
       "op": "setCost",
-      "target": { "kind": "weapon", "id": "Incendiary Grenades" },
+      "target": {
+        "kind": "weapon",
+        "id": "Incendiary Grenades"
+      },
       "currency": "ducats",
       "value": 10,
       "_src": "p.2 — 'Change the Cost of Incendiary Grenades to 10 in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court'"
+    },
+    {
+      "op": "addOption",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "option": {
+        "id": "dispatch01-strain-bolgias-gut",
+        "name": "Bolgias Gut",
+        "group": "Strains",
+        "cost": {
+          "ducats": 10,
+          "glory": 0
+        },
+        "constraints": [],
+        "description": "A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION. Burst ACTION: A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION."
+      },
+      "_src": "p.9 Grail Strains — 'Bolgias Gut (10)'",
+      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+    },
+    {
+      "op": "addOption",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "option": {
+        "id": "dispatch01-strain-hellfly-host",
+        "name": "Hellfly Host",
+        "group": "Strains",
+        "cost": {
+          "ducats": 0,
+          "glory": 0
+        },
+        "constraints": [],
+        "description": "A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability."
+      },
+      "_src": "p.9 Grail Strains — 'Hellfly Host (0)'",
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+    },
+    {
+      "op": "addOption",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "option": {
+        "id": "dispatch01-strain-leech-grip",
+        "name": "Leech Grip",
+        "group": "Strains",
+        "cost": {
+          "ducats": 7,
+          "glory": 0
+        },
+        "constraints": [],
+        "description": "A model with the Leech Grip Strain has a Melee Characteristic of +0. In addition, whenever an enemy model takes a Retreat ACTION within 1” of a model with the Leech Grip Strain, place 1 BLOOD MARKER next to the model taking the retreat (before any melee attacks are made against the retreating model)."
+      },
+      "_src": "p.9 Grail Strains — 'Leech Grip (7)'",
+      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+    },
+    {
+      "op": "addOption",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "option": {
+        "id": "dispatch01-strain-tapeworm-throng",
+        "name": "Tapeworm Throng",
+        "group": "Strains",
+        "cost": {
+          "ducats": 10,
+          "glory": 0
+        },
+        "constraints": [],
+        "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with the Tapeworm Throng Strain if they are within Short Range of the attacking model. This Strain has no effect if the model has the NEGATE FEAR Keyword. 03 -- 4 of 18 --"
+      },
+      "_src": "p.9 Grail Strains — 'Tapeworm Throng (10)'",
+      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
     }
   ]
 }

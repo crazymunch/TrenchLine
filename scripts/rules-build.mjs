@@ -217,6 +217,13 @@ for (const ruleset of RULESETS) {
   const v = verify(dataset, bookEntries, provenance, resolutions);
   const missingProv = findMissingProvenance(dataset, provenance);
 
+  // Ops whose cost currency could not be read from the source. Reported every
+  // build, loudly, because a Ducat silently read as Glory is exactly the kind
+  // of wrong-but-plausible value this pipeline exists to prevent.
+  const unresolvedCurrency = layers.flatMap((l) =>
+    (l.ops ?? []).filter((o) => o._costCurrencyUnresolved)
+      .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
+
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
   const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
 
@@ -247,6 +254,12 @@ for (const ruleset of RULESETS) {
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
+  if (unresolvedCurrency.length) {
+    console.log(`\n  ⚠ ${unresolvedCurrency.length} cost(s) with an UNCONFIRMED CURRENCY:`);
+    for (const u of unresolvedCurrency) console.log(`      ${u}`);
+    console.log('      The Dispatch prints currency as a glyph the text extraction drops.');
+    console.log('      Recorded as Ducats. Confirm against the PDF before relying on them.');
+  }
   if (missingProv.length) console.log(`  fields with NO provenance: ${missingProv.length}`);
 
   if (v.conflicts.length) {

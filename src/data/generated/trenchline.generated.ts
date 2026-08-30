@@ -540,7 +540,52 @@ export const DATASET: Dataset = {
       "min": null,
       "max": null,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "dispatch01-strain-bolgias-gut",
+          "name": "Bolgias Gut",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "constraints": [],
+          "description": "A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION. Burst ACTION: A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION."
+        },
+        {
+          "id": "dispatch01-strain-hellfly-host",
+          "name": "Hellfly Host",
+          "group": "Strains",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "constraints": [],
+          "description": "A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability."
+        },
+        {
+          "id": "dispatch01-strain-leech-grip",
+          "name": "Leech Grip",
+          "group": "Strains",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "constraints": [],
+          "description": "A model with the Leech Grip Strain has a Melee Characteristic of +0. In addition, whenever an enemy model takes a Retreat ACTION within 1” of a model with the Leech Grip Strain, place 1 BLOOD MARKER next to the model taking the retreat (before any melee attacks are made against the retreating model)."
+        },
+        {
+          "id": "dispatch01-strain-tapeworm-throng",
+          "name": "Tapeworm Throng",
+          "group": "Strains",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "constraints": [],
+          "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with the Tapeworm Throng Strain if they are within Short Range of the attacking model. This Strain has no effect if the model has the NEGATE FEAR Keyword. 03 -- 4 of 18 --"
+        }
+      ],
       "constraints": [
         {
           "id": "4e72-36fe-21b7-986d",
