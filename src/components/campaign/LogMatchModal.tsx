@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
+import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   X, 
@@ -20,7 +21,10 @@ interface LogMatchModalProps {
 }
 
 export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
-  const { campaign, scenarios, logCampaignMatch } = useStore();
+  const { campaign, logCampaignMatch } = useStore();
+  // The derived twelve plus the All Out War pack. The hand-written scenarios
+  // this replaced had the wrong game length for all twelve.
+  const { scenarios } = useScenarios();
 
   // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
   const overlayRef = useOverlay(true, onClose);
@@ -28,7 +32,8 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
   const members = campaign.members;
   const [p1WbId, setP1WbId] = useState<string>(members[0]?.warbandId || '');
   const [p2WbId, setP2WbId] = useState<string>(members[1]?.warbandId || members[0]?.warbandId || '');
-  const [scenarioName, setScenarioName] = useState<string>(scenarios[0]?.name || 'Trench Night Raid');
+  // Empty until the dataset loads, so the default is applied once it has.
+  const [scenarioName, setScenarioName] = useState<string>('');
   const [outcome, setOutcome] = useState<'p1' | 'p2' | 'draw'>('p1');
   const [p1Glory, setP1Glory] = useState<number>(3);
   const [p1Ducats, setP1Ducats] = useState<number>(30);
@@ -46,7 +51,9 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
     logCampaignMatch(
       p1WbId,
       p2WbId,
-      scenarioName,
+      // The select shows the first scenario until one is picked, so the logged
+      // name has to resolve the same way rather than recording an empty string.
+      scenarioName || scenarios[0]?.name || '',
       outcome,
       p1Glory,
       p1Ducats,
@@ -185,7 +192,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
                 Scenario Played:
               </label>
               <select
-                value={scenarioName}
+                value={scenarioName || scenarios[0]?.name || ''}
                 onChange={(e) => setScenarioName(e.target.value)}
                 className="w-full bg-theme-base border border-theme-border rounded p-2 text-xs font-mono text-theme-text focus:outline-none"
               >

@@ -53047,7 +53047,1545 @@ export const DATASET: Dataset = {
       "noSpecialRules": false
     }
   ],
-  "keywords": [],
+  "keywords": [
+    {
+      "name": "+/- DICE",
+      "type": "Effect",
+      "description": "Dice that are added to Success Rolls (▶ see Success Rolls). If the Keyword applies to a Weapon, the dice are only added to Success Rolls for Attacks made with it."
+    },
+    {
+      "name": "+/- INJURY DICE",
+      "type": "Effect",
+      "description": "Dice that are added to Injury Rolls (▶ see Injury Rolls). If the Keyword applies to a Weapon, the dice are only added to Injury Rolls for Attacks made with it."
+    },
+    {
+      "name": "+/- INJURY MODIFIER",
+      "type": "Effect",
+      "description": "Modifiers that are applied to the result of an Injury Roll (▶ see Injury Rolls). If the Keyword applies to a Weapon, the modifier is only added to Injury Rolls for Attacks made with it."
+    },
+    {
+      "name": "ACTION",
+      "type": "Tag",
+      "description": "An activity a model can carry out when it is Activated. Common ACTIONS include Move, Dash, Shoot and Fight."
+    },
+    {
+      "name": "AMMUNITION (KEYWORD)",
+      "type": "Effect",
+      "description": "If a model has a piece of Battlekit with this Keyword, it will use it in the next game that it takes part in. When the model is deployed, say which Ranged Weapon the Battlekit will be used for. It gains the (KEYWORD) until the end of the game. The Ranged Weapon you choose cannot already have the BLAST, FIRE, GAS, or SHRAPNEL Keywords, and cannot have more than one type of AMMUNITION."
+    },
+    {
+      "name": "ARMOUR PIERCING",
+      "type": "Effect",
+      "description": "A Weapon with this Keyword reduces the target’s total -INJURY MODIFIER from its Armour Characteristic, and/or any Armour or Shields it has by 1, to a minimum of 0. For example, if a target had Standard Armour and a Trench Shield, the -INJURY MODIFIER would be lowered from -2 to -1."
+    },
+    {
+      "name": "ARTIFICIAL",
+      "type": "Tag",
+      "description": "This model is not of natural biological origin but is instead constructed from non-organic elements."
+    },
+    {
+      "name": "ASSAULT",
+      "type": "Effect",
+      "description": "Ranged Attacks made with Weapons that have this Keyword do not prevent a model from taking a Charge or Fight ACTION during the same Activation."
+    },
+    {
+      "name": "AUTOMATIC (X)",
+      "type": "Effect",
+      "description": "When you take a Shoot ACTION and choose a Weapon with this Keyword to make a Ranged Attack, you can make a number of Ranged Attacks with this Weapon equal to X, one after another. The attacks can target different enemy models if desired, as long as they are all within 6” of each other. Resolve each attack one at a time using steps 2 to 6 of the Ranged Attack Sequence. Any BLOOD MARKERS or BLESSING MARKERS that are spent only modify the Injury Roll for the Ranged Attack they are spent on."
+    },
+    {
+      "name": "BLACK GRAIL",
+      "type": "Tag",
+      "description": "This model is part of the Cult of the Black Grail Faction."
+    },
+    {
+      "name": "BLAST (X”)",
+      "type": "Effect",
+      "description": "A Ranged Weapon with BLAST (X”) has a blast radius in inches equal to X (including vertically). When you make an attack with the Weapon, you must pick a target for the attack. The target can either be an enemy model or a visible point on the battlefield or on a terrain piece; whichever you choose must be within the attacking model’s Line of Sight and the Weapon’s range. If the Success Roll for the attack is a Failure, the attack misses and nothing happens unless the weapon also has the SCATTER Keyword (▶ see SCATTER). If the Success Roll for the attack is a Success or Critical Success, every model that has a Line of Sight to the target of the attack and which is within the Weapon’s blast radius is hit. In addition, friendly models that are within 1” of an enemy model that was hit by the blast radius are also hit. Measure the blast radius from the centre of the target model’s base, or the centre of the visible point you picked, to the closest point on the other model’s base. Make an Injury Roll for every model that was hit. If you roll a Critical Success, only add the extra INJURY DICE to the roll for a model if it was chosen as the target of the attack."
+    },
+    {
+      "name": "BLESSED (X)",
+      "type": "Effect",
+      "description": "When you deploy a model with this Keyword for the first time in a game, place a number of BLESSING MARKERS beside the model equal to X."
+    },
+    {
+      "name": "BLESSING MARKER",
+      "type": "Tag",
+      "description": "The model is under the influence of a supernatural or chemical enhancement that provides temporary benefits. (▶ see BLESSING MARKERS)."
+    },
+    {
+      "name": "BLOCK",
+      "type": "Effect",
+      "description": "Add -1 DICE for Melee Attacks targeting a model with this Keyword, or that has a Weapon that has this Keyword, if the attacker made a Charge ACTION before making the attack this Turn."
+    },
+    {
+      "name": "BLOOD MARKER",
+      "type": "Tag",
+      "description": "BLOOD MARKERS are placed on models that suffer an injury. (▶ see BLOOD MARKERS)."
+    },
+    {
+      "name": "CLEAVE (X)",
+      "type": "Effect",
+      "description": "When you take a Fight ACTION and choose a Weapon with this Keyword to make a Melee Attack, you can make a number of Melee Attacks with this Weapon equal to X, one after another. The attacks can target different enemy models if desired. Resolve each attack one at a time using steps 2 to 4 of the Melee Attack Sequence. Any BLOOD MARKERS or BLESSING MARKERS that are spent only modify the Injury Roll for the Melee Attack they are spent on."
+    },
+    {
+      "name": "CONSUMABLE",
+      "type": "Effect",
+      "description": "In a campaign (▶ see Campaign Rules) Battlekit with this Keyword is lost at the end of a game in which it is used."
+    },
+    {
+      "name": "COVER",
+      "type": "Effect",
+      "description": "A model with this Keyword has the Cover or Defended Obstacle attack modifiers (▶ see Cover)."
+    },
+    {
+      "name": "CRITICAL",
+      "type": "Effect",
+      "description": "Add +2 INJURY DICE instead of +1 INJURY DICE when a Critical Success is rolled for an attack made by a Weapon with this Keyword."
+    },
+    {
+      "name": "CUMBERSOME",
+      "type": "Effect",
+      "description": "Weapons with this Keyword require two hands to use, even if the model has the STRONG Keyword. However, they can still be used alongside a Shield with the Shield Combo stipulation."
+    },
+    {
+      "name": "DANGEROUS TERRAIN",
+      "type": "Effect",
+      "description": "If you Activate a model that is in terrain with this Keyword, or if you move a model into terrain with this Keyword during a move, you must take a Risky Success Roll for the model. If the roll is a Success or Critical Success, you can carry on with the model's move, and you do not have to take any more Risky Success Rolls for the model if it moves into any more terrain with this Keyword as part of that move. If the roll is a Failure, you must make an Injury Roll for the model and its Activation ends. Sometimes DANGEROUS TERRAIN will have one or more Keywords in brackets directly after it. Any Injury Rolls caused by the DANGEROUS TERRAIN rule have those Keywords. For example, if a terrain piece had the DANGEROUS TERRAIN (FIRE) Keywords, then any Injury Rolls caused by it would count as having the FIRE Keyword."
+    },
+    {
+      "name": "DEADLY",
+      "type": "Effect",
+      "description": "When you make an Injury Roll for an attack made with a weapon with this Keyword, roll 3D6 and add all 3 dice together. Any +INJURY DICE or -INJURY DICE are added to the roll normally, except that you pick the 3 highest or lowest dice in the roll instead of the 2 highest or lowest."
+    },
+    {
+      "name": "DEMONIC",
+      "type": "Effect",
+      "description": "A model with this Keyword has the NEGATE FIRE Keyword."
+    },
+    {
+      "name": "DEPLOYABLE",
+      "type": "Tag",
+      "description": "Battlekit that is represented by a model or terrain piece that can be set up during the game."
+    },
+    {
+      "name": "DIFFICULT TERRAIN",
+      "type": "Effect",
+      "description": "Every 1” a model is moved across terrain with this Keyword counts as 2”."
+    },
+    {
+      "name": "ELITE",
+      "type": "Tag",
+      "description": "The most senior and heroic models in a Warband."
+    },
+    {
+      "name": "FEAR",
+      "type": "Effect",
+      "description": "Add -1 DICE to a Melee Attack that targets a model with this Keyword. Models that cause FEAR are immune to FEAR themselves."
+    },
+    {
+      "name": "FIRE",
+      "type": "Effect",
+      "description": "After making the Injury Roll for a Weapon with this Keyword, place 1 extra BLOOD MARKER next to the target model even if the result is No Effect."
+    },
+    {
+      "name": "FIRETEAM",
+      "type": "Effect",
+      "description": "A model with this Keyword is part of a group of 2 models, both of which must have the FIRETEAM Keyword. You can create Fireteams when you recruit a Warband, and in the Quartermaster Step. Record which models are in Fireteams in your Warband on your Warband Roster. You can Activate friendly models that are part of the same Fireteam simultaneously. If you do so, you can take their ACTIONS in any order you wish, and you can switch between the two models freely. However, if the Activation of either member of the Fireteam ends during a simultaneous Activation, it immediately ends for the other model too. A model cannot be in more than 1 Fireteam."
+    },
+    {
+      "name": "FLAMETHROWER",
+      "type": "Effect",
+      "description": "When a Weapon with this Keyword is used to make a Ranged Attack it is automatically a Success. Do not make a Success Roll for the attack. Note that this means that the attack cannot achieve a Critical Success."
+    },
+    {
+      "name": "FLYING",
+      "type": "Effect",
+      "description": "When you make a move, retreat move or charge move with a model with this Keyword, you can measure the path on which it travels ‘through the air’. It must end the move on the battlefield or on a terrain piece. You must still take a Risky Success Roll for the model if it is Activated or ends its move on Dangerous terrain, and it cannot end its move on Impassable terrain. In addition do not make an Injury Roll if a model with this Keyword Falls."
+    },
+    {
+      "name": "GAS",
+      "type": "Effect",
+      "description": "After making the Injury Roll for a Weapon with this Keyword, place 1 extra BLOOD MARKER next to the target model even if the result is No Effect."
+    },
+    {
+      "name": "GOLEM",
+      "type": "Effect",
+      "description": "A model with this Keyword treats an Out of Action result from the Injury Roll Table as a Down result unless the result was caused by a Bloodbath Roll. In addition, you cannot remove BLOOD MARKERS from a friendly model with this Keyword (the opposing player can use them normally). Finally, a model with this Keyword has the NEGATE FEAR and NEGATE GAS Keywords, but cannot have the TOUGH Keyword."
+    },
+    {
+      "name": "HEAVY",
+      "type": "Effect",
+      "description": "A model cannot be equipped with more than one piece of Battlekit with this Keyword and it does not receive a Charge Bonus when it makes a charge move. In addition, if a Ranged Weapon or Grenade has this Keyword, you cannot use the Weapon or Grenade to make a Ranged Attack and take a Move, Charge or Retreat, or Dash ACTION with the attacking model as part of the same Activation."
+    },
+    {
+      "name": "HELD",
+      "type": "Effect",
+      "description": "A piece of Battlekit with this Keyword requires one hand to carry and cannot be put down. Because of this, a model that has this Keyword can only be equipped with or use either a 1-Handed Weapon or a Shield. It cannot be equipped with or use any 2-Handed Weapons, or both a Weapon and a Shield (even if the Shield has the Shield Combo rule). It may still carry Grenades."
+    },
+    {
+      "name": "HERETIC",
+      "type": "Tag",
+      "description": "The model is a member of the Heretic Legions Faction."
+    },
+    {
+      "name": "IGNORE ARMOUR",
+      "type": "Effect",
+      "description": "Ignore -INJURY DICE and -INJURY MODIFIERS for a target’s Armour Characteristic, and for any Armour or Shield pieces of Battlekit that it has, for attacks that have this Keyword."
+    },
+    {
+      "name": "IGNORE [MODIFIER]",
+      "type": "Effect",
+      "description": "Ignore the Success Roll or Injury Roll modifier that is specified. For example, the Success Roll for an attack made with a Ranged Weapon that had the IGNORE COVER Keyword would not be affected by the -1 DICE modifier for a target that is in Cover."
+    },
+    {
+      "name": "IMPASSABLE TERRAIN",
+      "type": "Effect",
+      "description": "Models cannot be moved onto or across terrain with this Keyword."
+    },
+    {
+      "name": "IMPERVIOUS",
+      "type": "Effect",
+      "description": "The ARMOUR PIERCING and IGNORE ARMOUR Effects do not affect any -INJURY DICE and -INJURY MODIFIERS that apply to Battlekit that has this Keyword. Any other Battlekit the target model has is affected normally."
+    },
+    {
+      "name": "INFECTION MARKERS",
+      "type": "Tag",
+      "description": "The model is under the influence of a supernatural or chemical malady that provides temporary effects. (▶ see Infection Markers in Warbands of Trench Crusade)."
+    },
+    {
+      "name": "INFILTRATOR",
+      "type": "Effect",
+      "description": "When a model with this Keyword is deployed for the first time in a game, it can be set up anywhere on the battlefield as long as it is out of the Line of Sight of all enemies and is at least 8” away from the closest enemy. INFILTRATORS are deployed after models that do not have this Keyword. Any INFILTRATORS that cannot be deployed in this way are instead deployed normally in their deployment zone."
+    },
+    {
+      "name": "MINED",
+      "type": "Effect",
+      "description": "When a model moves into contact with a Marker or terrain piece with the MINED Keyword, the mine will detonate unless the model has the NEGATE MINED Keyword. Make an Injury Roll with the SHRAPNEL Keyword for the model that detonated the mine, and then the Marker or terrain piece loses the MINED Keyword. If the model that detonated the mine wasn't taken Down or Out of Action, it can then continue its move. Models with the FLYING Keyword only detonate a mine if they finish a move in contact with a MINED Marker or terrain piece (they can fly across it without setting it off )."
+    },
+    {
+      "name": "LEADER",
+      "type": "Effect",
+      "description": "Add +1 DICE to Morale Checks if your Warband has at least 1 model with this Keyword on the battlefield that is not Down or Out of Action."
+    },
+    {
+      "name": "NEW ANTIOCH",
+      "type": "Tag",
+      "description": "This model is part of the Principality of New Antioch Faction."
+    },
+    {
+      "name": "NEGATE [KEYWORD]",
+      "type": "Effect",
+      "description": "A model with the NEGATE Keyword is not affected by the specified Keyword’s Effect. For example, a model with NEGATE SHRAPNEL ignores the Effect of the SHRAPNEL Keyword."
+    },
+    {
+      "name": "PILGRIM",
+      "type": "Tag",
+      "description": "This model is part of the Trench Pilgrim Faction."
+    },
+    {
+      "name": "PISTOL",
+      "type": "Effect",
+      "description": "A pistol can be used as a Melee Weapon or a Ranged Weapon, and can be used as both in the same Activation. When it is used as a Ranged Weapon it has the Range shown on its Profile and uses the attacking model’s Ranged Characteristic. When used as a Melee Weapon it can use the attacking model’s Ranged or Melee Characteristic and can be used as an Off-Hand Weapon if desired."
+    },
+    {
+      "name": "RELOAD",
+      "type": "Effect",
+      "description": "If a model makes an attack with a Weapon that has this Keyword then its Activation ends after the ACTION that allowed the attack is completed."
+    },
+    {
+      "name": "REGENERATE (X)",
+      "type": "Effect",
+      "description": "When you Activate a model with this Keyword, before carrying out any ACTIONS, you can remove up to X BLOOD MARKERS from the model."
+    },
+    {
+      "name": "RISKY",
+      "type": "Effect",
+      "description": "If you must make a Success Roll for a model that is using a piece of Battlekit that has this Keyword, then the Success Roll becomes a Risky Success Roll (the model’s Activation or ACTION will end if the Risky Success Roll is a Failure). For example, the Success Roll for an attack made with a Weapon that has the RISKY Keyword would become a Risky Success Roll. This Effect is ignored if the Success Roll is already a Risky Success Roll."
+    },
+    {
+      "name": "SCATTER",
+      "type": "Effect",
+      "description": "Some Weapons with the BLAST Keyword also have the SCATTER Keyword. When you make an attack with the Weapon, pick a target and carry out the attack as described in the rules for BLAST. However, if the Success Roll for the attack was a Failure, the attack will scatter instead of missing. To see where it scatters to, subtract the Success Roll from 7. For example, if the Success Roll was 4, then the target point would scatter (7–4=) 3”. Your opponent must move the attack exactly that many inches in a direction of their choice, to a point on the battlefield, on a terrain piece, or on the base of a model. There must be Line of Sight between the point that is chosen and the original target for the attack. If this is impossible for any reason, then treat the attack as a miss. Then, determine who is hit as described in the rules for BLAST."
+    },
+    {
+      "name": "SHOTGUN",
+      "type": "Effect",
+      "description": "Add -1 INJURY DICE to rolls for attacks made at Long Range with a Weapon that has this Keyword instead of the usual Long Range modifier (-1 DICE)."
+    },
+    {
+      "name": "SHRAPNEL",
+      "type": "Effect",
+      "description": "After making the Injury Roll for a Weapon with this Keyword, place 1 extra BLOOD MARKER next to the target model even if the result is No Effect."
+    },
+    {
+      "name": "SKIRMISHER",
+      "type": "Effect",
+      "description": "If an enemy selects a model with this Keyword as the target of a Charge, you can choose to evade with your model before the Charge is made, as long as your model is not within 1” of an enemy. When a model evades, roll a D3 and move the model that many inches. It must finish this move more than 1” away from all enemy models. If this move results in there being an interposing model between the evading model and the model that is making the charge, then the charging model must choose the interposing model as the target for its charge."
+    },
+    {
+      "name": "STRONG",
+      "type": "Effect",
+      "description": "A model with this Keyword has the NEGATE HEAVY Keyword. In addition, it can equip and use one 2-Handed Melee Weapon as if it were a 1-Handed Melee Weapon."
+    },
+    {
+      "name": "SULTANATE",
+      "type": "Tag",
+      "description": "This model is part of the Sultanate of the Iron Wall Faction."
+    },
+    {
+      "name": "THE COURT",
+      "type": "Tag",
+      "description": "This model is part of The Court of the Seven-Headed Serpent Faction."
+    },
+    {
+      "name": "TOUGH",
+      "type": "Effect",
+      "description": "The first time a model with this Keyword suffers an Out of Action result on the Injury Table, it is treated as a Down result instead."
+    }
+  ],
+  "scenarios": [
+    {
+      "number": 1,
+      "roman": "I",
+      "name": "Claim No Man’s Land",
+      "slug": "claim-no-mans-land",
+      "tagline": "Battle for control over a stretch of land and drive away your foes.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype.\n\n**Objective Markers**\n\nThe Markers shown on the map represent important objectives. When you set up the terrain pieces for this scenario, you must place the first five terrain pieces so that they are covering the locations where the Objective Markers will be set up. In addition, you must use Ruined Building terrain pieces if you have them available. The Objective Markers are set up after all of the terrain. Place each Objective Marker anywhere on the terrain piece that covers its starting position; the whole of the terrain piece is treated as the Objective for this scenario, and cannot be destroyed or removed for any reason..\n\n**Controlling Objectives**\n\nA player controls an Objective terrain piece if there are more friendly models on, in, or within 1” of the terrain piece than there are enemy models. If one player has any models on the terrain piece and their opponent does not, then the player with models on the terrain piece controls it even if their opponent has more models within 1” of the Objective."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins.\n\n**Infiltrators**\n\nInfiltrators must deploy normally (they cannot use their special deployment rules)."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts four Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of each Turn, each player scores 2 VPs for each\n\nObjective they control.\n\n- At the end of the game each player scores 1 VP for each Glorious Deed\n\nthey completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Bloodletting: An attack made by a friendly model results in the sixth BLOOD\n\nMARKER being placed beside an enemy model.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking the enemy model Down near a ledge, or by forcing it off a ledge in some way).\n\n- Hold Your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Lord of War: A friendly model takes two enemy models Out of Action with\n\nMelee Attacks in a single Turn.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers.\n\n- Suicidal Bravery: A friendly model successfully charges two models with the\n\nsame charge move."
+        }
+      ],
+      "mapImage": "/maps/claim-no-mans-land.png"
+    },
+    {
+      "number": 2,
+      "roman": "II",
+      "name": "Hunt for Heroes",
+      "slug": "hunt-for-heroes",
+      "tagline": "Hunt down the enemy leaders while protecting your own.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "In this scenario, both players must include as many ELITE models from their Warband as possible."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype.\n\n**Objective Markers**\n\nThe Markers shown on the map with a white cross represent important objectives. When you set up the terrain pieces for this scenario, you must place the first four terrain pieces so that they are covering the locations where the Objective Markers will be set up. In addition, you must use Ruined Building terrain pieces if you have them available. The Objective Markers are set up after all of the terrain. Place the Objective Marker anywhere on the terrain piece that covers its starting position; 5” 5” 5” 5” 8” 10” 10” 7” 7” Defense Works placements Area Defense Works placements Area M M G G the whole of the terrain piece is treated as the Objective for this scenario. A player controls an Objective terrain piece if there are more friendly models on, in, or within 1” of the terrain piece than there are enemy models.\n\n**Defence Works Markers**\n\nThe Markers shown on the map that have a G or an M represent defence works that have built-in weaponry - “G” has a Gun Battery, and “M” has a Machine Gun Emplacement. After you have set up any Objective terrain pieces, you must place the next four terrain pieces so that they are on top of where a Defence Works Marker will be set up. In addition, you must use Ruined Building terrain pieces if you have them available. The Defence Works Markers are set up after all of the terrain. Place the Marker anywhere on the terrain piece that covers its starting position. Defence Work Markers have the following special rules:\n\n- Gun Battery Marker: A Gun Battery Marker is treated as if it were a Sultanate\n\nGrand Cannon stationary gun battery that can be used by any model. Rules for the Sultanate Grand Cannon stationary battery are found in the Defenders of the Iron Wall section of the Warbands of Trench Crusade document.\n\n- Machine Gun Emplacement Marker: A model that is within 1” of a Machine\n\nGun Emplacement is treated as having a Machine Gun from the standard Battlekit List (▶ see Machine Gun). A Machine Gun Emplacement cannot be used if the Marker is within 1” of an enemy model. Each Machine Gun Emplacement can be used once per Turn."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 8” of an Objective.\n\n**Marks & Assets**\n\nAfter the deployment, each player must secretly write down up to three enemy models with the ELITE Keyword as Marks, and one friendly model that has the ELITE Keyword as an Asset. Taking out enemy Marks and keeping the friendly Asset alive will score additional Victory Points at the end of the game (▶ see below)."
+        },
+        {
+          "heading": "UNFORESEEN EVENTS",
+          "body": "At the start of each Turn after the first, one of the players must roll a D6. On a roll of 1-4 nothing happens, but on a 5 or 6, an Unforeseen Event takes place (do not roll again to see if any further Unforeseen Events take place). Roll D3 and look up the roll on the table below to see what happens.\n\n**D3 \tUnforeseen Event**\n\n1 Rising Fog: Heavy fog covers the entire combat zone, drastically limiting visibility for all models. During this Turn and the next Turn, all Ranged Weapons have their Range halved (short range will be half the reduced Range). 2 Rain, Mud, and Guts: The clouds roar and wail as a sudden downpour strikes the battlefield, leaving the ground muddy and bloody, and battlekit heavy and wet. During this Turn and the next Turn, add -2 DICE to rolls for Melee Attacks. 3 Deep Craters: A sudden and violent earthquake hits the area, sending tremors through the earth as the land splits and caves in, forming deep craters all over the warzone. The players roll-off. Starting with the winner, they take it in turn to each placing Crater Markers, one at a time, until 6 new Markers have been placed. The Crater Markers cannot be placed within a Deployment Zone or within 2” of a terrain piece or a model. Open terrain within 2” of the centre of the Crater Marker is considered to be a pit that has sheer sides and is D3+3” deep (roll separately for each Marker when it is placed). Models can Jump Down or Fall into the pit, and will need to Climb in order to leave it. Crater Markers can be represented by a suitable terrain piece that is up to 4” across, if any are available."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts five Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of each Turn, each player scores 1 VP for each Objective that is within\n\n1” of one or more of their models and 1 VP for each Objective they control.\n\n- At the end of the game each player scores:\n\n* 1 VP for each Glorious Deed they completed. * 2 VPs for each enemy Mark that was taken Out of Action. * 3 VPs if the friendly Asset was not taken Out of Action."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Sharpshooter: A friendly model in cover takes an enemy ELITE model Out of\n\nAction with a Ranged Attack with the Long Range modifier.\n\n- Dangerous Fall: A friendly model causes an enemy model to Fall into a\n\ncrater (▶ see Unforeseen Events).\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- High Risk, High Reward: An Asset takes an enemy Mark Out of Action. To\n\nclaim this deed, the player must first reveal that their model was an Asset and that the enemy model was a Mark.\n\n- Kill their Leaders: Take all of the enemy Marks Out of Action. To claim this\n\ndeed, the player must first reveal which enemy models were their Marks. The model that took the last Mark Out of Action is credited with completing this Glorious Deed."
+        }
+      ],
+      "mapImage": "/maps/hunt-for-heroes.png"
+    },
+    {
+      "number": 3,
+      "roman": "III",
+      "name": "Relic Hunt",
+      "slug": "relic-hunt",
+      "tagline": "Find and secure sacred relics for the glory of your Patron.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype. 1 5 6 4 3 2"
+        },
+        {
+          "heading": "RELIQUARY MARKERS",
+          "body": "The Markers shown on the map represent Reliquaries. Set up the Markers at the locations shown on the map. At the end of Turn 1, remove Reliquaries 1 and 2, and at the end of Turn 2, remove Reliquaries 3 and 4.\n\n- Claim Reliquary ACTION: A model that is within 1” of a Reliquary, can take\n\na Claim Reliquary ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, the Reliquary is claimed by the model (▶ see Victory Points). A Reliquary that has been claimed cannot be claimed again for the rest of the Turn (it can then be claimed again by either side in subsequent Turns). Note that after a model claims a Reliquary, it remains claimed by their side for the rest of the Turn even if the model is subsequently taken Down or Out of Action."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Each player may deploy a maximum of six models. Models mounted on bases 40mm or larger count as 2 models for this purpose. Any models that cannot be deployed are available as reinforcements. Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators must deploy normally (they cannot use their special deployment rules)."
+        },
+        {
+          "heading": "REINFORCEMENTS",
+          "body": "At the start of each Turn, the players roll-off. The winner rolls a D3 to see how many reinforcement models each of the players can deploy. The players then alternate deploying reinforcement models, one at a time, starting with the player that won the roll-off. Reinforcement models must be deployed touching the edge of the battlefield, wholly within their Deployment Zone, and more than 8” from the closest enemy model. If a player runs out of reinforcement models, the opposing player can set up any remaining reinforcements they have available up to the limit set for the Turn. Players must set up reinforcements if they have any available and are allowed to do so (you can’t choose to hold them back). TO THE DEATH! Neither side takes Morale Checks during this game, and neither player can choose to flee with their Warband."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts four Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield after any reinforcements have been deployed. Otherwise, the player with more Victory Points at the end of the game wins.\n\n**Victory Points**\n\n- During Turns 1 to 3 each player scores 1 VP for each Reliquary claimed by a\n\nmodel from their Warband, up to a maximum of 4 VPs per Turn (they can claim more Reliquaries to deny the enemy the chance of claiming them).\n\n- During Turn 4 each player scores 2 VPs for each Reliquary claimed by a model\n\nfrom their Warband.\n\n- At the end of the game each player scores 1 VP for each Glorious Deed\n\nthey completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Blood Sacrifice: A friendly model causes three enemy models to be taken Out of\n\nAction during the game.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking it Down near a ledge or by forcing it off a ledge in some way).\n\n- Protect the Relic: A friendly model causes an enemy model that is within 1” of a\n\nReliquary Marker to be taken Out of Action.\n\n- Relic Hunter: A friendly model claims two different Reliquaries\n\nduring the game.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers."
+        }
+      ],
+      "mapImage": "/maps/relic-hunt.png"
+    },
+    {
+      "number": 4,
+      "roman": "IV",
+      "name": "Trench Warfare",
+      "slug": "trench-warfare",
+      "tagline": "Assault the trenches to win glory for yourself or mount a defence against an enemy attack.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "Before picking their Forces, the players must decide who is the attacker and who is the defender in this scenario. In a campaign, the player with the most models in their Warband (ignoring their Threshold Values or Field Strength) is the attacker, and their opponent is the defender. If both players have the same number of models, and in one-off games, the players roll-off and the winner must decide who will be the attacker and who will be the defender. The defender must halve the number of 👑 they can spend on their Warband in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype. When setting up the terrain for this scenario, do not set up any terrain in either Deployment Zone (▶ see Defenders Trench Line below)."
+        },
+        {
+          "heading": "MINE",
+          "body": ""
+        },
+        {
+          "heading": "PLACEMENT AREA",
+          "body": "8” Trench Section 8” Trench Section 8” Trench Section"
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. Before deploying any models, the defender must set up their Trench Lines and Mine Markers as described below. The players then alternate deploying their models one at a time, starting with the attacker. Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Defending Trench Lines**\n\nThe defender must set up three trench sections that are at least 8” long at the locations shown on the map. They can add additional trench sections of any size.\n\n**Mine Markers**\n\nAfter the defender sets up their Trenches, they can set up 12 Mine Markers within the Mine Placement Area. After setting the Mine Markers up, the defender must secretly write down which 4 of the Mine Markers are duds. All of the other Mine Markers are live and have the MINED Keyword and the following special rule.\n\n- Slaughter Mines: As soon as a model moves within 3” of a Mine Marker,\n\ntemporarily halt its move. The defender must then reveal if the Mine Marker is a dud. If it is, nothing happens. If it is a live mine, it detonates in the same way as if the model had moved into contact with a Marker with the MINED Keyword. The Mine Marker is removed, and the moving model can then continue its move as long as it wasn’t taken Down or Out of Action. Models with the FLYING Keyword only trigger a Mine Marker if they finish a move in contact with it (they can fly across it without setting it off ).\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. Attacking models that use special deployment rules must deploy within 12” of their Deployment Zone."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "At the end of the fourth Turn, the attacker rolls a D6. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the fifth Turn."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of each Turn, the defender scores 1 VP for each trench section that\n\nis at least 8” long and has one or more defending models in it. If there are no attacking models in the trench section, the defender scores 2 VPs instead of 1.\n\n- At the end of each Turn, the attacker scores 2 VPs for each trench section that\n\nis at least 8” long and has one or more attacking models in it. If there are no defending models in the trench section, the attacker scores 3 VPs instead of 2.\n\n- At the end of the game each player scores 1 VP for each Glorious Deed\n\nthey completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Good Hunting: A friendly model takes an enemy model Out of Action with a\n\nRanged Attack that has the Long Range modifier.\n\n- Headshot: A friendly model that retreated earlier in its Activation takes one of\n\nthe enemy models it retreated from Out of Action.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Into the Trenches!: A friendly model successfully charges an enemy model\n\nin a trench section and then takes the enemy model Out of Action with a Melee Attack.\n\n- Survive to Tell the Tale: A friendly model that has two Injury Rolls made for it\n\nthat are caused by mine explosions and is not taken Out of Action by either of the explosions.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
+        }
+      ],
+      "mapImage": "/maps/trench-warfare.png"
+    },
+    {
+      "number": 5,
+      "roman": "V",
+      "name": "Armoured Train",
+      "slug": "armoured-train",
+      "tagline": "A derailed armoured train, laden with loot and ammunition, is being fought over by the two warbands.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "If this game is being played as part of a campaign, both players have a Field Strength of 15 models."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype and requires a Battlefield that is 48” by 48”.\n\n**The Train**\n\nWhen you set up the terrain for this battle, you must first set up the wagons from an armoured train. The wagons are located on a raised embankment that has a bridge in the middle.\n\n**G**\n\nThe dimensions of the wagons are shown on the map. Each wagon has ladders on both sides that allow models to Climb up the sides without having to take a Risky Success Roll and doors at the centre of each side that can be unlocked to reach the supplies inside (▶ see the Supplies rule below). The top of each wagon is flat and treated as Open terrain. Two of the wagons are located on raised embankments that measure 12” by 19”. The sides of the embankments are roughly 5” high and are Difficult terrain. The central wagon is located on a bridge that joins the two embankments together. Models can move under the bridge from the sides and onto the bridge from each end, where it connects to the raised embankments.\n\n**Gun Battery Marker**\n\nAfter setting up the weapons, place a Gun Battery Marker on the top of the central wagon, as shown on the map. It has the following special rule:\n\n- Gun Battery Marker: A Gun Battery Marker is treated as if it were a Sultanate\n\nGrand Cannon stationary gun battery that can be used by any model. Rules for the Sultanate Grand Cannon stationary battery are found in the Defenders of the Iron Wall section of the Warbands of Trench Crusade document."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators must deploy normally (they cannot use their special deployment rules)."
+        },
+        {
+          "heading": "TRAIN WAGONS",
+          "body": "The train was carrying supply crates containing precious weapons, materials, and holy relics. The supply crates are spread between the three wagons, which can be reached through the doors on the sides of the wagons. However, the doors on the sides of each wagon start the game locked. Train Wagons cannot be destroyed or removed for any reason.\n\n- Unlock Wagon ACTION: A model within 1” of a locked door can take an\n\nUnlock Wagon ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens (another model can try to unlock the door later in the same Turn). The door is unlocked and opened if the roll is a Success or Critical Success, revealing D3 Supply Crates inside. Place a Supply Crate Marker beside the wagon to show how many Supply Crates are inside it. If the door on the other side is unlocked, it can be used to reach any Supply Crates that remain inside, but does not generate any more of them.\n\n- Open Crate ACTION: A model within 1” of an unlocked door on a wagon\n\nwith any Supply Crate Markers still beside it, or within 1” of a Supply Crate Marker that has been carried by another model and dropped, can take an Open Crate ACTION. If it does so, choose one of the following three options for the model (you do not have to make a Success Roll): 1. Carry Crate: The model can carry the crate. Put the Supply Crate Markers in contact with the model’s base to show it is carrying it. The only thing a model carrying a crate can do is take Move or Retreat ACTIONS - it cannot do anything else while it has the crate. a. At the end of its Activation, you can say that a model that is carrying a crate will either drop it or hand it to a friendly model that is within 1”, or choose to Destroy or Draw Supplies from the crate as described below. When a model drops the crate, place it within 1” of the model and not in contact with any other models. When a model hands the crate on, place the Supply Crate Marker in contact with the other model’s base. b. If a model carrying a crate is taken Down or Out of Action, or is chosen as the target of a Melee Attack, it immediately drops the crate as described above. c. If a model carrying a crate finishes its Activation in contact with any edge of the battlefield, it can escape with the crate; remove the model and the Supply Crate Marker from the battlefield (▶ see Victory Points). The model is still considered part of the Warband for the purposes of Morale Checks. 2.Destroy Crate: Take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, the Supply Crate Marker is destroyed (remove it from the battlefield). 3.Draw Supplies: Take a Success Roll for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, place a BLESSING MARKER next to the model and the crate is emptied (remove it from the battlefield)."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts five Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of the game each player scores:\n\n* 1 VP for each Glorious Deed they completed. * 1 VP for each crate a friendly model drew supplies from. * 2 VPs for each crate a friendly model destroyed. * 3 VPs for each crate that a friendly model escaped with."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- King of the Hill: A friendly model ends 3 consecutive Turns on top of an\n\nembankment or the bridge and within 3” of a wagon.\n\n- Meat-Grinder: A friendly model takes 3 enemy models Out of Action during the\n\ngame using Ranged Attacks made with the Gun Battery.\n\n- No Stone Left Unturned: A friendly model unlocks two different wagons.\n\n- Over the Enemy Line: A friendly model escapes with a crate when it is wholly\n\nwithin the enemy Deployment Zone.\n\n- Supply Run: Two friendly models escape with a crate. The model that escaped\n\nwith the second crate is credited with completing this Glorious Deed."
+        }
+      ],
+      "mapImage": "/maps/armoured-train.png"
+    },
+    {
+      "number": 6,
+      "roman": "VI",
+      "name": "Dragon Hunt",
+      "slug": "dragon-hunt",
+      "tagline": "For the glory of your Patron, hunt and defeat a monstrous creature, be it a possessed tank or a hellish beast.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "The players will additionally need a Dragon model and 6 Peasant models. The rules and Warband Entries for these models can be found below."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the Dragon, the terrain and the Peasants for the game. This scenario uses the No Man’s Land or Trench Lines battlefield archetype (the player setting up the terrain decides which one to use).\n\n**The Dragon & The Peasants**\n\nThe Dragon model is set up before setting up the terrain for this battle and the 6 Peasant models are set up after the terrain has been set up. Deploy the Dragon so that it covers the midpoint of the battlefield. Deploy the Peasants anywhere on the battlefield that is more than 8” from the Dragon, and more than 6” from any other Peasant or either side’s Deployment Zone."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 8” of the Dragon or 1” of a Peasant."
+        },
+        {
+          "heading": "NEUTRAL MODELS",
+          "body": "The Dragon and the Peasants are neutral models. Neutral models are treated as enemy models by both sides.\n\n**Neutral Model Activation Rolls**\n\nWhen a player finishes an Activation with one of their models, they must take a Neutral Model Activation Roll by rolling a D6. If they roll a 1-4, they can Activate a Peasant of their choice, and on a 5-6, they can Activate the Dragon or a Peasant of their choice. A player cannot Activate a model that has already been Activated (by either player). Once the Dragon and all of the Peasants have been Activated during a Turn, the players stop making Neutral Model Activation Rolls until the following Turn. When a player Activates a neutral model, they must carry out an Activation with it using the rules for the Dragon and the Peasants below. If a player runs out of models from their own Warband to Activate and there are still neutral models remaining to Activate, they must still make Neutral Model Activation Rolls. Note that once the Dragon has been Activated, there is no longer any need to make the Neutral Model Activation Rolls; the players can just pick a Peasant that has yet to be Activated and Activate them. In the unlikely event that the Dragon remains to be Activated after both players have finished Activating models from their Warband, just roll-off and the winner Activates the Dragon."
+        },
+        {
+          "heading": "THE DRAGON",
+          "body": "The Dragon is represented by a model on a base between 120mm and 300mm. Ideally, it should be large enough and shaped in such a way that two models on 60mm bases (or four models on 25mm bases) could stand on it at once. It can be a Larval Beast, a Possessed Tank, an actual Dragon, or any other large imposing monster.\n\n**The Dragon’s Prey**\n\nWhen a player Activates the Dragon, they must first choose its prey. They then take 1 Move ACTION and 1 Shoot or 1 Fight ACTION with the Dragon. If the Dragon is not within 1” of its prey at the start of its Activation, it will move as described below and then attack. If the Dragon is within 1” of its prey at the start of its Activation, it will attack before it moves. If the attack takes the prey Out of Action, choose new prey and then move the Dragon as described below. The Dragon’s prey is determined by using the following list of priorities:\n\n- If a model attacked the Dragon this Turn or in the last Turn, and the model is\n\nnot on the Dragon’s back, then it becomes the Dragon’s prey. If several models are eligible, the closest eligible model to the Dragon becomes its prey. If two or more eligible models are equally close to the Dragon, the player can choose which model is its prey.\n\n- If the Dragon was not attacked in this Turn or the last Turn, or if it was attacked\n\nand the attacking models have been taken Out of Action, then the Peasant closest to the Dragon becomes its prey. If two or more Peasants are equally close to the Dragon, the player can choose which model is its prey.\n\n- If no Peasants are left on the battlefield, and the Dragon was not attacked in\n\nthis Turn or the last Turn, then it has no prey and will instead attempt to leave the battlefield.\n\n**Attacking with the Dragon**\n\nWhen the Dragon attacks, it will target its prey if it can do so. Otherwise, it will target the nearest model that it can attack. If two or more potential targets are equally close to the Dragon, the player can choose which model it attacks. The Dragon will make a Melee Attack with its Teeth and Claws if it is within 1” of its target. If it is not within 1” of the target but is within 10” of it, it will make a Ranged Attack with its Fire Breath. If it is not within 10” of its target, it does not attack.\n\n**Moving the Dragon**\n\nThe player must move the Dragon towards its prey so that it finishes either in contact with it or if that is impossible, as close to its prey as possible. If the Dragon has no prey, move it so that it finishes the move as close as possible to the nearest edge of the battlefield. If it reaches the edge of the battlefield, it leaves and is removed from the battlefield (▶ see Victory Conditions). Note that the Dragon’s Siege Weapon ability allows it to move across terrain, and its Crush ability allows it to move over models when trying to reach its prey (▶ see the Dragon).\n\n**The Dragon**\n\nThis massive entity is wreaking havoc, tearing through the afflicted, plague-ridden villages surrounding No Man’s Land. Descriptions of the monster are wildly inconsistent. While some believe it to be a newborn Larval Beast, others report sighting a Possessed Tank. Whispers abound of an Angelic creature gone rogue, and some even say it is an actual Dragon. All accounts agree on its immense size and the trail of destruction and bloodshed it leaves behind. Showing no allegiance, it has trampled warbands and strongholds alike, spreading chaos indiscriminately.\n\n**Movement \tRanged \tMelee \tArmour \tBase**\n\n10”/Infantry +3 DICE +3 DICE -3 120-300mm Battlekit The Dragon does not have any Battlekit. Abilities ** Fire Breath: The Dragon can make a Ranged Attack even though it does not have any Ranged Weapons. A Fire Breath attack has a Range of 10” and the +2 DICE, BLAST 3”, FIRE, IGNORE ARMOUR, and SCATTER Keywords.\n\n- Deadly Teeth and Claws: The Dragon can make a Melee Attack\n\neven though it does not have any Melee Weapons. A Teeth and Claws attack has the +1 DICE, +1 INJURY DICE, and IGNORE ARMOUR Keywords.\n\n- Tail Swipe: After you make a Melee Attack with the Dragon, if\n\nit is still within 1” of any models that are not on its back, make a Melee Attack against each of the models that are not on its back in the order of your choice. A Tail Swipe attack has the +1 INJURY MODIFIER Keyword.\n\n- Living Battlefield: Models can treat the Dragon and its base as\n\nif they were Dangerous terrain, and can finish a move on top of the Dragon’s model. All Success Rolls for a model on top of the Dragon become Risky Success Rolls if they are not already. Attacks made by a model that is on top of the Dragon and target it get +1 DICE and +1 INJURY DICE. The Dragon cannot attack a model that is on top of it. When the Dragon moves, any models on top of the Dragon are moved with it. After the Dragon’s move is finished, make a Success Roll for each model on it. If the roll is a Failure, the model Falls from the Dragon. Move it the shortest possible distance to the ground and place it Down, and then make an Injury Roll for it if it has Fallen 3” or more. If the roll is a Success or Critical Success, nothing happens. Take the Success Roll in the same way if a model on top of the Dragon is taken Down for any reason.\n\n- Siege Weapon: The Dragon can move over terrain pieces that\n\nmeasure up to 4” by 4” as if they were Open terrain. If it does so, the terrain piece is removed from the game when the Dragon moves into contact with it. Models that were on top of the terrain piece Fall directly down to the battlefield; an additional Injury Roll may have to be made for them if they Fall 3” or more, or if they land where they may be Trampled by the Dragon as it carries on with its move.\n\n- Crush: The Dragon can move over other models. If it does so,\n\nmake an Injury Roll for the model when the Dragon moves into contact with it, as if the model had been hit with an attack with the +1 INJURY MODIFIER and IGNORE ARMOUR Keywords. The Dragon then continues with its move. Leave the model where it was if the Dragon moves beyond it. If the Dragon would end up on top of the model, move it by the shortest distance possible so that it will not be underneath the Dragon (even if it is Down). If it is not possible to move the model out of the way for any reason, it is removed from play and counts as being taken Out of Action in the Campaign Phase.\n\n- Resistant: Remove 1 BLOOD MARKER from the Dragon when\n\nit is Activated. In addition, add -1 INJURY DICE to Injury Rolls for the Dragon if the attack has one or more of the following Keywords: FIRE, GAS, or SHRAPNEL.\n\n- Undying: The first, second, and third time the Dragon suffers an\n\nOut of Action result on the Injury Table, it is treated as a Down result instead. It then loses the Undying ability and replaces it with the Defiant ability:\n\n- Defiant: When the Dragon suffers an Out of Action result on the\n\nInjury Table, it is treated as a Down result instead. The Defiant ability is lost immediately when the sixth BLOOD MARKER is placed next to the Dragon (from then on, Out of Action results will affect it normally.)\n\n**Keywords \tFEAR**\n\n**The Peasants**\n\nThe Peasants are represented by suitably bedraggled and oppressed-looking models. The only thing an Activated Peasant model can do is take a Move or Retreat ACTION. When a player moves a Peasant model, they must do so so that it finishes the move as close as possible to the nearest edge of the battlefield. A Peasant will never enter Dangerous terrain, Climb, Jump, or Jump Down. If you are ever required to take a Success Roll for a Peasant, add -3 DICE to their roll. If a Peasant reaches the edge of the battlefield, they leave and are removed from the battlefield (▶ see Victory Conditions).\n\n**The Peasants**\n\nThe war has taken its toll on the peasantry. Many are suffering from never-before- seen ailments and diseases, their contaminated state is the main reason they have not been evacuated from the battlefield. Rescuing them is not an option. They pose a great risk to the troops. So, putting an end to their miserable lives is the only right thing to do.\n\n**Movement \tRanged \tMelee \tArmour \tBase**\n\n5”/Infantry - - 0 25mm Battlekit Peasants do not have any Battlekit. Abilities ** Feeble: Add +2 DICE and +2 INJURY DICE to the rolls for attacks that target a Peasant.\n\n**Keywords \tNone**"
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "At the end of the fourth Turn, the attacker rolls a D6. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the fifth Turn."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield or if the opposing Warband flees (typically due to failing a Morale Check). The game ends immediately in a draw if the Dragon leaves the battlefield. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nThe players must keep a running tally of the Victory Points they score during the game. Victory Points are scored for the following things:\n\n- Each player scores:\n\n* 2 VPs if an attack made by a friendly model takes a Peasant Out of Action. * 3 VPs if an attack made by a friendly model takes the Dragon Down (including when its Undying or Defiant abilities change the result to a Down result). * 6 VPs if an attack made by a friendly model takes the Dragon Out of Action (unless its Undying or Defiant abilities change the result to a Down result). * At the end of the game each player scores 1 VP for each Glorious Deed they completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Dragon Slayer: A friendly model on top of the Dragon takes the Dragon Out of\n\nAction with a Melee Attack (unless its Undying or Defiant abilities change the result to a Down result). You receive 2 ☼ for completing this Glorious Deed.\n\n- Fire with Fire: An attack made by a friendly model that has the FIRE, GAS\n\nand/or SHRAPNEL Keyword causes 2 BLOOD MARKERS to be placed next to the Dragon.\n\n- Genocidal: A model takes 3 Peasants Out of Action.\n\n- Opportunist: A model is within 3” of a Peasant when the Peasant is\n\ntrampled by the Dragon.\n\n- Off My Back: A friendly model takes a model that is on top of the Dragon\n\nDown, and the model then Falls off the Dragon."
+        }
+      ],
+      "mapImage": "/maps/dragon-hunt.png"
+    },
+    {
+      "number": 7,
+      "roman": "VII",
+      "name": "Supply Raid",
+      "slug": "supply-raid",
+      "tagline": "Raid enemy supplies or defend your caches from an assault.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "Before picking their Forces, the players must decide who is the attacker and who is the defender in this scenario. The player with the most models in their Warband (ignoring their Threshold Values or Field Strength) is the attacker in this scenario, and their opponent is the defender. If both players have the same number of models, they roll-off and the winner can decide who will be the attacker and who will be the defender."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land or Decimated Ruins battlefield archetype (the player setting up the terrain decides).\n\n**Supply Cache Markers**\n\nAfter the terrain has been set up, the players must set up 6 Supply Cache Markers. The players alternate setting up the Markers, one at a time, starting with the defender. Supply Cache Markers must be set up more than 6” from the edge of the battlefield, more than 6” away from any other Markers and more than 1” from Impassable terrain. Only one Marker can be placed in the defender’s Deployment Zone, and none can be placed within 12\" of the attacker’s Deployment Zone.\n\n- Destroying Supply Caches: A player can choose a Supply Cache Marker as the\n\ntarget for a Ranged Attack with the HEAVY Keyword, or a Melee Attack of any type. If the attack is a Success or a Critical Success, the Supply Cache Marker is destroyed (remove it from the battlefield)."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. Before deploying any models, the players must set up 6 Supply Cache Markers as described above. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). The defender may deploy a maximum of 6 models. The attacker may deploy a maximum of 6+D3 models. Any models that cannot be deployed are available as reinforcements. Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "heading": "REINFORCEMENTS",
+          "body": "At the start of each Turn, the players roll-off. The winner rolls a D3 to see how many reinforcement models each of the players can deploy. The players then alternate deploying reinforcement models, one at a time, starting with the player that won the roll-off. Reinforcement models must be deployed touching the edge of the battlefield, wholly within their Deployment Zone, and more than 8” from the closest enemy model. If a player runs out of reinforcement models, the opposing player can set up any remaining reinforcements they have available up to the limit set for the Turn. Players must set up reinforcements if they have any available and are allowed to do so (you can’t choose to hold them back)."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts four Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield after any reinforcements have been deployed or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of the game the attacker scores 1 VP for each Supply Cache Marker\n\nthat has been destroyed.\n\n- At the end of the game the defender scores 2 VPs for each Supply Cache Marker\n\nthat has not been destroyed.\n\n- At the end of the game each player scores 1 VP for each enemy model taken Out\n\nof Action and 1 VP for each Glorious Deed they completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Daring Raid (Attacker only): A friendly model destroys a Supply Cache Marker.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Rampage (Attacker only): A friendly model destroys a second Supply Cache Marker.\n\n- Save the Supplies! (Defender only): If there are four or more Supply Cache\n\nMarkers that have not been destroyed at the end of the game.\n\n- Stop Them! (Defender only): A friendly model takes an enemy Out of Action if\n\nthe enemy is fully or partially within their own Deployment Zone.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
+        }
+      ],
+      "mapImage": "/maps/supply-raid.png"
+    },
+    {
+      "number": 8,
+      "roman": "VIII",
+      "name": "From Below",
+      "slug": "from-below",
+      "tagline": "Conquer a pock-marked battlefield, but be careful not to rouse the beast that slumbers beneath.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario can use any battlefield archetype (the player setting up the terrain decides which one to use).\n\n**Ichor Pit Markers**\n\nThe 3 central Markers inside circles shown on the map represent Ichor Pits. Place the Ichor Pit Markers at the locations shown on the map before setting up any terrain. Terrain pieces cannot be set up within 1” of an Ichor Pit Marker. 12” 12” 12” 12” 6” 6” 6” 6” 14” 14” Artillery Shells Markers The 4 remaining Markers shown on the map represent Artillery Shells. After setting up any terrain, place the Artillery Shell Markers at the locations shown on the map."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). In this scenario, the players can only deploy half the models from their Force (rounding fractions up). Any remaining models are not used and are placed to one side. Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 6” of a Marker."
+        },
+        {
+          "heading": "ICHOR PIT MARKERS",
+          "body": "The entire battlefield was unknowingly built atop the back of a slumbering Larval Beast Lord. The unending barrage of shelling and gunfire has torn open wounds the size of pits across the monster’s back, each one filled with toxic ichor. This rare substance can corrode metal, flesh, and bone, carries unnamed diseases, and brims with properties not yet understood. Despite the immense risk of harvesting it and awakening the beast, the prize is simply too great to pass up. Open ground and terrain within 2” of the centre of the Ichor Pit Marker is treated as being Difficult and Dangerous terrain, in addition to any other terrain rules it may have. Each Ichor Pit contains enough Ichor to fill 6 Ichor Vials (▶ see below). We recommend you keep track of how many vials have been filled from a pit by putting a D6 on top of the Marker. An Ichor Pit with no Ichor left is no longer Dangerous Terrain.\n\n**Ichor Vials**\n\nEach model in this scenario has 3 empty Ichor Vials (even if they are not usually allowed to take Battlekit or Equipment). Each player must keep track of how many empty and filled Ichor Vials the models in their Warband are carrying. If a model is taken Out of Action, place a Vials Marker at their location and record how many empty or filled Ichor Vials it represents. All models in this scenario can take the following ACTIONS (no Success Rolls are necessary):\n\n- Fill Vial ACTION: A model with an empty Ichor Vial that is in contact with\n\nthe centre of an Ichor Pit Marker can take a Fill Vial ACTION. If it does so, it fills 1 empty Ichor Vial with Ichor.\n\n- Trade Vials ACTION: A model that is in contact with a friendly model can\n\ntake a Trade Vials ACTION. If it does so, you can swap any number of empty or filled Ichor Vials between the two models.\n\n- Steal Vials ACTION: A model that is in contact with a Vials Marker or an\n\nenemy model that is Down can take a Steals Vials ACTION. If it does so, you can take any number of empty or filled Ichor Vials from the Vials Marker or enemy model.\n\n- Extract Vials ACTION: A model that is in contact with the longest edge of the\n\nbattlefield in a Deployment Zone can take an Extract Vials ACTION. If it does so, you can extract any number of filled Ichor Vials from the model and replace them with empty Ichor Vials."
+        },
+        {
+          "heading": "ARTILLERY SHELLS MARKERS",
+          "body": "A player can choose an Artillery Shells Marker as the target for an attack. If the attack is a Success or a Critical Success, the Artillery Shells Marker explodes. An Artillery Shells Marker will also explode if it is caught in the radius of an attack with the BLAST Keyword. When an Artillery Shells Marker explodes, the players must first determine if the Beast awakens (▶ see below). If the Beast does not awaken, all models within 3” of it are hit in the same way as if they had been hit by an Infernal Bomb from the Heretic Legions Faction List (▶ see Infernal Bomb in Warbands of Trench Crusade). Then the Artillery Shells Marker is replaced with an Ichor Pit Marker and the players must set up Hell Ticks as described below."
+        },
+        {
+          "heading": "THE BEAST",
+          "body": "“I saw a great beast rise up from beneath, having seven amalgamated heads with ten mouths, and in each mouth, a thousand teeth and a hundred tongues, and upon its body were carved marks of blasphemy and the sigils of the end.” -New Syncretic Orthodox Bible Explosions caused by the piles of artillery shells may awaken the Beast. If the Beast awakens, all models that remain on the battlefield are taken Out of Action and the game ends (▶ see Victory Conditions).\n\n- First Explosion: The Beast twitches, causing a minor tremor across the\n\nbattlefield. Roll a D6 for each model that is not Down. On a roll of 6 the model is taken Down.\n\n- Second Explosion: Roll a D6. On a roll of 4-6, the Beast awakens.\n\n- Third Explosion: Roll a D6. On a roll of 3-6, the Beast awakens.\n\n- Fourth Explosion: The Beast awakens.\n\n**Call of the Beast**\n\nStarting with the first explosion of a pile of artillery shells, the Larval Beast’s wail of torment echoes through the valley, summoning the parasites buried within its own flesh to the surface. These bloated, bloodthirsty Hell Ticks claw and tear their way out of the creature’s body, swarming across the battlefield, ready to feast upon any living being they can sink their fangs into. If the Beast does not awaken after an explosion, the players roll-off and the winner can set up D3 Hell Tick models within 8” of the centre of the Ichor Pit Marker created by the explosion and more than 1” away from any other models. Hell Ticks are neutral models (▶ see below). Each Hell Ticks can be represented by a small and suitably insect-like model. If no suitable models are available, represent them with Markers.\n\n**Neutral Model Activation Rolls**\n\nHell Ticks are neutral models. Neutral models are treated as enemy models by both sides. In addition, when a player finishes an Activation with one of their models, they must take a Neutral Model Activation Roll by rolling a D6. If they roll a 1-4, they can Activate a Hell Tick of their choice. They cannot Activate a Hell Tick that has already been Activated (by either player). Once the Hell Ticks have been Activated during a Turn, stop making Neutral Model Activation Rolls until the following Turn. When a player Activates a Hell Tick, they must carry out an Activation with it using the rules below. If a player runs out of models from their own Warband to Activate and there are still Hell Ticks remaining to Activate, they must still make Neutral Model Activation Rolls. In the event that any Hell Ticks remain to be Activated after both players have finished Activating models from their Warband, just roll-off for each one, the winner must Activate the model.\n\n**Hell Tick Actions**\n\nWhen a player Activates a Hell Tick, they must first choose its prey (▶ see below). They must then take 1 Move ACTION and 1 Dash ACTION or 1 Fight ACTION with the Hell Tick. If the Hell Tick is not within 1” of its prey, it will move as described below and then Fight if it is within 1” of its prey or Dash if it is not. If the Hell Tick starts within 1” of its prey, it will attack before it moves. If the attack takes the prey Out of Action, choose new prey and then move the Hell Tick as described below. The Hell Tick’s chosen prey is determined by using the following list of priorities:\n\n- If there are any models within 20” of the Hell Tick that have BLOOD\n\nMARKERS, then it will choose the model with the most BLOOD MARKERS as its prey. If two or more models have the same number of BLOOD MARKERS, it will choose the closest as its prey. If two or more models are equally close, the player can choose which model is its prey.\n\n- If there are no models within 20” of the Hell Tick that have BLOOD\n\nMARKERS, then it will choose the closest as its prey. If two or more models are equally close, the player can choose which model is its prey.\n\n- Ignore other Hell Tick models when working out a Hell Tick’s chosen prey.\n\n**Moving the Hell Tick**\n\nA player must move a Hell Tick towards its prey so that it finishes either in contact with it, or if that is impossible, as close to its prey as possible.\n\n**Attacking with the Hell Tick**\n\nWhen the Hell Tick attacks, it will target its prey if it can do so. Otherwise, it will target the nearest model it can attack. If two or more potential targets are equally close to the Hell Tick, the player can choose which model it attacks. When a Hell Tick attacks, it makes a Melee Attack using its Mandibles ability.\n\n**Hell Ticks**\n\nHell Ticks infest No Man’s Land. Creatures of monstrous size with a voracious appetite for blood. Infestation follows wherever the path of the Beast cuts through the land.\n\n**Movement \tRanged \tMelee \tArmour \tBase**\n\n10”/Infantry - +1 DICE 0 25mm Battlekit Hell Ticks do not have any Battlekit. Abilities ** Mandibles: A Hell Tick can make a Melee Attack even though it does not have a Melee Weapon. Add +1 INJURY DICE to rolls for a Melee Attack made by a Hell Tick. Whenever a Melee Attack made by a Hell Tick causes any BLOOD MARKERS to be placed on the target, you can remove up to 1 BLOOD MARKER from the attacking Hell Tick model.\n\n- Poisoned: Whenever a Melee Attack made by a Hell Tick\n\ncauses any BLOOD MARKERS to be placed on the target, the target model becomes poisoned (it cannot be poisoned more than once). When you Activate a friendly model that has been poisoned, you must place 1 BLOOD MARKER next to the model. You can then spend a BLESSING MARKER that is next to the model if you wish to do so. If you do, the model is no longer poisoned.\n\n**Keywords \tNone**"
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "The game ends if the Beast awakens. In addition, at the end of the fourth Turn, the attacker rolls a D6. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the fifth Turn, provided the Beast fails to awaken before then."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees (typically due to failing a Morale Check). The game ends immediately in a draw if the Beast awakens. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of the game each player scores 1 VP for each Ichor Vial that they\n\nextracted and 1 VP for each Glorious Deed they completed during the game."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Bloodlust: A friendly model that has been poisoned uses a Bloodbath Roll to\n\ntake an enemy model that has been poisoned Out of Action. You can convert an Injury Roll into a Bloodbath Roll by spending BLOOD MARKERS (▶ see BLOOD MARKERS).\n\n- For Science: A friendly model extracts 3 Ichor Vials.\n\n- Ichor Frenzy: A friendly model extracts an Ichor Vial when it is wholly within\n\nthe enemy Deployment Zone.\n\n- Risk Taker: A friendly model causes an explosion that takes 2 or more enemy\n\nmodels Out of Action.\n\n- Sadistic Wretch: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move into an Ichor Pit.\n\n- Vial Thief: A friendly model steals an Ichor Vial from an enemy model and then\n\nmanages to extract it."
+        }
+      ],
+      "mapImage": "/maps/from-below.png"
+    },
+    {
+      "number": 9,
+      "roman": "IX",
+      "name": "Fields of Glory",
+      "slug": "fields-of-glory",
+      "tagline": "Show your might and bravery. Fight to the glorious death and let your legend live on.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the Trench Lines battlefield archetype."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts four Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- At the end of the game each player scores:\n\n* 1 VP for each Glorious Deed they completed. * 1 extra VP for each of the following Glorious Deeds they completed: Elite Hunter, Personal Revenge, and Risk It All. * 2 extra VPs if they completed the Trench Raider Glorious Deed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack that has the Diving Charge modifier.\n\n- Elite Hunter: A friendly model takes two enemy models with the ELITE\n\nKeyword Out of Action.\n\n- No Escape: A friendly model successfully charges an enemy model that it did\n\nnot have a Line of Sight to at the start of its Activation.\n\n- Personal Revenge: A friendly model uses a Bloodbath Roll to take an enemy\n\nmodel Out of Action if the enemy model had taken a friendly model Out of Action earlier in the game.\n\n- Reaper: A friendly model takes three enemy models Out of Action.\n\n- Risk It All: A friendly model takes two Risky Success Rolls in the same\n\nActivation, and both are a Success or Critical Success.\n\n- The Real Killer: A friendly model takes an enemy model that is on Dangerous or\n\nDifficult terrain Out of Action.\n\n- Trench Raider: A Warband captures a trench section that is at least 6” long and\n\nis wholly within 8” of the enemy Deployment Zone. A Warband captures a trench section if there are 1 or more friendly models in the trench and no enemy models are within 1” of it."
+        }
+      ],
+      "mapImage": "/maps/fields-of-glory.png"
+    },
+    {
+      "number": 10,
+      "roman": "X",
+      "name": "Don’t Breathe",
+      "slug": "dont-breathe",
+      "tagline": "Beware of poison gas as you assault enemy bunkers or drive back the attackers with the power of mustard gas!",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "Before picking their Forces, the players must decide who is the attacker and who is the defender in this scenario. The player with the most models in their Warband (ignoring their Threshold Values or Field Strength) is the attacker in this scenario and their opponent is the defender. If both players have the same number of models, they roll-off and the winner decides who will be the attacker and who will be the defender."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype and requires a battlefield that is 48\" by 48\". When setting up the terrain for this scenario, do not set up any terrain in either Deployment Zone. 18” 20 10 12 MINE"
+        },
+        {
+          "heading": "PLACEMENT AREA",
+          "body": ""
+        },
+        {
+          "heading": "DEPLOYMENT AREA",
+          "body": "**Trench**\n\n**Section**\n\n**Trench**\n\n**Section**\n\n**Trench**\n\n**Section**\n\n**Trench**\n\n**Section**\n\n**Trench**\n\n**Section**\n\n**Trench**\n\n**Section**\n\n**Bunker**\n\n**Bunker**\n\n**Bunker**\n\n**Bunker**"
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. Before any models are deployed, the defender must set up their Trench Lines, Bunkers, and Gas Mine Markers as described below. The players then alternate deploying their models one at a time, starting with the attacker. The players alternate deploying their models one at a time, starting with the attacker. The defender may deploy a maximum of 6 models. The attacker may deploy a maximum of 6+D3 models. Any models that cannot be deployed are available as reinforcements (▶ see below). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Defending Trench Lines**\n\nThe defender must set up six trench sections that are at least 8” long at the locations shown on the map. They can add additional trench sections of any size if they wish to, but all must be set up wholly within their Deployment Zone and more than 3” from the centre of where any of the Bunker Markers will be placed.\n\n**Bunkers Markers**\n\nThe Bunker Markers represent heavily armoured entrenchments. After the Defender has set up their Trenches, they must set up four terrain pieces on top of where a Bunker Marker will be set up. They must use Intact Building terrain pieces if available (if they run out of Buildings, they can use whatever terrain pieces they wish). Place each Bunker Marker anywhere on the terrain piece that covers its starting position; the whole of the terrain piece is treated as the Bunker in this scenario.\n\n**Gas Mine Markers**\n\nAfter the defender sets up their Trenches, they can set up 12 Gas Mine Markers. At least 8 of the Gas Mine Markers must be placed wholly within the Gas Mine Placement Area. Up to 4 can be placed wholly within the defender’s Deployment Zone. After setting the Gas Mine Markers up, the defender must secretly write down which 4 of the Gas Mine Markers are duds. All of the other Gas Mine Markers are live and have the MINED Keyword and the following special rules.\n\n- Choking Mines: As soon as a model moves within 3” of a Gas Mine Marker,\n\ntemporarily halt its move. The defender must then reveal if the Gas Mine Marker is a dud. If it is, nothing happens. If it is a live mine, it detonates in the same way as if the model had moved into contact with a Marker with the MINED Keyword. The Gas Mine Marker is then removed and replaced with a Gas Cloud Marker. The moving model can then carry on with its move as long as it wasn’t taken Down or Out of Action. Models with the FLYING Keyword only trigger a Gas Mine Marker if they finish a move in contact with it (they can fly across it without setting it off ).\n\n- Gas Cloud Markers: Place 1 BLOOD MARKER next to each model that is\n\nwithin 6” of the centre of a Gas Cloud Marker when it is set up. In addition, place 1 BLOOD MARKER next to a model that is within 6” of the centre of a Gas Cloud Marker when the model is Activated.\n\n- Detonating Gas Cloud Markers: A model can choose a Gas Cloud Marker as\n\nthe target for an attack with a weapon that has the BLAST or FIRE Keyword. If the attack is a Success or a Critical Success, the Gas Cloud Marker explodes. A Gas Cloud Marker will also explode if it is caught in the radius of an attack with the BLAST Keyword.\n\n- Gas Cloud Explosions: When a Gas Cloud Marker explodes, make an Injury\n\nRoll for each model within 3” of the Marker as if they had been hit by a weapon with the +2 INJURY DICE and FIRE Keywords. If the model is not taken Out of Action by the Injury Roll, it is blown away D3” in a straight line directly away from the centre of the Marker. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb. The Gas Cloud Marker is then removed from the battlefield.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. Attacking models that deploy using their special deployment rules cannot deploy within 8” of a Bunker Marker."
+        },
+        {
+          "heading": "REINFORCEMENTS",
+          "body": "At the start of each Turn, the players roll-off. The winner rolls a D3 to see how many reinforcement models each of the players can deploy. The players then alternate deploying reinforcement models, one at a time, starting with the player that won the roll-off. Reinforcement models must be deployed touching the edge of the battlefield, wholly within their Deployment Zone, and more than 8” from the closest enemy model. If a player runs out of reinforcement models, the opposing player can set up any remaining reinforcements they have available up to the limit set for the Turn. Players must set up reinforcements if they have any available and are allowed to do so (you can’t choose to hold them back)."
+        },
+        {
+          "heading": "DESTROYING BUNKERS",
+          "body": "Models on the attacking side with the ELITE Keyword have Demo Charges even if they are not usually allowed to take Battlekit or Equipment. A model that has Demo Charges can take the following ACTIONS (no Success Rolls are necessary):\n\n- Place Demo Charge ACTION: A model that has Demo Charges and is in\n\ncontact with a Bunker can take an ACTION to place the Demo Charge on the Bunker. Once it does so, it no longer has the Demo Charge but can now use the Detonate Demo Charge ACTION.\n\n- Detonate Demo Charge ACTION: A model that has set Demo Charges can\n\ntake an ACTION to detonate the Demo Charge. It can take the ACTION at any time during the game, and can wait one or more Turns before it does so if desired (this gives the model a chance to move away so it does not get caught in the explosion). When it finally takes the ACTION, make an Injury Roll with the IGNORE ARMOUR Keyword for every model within 3” of the Bunker. The Bunker Marker is then removed, and the terrain piece it was on is no longer considered a Bunker. Note that if a model that has placed a Demo Charge is taken Out of Action, it will not be possible to detonate the Demo Charge."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "At the end of the fifth Turn, the attacker rolls a D6. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nThe players must keep a running tally of the Victory Points they score. Victory Points are scored for the following things:\n\n- At the end of each Turn, the defender scores 1 VP for each trench section that\n\nis at least 8” long and has one or more defending models in it. If there are no attacking models in the trench section, the defender scores 2 VPs instead of 1.\n\n- At the end of each Turn, the attacker scores:\n\n* At the end of each Turn, the attacker scores 2 VPs for each trench section that is at least 8” long and has one or more attacking models in it. If there are no defending models in the trench section, the attacker scores 3 VPs instead of 2 * 2 VPs for each Bunker that was destroyed by a Demo Charge that Turn.\n\n- At the end of the game each player scores 1 VP for each Glorious Deed they\n\ncompleted and 4 VP for each Bunker they control. A player controls a Bunker if there are more friendly models within 1” of it than there are enemy models."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Burning Sight: A friendly model causes a Gas Cloud Marker that is more\n\nthan 14” away from it to explode, and the explosion takes one or more enemy models Out of Action.\n\n- Combustive: A friendly model causes a Gas Cloud Marker to explode, and the\n\nexplosion takes two or more enemy models Out of Action.\n\n- Deep Breaths: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move within 6” of the centre of a Gas Cloud Marker.\n\n- Iron Lungs: A Warband controls a Bunker that is within 6” of the centre\n\nof a Gas Cloud Marker at the end of two consecutive Turns. A Warband controls a Bunker if there are more friendly models within 1” of it than there are enemy models.\n\n- Poisonous Rage: A friendly model that is within 6” of the centre of a Gas Cloud\n\nmakes a Melee Attack that takes an enemy model Out of Action."
+        }
+      ],
+      "mapImage": "/maps/dont-breathe.png"
+    },
+    {
+      "number": 11,
+      "roman": "XI",
+      "name": "The High Ground",
+      "slug": "the-high-ground",
+      "tagline": "Capture the high ground at all costs. Every casualty is worth it to claim this crucial tactical location.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land or Decimated Ruins battlefield archetype (the player setting up the terrain decides which one to use) and requires a battlefield that is at least 36” by 36”.\n\n**Objective Markers**\n\nThe Markers shown on the map show high ground that the Warbands have been ordered to capture. When you set up the terrain pieces for this scenario, you must place the first five terrain pieces so that they are covering the locations where the Objective Markers will be set up, and at least 3” away from each other. In addition, you must use terrain pieces that are at least 6” tall. The terrain piece covering the central Objective Marker must be the tallest terrain piece available. The Objective Markers are set up after all of the terrain. Place each Objective Marker anywhere on the terrain piece that covers its starting position; the whole of the terrain piece is treated as the Objective for this scenario, and cannot be destroyed or removed for any reason.\n\n**Controlling Objectives**\n\nA player controls an Objective terrain piece if there are more friendly models on, in, or within 1” of the terrain piece than there are enemy models. If one player has any models on the terrain piece and their opponent does not, then the player with models on the terrain piece controls it even if their opponent has more models within 1” of the Objective."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 3” of an Objective."
+        },
+        {
+          "heading": "TOP PRIORITY OBJECTIVE",
+          "body": "After deployment, each player must secretly write down which one of the five Objectives is their top priority. Capturing it will earn the player additional VPs at the end of the game (▶ see Victory Conditions)."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts five Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees (typically due to failing a Morale Check). Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\n- Each player scores 1 VP each time a friendly model takes an enemy model Out of\n\nAction with a Melee Attack that has the Diving Charge modifier.\n\n- At the end of each Turn, each player scores 2 VPs for each\n\nObjective they control.\n\n- At the end of the game each player scores:\n\n* 1 VP for each Glorious Deed they completed. * 3 VPs if they control the opponent’s Top Priority Objective. * 3 VPs if they control their Top Priority Objective."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "- Back to the Mud: A friendly model causes an enemy model that is on an\n\nObjective to Fall and the Fall results in it being taken Out of Action.\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- Down with You: A friendly model on an Objective uses a Ranged Attack to take\n\nOut of Action an enemy model on a different, higher Objective.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- King of the Hill: A model has been on all five Objectives."
+        }
+      ],
+      "mapImage": "/maps/the-high-ground.png"
+    },
+    {
+      "number": 12,
+      "roman": "XII",
+      "name": "Great War",
+      "slug": "great-war",
+      "tagline": "The order for general assault has been given. The skirmishes are over. It is time to wipe out your hated enemy once and for all. The Great War begins.",
+      "sections": [
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario can use any battlefield archetype (the player setting up the terrain decides which one to use)."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another, until they have none left. Once the players have set up their models, deployment ends, and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. TO THE DEATH! Neither side takes Morale Checks during this game, and neither player can choose to flee with their Warband."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts five Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nEach player scores VPs for enemy models that were taken Out of Action equal to the model’s Cost, divided by 10 if it has a Cost in 👑 , or by 3 if it has a Cost in ☼ (rounding fractions up). Include the model’s Battlekit, Glory Items, and any other upgrades in its Cost. If a model has items worth both 👑 and ☼, work out each separately. For example, a model that had a total Cost of 100 👑 and 6 ☼ would be worth 100/10 = 10 VPs, plus 6/3 = 2VPs, for a total of 12 VPs."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "There are no Glorious Deeds in this scenario, just victory or death!\n\n**MK**"
+        }
+      ],
+      "mapImage": "/maps/great-war.png"
+    }
+  ],
+  "battlekit": [
+    {
+      "name": "Anti-Materiel Rifle",
+      "section": "Ranged Weapons",
+      "description": "Enormous long rifles designed to take out heavily armoured targets, vehicles and strongpoints. With the powerful armour available to the armies of the Great war, these terrifying weapons are much in demand. A downside is their enormous weight and terrifying recoil, and thus they are most often used by Communicants or Anointed who possess the supernatural strength to wield such weapons.",
+      "type": "2-Handed",
+      "range": "36’’",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "HEAVY",
+        "IGNORE ARMOUR"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Automatic Pistol",
+      "section": "Ranged Weapons",
+      "description": "Automatic pistols are symbols of prestige owing to their rarity and cost. They are excellent weapons when storming trenches or fighting in hand-to-hand combat. They boast a high rate of fire, though they can be hard to control even for the best sharpshooters since they usually lack a stock.",
+      "type": "1-Handed",
+      "range": "12”/Melee",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2",
+        "PISTOL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Automatic Rifle",
+      "section": "Ranged Weapons",
+      "description": "A marvel of modern engineering, only a few prototypes exist. It has a high rate of fire and can be quickly re-loaded.",
+      "type": "2-Handed",
+      "range": "24”",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2"
+      ],
+      "note": "",
+      "rules": [
+        "Focused Fire: When this Weapon is used to make 2 Ranged Attacks, the same enemy model must be the target of both attacks."
+      ]
+    },
+    {
+      "name": "Automatic Shotgun",
+      "section": "Ranged Weapons",
+      "description": "This shotgun is equipped with an auto-loader, a recent invention by the Prussian engineering corps of Königsberg. It is ideal for close quarter combat thanks to its high rate of power and accuracy. The technology has not been perfected, however, and sometimes leads to misfeeds and jams.",
+      "type": "2-Handed",
+      "range": "12”",
+      "keywords": [
+        "+1 DICE",
+        "ASSAULT",
+        "SHOTGUN"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Blunderbuss",
+      "section": "Ranged Weapons",
+      "description": "A firearm of a bygone era, loaded with rusty nails, lead shot, grenade shrapnel and shell pieces.",
+      "type": "2-Handed",
+      "range": "10”",
+      "keywords": [
+        "SHRAPNEL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Bolt-Action Rifle",
+      "section": "Ranged Weapons",
+      "description": "The workhorse of the Great War. Sturdy, highly reliable and reasonably accurate, it is no surprise that most of the infantry of the Great War carry this battlefield classic.",
+      "type": "2-Handed",
+      "range": "24”",
+      "keywords": [],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Flamethrower",
+      "section": "Ranged Weapons",
+      "description": "A flamethrower is a terrifying Weapon capable of projecting great streams of fire and flammable liquids at a distance. It is ideal for clearing bunkers, trenches and other fortifications, killing in a most horrific way. Consequently, it is greatly favoured by the Heretic forces.",
+      "type": "2-Handed",
+      "range": "8’’",
+      "keywords": [
+        "-1 INJURY DICE",
+        "FIRE",
+        "FLAMETHROWER",
+        "IGNORE ARMOUR"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Grenade Launcher",
+      "section": "Ranged Weapons",
+      "description": "Modifications of great siege rifles designed to lob grenades over long distances.",
+      "type": "2-Handed",
+      "range": "36”",
+      "keywords": [
+        "BLAST 3”",
+        "HEAVY",
+        "IGNORE COVER",
+        "SHRAPNEL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Heavy Flamethrower",
+      "section": "Ranged Weapons",
+      "description": "These massive flamethrowers are normally mounted on armoured vehicles, but those possessing uncanny strength may use them as infantry weapons.",
+      "type": "2-Handed",
+      "range": "10’’",
+      "keywords": [
+        "-1 INJURY DICE",
+        "AUTOMATIC 2",
+        "FIRE",
+        "FLAMETHROWER",
+        "HEAVY",
+        "IGNORE ARMOUR"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Heavy Shotgun",
+      "section": "Ranged Weapons",
+      "description": "This massive 8 bore shotgun is used to take down extremely powerful and large opponents at short range. It is known as a “Wolf-Killer” in New Antioch as it is the weapon favoured by the soldiery of the Duke to take down the Heretic War Wolf Assault Beasts. Heavy shotguns use tungsten-orichalcum alloy shot which explains their enormous stopping power at short ranges.",
+      "type": "2-Handed",
+      "range": "12”",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY",
+        "SHOTGUN"
+      ],
+      "note": "",
+      "rules": [
+        "Tungsten-orichalcum Alloy Shot: Add +1 INJURY DICE to rolls for Ranged Attacks made by this Weapon at Short Range."
+      ]
+    },
+    {
+      "name": "Machine Gun",
+      "section": "Ranged Weapons",
+      "description": "Machine guns are lethal fully-automatic firearms, capable of mowing down entire ranks of infantry from afar. The firing rate depends on the lock assembly used but averages 500 rounds per minute.",
+      "type": "2-Handed",
+      "range": "36”",
+      "keywords": [
+        "AUTOMATIC 3",
+        "HEAVY",
+        "RELOAD"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Musket",
+      "section": "Ranged Weapons",
+      "description": "A primitive weapon from a bygone age, the musket is a smooth bore long rifle that shoots lead balls. It still sees widespread use due to its simple construction and low price.",
+      "type": "2-Handed",
+      "range": "18”",
+      "keywords": [
+        "-1 INJURY DICE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Pistol",
+      "section": "Ranged Weapons",
+      "description": "Pistols come in a staggering variety, ranging from revolvers to semi-automatic pistols. Heretic forges produce their own, often highly elaborate sidearms. They see extensive use in close-quarter combat.",
+      "type": "1-Handed",
+      "range": "12”/Melee",
+      "keywords": [
+        "PISTOL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Semi-Automatic Rifle",
+      "section": "Ranged Weapons",
+      "description": "Semi-automatic rifles are said to be an invention of Marbas, the Devil who holds great wisdom and knowledge in mechanical arts. They are excellent both at long range and in assault, combining accuracy and high rate of fire, though they are prone to jamming.",
+      "type": "2-Handed",
+      "range": "24’’",
+      "keywords": [
+        "ASSAULT"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Shotgun",
+      "section": "Ranged Weapons",
+      "description": "Short-barrelled pump action shotgun loaded with six rounds containing antimony hardened 00 buckshot, the combat shotgun is ideal for short-range engagements, clearing trenches and taking out lightly-armoured infantry. Often featuring stocks made of walnut or other rare wood, it is a custom of the troops to decorate these arms with carvings and inscriptions.",
+      "type": "2-Handed",
+      "range": "12’’",
+      "keywords": [
+        "+1 DICE",
+        "SHOTGUN PW"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Silenced Pistol",
+      "section": "Ranged Weapons",
+      "description": "A sophisticated sidearm made of orichalcum or other holy metals, or from Infernal iron taken from the very prisons of Hell to muffle the wails of the damned. It is virtually silent and is excellent for ambushes or for shooting from behind cover.",
+      "type": "1-Handed",
+      "range": "12”/Melee",
+      "keywords": [
+        "ASSAULT",
+        "PISTOL"
+      ],
+      "note": "",
+      "rules": [
+        "Silent: Add +1 DICE to the roll if the attacker is in contact with a terrain piece that is at least ½” tall and that lies in between it and the target model."
+      ]
+    },
+    {
+      "name": "Sniper Rifle",
+      "section": "Ranged Weapons",
+      "description": "A sniper rifle is a high-precision, long-range rifle, widely used in the trenches to pick off high value targets such as officers, sappers and artillery crews. Expensive and rare, they are commonly given to the best marksmen and sharpshooters of the warband.",
+      "type": "2-Handed",
+      "range": "48”",
+      "keywords": [
+        "+1 DICE",
+        "CRITICAL",
+        "RISKY"
+      ],
+      "note": "",
+      "rules": [
+        "Bull’s Eye: If the Success Roll for a Ranged Attack made with a Sniper Rifle is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword."
+      ]
+    },
+    {
+      "name": "Submachine Gun",
+      "section": "Ranged Weapons",
+      "description": "The submachine gun (or SMG) is a fully automatic firearm, trading lower penetration power and range for a much higher rate of fire. Ideal for short-range engagements, it is much sought-after by warbands despite its scarcity and high cost.",
+      "type": "2-Handed",
+      "range": "16”",
+      "keywords": [
+        "ASSAULT"
+      ],
+      "note": "",
+      "rules": [
+        "Quick Bursts: A model armed with a Submachine Gun can take two Shoot ACTIONS during the same Activation, as long as the Submachine Gun is used to make both attacks. The Shoot ACTIONS can be taken one after the other, or other ACTIONS can be taken between the Shoot ACTIONS."
+      ]
+    },
+    {
+      "name": "Anti-Tank Hammer",
+      "section": "Melee Weapons",
+      "description": "A polearm with a directional explosive mounted on its head. It is exceedingly good at taking out armoured targets but puts its user in grave danger.",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "IGNORE ARMOUR",
+        "RISKY"
+      ],
+      "note": "",
+      "rules": [
+        "Dangerous: Place 1 BLOOD MARKER next to the model using this Weapon if it makes a Melee Attack and the Success Roll is a Success or a Critical Success."
+      ]
+    },
+    {
+      "name": "Bayonet",
+      "section": "Melee Weapons",
+      "description": "Bayonets are blades in the form of spikes or daggers that can be fixed to the tip of a firearm and used in melee combat.",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CUMBERSOME PW"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Flail/Scourge",
+      "section": "Melee Weapons",
+      "description": "The metal whips of the Church are supremely good at both instilling discipline in the ranks of the faithful and tormenting the heretics. Many devils also enjoy using these weapons due to the excruciating pain they inflict. These weapons are extremely difficult to dodge.",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 DICE"
+      ],
+      "note": "",
+      "rules": [
+        "Unwieldy: The +1 DICE Keyword does not apply when this Weapon is used as an Off- Hand Weapon."
+      ]
+    },
+    {
+      "name": "Great Hammer/Maul",
+      "section": "Melee Weapons",
+      "description": "These are large, cumbersome weapons, often made from sturdy wood with a metal tip of steel, lead or iron of Tartarus. It takes great strength to fight with it for any length of time. They are especially suited for attacking armoured targets.",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "HEAVY"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Great Sword/Axe",
+      "section": "Melee Weapons",
+      "description": "Claymores, Zweihänders and even huge battle axes are used in the trenches when bullets fail to stop quick or well-armoured targets. The strikes from these weapons can easily lop off limbs and heads.",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "HEAVY"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Misericordia",
+      "section": "Melee Weapons",
+      "description": "The misericordia dagger is designed to put enemies out of their misery by finding chinks in the armour: eye slits, neck joints and every other vulnerable seam.",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Despatch: This weapon has the IGNORE ARMOUR Keyword if the target is Down."
+      ]
+    },
+    {
+      "name": "Polearm",
+      "section": "Melee Weapons",
+      "description": "Trench pikes, billhooks, spears and other long polearms are excellent defensive weapons, but are cumbersome and heavy.",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "BLOCK",
+        "CUMBERSOME"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Sword/Axe",
+      "section": "Melee Weapons",
+      "description": "Because of the martial traditions of many proud nations and due to the advances in armour technology, swords and axes are extremely popular, especially amongst elite units and officers. They are supremely useful for finishing off downed opponents and causing profusely bleeding wounds.",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Trench Club",
+      "section": "Melee Weapons",
+      "description": "Trench Clubs are one of the most common weapons of the Great War, as melee combat is frequent and brutal. Usually made of wood with a metal tip from iron, lead or steel, trench clubs often feature spikes and hobnails. Most designs have some form of cord or leather strap at the end to wrap around the user’s wrist.",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Trench Knife",
+      "section": "Melee Weapons",
+      "description": "Virtually all soldiers carry a trench knife, dagger or other kind of blade for close quarter engagements. It may lack the devastating power of a great maul or other heavier melee weapons, but this humble weapon has taken countless lives during the Great War.",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "-1 DICE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Frag Grenades",
+      "section": "Grenades",
+      "description": "Fragmentation grenades or hand bombs are a staple of trench warfare. Usually referred to as frag grenades, they can kill the enemy underground or behind cover. They can also force the enemy into the open, providing targets for rifle and machine gun fire.",
+      "type": "Grenade",
+      "range": "8’’",
+      "keywords": [
+        "ASSAULT",
+        "BLAST 2”",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "SHRAPNEL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Gas Grenades",
+      "section": "Grenades",
+      "description": "Gas grenades are insidious weapons, attacking the lungs and other internal organs with noxious fumes. Devil alchemists of the Fifth Circle are especially clever in creating these fiendish and hated weapons.",
+      "type": "Grenade",
+      "range": "8’’",
+      "keywords": [
+        "-1 INJURY DICE",
+        "ASSAULT",
+        "BLAST 3”",
+        "GAS",
+        "IGNORE ARMOUR",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Incendiary Grenades",
+      "section": "Grenades",
+      "description": "Incendiary grenades can set their target alight with sulphur, phosphorous or flammable gas captured from the Lake of Fire in the Seventh Circle of Hell.",
+      "type": "Grenade",
+      "range": "8’’",
+      "keywords": [
+        "ASSAULT",
+        "FIRE",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE"
+      ],
+      "note": "",
+      "rules": [
+        "Liquid Fire: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword."
+      ]
+    },
+    {
+      "name": "Molotov Cocktail",
+      "section": "Grenades",
+      "description": "Developed on the desperate Finnish battle frontier against ice demons, this improvised weapon consists of a glass bottle containing a flammable substance such as gasoline, alcohol or a napalm-like mixture plus a source of ignition.",
+      "type": "Grenade",
+      "range": "6”",
+      "keywords": [
+        "-1 INJURY DICE",
+        "ASSAULT",
+        "FIRE",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE"
+      ],
+      "note": "",
+      "rules": [
+        "Liquid Fire: If the Success Roll for a Ranged Attack made with a Molotov Cocktail is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword."
+      ]
+    },
+    {
+      "name": "Satchel Charge",
+      "section": "Grenades",
+      "description": "Battlefield explosives designed to break apart enemy fortifications and to crack even the toughest of armour.",
+      "type": "Grenade",
+      "range": "6”",
+      "keywords": [
+        "+1 INJURY DICE",
+        "BLAST 3”",
+        "CONSUMABLE",
+        "HEAVY",
+        "IGNORE ARMOUR",
+        "IGNORE COVER",
+        "SCATTER"
+      ],
+      "note": "",
+      "rules": [
+        "Heavy Explosive: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack. PW"
+      ]
+    },
+    {
+      "name": "Trench Shield",
+      "section": "Shields",
+      "description": "Shields used in trench warfare are made of steel reinforced with orichalcum to allow them to withstand even high-calibre bullets, or from metal mined from Infernal bedrock and shaped in the armouries of Pandemonium, the capital of Hell.",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Reinforced Armour",
+      "section": "Armour",
+      "description": "Reinforced armour is a master-crafted suit made individually for the most important and elite troops. Each one is richly decorated and often carries the personal device of the warrior who wears it.",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Standard Armour",
+      "section": "Armour",
+      "description": "With the advancements in metallurgy and technology, both Faithful and Heretic armies are well-equipped with suits of alloy armour that can withstand an impact from a bullet or turn aside the sharpest of blades. Standard armour is usually mass- produced, but highly effective even against high-calibre weapons.",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Armour-Piercing Bullets",
+      "section": "Equipment",
+      "description": "Advanced armour technology has forced the armouries of the Great War to forge new types of bullets. Expensive and labour-intensive to produce, these hardened tungsten rounds are more effective against battlefield armour.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "AMMUNITION (ARMOUR- PIERCING)",
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Binoculars",
+      "section": "Equipment",
+      "description": "It is quite common for officers to carry finely-crafted battlefield binoculars to survey the land ahead, spot hidden enemy troops and observe any sign of movement.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Survey the Land: Enemy models cannot use the INFILTRATOR Keyword to deploy within 16” of a model with this Keyword unless they are in their own side’s deployment zone."
+      ]
+    },
+    {
+      "name": "Blessed Icon",
+      "section": "Equipment",
+      "description": "Small icons of saints, great angels and holy warriors are a common sight amongst the Trench Pilgrims. They are hung on rosaries, belts, or attached to portable shrines carried on the Pilgrims’ backs.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": [
+        "Talisman: Once during a game, when a Risky Success Roll for a model with a Blessed Icon is a Failure, you can say that the model will use its Talisman. If you do, the model’s Activation does not end."
+      ]
+    },
+    {
+      "name": "Combat Helmet",
+      "section": "Equipment",
+      "description": "The simple combat helmet has proven its value on the battlefield time and again.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE SHRAPNEL"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Dum-Dum Bullets",
+      "section": "Equipment",
+      "description": "These hollow-point bullets are far more likely to cause fatal wounds than standard ammunition.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "AMMUNITION (CRITICAL)",
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Field Shrine",
+      "section": "Equipment",
+      "description": "Holy reliquaries, blessed artefacts and sacred crosses are often carried to the battlefield to encourage the troops, while the Heretics bring idols of the Golden Calf, tortured captives or other wicked totems to bear.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "DEPLOYABLE"
+      ],
+      "note": "A Field Shrine is represented by a terrain piece that is at least ½” high and which is mounted on a 40mm base. It is Impassable terrain.",
+      "rules": [
+        "Site of Worship: After you deploy a model that has Field Shrine, you can also deploy their Field Shrine anywhere wholly within their deployment zone. In the Morale Phase, each friendly Field Shrine on the battlefield adds 3 to the number of models you have in your Warband that are not Down or Out of Action, up to a maximum bonus of 9 extra models. Once deployed, the model that had the Field Shrine is not considered to be carrying it for the rest of the game.",
+        "Tear It Down!: Models can attack a Field Shrine as if it were an enemy model. If it is hit by an attack or is in the blast radius of an attack made with a Weapon that has the BLAST Keyword, it is removed from the battlefield and is removed from the Warband Roster (no Injury Roll is required)."
+      ]
+    },
+    {
+      "name": "Gas Mask",
+      "section": "Equipment",
+      "description": "Mustard gas, phosgene, chlorine as well as noxious fumes from the bolgias of Hell plague the battlefield. The gas mask allows soldiers to withstand such attacks.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE GAS"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Hellbound Soul Contract",
+      "section": "Equipment",
+      "description": "An infernal contract signed by a Heretic and the demon who will come to collect the damned soul when death is close. The mortal signatory bursts into Infernal flames when seriously wounded.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Fiery Exodus: If a model with a Hellbound Soul Contract is taken Out of Action, before removing it from the battlefield add 1 BLOOD MARKER to each enemy model that is within 1” of it. Models that have the NEGATE FIRE Keyword are not affected by this special rule."
+      ]
+    },
+    {
+      "name": "Holy Relic",
+      "section": "Equipment",
+      "description": "Due to the threat to all Creation, the churches, cathedrals and basilicas have emptied their reliquaries and distributed their relics to the frontline troops to aid them in their battle against the damned.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "BLESSED 1"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Incendiary Ammunition",
+      "section": "Equipment",
+      "description": "Developed by Aym, the great duke of Hell, these bullets set any target they hit on fire.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "AMMUNITION (FIRE)",
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Infernal Brand",
+      "section": "Equipment",
+      "description": "A Heretic who has made a holy pilgrimage into Hell itself is branded by their patron devil with an ever-burning mark. Mortal fire no longer has the power to harm them.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE FIRE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Martyrdom Pills",
+      "section": "Equipment",
+      "description": "Martyrdom pills are a potent mixture of mind-altering drugs and chemicals that inure a soldier against all pain and injury. However, it takes a tremendous toll on the body.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": [
+        "Inured to Pain: When you deploy a model that has Martyrdom Pills you can say that they will consume them. If you do so, until the end of the game the model has the NEGATE FEAR Keyword. In addition, add -1 INJURY DICE to rolls for attacks that hit the model."
+      ]
+    },
+    {
+      "name": "Medi-kit",
+      "section": "Equipment",
+      "description": "Battlefield first aid has brought many soldiers back from the brink of death. Blessed ointments can seal fatal wounds completely, while the black blood of demons used by twisted Heretic medics allows mangled troops to return to the fray.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Treat ACTION: A model with this Keyword can take a Treat ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If it is a Success or a Critical Success, you can do one of the following things: • Remove 1 BLOOD MARKER from the model or a friendly model within 1” of the model. • Stand up a friendly model that is Down and within 1” of the model."
+      ]
+    },
+    {
+      "name": "Mountaineer Kit",
+      "section": "Equipment",
+      "description": "This kit includes ropes, carabiners, slings, mountaineering harness and pitons to aid a soldier in overcoming almost any vertical obstacle.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Ropes and Pitons: Add +1 DICE to Risky Success Rolls for friendly models with this special rule that are attempting to climb a sheer surface."
+      ]
+    },
+    {
+      "name": "Musical Instrument",
+      "section": "Equipment",
+      "description": "Horns, drums, trumpets, whistles, bagpipes and many other types of instruments are used extensively in the battles of the Great War. They can bolster the hearts of those facing the horrors of Hell, or they can recite terrifying hymns praising the lords of the Inferno!",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HELD"
+      ],
+      "note": "",
+      "rules": [
+        "Fanfare: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 4” of one or more models with a Musical Instrument."
+      ]
+    },
+    {
+      "name": "Shovel",
+      "section": "Equipment",
+      "description": "Battlefield shovels allow troops to dig in and fight from cover in virtually any battlefield.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "note": "",
+      "rules": [
+        "Dug In: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has."
+      ]
+    },
+    {
+      "name": "Tracer Bullets",
+      "section": "Equipment",
+      "description": "Tracer bullets allow soldiers to adjust their aim efficiently.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "AMMUNITION (+1 DICE)",
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Troop Flag",
+      "section": "Equipment",
+      "description": "Most warbands and units carry banners, flags, standards, pennants or other symbols to rally the troops.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "LEADER",
+        "HELD"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Unholy Relic",
+      "section": "Equipment",
+      "description": "An artefact bestowed with unholy power. Examples include nephilim heads, desecrated splinters of the True Cross or mummified body parts of fallen saints and bishops.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "FEAR"
+      ],
+      "note": "",
+      "rules": []
+    },
+    {
+      "name": "Unholy Trinket",
+      "section": "Equipment",
+      "description": "Many Heretic Troopers carry a talisman or charm that are sold by soothsayers and imps in the Heretic domains. Such a trinket might be a skull, preserved foetus, horn of a goat, and is often covered in Goetic runes.",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "note": "",
+      "rules": [
+        "Talisman: Once during a game, when a Risky Success Roll for a model with an Unholy Trinket is a Failure, you can say that the model will use it. If you do, the model’s Activation does not end. GD"
+      ]
+    }
+  ],
   "campaign": {
     "thresholds": [
       {

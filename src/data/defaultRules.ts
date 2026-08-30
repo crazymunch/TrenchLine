@@ -1,8 +1,4 @@
 import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, RuleKeyword, Scenario } from '../types/rules';
-import { 
-  OFFICIAL_SCENARIOS, 
-  OFFICIAL_KEYWORDS, 
-} from './officialRulesData';
 import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 import { ALL_OUT_WAR_SCENARIOS } from './allOutWarData';
 
@@ -2109,17 +2105,16 @@ export const BASE_UNITS: UnitProfile[] = [
   }
 ];
 
-export const KEYWORDS: RuleKeyword[] = OFFICIAL_KEYWORDS.map((k) => ({
-  id: `kw-${k.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-  name: k.name,
-  type: k.type,
-  category: k.type || 'Rule Keyword',
-  summary: k.description && k.description.length > 100 ? `${k.description.slice(0, 97)}...` : (k.description || ''),
-  description: k.description || '',
-  fullText: k.description || ''
-}));
+/*
+  KEYWORDS is deleted with OFFICIAL_KEYWORDS. The glossary is derived from the
+  rulebook and reaches the app as `dataset.keywords`; the Codex and the Play
+  Mode quick search read it from there.
+*/
 
-export const SCENARIOS: Scenario[] = [...OFFICIAL_SCENARIOS, ...ALL_OUT_WAR_SCENARIOS];
+/*
+  SCENARIOS is deleted with OFFICIAL_SCENARIOS. `useScenarios()` merges the
+  derived twelve with the All Out War pack, and marks which is which.
+*/
 
 /*
   INJURY_TABLE_D66 and EXPLORATION_TABLE_D66 were re-exports of the fabricated
@@ -2128,8 +2123,4 @@ export const SCENARIOS: Scenario[] = [...OFFICIAL_SCENARIOS, ...ALL_OUT_WAR_SCEN
   tables from the rulebook. See AUDIT §1.13.
 */
 
-export {
-  OFFICIAL_SCENARIOS,
-  OFFICIAL_KEYWORDS,
-  OFFICIAL_CORE_RULES
-};
+export { OFFICIAL_CORE_RULES };

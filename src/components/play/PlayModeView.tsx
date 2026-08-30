@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
+import { useScenarios, sectionOf } from '../../rules/useScenarios';
 import { DiceRoller } from './DiceRoller';
 import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
@@ -64,8 +65,6 @@ export const PlayModeView: React.FC = () => {
     setUnitStatus, 
     toggleUnitActed,
     setActiveKeyword,
-    keywords,
-    scenarios,
     isPostBattleOpen,
     setIsPostBattleOpen,
     setCurrentView
@@ -141,13 +140,16 @@ export const PlayModeView: React.FC = () => {
     return u.status === filterStatus;
   });
 
+  // The derived twelve plus the All Out War pack, in place of the hand-written
+  // set whose game lengths and Glorious Deeds were invented.
+  const { scenarios } = useScenarios();
   const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   // Check if scenario is All Out War (Multiplayer card deck applies only here)
   const isAllOutWarScenario = Boolean(
     selectedScenario && (
       /all out war/i.test(selectedScenario.name) ||
-      /all-out-war/i.test(selectedScenario.slug || selectedScenario.id) ||
+      /all-out-war/i.test(selectedScenario.id) ||
       selectedScenario.tagline?.toLowerCase().includes('all out war') ||
       (selectedScenario.number && selectedScenario.number > 12)
     )
@@ -275,7 +277,7 @@ export const PlayModeView: React.FC = () => {
       });
   };
 
-  const scenarioDeeds = parseDeedsList(selectedScenario?.gloriousDeeds);
+  const scenarioDeeds = parseDeedsList(sectionOf(selectedScenario, 'GLORIOUS DEEDS') ?? undefined);
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 pb-24 font-mono text-xs">
@@ -492,7 +494,7 @@ export const PlayModeView: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-theme-muted pt-0.5 px-1 font-mono">
                       <span className="text-theme-primary font-bold">🔍 Click to Expand Diagram</span>
-                      <span>{selectedScenario.tableSize || '48" x 48"'} Table</span>
+                      <span>{selectedScenario.name}</span>
                     </div>
                   </div>
                 )}
@@ -502,15 +504,17 @@ export const PlayModeView: React.FC = () => {
               <div className="lg:col-span-2 space-y-4 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-theme-primary">{selectedScenario?.name}</h3>
-                  <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline || selectedScenario?.flavor}</p>
-                  
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-theme-text pt-2 border-b border-theme-border pb-2">
-                    <span>Table: <strong>{selectedScenario?.tableSize || '48" x 48"'}</strong></span>
-                    <span>•</span>
-                    <span>Game Length: <strong>{selectedScenario?.gameLength || '4-5 Turns'}</strong></span>
-                    <span>•</span>
-                    <span>Deployment: <strong>{selectedScenario?.deployment || 'Standard'}</strong></span>
-                  </div>
+                  <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline}</p>
+
+                  {/* Published, or absent. The defaults these replaced —
+                      '48" x 48"', '4-5 Turns', 'Standard' — were what the app
+                      actually displayed, because the hand-written fields behind
+                      them were wrong for every scenario. */}
+                  {selectedScenario?.gameLength && (
+                    <p className="text-xs text-theme-text pt-2 border-b border-theme-border pb-2">
+                      {selectedScenario.gameLength}
+                    </p>
+                  )}
                 </div>
 
                 {/* Victory Conditions */}
@@ -520,7 +524,7 @@ export const PlayModeView: React.FC = () => {
                     <span>Victory Conditions:</span>
                   </span>
                   <p className="text-theme-text text-[11px] leading-relaxed whitespace-pre-line bg-theme-surface p-2.5 rounded border border-theme-border/60">
-                    {selectedScenario?.victoryConditions}
+                    {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
                   </p>
                 </div>
 
@@ -1006,7 +1010,7 @@ export const PlayModeView: React.FC = () => {
                       <span>Victory Conditions & Scoring Rules:</span>
                     </span>
                     <p className="text-[11px] text-theme-text leading-relaxed whitespace-pre-line">
-                      {selectedScenario?.victoryConditions}
+                      {sectionOf(selectedScenario, 'VICTORY CONDITIONS')}
                     </p>
                   </div>
 
@@ -1394,7 +1398,7 @@ export const PlayModeView: React.FC = () => {
                     OFFICIAL DEPLOYMENT DIAGRAM: {selectedScenario.name}
                   </h3>
                   <span className="text-[10px] text-theme-muted block">
-                    Table Size: {selectedScenario.tableSize || '48" x 48"'} • Vector Scenario Map
+                    {selectedScenario.tagline}
                   </span>
                 </div>
               </div>

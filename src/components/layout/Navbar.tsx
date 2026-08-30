@@ -83,19 +83,29 @@ export const Navbar: React.FC = () => {
               </span>
             </div>
 
-            {/* 1. Left (Desktop): View Title Breadcrumb */}
-            <div className="hidden lg:flex items-center space-x-3">
+            {/*
+              1. Left (Desktop): View Title Breadcrumb
+
+              `min-w-0` and `truncate` are load-bearing. Without them this block
+              sizes to its longest subtitle, and the Codex's — "Scenarios,
+              tactical deployment maps, keywords, and armoury" — pushed the
+              whole header to 1306px on a 1280px screen, so the desktop page
+              scrolled sideways on that view and only that view. Same failure as
+              the mobile header in Phase 0: a flex row whose children refuse to
+              shrink is as wide as its contents, not as wide as the screen.
+            */}
+            <div className="hidden lg:flex items-center space-x-3 min-w-0">
               <div 
-                className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-inner"
+                className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-inner flex-shrink-0"
                 style={{ borderColor: activeThemeObj.primaryColor, color: activeThemeObj.primaryColor }}
               >
                 {currentViewInfo.icon}
               </div>
-              <div>
-                <h2 className="font-gothic font-bold text-sm tracking-wide text-theme-text">
+              <div className="min-w-0">
+                <h2 className="font-gothic font-bold text-sm tracking-wide text-theme-text truncate">
                   {currentViewInfo.title}
                 </h2>
-                <p className="text-[10px] font-mono text-theme-muted leading-none">
+                <p className="text-[10px] font-mono text-theme-muted leading-none truncate">
                   {currentViewInfo.subtitle}
                 </p>
               </div>

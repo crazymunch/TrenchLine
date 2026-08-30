@@ -1,14 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { 
-  OFFICIAL_WEAPONS,
-  OFFICIAL_ARMOUR,
-  OFFICIAL_EQUIPMENT,
-  OfficialWargearItem
-} from '../../data/officialRulesData';
 import { OFFICIAL_CORE_RULES } from '../../data/officialCoreRules';
+import { buildArsenal, groupOf, offersDiffer, type ArsenalItem } from '../../rules/arsenal';
+import { Sheet } from '../ui/Sheet';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { AVAILABLE_RULESETS } from '../../data/rulesets';
@@ -41,8 +37,38 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
+/**
+ * A scenario section's body.
+ *
+ * The parser emits the book's own structure as markdown — `**Sub-heading**` for
+ * a Title-Case heading, `- ` for a `**` bullet — and this is the smallest
+ * renderer that keeps it. Not a markdown library: the vocabulary is two
+ * constructs and the text is rules, so a dependency that might reflow or
+ * swallow something is a worse trade than fifteen lines.
+ */
+const ScenarioBody: React.FC<{ body: string }> = ({ body }) => (
+  <div className="space-y-2">
+    {body.split('\n\n').map((para, i) => {
+      const heading = /^\*\*(.+)\*\*$/.exec(para);
+      if (heading) {
+        return (
+          <p key={i} className="font-bold text-theme-text pt-1">{heading[1]}</p>
+        );
+      }
+      if (para.startsWith('- ')) {
+        return (
+          <p key={i} className="text-theme-text leading-relaxed pl-4 -indent-4">
+            <span className="text-theme-primary">▪ </span>{para.slice(2)}
+          </p>
+        );
+      }
+      return <p key={i} className="text-theme-text leading-relaxed">{para}</p>;
+    })}
+  </div>
+);
+
 export const CodexView: React.FC = () => {
-  const { keywords, scenarios, weapons, armour, equipment, rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
+  const { rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
   const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets'>('rules');
 
   /**
@@ -91,7 +117,7 @@ export const CodexView: React.FC = () => {
     d66Roll: string;
     howToObtain: string;
   } | null>(null);
-  const [selectedWargearItem, setSelectedWargearItem] = useState<OfficialWargearItem | null>(null);
+  const [selectedWargearItem, setSelectedWargearItem] = useState<ArsenalItem | null>(null);
   const [lightboxMap, setLightboxMap] = useState<{ src: string; name: string; tableSize?: string } | null>(null);
 
   const filterText = searchQuery.toLowerCase().trim();
@@ -100,41 +126,77 @@ export const CodexView: React.FC = () => {
     (r) => r.title.toLowerCase().includes(filterText) || r.content.toLowerCase().includes(filterText)
   );
 
+  /**
+   * The Keyword Glossary, derived.
+   *
+   * The hand-written copy this replaced had 46 entries against the book's 59.
+   * Two of the 46 — HEAVY COVER and LIGHT COVER — do not appear anywhere in the
+   * rulebook, and the rest split the book's parameterised rules into instances:
+   * three NEGATE entries for the one NEGATE [KEYWORD] rule. Both failures point
+   * the same way, and a glossary is consulted precisely when a player cannot
+   * check it.
+   */
+  const keywords = codexDataset?.keywords ?? [];
+
   const filteredKeywords = keywords.filter(
     (k) => k.name.toLowerCase().includes(filterText) || (k.description || '').toLowerCase().includes(filterText) || (k.type || '').toLowerCase().includes(filterText)
   );
 
-  const filteredWeapons = OFFICIAL_WEAPONS.filter(
-    (w) => w.name.toLowerCase().includes(filterText) || w.keywords.some((kw) => kw.toLowerCase().includes(filterText)) || (w.lore || '').toLowerCase().includes(filterText) || w.faction.toLowerCase().includes(filterText)
-  );
+  /**
+   * The arsenal: the Armoury Tables joined to the rulebook's Battlekit chapter.
+   *
+   * What this replaced carried one Ducat cost and one `faction` string per
+   * item, and wargear is priced *per faction* — an Automatic Rifle is 40
+   * Ducats in two armouries and 2 Glory in a third. One number was right for
+   * two factions out of six and quietly wrong for the rest, which is why the
+   * card now lists every armoury that stocks the item rather than a badge
+   * claiming it is "Universal / Standard Issue".
+   */
+  const arsenal = useMemo(() => buildArsenal(codexDataset), [codexDataset]);
 
-  const filteredArmour = [...OFFICIAL_ARMOUR, ...OFFICIAL_EQUIPMENT].filter(
-    (a) => a.name.toLowerCase().includes(filterText) || (a.lore || '').toLowerCase().includes(filterText) || (a.rules || '').toLowerCase().includes(filterText) || a.faction.toLowerCase().includes(filterText)
-  );
+  const matchesArsenal = (i: ArsenalItem) =>
+    i.name.toLowerCase().includes(filterText)
+    || i.keywords.some((kw) => kw.toLowerCase().includes(filterText))
+    || (i.description || '').toLowerCase().includes(filterText)
+    || i.rules.some((r) => r.toLowerCase().includes(filterText))
+    || i.offers.some((o) => o.faction.toLowerCase().includes(filterText));
+
+  const filteredWeapons = arsenal.filter((i) => groupOf(i) === 'weapons' && matchesArsenal(i));
+  const filteredArmour = arsenal.filter((i) => groupOf(i) !== 'weapons' && matchesArsenal(i));
+
+  /**
+   * The twelve scenarios, derived.
+   *
+   * The hand-written set had the wrong game length for **all twelve**, inverted
+   * Claim No Man's Land's Infiltrator rule (the book says they must deploy
+   * normally; the app said they need not), and invented 32 of its 46 Glorious
+   * Deeds. A player following it plays a different game from the one their
+   * opponent is playing out of the book.
+   */
+  const scenarios = codexDataset?.scenarios ?? [];
 
   const filteredScenarios = scenarios.filter(
-    (s) => s.name.toLowerCase().includes(filterText) || (s.tagline || s.flavor || s.fullRulesMarkdown || '').toLowerCase().includes(filterText)
+    (s) => s.name.toLowerCase().includes(filterText)
+      || s.tagline.toLowerCase().includes(filterText)
+      || s.sections.some((sec) => sec.body.toLowerCase().includes(filterText))
   );
 
-  const formatFactionLabel = (faction: string) => {
-    switch (faction) {
-      case 'iron-sultanate': return 'Iron Sultanate Exclusive';
-      case 'trench-pilgrims': return 'Trench Pilgrims Exclusive';
-      case 'new-antioch': return 'New Antioch Exclusive';
-      case 'heretic-legion': return 'Heretic Legion Exclusive';
-      case 'black-grail': return 'Black Grail Exclusive';
-      default: return 'Universal / Standard Issue';
-    }
-  };
+  /** `40 D`, `2 G`, or both where an offer costs Ducats *and* Glory. */
+  const priceLabel = (cost: { ducats: number; glory: number }) =>
+    [cost.ducats ? `${cost.ducats} D` : '', cost.glory ? `${cost.glory} G` : '']
+      .filter(Boolean).join(' + ') || 'Free';
 
-  const getFactionBadgeColor = (faction: string) => {
-    switch (faction) {
-      case 'iron-sultanate': return 'bg-[#1A535C]/30 text-[#4ECDC4] border-[#4ECDC4]/40';
-      case 'trench-pilgrims': return 'bg-[#B22222]/30 text-[#FF6B6B] border-[#FF6B6B]/40';
-      case 'new-antioch': return 'bg-[#2E4057]/30 text-[#8ECAE6] border-[#8ECAE6]/40';
-      case 'heretic-legion': return 'bg-[#4A0E17]/30 text-[#FF4D6D] border-[#FF4D6D]/40';
-      default: return 'bg-theme-elevated text-theme-primary border-theme-primary/30';
-    }
+  /**
+   * How many armouries stock an item, in one line.
+   *
+   * Replaces a badge that read "Universal / Standard Issue" for anything it
+   * had no faction for. That is not a category the game has: what exists is six
+   * Armoury Tables, and an item is stocked by however many of them list it.
+   */
+  const stockedLabel = (item: ArsenalItem) => {
+    if (!item.offers.length) return 'Not stocked by any Armoury Table';
+    if (item.offers.length === 1) return `${item.offers[0].faction} only`;
+    return `${item.offers.length} armouries`;
   };
 
   return (
@@ -206,8 +268,8 @@ export const CodexView: React.FC = () => {
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
-              { id: 'weapons', label: `Weapons Codex (${weapons.length})`, icon: <Swords className="w-4 h-4" /> },
-              { id: 'armour', label: `Armour & Gear (${armour.length + equipment.length})`, icon: <Shield className="w-4 h-4" /> },
+              { id: 'weapons', label: `Weapons Codex (${arsenal.filter((i) => groupOf(i) === 'weapons').length})`, icon: <Swords className="w-4 h-4" /> },
+              { id: 'armour', label: `Armour & Gear (${arsenal.filter((i) => groupOf(i) !== 'weapons').length})`, icon: <Shield className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -434,14 +496,14 @@ export const CodexView: React.FC = () => {
         <div className="space-y-6">
           <div className="space-y-4">
             {filteredScenarios.map((scen) => {
-              const isExpanded = expandedScenarioId === scen.id;
+              const isExpanded = expandedScenarioId === scen.slug;
               return (
                 <div
-                  key={scen.id}
+                  key={scen.slug}
                   className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container hover:border-theme-primary/40 transition-colors"
                 >
                   <button
-                    onClick={() => setExpandedScenarioId(isExpanded ? '' : scen.id)}
+                    onClick={() => setExpandedScenarioId(isExpanded ? '' : scen.slug)}
                     className="w-full p-5 flex items-center justify-between text-left bg-theme-surface hover:bg-theme-elevated transition-colors"
                   >
                     <div className="flex items-center space-x-3 min-w-0">
@@ -466,7 +528,7 @@ export const CodexView: React.FC = () => {
                       {/* Scenario Tactical Map Graphic with Lightbox Trigger */}
                       {scen.mapImage && (
                         <div 
-                          onClick={() => setLightboxMap({ src: scen.mapImage || '', name: scen.name, tableSize: scen.tableSize })}
+                          onClick={() => setLightboxMap({ src: scen.mapImage, name: scen.name })}
                           className="bg-theme-surface border-2 border-theme-primary/60 hover:border-theme-primary rounded-md p-4 space-y-2 max-w-2xl mx-auto shadow-2xl cursor-pointer group transition-all"
                         >
                           <div className="flex items-center justify-between text-xs font-mono text-theme-primary border-b border-theme-border pb-2 font-bold uppercase">
@@ -495,54 +557,31 @@ export const CodexView: React.FC = () => {
                         </div>
                       )}
 
-                      {/* Scenario Rules Cards */}
+                      {/*
+                        The book's own sections, in the book's own order.
+
+                        This replaced five fixed fields — forces, battlefield,
+                        deployment, victoryConditions, gloriousDeeds — which
+                        could not hold what half the scenarios actually have:
+                        Dragon Hunt's THE DRAGON, Armoured Train's TRAIN WAGONS,
+                        Don't Breathe's ICHOR PIT MARKERS. A fixed shape drops
+                        exactly the rules that make a scenario itself.
+                      */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                        
-                        {/* Forces */}
-                        <div className="p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5">
-                          <span className="font-bold text-theme-primary uppercase flex items-center space-x-1.5 text-xs">
-                            <Shield className="w-3.5 h-3.5" />
-                            <span>Forces & Restrictions:</span>
-                          </span>
-                          <p className="text-theme-text leading-relaxed whitespace-pre-line">{scen.forces}</p>
-                        </div>
-
-                        {/* Battlefield */}
-                        <div className="p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5">
-                          <span className="font-bold text-theme-primary uppercase flex items-center space-x-1.5 text-xs">
-                            <MapPin className="w-3.5 h-3.5" />
-                            <span>The Battlefield:</span>
-                          </span>
-                          <p className="text-theme-text leading-relaxed whitespace-pre-line">{scen.battlefield}</p>
-                        </div>
-
-                        {/* Deployment */}
-                        <div className="p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5 md:col-span-2">
-                          <span className="font-bold text-theme-primary uppercase flex items-center space-x-1.5 text-xs">
-                            <Compass className="w-3.5 h-3.5" />
-                            <span>Deployment Protocol:</span>
-                          </span>
-                          <p className="text-theme-text leading-relaxed whitespace-pre-line">{scen.deployment}</p>
-                        </div>
-
-                        {/* Victory Conditions */}
-                        <div className="p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5">
-                          <span className="font-bold text-status-legal uppercase flex items-center space-x-1.5 text-xs">
-                            <Award className="w-3.5 h-3.5" />
-                            <span>Victory Conditions:</span>
-                          </span>
-                          <p className="text-theme-text leading-relaxed whitespace-pre-line">{scen.victoryConditions}</p>
-                        </div>
-
-                        {/* Glorious Deeds */}
-                        <div className="p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5">
-                          <span className="font-bold text-theme-primary uppercase flex items-center space-x-1.5 text-xs">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>Glorious Deeds:</span>
-                          </span>
-                          <div className="text-theme-text leading-relaxed whitespace-pre-line">{scen.gloriousDeeds}</div>
-                        </div>
-
+                        {scen.sections.map((sec) => (
+                          <div
+                            key={sec.heading}
+                            className={`p-4 bg-theme-surface border border-theme-border rounded-md space-y-1.5 ${
+                              sec.body.length > 400 ? 'md:col-span-2' : ''
+                            }`}
+                          >
+                            <span className="font-bold text-theme-primary uppercase flex items-center gap-1.5 text-xs">
+                              <Scroll className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span>{sec.heading}</span>
+                            </span>
+                            <ScenarioBody body={sec.body} />
+                          </div>
+                        ))}
                       </div>
 
                     </div>
@@ -901,26 +940,22 @@ export const CodexView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredWeapons.map((wep) => (
               <div
-                key={wep.id}
+                key={wep.key}
                 onClick={() => setSelectedWargearItem(wep)}
                 className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2.5 bevel-container hover:border-theme-primary cursor-pointer transition-all hover:scale-[1.01] flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex justify-between items-start border-b border-theme-border pb-2">
-                    <div>
-                      <span className="font-gothic font-bold text-base text-theme-text block">{wep.name}</span>
-                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded border font-bold ${getFactionBadgeColor(wep.faction)}`}>
-                        {formatFactionLabel(wep.faction)}
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono font-bold text-theme-primary bg-theme-base px-2 py-0.5 rounded border border-theme-border">
-                      {wep.cost} D
+                  <div className="border-b border-theme-border pb-2">
+                    <span className="font-gothic font-bold text-base text-theme-text block">{wep.name}</span>
+                    <span className="text-[11px] font-mono text-theme-muted">
+                      {stockedLabel(wep)}
+                      {offersDiffer(wep) && <span className="text-status-warning"> · prices differ</span>}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-theme-muted pt-2">
-                    <div>Type: <strong className="text-theme-text">{wep.type}</strong></div>
-                    <div>Range: <strong className="text-theme-text">{wep.range}</strong></div>
+                    <div>Type: <strong className="text-theme-text">{wep.type ?? '—'}</strong></div>
+                    <div>Range: <strong className="text-theme-text">{wep.range ?? '—'}</strong></div>
                   </div>
 
                   {wep.keywords.length > 0 && (
@@ -933,9 +968,11 @@ export const CodexView: React.FC = () => {
                     </div>
                   )}
 
-                  <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
-                    &quot;{wep.lore}&quot;
-                  </p>
+                  {wep.description && (
+                    <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
+                      &quot;{wep.description}&quot;
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-[10px] font-mono text-theme-primary">
@@ -957,28 +994,18 @@ export const CodexView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredArmour.map((arm) => (
               <div
-                key={arm.id}
+                key={arm.key}
                 onClick={() => setSelectedWargearItem(arm)}
                 className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2.5 bevel-container hover:border-theme-primary cursor-pointer transition-all hover:scale-[1.01] flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex justify-between items-start border-b border-theme-border pb-2">
-                    <div>
-                      <span className="font-gothic font-bold text-base text-theme-text block">{arm.name}</span>
-                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded border font-bold ${getFactionBadgeColor(arm.faction)}`}>
-                        {formatFactionLabel(arm.faction)}
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono font-bold text-theme-primary bg-theme-base px-2 py-0.5 rounded border border-theme-border">
-                      {arm.cost} D
+                  <div className="border-b border-theme-border pb-2">
+                    <span className="font-gothic font-bold text-base text-theme-text block">{arm.name}</span>
+                    <span className="text-[11px] font-mono text-theme-muted">
+                      {arm.section} · {stockedLabel(arm)}
+                      {offersDiffer(arm) && <span className="text-status-warning"> · prices differ</span>}
                     </span>
                   </div>
-
-                  {arm.armourModifier !== undefined && (
-                    <div className="text-xs font-mono text-status-legal font-bold pt-1.5">
-                      Protection: {arm.armourModifier} to Injury Rolls
-                    </div>
-                  )}
 
                   {arm.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-1.5">
@@ -990,9 +1017,11 @@ export const CodexView: React.FC = () => {
                     </div>
                   )}
 
-                  <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
-                    &quot;{arm.lore}&quot;
-                  </p>
+                  {arm.description && (
+                    <p className="text-[11px] font-mono text-theme-muted line-clamp-2 pt-2 italic">
+                      &quot;{arm.description}&quot;
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-[10px] font-mono text-theme-primary">
@@ -1008,108 +1037,117 @@ export const CodexView: React.FC = () => {
       {/* TAB 8: MISSION GENERATOR */}
       {activeTab === 'generator' && <MissionGenerator />}
 
-      {/* WARGEAR OFFICIAL INSPECTOR MODAL */}
-      {selectedWargearItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-theme-surface border-2 border-theme-primary rounded-lg max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
-            
-            {/* Modal Header */}
-            <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded bg-theme-primary/20 border border-theme-primary flex items-center justify-center">
-                  <Swords className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h3 className="font-gothic font-bold text-lg text-white">
-                    {selectedWargearItem.name}
-                  </h3>
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded border font-bold ${getFactionBadgeColor(selectedWargearItem.faction)}`}>
-                    {formatFactionLabel(selectedWargearItem.faction)}
-                  </span>
-                </div>
+      {/* WARGEAR INSPECTOR */}
+      <Sheet
+        open={Boolean(selectedWargearItem)}
+        onClose={() => setSelectedWargearItem(null)}
+        size="lg"
+        title={selectedWargearItem?.name}
+        subtitle={selectedWargearItem
+          ? `${selectedWargearItem.section} · ${stockedLabel(selectedWargearItem)}`
+          : undefined}
+      >
+        {selectedWargearItem && (
+          <div className="space-y-4 font-mono text-sm">
+
+            <div className="grid grid-cols-2 gap-3 p-3 bg-theme-base border border-theme-border rounded-md text-center">
+              <div>
+                <span className="text-xs text-theme-muted uppercase block">Type</span>
+                <strong className="text-theme-text">{selectedWargearItem.type ?? '—'}</strong>
               </div>
-              <button
-                onClick={() => setSelectedWargearItem(null)}
-                className="text-theme-muted hover:text-white p-1"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div>
+                <span className="text-xs text-theme-muted uppercase block">Range</span>
+                <strong className="text-theme-text">{selectedWargearItem.range ?? '—'}</strong>
+              </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-4 font-mono text-xs">
-              
-              {/* Profile Metrics Grid */}
-              <div className="grid grid-cols-3 gap-3 p-3 bg-theme-base border border-theme-border rounded-md text-center">
-                <div>
-                  <span className="text-[10px] text-theme-muted uppercase block">Category / Type</span>
-                  <strong className="text-white text-xs">{selectedWargearItem.type || selectedWargearItem.category}</strong>
-                </div>
-                <div>
-                  <span className="text-[10px] text-theme-muted uppercase block">Range</span>
-                  <strong className="text-white text-xs">{selectedWargearItem.range || '-'}</strong>
-                </div>
-                <div>
-                  <span className="text-[10px] text-theme-muted uppercase block">Armoury Cost</span>
-                  <strong className="text-theme-primary text-xs">{selectedWargearItem.cost} Ducats</strong>
+            {/*
+              Price per faction, not one number.
+
+              This is the whole reason the hand-written arsenal had to go: it
+              carried `cost: 40` for the Automatic Rifle, which is what New
+              Antioch and the Trench Pilgrims pay. The Heretic Legions pay 2
+              Glory for it, with a different limit. There is no single price to
+              show, so the Codex shows the table.
+            */}
+            <div className="space-y-1.5">
+              <span className="text-xs uppercase font-bold text-theme-muted block">
+                Armoury Tables
+              </span>
+              {selectedWargearItem.offers.length === 0 ? (
+                <p className="text-theme-muted">
+                  No faction Armoury Table stocks this. It is printed in the
+                  rulebook&apos;s Battlekit chapter, so the rules are here, but no
+                  warband can buy it from a faction list.
+                </p>
+              ) : (
+                <ul className="divide-y divide-theme-border border border-theme-border rounded">
+                  {selectedWargearItem.offers.map((o) => (
+                    <li key={o.factionId} className="flex items-baseline justify-between gap-3 px-3 py-2">
+                      <span className="text-theme-text min-w-0">
+                        {o.faction}
+                        {o.restrictions.length > 0 && (
+                          <span className="block text-xs text-theme-muted">
+                            {o.restrictions.join(' · ')}
+                          </span>
+                        )}
+                      </span>
+                      <strong className="text-theme-primary flex-shrink-0">{priceLabel(o.cost)}</strong>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {selectedWargearItem.keywords.length > 0 && (
+              <div className="space-y-1.5">
+                <span className="text-xs uppercase font-bold text-theme-muted block">Keywords</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedWargearItem.keywords.map((kw) => (
+                    <span
+                      key={kw}
+                      className="px-2 py-1 bg-theme-elevated text-theme-primary border border-theme-primary/30 rounded text-xs font-bold"
+                    >
+                      {kw}
+                    </span>
+                  ))}
                 </div>
               </div>
+            )}
 
-              {/* Keywords & Traits */}
-              {selectedWargearItem.keywords.length > 0 && (
-                <div className="space-y-1.5">
-                  <span className="text-[10px] uppercase font-bold text-theme-muted block">
-                    Associated Rules & Keywords:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selectedWargearItem.keywords.map((kw) => (
-                      <span 
-                        key={kw} 
-                        className="px-2 py-1 bg-theme-elevated text-theme-primary border border-theme-primary/30 rounded text-xs font-bold"
-                      >
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {selectedWargearItem.note && (
+              <p className="p-3 bg-theme-base border border-theme-border rounded text-theme-text leading-relaxed">
+                {selectedWargearItem.note}
+              </p>
+            )}
 
-              {/* Special Rules */}
-              {selectedWargearItem.rules && (
-                <div className="p-3 bg-theme-base border border-theme-border rounded space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-theme-primary block">
-                    Weapon Mechanics:
-                  </span>
-                  <p className="text-theme-text leading-relaxed">{selectedWargearItem.rules}</p>
-                </div>
-              )}
+            {selectedWargearItem.rules.map((rule) => (
+              <div key={rule} className="p-3 bg-theme-base border border-theme-border rounded">
+                <p className="text-theme-text leading-relaxed">{rule}</p>
+              </div>
+            ))}
 
-              {/* Official Rulebook Lore */}
+            {selectedWargearItem.description ? (
               <div className="p-4 bg-theme-base border border-theme-primary/40 rounded-md space-y-1.5">
-                <span className="text-[10px] uppercase font-bold text-theme-primary flex items-center space-x-1.5">
+                <span className="text-xs uppercase font-bold text-theme-primary flex items-center gap-1.5">
                   <Scroll className="w-3.5 h-3.5" />
-                  <span>Official Rulebook Lore & Technical History:</span>
+                  <span>From the rulebook</span>
                 </span>
-                <p className="text-xs text-theme-text leading-relaxed italic">
-                  &quot;{selectedWargearItem.lore}&quot;
+                <p className="text-theme-text leading-relaxed italic">
+                  &quot;{selectedWargearItem.description}&quot;
                 </p>
               </div>
-
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-3 bg-theme-elevated border-t border-theme-border flex justify-end">
-              <button
-                onClick={() => setSelectedWargearItem(null)}
-                className="px-4 py-1.5 bg-theme-primary hover:bg-[#C49F27] text-black font-bold uppercase rounded text-xs font-mono"
-              >
-                Close Dossier
-              </button>
-            </div>
+            ) : (
+              <p className="text-xs text-theme-muted">
+                Described in Warbands of Trench Crusade rather than the Battlekit
+                chapter, which is what this view reads. Its price and
+                restrictions above are from the Armoury Table and are complete.
+              </p>
+            )}
 
           </div>
-        </div>
-      )}
+        )}
+      </Sheet>
 
       {/* 2D6 Probability Odds Modal */}
       {isProbabilityOpen && (

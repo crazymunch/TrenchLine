@@ -3,7 +3,7 @@ import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment,
 import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT, KEYWORDS, SCENARIOS } from '../data/defaultRules';
+import { FACTIONS, BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from '../data/defaultRules';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
 import { storage } from '../services/storage';
 
@@ -19,8 +19,10 @@ interface AppState {
   weapons: WeaponProfile[];
   armour: ArmourProfile[];
   equipment: EquipmentItem[];
-  keywords: RuleKeyword[];
-  scenarios: Scenario[];
+  /* `keywords` is gone: the glossary is derived and reaches the app as
+     `dataset.keywords`. `activeKeyword` below stays — it is UI state, not data. */
+  /* `scenarios` is gone: the twelve are derived and reach the app through
+     `useScenarios()`, which also marks the All Out War pack as un-derived. */
   customUnits: UnitProfile[];
   customWeapons: WeaponProfile[];
 
@@ -427,8 +429,6 @@ export const useStore = create<AppState>((set, get) => {
     weapons: [...BASE_WEAPONS, ...customWeapons],
     armour: BASE_ARMOUR,
     equipment: BASE_EQUIPMENT,
-    keywords: KEYWORDS,
-    scenarios: SCENARIOS,
     customUnits,
     customWeapons,
     customArmour: [],

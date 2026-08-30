@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
+import { useScenarios } from '../../rules/useScenarios';
 import {
   explorationDice, explorationTables, resolveExploration, campaignGameOf,
 } from '../../rules/campaign';
@@ -32,7 +33,7 @@ interface PostBattleWizardModalProps {
 }
 
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
-  const { getActiveWarband, scenarios, applyPostBattleResults, campaign } = useStore();
+  const { getActiveWarband, applyPostBattleResults, campaign } = useStore();
 
   // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
   const overlayRef = useOverlay(true, onClose);
@@ -50,7 +51,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
 
   const [step, setStep] = useState<number>(1);
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(scenarios[0]?.id || 'claim-no-mans-land');
+  // Empty until the dataset loads; `scenario` below falls back to the first.
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
@@ -88,6 +90,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       ? selectedExplorationTable
       : (openTables?.tables[0] ?? 'common');
 
+  // The derived twelve plus the All Out War pack, in place of the hand-written
+  // set whose game lengths and Glorious Deeds were invented.
+  const { scenarios } = useScenarios(rulesetId);
   const scenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   /**
@@ -302,12 +307,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   )}
                   <div className="text-xs space-y-1">
                     <span className="text-theme-primary font-bold block">{scenario.name}</span>
-                    <p className="text-theme-muted text-[11px] italic">{scenario.tagline || scenario.flavor}</p>
-                    <div className="text-[10px] text-theme-text space-x-2 pt-1">
-                      <span>Length: <strong>{scenario.gameLength || '5 Turns'}</strong></span>
-                      <span>•</span>
-                      <span>Table: <strong>{scenario.tableSize || '48" x 48"'}</strong></span>
-                    </div>
+                    <p className="text-theme-muted text-[11px] italic">{scenario.tagline}</p>
+                    {/* No `|| '5 Turns'` fallback. That default is what hid the
+                        hand-written game lengths being wrong for all twelve —
+                        every one fell through to it, so the app showed five
+                        Turns for scenarios the book plays over four. */}
+                    {scenario.gameLength && (
+                      <p className="text-[10px] text-theme-text pt-1">{scenario.gameLength}</p>
+                    )}
                   </div>
                 </div>
               )}

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
+import { useScenarios } from '../../rules/useScenarios';
 import { Scenario } from '../../types/rules';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -123,7 +124,10 @@ const SECONDARY_AGENDAS = [
 ];
 
 export const MissionGenerator: React.FC = () => {
-  const { scenarios, setCurrentView } = useStore();
+  const { setCurrentView } = useStore();
+  // The derived twelve plus the All Out War pack. Templates are seeded from
+  // the book's own sections, so a custom mission starts from real rules.
+  const { scenarios } = useScenarios();
   const [activeMode, setActiveMode] = useState<'designer' | 'procedural'>('designer');
 
   // Procedural Generator State
@@ -156,14 +160,19 @@ export const MissionGenerator: React.FC = () => {
 
     const template = scenarios.find((s) => s.id === scenId);
     if (template) {
+      // Sections as the book prints them. Nothing is defaulted: a template
+      // seeded with '48" x 48"' or '4 Turns' because the source did not say so
+      // is a made-up rule the user then saves under their own name.
+      const section = (h: string) =>
+        template.entry?.sections.find((x) => x.heading === h)?.body ?? '';
       setCustomTitle(template.name);
-      setCustomTagline(template.tagline || template.flavor || '');
-      setCustomTableSize(template.tableSize || '48" x 48"');
-      setCustomBattlefield(template.battlefield || '');
-      setCustomDeployment(template.deployment || '');
-      setCustomGameLength(template.gameLength || '4 Turns');
-      setCustomVictory(template.victoryConditions || '');
-      setCustomGloriousDeeds(template.gloriousDeeds || '');
+      setCustomTagline(template.tagline);
+      setCustomTableSize('');
+      setCustomBattlefield(section('THE BATTLEFIELD'));
+      setCustomDeployment(section('DEPLOYMENT'));
+      setCustomGameLength(template.gameLength ?? '');
+      setCustomVictory(section('VICTORY CONDITIONS'));
+      setCustomGloriousDeeds(section('GLORIOUS DEEDS'));
       soundEffects.playCathedralBell();
     }
   };
@@ -270,9 +279,7 @@ export const MissionGenerator: React.FC = () => {
               >
                 <option value="">-- Start Blank from Scratch --</option>
                 {scenarios.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.number ? `Scenario ${s.number}: ` : ''}{s.name}
-                  </option>
+                  <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
             </div>

@@ -340,6 +340,62 @@ export interface Armoury {
   rows: ArmouryRow[];
 }
 
+/**
+ * One entry of the rulebook's Battlekit chapter.
+ *
+ * Deliberately carries no cost. Wargear is priced **per faction** — the same
+ * Automatic Rifle is 40 Ducats in one Armoury and 2 Glory in another — so a
+ * price on a single shared record cannot be right for more than one faction at
+ * a time. `Armoury` prices it; this carries what the Armoury Table does not
+ * print: what the thing is, and the special rules under its profile.
+ */
+export interface BattlekitEntry {
+  name: string;
+  /** 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Shields' | 'Armour' | 'Equipment' */
+  section: string;
+  /** As printed: '1-Handed' | '2-Handed' | 'Grenade' | 'Armour' | 'Shield' | 'Equipment' */
+  type: string;
+  /** '24"', 'Melee', '12"/Melee', '-'. Verbatim, including the book's quote marks. */
+  range: string;
+  keywords: string[];
+  /** The published description, unwrapped onto one line. */
+  description: string;
+  /** Unbulleted rules text printed under the profile. Only the Field Shrine has any. */
+  note: string;
+  /** The `**` special rules printed under the profile, each unwrapped. */
+  rules: string[];
+}
+
+/**
+ * One scenario, as the rulebook prints it.
+ *
+ * `sections` is an ordered list rather than a fixed set of fields because the
+ * six core headings are not all a scenario has: Dragon Hunt adds THE DRAGON,
+ * Armoured Train adds TRAIN WAGONS, Don't Breathe adds ICHOR PIT MARKERS. Those
+ * are the rules that make the scenario itself, and a fixed shape would drop
+ * them.
+ */
+export interface ScenarioSection {
+  /** The heading exactly as printed: 'GAME LENGTH', 'THE DRAGON'. */
+  heading: string;
+  /** The body as markdown — `**Sub-heading**` and `- bullet`. */
+  body: string;
+}
+
+export interface ScenarioEntry {
+  /** 1-12. */
+  number: number;
+  /** The numeral the book prints: 'I' … 'XII'. */
+  roman: string;
+  name: string;
+  /** Derived from the name, and checked against `public/maps/` at build time. */
+  slug: string;
+  tagline: string;
+  sections: ScenarioSection[];
+  /** The deployment map, verified to exist when the dataset was built. */
+  mapImage: string;
+}
+
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
 
 /**
@@ -386,6 +442,10 @@ export interface Dataset {
   armouries: Armoury[];
   /** Every Warband Variant, with its rules and its derived ops. */
   variants: WarbandVariant[];
+  /** The rulebook's Battlekit chapter: descriptions and per-item special rules. */
+  battlekit: BattlekitEntry[];
+  /** The twelve scenarios, as printed. */
+  scenarios: ScenarioEntry[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
