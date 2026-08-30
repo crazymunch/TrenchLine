@@ -502,7 +502,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           </span>
                         </div>
                         <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
-                          {w.cost} D
+                          {w.cost > 0 || !w.gloryCost ? `${w.cost} D` : ''}
+                          {w.gloryCost ? `${w.cost > 0 ? ' + ' : ''}${w.gloryCost} Glory` : ''}
                         </span>
                       </div>
 
@@ -573,7 +574,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           </span>
                         </div>
                         <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
-                          {a.cost} D
+                          {a.cost > 0 || !a.gloryCost ? `${a.cost} D` : ''}
+                          {a.gloryCost ? `${a.cost > 0 ? ' + ' : ''}${a.gloryCost} Glory` : ''}
                         </span>
                       </div>
 
@@ -644,7 +646,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           </span>
                         </div>
                         <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
-                          {e.cost} D
+                          {e.cost > 0 || !e.gloryCost ? `${e.cost} D` : ''}
+                          {e.gloryCost ? `${e.cost > 0 ? ' + ' : ''}${e.gloryCost} Glory` : ''}
                         </span>
                       </div>
 

@@ -1,12 +1,24 @@
 import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../types/rules';
-import { BASE_UNITS, BASE_WEAPONS, BASE_ARMOUR, BASE_EQUIPMENT } from '../data/defaultRules';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore';
 
-export function importNewRecruitRoster(rawInput: string, customUnits: UnitProfile[] = []): Warband {
+/**
+ * Import a NewRecruit / BattleScribe roster.
+ *
+ * `knownUnits` is now passed in rather than read from `defaultRules.ts`. That
+ * matters: an import resolves each roster line against this list, so importing
+ * against the hand-written profiles gave every imported model a statline the
+ * audit measured as 97% wrong — silently, because the names matched.
+ *
+ * The caller passes the store's `units`, which the dataset fills.
+ */
+export function importNewRecruitRoster(
+  rawInput: string,
+  knownUnits: UnitProfile[] = []
+): Warband {
   const trimmed = rawInput.trim();
-  const allUnits = [...BASE_UNITS, ...customUnits];
+  const allUnits = knownUnits;
 
   // 1. Try parsing as JSON
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) {

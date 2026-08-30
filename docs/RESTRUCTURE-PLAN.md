@@ -143,7 +143,7 @@ All four are covered by regression tests.
 | 2.8 | ✅ Provenance UI — `ProvenanceTag`, per field, served per entity from `/api/dataset/provenance` |
 | 2.9 | ✅ 124 tests, including the real 1,320-Ducat roster against the real dataset |
 
-| 2.11 | 🟡 **Migrate the app onto the generated dataset** — legality is migrated; **recruitment is not**. See below. |
+| 2.11 | ✅ **Migrate the app onto the generated dataset** — legality *and* recruitment. See below. |
 
 **Done when:** an illegal roster cannot be silently built; every violation names
 the rule and cites its source; switching rulesets shows a diff rather than
@@ -165,22 +165,38 @@ legality authority: 6 armouries, 213 rows. The 1.6 MB dataset is served from
 `fromWarband.toRoster` joins the saved warband to it by name, re-pricing from
 the armoury.
 
-**What is not: recruiting.** `useStore.ts` still builds its unit list as
-`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts`, and `AddUnitModal`
-reads it. So the models a player can *add* still come from the hand-written
-data the audit measured as 97% wrong on statlines, with 38% of its wargear
-invented. `QuickSearchModal`, `newRecruitImporter` and `warbandLore` read it too.
+**And recruiting, now.** `useStore` built its unit list as
+`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts` — 45 hand-written
+entries the audit measured as 97% wrong on statlines, with 38% of its wargear
+invented — and `AddUnitModal` read it. So a roster was *checked* against sourced
+data but *assembled* from unsourced data, and the check fired after the mistake
+instead of preventing it.
 
-This is the gap between the two halves of Phase 2's own acceptance test. A
-finished roster is now checked against sourced data and told exactly what is
-wrong with it — but it is still *assembled* from unsourced data, so the check
-fires after the fact rather than preventing the mistake. Until the recruit path
-moves, **"an illegal roster cannot be silently built" is not true**; only "an
-illegal roster does not stay silent" is.
+`src/rules/recruitable.ts` converts the generated dataset into the shape the
+roster format speaks, and `hydrateCatalogs` fills the store from it. **All 2,000
+lines of hand-written profiles are deleted.** What the conversion drops — Glory
+costs the format cannot hold, per-model options — is dropped in one place with a
+note, not silently per call site; and `gloryCost` was added to the roster format
+rather than dropped, because a Mercenary at 0 Ducats and 5 Glory rendered as
+"0 D": free, and hireable without limit.
 
-Moving it is a store restructure, not a data change, and `useStore.ts` is the
-2,364-line file Phase 4.2 exists to split — so it is sequenced with that work
-rather than bolted on ahead of it.
+Three things the deleted entries got wrong that the dataset gets right:
+
+| | old | new |
+|---|---|---|
+| statlines | 97% wrong | traceable to a pinned catalogue commit |
+| recruitment limits | none at all | 69 of 89 units carry one, enforced |
+| default loadouts | invented | none — the catalogues do not issue gear |
+
+**The catalogs start empty** and fill when the dataset loads. That is the honest
+state and the builder says so; there is deliberately no fallback, because a
+fallback to `defaultRules.ts` is precisely the `githubSync` failure this project
+deleted (AUDIT §1.8).
+
+One bug found wiring it up, and it is the third instance of the same one: the
+dataset spells a faction `Iron Sultanate` and the app spells it
+`iron-sultanate`, so the recruit list filtered to nothing and showed an empty
+roster. The adapter resolves through `sameFaction` now.
 
 ### 2.10 — picking a variant, and the joins it exposed
 
@@ -432,10 +448,40 @@ the correctness, not the layout.
 | # | Task |
 |---|---|
 | 4.1 | Real routes — `/roster/[id]`, `/play/[matchId]`, `/campaign/[id]`, `/codex/[...slug]` |
-| 4.2 | Split `useStore.ts` (2,364 lines) into roster / match / campaign / settings |
+| 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
 | 4.3 | Resolve the `localStorage` ⇄ Postgres dual source of truth |
 | 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
 | 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
+
+### 4.2 — the store, in pieces
+
+`useStore.ts` was 2,471 lines: warbands, models, progression, play mode, the
+campaign, the customizer and the theme, in one object literal. It is now 54
+lines of composition over seven slices.
+
+| file | lines | |
+|---|---:|---|
+| `slices/roster.ts` | 561 | warbands, cloud sync, stash, favourites |
+| `slices/campaign.ts` | 437 | enrolment, territories, the post-battle sequence |
+| `slices/progression.ts` | 431 | advancements, skills, scars, titles, deeds |
+| `slices/units.ts` | 395 | recruiting, naming, equipping |
+| `slices/catalog.ts` | 146 | the rule catalogs and the player's own additions |
+| `slices/match.ts` | 136 | the turn counter, wounds, markers, activation |
+| `slices/settings.ts` | 43 | view, theme, ruleset, pending diffs |
+
+`AppState` stays whole. Zustand's slice pattern types each creator as
+`StateCreator<AppState, [], [], ItsOwnKeys>` precisely so `get()` still reaches
+the whole store, and seven partial types importing each other would be the same
+coupling spread over more files. Nothing about how components use the store
+changed — `useStore()` still returns everything.
+
+The split was checked mechanically rather than by eye: every key the old
+returned object defined is defined by exactly one slice, none is missing and
+none is defined twice.
+
+`readInitialState()` does the one read of `localStorage`, so a slice that needs
+a seed takes it as an argument instead of closing over a variable defined four
+hundred lines above it.
 
 ---
 

@@ -24,6 +24,13 @@ export interface WeaponProfile {
   damage?: string; // e.g. "Standard" or "D3"
   keywords: string[];
   cost: number; // in Ducats
+  /**
+   * Glory, where the entry is priced in it. Trench Crusade has two currencies
+   * and this format modelled one, so a Mercenary costing 0 Ducats and 5 Glory
+   * rendered as "0 D" — free, and hireable without limit. Optional because most
+   * entries have no Glory component, and absent is not zero.
+   */
+  gloryCost?: number;
   category?: string;
   description?: string;
   hands?: 1 | 2;
@@ -40,6 +47,13 @@ export interface ArmourProfile {
   modifier?: string;
   category?: string;
   cost: number;
+  /**
+   * Glory, where the entry is priced in it. Trench Crusade has two currencies
+   * and this format modelled one, so a Mercenary costing 0 Ducats and 5 Glory
+   * rendered as "0 D" — free, and hireable without limit. Optional because most
+   * entries have no Glory component, and absent is not zero.
+   */
+  gloryCost?: number;
   keywords?: string[];
   description?: string;
   factionId?: string;
@@ -52,6 +66,13 @@ export interface EquipmentItem {
   id: string;
   name: string;
   cost: number;
+  /**
+   * Glory, where the entry is priced in it. Trench Crusade has two currencies
+   * and this format modelled one, so a Mercenary costing 0 Ducats and 5 Glory
+   * rendered as "0 D" — free, and hireable without limit. Optional because most
+   * entries have no Glory component, and absent is not zero.
+   */
+  gloryCost?: number;
   effect: string;
   category?: string;
   keywords?: string[];
@@ -68,6 +89,13 @@ export interface UnitProfile {
   factionId: string;
   category: UnitCategory;
   baseCost: number; // in Ducats
+  /**
+   * Glory, where the entry is priced in it. Trench Crusade has two currencies
+   * and this format modelled one, so a Mercenary costing 0 Ducats and 5 Glory
+   * rendered as "0 D" — free, and hireable without limit. Optional because most
+   * entries have no Glory component, and absent is not zero.
+   */
+  gloryCost?: number;
   stats: Statline;
   maxCount?: number;
   innateAbilities?: Ability[];

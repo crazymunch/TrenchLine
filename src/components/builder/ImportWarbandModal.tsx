@@ -20,7 +20,10 @@ interface ImportWarbandModalProps {
 }
 
 export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose }) => {
-  const { customUnits, warbands, factions, setActiveWarbandId } = useStore();
+  // `units` already carries the dataset's profiles plus any custom ones. The
+  // importer used to resolve against `defaultRules.ts` instead, which gave
+  // every imported model a hand-written statline under a name that matched.
+  const { units, warbands, factions, setActiveWarbandId, catalogsLoaded } = useStore();
 
   // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
   const overlayRef = useOverlay(true, onClose);
@@ -35,7 +38,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     }
 
     try {
-      const result = importNewRecruitRoster(inputText, customUnits);
+      const result = importNewRecruitRoster(inputText, units);
       if (result.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
         setParsedWarband(null);
@@ -58,7 +61,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       const content = event.target?.result as string;
       setInputText(content);
       try {
-        const result = importNewRecruitRoster(content, customUnits);
+        const result = importNewRecruitRoster(content, units);
         setParsedWarband(result);
         setErrorMsg(null);
       } catch (err) {

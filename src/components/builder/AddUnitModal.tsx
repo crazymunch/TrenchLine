@@ -33,7 +33,9 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
     addUnitToWarband, 
     favouriteUnits, 
     addUnitFromFavourite, 
-    removeUnitFromFavourites 
+    removeUnitFromFavourites,
+    catalogsLoaded,
+    catalogsError,
   } = useStore();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -187,6 +189,30 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                 })
               )}
             </div>
+          ) : !catalogsLoaded ? (
+            /*
+              The recruitable list comes from the generated dataset, which is
+              fetched. Until it arrives there is nothing to show — and saying so
+              is the point. This modal used to be backed by `defaultRules.ts`,
+              whose statlines the audit measured as 97% wrong, so it was always
+              instantly full and always partly wrong. An empty list that says
+              why beats a full one that lies.
+            */
+            <div className="p-8 text-center text-theme-muted">
+              {catalogsError ? (
+                <>
+                  <p className="font-bold text-status-error">The ruleset could not be loaded.</p>
+                  <p className="mt-1">{catalogsError}</p>
+                  <p className="mt-2">
+                    Nothing is shown rather than falling back to older data —
+                    recruiting from the wrong ruleset is worse than not
+                    recruiting yet.
+                  </p>
+                </>
+              ) : (
+                <p>Loading the roster from the ruleset…</p>
+              )}
+            </div>
           ) : (
             /* TAB: STANDARD PROFILES */
             filtered.map((unit) => {
@@ -269,7 +295,13 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-black font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>{unit.baseCost} D</span>
+                      {/* Both currencies. This read "0 D" for every Mercenary
+                          the catalogues price in Glory — free, and hireable
+                          without limit. */}
+                      <span>
+                        {unit.baseCost > 0 || !unit.gloryCost ? `${unit.baseCost} D` : ''}
+                        {unit.gloryCost ? `${unit.baseCost > 0 ? ' + ' : ''}${unit.gloryCost} Glory` : ''}
+                      </span>
                     </button>
                   </div>
                 </div>
