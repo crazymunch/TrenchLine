@@ -411,6 +411,94 @@ One engine, two uses.
 
 ---
 
+## 7b. Catalogue modifiers — the conditional layer
+
+The single largest thing the first pass threw away.
+
+BattleScribe does not store a model's printed profile. It stores a **base**
+profile plus `modifier` elements that fire when a condition holds. There are
+**1,862** of them in the pinned catalogues; the parser read none, which is why
+the generated data had no `Kavass`, derived no Armour from equipped armour, and
+could not reach `Favoured Brazen Bull` at all.
+
+They are now parsed into `Modifier` (`src/types/catalogue.ts`) and evaluated by
+[`src/rules/modifiers.ts`](../src/rules/modifiers.ts).
+
+### What they encode
+
+| Target | Count | Example |
+|---|---|---|
+| `hidden` | 772 | availability — the machine-readable "cannot include" |
+| Armour | 171 | `set stats.armour = -2` when Reinforced Armour is equipped |
+| `name` | 91 | `set name = Kavass` when the roster has The House of Wisdom |
+| `category` | 77 | grants ELITE at no cost |
+| Melee / Ranged | 141 | `set stats.melee = +0 Dice` when Studied Blade |
+| constraints | ~60 | `increment` the Lion of Jabir's roster max under a variant |
+| Ducats / Glory | 41 | an option that changes the price |
+
+### Why this matters more than it sounds
+
+**The variant rules are derivable, not transcribable.** §7a describes reading
+the fourteen variants out of the Warbands PDF as prose and hand-writing ops.
+Most of that work is already done, in machine-readable form, in the catalogues:
+
+```
+Lion of Jabir     base max 2  +  increment 1 when "The House of Wisdom"   -> 0-3
+Jabirean Alchemist base max 1  +  increment 1 when "The House of Wisdom"   -> 0-2
+                   base min 0  +  increment 1 when "The House of Wisdom"   -> must include 1
+```
+
+which is *Pride of Jabir* and *Alchemists*, word for word, without anyone
+transcribing them. Prefer the derived form; keep the PDF prose as the
+cross-check, not the source.
+
+### Rules this file obeys
+
+- **Document order.** A later `set` overrides an earlier `increment`. That is
+  BattleScribe's own semantics and we reproduce it rather than imposing one we
+  find tidier.
+- **Three-valued conditions.** `instanceOf` needs a type hierarchy the
+  catalogues do not give us. Such a condition evaluates to `null`, never to
+  `false`, and the modifier is reported as unevaluated rather than dropped.
+- **No invented fields.** A field id we cannot resolve is kept verbatim under
+  `rawField` and counted by the build (currently 3 of 820 on units and weapons).
+
+### Verified against a real roster
+
+`src/rules/__tests__/modifiers.test.ts` replays the Al-Qarn Rihla NewRecruit
+export through the evaluator and compares every statline against what NewRecruit
+itself printed. **All of them match** from the catalogue base plus modifiers.
+
+### Elite promotion titles
+
+A promoted model prints with a faction title: `Favoured Brazen Bull`,
+`Ascendant …`, `Blasphemous …`. These are a **community convention**, not a rule
+in any book — but they are real catalogue data, held on the shared
+`Elite Promotion` entry and chosen by an `instanceOf` against the roster's
+primary catalogue:
+
+| Faction | Title |
+|---|---|
+| Principality of New Antioch | Commissioned Officer |
+| Trench Pilgrims | Exalted |
+| Iron Sultanate | **Favoured** |
+| Heretic Legions | Blasphemous |
+| Court of the Seven-Headed Serpent | Ascendant |
+| The Black Grail | Putrid |
+
+So they are derived, never hand-written. Trench Companion publishes a competing
+set that agrees on five of six and calls the Sultanate's *Veteran*; the
+maintainer has ruled for the NewRecruit set, which is the one the catalogues
+carry, so no layer is needed to express that preference today. If it ever is,
+it belongs in a layer with a citation.
+
+The separator is U+00A0, carried on the modifier's `join` attribute — a
+non-breaking space, so a title never wraps away from the name it decorates.
+The parser reads attribute values verbatim for exactly this reason; trimming
+them turned the separator into `''` and produced `FavouredBrazen Bull`.
+
+---
+
 ## 7a. Warband Variants
 
 A **Variant** (Papal States Intervention Force, House of Wisdom, Trench Ghosts…)

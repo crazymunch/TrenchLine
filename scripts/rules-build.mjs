@@ -141,6 +141,12 @@ for (const ruleset of RULESETS) {
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
   console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}  variants ${variants.length}`);
   console.log(`  weapons carrying armoury restrictions: ${restricted}`);
+  const mods = [...dataset.units, ...dataset.weapons]
+    .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
+  const unmapped = [...dataset.units, ...dataset.weapons]
+    .flatMap((e) => e.modifiers ?? []).filter((m) => m.rawField).length;
+  console.log(`  conditional modifiers read: ${mods}` +
+              (unmapped ? `  (${unmapped} with an unmapped field)` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
   console.log(`  verified against the rulebook: ${v.compared} units`);
   console.log(`    confirmed   ${v.confirmed}`);

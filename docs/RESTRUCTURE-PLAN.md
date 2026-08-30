@@ -132,13 +132,13 @@ All four are covered by regression tests.
 |---|---|
 | 2.1 | `src/rules/validate.ts` — constraint evaluation (min/max, roster/parent scope, conditions) |
 | 2.2 | `src/rules/costs.ts` — Ducats **and** Glory, including options and Glory Items |
-| 2.3 | `UnitOption` support — Strains, Vile Corpus, Goetic Powers, Glory Items, variants |
+| 2.3 | `UnitOption` support — Strains, Vile Corpus, Goetic Powers, Glory Items, variants. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
 | 2.5a | Faction Special Rules as engine rules — e.g. New Antioch "up to 2 Fireteams", granting FIRETEAM at no cost |
 | 2.6 | Surface violations in the builder: per-unit, per-roster, blocking vs advisory |
 | 2.7 | Ruleset switcher + reconciliation review screen — needed for *Latest GitHub* ⇄ *TrenchLine* switching; no longer blocks Phase 1 |
-| 2.10 | **Warband Variants** — `variantId` on `Warband`, variant selection at creation, variant ops applied to roster validation ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). 14 official variants. |
+| 2.10 | **Warband Variants** — `variantId` on `Warband`, variant selection at creation, variant ops applied to roster validation ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). 14 official variants. **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
 | 2.8 | Provenance UI — "where does this number come from?" in the Codex |
 | 2.9 | Comprehensive unit tests for `src/rules/*` |
 

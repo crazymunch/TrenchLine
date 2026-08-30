@@ -399,6 +399,75 @@ Phase 1 splits the file: narrative moves to
 
 ---
 
+### 1.11 The parser discarded the catalogues' conditional layer
+
+Found while tracing why the preserved Al-Qarn Rihla roster contains models
+(`Favoured Brazen Bull`, `Favoured Kavass`, `Kavass`) that appear in no dataset.
+
+They are not missing entries. `Kavass` **is** the catalogue's `Azeb`, renamed by
+a `modifier` that fires when the roster has selected The House of Wisdom.
+`Favoured Brazen Bull` is the `Brazen Bull` entry with an ELITE promotion.
+
+The catalogues carry **1,862 modifiers**. The first parser read the static
+`selectionEntry` and none of them, so everything conditional was lost:
+
+- a model's Armour, which is derived from the armour it has equipped — the
+  reason every generated Armour value is the bare base
+- Warband Variant renames and stat changes
+- variant changes to recruitment limits
+- options that change a cost
+
+This is not fabricated data — everything shipped was traceable — but it is a
+whole mechanism silently dropped, and it made the app structurally unable to
+show what a model actually looks like once equipped.
+
+Fixed: modifiers are parsed with their condition trees intact, ids resolved to
+readable names, and evaluated by `src/rules/modifiers.ts`. Verified by replaying
+the real roster: **every printed field — name and all four statline values —
+now reproduces exactly from the catalogue base plus modifiers**, including the
+`Favoured` elite-promotion title, with nothing hand-written.
+See [`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer).
+
+**Correction to §1.6a.** That section says the fourteen Warband Variants have to
+be transcribed from the Warbands PDF. Much of that is wrong: the variants'
+mechanical effects are already machine-readable in the catalogues as modifiers.
+*Pride of Jabir* (Lions 0-2 → 0-3) and *Alchemists* (must include 1-2) both
+derive exactly. The PDF prose remains the cross-check, not the source.
+
+### 1.12 The catalogue fetch used a hardcoded file list, and it had gone stale
+
+Found while tracing the same roster: the `Elite Promotion` entry it selects
+resolved to nothing.
+
+`scripts/rules-fetch.mjs` held a literal array of eleven catalogue file names.
+Upstream publishes twelve. The missing one is **`Campaign Rules.cat`** — 470 KB
+containing every Advancement, Injury, Glory Item, Exploration Reward and
+Exploration Skill, the Patron selection, and the elite-promotion titles.
+
+Nothing failed. No warning, no conflict, no missing-provenance error: the
+pipeline fetched what it was told to fetch and reported success. The dataset was
+simply incomplete, which is the quietest possible version of the failure this
+project exists to prevent.
+
+Impact once fetched, with no other change:
+
+| | before | after |
+|---|---|---|
+| gear / battlekit entries | 389 | 543 |
+| conditional modifiers | 820 | 971 |
+| unresolvable Dispatch ops | 3 | 2 |
+
+Fixed: the file list is now **discovered** from the repository, and the fetch
+reports files that newly appear (`new upstream: Campaign Rules.cat`) and warns
+about any it previously held that upstream no longer publishes. A guessed list
+is refused outright rather than fetched partially.
+
+**Lesson generalised.** Every hardcoded list of things-from-a-source is a
+staleness bug waiting to happen. Rule 2 says never invent a fallback; this is
+its sibling — never assume you know the whole of a source you did not enumerate.
+
+---
+
 ## 2. Mobile and tablet
 
 ### 2.1 The hard bug

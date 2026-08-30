@@ -247,3 +247,73 @@ describe.skipIf(!hasBook)('rulebook extraction', () => {
     expect(v.find((x) => x.name === 'HOUSE OF WISDOM').specialRules.length).toBeGreaterThan(0);
   });
 });
+
+/* ---------------------------------------------------------------- modifiers */
+
+// The catalogues state every conditional rule as a modifier. Discarding them
+// was why the generated data had no Kavass, no derived armour, and no way to
+// express a Warband Variant changing a recruitment limit.
+describe('catalogue modifiers', () => {
+  const ds = parseCatalogues('data-sources/battlescribe');
+  const unit = (name) => ds.units.find((u) => u.name === name);
+
+  it('reads modifiers off real catalogue entries', () => {
+    const n = [...ds.units, ...ds.weapons].reduce((a, e) => a + e.modifiers.length, 0);
+    expect(n).toBeGreaterThan(500);
+  });
+
+  it('resolves a condition to the entry it names, not a bare UUID', () => {
+    const azeb = unit('Azeb');
+    const rename = azeb.modifiers.find((m) => m.field === 'name' && m.value === 'Kavass');
+    expect(rename).toBeTruthy();
+    expect(rename.when.childName).toBe('The House of Wisdom');
+    expect(rename.when.scope).toBe('roster');
+  });
+
+  it('maps characteristic ids to field paths', () => {
+    const azeb = unit('Azeb');
+    const armour = azeb.modifiers.filter((m) => m.field === 'stats.armour');
+    expect(armour.length).toBeGreaterThan(2);
+    // Armour is derived from the armour you equipped, not a fixed number.
+    expect(armour.some((m) => m.when?.childName === 'Standard Armour')).toBe(true);
+  });
+
+  it('carries the author\'s own label for a modifier group', () => {
+    const azeb = unit('Azeb');
+    expect(azeb.modifiers.some((m) => m.comment === 'armour adjustments')).toBe(true);
+  });
+
+  // "Pride of Jabir: a House of Wisdom Warband can include 0-3 Lions of Jabir"
+  // is a +1 on the Lion's roster max, not prose. Deriving it beats transcribing it.
+  it('recognises a modifier that changes a recruitment limit', () => {
+    const lion = unit('Lion of Jabir');
+    expect(lion.max).toBe(2);
+    const bump = lion.modifiers.find(
+      (m) => m.field.startsWith('constraint:') && m.when?.childName === 'The House of Wisdom');
+    expect(bump).toBeTruthy();
+    expect(bump.op).toBe('increment');
+    expect(bump.value).toBe('1');
+  });
+
+  it('nests a group condition above the modifier\'s own', () => {
+    const withBoth = [...ds.units, ...ds.weapons]
+      .flatMap((e) => e.modifiers)
+      .find((m) => m.when && 'all' in m.when && m.comment);
+    // Not every catalogue has one; assert the shape only when it does.
+    if (withBoth) expect(Array.isArray(withBoth.when.all)).toBe(true);
+  });
+
+  it('flags an unmappable field rather than mislabelling it', () => {
+    const unmapped = [...ds.units, ...ds.weapons]
+      .flatMap((e) => e.modifiers).filter((m) => m.rawField);
+    // A handful are expected; a spike means the field maps went stale.
+    expect(unmapped.length).toBeLessThan(20);
+    for (const m of unmapped) expect(m.field).toBe(m.rawField);
+  });
+
+  it('records the containing entry id, which is what rosters address', () => {
+    const azeb = unit('Azeb');
+    expect(azeb.entryId).toBeTruthy();
+    expect(azeb.entryId).not.toBe(azeb.id);
+  });
+});

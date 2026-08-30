@@ -11,6 +11,7 @@ export const DATASET: Dataset = {
   "units": [
     {
       "id": "5fad-8b9c-8d6a-a2f0",
+      "entryId": "43b9-c7fd-4680-3e7a",
       "name": "Plague Knight",
       "factionId": "Black Grail",
       "roles": [
@@ -52,16 +53,216 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "f025-ee7a-4125-ce80",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:f025-ee7a-4125-ce80",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "fdaf-1b5e-0348-3ad9",
+            "childName": "Led by a Plague Knight",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:f025-ee7a-4125-ce80",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "The Lamentor",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "dc04-f8df-606f-f06c",
+            "childName": "The Lamenter",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "The Executor",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b044-cbf6-a7c5-e2b3",
+            "childName": "The Executor",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Butcher Knight",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b044-cbf6-a7c5-e2b3",
+            "childName": "The Executor",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "780c-f898-6d4b-cfe7",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4e66-70be-9744-7ce6",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Plague Knight",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "66c3-c1a5-004d-3c68",
+                "childName": "Armour of the Fly",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "54d7-7daa-ec1f-a328",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Ravenous Infection",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "8fc4-805a-2894-01ad",
+      "entryId": "5df2-ef54-85ea-adfe",
       "name": "Hound of the Black Grail",
       "factionId": "Black Grail",
       "roles": [
@@ -107,16 +308,94 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "e5df-0eb4-a3c5-8cf7",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Wailers",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:e5df-0eb4-a3c5-8cf7",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Prowler",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Teeths & Claws",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "670f-9bed-3b5c-2b36",
+            "childName": "Infected"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Wailer",
+          "origin": "profile:Hound of the Black Grail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "93f3-a076-a503-e864",
+      "entryId": "3a3c-7f8b-4ee4-d9d7",
       "name": "Thrall",
       "factionId": "Black Grail",
       "roles": [],
@@ -140,16 +419,80 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "4e72-36fe-21b7-986d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+0 Dice",
+          "origin": "profile:Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Bereaved",
+          "origin": "profile:Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Ravenous",
+          "origin": "profile:Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+0 Dice",
+          "origin": "profile:Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "2055-017b-f08e-aff4",
+      "entryId": "4173-8d52-ff32-03d8",
       "name": "Winged Thrall",
       "factionId": "Black Grail",
       "roles": [],
@@ -173,16 +516,94 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "e184-8bff-3cab-0f3b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Winged Bereaved",
+          "origin": "profile:Winged Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Winged Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7fb6-d318-1757-96a6",
+            "childName": "Trench Shield"
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+0 Dice",
+          "origin": "profile:Winged Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Winged Ravenous",
+          "origin": "profile:Winged Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+0 Dice",
+          "origin": "profile:Winged Thrall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "b0d3-1c47-ce33-922d",
+      "entryId": "8f23-4665-3322-ca92",
       "name": "Heralds of Beelzebub",
       "factionId": "Black Grail",
       "roles": [
@@ -213,16 +634,110 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "904b-6f39-0451-bd48",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Weepers",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:904b-6f39-0451-bd48",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Weeper",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "e5d5-c4bb-4b99-020d",
+      "entryId": "036b-eb9f-9b58-fa7e",
       "name": "Amalgam",
       "factionId": "Black Grail",
       "roles": [
@@ -280,16 +795,62 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "a898-9a6a-c027-2c75",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "0f19-7c79-420e-13bf",
+                "childName": "Dirge of the Great Hegemon",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Amalgam",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7fb6-d318-1757-96a6",
+            "childName": "Trench Shield"
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "aca1-8c2f-0a00-ee49",
+      "entryId": "80e3-313d-1c13-05a0",
       "name": "Lord of Tumours",
       "factionId": "Black Grail",
       "roles": [
@@ -338,22 +899,175 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "14da-6cb8-f66e-7ad6",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "7385-348a-8951-199e",
           "type": "min",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:14da-6cb8-f66e-7ad6",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "fdaf-1b5e-0348-3ad9",
+            "childName": "Led by a Plague Knight",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "0f19-7c79-420e-13bf",
+                "childName": "Dirge of the Great Hegemon",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:7385-348a-8951-199e",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "bd82-c719-4abf-c104",
+            "childName": "Led by a Lord of Tumours"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Lord of Tumours",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Lord of Tumours",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Lord of Tumours",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "780c-f898-6d4b-cfe7",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Lord of Tumours",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4e66-70be-9744-7ce6",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Lord of Tumours",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "66c3-c1a5-004d-3c68",
+                "childName": "Armour of the Fly",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "54d7-7daa-ec1f-a328",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "6435-cea8-b098-e528",
+      "entryId": "7e0b-de14-f14c-8ea0",
       "name": "Corpse Guard",
       "factionId": "Black Grail",
       "roles": [
@@ -409,16 +1123,186 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "d823-e8a8-3761-c40e",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Desiccated Husks",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:d823-e8a8-3761-c40e",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+2 Dice",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "780c-f898-6d4b-cfe7",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4e66-70be-9744-7ce6",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Corpse Guard",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "66c3-c1a5-004d-3c68",
+                "childName": "Armour of the Fly",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "54d7-7daa-ec1f-a328",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Bodyguard",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Shredding",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "9f3b-37db-7c86-c7ff",
+      "entryId": "a657-8944-aecd-713d",
       "name": "Matagot Hag",
       "factionId": "Black Grail",
       "roles": [
@@ -476,22 +1360,146 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "642a-ff71-0b2e-76db-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "642a-ff71-0b2e-76db-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Matagot Hag",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Matagot Hag",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Matagot Hag",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "780c-f898-6d4b-cfe7",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Matagot Hag",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "4e66-70be-9744-7ce6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "83de-02a7-ba19-3570",
+                "childName": "Foetid Palanquin",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Matagot Hag",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "66c3-c1a5-004d-3c68",
+                "childName": "Armour of the Fly",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "54d7-7daa-ec1f-a328",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "cb0d-b71b-7cf1-b375",
+      "entryId": "6291-8d16-b2c8-d9a7",
       "name": "Gregori Gula",
       "factionId": "Black Grail",
       "roles": [
@@ -543,16 +1551,35 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "7480-0914-6929-e8eb",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "2900-bb42-dc77-e352",
+      "entryId": "dda8-eeec-a07e-ed88",
       "name": "Homunculus",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -594,16 +1621,171 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "df57-0935-69d8-9112",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2062-5f34-83d0-3e52",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "52dd-8148-fabf-d590",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "101f-2c0b-c1a9-127e",
+            "childName": "Terrifying Appearance",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "222e-037b-dbbc-151e",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "52dd-8148-fabf-d590",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2062-5f34-83d0-3e52",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "52dd-8148-fabf-d590",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4074-5e11-5f6c-1982",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6de1-e878-02f0-d31c",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "a2b2-89a6-6e9b-6070",
+      "entryId": "68a4-5af6-6f09-aeab",
       "name": "Praetor",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -637,16 +1819,151 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "5da1-9568-2d09-2030",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Praetor",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Praetor",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Praetor",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Praetor",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Praetor",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Praetor",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "67ea-6a29-5c38-05b8",
+      "entryId": "322d-1a69-dc2a-2e26",
       "name": "Sorcerer",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -677,16 +1994,136 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "fbca-352e-df39-8dd7",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "f126-6f86-fb26-0f97",
+      "entryId": "bf89-44f3-36a0-c7b4",
       "name": "Hunter of the Left-hand Path",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -717,16 +2154,166 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "3ddf-9a2c-9351-f29c",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Oracle Beast Cloak",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "58a3-64fb-8c2d-5105",
+            "childName": "Bestial Skin Cloak",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "e508-c5a4-d746-1eb6",
+      "entryId": "64c4-6b74-0805-0e82",
       "name": "Hell Knight",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -757,16 +2344,65 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "a095-835e-9689-f1ed",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "f16c-02fc-f6ad-4562",
+      "entryId": "658a-8247-8e8a-8f85",
       "name": "Yoke Fiend",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -831,10 +2467,279 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Cultist",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "420c-0871-4283-b95b",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Void Cultist",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "8ba8-5e95-71aa-24e8",
+                "childName": "Embraced by the Void",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Hateful",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a805-292c-3b37-bc40",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "af16-e7f1-b528-97b9",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Torturer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Infinite Duress",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Hateful",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a805-292c-3b37-bc40",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "af16-e7f1-b528-97b9",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Slavemaster",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "8ba8-5e95-71aa-24e8",
+            "childName": "Embraced by the Void",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "b2dd-8727-aaa1-e504",
+      "entryId": "a957-7766-e2fa-f4b3",
       "name": "Wretched",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -873,16 +2778,84 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "f823-9f28-5302-57af",
           "type": "max",
           "value": -1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:f823-9f28-5302-57af",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "constraint:f823-9f28-5302-57af",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "equalTo",
+            "value": "0",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "420c-0871-4283-b95b",
+            "childName": "Demonic",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Wretched must be armed!",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c42c-5c26-a975-0ad3",
+                "childName": "Weapons",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "22af-c114-4143-a904",
+                "childName": "Grenades",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "6987-6ba4-6c22-54b8",
+      "entryId": "a81c-9cc6-8d4c-1d5e",
       "name": "Pit Locust",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -920,16 +2893,50 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "f133-7c3f-8861-2506",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Pit Locust",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Pit Locust",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "8402-cb2e-c367-efe5",
+      "entryId": "0447-09f8-8cc2-64da",
       "name": "Desecrated Saint",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -1015,16 +3022,170 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "9b1b-be8d-d21d-90ae",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Desecrated Saint",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Desecrated Saint",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Envy",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "3a57-9286-5c7e-de27",
+            "childName": "Envy",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Gluttony",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f1b5-ce92-42bc-2469",
+            "childName": "Gluttony",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Greed",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "3a0b-d655-c557-84c1",
+            "childName": "Greed",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Lust",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "3fc4-33b0-264c-8510",
+            "childName": "Lust",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Pride",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "715d-d6a9-0948-8e79",
+            "childName": "Pride",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Sloth",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "be23-ed3c-e3a7-5140",
+            "childName": "Sloth",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of the Void",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Aura of Wrath",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "2fbd-2ebe-b0e5-8708",
+            "childName": "Wrath",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "6583-d273-0c59-fdf6",
+      "entryId": "4c27-9424-de7d-b905",
       "name": "Faceless",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -1067,16 +3228,151 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "c8a8-9e5b-ef7d-4d8f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Faceless",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "e147-1fc4-7be4-1f66",
+      "entryId": "fb1c-94da-c9c8-be8e",
       "name": "Stalker",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -1121,16 +3417,151 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "d26e-4f50-5a77-99a3",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Stalker",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "c4f9-0bca-fb4a-1a51",
+      "entryId": "15bf-43f1-0650-1070",
       "name": "Anointed Heavy Infantry",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1165,16 +3596,182 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "2daf-dded-85a2-f21a",
           "type": "max",
           "value": 5,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:2daf-dded-85a2-f21a",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b0b0-1549-d4ec-7b5f",
+                "childName": "Cadaver Corps",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "9b36-57f6-1887-7bea",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7b92-190b-f8c3-531a",
+            "childName": "Unseen Infiltrator"
+          }
+        },
+        {
+          "op": "unset-primary",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set-primary",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Anointed Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Anointed Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Anointed Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Incandescent",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "1c77-e32a-aec8-53a7",
+      "entryId": "8983-6564-96c7-fd33",
       "name": "Heretic Priest",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1204,22 +3801,212 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "e878-a54e-5461-5f68-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "e878-a54e-5461-5f68-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "61b5-8cd2-9946-22fd",
+            "childName": "Tank Palanquin",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "e878-a54e-5461-5f68-min",
+          "value": "0",
+          "origin": "entry",
+          "rawField": "e878-a54e-5461-5f68-min",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "e878-a54e-5461-5f68-max",
+          "value": "0",
+          "origin": "entry",
+          "rawField": "e878-a54e-5461-5f68-max",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ac3e-734d-ddbe-d291",
+            "childName": "Technomancer",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Heretic Priest",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "61b5-8cd2-9946-22fd",
+                "childName": "Tank Palanquin",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f468-49af-8d3b-7c7b",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a4a9-4340-7070-9861",
+                "childName": "Armour of Cobar",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "459b-6e4b-c658-2d35",
+      "entryId": "77f7-5569-472a-6e92",
       "name": "Death Commando",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1259,16 +4046,135 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "154a-1d9d-959e-d915",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Death Commando",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Death Commando",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Death Commando",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Death Commando",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Death Commando",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "8dab-235b-d0d8-967f",
+      "entryId": "fe81-08b2-7161-d4cb",
       "name": "Chorister",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1303,16 +4209,223 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "a315-a1b6-dd13-ba1c",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Mammon demands 80+ Ducats",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "15",
+                "field": "8d43-33fd-332d-17a6",
+                "scope": "self",
+                "childId": "any",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Banshee",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2947-3143-19a4-59a0",
+            "childName": "Banshee",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Chorister",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Chorister",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Chorister",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Chorister",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f468-49af-8d3b-7c7b",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a4a9-4340-7070-9861",
+                "childName": "Armour of Cobar",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Chorister",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Chorister",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Unholy Hymns",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2947-3143-19a4-59a0",
+            "childName": "Banshee",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "57ad-9a46-41b3-5414",
+      "entryId": "eab4-df0a-d8f3-302d",
       "name": "War Wolf",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1355,16 +4468,198 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "105c-8780-b389-2f18",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "War Hyena",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "140",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "40mm",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:105c-8780-b389-2f18",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "f0ef-ba0d-8963-331a",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "aa2f-f4b3-3003-4b43",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:War Wolf",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Appetisers",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "73fc-5557-f02b-f423",
+      "entryId": "f2d9-0f99-61a1-fce5",
       "name": "Artillery Witch",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1402,16 +4697,300 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "ceb2-bf00-2a24-aa1d",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Phosphor Witch",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "95",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f468-49af-8d3b-7c7b",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Infernal Bomb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b0b0-1549-d4ec-7b5f",
+                "childName": "Cadaver Corps",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Gas Bomb",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Creator's Shadow",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "5c28-fb72-df49-7ffd",
+      "entryId": "cf02-7a3e-ffbf-d7f9",
       "name": "Wretched",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1455,16 +5034,35 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "fdf2-72c7-8ada-82f0",
           "type": "max",
           "value": -1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Wretched",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "9654-b8d7-9c76-f5db",
+      "entryId": "3844-b41c-9ecc-85b9",
       "name": "Heretic Trooper",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1491,10 +5089,249 @@ export const DATASET: Dataset = {
       "abilities": [],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Legionnaire",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f606-4316-044d-4503",
+            "childName": "Legionnaire",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Mammon demands 80+ Ducats",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "50",
+                "field": "8d43-33fd-332d-17a6",
+                "scope": "self",
+                "childId": "any",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ba6a-355d-e37e-decf",
+                "childName": "Melee",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f606-4316-044d-4503",
+                "childName": "Legionnaire",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "47e6-8d3a-8720-e02e",
+                "childName": "Ranged",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f606-4316-044d-4503",
+                "childName": "Legionnaire",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Heretic Trooper",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cdaf-763d-01d8-3c81",
+                "childName": "Sarcophagus Mine",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a4a9-4340-7070-9861",
+                "childName": "Armour of Cobar",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f468-49af-8d3b-7c7b",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "7d0c-f87e-d843-b52e",
+      "entryId": "ac3e-734d-ddbe-d291",
       "name": "Technomancer",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1541,16 +5378,188 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "f9fd-f8bb-f0a6-e390",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:f9fd-f8bb-f0a6-e390",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8983-6564-96c7-fd33",
+            "childName": "Heretic Priest",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Technomancer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Technomancer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Technomancer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Technomancer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Technomancer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Technomancer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "61b5-8cd2-9946-22fd",
+                "childName": "Tank Palanquin",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f468-49af-8d3b-7c7b",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a4a9-4340-7070-9861",
+                "childName": "Armour of Cobar",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "f985-029a-9867-33a0",
+      "entryId": "eeba-3e20-1de2-32d2",
       "name": "Witch Coven Matriarch",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1595,16 +5604,173 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "0567-3201-6664-47c0",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Witch Coven Matriarch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "61b5-8cd2-9946-22fd",
+                "childName": "Tank Palanquin",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "f468-49af-8d3b-7c7b",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a4a9-4340-7070-9861",
+                "childName": "Armour of Cobar",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "2f34-d5f0-2acc-17eb",
+      "entryId": "e6f9-0f05-aa5b-06cd",
       "name": "Homunculus",
       "factionId": "Heretic Legion",
       "roles": [
@@ -1646,16 +5812,171 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "4c03-6abb-7900-2095",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3fb4-b607-7277-c486",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e637-e915-600f-0ed5",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b210-a78b-2c43-8366",
+            "childName": "Terrifying Appearance",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "fb6e-4676-0313-a505",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e637-e915-600f-0ed5",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3fb4-b607-7277-c486",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e637-e915-600f-0ed5",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7db6-6b99-81a9-064e",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "29e1-35be-2c50-269a",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "02c4-88da-ec78-8a33",
+      "entryId": "2f82-e47f-c162-9152",
       "name": "Homunculus",
       "factionId": "Iron Sultanate",
       "roles": [],
@@ -1697,10 +6018,239 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "246c-e662-2f58-db1b",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6c4b-c577-6aca-f270",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "ec42-1750-48bc-074c",
+            "childName": "Terrifying Appearance",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f5d7-6c47-430c-2666",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6c4b-c577-6aca-f270",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "246c-e662-2f58-db1b",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6c4b-c577-6aca-f270",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "387f-21f7-517f-003e",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6603-2315-97b5-d845",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Homunculus",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "6938-a6bd-aec7-18d9",
+      "entryId": "e874-ea2b-96ed-0f9a",
       "name": "Sultanate Sapper",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -1759,16 +6309,249 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "b58f-20a0-c247-b933",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:b58f-20a0-c247-b933",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:b58f-20a0-c247-b933",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:b58f-20a0-c247-b933",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "d0e7-c2c3-d5d0-4147",
+            "childName": "Abrek Sapper",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "entry",
+          "comment": "Ghazi Changes",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Abrek Sapper",
+          "origin": "entry",
+          "comment": "Ghazi Changes",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Sultanate Sapper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Set Mine",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Improvised Trap",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "8aa4-2bfe-6a85-595c",
+      "entryId": "7c17-5f75-6fd9-73cf",
       "name": "Jabirean Alchemist",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -1807,22 +6590,210 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "f3ed-4f4b-c773-61a7",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "30d3-7307-2ec8-6263",
           "type": "min",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:f3ed-4f4b-c773-61a7",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:30d3-7307-2ec8-6263",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Jabirean Alchemist",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "16b9-d9fd-6c2d-68f9",
+      "entryId": "58c8-0815-71a7-27fb",
       "name": "Janissary",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -1862,16 +6833,563 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "a33e-7153-a9b3-e446",
           "type": "max",
           "value": 6,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "The maximum cumulative armour they can have is -2.",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "e370-2887-f54b-16ee",
+                    "childName": "Trench Shield",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "c60a-0cd3-a0a3-3b3e",
+                    "childName": "Reinforced Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "2c5e-e97c-3df7-39d4",
+                    "childName": "Shield Training",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "2c5e-e97c-3df7-39d4",
+                    "childName": "Shield Training",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "c1fa-c327-3411-9462",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "2",
+          "origin": "entry",
+          "comment": "House of Wisdom",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "comment": "House of Wisdom",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set-primary",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "comment": "House of Wisdom",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "comment": "House of Wisdom",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Fāris",
+          "origin": "entry",
+          "comment": "House of Wisdom",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Dervishes",
+          "origin": "entry",
+          "comment": "Cabal of Assassins",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "comment": "Cabal of Assassins",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "4",
+          "origin": "entry",
+          "comment": "Cabal of Assassins",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "2",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set-primary",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Officier Janissary",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "4",
+          "origin": "entry",
+          "comment": "Ghazi",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Günahkâr",
+          "origin": "entry",
+          "comment": "Ghazi",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "7877-788b-2d58-c844",
+          "origin": "entry",
+          "comment": "Ghazi",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "51e5-f4a9-dfa0-371d",
+                "childName": "Günahkâr",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "Ghazi"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Whirling Dervishes",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Dervishes",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Fāris",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Janissary",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Janissary",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Counter-Charge",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "0a4b-397f-ded9-8e79",
+      "entryId": "e62d-c06e-ce35-428b",
       "name": "Brazen Bull",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -1920,16 +7438,220 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "4796-111c-7f8d-fcad",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Max 2 Bull Weapons",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "3",
+            "field": "selections",
+            "scope": "self",
+            "childId": "0934-cc68-ca08-7e2b",
+            "childName": "Bull",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:4796-111c-7f8d-fcad",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "2",
+                "field": "selections",
+                "scope": "self",
+                "childId": "99ce-8e70-94c9-35c4",
+                "childName": "Shields",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "b246-355b-f3ba-f72e",
+                    "childName": "Iron Wall Kalkan",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "99ce-8e70-94c9-35c4",
+                    "childName": "Shields",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Brazen Bull",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "2e2a-409a-cf05-c437",
+      "entryId": "62d4-d89a-f7e2-7d3b",
       "name": "Sultanate Assassin",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -1969,16 +7691,233 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "a7ba-73fe-fc91-ca18",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:a7ba-73fe-fc91-ca18",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Master Assassin",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "411a-f356-8c9d-7224",
+            "childName": "Master Assassin",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "fdd0-11e7-0db6-acb2",
+            "childName": "Hashashin Leaf",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c2b1-d49e-937b-2f87",
+                "childName": "The House of Wisdom",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.movement",
+          "value": "2",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f066-7776-2591-48e3",
+            "childName": "Thunderbolt of Alamut",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Sultanate Assassin",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "7280-5029-065d-2822",
+      "entryId": "9c5a-601e-6b16-320d",
       "name": "Yüzbaşı Captain",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2018,22 +7957,316 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "1905-92a3-4759-3875-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "1905-92a3-4759-3875-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c2b1-d49e-937b-2f87",
+                "childName": "The House of Wisdom",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "The maximum cumulative armour they can have is -2.",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "e370-2887-f54b-16ee",
+                    "childName": "Trench Shield",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "c60a-0cd3-a0a3-3b3e",
+                    "childName": "Reinforced Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "2c5e-e97c-3df7-39d4",
+                    "childName": "Shield Training",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "c1fa-c327-3411-9462",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "2c5e-e97c-3df7-39d4",
+                    "childName": "Shield Training",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Akinji-Bey",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "a0bc-2879-6cde-b11f",
+            "childName": "Akinji-Bey"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Silahdar",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "comment": "Iron Wall",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Yüzbaşı Captain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Mubarizun",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a0bc-2879-6cde-b11f",
+                "childName": "Akinji-Bey"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "16d8-5d2d-abc1-4bfc",
+      "entryId": "0e7e-9167-f044-9493",
       "name": "Azeb",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2060,10 +8293,211 @@ export const DATASET: Dataset = {
       "abilities": [],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Skirmisher Azeb",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "bcd1-1771-9c7f-413c",
+            "childName": "Light Skirmisher"
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "73cd-d90d-7e4f-8e86",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "bcd1-1771-9c7f-413c",
+            "childName": "Light Skirmisher"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Kavass",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+0 Dice",
+          "origin": "profile:Azeb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "2a4f-c258-5d70-a3c5",
+                "childName": "Melee Proficiency [7]",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "2bad-28de-8cb2-398d",
+                "childName": "Studied Blade"
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Azeb",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Azeb",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "2a4f-c258-5d70-a3c5",
+                "childName": "Melee Proficiency [7]",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "2bad-28de-8cb2-398d",
+                "childName": "Studied Blade"
+              }
+            ]
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Azeb",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Azeb",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Azeb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Azeb",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "2ce6-a5e6-fd5e-9b11",
+      "entryId": "f63f-ac9a-639b-b7ba",
       "name": "Lion of Jabir",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2114,16 +8548,203 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "c80f-b5eb-7a75-4bae",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:c80f-b5eb-7a75-4bae",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:c80f-b5eb-7a75-4bae",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "comment": "Fierce Lion Fear",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b3f6-f405-6579-9ff9",
+            "childName": "Fierce Lion"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Lion of Jabir",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Lion of Jabir",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Lion of Jabir",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Lion of Jabir",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Lion of Jabir",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "910a-f733-210e-3161",
+      "entryId": "786e-0d01-8a9c-a3be",
       "name": "\"Zamburak\" Weapon Platform",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2158,16 +8779,49 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "1fd2-5dcc-0444-f4cc",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:1fd2-5dcc-0444-f4cc",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1100",
+            "field": "limit::8d43-33fd-332d-17a6",
+            "scope": "roster",
+            "childId": "any",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "cc60-cf6f-3252-dee0",
+      "entryId": "bc0a-c750-bc8b-0419",
       "name": "Bedu Sharpshooter",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2199,16 +8853,35 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "16c4-da8e-b6ce-9859",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "ea9d-10cb-d033-c1e8",
+      "entryId": "b13b-7b29-752f-ab2e",
       "name": "Archeologist",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2250,16 +8923,63 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "11f2-2b7a-289d-ebbe",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Weaponized Shovel",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "bfe3-326a-87ad-256f",
+                "childName": "Melee Weapons",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "41a5-7586-9820-990b",
+                "childName": "Utility Hand",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "3fce-74d0-c0b4-1ebd",
+      "entryId": "9bfc-c394-0056-4f3e",
       "name": "Teğmen",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2298,16 +9018,179 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "2084-47b2-7fbb-7862",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "97b6-93af-0240-795d",
+            "childName": "Deliler"
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "508d-8edb-4c7f-2868",
+            "childName": "Pahlavan"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Teğmen",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Teğmen",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Teğmen",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Teğmen",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Teğmen",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Teğmen",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "aed0-3d61-c331-fd51",
+      "entryId": "d021-f84d-78e4-f486",
       "name": "Shirdal",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2353,16 +9236,166 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "3731-98ea-d19a-d813",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:3731-98ea-d19a-d813",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "40a7-c3a6-c5ce-9b14",
+            "childName": "Shirdal",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Shirdal",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "ee61-1ca1-89ee-f657",
+      "entryId": "a98c-24cc-6885-daaa",
       "name": "Pairika",
       "factionId": "Iron Sultanate",
       "roles": [
@@ -2408,16 +9441,151 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "4bd8-dab8-a6d7-c16c",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Pairika",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "aa7f-02df-a12f-1ed3",
+      "entryId": "39c2-abb6-fef0-f96e",
       "name": "Combat Medic",
       "factionId": "Mercenaries",
       "roles": [
@@ -2454,16 +9622,34 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "28e8-6cb9-21c3-edca",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "05fe-9537-b2ad-0782",
+      "entryId": "886c-6e17-ab87-8c9c",
       "name": "Observer",
       "factionId": "Mercenaries",
       "roles": [
@@ -2510,16 +9696,46 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "2129-ccd3-56ef-6bcb",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "8e7d-f104-423a-2b4a",
+      "entryId": "f1b3-1797-9928-0a6f",
       "name": "Communicant Anti-Tank Hunter",
       "factionId": "Mercenaries",
       "roles": [
@@ -2554,16 +9770,59 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "956e-4c42-f303-0aca",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "d54d-055d-bbc0-a20f",
+                    "childName": "Trench Pilgrims"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "707d-5bdf-586e-f704",
+                    "childName": "New Antioch"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "b5ac-1a57-c1d4-3f4c",
+      "entryId": "fb45-9c9c-7cf1-6745",
       "name": "Witchburner",
       "factionId": "Mercenaries",
       "roles": [
@@ -2592,16 +9851,46 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "baab-302a-7af9-204e",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "2d21-7af1-0770-da4c",
+      "entryId": "4703-d968-d52d-46b5",
       "name": "Sin Eater",
       "factionId": "Mercenaries",
       "roles": [
@@ -2638,16 +9927,76 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "ccfa-5d05-18db-3c76",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "6941-ec54-3001-8288",
+                    "childName": "Heretic Legion"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "44b9-e92b-2dc0-6820",
+                    "childName": "Court of the Seven-Headed Serpent"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "0b26-15c1-cebd-0077",
+                    "childName": "Black Grail"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "031a-a689-a059-6278",
+      "entryId": "0923-5700-c9f0-2ef6",
       "name": "Mendelist Ammo Monk",
       "factionId": "Mercenaries",
       "roles": [
@@ -2684,16 +10033,59 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "5aff-b082-b12a-a7a5",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "0",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "d54d-055d-bbc0-a20f",
+                    "childName": "Trench Pilgrims"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "707d-5bdf-586e-f704",
+                    "childName": "New Antioch"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "ce78-bd08-5b44-8e38",
+      "entryId": "52e5-2006-85e1-a7c7",
       "name": "Trench Dog",
       "factionId": "Mercenaries",
       "roles": [
@@ -2730,16 +10122,190 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "22ee-cd8f-9929-aa6b",
           "type": "max",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Mercy Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6871-d12d-d7fc-bb03",
+            "childName": "Mercy Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Martyrdom Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "d196-34d1-a003-da6f",
+            "childName": "Martyrdom Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Guard Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4d84-784e-a2c6-53c0",
+            "childName": "Guard Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Hellhound",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b990-d914-9dce-66af",
+            "childName": "Hellhound"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "05f3-2ee4-36c0-8c25",
+            "childName": "Dog Food",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:22ee-cd8f-9929-aa6b",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "05f3-2ee4-36c0-8c25",
+            "childName": "Dog Food",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Trench Dog",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6871-d12d-d7fc-bb03",
+                "childName": "Mercy Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "d196-34d1-a003-da6f",
+                "childName": "Martyrdom Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "4d84-784e-a2c6-53c0",
+                "childName": "Guard Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b990-d914-9dce-66af",
+                "childName": "Hellhound"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Bite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b990-d914-9dce-66af",
+            "childName": "Hellhound"
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "381b-1e9b-e962-cb6b",
+      "entryId": "4d84-784e-a2c6-53c0",
       "name": "Guard Dog",
       "factionId": "Mercenaries",
       "roles": [],
@@ -2769,16 +10335,46 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "3932-e824-7713-45b8",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "44b9-e92b-2dc0-6820",
+                "childName": "Court of the Seven-Headed Serpent"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "0b26-15c1-cebd-0077",
+                "childName": "Black Grail"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "a7bd-81f7-6908-8080",
+      "entryId": "d196-34d1-a003-da6f",
       "name": "Martyrdom Dog",
       "factionId": "Mercenaries",
       "roles": [],
@@ -2813,16 +10409,34 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "7123-6d69-2b7a-aefa",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "1331-ddb8-fad3-81a3",
+      "entryId": "6871-d12d-d7fc-bb03",
       "name": "Mercy Dog",
       "factionId": "Mercenaries",
       "roles": [],
@@ -2852,16 +10466,38 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "e5e6-d539-4d10-1cb4",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "35df-a599-1589-8c23",
+      "entryId": "b990-d914-9dce-66af",
       "name": "Hellhound",
       "factionId": "Mercenaries",
       "roles": [],
@@ -2885,16 +10521,81 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "ee60-7b0a-3bed-63a3",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "44b9-e92b-2dc0-6820",
+                "childName": "Court of the Seven-Headed Serpent"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "0b26-15c1-cebd-0077",
+                "childName": "Black Grail"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "keywords",
+          "value": "GAS",
+          "origin": "profile:Infernal Bite",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "0b26-15c1-cebd-0077",
+                "childName": "Black Grail"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "02df-b4d5-3ca5-9a2b",
+      "entryId": "ee4b-f5d6-afa4-9e50",
       "name": "Combat Biologist",
       "factionId": "Mercenaries",
       "roles": [
@@ -2920,16 +10621,46 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "afe6-45e9-ff41-16df",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "2a1b-d09e-f965-06c9",
+      "entryId": "ef8a-5dfd-41a0-5b8d",
       "name": "Disciple of St. Roch",
       "factionId": "Mercenaries",
       "roles": [
@@ -2970,10 +10701,89 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "a1a3-ab0f-8d5c-e5ff",
+            "childName": "Machine Armour"
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "40mm",
+          "origin": "entry",
+          "scope": "model",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "a1a3-ab0f-8d5c-e5ff",
+            "childName": "Machine Armour"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "8397-95ab-8729-eb60",
+                "childName": "Allow Third-Party Mercenaries?",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "72ab-daa4-80ee-e9a5",
+                    "childName": "Iron Sultanate"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "707d-5bdf-586e-f704",
+                    "childName": "New Antioch"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "d54d-055d-bbc0-a20f",
+                    "childName": "Trench Pilgrims"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "a674-6866-aab4-a938",
+      "entryId": "22b8-dc59-428d-87cd",
       "name": "Mamluk Faris",
       "factionId": "Mercenaries",
       "roles": [
@@ -3014,10 +10824,88 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "68d9-a653-9765-d3e7",
+            "childName": "Polearm and Shield",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "range",
+          "value": "6",
+          "origin": "profile:Alchemical Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4467-39c5-0252-1b2d",
+            "childName": "Far Shot [5]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Alchemical Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "6ffb-5ac2-a05a-8c44",
+            "childName": "Lost Arm [26]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "3fe9-1530-6fcd-1855",
+      "entryId": "08cc-f1b9-e991-e191",
       "name": "Scripture Guardian",
       "factionId": "Mercenaries",
       "roles": [
@@ -3056,16 +10944,48 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "6e44-7b89-6f05-d44e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "1a28-719d-fbd0-5bf0",
+      "entryId": "e9cd-3848-885f-bdac",
       "name": "Goetic Warlock",
       "factionId": "Mercenaries",
       "roles": [
@@ -3111,16 +11031,128 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "1333-7410-bbe0-6aea",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "6941-ec54-3001-8288",
+                    "childName": "Heretic Legion"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "44b9-e92b-2dc0-6820",
+                    "childName": "Court of the Seven-Headed Serpent"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "110",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.glory",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Goetic Warlock",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Goetic Warlock",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "bc90-d206-2b0d-b743",
+      "entryId": "2d0c-00e9-7897-83d7",
       "name": "Homunculus",
       "factionId": "New Antioch",
       "roles": [
@@ -3162,16 +11194,184 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "60b5-ee85-3103-d42e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "8448-bccf-aac9-52a5",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2786-d139-8c2d-7a84",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "50f3-c7bc-63ac-2adc",
+            "childName": "Terrifying Appearance",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3e05-5fa6-8b0c-e416",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2786-d139-8c2d-7a84",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "8448-bccf-aac9-52a5",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2786-d139-8c2d-7a84",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "5e49-cff8-3d14-cff5",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f831-3c35-aebe-7d52",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "9e87-e971-61ba-870c",
+      "entryId": "e578-1122-47cb-10ad",
       "name": "Lieutenant",
       "factionId": "New Antioch",
       "roles": [
@@ -3207,22 +11407,315 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "7f30-2514-baef-c492-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "7f30-2514-baef-c492-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "7f30-2514-baef-c492-min",
+          "value": "0",
+          "origin": "entry",
+          "rawField": "7f30-2514-baef-c492-min",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7dda-8f8f-2120-65de",
+            "childName": "Papal States Intervention Force",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "73cd-d90d-7e4f-8e86",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:On my Command!",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "d27d-b034-cb18-f3ae",
+            "childName": "Menaulatoi Princeps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7e92-a9c9-240d-6179",
+            "childName": "Varangian Warlord",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7e92-a9c9-240d-6179",
+            "childName": "Varangian Warlord",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7e92-a9c9-240d-6179",
+            "childName": "Varangian Warlord",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Menaulatoi Princeps",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "d27d-b034-cb18-f3ae",
+            "childName": "Menaulatoi Princeps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Warlord",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7e92-a9c9-240d-6179",
+            "childName": "Varangian Warlord",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Lieutenant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "2341-5d66-9395-bcf5",
+      "entryId": "f8bc-5df8-1768-a72a",
       "name": "Trench Cleric",
       "factionId": "New Antioch",
       "roles": [
@@ -3267,22 +11760,249 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "16e2-020d-1d3b-6a0f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "7c0b-bfc0-e9af-4650",
           "type": "min",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:7c0b-bfc0-e9af-4650",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7dda-8f8f-2120-65de",
+            "childName": "Papal States Intervention Force",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:16e2-020d-1d3b-6a0f",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Holy Warrior",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "1da0-5c5c-ad5a-ae96",
+            "childName": "Holy Warrior",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:16e2-020d-1d3b-6a0f",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Holy Warrior",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "9b8f-4361-5f23-2e20",
+            "childName": "Expeditionary Forces of Abyssinia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Trench Cleric",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Away, Serpents!",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "25dc-fcf4-2e75-a4b9",
+      "entryId": "f2c3-86d1-5924-093f",
       "name": "Yeoman",
       "factionId": "New Antioch",
       "roles": [
@@ -3309,10 +12029,165 @@ export const DATASET: Dataset = {
       "abilities": [],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "9b36-57f6-1887-7bea",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "9886-5b15-fa46-8d84",
+            "childName": "Trench Mole"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Trench Mole",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "9886-5b15-fa46-8d84",
+            "childName": "Trench Mole"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Yeoman",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Yeoman",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Yeoman",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Yeoman",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Yeoman",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Yeoman",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "1edc-6a6e-cd50-f841",
+      "entryId": "dd59-a783-dbb5-242f",
       "name": "Sniper Priest",
       "factionId": "New Antioch",
       "roles": [
@@ -3352,16 +12227,207 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "15b5-28fb-d0b3-9f5b",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:15b5-28fb-d0b3-9f5b",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "a911-0ba3-a9f7-17b7",
+                    "childName": "Remnants of Byzantium",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1200",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1200",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "9b8f-4361-5f23-2e20",
+            "childName": "Expeditionary Forces of Abyssinia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Sniper Priest",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "0aa8-8798-1d64-7cc4",
+      "entryId": "579e-2810-d1cf-454b",
       "name": "Shocktrooper",
       "factionId": "New Antioch",
       "roles": [
@@ -3420,22 +12486,389 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "6995-3472-87b9-2803",
           "type": "max",
           "value": 5,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "9547-b0f4-2926-29fe",
           "type": "min",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:9547-b0f4-2926-29fe",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:6995-3472-87b9-2803",
+          "value": "8",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:6995-3472-87b9-2803",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Guard",
+          "origin": "entry",
+          "comment": "Byzantine",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "cost.ducats",
+          "value": "5",
+          "origin": "entry",
+          "comment": "Byzantine",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "constraint:6995-3472-87b9-2803",
+          "value": "1",
+          "origin": "entry",
+          "comment": "Byzantine",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "-1 Dice",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Guard",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Shocktrooper",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "append",
+          "field": "rules",
+          "value": "This ability does not function if the model is equipped with a 2-handed axe and a shield.",
+          "origin": "profile:Shock Charge",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Shock Charge",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "db8d-f0cf-9959-273f",
+                    "childName": "Great Sword/Axe",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "self",
+                    "childId": "0084-2122-f8c1-537a",
+                    "childName": "Dane Axe",
+                    "includeChildSelections": true
+                  },
+                  null
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Assault Drill",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Axe Mastery",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "7b50-3c72-1794-64bb",
+      "entryId": "50d8-f63e-e01d-2698",
       "name": "Engineer",
       "factionId": "New Antioch",
       "roles": [
@@ -3489,16 +12922,165 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "daa3-c5e8-36e2-48c5",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:daa3-c5e8-36e2-48c5",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:daa3-c5e8-36e2-48c5",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Engineer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Engineer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "be61-1a63-4154-9a20",
+      "entryId": "3523-c775-3603-dbeb",
       "name": "Combat Medic",
       "factionId": "New Antioch",
       "roles": [
@@ -3542,16 +13124,71 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "697d-8353-cd4d-2999",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:697d-8353-cd4d-2999",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "9b8f-4361-5f23-2e20",
+            "childName": "Expeditionary Forces of Abyssinia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:697d-8353-cd4d-2999",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Combat Medic",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Combat Medic",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "aeaa-7023-3585-4664",
+      "entryId": "3133-240a-a0cc-9cb4",
       "name": "Heavy Infantry",
       "factionId": "New Antioch",
       "roles": [
@@ -3580,16 +13217,252 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "80cb-0666-30a3-5540",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:80cb-0666-30a3-5540",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:80cb-0666-30a3-5540",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:80cb-0666-30a3-5540",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Cataphract Mechanized Infantry",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "65",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+0 Dice",
+          "origin": "profile:Heavy Infantry",
+          "comment": "Abla Subfaction",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Heavy Infantry",
+          "comment": "Abla Subfaction",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Heavy Infantry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Heavy Infantry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "88f5-eec0-4e4f-c02c",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "e023-b74f-24ed-98b8",
+      "entryId": "e558-982e-ccda-bbe7",
       "name": "Trench Dog",
       "factionId": "New Antioch",
       "roles": [
@@ -3623,16 +13496,123 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "8ad8-a1f0-ebd3-34ff",
           "type": "max",
           "value": 0,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Mercy Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3fc9-edd8-0283-187b",
+            "childName": "Mercy Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Guard Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4f32-2acd-646e-b2c5",
+            "childName": "Guard Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Attack Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "ad89-2d46-a3ae-2cd6",
+            "childName": "Attack Dog"
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "constraint:8ad8-a1f0-ebd3-34ff",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:8ad8-a1f0-ebd3-34ff",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Trench Dog",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "3fc9-edd8-0283-187b",
+                "childName": "Mercy Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "4f32-2acd-646e-b2c5",
+                "childName": "Guard Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ad89-2d46-a3ae-2cd6",
+                "childName": "Attack Dog"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "d52f-86b4-bf67-37b5",
+      "entryId": "4f32-2acd-646e-b2c5",
       "name": "Guard Dog",
       "factionId": "New Antioch",
       "roles": [],
@@ -3656,16 +13636,19 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "7244-54b5-9984-9f85",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "028d-42bd-5416-a4df",
+      "entryId": "3fc9-edd8-0283-187b",
       "name": "Mercy Dog",
       "factionId": "New Antioch",
       "roles": [],
@@ -3689,16 +13672,19 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "b098-d485-a286-ba4e",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "e193-81ee-658c-bbc8",
+      "entryId": "ad89-2d46-a3ae-2cd6",
       "name": "Attack Dog",
       "factionId": "New Antioch",
       "roles": [],
@@ -3721,10 +13707,12 @@ export const DATASET: Dataset = {
       "abilities": [],
       "options": [],
       "constraints": [],
+      "modifiers": [],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "4fca-7401-fc43-e298",
+      "entryId": "08ba-0a4d-5ba4-dff6",
       "name": "Crimson Communicant",
       "factionId": "New Antioch",
       "roles": [
@@ -3760,16 +13748,159 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "6b28-6340-4a94-d517",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Crimson Communicant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "8df3-9e37-23c4-8cff",
+      "entryId": "be87-2199-9bda-1a4f",
       "name": "Takwin Homunculus",
       "factionId": "Trench Crusade",
       "roles": [
@@ -3813,16 +13944,126 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "d572-2703-5027-d31e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6fe0-553d-a4b4-ecd6",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "26fd-9847-fe97-9aff",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f9f7-089c-a38d-717f",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "26fd-9847-fe97-9aff",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "804f-e412-ea03-aa6d",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "7006-0a35-7bbc-90c6",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Takwin Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "780c-f898-6d4b-cfe7",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Trench Crusade.gst"
     },
     {
       "id": "8e45-5a5a-379e-22ce",
+      "entryId": "3eda-5baa-29d3-d617",
       "name": "Homunculus",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -3864,16 +14105,171 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "e8d8-2095-d7db-78e8",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "5179-2836-214e-2286",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "01e9-4879-e909-a64b",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4f5c-027d-253c-ffa3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "aaa1-a1ca-519e-c2f9",
+            "childName": "Terrifying Appearance",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "63e1-fd9c-3c8e-37bf",
+            "childName": "Wings",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "01e9-4879-e909-a64b",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "50mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "5179-2836-214e-2286",
+            "childName": "Massive Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.melee",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "01e9-4879-e909-a64b",
+            "childName": "Inhuman Strength",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 Dice",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2546-a2d9-1305-5ce9",
+            "childName": "Hawk Eyes",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "60mm",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b2d3-2cbc-d328-4fe2",
+            "childName": "Gargantuan Size",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Homunculus",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "c7b8-f35d-edca-e0c4",
+      "entryId": "260d-6d69-cde5-67b7",
       "name": "Castigator",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -3912,16 +14308,144 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "b90d-c191-26bd-76df",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2fe1-9dfe-d2d6-5ecc",
+            "childName": "Zealot Strength"
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Castigator",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Castigator",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Castigator",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Castigator",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "5d80-7b84-5e97-9b76",
+                "childName": "Holy Icon Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ea8a-62b2-605f-6aa6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Castigator",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "0e4c-78a2-26bf-6e0e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "a1dc-6afc-2a7c-d293",
+      "entryId": "3249-993c-9f42-06ad",
       "name": "Trench Pilgrim",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -3954,10 +14478,217 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6082-859c-8347-2a94",
+            "childName": "Zealot Strength"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Martyr-Penitent",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b32b-6d55-9163-8486",
+            "childName": "Martyred"
+          }
+        },
+        {
+          "op": "replace",
+          "field": "stats.melee",
+          "value": "+1 DICE",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b32b-6d55-9163-8486",
+            "childName": "Martyred"
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b32b-6d55-9163-8486",
+            "childName": "Martyred"
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "32mm",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6082-859c-8347-2a94",
+                "childName": "Zealot Strength"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c84b-02db-94df-7406",
+                "childName": "Wrath of God"
+              }
+            ]
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "5d80-7b84-5e97-9b76",
+                "childName": "Holy Icon Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ea8a-62b2-605f-6aa6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Trench Pilgrim",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "0e4c-78a2-26bf-6e0e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Resurrection",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b32b-6d55-9163-8486",
+                "childName": "Martyred"
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "53e3-a873-a192-6a91",
+      "entryId": "d21f-81f7-cf6f-690e",
       "name": "Communicant",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4003,16 +14734,173 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "1aa1-9e86-d59f-f8be",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "65bd-e9b5-eea8-5f65",
+                "childName": "Children of Yggdrasil",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "0",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.glory",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Communicant",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Communicant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "5d80-7b84-5e97-9b76",
+                "childName": "Holy Icon Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ea8a-62b2-605f-6aa6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Communicant",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "0e4c-78a2-26bf-6e0e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "d3bd-024c-681c-eb6c",
+      "entryId": "3d5c-4325-5a12-5010",
       "name": "War Prophet",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4062,22 +14950,167 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "8964-247e-4f1c-6eff-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "8964-247e-4f1c-6eff-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:War Prophet",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:War Prophet",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:War Prophet",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:War Prophet",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "5d80-7b84-5e97-9b76",
+                "childName": "Holy Icon Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ea8a-62b2-605f-6aa6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:War Prophet",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "0e4c-78a2-26bf-6e0e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Day of His Wrath",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Laying on Hands",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "bf78-c847-c302-fec0",
+      "entryId": "a43e-f0e1-fb97-0291",
       "name": "Ecclesiastic Prisoner",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4110,10 +15143,41 @@ export const DATASET: Dataset = {
       ],
       "options": [],
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "error",
+          "value": "The Unclean: Max 2 Prisoners",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "8b6b-5bd4-c742-bb12",
+                "childName": "Cavalcade of the Tenth Plague",
+                "includeChildSelections": true
+              },
+              {
+                "type": "greaterThan",
+                "value": "2",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a43e-f0e1-fb97-0291",
+                "childName": "Ecclesiastic Prisoner",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "951c-0a8e-c90d-6c3c",
+      "entryId": "caa2-22ce-1bc5-4d51",
       "name": "Stigmatic Nun",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4153,16 +15217,136 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "40e9-292f-3ade-d4f5",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "constraint:40e9-292f-3ade-d4f5",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:40e9-292f-3ade-d4f5",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Stigmatic Nun",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Stigmatic Nun",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Stigmatic Nun",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2bc5-1430-4c95-efe0",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Stigmatic Nun",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "5d80-7b84-5e97-9b76",
+                "childName": "Holy Icon Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ea8a-62b2-605f-6aa6",
+                "childName": "Standard Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Stigmatic Nun",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "0e4c-78a2-26bf-6e0e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "3d17-425a-2ba2-daf2",
+      "entryId": "f2e8-cc7b-df49-4819",
       "name": "Anchorite",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4201,16 +15385,131 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "9509-6e8f-57f6-ac7e",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:9509-6e8f-57f6-ac7e",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9509-6e8f-57f6-ac7e",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "force",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+0 Dice",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4863-d3e6-bda5-f230",
+            "childName": "Sacred Geometry",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Broken on the Wheel",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "b489-b17e-d6dd-1975",
+      "entryId": "68a1-e013-8b08-e9e8",
       "name": "Chieftain",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4253,22 +15552,42 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "1aa4-9c3f-703d-8692",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "09cb-ba09-331c-6d03",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "da01-36e4-caeb-2440",
+      "entryId": "f28e-7b89-120d-f905",
       "name": "Huscarl",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4302,16 +15621,35 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "b768-7b40-dd27-88ce",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "822e-7e28-b8de-1cfc",
+      "entryId": "f4ac-a238-b6de-4b57",
       "name": "Captive Giant",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -4357,10 +15695,28 @@ export const DATASET: Dataset = {
       "options": [],
       "constraints": [
         {
+          "id": "9a61-62c8-7422-11a3",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -4369,6 +15725,7 @@ export const DATASET: Dataset = {
   "weapons": [
     {
       "id": "d488-9020-4ba3-a3a2",
+      "entryId": "481e-f5d8-f8e7-1ba1",
       "name": "Fire Shield",
       "type": "Shield",
       "range": "-",
@@ -4383,16 +15740,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b9ec-0128-d631-499f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "e278-9146-ff0d-86d4",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "374c-9b11-8530-d0af",
+            "childName": "Jabirean Alchemical Book",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -4401,6 +15777,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7cac-e423-0e4d-b763",
+      "entryId": "ed7f-e91c-7eca-840a",
       "name": "Broken Crown",
       "type": "Equipment",
       "range": "-",
@@ -4412,10 +15789,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2b00-d6a9-585a-365b",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -4424,6 +15819,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "cc13-67a7-5431-2fdd",
+      "entryId": "f451-eff3-bd36-29ff",
       "name": "Urn of Bitter Ashes",
       "type": "Equipment",
       "range": "-",
@@ -4435,10 +15831,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "60b1-b034-467b-2f3a",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -4447,6 +15861,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ac98-5942-087b-9eaf",
+      "entryId": "720d-fced-3283-89f6",
       "name": "Grail Devotee",
       "type": "Battlekit",
       "range": "",
@@ -4458,10 +15873,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8940-dbdc-bf24-70a1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "8f23-4665-3322-ca92",
+            "childName": "Heralds of Beelzebub"
+          }
         }
       ],
       "restrictions": [],
@@ -4470,6 +15902,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "fe5c-8b4d-7a52-73d0",
+      "entryId": "698c-0858-ccf4-a63d",
       "name": "Compound Eyes Helmet",
       "type": "Battlekit",
       "range": "",
@@ -4483,10 +15916,59 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "64d0-ecf3-15d5-9ae8",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atMost",
+                "value": "0",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4ae9-6e62-b943-faeb",
+                "childName": "The Great Hunger",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "8f23-4665-3322-ca92",
+                    "childName": "Heralds of Beelzebub"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -4495,6 +15977,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b064-784f-a535-ca37",
+      "entryId": "3e58-4098-275d-dfce",
       "name": "Knight Companion of the Bladed Fly",
       "type": "Battlekit",
       "range": "",
@@ -4506,10 +15989,20 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b47b-b3e4-5655-02b5",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -4518,6 +16011,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "54ac-2422-34c4-3bad",
+      "entryId": "126e-560a-c85d-fb2e",
       "name": "Knight Companion of the Distant Fly",
       "type": "Battlekit",
       "range": "",
@@ -4529,10 +16023,20 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b847-eb3f-31b3-23b5",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -4541,6 +16045,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ef69-c253-5f0f-b3ad",
+      "entryId": "dd64-8133-3b6e-724e",
       "name": "Knight of the Rotten Cross",
       "type": "Battlekit",
       "range": "",
@@ -4552,18 +16057,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ca22-afcb-f91f-a42d",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "fec5-bb13-792b-8199",
+      "entryId": "085c-7c75-d3e5-9db2",
       "name": "Claimed: Automatic Pistol",
       "type": "Battlekit",
       "range": "",
@@ -4575,18 +16083,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "fe1d-e469-c3f5-2ad2",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "707f-beaa-1d76-4cd8",
+      "entryId": "f541-3b6f-3518-340f",
       "name": "Claimed: Semi-automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -4598,18 +16109,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7db1-a6cd-2f05-e632",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "dc09-d86d-ae34-41d2",
+      "entryId": "f7bb-c32a-6e20-01fa",
       "name": "Claimed: Automatic Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -4621,18 +16135,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1fab-e16d-be0a-b6ce",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "b8f0-aa97-3937-9647",
+      "entryId": "cd9d-bbf9-725f-e50c",
       "name": "Claimed: Automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -4644,18 +16161,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "37f6-2c47-6614-e01f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "736b-79f3-9bb1-bf1d",
+      "entryId": "5c8d-1c40-9c03-41a9",
       "name": "Claimed: Sniper Rifle",
       "type": "Battlekit",
       "range": "",
@@ -4667,18 +16187,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "91db-4c3f-6e6b-6d23",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "e886-7dfb-33ed-95f7",
+      "entryId": "3a47-d5a7-a039-3eae",
       "name": "Claimed: Grenade Launcher",
       "type": "Battlekit",
       "range": "",
@@ -4690,18 +16213,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5414-42a5-ac9e-50ce",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "1637-5050-6752-0717",
+      "entryId": "2391-8571-4ce5-d96e",
       "name": "Claimed: Incendiary Grenades",
       "type": "Battlekit",
       "range": "",
@@ -4713,18 +16239,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9106-3a5d-ef40-946b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "7915-ab6a-b727-3c5c",
+      "entryId": "c0fc-22cd-ad4c-838b",
       "name": "Claimed: Submachine Gun",
       "type": "Battlekit",
       "range": "",
@@ -4736,18 +16265,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "efbd-dfb9-6ba1-6733",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "fe45-0d6a-cf4a-347f",
+      "entryId": "7fd2-9f6e-9db5-0a3e",
       "name": "Claimed: Machine Gun",
       "type": "Battlekit",
       "range": "",
@@ -4759,18 +16291,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "67fd-a67a-3809-2806",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "5945-b33c-aca6-8fb1",
+      "entryId": "9ad1-3a15-c3ad-c116",
       "name": "Claimed: Satchel Charge",
       "type": "Battlekit",
       "range": "",
@@ -4782,18 +16317,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "489c-cff3-45c0-9575",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "52a1-3eb7-ed92-8636",
+      "entryId": "d456-7dbf-4db1-a18c",
       "name": "Claimed: Grenades",
       "type": "Battlekit",
       "range": "",
@@ -4805,18 +16343,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5302-4fbb-b367-d18c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "0838-7d47-0d0b-4747",
+      "entryId": "f37f-0096-6b13-3881",
       "name": "Claimed: Heavy Flamethrower",
       "type": "Battlekit",
       "range": "",
@@ -4828,18 +16369,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "55b7-3b99-56a9-7855",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "481a-d408-3699-d802",
+      "entryId": "8b59-8e2f-7036-da88",
       "name": "Claimed: Heavy Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -4851,18 +16395,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2bd4-c362-8c2f-886d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "d8f9-a2d9-d49f-e65d",
+      "entryId": "f9b1-e638-9536-7164",
       "name": "Claimed: Flamethrower",
       "type": "Battlekit",
       "range": "",
@@ -4874,18 +16421,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ca90-7257-d3f2-de00",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "6883-6f33-5604-4f1f",
+      "entryId": "88d5-06eb-8513-fd0c",
       "name": "Claimed: Automatic Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -4896,12 +16446,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "7901-7b55-fd13-1c06",
+      "entryId": "04ed-2336-0404-d8ea",
       "name": "Claimed: Blasphemous Staff",
       "type": "Battlekit",
       "range": "",
@@ -4912,12 +16464,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "c50d-32c4-ff0e-12bf",
+      "entryId": "77d4-a2d2-2f40-d20b",
       "name": "Claimed: Automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -4928,12 +16482,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "b911-6e05-ae16-b799",
+      "entryId": "0407-c546-5fd0-f3f9",
       "name": "Claimed: Silenced Pistol",
       "type": "Battlekit",
       "range": "",
@@ -4944,12 +16500,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "6d21-dbbd-d6e6-c101",
+      "entryId": "ba6a-7cfa-20b6-15c4",
       "name": "Claimed: Machine Gun",
       "type": "Battlekit",
       "range": "",
@@ -4960,12 +16518,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "b401-8a8b-c3fa-80dc",
+      "entryId": "ba6a-7cfa-20b6-15c4",
       "name": "Claimed: Machine Gun",
       "type": "Battlekit",
       "range": "",
@@ -4976,12 +16536,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "6ced-b27b-7642-41e8",
+      "entryId": "9a90-38c3-7c21-163f",
       "name": "Claimed: Incendiary Grenades",
       "type": "Battlekit",
       "range": "",
@@ -4992,12 +16554,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "aca9-4bdb-5e73-ad58",
+      "entryId": "9996-c3a6-606f-7855",
       "name": "Claimed: Submachine Gun",
       "type": "Battlekit",
       "range": "",
@@ -5008,12 +16572,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "26d3-c5f2-dfc5-6cc9",
+      "entryId": "84d2-3015-2fb3-2b51",
       "name": "Claimed: Grenades",
       "type": "Battlekit",
       "range": "",
@@ -5024,12 +16590,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "717c-569e-8f9e-3985",
+      "entryId": "d1d3-dea7-48d7-42fc",
       "name": "Claimed: Grenade Launcher",
       "type": "Battlekit",
       "range": "",
@@ -5040,12 +16608,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "4e54-317d-3391-e00d",
+      "entryId": "635a-322d-b312-68f5",
       "name": "Claimed: Semi-Automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -5056,12 +16626,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "36f9-cbf1-7f8b-474a",
+      "entryId": "9a54-32a8-1ab8-7b58",
       "name": "Claimed: Flamethrower",
       "type": "Battlekit",
       "range": "",
@@ -5072,12 +16644,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f73e-b97e-1b7b-0d76",
+      "entryId": "dd8d-f0b1-2c9d-208f",
       "name": "Claimed: Heavy Flamethrower",
       "type": "Battlekit",
       "range": "",
@@ -5088,12 +16662,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f855-3a79-f6c4-c14d",
+      "entryId": "06a1-9111-a3f5-9f77",
       "name": "Claimed: Anti-Materiel Rifle",
       "type": "Battlekit",
       "range": "",
@@ -5104,12 +16680,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "a591-57b1-8abb-3426",
+      "entryId": "1b94-d655-8d37-4dbd",
       "name": "Claimed: Sacrificial Blade",
       "type": "Battlekit",
       "range": "",
@@ -5120,12 +16698,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "fab2-a4e3-5baf-e68b",
+      "entryId": "6bf6-ed24-d225-3675",
       "name": "Claimed: Hellblade",
       "type": "Battlekit",
       "range": "",
@@ -5136,12 +16716,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "1780-92d2-3e63-3c71",
+      "entryId": "ca6e-b552-9a9c-9288",
       "name": "Plague Almoner",
       "type": "Battlekit",
       "range": "",
@@ -5152,12 +16734,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "7fd0-a83c-445b-40ff",
+      "entryId": "8858-f2cf-be66-80ce",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -5169,10 +16753,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "dda6-b2a1-8a75-aa0e",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8f41-ebe0-81cb-6817",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -5181,6 +16783,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "8972-bbdb-d18e-bbbc",
+      "entryId": "f74e-8cd7-864e-a815",
       "name": "Miasma of Pestilence",
       "type": "Spell (Cost 2)",
       "range": "6\"",
@@ -5192,24 +16795,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0012-c15d-e44e-d75c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "3c44-fd66-587b-29d9",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "3ba1-5e5a-3d9e-1042",
+      "entryId": "1987-02a7-3f2f-bd5f",
       "name": "Mother's Call",
       "type": "Spell (Cost 1)",
       "range": "8\"",
@@ -5221,10 +16828,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4b53-3d3c-b9b9-7c7d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "a657-8944-aecd-713d",
+            "childName": "Matagot Hag"
+          }
         }
       ],
       "restrictions": [],
@@ -5233,6 +16857,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bc8e-8a8a-1a69-20fc",
+      "entryId": "392f-d62c-a6c0-4ba8",
       "name": "Vomitus",
       "type": "Spell (Cost 1-3)",
       "range": "8\"",
@@ -5244,24 +16869,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "341d-0b4b-6c32-0308",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "bbe5-5c40-c2ba-fd5f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "b310-3c5c-01b3-5000",
+      "entryId": "6a0c-04ca-91db-25f2",
       "name": "Vile Churning",
       "type": "Spell (Cost 1-2)",
       "range": "1\"",
@@ -5273,24 +16902,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5841-abd3-1c6e-7734",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "4928-c16d-e6ad-9471",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "59e5-631d-6b0b-e143",
+      "entryId": "c75b-f522-6936-7dab",
       "name": "Virulent Clot",
       "type": "Spell (Cost 2/4/6)",
       "range": "-",
@@ -5302,24 +16935,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "518f-b784-dd62-9790",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "2d13-c531-c8e2-9468",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "7cc3-5efe-ed8e-574e",
+      "entryId": "feda-5057-a3f1-a3a5",
       "name": "Entitled To Corruption Belchers",
       "type": "Battlekit",
       "range": "",
@@ -5330,12 +16967,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "46a3-73b3-8c4b-c65e",
+      "entryId": "720a-243e-936f-7bc4",
       "name": "Entitled To Machine Guns",
       "type": "Battlekit",
       "range": "",
@@ -5346,12 +16985,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "802e-98a7-30b5-551b",
+      "entryId": "f86a-6dfe-0ae6-352d",
       "name": "Entitled To Putrid Shotguns",
       "type": "Battlekit",
       "range": "",
@@ -5362,12 +17003,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "7e1b-68ce-f927-2410",
+      "entryId": "71bc-496d-162c-3816",
       "name": "Entitled To Viscera Cannons",
       "type": "Battlekit",
       "range": "",
@@ -5378,12 +17021,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f414-efa5-ad21-edf7",
+      "entryId": "a7be-2afb-dd87-9cd5",
       "name": "Entitled To Plague Blades",
       "type": "Battlekit",
       "range": "",
@@ -5394,12 +17039,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "5f11-5881-a15c-9100",
+      "entryId": "ce2b-3df0-f2a1-8005",
       "name": "Entitled To Beelzebub's Axe",
       "type": "Battlekit",
       "range": "",
@@ -5410,12 +17057,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "ad78-80b9-dee7-9bf2",
+      "entryId": "0526-f0b0-ecbe-7893",
       "name": "Leader",
       "type": "Battlekit",
       "range": "",
@@ -5427,22 +17076,78 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cd64-1128-ac9f-abf7",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "8a3d-651b-7bac-c391",
           "type": "min",
           "value": 0,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "73a3-5983-5994-27c6",
           "type": "min",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afb9-39f5-82d9-46ed",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "fdaf-1b5e-0348-3ad9",
+            "childName": "Led by a Plague Knight",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:8a3d-651b-7bac-c391",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "b044-cbf6-a7c5-e2b3",
+            "childName": "The Executor"
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:73a3-5983-5994-27c6",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "fdaf-1b5e-0348-3ad9",
+            "childName": "Led by a Plague Knight",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -5451,6 +17156,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "e635-2d2a-2df7-bafe",
+      "entryId": "670f-9bed-3b5c-2b36",
       "name": "Infected Teeth & Claws",
       "type": "Special",
       "range": "Melee",
@@ -5463,18 +17169,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "89d2-b313-5386-bb61",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f1f4-ad6d-1a6e-d822",
+      "entryId": "88c2-b376-ccbb-6918",
       "name": "Double Dog",
       "type": "Battlekit",
       "range": "",
@@ -5485,12 +17194,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Double Dog",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "89ff-6802-1ec4-c89b",
+            "childName": "Dog's Friend",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "8037-91e3-fc56-e8d8",
+      "entryId": "ec39-f328-bad6-a586",
       "name": "Pummel",
       "type": "Special",
       "range": "Melee",
@@ -5500,12 +17227,177 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Bereaved",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "30",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "35",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Ravenous",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Pummel",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "3a3c-7f8b-4ee4-d9d7",
+            "childName": "Grounded",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "keywords",
+          "value": "CRITICAL",
+          "origin": "profile:Pummel",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Overwhelming Horde",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Ravenous Infection",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4173-8d52-ff32-03d8",
+            "childName": "Winged",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "cb53-aa4b-07e7-ce87",
+            "childName": "Hellfly Host"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gluttonous Horde",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger"
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f726-9549-bfcb-51e6",
+      "entryId": "909e-f461-d379-1619",
       "name": "Maddening Buzz",
       "type": "Battlekit",
       "range": "",
@@ -5517,18 +17409,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7b91-f251-2b6a-887f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "6138-06ef-9465-b870",
+      "entryId": "a889-723f-f818-0867",
       "name": "Special Rule: Morale",
       "type": "Battlekit",
       "range": "",
@@ -5540,24 +17435,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "495e-0cf8-8f45-d3c7-min",
           "type": "min",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "495e-0cf8-8f45-d3c7-max",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "9aa7-5a1a-cbf9-b1b5",
+      "entryId": "83de-02a7-ba19-3570",
       "name": "Foetid Palanquin",
       "type": "Armour",
       "range": "",
@@ -5571,10 +17470,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "feea-99a0-d19e-74df",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "a657-8944-aecd-713d",
+            "childName": "Matagot Hag"
+          }
         }
       ],
       "restrictions": [],
@@ -5583,6 +17499,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "5e94-0f13-1aef-0338",
+      "entryId": "5a77-6daf-1d1d-261b",
       "name": "Vomitus",
       "type": "Special",
       "range": "8\"",
@@ -5597,12 +17514,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
     {
       "id": "f9f0-47a6-b77d-16b7",
+      "entryId": "a6af-5458-9dbb-7dd4",
       "name": "Pummel",
       "type": "Special",
       "range": "Melee",
@@ -5613,10 +17532,57 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "456d-7210-1416-b1d3",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4173-8d52-ff32-03d8",
+            "childName": "Winged",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "cb53-aa4b-07e7-ce87",
+            "childName": "Hellfly Host"
+          }
         }
       ],
       "restrictions": [],
@@ -5624,7 +17590,7657 @@ export const DATASET: Dataset = {
       "sourceFile": "Black Grail.cat"
     },
     {
+      "id": "7494-e725-3e34-1028",
+      "entryId": "7131-4bf6-d01a-d823",
+      "name": "Campaign Rules: Disabled",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Uses only Core Rulebook items.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6250-9440-acde-584c",
+      "entryId": "e144-fd65-dd37-8ba2",
+      "name": "Campaign Rules: Enabled",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Enables Campaign-only Equipment, but no Skills or Injuries.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8a3c-81e1-ddd4-dab7",
+      "entryId": "afdf-43aa-a03d-918b",
+      "name": "Campaign Rules: Enabled",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Enables Skills, Injuries, and Campaign-only Equipment.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Max Six Elites!",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "eda3-efab-e4be-450c",
+                    "childName": "Bad Company [5]",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "greaterThan",
+                    "value": "6",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "ce28-ad9a-bbc1-f1dc",
+                    "childName": "Pile",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "eda3-efab-e4be-450c",
+                    "childName": "Bad Company [5]",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "greaterThan",
+                    "value": "7",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "ce28-ad9a-bbc1-f1dc",
+                    "childName": "Pile",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Max Seven Elites!",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "eda3-efab-e4be-450c",
+                    "childName": "Bad Company [5]",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "greaterThan",
+                    "value": "7",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "ce28-ad9a-bbc1-f1dc",
+                    "childName": "Pile",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "eda3-efab-e4be-450c",
+                    "childName": "Bad Company [5]",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "greaterThan",
+                    "value": "7",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "ce28-ad9a-bbc1-f1dc",
+                    "childName": "Pile",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "0443-8d91-dd96-34c6",
+      "entryId": "6983-6ce4-7c38-4fcf",
+      "name": "Learned Saint",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is a great teacher saint such as St. Patrick, St. Thomas Aquinas or St. Methodius. Followers of such a saint emphasise planning, sciences, strategy and organisational skills.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7fc6-1c2b-a230-07d1",
+          "type": "min",
+          "value": 0,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:7fc6-1c2b-a230-07d1",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7dd2-6c14-7cb1-a6d1",
+      "entryId": "69f1-5fbe-ef33-ea5b",
+      "name": "Warrior Saint",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is a mighty saint of soldiers and warriors such as Saint George the Dragonslayer, Saint John the Warrior, Saint Joan of Arc, or even Archangel Saint Michael himself. Such Patrons offer great power in personal combat and divine protection on the battlefield.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "b53b-b824-f8ad-58dc",
+      "entryId": "af5d-a290-bd7f-2f4d",
+      "name": "Infernal Noble",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your Patron is one of the Fallen, a mighty devil noble such as Baal, Balam, Zepar, Astaroth or Gusion. Such Patrons bestow magical powers, reward evil deeds and enhance the power of sins.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "44b9-e92b-2dc0-6820",
+                "childName": "Court of the Seven-Headed Serpent"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "71d8-cd96-9818-751c",
+      "entryId": "c9e0-f02f-788d-56ad",
+      "name": "Sublime Gate",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is one of the high-ranking nobles of the Sultanate such as an Emir, Pasha, Vizier or even the Sultan himself. Such Patrons bestow martial prowess, access to exotic weapons, armour, superior training and of course, the favour of the Sultan.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "72ab-daa4-80ee-e9a5",
+            "childName": "Iron Sultanate"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "67ad-de30-318c-4c56",
+      "entryId": "880e-2c46-f553-5fab",
+      "name": "The Order of the Fly",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is a powerful infernal noble of the Order of the Fly, such as Enlil, Prince Vassago or even Beelzebub the Lord of the Flies himself. Through you, these putrid and mighty devils unleash a tidal wave of corruption upon the mortal world.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "bf2f-f7a7-2c82-fcaa",
+      "entryId": "c9f6-a7c1-cd75-06fe",
+      "name": "Mammon",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your Patron is Mammon, the Prince of Greed, the Treasurer of Hell, and the King of Fools. He appears as a golden-skinned king on an opulent throne, with black scorch marks tarnishing his splendour. He is the most popular patron amongst mortals.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "fa2d-51f3-c793-e15f",
+          "type": "min",
+          "value": 0,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "3a0b-d655-c557-84c1",
+                "childName": "Greed",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:fa2d-51f3-c793-e15f",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "5174-2827-852b-b097",
+      "entryId": "3646-8192-6e5c-3253",
+      "name": "Anti-Pope of Avignon",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is the Anti-Pope of Avignon, the high priest of the Cult of the Black Grail. Whereas most strains of the Black Grail infect the body alone leaving the mind to suffer, the variant that is spread by Missionaries of Beelzebub infects the mind and brain above all else. This is why these Apostles of the Fly are startlingly successful in winning new converts to their cause despite the self-evident ruin caused by embracing the Lord of the Flies.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "0486-321b-dafd-e641",
+      "entryId": "d457-01c7-0edd-c7b6",
+      "name": "Temporal Lord",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your patron is a powerful noble, perhaps a merchant prince, a high-ranking military officer, a minister, or even the mighty Duke of New Antioch himself",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "127a-0690-5928-aa63",
+      "entryId": "ae29-4ce7-8861-4020",
+      "name": "Trench Shrine: Shrine",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Add a Field Shrine to your warband’s roster for free. (Note: this adds a single Field Shrine for armies without one in their list per time taken.)",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "aed1-42cf-498e-b088",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "cb67-a68f-76f3-0ee2",
+      "entryId": "b621-24b3-db53-b09a",
+      "name": "Angelic Instrument",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find an otherworldly instrument on the battlefield besides the wracked body of a lesser angel – fallen or divine. Add an Angelic Instrument to your warband’s roster for free. It’s identical to a Musical Instrument (including their equipment restrictions and LIMIT), except its effect has a range of 8” instead of 4”. If your warband is at its LIMIT for Musical Instruments, it can immediately replace an existing Musical Instrument with the Angelic Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "6073-e652-8a8a-b09c",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ecc1-b5e5-76a1-743c",
+      "entryId": "3934-a297-9e35-799f",
+      "name": "Ransacked Alchemist Workshop",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You gather some of the life-giving liquids. Add Curative Fluids to your warband’s roster for free. During any Reallocate Equipment phase for the rest of the campaign, your warband can use these fluids to remove one Battle Scar from any model in your warband. Once these fluids are used, they are spent and cannot be used again.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "9da4-a9ca-bd1f-7578",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6a40-1041-7604-c8ab",
+      "entryId": "f73c-0f08-e6c3-e9fd",
+      "name": "Book of Golems",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find a Rabbinic manual on creating golems. Studying it, you can create one golem. Use the House of Wisdom Takwin creature creation to make a Homunculus of up to 100 ducats of value (40 ducats base cost) and add it to your warband’s roster for free. You can buy items from your armoury for your golem. Otherwise it uses exactly the same rules as Takwin Homunculi. This golem can never be promoted to ELITE or gain experience. Unlike a Takwin creature, the golem does not need to be associated with an alchemist and it does not count as a Takwin creature for any purposes (such as LIMIT). Replace any instance of Iron Sultanate with your faction.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "1c4e-568c-5495-1503",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "9ff0-17f0-d0b8-919a",
+      "entryId": "0582-f69c-058a-15a0",
+      "name": "Stash of Drugs & Erotica",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "From now on, your warband rolls Morale checks with +1 DICE.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "760a-01e1-c235-94df",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "52a0-ea69-5495-1074",
+      "entryId": "894c-76bf-39f5-8308",
+      "name": "Saints Reliquary",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find the well-hidden reliquary of a Fallen Saint. Add a Saintly Relic to your warband’s roster for free. This piece of equipment can only be carried by an ELITE model. A model equipped with the Saintly Relic gains the Keyword TOUGH but loses the Keyword INFILTRATOR (should it have it) and can never have cover.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "dad7-39d1-6152-0b97",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "411a-7df7-019a-387f",
+      "entryId": "7bc6-edcb-2ee1-4f6f",
+      "name": "Esoteric Library: Study",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "At the start of each battle, select any one model (friend or foe). That model starts the battle with +1 BLOOD MARKER.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "98a4-b8df-6f59-ef5e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "rules",
+          "value": "At the start of each battle, select any one model (friend or foe). That model starts the battle with +1 INFECTION MARKER.",
+          "origin": "profile:Esoteric Library: Study",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a9fe-808e-bbe3-9d69",
+      "entryId": "374c-9b11-8530-d0af",
+      "name": "Jabirean Alchemical Book",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "If not House of Wisdom: Your warband now buy a Fire Shield exactly as if it was a House of Wisdom warband. If House of Wisdom: You glean great secrets of Takwin creation and all the Alchemical Formulae now cost 5 ducats less (down to minimum of 5).",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "2332-1a2c-25a9-70a2",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "efa1-13ba-e5ff-b1ae",
+      "entryId": "b48d-4fe2-c3e6-1ec5",
+      "name": "Skull of a Saint",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find the skull of a saint beheaded in ages past. The power of communion lingers in the holy remains. The skull screams ceaselessly as you mount it on a pole to mock God and paint it with blasphemous names. This item counts as a banner. It adds +2D to your Morale Tests and you automatically gain 1 Glory Point after each battle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "5803-1d8d-1c26-c685",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "rules",
+          "value": "You find the skull of a saint beheaded in ages past. The power of communion lingers in the holy remains.\n\nThe saint guides your troops before each battle. The model with the skull gains the following skill: Unless the scenario prohibits use of the special deployment of INFILTRATORS, you may deploy the model on any table edge as long as it is at least 8” away from any enemy model after INFILTRATORS are deployed.",
+          "origin": "profile:Skull of a Saint",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "688b-042c-ca5c-7980",
+      "entryId": "f1a4-5dd7-1649-cfac",
+      "name": "Lock of Samson's Hair",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find a lock Samson’s hair, imbued with the unlimited strength of the strongest warrior that ever lived. This item is a piece of equipment with the following rules: - The model with this item gains the Keyword STRONG and +1 to all injury rolls in melee.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3d8a-1f11-59c9-f5f5",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "86cc-02bb-2975-a7e9",
+      "entryId": "cf64-006b-382f-db29",
+      "name": "Sample of Holy DNA",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You find a sample of holy DNA. You can treat any one model in your warband with it. When this model is activated, one INFECTION MARKER or BLOOD MARKER the model has becomes a BLESSING MARKER instead.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "fe62-54f1-3e0c-8587",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7dd2-fe4e-86ee-06a2",
+      "entryId": "1b64-db02-1b41-f989",
+      "name": "Golgotha Tekites",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You can treat any armour with the Golgotha Tekites. The armour now ignores extra BLOOD MARKERS from the Keywords GAS, FIRE and SHRAPNEL.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "9bc7-e3ef-669e-1458",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "3ae7-1120-4b97-b549",
+      "entryId": "71ac-1858-f313-c965",
+      "name": "Fruit from the Tree of Knowledge of Good and Evil",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Amongst bones of giant humans unearthed by the chaos of war you find a golden-hued fruit wrapped in a spun cloth. Any model eating this fruit will immediately gain any skill of your choice (that is normally available to your warband/this model, including any Exploration Skill). In addition the model gains the Keyword DEMONIC.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "5e6e-94c3-526e-5c57",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8c06-3e5e-14ee-2494",
+      "entryId": "2986-1070-2fb0-de35",
+      "name": "Found a Sniper Scope",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You have found a single Sniper Scope for use.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "645d-be48-328f-dd88",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "rules",
+          "value": "At the start of each battle, select any one model (friend or foe). That model starts the battle with +1 INFECTION MARKER.",
+          "origin": "profile:Found a Sniper Scope",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "807b-c340-06b1-2515",
+      "entryId": "fa3c-8a72-aaf6-2687",
+      "name": "Extra Dice",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Roll one extra Exploration Die.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "945b-c32c-6245-8377",
+      "entryId": "a882-6d41-5720-edee",
+      "name": "Duplicate",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "After you roll, select any Exploration Die and add another die with an identical result, including any modifications, to your total.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "4c49-5fc3-e334-7af3",
+      "entryId": "16ad-6e2f-f915-4086",
+      "name": "Split",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Divide the dice result by two into two separate dice rolls. Round any halves up.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "bfff-4bab-0dae-346c",
+      "entryId": "8a00-7faf-1c6d-b9a7",
+      "name": "Reroll",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Re-roll any Exploration Dice once.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "662a-e216-f7e0-f7ce",
+      "entryId": "fdb5-c8e3-b610-60e1",
+      "name": "Set Dice",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Select any one dice and set it to a number you want.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "892c-35dd-1ce0-53c5",
+      "entryId": "b4a1-51c0-6294-b72a",
+      "name": "Seek",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Modify one Exploration Dice result by +1.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "90a9-29dc-0cd6-3081",
+      "entryId": "225e-a280-2711-85ce",
+      "name": "Circle Back",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Modify one Exploration Dice result by -1.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "0f43-2207-7733-b719",
+      "entryId": "23fc-5cf5-27f7-b1d1",
+      "name": "Combine",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "After you roll, select two Exploration Dice and add them together. Then discard them. The value is treated as a single die roll you made. It can be more than 6.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "06e8-c627-5e82-022f",
+      "entryId": "b838-7259-c6d9-705c",
+      "name": "Lucky",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Roll an extra Exploration Die that is paired with one of your other dice. After you roll, choose one die in the pair to keep and one die in the pair to discard.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7a1d-53d8-c722-207d",
+      "entryId": "328f-3496-3c6c-4033",
+      "name": "Organized Combat Medics",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Combat Medic.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b344-a353-63c2-7bfa",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "fd7d-ead9-bd13-4b0e",
+      "entryId": "e178-620d-98ee-eadd",
+      "name": "Organized Stigmatic Nuns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Stigmatic Nun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ff0a-b6b5-ad89-edbe",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "9d60-7091-1ccb-53e9",
+      "entryId": "d493-9221-aee2-a4a8",
+      "name": "Organized Shrine Anchorites",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Shrine Anchorite.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "0607-3141-fa8c-4743",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "4198-1e24-e43b-9742",
+      "entryId": "f397-820f-7f8a-9610",
+      "name": "Organized Shocktroopers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Shocktrooper.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c0ec-1358-d71a-9e42",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e8b7-f33d-3e81-6c3e",
+      "entryId": "8edf-491a-c39e-1991",
+      "name": "Organized Combat Engineers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Combat Engineer.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "f77a-8b86-16d6-f950",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6473-5d50-6d7e-b389",
+      "entryId": "fe85-f76f-2989-0fda",
+      "name": "Organized Mechanized Heavy Infantry",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may employ an additional Mechanized Heavy Infantry.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c431-b6d1-0a0d-753c",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "275e-c54a-05cb-070f",
+      "entryId": "f74a-396c-ab73-225a",
+      "name": "Residual Favour",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You are able to select more Favoured Units than you have instances of Sultan's Favour. This is because Sultan's Favour is not lost when the associated model dies. Please do not use this to cheat. That would be uncouth.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b625-a4ca-b687-dd0f",
+          "type": "min",
+          "value": 0,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:b625-a4ca-b687-dd0f",
+          "value": "1",
+          "origin": "entry"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7884-d070-ef44-b45b",
+      "entryId": "a632-593c-63b3-de75",
+      "name": "Legacy Inventory",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "You are able to select more Wealthy Acquisitions than you have instances of Money can buy Anything. This is because Money can buy Anything is not lost when the associated model dies. Please do not use this to cheat. That would be uncouth.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "cd44-85af-5894-a8e8",
+          "type": "min",
+          "value": 0,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "3f38-63c8-205a-29a1",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:cd44-85af-5894-a8e8",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a632-593c-63b3-de75",
+                "childName": "Money can buy Anything",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "aa37-58a9-6f8e-cafc",
+                "childName": "Money can buy Anything",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a632-593c-63b3-de75",
+                "childName": "Money can buy Anything",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "aa37-58a9-6f8e-cafc",
+                "childName": "Money can buy Anything",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7030-fa22-471a-d8f2",
+      "entryId": "39f8-37bc-f857-ca21",
+      "name": "Leveraged on Anti-Material Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Anti-Material Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e70b-0a47-c7d2-dbf3",
+      "entryId": "f7c8-82d1-a9cc-36d4",
+      "name": "Leveraged on Automatic Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Automatic Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f15d-3c2b-138e-8f54",
+      "entryId": "cfac-603e-607e-58f1",
+      "name": "Leveraged on Coin Hammers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Coin Hammer.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ac72-93ff-8dd8-65ca",
+      "entryId": "2407-821b-3a79-20e8",
+      "name": "Leveraged on Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "fba1-6d76-49cf-f264",
+      "entryId": "637c-4134-8734-152e",
+      "name": "Leveraged on Grenade Launchers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Grenade Launcher.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "811b-3858-c341-80f3",
+      "entryId": "2faa-0945-7b24-2282",
+      "name": "Leveraged on Heavy Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Heavy Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "31bb-45a3-d510-8959",
+      "entryId": "8ac1-169a-17b8-8e10",
+      "name": "Leveraged on Hellblades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Hellblade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "aedc-c2b6-d21d-cf81",
+      "entryId": "8de0-69a6-1628-25e3",
+      "name": "Leveraged on Machine Guns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Machine Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "fe36-747f-7e9d-662b",
+      "entryId": "c7fe-69f0-1ac0-f61a",
+      "name": "Leveraged on Sacrificial Blades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Sacrificial Blade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "914d-c786-75e2-f91c",
+      "entryId": "6468-c8ce-b731-fb2d",
+      "name": "Leveraged on Tarnished Armour",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Tarnished Armour.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "34fa-fed9-db01-e7ff",
+      "entryId": "809e-1185-2bed-7b24",
+      "name": "Leveraged on Troop Flags",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Troop Flag.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "4e9e-15f9-98db-29d5",
+      "entryId": "2f0a-69a9-39ce-1a7d",
+      "name": "Leveraged on Musical Instruments",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Musical Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "83c6-cb77-72e8-410b",
+      "entryId": "e4c3-5a44-0f7f-4eb7",
+      "name": "Leveraged on Malebranche Swords",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Malebranche Sword.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c19a-2df4-37e0-268c",
+      "entryId": "eab2-b1de-9270-5950",
+      "name": "Leveraged on Ophidian Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Ophidian Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8e00-3f62-afbc-a4c4",
+      "entryId": "9f0d-ef38-4de7-41a8",
+      "name": "Leveraged on Incendiary Ammunition",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Incendiary Ammunition.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f198-a0db-258a-3967",
+      "entryId": "babc-902b-00ba-4789",
+      "name": "Leveraged on Serpent Assault Guns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Serpent Assault Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "51d2-b392-2264-7410",
+      "entryId": "a06c-42e9-323b-3094",
+      "name": "Leveraged on Restraining Muzzles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Restraining Muzzle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "eef6-846c-34c2-04cf",
+      "entryId": "3efa-35fa-3b4b-6328",
+      "name": "Leveraged on Heavy Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Heavy Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a5f3-32fe-f0a5-3d6a",
+      "entryId": "a921-a7f5-3cd4-2872",
+      "name": "Leveraged on Headtakers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Headtaker.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "17ba-60e1-0392-fe95",
+      "entryId": "a7cd-804c-c67d-7e3c",
+      "name": "Leveraged on Hellblades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Hellblade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "b804-fb87-d8b3-a691",
+      "entryId": "1d6d-a019-ecf2-7ab9",
+      "name": "Leveraged on Incendiary Grenades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Incendiary Grenade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ae5b-3aec-abfa-2ad8",
+      "entryId": "f8dd-8cd7-871f-e078",
+      "name": "Leveraged on Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a5fd-1fd7-721c-bdc8",
+      "entryId": "a702-4489-db95-8023",
+      "name": "Leveraged on Troop Flags",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Troop Flag.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a5fd-20ec-7c3d-f600",
+      "entryId": "7867-e762-19ff-6a4c",
+      "name": "Leveraged on Musical Instruments",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Musical Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e64f-cc0c-ea8e-9e29",
+      "entryId": "fc51-aa96-f4ec-7947",
+      "name": "Knowledge of the Incendiary Ammunition",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Incendiary Ammunition.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "d547-7230-1ac7-1840",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c99c-a8d4-8439-c627",
+      "entryId": "0d8e-6131-5ba9-43cd",
+      "name": "Knowledge of the Sniper Scope",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Sniper Scope.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "a15b-1a83-5a27-933d",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f79c-de03-ec60-782f",
+      "entryId": "9bae-2e47-3b68-cd5e",
+      "name": "Knowledge of the Automatic Pistol",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Automatic Pistol.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "17e2-7291-6780-3209",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "1e78-9103-1e5a-d08b",
+      "entryId": "de5b-16f8-5a96-e6a9",
+      "name": "Knowledge of the Grenade Launcher",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Grenade Launcher.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "1022-7850-a1e6-8dd8",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c802-d291-8e1d-d1f2",
+      "entryId": "68ec-2a15-281d-5d8b",
+      "name": "Knowledge of the Automatic Shotgun",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Automatic Shotgun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "40d8-8402-fb06-d71b",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f65d-a5e7-dd2e-2b19",
+      "entryId": "0ac7-e754-c909-9d72",
+      "name": "Knowledge of the Mountaineer Kit",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Mountaineer Kit.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7e61-6d09-b1d1-334d",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "2d3c-2e3a-2787-50d4",
+      "entryId": "2b13-d0ad-84b2-0bff",
+      "name": "Knowledge of the Sniper Rifle",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Sniper Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ccdf-1c09-cd0b-56e7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "45b9-bcfd-9824-cf88",
+      "entryId": "a32d-ebfc-2926-aa1e",
+      "name": "Knowledge of the Sniper Rifle",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Incendiary Grenade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "82c7-25fe-d6af-d729",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "9941-7638-dae6-899e",
+      "entryId": "d5a9-62eb-50db-8c1e",
+      "name": "Knowledge of the Submachine Gun",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Submachine Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "92ac-b593-1b46-d990",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "066b-4c11-11d2-0f36",
+      "entryId": "8cf0-d486-fce1-c231",
+      "name": "Knowledge of the Machine Gun",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Machine Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "4736-8960-8610-f023",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "5f10-9516-d4b4-9f88",
+      "entryId": "f42a-ef8c-e9e5-ea9c",
+      "name": "Knowledge of the Flamethrower",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b4e8-cde0-4f61-f7d3",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "d3b6-47ec-a536-d15b",
+      "entryId": "a4e8-77ef-5450-766c",
+      "name": "Knowledge of the Heavy Flamethrower",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Heavy Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "cdda-ed79-d2e0-1dd3",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "de8d-fbf4-3589-72c0",
+      "entryId": "6cc5-aa3d-59be-374f",
+      "name": "Knowledge of the Satchel Charge",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Satchel Charge.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "4558-f004-1812-ac92",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7b9e-a42c-d0c8-9af3",
+      "entryId": "1f05-f210-d29a-9f3c",
+      "name": "Knowledge of the Misericordia",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Misericordia.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "6602-49d2-7269-a2c1",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "0d13-26e8-e47c-703d",
+      "entryId": "aefa-e63f-8e48-28a5",
+      "name": "Knowledge of the Machine Armour",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Machine Armour.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "8e35-bb76-cd4d-ba15",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "3b04-852b-72d8-ce3a",
+      "entryId": "623f-4304-7ce7-65ef",
+      "name": "Knowledge of the Bagpipe",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Bagpipe.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7a52-5d6c-da86-b355",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a324-223c-b658-1280",
+      "entryId": "0d4c-f0ae-cd5a-6f83",
+      "name": "Knowledge of the Martyrdom Pills",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Martyrdom Pills.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "af5f-e110-0550-c34a",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ac57-fda6-4076-2baf",
+      "entryId": "697f-57a4-1502-79c8",
+      "name": "Knowledge of the Troop Flag",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Troop Flag.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "0c1c-0c9b-49fc-2b3a",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "559d-69d0-eaa2-b999",
+      "entryId": "cdfd-1155-85af-7e8a",
+      "name": "Knowledge of the Musician’s Instrument",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Musician’s Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "368e-3040-4c1e-060a",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c92f-74bc-9acb-69b4",
+                "childName": "Kingdom of Alba Assault Detachment",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "d54d-055d-bbc0-a20f",
+                    "childName": "Trench Pilgrims"
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "primary-catalogue",
+                    "childId": "707d-5bdf-586e-f704",
+                    "childName": "New Antioch"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "b19b-d362-1049-8b82",
+      "entryId": "a9b8-3287-ee3b-34bc",
+      "name": "Knowledge of the Carnyx",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Carnyx.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "adbb-f68e-f964-f8ce",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e4a5-90dd-d69c-0350",
+      "entryId": "8893-94a8-be58-8098",
+      "name": "Knowledge of the Automatic Rifle",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Automatic Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "2f82-62a2-a1e9-b10f",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "79cc-461e-4753-3f73",
+      "entryId": "8659-2085-8a85-8a03",
+      "name": "Knowledge of the Hallowed Anchorite",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Hallowed Anchorite.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c0b4-b58f-20cb-57b2",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "03a4-31f2-3d5b-c963",
+      "entryId": "08ce-5f7f-1a52-7f1f",
+      "name": "Knowledge of the Anti-Tank Hammer",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Anti-Tank Hammer.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "0dba-4515-7b74-43c7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ac07-fcca-abc0-a7be",
+      "entryId": "09bc-9cfb-0aa8-5923",
+      "name": "Knowledge of the Punt Gun",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Punt Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "4e28-a4e2-0ee2-0f02",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7740-274b-c4ae-1548",
+      "entryId": "4850-3648-7cf2-ea62",
+      "name": "Knowledge of the Sacred Geometry",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Sacred Geometry.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "5ee9-ad13-a180-3d75",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "715a-c5b2-7690-4b02",
+      "entryId": "e5d3-f045-131f-b061",
+      "name": "Knowledge of the Grand Anchorite",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Grand Anchorite.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "f5b4-5231-0fe4-f65d",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "67e6-595f-2b40-1c69",
+      "entryId": "0f3a-e237-c06b-2cae",
+      "name": "Knowledge of the Heavy Shotgun",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Heavy Shotgun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "460a-60ad-7c4f-a0ad",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "notInstanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8259-863c-5f9e-12d5",
+      "entryId": "a163-1321-9e47-eb08",
+      "name": "Knowledge of the Tank-Splitter Sword",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband may take an additional Tank-Splitter Sword.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "4d7d-de71-a6e8-b0c3",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "3388-b9a5-8120-e597",
+      "entryId": "d87c-7bd0-b132-5a3b",
+      "name": "Lash of Acheron",
+      "type": "Ability",
+      "range": "6\"",
+      "keywords": [
+        "IGNORE ARMOUR"
+      ],
+      "rules": "ACTION: A model with this Skill can take a Lash of Acheron ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, you can make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model that is within 6\" of the model taking the Lash of Acheron ACTION and in their line of sight.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "34d2-0a91-2f79-d61e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "fe6e-1c07-510c-52ea",
+      "entryId": "9837-88e7-12ef-1be6",
+      "name": "Cup of Filth",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Drink from the Cup: At the start of the game, before either side deploys, you can pick either 1 ELITE model or up to 4 Thralls to drink from the cup. For the rest of the game, add +1 DICE to the Risky Success Roll for models that drank from the cup when they take a Dash ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "9e74-89fe-a358-4b84",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "5696-c174-2891-cce1",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "de1c-c937-a89f-d76c",
+      "entryId": "cd8e-22a5-02c4-ab9a",
+      "name": "Holy Grenade",
+      "type": "GRENADE",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "BLAST 2\"",
+        "IGNORE COVER",
+        "IGNORE LONG RANGE",
+        "SHRAPNEL",
+        "FUMBLE"
+      ],
+      "rules": "Spirit of Vengeance: Add +1 INJURY DICE to rolls against models that have the BLACK GRAIL or DEMONIC Keyword",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [
+        {
+          "id": "4b70-c756-0529-0994",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "95e9-9885-c45a-bc29",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7704-7ad0-2d9b-71f9",
+      "entryId": "ed85-9433-ea76-60c4",
+      "name": "Donkey's Jawbone",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY DICE"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "35ee-3097-47d3-1418",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "1d15-c593-5712-d0c9",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "960e-e3f4-9d4f-187c",
+      "entryId": "e365-c945-740f-e764",
+      "name": "RPG",
+      "type": "Equipment",
+      "range": "36\"",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CONSUMABLE",
+        "IGNORE ARMOUR",
+        "RELOAD"
+      ],
+      "rules": "Disposable Rocket: A Rocket-Propelled Grenade is a piece of Equipment that can be used once during a campaign as a Ranged Weapon. If a model that has been hit by a Rocket-Propelled Grenade is not taken Out of Action by the Injury Roll, it is blown D6\" in a straight line directly away from the attacking model. It stops if it is blown into another model, Impassable terrain or terrain it cannot cross without having to Climb.",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [
+        {
+          "id": "c69c-789b-f917-f2fc",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "2cf5-1cb9-a62b-2779",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:c69c-789b-f917-f2fc",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "72ab-daa4-80ee-e9a5",
+            "childName": "Iron Sultanate"
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:c69c-789b-f917-f2fc",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "4c95-f212-101f-f07f",
+      "entryId": "b537-34fb-bae6-2cbb",
+      "name": "Demonic Grenade",
+      "type": "GRENADE",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "BLAST 3\"",
+        "IGNORE ARMOUR",
+        "IGNORE COVER",
+        "SCATTER"
+      ],
+      "rules": "Deadly Light: Double the number of BLOOD MARKERS placed next to a model by an Injury Roll for an attack made with a Demonic Aura Grenade. In addition, an Injury Roll is made for all models that are within 3\" of the target point when the Demonic Aura Grenade explodes, even if interposing terrain blocks the line of sight.",
+      "cost": {
+        "ducats": 0,
+        "glory": 3
+      },
+      "constraints": [
+        {
+          "id": "4875-7b63-8849-8ba7",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "52b0-dd56-20fd-bf6c",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "d31f-9638-3044-4892",
+      "entryId": "446f-35b5-6d7e-5fb2",
+      "name": "The Mark of Cain",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Retribution: If an ACTION taken by a model causes one or more BLOOD MARKERS to be placed next to a model with the Mark of Cain, then place an equal number of BLOOD MARKERS next to the model that took the ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "85fa-5750-ede8-e88c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "ce2d-9b72-8b27-10b2",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a465-cc89-17eb-185c",
+      "entryId": "a9ef-f6d0-107c-2441",
+      "name": "Salvage Golem",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "rules": "Helpful Servitor: A Salvage Golem is not allocated to a model (just add it to your Arsenal instead). At the end of each game, your Warband receives an extra D6x5 Ducats for each Salvage Golem it has in its Arsenal.",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "3ee7-43fc-0968-ba36",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "3a73-b7f9-70f7-971c",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "599f-5738-a80b-64ab",
+      "entryId": "9857-a324-046f-5d41",
+      "name": "Masterwork Jezzail",
+      "type": "2-handed",
+      "range": "36\"",
+      "keywords": [
+        "+1 DICE",
+        "CRITICAL"
+      ],
+      "rules": "Enhanced Bullets: If the target of an attack made with a Masterwork Jezzail is within 1\" of a friendly model, you do not have to roll a D6 to see if the friendly model is hit by the attack. In addition, if the Success Roll for an attack made with a Masterwork Jezzail is more than 7, after making the Injury Roll for the target, subtract 7 from the Success Roll. Then make an Injury Roll for the closest enemy model that is within this distance in inches of the target model and has a Line of Sight to it (no Success Roll is taken). For example, if you roll a 9 for the Success Roll, you could make an Injury Roll for a second enemy model that was within (9-7=) 2\" of the target model and in its Line of Sight. Note that if the original attack was a Critical Success, you only add +1 INJURY DICE to the first Injury Roll; it does not apply to any subsequent models that are hit.",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "1fe2-6ec9-0f62-1042",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "e02a-8dbf-3419-9587",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "range",
+          "value": "6",
+          "origin": "profile:Masterwork Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4467-39c5-0252-1b2d",
+            "childName": "Far Shot [5]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Masterwork Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "954d-3d50-257d-a78a",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e900-d699-609f-10c2",
+      "entryId": "2958-0f21-a1a5-74fb",
+      "name": "Book of Battle Prayers",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Continuous Litany of Prayers: A model that has the Book of Battle Prayers cannot take a Dash ACTION. Speak a Blessing ACTION: A model that has the Book of Battle Prayers can take a Speak a Blessing ACTION. If they do so, take a Success Roll for the model. If the roll is a Failure nothing happens. If the roll is a Success or Critical Success, you can place 1 BLESSING MARKER next to a friendly model that is within 12\" of the model with the Book of Battle Prayers.",
+      "cost": {
+        "ducats": 0,
+        "glory": 7
+      },
+      "constraints": [
+        {
+          "id": "e93f-5b76-877a-1b6f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "4fcd-5f78-1dfe-993b",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "90f7-bbfc-d41c-2fb8",
+      "entryId": "4a11-8e06-0271-3973",
+      "name": "Armour of Cobar",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-3 INJURY MODIFIER"
+      ],
+      "rules": "Lead to Death: Place 1 BLESSING MARKER next to a model that has the Armour of Cobar each time a friendly model is taken Out of Action. Weight of Sins: Add -1 DICE to the Risky Success Roll for a model that has the Armour of Cobar that is taking a Dash ACTION. In addition, a model wearing the Armour of Cobar cannot have a Shield.",
+      "cost": {
+        "ducats": 0,
+        "glory": 8
+      },
+      "constraints": [
+        {
+          "id": "2db0-308f-ee96-daa8",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "eda0-5b84-b1a7-2d4e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "b24b-1f30-3ef1-00cb",
+      "entryId": "6db3-6176-dc20-c6b8",
+      "name": "Smoke Screen",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "rules": "Swathed in Smoke: At the start of a game, after deployment, if you have a model with a Smokescreen, you can say they will use it. If you do so, divide the battlefield into 4 equal quarters and say which one is swathed in smoke. Add -1 DICE to Ranged Attacks if the Line of Sight for the attack crosses any part of the quarter that is swathed in smoke.",
+      "cost": {
+        "ducats": 0,
+        "glory": 5
+      },
+      "constraints": [
+        {
+          "id": "7c98-11d6-284e-5985",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "d142-836b-22d0-2fd9",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "cd74-1e16-33db-01b6",
+      "entryId": "85ba-f5ac-54dd-1aa5",
+      "name": "Locust Spitter",
+      "type": "2-handed",
+      "range": "24\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "IGNORE ARMOUR"
+      ],
+      "rules": "Devouring Swarm: When a target is hit with the Locust Spitter, the mindless hunger of the Lord of Flies compels the swarm to continue devouring. If the Success Roll for a Ranged Attack made with Locust Spitter is a Success or Critical Success, after making the Injury Roll for the target, subtract the range to the target from 18\". Then make another Injury Roll for the closest model (friend or foe) that is within this distance of the target model and has a line of sight to it (no Success Roll is required). After the second target’s Injury Roll has been made, the swarm moves on again, but this time the remaining distance it can travel is reduced by the distance between the first and second target, and it must target a new model that has not already been attacked. This carries on until the swarm either runs out of new target models it can reach and has a line of sight to, or the distance it is allowed to move is reduced to 0\". For example, if the range to the first target was 10\", then after making an Injury Roll for the first target, the closest model that can see the first target and is within (18-10) = 8\" of it would also be hit. If the second target was within 3\" of the first, then after making the second Injury Roll , the closest model that has not yet been attacked, and which can see the second target and is within (18-10-3) = 5\" of it would be hit, and so on. Note that if the original attack was a Critical Success, the Injury Roll modifier only applies to the first Injury Roll; it does not apply to any subsequent models that are hit by the swarm. However, the -1 INJURY DICE and IGNORE ARMOUR Keywords apply to all of the Injury Rolls made.",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "5123-c5b2-d110-7241",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "5b46-5a79-43b2-6dbd",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "ca1b-2007-8968-9d4b",
+      "entryId": "639d-bf8f-60b5-1585",
+      "name": "Knighthood",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Famous Deeds: At the end of each game, your Warband receives 1 Glory Point for each model with a Knighthood that is on the battlefield.",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [
+        {
+          "id": "3253-8190-bc20-0b5d",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "3f0a-c572-9990-8f45",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "06c4-5a96-4182-9c79",
+      "entryId": "8beb-299d-e303-63c8",
+      "name": "Battlefield Title",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Privileged Access: Pick 1 Weapon or suit of Armour from your Armoury Tables that has the Limit special rule. Note on your Warband Roster that the Limit is increased by 1. The increase will remain in place even if the model that has the Battlefield Title is removed from your Roster later during the campaign. You are encouraged to come up with a special title for the Weapon or Armour that you have gained access to.",
+      "cost": {
+        "ducats": 0,
+        "glory": 5
+      },
+      "constraints": [
+        {
+          "id": "1776-640e-c721-26a7",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "7626-46e5-72a6-dbb4",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "34bd-94d9-7eac-2499",
+      "entryId": "b3a8-7dea-49be-d447",
+      "name": "Executioner's Axe",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY DICE",
+        "CRITICAL"
+      ],
+      "rules": "Twin Blows: After a model with the Executioner’s Axe makes a Melee Attack, it can immediately make a second Melee Attack with the axe. The additional attack for the Executioner’s Axe cannot be combined with further additional attacks allowed by other Abilities or Skills (you can make two Melee Attacks with the Axe and no more).",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "ec9f-e796-d7cf-21e8",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "75d0-5a17-e83b-4dfa",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a68a-42a0-7fd5-d633",
+      "entryId": "f7fa-6048-8a05-53c8",
+      "name": "Kilij",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "CRITICAL"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [
+        {
+          "id": "a2a0-b32c-1c1d-6704",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6f72-4947-54b8-efc7",
+      "entryId": "66c3-c1a5-004d-3c68",
+      "name": "Armour of the Fly",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "NEGATE SHRAPNEL"
+      ],
+      "rules": "Insect Wings: Change the Movement Characteristic of a model that has the Armour of the Fly to 8\"/Flying. Sucked Dry: After a model that has the Armour of the Fly makes a Melee Attack, it can immediately make a second Melee Attack with +1 DICE to the roll for the second attack. However, do not make an Injury Roll if the second attack hits the target; instead place 1 BLOOD MARKER next to the target model.",
+      "cost": {
+        "ducats": 0,
+        "glory": 7
+      },
+      "constraints": [
+        {
+          "id": "523a-ec14-323b-aafe",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "8\"/Flying",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "303c-e35a-9668-0fe8",
+      "entryId": "03eb-5358-03ae-8046",
+      "name": "Ducal Winged Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-3 Injury Modifier"
+      ],
+      "rules": "Myrmidon Wings: Change the Movement Characteristic of a model that has the Ducal Winged Armour to 10\"/Flying. Steadfast: When a model that has Ducal Winged Armour suffers a Down result on the Injury table, it is treated as a Minor Wound result instead.",
+      "cost": {
+        "ducats": 0,
+        "glory": 8
+      },
+      "constraints": [
+        {
+          "id": "c163-a17e-ca84-ddfd",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "d3bd-67d8-f569-599f",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "8beb-299d-e303-63c8",
+                    "childName": "Battlefield Title",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "639d-bf8f-60b5-1585",
+                    "childName": "Knighthood",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.movement",
+          "value": "10\"/Flying",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6989-ce35-b217-5676",
+      "entryId": "d954-b3b8-db5f-0026",
+      "name": "Horn of Joshua",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Blow Thy Horn ACTION: A model with the Horn of Joshua can take a Blow Thy Horn ACTION. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, pick 1 terrain piece that is within 12\" of the model with the Horn of Joshua and that measures up to 8\" by 8\". Make an Injury Roll for each model (friend or foe) that is on or in contact with the terrain piece, and then remove the terrain piece from the game. Models that were on top of the terrain piece Fall directly down to the battlefield, and an additional Injury Roll may have to be made for them if they Fall 3\" or more.",
+      "cost": {
+        "ducats": 0,
+        "glory": 9
+      },
+      "constraints": [
+        {
+          "id": "d2ea-3b9f-6ba8-1d6b",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "601c-f341-3168-89af",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "caee-8b72-72be-c864",
+      "entryId": "eb62-f33b-0d57-cd92",
+      "name": "Field Hospital",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "rules": "Field Hospital: A Field Hospital cannot be allocated to a model, but is added to your Arsenal. If your Warband also includes a Combat Medic or an Alchemist, at the end of the Trauma Step in the Campaign Phase you can use a Field Hospital to treat 1 model from your Warband that has 1 or more Battle Scars. If you do so, roll 2D6. On a roll of 7+ you can remove 1 of the model’s Battle Scars; on a roll of 3-6 nothing happens; on a roll of 2 the model receives 1 extra Battle Scar.",
+      "cost": {
+        "ducats": 0,
+        "glory": 10
+      },
+      "constraints": [
+        {
+          "id": "e37a-4b92-a32a-1416",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "7330-673a-6cd2-a7c2",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8b57-bf47-6a34-7732",
+      "entryId": "54b8-464a-88c3-3244",
+      "name": "Damascus Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "IMPERVIOUS"
+      ],
+      "rules": "Inspiring Gift: A model that has a suit of Damascus Armour is not sent back home until they suffer their 4th Battle Scar. In addition, a suit of Damascus Armour cannot be removed from a model during a campaign unless the model wearing it has been killed or been declared Unfit for Duty.",
+      "cost": {
+        "ducats": 0,
+        "glory": 5
+      },
+      "constraints": [
+        {
+          "id": "1261-6599-eeaa-f656",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "bd16-6c17-18d8-84b3",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "cc1a-f917-862d-26dc",
+      "entryId": "53fc-b3e3-e7f6-6ce5",
+      "name": "Great Banner of New Antioch",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "Held"
+      ],
+      "rules": "Rally to the Flag: If a model with a Great Banner of New Antioch is on the Battlefield when you take a Morale Check (even if they are Down), you can choose for the Morale Check to be a Success or for your Warband to flee.",
+      "cost": {
+        "ducats": 0,
+        "glory": 12
+      },
+      "constraints": [
+        {
+          "id": "29d4-8fcd-34d0-b7b7",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "0149-bf69-ea42-249a",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "e144-fd65-dd37-8ba2",
+                "childName": "Equipment Only",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f10c-88b8-0b18-3833",
+      "entryId": "28c1-351c-12d0-1f26",
+      "name": "Resurrection Engine",
+      "type": "Special",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "rules": "Holy Machine: A Resurrection Engine is not allocated to a model (just add it to your Arsenal instead). Once during the campaign, you can use the Resurrection Engine to change the result rolled on the Trauma Table to a Full Recovery result. The Resurrection Engine is Consumed when it is used.",
+      "cost": {
+        "ducats": 0,
+        "glory": 11
+      },
+      "constraints": [
+        {
+          "id": "87d9-e4db-ea55-38e2",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "5f08-985f-4197-18af",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "55cc-bfda-1fd4-0633",
+      "entryId": "d9f1-b37e-ff7c-cffe",
+      "name": "Brazen Bull Grand Cannon",
+      "type": "1-handed",
+      "range": "48\"",
+      "keywords": [
+        "+2 INJURY DICE",
+        "HEAVY",
+        "IGNORE ARMOUR"
+      ],
+      "rules": "Unstoppable Object: If a model that has been hit by a Sultanate Grand Cannon is not taken Out of Action by the Injury Roll, it is pushed D6\" in a straight line directly away from the attacking model. The model stops if it pushed into another model, Impassable terrain or a terrain piece it cannot cross without having to Climb.",
+      "cost": {
+        "ducats": 0,
+        "glory": 10
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e62d-c06e-ce35-428b",
+                    "childName": "Brazen Bull"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "6603-2315-97b5-d845",
+                    "childName": "Gargantuan Size",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "0172-5d62-14d9-7627",
+      "entryId": "46b5-59af-5d44-2cb0",
+      "name": "Beelzebub's Embrace",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Many-Legged Form: A model that has been blessed with Beelzebub’s Embrace has its arms replaced with fly-like limbs. The model cannot have Weapons, Grenades, Shields or Equipment that has the HELD Keyword. It can take a Fight ACTION even though it doesn’t have any Melee Weapons. When it does so, it can make 4 Melee Attacks in a row, one after the other. If all 4 Melee Attacks successfully hit the same target model, and the target is mounted on a 32mm base or smaller, then the target is immediately taken Out of Action when it is hit by the 4th attack. Do not make an Injury Roll for the 4th attack, and any rules or abilities that would change the result do not apply (i.e. the TOUGH Keyword would not affect the 4th attack).",
+      "cost": {
+        "ducats": 0,
+        "glory": 12
+      },
+      "constraints": [
+        {
+          "id": "d9f0-067e-92b2-2cec",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "9407-d482-f6ff-6f57",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "9be9-4295-fbb8-116e",
+      "entryId": "46b5-59af-5d44-2cb0",
+      "name": "Many-Limbed End",
+      "type": "SPECIAL",
+      "range": "Melee",
+      "keywords": [],
+      "rules": "See \"Beelzebub's Embrace\"",
+      "cost": {
+        "ducats": 0,
+        "glory": 12
+      },
+      "constraints": [
+        {
+          "id": "d9f0-067e-92b2-2cec",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "9407-d482-f6ff-6f57",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "5a63-5df8-de11-0039",
+      "entryId": "a26c-4afe-ca98-962c",
+      "name": "Angelic Instrument",
+      "type": "Equipment",
+      "range": "8\"",
+      "keywords": [
+        "HELD"
+      ],
+      "rules": "Fanfare: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 8\" of one or more models with a Musical Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "0336-0d87-a848-bbe0",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "7be2-663a-604d-2227",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:0336-0d87-a848-bbe0",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Angelic Bagpipes",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Angelic Carnyx",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "rules",
+          "value": "Highland Fanfare: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 8\" of one or more models with a Musical Instrument. Also, units within 8\" gain NEGATE FEAR.",
+          "origin": "profile:Angelic Instrument",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "append",
+          "field": "keywords",
+          "value": "FEAR",
+          "origin": "profile:Angelic Instrument",
+          "join": ", ",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "df62-4e07-25a1-d03b",
+      "entryId": "f6fb-8677-c747-229e",
+      "name": "Consumed the Fruit from the Tree of Knowledge of Good and Evil",
+      "type": "Dietary Supplement",
+      "range": "-",
+      "keywords": [],
+      "rules": "Having consumed the Fruit from the Tree of Knowledge of Good and Evil, this unit gains the Demonic keyword, and may select an additional skill from those available to it (note: non-Elites are assumed to have no skills available).",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "d0de-6651-954b-aa98",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        },
+        {
+          "id": "ae8d-267e-115b-b9bf",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "71ac-1858-f313-c965",
+            "childName": "Fruit from the Tree of Knowledge of Good and Evil",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "420c-0871-4283-b95b",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "a9a0-cd15-f240-4c56",
+      "entryId": "d463-4cae-f431-3322",
+      "name": "Golgotha Tekites",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "rules": "This model's armour is treated with the Golgotha Tekites. The armour now gains NEGATE FIRE, NEGATE GAS, and NEGATE SHRAPNEL.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ad18-d8c8-e4d0-78ec",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        },
+        {
+          "id": "39cf-72a6-6ffd-ebae",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "48e6-5bba-1352-f9bc",
+      "entryId": "ac5b-0ae8-e0cd-5fda",
+      "name": "Saintly Guidance",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "The saint guides your troops before each battle. The model with the skull gains the following skill: Unless the scenario prohibits use of the special deployment of INFILTRATORS, you may deploy the model on any table edge as long as it is at least 8” away from any enemy model after INFILTRATORS are deployed.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "55c8-ce27-754e-ad9f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "21be-259a-9897-89f8",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b48d-4fe2-c3e6-1ec5",
+            "childName": "Skull of a Saint",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Skull of a Saint",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Saintly Guidance",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Blasphemous Banner",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "279b-559d-2b08-d3ae",
+      "entryId": "ac5b-0ae8-e0cd-5fda",
+      "name": "Blasphemous Banner",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "The skull screams ceaselessly as you mount it on a pole to mock God and paint it with blasphemous names. This item counts as a banner. It adds +2D to your Morale Tests and you automatically gain 1 Glory Point after each battle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "55c8-ce27-754e-ad9f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "21be-259a-9897-89f8",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b48d-4fe2-c3e6-1ec5",
+            "childName": "Skull of a Saint",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Skull of a Saint",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Saintly Guidance",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Blasphemous Banner",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "e3d8-620c-8528-159f",
+      "entryId": "0e49-dfa5-4190-ee69",
+      "name": "Curative Fluids",
+      "type": "Special",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "rules": "Once, in any future Quartermaster Step, you can use the Curative Fluids to remove 1 Battle Scar (but not the effects of any Trauma) from a model in your Warband.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "fcaa-c9f9-e670-7d33",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "a774-418a-fac1-af6f",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "3934-a297-9e35-799f",
+            "childName": "Ransacked Alchemist Workshop",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7e17-aeb6-60d3-a2af",
+      "entryId": "9b61-d0a4-dd30-2d32",
+      "name": "Lock of Samson's Hair",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "The model with this item gains the Keyword STRONG and +1 to all injury rolls in melee.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "05c1-d57e-3f2b-fb94",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "59a6-96ba-4991-f842",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f1a4-5dd7-1649-cfac",
+            "childName": "Lock of Samson's Hair",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c35a-d304-0b12-be6c",
+      "entryId": "cf19-f306-c26c-1537",
+      "name": "Saint's Reliquary",
+      "type": "-",
+      "range": "-",
+      "keywords": [],
+      "rules": "This piece of equipment can only be carried by an ELITE model. A model equipped with the Saintly Relic gains the Keyword TOUGH but loses the Keyword INFILTRATOR (should it have it) and can never have cover.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3843-124e-013f-3655",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "2db4-b97f-ce5a-bc8e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "894c-76bf-39f5-8308",
+                "childName": "Saints Reliquary",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "9b36-57f6-1887-7bea",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7735-5567-9b74-b8f2",
+      "entryId": "9ab3-2522-a7dd-e902",
+      "name": "Lordship of this World",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Mark of the Pit: The model carries a mark such as a living tattoo or a rune painted or carved by the hand of its infernal patron. At the start of each game, after both sides have deployed, if a friendly model with the Lordship of This World is on the battlefield you can pick 1 terrain piece that measures up to 8\" by 8\" and does not have any models from your Warband on it. You can move the terrain piece 6\" in any direction, but it must finish wholly upon the battlefield and not on top of any of the models from your Warband. Any enemy models that are on the terrain piece are moved with it. Enemy models that the terrain piece is moved on top of are removed from the battlefield and then immediately redeployed by your opponent anywhere they desire within their deployment zone.",
+      "cost": {
+        "ducats": 0,
+        "glory": 9
+      },
+      "constraints": [
+        {
+          "id": "478d-0872-1bd0-faa5",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "2b8f-ffbd-b2a6-4659",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "68a4-5af6-6f09-aeab",
+                    "childName": "Praetor"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2a14-1d21-3b35-86a8"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "6155-24e1-c8ac-e4fc",
+      "entryId": "2d7d-d9ed-a9c1-2ab1",
+      "name": "Cruel Helmet",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Gruesome Weight: When a model with a Cruel Helmet is deployed for the first time in a game, they are placed Down. In addition, if they are the target of an attack on the first Turn before they have been Activated, place 1 extra BLOOD MARKER next to them (even if the attack misses or the Injury Roll for it has No Effect).",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [
+        {
+          "id": "b16a-d294-f13f-c9a6",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "7224-d5ba-da7a-4725",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "a957-7766-e2fa-f4b3",
+                "childName": "Wretched"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "583b-2a75-d7f7-e227",
+      "entryId": "9e76-7d20-071d-c8cd",
+      "name": "Piece of Silver",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Luck of the Devil: At the start of each game, before deployment, if you have a model with a Piece of Silver in your Warband, take 3 D6, set them to 6, and put them aside. During the game, unless you are making an Injury Roll or a Bloodbath Roll, you can replace a D6 that you are about to roll with one of the dice you put aside. It is not rolled and is always treated as having rolled a 6 (roll any other dice normally). You can only use one of the dice you set aside per roll. If the model with the Piece of Silver is taken Out of Action, any of the dice you set aside that remain are discarded and cannot be used.",
+      "cost": {
+        "ducats": 0,
+        "glory": 12
+      },
+      "constraints": [
+        {
+          "id": "4cb1-6d04-f86f-1025",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "64cb-bb50-d8e5-e51e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c05f-a1a1-50f7-afab",
+      "entryId": "d88a-78c6-8e31-75be",
+      "name": "Koraktor, the Great Tome of Hell",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Goetic Power: You can purchase a Goetic Power for a Sorcerer that has Koraktor, the Great Tome of Hell. It can be taken in addition to the 3 Goetic Powers the Sorcerer can normally have, and you can ignore any restrictions that would normally apply (such as the Sin the Sorcerer’s Warband needs to be dedicated too, or it only being allowed for a model that isn’t a Sorcerer). The additional power is purchased in the Quartermaster Step and its Cost must be paid normally",
+      "cost": {
+        "ducats": 0,
+        "glory": 8
+      },
+      "constraints": [
+        {
+          "id": "3e08-64af-0c65-4d4f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "257f-bfd2-778d-f155",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "322d-1a69-dc2a-2e26",
+                "childName": "Sorcerer"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "d4f7-37c4-ce83-0e37",
+      "entryId": "58a3-64fb-8c2d-5105",
+      "name": "Bestial Skin Cloak",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Spirit of the Beast: Once per Turn, you can do one of the following things for a model that as a Bestial Skin Cloak. * Add +1 DICE to the roll for a Melee Attack made by the model. * Add +1 INJURY DICE to the roll for a Melee Attack made by the model. * Add +1 DICE to the Risky Success Roll when the model takes a Dash ACTION. A Hunter of the Left-Hand Path cannot cast the Oracle Beast Cloak Goetic Spell if it has a Bestial Skin Cloak.",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "06eb-cf1e-b800-b2be",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        },
+        {
+          "id": "7352-92cb-9db0-c16a",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "09b1-d7b2-638d-03da",
+      "entryId": "4252-ed12-c088-aa07",
+      "name": "Promoted!",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "This unit is now Elite.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "1feb-86cf-e5ed-6721",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "4252-ed12-c088-aa07",
+                "childName": "Elite Promotion",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set-primary",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Favoured",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "72ab-daa4-80ee-e9a5",
+            "childName": "Iron Sultanate"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Commissioned Officer",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Ascendant",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "44b9-e92b-2dc0-6820",
+            "childName": "Court of the Seven-Headed Serpent"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Blasphemous",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "6941-ec54-3001-8288",
+            "childName": "Heretic Legion"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Exalted",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Putrid",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "c755-7cc0-778c-8a88",
+      "entryId": "d8b6-6041-9e3b-7adc",
+      "name": "Experience",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "This model has accumulated experience. This does not effect your skill access in NewRecruit, and is solely for convenience of tracking.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "82ed-905d-e8f3-91ae",
+          "type": "max",
+          "value": 18,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "61e9-7a36-04f0-8582",
+      "entryId": "4bea-b5e2-2b9d-fcd3",
+      "name": "Entitled to Heavy Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Heavy Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b50d-4459-67f5-3114",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "5e70-9ebd-b81a-cb5c",
+      "entryId": "0330-4e75-a7be-2db6",
+      "name": "Entitled to Automatic Pistols",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Automatic Pistol.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c9c5-de34-2fb1-6a6f",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8fa3-b53f-c08c-702f",
+      "entryId": "4cf3-bdfa-9260-a828",
+      "name": "Entitled to Submachine Guns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Submachine Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "6d35-594f-1ad7-dd6e",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "2e46-7b20-fcf1-73f7",
+      "entryId": "b3b1-2e89-19e9-624d",
+      "name": "Entitled to Automatic Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Automatic Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "cc1b-f3dd-29ae-ca75",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7c07-1a59-04ab-7d66",
+      "entryId": "6ef1-51b6-9a26-cc36",
+      "name": "Entitled to Automatic Shotguns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Automatic Shotgun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c0da-9099-e820-2bd9",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "5611-1109-e379-83a2",
+      "entryId": "e6ef-68d4-a0e4-379d",
+      "name": "Entitled to Machine Armour",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Machine Armour.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ab36-e9ec-eac5-a659",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "eb2a-463b-9c4a-e20e",
+      "entryId": "a252-0110-1823-e0f9",
+      "name": "Entitled to Sniper Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Sniper Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "4f47-770f-bc56-bc32",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "323b-8d17-a5b8-869b",
+      "entryId": "edfb-8199-6bb5-7556",
+      "name": "Entitled to Grenade Launchers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Grenade Launcher.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "152d-a68b-0dc2-c8c5",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7b3c-21f9-dc69-42cb",
+      "entryId": "c8f3-1e8b-6a3c-b453",
+      "name": "Entitled to Incendiary Grenades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Incendiary Grenade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "1500-d7d5-76c2-2d7b",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "7768-e960-5313-055c",
+      "entryId": "c15a-6239-aeb2-3229",
+      "name": "Entitled to Machine Guns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Machine Gun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "acec-1f52-74bc-1c97",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "735d-318e-5f35-3aa3",
+      "entryId": "7a2b-8955-0ed6-426c",
+      "name": "Entitled to Flamethrowers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Flamethrower.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "6ce1-1884-2ff6-fec1",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "8aea-2a61-9ad6-1c32",
+      "entryId": "d523-deea-cb75-403e",
+      "name": "Entitled to Heavy Shotguns",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Heavy Shotgun.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c8de-4d04-22fd-f427",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "3dd8-da69-6ac5-bdca",
+      "entryId": "b39d-c158-fd2d-7f3d",
+      "name": "Entitled to Satchel Charges",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Satchel Charge.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "de18-6fa5-2f89-3c09",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "da9e-6d24-6c55-f45c",
+      "entryId": "8802-f3e8-dd87-f06e",
+      "name": "Entitled to Hellblades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Hellblade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "989f-ab10-5a70-1144",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "176a-1759-a80c-ea2d",
+      "entryId": "ad7e-8af4-357c-b8ef",
+      "name": "Entitled to Anti-Material Rifles",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Anti-Material Rifle.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7507-7098-f555-7463",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "405f-d81b-3d6f-2074",
+      "entryId": "94fd-1ae4-a167-310c",
+      "name": "Entitled to Tarnished Armour",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Tarnished Armour.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "248d-537f-568e-1818",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "b666-f7eb-ac6f-ac41",
+      "entryId": "e9ef-e201-bd31-38c6",
+      "name": "Entitled to Sacrificial Blades",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Sacrificial Blade.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "58ca-1201-1c6c-0986",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
+      "id": "f750-d97a-5fcf-b22d",
+      "entryId": "20f6-68af-9eae-0e73",
+      "name": "Entitled to Coin Hammers",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Your warband can take an additional Coin Hammer.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "56d9-beb3-d430-3eb7",
+          "type": "max",
+          "value": 1,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Campaign Rules",
+      "sourceFile": "Campaign Rules.cat"
+    },
+    {
       "id": "25ba-4c30-92ec-cf3a",
+      "entryId": "c6c7-bb5b-f638-5506",
       "name": "Apex Form",
       "type": "Equipment",
       "range": "",
@@ -5636,10 +25252,88 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8c58-2561-9c43-690f",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "658a-8247-8e8a-8f85",
+                    "childName": "Yoke Fiend"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64c4-6b74-0805-0e82",
+                    "childName": "Hell Knight"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "a81c-9cc6-8d4c-1d5e",
+                    "childName": "Pit Locust"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.movement",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -5648,6 +25342,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "5c42-9d35-f204-8da2",
+      "entryId": "fe6c-3b3b-a756-9387",
       "name": "Orphaned Failures",
       "type": "Equipment",
       "range": "",
@@ -5659,16 +25354,89 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ece5-506d-2c03-4bf1",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "4b98-558c-1394-ac2e",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "0447-09f8-8cc2-64da",
+                    "childName": "Desecrated Saint"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "64c4-6b74-0805-0e82",
+                    "childName": "Hell Knight"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "658a-8247-8e8a-8f85",
+                    "childName": "Yoke Fiend"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5677,6 +25445,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4dd5-9b7d-69da-b77a",
+      "entryId": "98da-209c-28a1-890c",
       "name": "Entropital Dermis",
       "type": "Equipment",
       "range": "",
@@ -5688,10 +25457,66 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b3a4-c22d-344d-d6dc",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5700,6 +25525,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1579-00f4-ef39-5244",
+      "entryId": "abcb-b151-f83d-636d",
       "name": "Herald of the Void",
       "type": "Equipment",
       "range": "",
@@ -5711,10 +25537,66 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cad0-a8ba-37fd-fae0",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5723,6 +25605,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "538c-76dc-547d-5458",
+      "entryId": "ca1e-ab83-ae4e-8c8d",
       "name": "Unnatural Conduit",
       "type": "Equipment",
       "range": "",
@@ -5734,10 +25617,54 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8832-7a7d-9709-2611",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "e144-fd65-dd37-8ba2",
+                    "childName": "Equipment Only",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "afdf-43aa-a03d-918b",
+                    "childName": "Enabled",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5746,6 +25673,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "a745-cf5c-0178-84df",
+      "entryId": "a299-79e5-204e-1923",
       "name": "Living Instrument",
       "type": "2-handed",
       "range": "",
@@ -5757,10 +25685,50 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "90eb-1180-ad74-9406",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "afdf-43aa-a03d-918b",
+                "childName": "Enabled",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "70e3-b854-c325-5f96",
+                "childName": "Musical Instrument",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5769,6 +25737,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "6dec-b744-5999-b2b0",
+      "entryId": "b3f0-bf19-e420-304f",
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -5780,16 +25749,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3449-e5f1-ee51-9636",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "fc04-0946-77d1-1c20",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "374c-9b11-8530-d0af",
+            "childName": "Jabirean Alchemical Book",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -5798,6 +25786,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "acb9-b7e1-1db0-86b2",
+      "entryId": "23e2-917e-bc76-9ad9",
       "name": "Too Proud to Fall",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -5809,10 +25798,39 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2862-733e-48a2-f0a0",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "322d-1a69-dc2a-2e26",
+                "childName": "Sorcerer"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "68a4-5af6-6f09-aeab",
+                "childName": "Praetor"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5821,6 +25839,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "46ac-67c1-bb50-8196",
+      "entryId": "332e-325f-e1cb-d0ac",
       "name": "Light of Samael",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -5832,10 +25851,39 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "59e6-081a-6046-bc99",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "322d-1a69-dc2a-2e26",
+                "childName": "Sorcerer"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "68a4-5af6-6f09-aeab",
+                "childName": "Praetor"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -5844,6 +25892,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4b37-4ec8-ec5d-4cfb",
+      "entryId": "bb3b-a110-4f6d-3712",
       "name": "Claimed: Bolt Action Rifle",
       "type": "Battlekit",
       "range": "",
@@ -5855,18 +25904,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4263-1d68-d857-3956",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "1401-6c97-8f52-26e1",
+      "entryId": "0cc0-a81d-4a31-d289",
       "name": "Claimed: Submachine Gun",
       "type": "Battlekit",
       "range": "",
@@ -5878,18 +25930,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0b06-0d3a-0dbb-5c71",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "0c38-cf0f-2425-4433",
+      "entryId": "3666-52ae-2810-f7c3",
       "name": "Claimed: Automatic Pistol",
       "type": "Battlekit",
       "range": "",
@@ -5901,18 +25956,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "564d-7e9a-26f0-7bee",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "7918-d1a1-8624-dd27",
+      "entryId": "6dbc-eca3-9899-590f",
       "name": "Claimed: Molotov Cocktail",
       "type": "Battlekit",
       "range": "",
@@ -5924,18 +25982,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "88e6-61d2-84af-8c6b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "7fc9-3a86-a1dd-58dd",
+      "entryId": "7035-a343-375e-1a38",
       "name": "Claimed: Semi-automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -5947,18 +26008,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "737b-edc2-8ea5-405c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "8bd6-fd99-ac8e-5037",
+      "entryId": "44bd-c9c4-f85a-9685",
       "name": "Claimed: Sniper Rifle",
       "type": "Battlekit",
       "range": "",
@@ -5970,18 +26034,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f36d-ad09-cb5a-e673",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "9388-a68c-58de-9b61",
+      "entryId": "b707-8628-3af4-04ab",
       "name": "Claimed: Machine Gun",
       "type": "Battlekit",
       "range": "",
@@ -5993,18 +26060,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ee25-0b66-7daf-9c00",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "c089-1bd1-cb13-a89c",
+      "entryId": "9c8b-80f1-a561-8067",
       "name": "Claimed: Musket",
       "type": "Battlekit",
       "range": "",
@@ -6016,18 +26086,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0e7f-de1a-971e-92bb",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "ac3f-2fd2-9e13-30c0",
+      "entryId": "332b-da0e-62d4-d690",
       "name": "Claimed: Warcross",
       "type": "Battlekit",
       "range": "",
@@ -6039,18 +26112,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9ded-26ee-2fac-95ee",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "305b-6ef0-4b63-146c",
+      "entryId": "9010-9491-ab86-c2fb",
       "name": "Claimed: Anti-Tank Hammer",
       "type": "Battlekit",
       "range": "",
@@ -6062,18 +26138,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "eff0-350f-5cd6-21ec",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "f70e-1bff-a65a-66af",
+      "entryId": "6730-cba5-a098-021b",
       "name": "Claimed: Punt Gun",
       "type": "Battlekit",
       "range": "",
@@ -6085,18 +26164,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "fdd7-7680-57b8-3674",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "34a2-3a0d-5746-c24f",
+      "entryId": "1d58-aeae-052d-6463",
       "name": "Claimed: Flail/Scourge",
       "type": "Battlekit",
       "range": "",
@@ -6108,18 +26190,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "25d8-adba-9150-9762",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "f991-7aaa-24b1-6937",
+      "entryId": "d16f-30d7-c5dc-58f4",
       "name": "Claimed: Misericordia",
       "type": "Battlekit",
       "range": "",
@@ -6131,18 +26216,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "950e-712c-cd32-a99e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "793b-d5d8-1024-63c3",
+      "entryId": "4767-42a9-91af-7104",
       "name": "Claimed: Grenades",
       "type": "Battlekit",
       "range": "",
@@ -6154,18 +26242,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2ae4-eb5f-9e6d-b2e1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "3ece-5b15-88af-1394",
+      "entryId": "cde7-97c2-3420-f771",
       "name": "Claimed: Sniper Rifle",
       "type": "Battlekit",
       "range": "",
@@ -6177,18 +26268,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "71bc-f7ad-f09c-074a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "95b4-ff42-9834-b1a5",
+      "entryId": "887a-fb7c-9db9-830d",
       "name": "Claimed: Alchemist Armour",
       "type": "Battlekit",
       "range": "",
@@ -6200,18 +26294,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1bcd-b155-844d-1f91",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "6f0f-5f09-f414-afd7",
+      "entryId": "b953-42b1-dbcb-b6a2",
       "name": "Claimed: Jezzail",
       "type": "Battlekit",
       "range": "",
@@ -6223,18 +26320,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8f40-cad9-1018-2d5e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "7d86-96fb-1462-14ba",
+      "entryId": "d1ae-d464-68d1-f88e",
       "name": "Claimed: Siege Jezzail",
       "type": "Battlekit",
       "range": "",
@@ -6246,18 +26346,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9fe4-8dcb-cb2e-3bc8",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "f4ba-5a86-9106-9497",
+      "entryId": "6bf8-8c5b-91cc-9fe5",
       "name": "Claimed: Musket",
       "type": "Battlekit",
       "range": "",
@@ -6269,18 +26372,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cd64-5443-06b6-63ca",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "af2e-d32b-d37b-8626",
+      "entryId": "d550-a32c-a400-046f",
       "name": "Claimed: Halberd-Gun",
       "type": "Battlekit",
       "range": "",
@@ -6292,18 +26398,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d538-6a78-1020-4fc4",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "85ee-683c-63c5-e708",
+      "entryId": "06e6-12a3-6697-73ec",
       "name": "Claimed: Machine Gun",
       "type": "Battlekit",
       "range": "",
@@ -6315,18 +26424,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "fee9-d910-c25d-7243",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "cfc6-9ebe-635d-2221",
+      "entryId": "402e-79d7-4289-cb56",
       "name": "Claimed: Bolt Action Rifle",
       "type": "Battlekit",
       "range": "",
@@ -6338,18 +26450,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2f14-972f-11c1-0d58",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "e649-4071-34a6-8661",
+      "entryId": "7cc0-6381-e059-0234",
       "name": "Claimed: Automatic Pistol",
       "type": "Battlekit",
       "range": "",
@@ -6361,18 +26476,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1bbe-6c83-585c-448d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "d7da-68e6-c806-79a0",
+      "entryId": "59d3-d0f7-6723-cc1a",
       "name": "Claimed: Semi-automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -6384,18 +26502,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0aa2-ed8b-4900-9976",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "9845-8249-07e1-5c50",
+      "entryId": "bce9-a6fb-e4e8-89b3",
       "name": "Claimed: Automatic Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -6407,18 +26528,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c68a-11cd-9a3c-68e4",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "4305-3002-cdd4-284a",
+      "entryId": "0bad-3737-9b3d-fb57",
       "name": "Claimed: Automatic Rifle",
       "type": "Battlekit",
       "range": "",
@@ -6430,18 +26554,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1581-95cb-e200-2d5a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "deab-41ec-216f-5947",
+      "entryId": "f25c-a491-5947-69b0",
       "name": "Claimed: Satchel Charge",
       "type": "Battlekit",
       "range": "",
@@ -6453,18 +26580,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e4ce-26b6-0b41-801b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "ab84-6453-d13a-fe65",
+      "entryId": "c2d3-0190-0a94-13bc",
       "name": "Claimed: Machine Armour",
       "type": "Battlekit",
       "range": "",
@@ -6476,18 +26606,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2e5e-5558-ed47-9629",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "cb97-d342-2a89-e850",
+      "entryId": "0660-fcae-c395-04bd",
       "name": "Claimed: Grenade Launcher",
       "type": "Battlekit",
       "range": "",
@@ -6499,18 +26632,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "dc9e-fe4b-00ae-ec2d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "81e0-f988-e048-8547",
+      "entryId": "1f26-828c-fd26-882e",
       "name": "Claimed: Grenades",
       "type": "Battlekit",
       "range": "",
@@ -6522,18 +26658,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b63d-c823-16ea-b417",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "19bd-8885-be91-907d",
+      "entryId": "b5ef-3d46-9741-06c8",
       "name": "Claimed: Submachine Gun",
       "type": "Battlekit",
       "range": "",
@@ -6545,18 +26684,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7a5c-9f0b-cf37-ba8f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "bbab-a74c-e82c-e4e8",
+      "entryId": "1d09-cda6-3160-6176",
       "name": "Claimed: Heavy Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -6568,18 +26710,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "fd10-64e8-48cc-0024",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "8d72-52c6-08af-34b5",
+      "entryId": "01b0-1455-dbd3-8e80",
       "name": "Coveted Position",
       "type": "Spell (Cost 2)",
       "range": "12\"",
@@ -6591,10 +26736,39 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e2cf-6056-6808-b7fd",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "322d-1a69-dc2a-2e26",
+                "childName": "Sorcerer"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "68a4-5af6-6f09-aeab",
+                "childName": "Praetor"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -6603,6 +26777,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "02a0-968e-d2e1-09c6",
+      "entryId": "a2ba-2877-7293-0675",
       "name": "What is Yours is Mine",
       "type": "Spell (Cost 1)",
       "range": "-",
@@ -6614,10 +26789,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c0be-66e9-a09f-00cc",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6626,6 +26818,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7b6f-566f-3690-6a06",
+      "entryId": "c598-d0e1-26bb-4d64",
       "name": "Uncaring Gluttony",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -6637,16 +26830,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c927-b080-aae0-c93a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "18a0-064a-674f-af00",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6655,6 +26866,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "3a38-b172-9d70-ee94",
+      "entryId": "8a96-4a3d-9183-b2bb",
       "name": "Exquisite Pain",
       "type": "Spell (1-2)",
       "range": "",
@@ -6666,10 +26878,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "466f-09fe-5572-732f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6678,6 +26907,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f957-a6db-7309-b93f",
+      "entryId": "e962-b9a5-17a9-4c29",
       "name": "Call of Flesh",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -6689,10 +26919,39 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "593e-5710-2105-de8a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "322d-1a69-dc2a-2e26",
+                "childName": "Sorcerer"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "68a4-5af6-6f09-aeab",
+                "childName": "Praetor"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -6701,6 +26960,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b1e9-f895-8cab-5c0b",
+      "entryId": "6563-3cee-7f89-8d1e",
       "name": "Morphean Mind",
       "type": "Ability",
       "range": "",
@@ -6712,16 +26972,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e52d-5ccb-aad8-992f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "3e47-8a3d-ebc0-71dc",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6730,6 +27008,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "655a-5c5e-a497-248f",
+      "entryId": "34d0-ca9d-a23f-0d9b",
       "name": "Charm of Acedia",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -6741,10 +27020,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "aa3b-2a62-42c7-d49f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6753,6 +27049,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7cbe-aaa1-8d58-dd69",
+      "entryId": "a442-f722-3112-8153",
       "name": "Daemonium Meridianum",
       "type": "Ability",
       "range": "",
@@ -6764,16 +27061,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a1c0-773b-cad9-106d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "87f5-0a59-fc40-48aa",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6782,6 +27097,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "684d-fb32-d817-7a19",
+      "entryId": "38c0-d3a4-a30a-d43b",
       "name": "Black Heart",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -6793,16 +27109,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2370-53b9-8594-069c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "6daa-cc1d-d2b7-3e63",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6811,6 +27145,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "80a8-fe07-6cfc-68bd",
+      "entryId": "f524-976a-c9e5-af0d",
       "name": "Beauty in Suffering",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -6822,24 +27157,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "157d-16a4-b449-898c",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "d521-fc62-15e1-4728",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "79b8-db30-6294-d5e3",
+      "entryId": "fb8a-8c3b-e04b-68ab",
       "name": "Coagulation",
       "type": "Spell (Cost 3)",
       "range": "",
@@ -6851,16 +27190,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "44f5-f2df-5b5e-83f1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "efa3-65cc-f0e9-5410",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [],
@@ -6869,6 +27226,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "8250-d2c5-b8b6-9c1f",
+      "entryId": "d99d-2dbd-c2ca-9d4c",
       "name": "Dark Innervation",
       "type": "Spell (Cost 2-3)",
       "range": "",
@@ -6880,24 +27238,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d111-bd98-4a8d-89c4",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "aa1e-1e1d-7b1f-c791",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "32cc-13ad-b391-00c0",
+      "entryId": "106d-9327-56be-188e",
       "name": "Final Frenzy",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -6909,18 +27271,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2c9a-8501-3188-6af2",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "143b-3167-b6c2-b243",
+      "entryId": "9a58-b86e-4759-a49b",
       "name": "Dust to Dust",
       "type": "Spell (Cost 3)",
       "range": "",
@@ -6932,24 +27297,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9eff-8b3b-637a-9430",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "dfd1-5c60-48d4-017c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "de39-4798-436c-d3a3",
+      "entryId": "79d0-a521-12d1-5158",
       "name": "Event Horizon",
       "type": "Spell (Cost 1-3)",
       "range": "",
@@ -6961,10 +27330,55 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4a3b-ff85-dc7f-523a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "322d-1a69-dc2a-2e26",
+            "childName": "Sorcerer"
+          }
+        },
+        {
+          "op": "add",
+          "field": "error",
+          "value": "Event Horizon is not allowed with Burning Inferno.",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "79d0-a521-12d1-5158",
+                "childName": "Event Horizon",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "42bc-f444-0c78-b0f6",
+                "childName": "Burning Inferno",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -6973,6 +27387,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "9b7a-8ca7-9868-cc02",
+      "entryId": "42bc-f444-0c78-b0f6",
       "name": "Burning Inferno",
       "type": "Spell (Cost 1-3)",
       "range": "36\"",
@@ -6988,10 +27403,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e457-4790-6acd-5645",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "322d-1a69-dc2a-2e26",
+            "childName": "Sorcerer"
+          }
         }
       ],
       "restrictions": [],
@@ -7000,6 +27432,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "662c-894d-16fb-3b8c",
+      "entryId": "2e3f-096e-2668-9f4e",
       "name": "Slavemaster",
       "type": "Spell (Cost 1)",
       "range": "18\"",
@@ -7011,10 +27444,79 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "299f-b90f-a7a1-0e81",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "1fda-e6a9-7628-9c49",
+                    "childName": "Fang of the Seething Black",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "658a-8247-8e8a-8f85",
+                    "childName": "Yoke Fiend"
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "1fda-e6a9-7628-9c49",
+                    "childName": "Fang of the Seething Black",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "4c27-9424-de7d-b905",
+                    "childName": "Faceless"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -7023,6 +27525,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f012-3a44-5c5d-5460",
+      "entryId": "314f-8656-a0c6-d246",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -7034,10 +27537,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7200-183a-218d-6ede",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "fe96-3446-f665-329f",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -7046,6 +27567,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b565-d29c-fb83-e637",
+      "entryId": "85e9-7a43-5d8d-8139",
       "name": "Comically Large Rock",
       "type": "Battlekit",
       "range": "",
@@ -7057,18 +27579,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0ee3-b94a-0fd5-b764",
           "type": "max",
           "value": 2,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "1c27-5a6d-1a8b-bf04",
+      "entryId": "957a-7a31-9700-9191",
       "name": "Entitled To Ophidian Rifles",
       "type": "Battlekit",
       "range": "",
@@ -7078,12 +27603,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "a502-8362-06be-59a2",
+      "entryId": "ae6f-c9b4-4538-b473",
       "name": "Entitled To Incendiary Grenades",
       "type": "Battlekit",
       "range": "",
@@ -7094,12 +27621,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "506d-7eec-ee56-fe93",
+      "entryId": "6e7a-ea5d-14be-d309",
       "name": "Entitled To Serpent Assault Guns",
       "type": "Battlekit",
       "range": "",
@@ -7110,12 +27639,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "2d97-93c1-37b4-de43",
+      "entryId": "2c3d-7002-9a7a-4600",
       "name": "Entitled To Heavy Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -7126,12 +27657,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "5555-a81b-b83c-cb4e",
+      "entryId": "8eb2-70c4-2670-7153",
       "name": "Entitled To Headtakers",
       "type": "Battlekit",
       "range": "",
@@ -7142,12 +27675,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "0cc4-dd59-6e01-3301",
+      "entryId": "0c6e-e250-4ed5-90d4",
       "name": "Entitled To Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -7158,12 +27693,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "2786-e606-cad9-3180",
+      "entryId": "3213-5109-f987-c4cd",
       "name": "Entitled To Hellblades",
       "type": "Battlekit",
       "range": "",
@@ -7174,12 +27711,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "7964-09b3-0b61-b008",
+      "entryId": "78ac-5951-4971-8272",
       "name": "Entitled To Malebranche Swords",
       "type": "Battlekit",
       "range": "",
@@ -7190,12 +27729,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
       "id": "12d2-7961-1e16-963c",
+      "entryId": "30b2-e154-1911-8f5e",
       "name": "Promoted!",
       "type": "Battlekit",
       "range": "",
@@ -7207,10 +27748,157 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8b97-8150-7d1e-fd06",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "30b2-e154-1911-8f5e",
+                "childName": "Elite Promotion",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set-primary",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Favoured",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "72ab-daa4-80ee-e9a5",
+            "childName": "Iron Sultanate"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Commissioned Officer",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Ascendant",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "44b9-e92b-2dc0-6820",
+            "childName": "Court of the Seven-Headed Serpent"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Blasphemous",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "6941-ec54-3001-8288",
+            "childName": "Heretic Legion"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Exalted",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "d54d-055d-bbc0-a20f",
+            "childName": "Trench Pilgrims"
+          }
+        },
+        {
+          "op": "prepend",
+          "field": "name",
+          "value": "Putrid",
+          "origin": "entry",
+          "join": " ",
+          "scope": "model",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "0b26-15c1-cebd-0077",
+            "childName": "Black Grail"
+          }
         }
       ],
       "restrictions": [],
@@ -7219,6 +27907,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2873-9e7a-3ad9-a547",
+      "entryId": "49fd-8f83-901e-e948",
       "name": "Experience",
       "type": "Battlekit",
       "range": "",
@@ -7230,10 +27919,41 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9ae8-1dfa-19a6-5bf8",
           "type": "max",
           "value": 18,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:9ae8-1dfa-19a6-5bf8",
+          "value": "7",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "71f8-ee29-0f90-59ec",
+            "childName": "Limited Potential"
+          }
         }
       ],
       "restrictions": [],
@@ -7242,6 +27962,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "0691-b648-ac01-3dc7",
+      "entryId": "ab45-1e00-df56-dbda",
       "name": "Trench Shield",
       "type": "Shield",
       "range": "",
@@ -7254,18 +27975,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8a59-6ce2-41f3-94c5",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "33ed-6314-e75f-8982",
+      "entryId": "a535-4fb6-c587-691a",
       "name": "Reinforced Armour",
       "type": "Armour",
       "range": "",
@@ -7278,12 +28002,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1d07-a4db-bb42-fcb0",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "ELITE only",
         "ELITE & Janissaries only",
@@ -7294,6 +28020,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "71ec-000e-5999-ba1c",
+      "entryId": "fc21-c383-cc54-c15c",
       "name": "Standard Armour",
       "type": "Armour",
       "range": "",
@@ -7306,18 +28033,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9338-dd96-6c50-1cde",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "0327-358f-77be-d119",
+      "entryId": "9f51-3782-6026-46a6",
       "name": "Armour Piercing Bullets",
       "type": "Equipment",
       "range": "",
@@ -7330,12 +28060,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "d8ed-a44c-df74-d064",
+      "entryId": "e1cb-6d32-6315-eb1b",
       "name": "Binoculars",
       "type": "Equipment",
       "range": "",
@@ -7347,12 +28079,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "37e4-a6ee-a1f1-a719",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "ELITE only"
       ],
@@ -7361,6 +28095,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "3c35-dded-ffab-2e12",
+      "entryId": "2fb0-a298-d74c-a76a",
       "name": "Blessed Icon",
       "type": "Equipment",
       "range": "",
@@ -7374,12 +28109,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d8bc-e85d-f1aa-6b31",
           "type": "max",
           "value": 1,
           "scope": "model",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Consumable"
       ],
@@ -7388,6 +28125,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f742-ff2c-671c-3e20",
+      "entryId": "dd63-2453-14d7-7e00",
       "name": "Combat Helmet",
       "type": "Equipment",
       "range": "",
@@ -7400,12 +28138,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "59bb-c8af-9428-6d47",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Headgear"
       ],
@@ -7414,6 +28154,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "913c-4427-b470-9a6a",
+      "entryId": "8b0b-b48b-c82a-f71e",
       "name": "Dum-Dum Bullets",
       "type": "Equipment",
       "range": "",
@@ -7426,12 +28167,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "5b7d-4bc2-5a44-43ce",
+      "entryId": "b8e5-5657-f3fc-fd59",
       "name": "Field Shrine",
       "type": "Equipment",
       "range": "",
@@ -7445,18 +28188,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f22e-8077-3ae2-e1db",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "29d4-73f4-67aa-ecbb",
+      "entryId": "8927-946d-c993-14ee",
       "name": "Gas Mask",
       "type": "Equipment",
       "range": "",
@@ -7469,18 +28215,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c887-179f-e3e3-9dbd",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "4fa4-3134-d167-8099",
+      "entryId": "a2d4-cd33-46c4-3b81",
       "name": "Hellbound Soul Contract",
       "type": "Equipment",
       "range": "",
@@ -7492,18 +28241,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4aa9-00fb-3e27-5d7b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "0e24-838f-4297-c2b9",
+      "entryId": "bf17-de3b-1272-3d4c",
       "name": "Holy Relic",
       "type": "Equipment",
       "range": "",
@@ -7516,12 +28268,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0ef9-334b-b026-d22f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "ELITE only"
       ],
@@ -7530,6 +28284,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2eb8-75e4-b529-12ad",
+      "entryId": "c837-cb9f-bfbb-fabc",
       "name": "Incendiary Ammunition",
       "type": "Equipment",
       "range": "",
@@ -7542,6 +28297,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Consumable, Limit: 1"
       ],
@@ -7550,6 +28306,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "e5d0-2e53-965c-1b78",
+      "entryId": "0198-2836-2591-f0ad",
       "name": "Infernal Brand",
       "type": "Equipment",
       "range": "",
@@ -7562,18 +28319,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6e9f-22ef-279c-71e7",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "322c-cb76-719a-0cb9",
+      "entryId": "6347-11b1-0c96-2803",
       "name": "Martyrdom Pills",
       "type": "Equipment",
       "range": "",
@@ -7587,12 +28347,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d681-81a3-729f-73af",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Consumable, ELITE only, Limit: 2",
         "Consumable, Limit: 3"
@@ -7602,6 +28364,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "cb36-de41-f960-6526",
+      "entryId": "05b0-3aaa-2e29-c69f",
       "name": "Medikit",
       "type": "Equipment",
       "range": "",
@@ -7613,18 +28376,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d245-5975-eb0d-7ccd",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "111a-02f4-8014-be04",
+      "entryId": "46fc-c345-e21b-1df9",
       "name": "Mountaineer Kit",
       "type": "Equipment",
       "range": "",
@@ -7636,12 +28402,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e89d-79d5-ec81-3aae",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Limit: 4",
         "Limit: 1",
@@ -7652,6 +28420,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ed7c-0353-5a9d-b903",
+      "entryId": "d6b0-fb63-288a-420a",
       "name": "Musical Instrument",
       "type": "Equipment",
       "range": "",
@@ -7665,12 +28434,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b35c-7505-09f3-9f11",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Limit: 1"
       ],
@@ -7679,6 +28450,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "41f3-4b8e-6736-1db8",
+      "entryId": "d0a8-ad68-ad47-83f5",
       "name": "Shovel",
       "type": "Equipment",
       "range": "",
@@ -7690,12 +28462,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "895e-ce14-ba6b-a6be",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Wretched & Yoke Fiends only"
       ],
@@ -7704,6 +28478,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "169e-7bba-028c-72a5",
+      "entryId": "920b-d2b1-8145-0c60",
       "name": "Weaponized Shovel",
       "type": "1-Handed",
       "range": "Melee",
@@ -7714,18 +28489,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0257-a91d-e534-6961",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "a00a-6279-d459-1641",
+      "entryId": "cc0d-7daf-d822-83ee",
       "name": "Tracer Bullets",
       "type": "Equipment",
       "range": "",
@@ -7738,12 +28516,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "2b17-59ef-7e74-fd47",
+      "entryId": "98cd-8361-8cc4-81ea",
       "name": "Troop Flag",
       "type": "Equipment",
       "range": "",
@@ -7757,12 +28537,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "97bc-8a47-41ab-2b8e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Limit: 1"
       ],
@@ -7771,6 +28553,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "411f-228a-4117-3784",
+      "entryId": "cc52-3402-19d6-ffeb",
       "name": "Unholy Relic",
       "type": "Equipment",
       "range": "",
@@ -7783,18 +28566,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b497-eb13-cfde-10f3",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
     {
       "id": "ab23-2c25-8507-9ca3",
+      "entryId": "11ce-c3bb-7246-14af",
       "name": "Unholy Trinket",
       "type": "Equipment",
       "range": "",
@@ -7808,12 +28594,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "81c2-b80e-2b16-c9ca",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Consumable"
       ],
@@ -7822,6 +28610,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "835c-9624-303f-5792",
+      "entryId": "61b5-8cd2-9946-22fd",
       "name": "Tank Palanquin",
       "type": "Armour",
       "range": "-",
@@ -7835,10 +28624,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6dbf-3911-b4ac-74af",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -7847,6 +28654,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "9395-0d4e-5cdb-6377",
+      "entryId": "cdaf-763d-01d8-3c81",
       "name": "Sarcophagus Mine",
       "type": "Battlekit",
       "range": "",
@@ -7861,16 +28669,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "375b-a888-f3fe-739d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "10cc-9fb1-e13a-d49d",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -7879,6 +28706,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "05d8-72d5-36d0-f648",
+      "entryId": "31ef-14a4-4be6-508f",
       "name": "Battlefield Looters (Automatic Rifle)",
       "type": "Battlekit",
       "range": "",
@@ -7889,12 +28717,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "cab4-0571-19c0-eaf2",
+      "entryId": "7698-8d7d-b9d0-d110",
       "name": "Battlefield Looters (Machine Gun)",
       "type": "Battlekit",
       "range": "",
@@ -7905,12 +28735,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "314c-5a0b-cf87-d46d",
+      "entryId": "5530-8135-2df1-4b67",
       "name": "Battlefield Looters (Grenade Launcher)",
       "type": "Battlekit",
       "range": "",
@@ -7921,12 +28753,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "a73b-6d6d-37aa-fd3f",
+      "entryId": "0ea6-99b3-e165-9336",
       "name": "Battlefield Looters (Musical Instrument)",
       "type": "Battlekit",
       "range": "",
@@ -7937,12 +28771,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "4ab1-ea85-f390-6fb0",
+      "entryId": "1c2d-14b1-1ec3-3bdb",
       "name": "Battlefield Looters (Flamethrower)",
       "type": "Battlekit",
       "range": "",
@@ -7953,12 +28789,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "06bf-a67e-fba4-5214",
+      "entryId": "346b-cc13-f92e-61bc",
       "name": "Battlefield Looters (Heavy Flamethrower)",
       "type": "Battlekit",
       "range": "",
@@ -7969,12 +28807,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "bca6-aeb8-da80-ca45",
+      "entryId": "f968-d86e-691c-d8af",
       "name": "Battlefield Looters (Anti-Material Rifle)",
       "type": "Battlekit",
       "range": "",
@@ -7985,12 +28825,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "e8cf-8a0c-d0cc-756d",
+      "entryId": "fc35-e469-8877-b62c",
       "name": "Battlefield Looters (Mountaineer Kit)",
       "type": "Battlekit",
       "range": "",
@@ -8001,12 +28843,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "4951-f794-ad38-ad03",
+      "entryId": "c66f-56e1-c379-0f1c",
       "name": "Battlefield Looters (Incendiary Ammunition)",
       "type": "Battlekit",
       "range": "",
@@ -8017,12 +28861,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "290e-b9f3-e527-d0f5",
+      "entryId": "5549-36f8-a639-8fc4",
       "name": "Battlefield Looters (Hellblade)",
       "type": "Battlekit",
       "range": "",
@@ -8033,12 +28879,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "cc71-f6a8-5519-bcf3",
+      "entryId": "0422-86f1-0b4b-26b9",
       "name": "Battlefield Looters (Troop Flag)",
       "type": "Battlekit",
       "range": "",
@@ -8049,12 +28897,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "3362-0f7e-b412-ce4d",
+      "entryId": "3ff6-3412-b7f3-b0a4",
       "name": "Battlefield Looters (Sacrificial Blade)",
       "type": "Battlekit",
       "range": "",
@@ -8065,12 +28915,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "6df6-b367-67b3-0a82",
+      "entryId": "8f70-ef9e-dd8b-0568",
       "name": "Pilfered: Jezzail",
       "type": "Battlekit",
       "range": "",
@@ -8082,18 +28934,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f89d-cb72-748d-0f1d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "9687-b24e-bf63-d228",
+      "entryId": "59c9-2964-96f1-9b9a",
       "name": "Pilfered: Siege Jezzail",
       "type": "Battlekit",
       "range": "",
@@ -8105,18 +28960,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "abc3-0d08-3052-04eb",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "24a0-e75f-fda6-3a63",
+      "entryId": "f7cf-1fb3-686c-b38d",
       "name": "Pilfered: Musket",
       "type": "Battlekit",
       "range": "",
@@ -8128,18 +28986,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cf1c-2d89-a985-b27e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "b8e7-a29c-9ca9-24b6",
+      "entryId": "41ea-0e5d-eebb-a8dc",
       "name": "Pilfered: Halberd-Gun",
       "type": "Battlekit",
       "range": "",
@@ -8151,18 +29012,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0f6f-0e11-c754-2213",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "2a14-9d00-49fb-86df",
+      "entryId": "8228-b935-f1dc-59d6",
       "name": "Pilfered: Sniper Rifle",
       "type": "Battlekit",
       "range": "",
@@ -8174,18 +29038,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cbd6-97d5-4958-71e1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "1181-0635-aa21-d9bb",
+      "entryId": "3277-be84-f735-f64e",
       "name": "Pilfered: Alchemist Armour",
       "type": "Battlekit",
       "range": "",
@@ -8197,18 +29064,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d20b-39b2-56fe-32f0",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "8e79-67ff-8442-44b2",
+      "entryId": "cc48-3a28-c443-ef76",
       "name": "Pilfered: Cloak of Alamut",
       "type": "Battlekit",
       "range": "",
@@ -8220,18 +29090,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f051-26cc-42f9-3e55",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "7840-b59b-373f-9fc2",
+      "entryId": "9f83-64bd-c857-0e35",
       "name": "Pilfered: Wind Amulet",
       "type": "Battlekit",
       "range": "",
@@ -8243,18 +29116,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e761-7f79-a9d8-1f4f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "6dcf-8eba-6204-b814",
+      "entryId": "d7ac-fbc2-1d31-d5ab",
       "name": "Pilfered: Holy Relic",
       "type": "Battlekit",
       "range": "",
@@ -8266,18 +29142,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6f58-0c00-c1f1-d626",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "412d-d440-11fc-f415",
+      "entryId": "8856-efbf-4e29-8ecb",
       "name": "Pilfered: Binoculars",
       "type": "Battlekit",
       "range": "",
@@ -8289,18 +29168,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f31d-cd39-7ca6-5f1f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "da4c-40b8-a166-dc7c",
+      "entryId": "ac8d-db2f-016d-741d",
       "name": "Pilfered: Medi-kits",
       "type": "Battlekit",
       "range": "",
@@ -8312,18 +29194,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "857c-758b-aa00-2cf6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "4964-07b9-b8a1-f35b",
+      "entryId": "4525-5074-aa24-9783",
       "name": "Stolen: Automatic Pistol",
       "type": "Battlekit",
       "range": "",
@@ -8335,18 +29220,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "adc7-87f2-85bc-1aa2",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "8a1d-ae05-5597-07e2",
+      "entryId": "8be5-7527-c6fa-2bf7",
       "name": "Stolen: Heavy Shotgun",
       "type": "Battlekit",
       "range": "",
@@ -8358,18 +29246,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b47e-579e-2f2e-fa3b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "9626-3796-60f5-9170",
+      "entryId": "5d6e-91f8-4cfd-b79d",
       "name": "Stolen: Sniper Rifle",
       "type": "Battlekit",
       "range": "",
@@ -8381,18 +29272,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "eb25-018a-ce9d-21b0",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "6ce7-e339-f8ab-ac68",
+      "entryId": "767d-1b1d-79b4-5765",
       "name": "Stolen: Satchel Charge",
       "type": "Battlekit",
       "range": "",
@@ -8404,18 +29298,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8cf8-daad-2987-4182",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "83f0-876a-3cc7-3564",
+      "entryId": "7bdb-1be6-5174-fdf6",
       "name": "Stolen: Machine Armour",
       "type": "Battlekit",
       "range": "",
@@ -8427,18 +29324,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d395-8e03-6b31-3a1c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "f4ce-75a0-6a5e-7f5f",
+      "entryId": "aabe-d640-df70-d15d",
       "name": "Stolen: Medi-Kit",
       "type": "Battlekit",
       "range": "",
@@ -8450,18 +29350,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "306a-8b17-7c3c-9651",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "3ee7-3e7e-d239-1c94",
+      "entryId": "5d93-6350-6692-271c",
       "name": "Stolen: Martyrdom Pills",
       "type": "Battlekit",
       "range": "",
@@ -8473,18 +29376,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8ca4-3cd5-dfb0-817b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "5b33-f856-132e-7c89",
+      "entryId": "352f-0577-5939-c99e",
       "name": "Stolen: Field Shrine",
       "type": "Battlekit",
       "range": "",
@@ -8496,18 +29402,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8177-94cd-674b-1a54",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "d65c-996d-9bd5-be6b",
+      "entryId": "2a16-0288-2ac6-0630",
       "name": "Stolen: Binoculars",
       "type": "Battlekit",
       "range": "",
@@ -8519,18 +29428,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "875c-2c31-295c-d4bf",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "7de6-ffe0-bad3-043e",
+      "entryId": "cd9d-ad28-a47d-168d",
       "name": "Stolen: Grenade Launcher",
       "type": "Battlekit",
       "range": "",
@@ -8542,18 +29454,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ce5d-b101-b85e-2b2e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "4e92-442c-e2fc-4583",
+      "entryId": "cd7e-904f-67b2-2d24",
       "name": "Coin Hammer",
       "type": "2-Handed",
       "range": "Melee",
@@ -8568,10 +29483,63 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "293d-6315-40d8-6b11",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:293d-6315-40d8-6b11",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "20f6-68af-9eae-0e73",
+            "childName": "Entitled to Coin Hammers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:293d-6315-40d8-6b11",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "cf02-7a3e-ffbf-d7f9",
+            "childName": "Wretched"
+          }
         }
       ],
       "restrictions": [],
@@ -8580,6 +29548,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "77d6-2ff5-90cb-b1a8",
+      "entryId": "c9ba-7a03-eaae-1c00",
       "name": "Golden Calf Altar",
       "type": "Equipment",
       "range": "",
@@ -8594,16 +29563,47 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "18e9-2443-d3f8-b027",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "4fae-21ed-15e6-5c17",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "cf02-7a3e-ffbf-d7f9",
+                "childName": "Wretched"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -8612,6 +29612,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "a854-4a9d-a500-f54f",
+      "entryId": "e13c-e295-3a8e-34dd",
       "name": "Vessel of Original Sin",
       "type": "Equipment",
       "range": "-",
@@ -8623,24 +29624,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "220c-cc20-c6a7-16b5",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "12d0-60cf-3d82-204b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "68aa-f526-16fe-39a6",
+      "entryId": "bb9f-a973-1114-dc21",
       "name": "Artificial Rebirth",
       "type": "Equipment",
       "range": "-",
@@ -8652,10 +29657,75 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b9ac-5d32-4817-2487",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "bb9f-a973-1114-dc21",
+                "childName": "Artificial Rebirth",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "7ba1-f516-e8cf-3957",
+                    "childName": "Heretic",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "4180-5377-2d83-48ba",
+                    "childName": "Artificial",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "4180-5377-2d83-48ba",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "7877-788b-2d58-c844",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "d935-8238-a3f7-8ab0",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -8664,6 +29734,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "3404-bb75-a82a-b773",
+      "entryId": "2ee4-7f35-8086-2f2a",
       "name": "Thermal Shielding",
       "type": "Equipment",
       "range": "-",
@@ -8677,10 +29748,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "68ef-c1f9-ffc1-7496",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8689,6 +29778,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ed64-3975-4671-5ab2",
+      "entryId": "6b11-a83d-8aba-872a",
       "name": "Sonomatic Sculpture",
       "type": "Equipment",
       "range": "-",
@@ -8700,10 +29790,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0605-51ff-8ddf-250c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8712,6 +29820,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "a497-c45b-d2de-16d5",
+      "entryId": "732a-29eb-ad77-d384",
       "name": "Enhanced Agility",
       "type": "Equipment",
       "range": "-",
@@ -8723,10 +29832,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2379-c59c-9f58-6e3c",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8735,6 +29862,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "dd25-ee30-7576-7b32",
+      "entryId": "2ea9-6b43-8872-1f15",
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -8746,10 +29874,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d756-14d7-626a-bd90",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8758,6 +29904,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4d39-10aa-ae9d-162e",
+      "entryId": "4194-478c-0584-06db",
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -8769,10 +29916,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "87f2-e58d-430e-668d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8781,6 +29946,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "0da4-88a6-6cc3-bcd8",
+      "entryId": "26ad-abf9-50ff-8311",
       "name": "Essence Extractor",
       "type": "Equipment",
       "range": "-",
@@ -8792,16 +29958,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d665-f3fc-4d33-82e5",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "a876-c869-2385-4d6a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4180-5377-2d83-48ba",
+            "childName": "Artificial",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8810,6 +29995,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "debb-b1ea-a645-92dd",
+      "entryId": "d703-b13e-c546-327c",
       "name": "Standard of Mammon",
       "type": "Equipment",
       "range": "",
@@ -8824,16 +30010,68 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b869-9752-f959-c278",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "7544-b56f-4420-6801",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "cf02-7a3e-ffbf-d7f9",
+                "childName": "Wretched"
+              },
+              {
+                "any": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e6f9-0f05-aa5b-06cd",
+                    "childName": "Homunculus"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "adcc-26c4-07e5-0372",
+                    "childName": "Seal of Solomon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -8842,6 +30080,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7555-188e-e8fb-6a31",
+      "entryId": "c2f1-1e4f-2374-a6a5",
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -8856,16 +30095,47 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b6df-f9f5-efd1-2fbc",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "1ad6-b684-8296-5c42",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "374c-9b11-8530-d0af",
+                "childName": "Jabirean Alchemical Book",
+                "includeChildSelections": true
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "cf02-7a3e-ffbf-d7f9",
+                "childName": "Wretched"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -8874,6 +30144,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b2e8-94d9-2ff1-7cdd",
+      "entryId": "a6fb-9aa2-1030-b5bf",
       "name": "Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -8888,16 +30159,68 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6e3c-32f6-4f8d-7f49",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "0071-a035-08f3-8565",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "cf02-7a3e-ffbf-d7f9",
+                "childName": "Wretched"
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:6e3c-32f6-4f8d-7f49",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "94fd-1ae4-a167-310c",
+            "childName": "Entitled to Tarnished Armour",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:6e3c-32f6-4f8d-7f49",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -8906,6 +30229,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bc3d-26f8-182e-d523",
+      "entryId": "30bc-1025-53a4-1ecc",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -8917,10 +30241,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cb87-e6ab-fc79-27a4",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8501-9698-e3e4-1918",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -8929,6 +30271,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "a28d-5ed5-5c1e-3b58",
+      "entryId": "3090-d5f2-2bf7-0f4c",
       "name": "Byzantinium Hearth",
       "type": "Equipment",
       "range": "-",
@@ -8939,12 +30282,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "ba85-939c-d69d-5734",
+      "entryId": "0aa4-71b3-4c9c-5848",
       "name": "Thermal Shielding",
       "type": "Equipment",
       "range": "-",
@@ -8957,12 +30302,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
       "sourceFile": "Heretic Legion.cat"
     },
     {
       "id": "bb71-83f8-e3a8-048f",
+      "entryId": "2177-9bd9-1473-1786",
       "name": "Weaponized Marid Shovel",
       "type": "1-Handed",
       "range": "Melee",
@@ -8975,18 +30322,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0fd4-3e48-db52-67bb",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "ec64-7a03-2155-796b",
+      "entryId": "fdd0-11e7-0db6-acb2",
       "name": "Hashashin Leaf",
       "type": "Battlekit",
       "range": "-",
@@ -9000,16 +30350,42 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "79d1-fe65-a0cd-1593",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "015d-4cb5-9047-ea3f",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -9018,6 +30394,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7d3a-4d24-677e-bb71",
+      "entryId": "e4a9-be6a-c7fe-9d16",
       "name": "Elixir of Al-Khidr",
       "type": "Equipment",
       "range": "",
@@ -9031,10 +30408,67 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8b1b-d5f0-3528-7f3a",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c2b1-d49e-937b-2f87",
+                "childName": "The House of Wisdom",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e62d-c06e-ce35-428b",
+                    "childName": "Brazen Bull"
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f63f-ac9a-639b-b7ba",
+                    "childName": "Lion of Jabir"
+                  },
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2f82-e47f-c162-9152",
+                    "childName": "Takwin Homunculus"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -9043,6 +30477,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "9902-c422-18ce-ab2b",
+      "entryId": "b535-89b0-70c0-a86f",
       "name": "Explosive Charges",
       "type": "Equipment",
       "range": "",
@@ -9056,10 +30491,52 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ca9f-eeea-54c6-064f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e874-ea2b-96ed-0f9a",
+                    "childName": "Sultanate Sapper"
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "9c5a-601e-6b16-320d",
+                    "childName": "Yüzbaşı Captain"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9068,6 +30545,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "0888-90bb-c320-ca0f",
+      "entryId": "3f63-ae26-fd5d-3411",
       "name": "Takwin Anqā Bird",
       "type": "Equipment",
       "range": "-",
@@ -9079,10 +30557,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8780-ee92-2dd8-9229",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "3de0-192c-3ec2-51be",
+            "childName": "Elite"
+          }
         }
       ],
       "restrictions": [
@@ -9093,6 +30588,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "c76e-7839-f61f-df09",
+      "entryId": "d93a-0370-2f55-2f63",
       "name": "Rocket-Propelled Grenade",
       "type": "Equipment",
       "range": "36\"",
@@ -9109,16 +30605,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a97b-4723-7109-8686",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "10b7-ddea-43d5-c5c4",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -9127,6 +30642,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4e9a-9a98-557d-c2d1",
+      "entryId": "176e-55a7-5f50-3286",
       "name": "Marid Pelt",
       "type": "Equipment",
       "range": "-",
@@ -9138,16 +30654,54 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "90f3-a839-8448-bbd8",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "f9d4-b4a7-4b9e-2eb4",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "58c8-0815-71a7-27fb",
+                "childName": "Janissary"
+              }
+            ]
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "9b36-57f6-1887-7bea",
+          "origin": "entry",
+          "scope": "parent"
         }
       ],
       "restrictions": [],
@@ -9156,6 +30710,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "71fb-43b5-da89-15f1",
+      "entryId": "3be9-5225-347c-c8f5",
       "name": "Sparkpowder Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -9167,16 +30722,119 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "db8d-e39d-2f09-8927",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": true
         },
         {
+          "id": "f52b-98e9-cb9a-1d80",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              },
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "dc52-7d54-ed37-7b20",
+                        "childName": "Halberd-Gun"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "2b27-3653-e972-8d5a",
+                        "childName": "Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ab06-4025-36da-4e62",
+                        "childName": "Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "4f0f-a0cf-e8e8-b332",
+                        "childName": "Alaybozan"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "d039-5982-7011-334e",
+                        "childName": "Shield-Paired Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "f5fe-26c3-c542-2bcb",
+                        "childName": "Shield-Paired Halberd-Gun"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "b481-84cd-1a42-8f6e",
+                        "childName": "Machine Gun"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ffb6-34ac-c895-4d37",
+                        "childName": "Relic Alaybozan"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9185,6 +30843,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2bfa-f76b-086f-249e",
+      "entryId": "8ccf-c0b6-efff-4c4f",
       "name": "Heavy Bore Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -9196,16 +30855,79 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f1b1-5287-8474-47f5",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "d61a-66e5-d78d-b88b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ab06-4025-36da-4e62",
+                        "childName": "Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "4f0f-a0cf-e8e8-b332",
+                        "childName": "Alaybozan"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "d039-5982-7011-334e",
+                        "childName": "Shield-Paired Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ffb6-34ac-c895-4d37",
+                        "childName": "Relic Alaybozan"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9214,6 +30936,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ece5-a8b9-b42e-cdfe",
+      "entryId": "7f27-bb98-20d0-0a10",
       "name": "Shayṭānic Shard Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -9225,16 +30948,95 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8b27-f514-658f-899d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": true
         },
         {
+          "id": "5f47-4e37-0642-6eca",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ab06-4025-36da-4e62",
+                        "childName": "Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "d039-5982-7011-334e",
+                        "childName": "Shield-Paired Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "2b27-3653-e972-8d5a",
+                        "childName": "Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "f21b-e8c4-e383-5760",
+                        "childName": "Sniper Rifle"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "f5fe-26c3-c542-2bcb",
+                        "childName": "Shield-Paired Halberd-Gun"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "dc52-7d54-ed37-7b20",
+                        "childName": "Halberd-Gun"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9243,6 +31045,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1704-e9c5-80e1-74e5",
+      "entryId": "cb03-3d32-ca15-fd88",
       "name": "Scrap Shot",
       "type": "Equipment",
       "range": "-",
@@ -9253,12 +31056,82 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "ab06-4025-36da-4e62",
+                        "childName": "Siege Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "2b27-3653-e972-8d5a",
+                        "childName": "Jezzail"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "4f0f-a0cf-e8e8-b332",
+                        "childName": "Alaybozan"
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": "1",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "dc52-7d54-ed37-7b20",
+                        "childName": "Halberd-Gun"
+                      },
+                      {
+                        "type": "equalTo",
+                        "value": "0",
+                        "field": "selections",
+                        "scope": "parent",
+                        "childId": "8a1e-a662-247a-2c2b",
+                        "childName": "Alchemical Ammunition"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "df3a-aed2-fa57-750e",
+      "entryId": "3f2a-95a4-6029-8faa",
       "name": "Limpet Mine",
       "type": "GRENADE",
       "range": "6\"",
@@ -9275,10 +31148,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "be0f-d401-f627-5009",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -9287,6 +31178,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "3b60-009c-4bfb-6c75",
+      "entryId": "ff14-6bda-4958-a507",
       "name": "Chain Kura",
       "type": "Grenade",
       "range": "8\"",
@@ -9303,16 +31195,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3cbe-5cee-f71e-963a",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "acaa-0f67-7102-4e62",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -9321,6 +31232,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f9a1-ea01-d4b8-e52f",
+      "entryId": "e7b5-4ba3-2813-a11f",
       "name": "Golden Khanjar",
       "type": "1-handed",
       "range": "Melee",
@@ -9334,10 +31246,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d332-b1a5-6d4f-e04f",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "62d4-d89a-f7e2-7d3b",
+                "childName": "Sultanate Assassin"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9346,6 +31288,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1003-02a4-ae72-4503",
+      "entryId": "0a63-27a9-9db3-5a32",
       "name": "Khyber Knife",
       "type": "1-handed",
       "range": "Melee",
@@ -9359,12 +31302,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "1779-f308-8bbc-5885",
+      "entryId": "6caf-ec1d-e1ed-66d3",
       "name": "Kayanin Mace",
       "type": "2-handed",
       "range": "Melee",
@@ -9380,10 +31341,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "02f1-9b2e-5a95-decc",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9392,6 +31383,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f692-f0ef-3d09-399a",
+      "entryId": "f5fe-26c3-c542-2bcb",
       "name": "Shield-Paired Halberd-Gun",
       "type": "2-handed",
       "range": "24\"",
@@ -9405,12 +31397,51 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "2c5e-e97c-3df7-39d4",
+                "childName": "Shield Training",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "8af2-2771-9c86-65f3",
+      "entryId": "c650-4b48-ccfb-899a",
       "name": "Anaza Spear",
       "type": "2-handed",
       "range": "Melee",
@@ -9426,10 +31457,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "54d2-3412-ddd2-cd7c",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9438,6 +31499,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1bff-0694-c7a5-a7f8",
+      "entryId": "b9c5-9ea8-b9e0-00ac",
       "name": "Bow of Alamut",
       "type": "2-handed",
       "range": "40\"",
@@ -9453,10 +31515,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c6cf-a310-9513-928b",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "62d4-d89a-f7e2-7d3b",
+                "childName": "Sultanate Assassin"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "cd91-f171-98d6-423e",
+                "childName": "Fida’i of Alamut – The Cabal of Assassins",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9465,6 +31557,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f3a8-7fad-4a06-c27b",
+      "entryId": "ffb6-34ac-c895-4d37",
       "name": "Relic Alaybozan",
       "type": "2-handed",
       "range": "12\"",
@@ -9479,12 +31572,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "3d9f-050e-4682-7f81",
+      "entryId": "61aa-fb82-8fe6-99db",
       "name": "Abus Gun",
       "type": "2-handed",
       "range": "30\"",
@@ -9500,16 +31611,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "db80-5c56-b0b8-0238",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "7d38-c637-6ef3-fb26",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -9518,6 +31648,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "061e-eaaa-0b9b-b878",
+      "entryId": "d039-5982-7011-334e",
       "name": "Shield-Paired Siege Jezzail",
       "type": "2-handed",
       "range": "30\"",
@@ -9530,12 +31661,58 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "range",
+          "value": "6",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4467-39c5-0252-1b2d",
+            "childName": "Far Shot [5]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "parent",
+                "childId": "2c5e-e97c-3df7-39d4",
+                "childName": "Shield Training",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "a92a-fa8e-15f9-f2f2",
+      "entryId": "becf-a3fd-2983-1510",
       "name": "Banner of Desert Wind",
       "type": "Equipment",
       "range": "",
@@ -9550,10 +31727,53 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a76a-6032-b55b-e76d",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2f82-e47f-c162-9152",
+                    "childName": "Takwin Homunculus"
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e77a-39f7-7264-9008",
+                    "childName": "Seal of Solomon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9562,6 +31782,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f51d-4a48-6b34-7342",
+      "entryId": "4377-b71d-92f5-3c05",
       "name": "Banner of the Eagle",
       "type": "Equipment",
       "range": "-",
@@ -9576,10 +31797,55 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7e1e-2df9-3f44-3aa6",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "2f82-e47f-c162-9152",
+                "childName": "Takwin Homunculus"
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "e77a-39f7-7264-9008",
+                "childName": "Seal of Solomon",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9588,6 +31854,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ce56-ea31-c691-08eb",
+      "entryId": "bf62-7e77-d895-711f",
       "name": "Fire Shield",
       "type": "Shield",
       "range": "",
@@ -9602,16 +31869,61 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "7f51-4b32-95c7-8db3",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "a2eb-a830-511f-dd16",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "c1fa-c327-3411-9462",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "374c-9b11-8530-d0af",
+                    "childName": "Jabirean Alchemical Book",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "c2b1-d49e-937b-2f87",
+                    "childName": "The House of Wisdom",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9620,6 +31932,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bfda-ea24-3f37-828d",
+      "entryId": "b246-355b-f3ba-f72e",
       "name": "Iron Wall Kalkan",
       "type": "SHIELD",
       "range": "",
@@ -9633,10 +31946,53 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5f11-c216-833a-904f",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6032-5543-8548-b9ac",
+                "childName": "Defenders of the Iron Wall",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e62d-c06e-ce35-428b",
+                    "childName": "Brazen Bull"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "6603-2315-97b5-d845",
+                    "childName": "Gargantuan Size",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9645,6 +32001,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "0966-6f0e-5300-4284",
+      "entryId": "df13-797c-9e94-0df3",
       "name": "Secrets of Medicine",
       "type": "Battlekit",
       "range": "",
@@ -9656,18 +32013,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6a4c-54d0-8e68-cada",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "4e71-6ded-f58e-8ffe",
+      "entryId": "74b6-87eb-d383-ea59",
       "name": "Secrets of Cartography & Geometry",
       "type": "Battlekit",
       "range": "",
@@ -9679,18 +32039,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "66d3-08bd-67f2-a932",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "77a1-74cd-f781-efb5",
+      "entryId": "5731-aea3-61d2-206c",
       "name": "Secrets of Chemistry & Alchemy",
       "type": "Battlekit",
       "range": "",
@@ -9702,18 +32065,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c265-f1c3-f85f-b2c4",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "4285-e047-b265-bc62",
+      "entryId": "1549-4fe1-f55f-fd26",
       "name": "Secrets of Takwin",
       "type": "Battlekit",
       "range": "",
@@ -9725,18 +32091,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6718-74c4-4c07-9e34",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "1397-70c7-2653-9820",
+      "entryId": "8dc7-e406-a9c5-2215",
       "name": "Secrets of Philosophy, Poetry and Theology",
       "type": "Battlekit",
       "range": "",
@@ -9750,18 +32119,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6144-2684-1405-6571",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "13ba-447f-38db-4b1a",
+      "entryId": "bf03-e9ef-b9e7-b490",
       "name": "Sultanate Grand Cannon",
       "type": "1-handed",
       "range": "48\"",
@@ -9777,18 +32149,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "08d2-a5ca-b4ae-fc38",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "dbf1-479d-1dfa-29e2",
+      "entryId": "20ec-9e12-6cdf-abe2",
       "name": "Anqā Guard",
       "type": "Equipment",
       "range": "",
@@ -9802,12 +32177,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "b12d-f138-c557-e74d",
+      "entryId": "09f8-fd32-af0a-a131",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -9819,24 +32196,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e494-4b66-ba7a-4c44",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "0bdf-ebb5-a785-fe43",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "d8ef-4597-49bd-8c2f",
+      "entryId": "5782-5d13-1025-abdb",
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -9848,10 +32229,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3157-68bd-e41d-6e44",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "80f0-b0dc-e20d-7ce0",
+                "childName": "Assigned Sword",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9860,6 +32271,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "21f1-4a29-ae87-7cf2",
+      "entryId": "d309-00e2-6fe8-a939",
       "name": "Killing Squad",
       "type": "Battlekit",
       "range": "",
@@ -9871,10 +32283,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "01a1-4333-21e4-0a6c",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "cd91-f171-98d6-423e",
+            "childName": "Fida’i of Alamut – The Cabal of Assassins",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -9883,6 +32313,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "e412-732c-30a6-9790",
+      "entryId": "f035-115c-4a4d-62ad",
       "name": "Sipahi-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -9894,10 +32325,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2f07-ef69-320d-33ef",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "0ef5-5146-4d29-b5c1",
+                "childName": "Assigned Sword",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -9906,6 +32367,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7e5c-ba89-c669-191a",
+      "entryId": "29e8-f9d5-9bb1-7137",
       "name": "Mind-Linked",
       "type": "Battlekit",
       "range": "",
@@ -9917,10 +32379,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8e15-1ef2-f3cb-8f9e",
           "type": "max",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "d832-e6aa-7c93-32e4",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:8e15-1ef2-f3cb-8f9e",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -9929,6 +32415,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4038-bef2-1da5-b69b",
+      "entryId": "80f0-b0dc-e20d-7ce0",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -9940,18 +32427,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9dd6-a553-5336-a922",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "2342-ecab-9e48-b848",
+      "entryId": "80f0-b0dc-e20d-7ce0",
       "name": "Assigned Sword",
       "type": "Battlekit",
       "range": "",
@@ -9963,18 +32453,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9dd6-a553-5336-a922",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "2470-9ee0-49df-2c72",
+      "entryId": "b475-de34-e00c-b14f",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -9986,10 +32479,33 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a1b3-e09c-c7a1-faba",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "As with normal Fireteams, this method of Fireteam selection is being phased out for being really, really janky. Please use the Assigned Sword feature and the \"Mamluk-Guarded\" Fireteam instead.",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "b475-de34-e00c-b14f",
+            "childName": "Elite Ally"
+          }
         }
       ],
       "restrictions": [],
@@ -9998,6 +32514,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2843-d7c2-29ba-03db",
+      "entryId": "0ef5-5146-4d29-b5c1",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -10009,18 +32526,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a84c-ed17-cfa5-806e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "8a1c-023a-d19f-0e9f",
+      "entryId": "0ef5-5146-4d29-b5c1",
       "name": "Assigned Sword",
       "type": "Battlekit",
       "range": "",
@@ -10032,18 +32552,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a84c-ed17-cfa5-806e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
     {
       "id": "e028-d503-dcf3-b3cf",
+      "entryId": "da5c-280f-9d08-42b4",
       "name": "Pummelling Blows",
       "type": "Battlekit",
       "range": "",
@@ -10055,10 +32578,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9210-fe94-fee8-81b1",
           "type": "max",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9210-fe94-fee8-81b1",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -10067,6 +32614,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "328e-9d8a-0a2c-47c6",
+      "entryId": "0f6a-12ab-facd-4972",
       "name": "Anti-Tank Hammer",
       "type": "2-Handed",
       "range": "Melee",
@@ -10082,6 +32630,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "ELITE only, Limit: 3"
       ],
@@ -10090,6 +32639,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "77d0-35f2-b3d3-4022",
+      "entryId": "2a56-df62-c8c1-9bc0",
       "name": "Bayonet",
       "type": "2-Handed",
       "range": "Melee",
@@ -10102,12 +32652,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f37e-2447-0629-fe82",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Shield Combo"
       ],
@@ -10116,6 +32668,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "9e8c-dc75-19ab-36b0",
+      "entryId": "ee65-c18f-650e-cce9",
       "name": "Flail/Scourge",
       "type": "1-Handed",
       "range": "Melee",
@@ -10128,12 +32681,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "a6cd-257b-508a-11b9",
+      "entryId": "df88-b7a2-1a01-1b56",
       "name": "Great Hammer/Maul",
       "type": "2-Handed",
       "range": "Melee",
@@ -10146,12 +32701,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "f11f-a0c6-d658-dcb6",
+      "entryId": "43b5-20ac-4f52-3ce5",
       "name": "Great Sword/Axe",
       "type": "2-Handed",
       "range": "Melee",
@@ -10165,12 +32722,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "bd4b-593e-5a79-09fd",
+      "entryId": "1fac-60d6-f476-9c4d",
       "name": "Misericordia",
       "type": "1-Handed",
       "range": "Melee",
@@ -10181,6 +32740,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Combat Medic only, Limit: 1",
         "Limit: 1"
@@ -10190,6 +32750,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1c55-92d4-5367-2e27",
+      "entryId": "80dd-5d7c-c33e-a950",
       "name": "Polearm",
       "type": "2-Handed",
       "range": "Melee",
@@ -10202,6 +32763,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Shield Combo"
       ],
@@ -10210,6 +32772,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ef6c-14c0-f6f6-4859",
+      "entryId": "8ad7-a2d8-fa56-0a09",
       "name": "Sword/Axe",
       "type": "1-Handed",
       "range": "Melee",
@@ -10221,12 +32784,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "53b3-b3f8-2109-1505",
+      "entryId": "bd07-8e58-85a3-71f0",
       "name": "Trench Club",
       "type": "1-Handed",
       "range": "Melee",
@@ -10236,12 +32801,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "c93b-27f6-78c1-68fa",
+      "entryId": "daaa-b1ef-7908-82a7",
       "name": "Trench Knife",
       "type": "1-Handed",
       "range": "Melee",
@@ -10253,12 +32820,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
     {
       "id": "c63d-fe53-a980-4a2a",
+      "entryId": "4d1c-67e3-95cf-1169",
       "name": "Tenderizer Maul",
       "type": "2-Handed",
       "range": "Melee",
@@ -10273,24 +32842,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "21e8-78ee-05d0-1e8b-min",
           "type": "min",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "21e8-78ee-05d0-1e8b-max",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "ce55-e4a0-f88f-0df9",
+      "entryId": "5f45-ffc2-6635-0f8c",
       "name": "Man's Best Friend",
       "type": "Ability",
       "range": "-",
@@ -10302,18 +32875,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4247-15fb-28c3-b5c3",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "0a72-3d4c-48ea-dd92",
+      "entryId": "9f3e-f682-ff22-8184",
       "name": "Purgation Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -10327,10 +32903,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "dcde-a57e-cc93-0c63",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "ad48-d8bd-6c14-8a47",
+            "childName": "Pistol"
+          }
         }
       ],
       "restrictions": [],
@@ -10339,6 +32932,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "652b-a2bf-a330-c9ba",
+      "entryId": "932a-0ad5-c74c-3593",
       "name": "Winged Staff",
       "type": "Equipment",
       "range": "-",
@@ -10352,18 +32946,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8af7-4ef3-2808-63f9",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "9d4d-bc41-82dc-c18a",
+      "entryId": "8e13-f6ad-46a4-9853",
       "name": "Crook",
       "type": "2-handed",
       "range": "Melee",
@@ -10378,18 +32975,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0927-912b-6898-93bf",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "c289-b180-d583-04b0",
+      "entryId": "ad6c-4635-f9a7-8115",
       "name": "Fumigator",
       "type": "2-handed",
       "range": "8\"",
@@ -10406,18 +33006,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3188-fbb7-94b7-3759",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "9c1c-2178-d6c0-cf6a",
+      "entryId": "087b-32d3-0503-70bb",
       "name": "Heavy Fumigator",
       "type": "2-handed",
       "range": "10\"",
@@ -10435,18 +33038,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "601d-c6a0-72ff-86f9",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "4b3d-28cf-cb23-aeba",
+      "entryId": "1f47-9c34-ef9b-914b",
       "name": "Dog's Friend",
       "type": "Battlekit",
       "range": "",
@@ -10458,16 +33064,55 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8434-a8f9-fe1c-0893",
           "type": "max",
           "value": 1,
           "scope": "model",
           "includeChildSelections": false
         },
         {
+          "id": "938d-ae71-035c-aff9",
           "type": "max",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5f45-ffc2-6635-0f8c",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:938d-ae71-035c-aff9",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Concerted Attack",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
         }
       ],
       "restrictions": [],
@@ -10476,6 +33121,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "d455-9d26-0f2d-3b30",
+      "entryId": "1f47-9c34-ef9b-914b",
       "name": "Concerted Attack",
       "type": "Ability",
       "range": "-",
@@ -10487,16 +33133,55 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8434-a8f9-fe1c-0893",
           "type": "max",
           "value": 1,
           "scope": "model",
           "includeChildSelections": false
         },
         {
+          "id": "938d-ae71-035c-aff9",
           "type": "max",
           "value": 0,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5f45-ffc2-6635-0f8c",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:938d-ae71-035c-aff9",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Concerted Attack",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "primary-catalogue",
+            "childId": "707d-5bdf-586e-f704",
+            "childName": "New Antioch"
+          }
         }
       ],
       "restrictions": [],
@@ -10505,6 +33190,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bd3d-9eff-a7d0-2805",
+      "entryId": "05f3-2ee4-36c0-8c25",
       "name": "Dog Food",
       "type": "Equipment",
       "range": "-",
@@ -10516,18 +33202,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8530-2dc3-75e0-1a85",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "e8d8-c2a3-9a3e-b3b8",
+      "entryId": "1e63-fd87-a6a7-eb5e",
       "name": "Reaping Claws",
       "type": "Special",
       "range": "Melee",
@@ -10542,24 +33231,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9ee1-4f8f-3f7c-bdbe",
           "type": "min",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "c80e-9024-f120-0c7f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
     },
     {
       "id": "999f-be77-8027-46c0",
+      "entryId": "b4d4-3da2-7157-f15b",
       "name": "Holy Water of Lalibela",
       "type": "Equipment",
       "range": "-",
@@ -10571,16 +33264,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5d33-0937-6ae1-c6cd",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "4a9c-eb20-0796-dcae",
           "type": "max",
           "value": 5,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "9b8f-4361-5f23-2e20",
+            "childName": "Expeditionary Forces of Abyssinia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -10589,6 +33301,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "57f1-1ef0-9659-e9e6",
+      "entryId": "ffda-4bec-1b59-f267",
       "name": "Tabot",
       "type": "Equipment",
       "range": "-",
@@ -10600,10 +33313,41 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a31b-d1fb-4963-fd8a",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "1da0-5c5c-ad5a-ae96",
+                "childName": "Holy Warrior",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -10612,6 +33356,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4f6a-a92d-d7a7-d512",
+      "entryId": "114b-97a7-6011-55c2",
       "name": "Blood Cloak",
       "type": "Battlekit",
       "range": "",
@@ -10623,16 +33368,42 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4e85-4ae0-e3bc-b882",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "7809-6d02-08eb-ea33",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "73cd-d90d-7e4f-8e86",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -10641,6 +33412,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "8bd6-c237-de4c-2e9a",
+      "entryId": "95a5-9e57-57dc-d63a",
       "name": "Phosphorous Rounds",
       "type": "Battlekit",
       "range": "",
@@ -10652,10 +33424,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8639-a295-a97c-4997",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -10664,6 +33454,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "c562-c611-15d4-54c7",
+      "entryId": "a9d2-fb36-792e-d69e",
       "name": "Holy Smoke",
       "type": "Equipment",
       "range": "-",
@@ -10677,10 +33468,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "230f-744d-7d0d-e6c1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "f8bc-5df8-1768-a72a",
+                "childName": "Trench Cleric"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "440a-e3aa-60d7-7d9c",
+                "childName": "Stoßtruppen of the Free State of Prussia",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -10689,6 +33510,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4f39-6eb0-3ad1-6338",
+      "entryId": "0bbf-0f8a-df4f-2f45",
       "name": "Anfarro",
       "type": "Equipment",
       "range": "-",
@@ -10702,10 +33524,60 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "867d-e7af-53f0-cca7",
           "type": "max",
           "value": 6,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f5cc-8e5a-445d-bc09",
+                    "childName": "Chewa",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -10714,6 +33586,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "3a61-396b-8340-2ce3",
+      "entryId": "b15e-e3c1-f53b-dedc",
       "name": "Greek Fire",
       "type": "GRENADE",
       "range": "6\"",
@@ -10731,16 +33604,49 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "42a3-96f2-8cac-97d6",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "b386-014c-dd9b-6a67",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "70c9-988d-71a7-7654",
+          "origin": "entry",
+          "when": {
+            "type": "instanceOf",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "50d8-f63e-e01d-2698",
+            "childName": "Combat Engineer"
+          }
         }
       ],
       "restrictions": [],
@@ -10749,6 +33655,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "d678-de0f-c92b-f9ea",
+      "entryId": "ae50-9c6f-a718-8767",
       "name": "Shotel",
       "type": "1-Handed",
       "range": "Melee",
@@ -10760,12 +33667,55 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "9b8f-4361-5f23-2e20",
+                "childName": "Expeditionary Forces of Abyssinia",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "f5cc-8e5a-445d-bc09",
+                    "childName": "Chewa",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3de0-192c-3ec2-51be",
+                    "childName": "Elite"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "e02d-fb45-cb6c-34f0",
+      "entryId": "adba-b7f8-83fd-a35c",
       "name": "Lochaber Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -10781,12 +33731,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c92f-74bc-9acb-69b4",
+            "childName": "Kingdom of Alba Assault Detachment",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "4bc1-a897-8ad3-e239",
+      "entryId": "2c09-3968-682f-af03",
       "name": "Tank-Splitter Sword",
       "type": "2-handed",
       "range": "Melee",
@@ -10802,10 +33770,34 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "db3e-7b72-f006-1491",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:db3e-7b72-f006-1491",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -10814,6 +33806,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b984-ef6c-1b2a-6c68",
+      "entryId": "0084-2122-f8c1-537a",
       "name": "Dane Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -10829,10 +33822,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b097-ea28-5739-2393",
           "type": "max",
           "value": 3,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -10841,6 +33852,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1818-099d-77ef-0ad7",
+      "entryId": "7151-74bd-c678-4c41",
       "name": "Red Banner",
       "type": "Battlekit",
       "range": "",
@@ -10852,10 +33864,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "dae7-f13d-aa51-1aba",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -10864,6 +33894,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b719-9833-e8fd-f089",
+      "entryId": "f914-0bc3-a983-1e48",
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -10875,16 +33906,70 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5b72-9baf-7916-5314",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "0dc4-5de1-984c-1df2",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "374c-9b11-8530-d0af",
+                "childName": "Jabirean Alchemical Book",
+                "includeChildSelections": true
+              },
+              {
+                "all": [
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "03eb-5358-03ae-8046",
+                    "childName": "Ducal Winged Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "88f5-eec0-4e4f-c02c",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "lessThan",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "e6ac-8562-3982-4bfc",
+                    "childName": "Machine Armour",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -10893,6 +33978,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "d777-d95f-f173-9c07",
+      "entryId": "831d-0f3f-be36-9b1d",
       "name": "Bagpipes",
       "type": "Battlekit",
       "range": "",
@@ -10904,16 +33990,75 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "48ff-24b3-dea9-60e8",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "7098-7417-d3e4-8fa6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b621-24b3-db53-b09a",
+                "childName": "Angelic Instrument",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c92f-74bc-9acb-69b4",
+                "childName": "Kingdom of Alba Assault Detachment",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2d0c-00e9-7897-83d7",
+                    "childName": "Homunculus"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "820b-8856-fb9c-e9d9",
+                    "childName": "Seal of Solomon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:48ff-24b3-dea9-60e8",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -10922,6 +34067,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bf4f-e324-29c3-1527",
+      "entryId": "2b13-5e5c-b810-c791",
       "name": "War Horn",
       "type": "Battlekit",
       "range": "",
@@ -10933,16 +34079,83 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "448d-1c46-ffe1-2586",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "78ed-e0ab-fce3-388e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b621-24b3-db53-b09a",
+                "childName": "Angelic Instrument",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "579e-2810-d1cf-454b",
+                "childName": "Shocktrooper"
+              },
+              {
+                "any": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2d0c-00e9-7897-83d7",
+                    "childName": "Homunculus"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "820b-8856-fb9c-e9d9",
+                    "childName": "Seal of Solomon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:448d-1c46-ffe1-2586",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -10951,6 +34164,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2ddb-f3e4-5ad4-7d7e",
+      "entryId": "54c8-6df8-9942-13b8",
       "name": "Carnyx",
       "type": "Battlekit",
       "range": "",
@@ -10962,16 +34176,75 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "843a-d715-6ad3-a921",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "8062-b1e9-f764-669b",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b621-24b3-db53-b09a",
+                "childName": "Angelic Instrument",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "6aa4-b38b-5146-4106",
+                "childName": "Eire Rangers",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "2d0c-00e9-7897-83d7",
+                    "childName": "Homunculus"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "820b-8856-fb9c-e9d9",
+                    "childName": "Seal of Solomon",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:843a-d715-6ad3-a921",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -10980,6 +34253,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "cddd-0785-2e56-eeb9",
+      "entryId": "ef6c-46c2-70ec-568e",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -10991,24 +34265,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cc79-3822-ea41-8606",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "5305-3db7-c5a4-f5fa",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "2445-d55d-9de4-ac37",
+      "entryId": "ef6c-46c2-70ec-568e",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11020,24 +34298,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "cc79-3822-ea41-8606",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "5305-3db7-c5a4-f5fa",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "a114-2461-5520-9cdb",
+      "entryId": "5469-6e40-43ff-924e",
       "name": "Fireteam Alpha",
       "type": "Battlekit",
       "range": "",
@@ -11049,18 +34331,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f316-4a48-fab8-b6b9",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "3ae4-3e37-6540-e2c8",
+      "entryId": "ae80-5f88-3724-f083",
       "name": "Fireteam Beta",
       "type": "Battlekit",
       "range": "",
@@ -11072,18 +34357,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3d02-2091-9261-d56d",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "5153-8b77-2941-daa3",
+      "entryId": "df86-048e-5b6c-fb1f",
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -11095,10 +34383,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3041-a8a3-4cb5-b4a9",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11107,6 +34413,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b4d7-4d3d-3993-d73b",
+      "entryId": "9569-393f-f2d2-252b",
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -11118,10 +34425,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3920-fd68-943e-9f5e",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a41a-bff7-3736-d3c7",
+                "childName": "Assigned Sword",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -11130,6 +34467,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "04ff-1014-c632-3867",
+      "entryId": "4da7-e087-f7ab-b89b",
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -11141,10 +34479,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1ba4-19c6-9493-2983",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b629-dd71-c863-5db4",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11153,6 +34509,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f10d-341e-5e15-05ec",
+      "entryId": "c5ee-6047-898f-a5de",
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -11164,10 +34521,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ac8a-b977-6e81-c0a6",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "2",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b629-dd71-c863-5db4",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11176,6 +34551,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f592-a9ac-af5c-4a17",
+      "entryId": "1846-bfb6-9551-a3e6",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -11187,10 +34563,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0bf2-9e1d-a8e3-9fcf",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "155f-9854-c740-da37",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11199,6 +34593,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b51c-b117-6a6c-d98f",
+      "entryId": "2f44-24c6-beb8-a457",
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -11210,10 +34605,53 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "30a2-4037-a456-9284",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "7e92-a9c9-240d-6179",
+                    "childName": "Varangian Warlord",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3133-240a-a0cc-9cb4",
+                    "childName": "Mechanized Heavy Infantry"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -11222,6 +34660,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f36e-dddb-8a6f-e34b",
+      "entryId": "0c98-5f09-1094-7c57",
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -11233,10 +34672,73 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f10d-45c3-7beb-dce9",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "7e92-a9c9-240d-6179",
+                    "childName": "Varangian Warlord",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3133-240a-a0cc-9cb4",
+                    "childName": "Mechanized Heavy Infantry"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1200",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1200",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -11245,6 +34747,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7b83-acba-914a-38c8",
+      "entryId": "856b-ba44-04c5-fdf5",
       "name": "Blessing of the Pontiff",
       "type": "Equipment",
       "range": "-",
@@ -11256,10 +34759,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ba95-b27b-63db-241a",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7dda-8f8f-2120-65de",
+            "childName": "Papal States Intervention Force",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11268,6 +34789,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "309a-dd71-d814-5a48",
+      "entryId": "f401-9511-6ea4-982e",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -11279,24 +34801,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "71d6-2932-0a93-2c6e",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "99e5-00e6-63c1-f5f6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "5164-4370-cef3-ea1e",
+      "entryId": "f401-9511-6ea4-982e",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11308,24 +34834,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "71d6-2932-0a93-2c6e",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "99e5-00e6-63c1-f5f6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "7b02-d2fa-45e0-7b86",
+      "entryId": "5c65-a611-f28a-9081",
       "name": "Fireteam Alpha",
       "type": "Battlekit",
       "range": "",
@@ -11337,18 +34867,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "601a-252f-6323-997b",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "0256-956d-2f01-2ccd",
+      "entryId": "e8cf-4194-0c2e-b1c4",
       "name": "Fireteam Beta",
       "type": "Battlekit",
       "range": "",
@@ -11360,10 +34893,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "445f-63a5-e6ed-7ce8",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11372,6 +34923,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7cae-a8a7-46f0-a2c6",
+      "entryId": "e500-5c2c-04d3-ae8a",
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -11383,10 +34935,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3532-eb2c-1768-2d40",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11395,6 +34965,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b59f-143c-5c28-7765",
+      "entryId": "153d-e4c2-3390-fb44",
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -11406,10 +34977,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5e33-7a82-fdc6-0a44",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "30f6-07a5-f70d-8794",
+                "childName": "Mamluk Faris",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -11418,6 +35019,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "6096-b9bf-a81f-b08e",
+      "entryId": "766c-ab11-eda6-22d2",
       "name": "Gunslinger",
       "type": "Battlekit",
       "range": "",
@@ -11428,12 +35030,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "66e9-8f4f-e3bf-5d93",
+      "entryId": "7927-0db7-57c0-fa65",
       "name": "Papal Courage",
       "type": "Battlekit",
       "range": "",
@@ -11445,10 +35065,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "56de-33a5-a182-d773",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7dda-8f8f-2120-65de",
+            "childName": "Papal States Intervention Force",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11457,6 +35095,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1546-e8f0-cbfd-f2b1",
+      "entryId": "d27d-b034-cb18-f3ae",
       "name": "Menaulatoi",
       "type": "Battlekit",
       "range": "",
@@ -11467,12 +35106,22 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Menaulatoi Princeps",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "c931-d8d8-497d-d497",
+      "entryId": "d27d-b034-cb18-f3ae",
       "name": "Vanguard",
       "type": "Battlekit",
       "range": "",
@@ -11483,12 +35132,22 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Menaulatoi Princeps",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "53d0-3231-931f-d7a1",
+      "entryId": "d27d-b034-cb18-f3ae",
       "name": "Longspear Doctrine",
       "type": "Battlekit",
       "range": "",
@@ -11499,12 +35158,22 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Menaulatoi Princeps",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "f11c-fa32-df03-b98a",
+      "entryId": "7e92-a9c9-240d-6179",
       "name": "Piston Reconfiguration",
       "type": "Battlekit",
       "range": "",
@@ -11515,12 +35184,29 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Warlord",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "ba8a-6d25-4842-123c",
+      "entryId": "7e92-a9c9-240d-6179",
       "name": "Axe Mastery",
       "type": "Battlekit",
       "range": "",
@@ -11531,12 +35217,29 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Warlord",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "2f38-3778-4b83-a125",
+      "entryId": "7e92-a9c9-240d-6179",
       "name": "Shield Bash",
       "type": "Battlekit",
       "range": "",
@@ -11547,12 +35250,29 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Warlord",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "aac6-410b-8a02-3bb9",
+      "entryId": "7e92-a9c9-240d-6179",
       "name": "Indomitable",
       "type": "Battlekit",
       "range": "",
@@ -11563,12 +35283,29 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "category",
+          "value": "afcc-5f24-1c7c-63c4",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Varangian Warlord",
+          "origin": "entry",
+          "scope": "model"
+        }
+      ],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "9738-ded5-a2b7-3247",
+      "entryId": "15ee-f66c-def4-a014",
       "name": "Fire Support Reconfiguration",
       "type": "Battlekit",
       "range": "",
@@ -11580,18 +35317,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4840-bb58-a4e2-70a9",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "2dba-a286-9e20-ff59",
+      "entryId": "b7fd-a5d3-3873-dcd2",
       "name": "Piston Reconfiguration",
       "type": "Battlekit",
       "range": "",
@@ -11603,10 +35343,27 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e4d3-cbba-f579-df0f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
+        },
+        {
+          "op": "decrement",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "entry",
+          "scope": "model"
         }
       ],
       "restrictions": [],
@@ -11615,6 +35372,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "997b-3cb7-7dee-c67d",
+      "entryId": "441f-8640-cfed-8e78",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -11626,10 +35384,64 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b845-3e0e-899d-4114",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:b845-3e0e-899d-4114",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:b845-3e0e-899d-4114",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "Due to being extremely jank and introducing many bugs, this iteration of Fireteams is being phased out. I won't delete them, as to not disrupt existing lists, but it is advised to use the new Fireteam selection. Further Fireteams cannot be to lists without Fireteams, and removing all Fireteams from your list will prevent them from being re-added. If you have strong negative opinions on this, please contact me on the Discord or via Report Data Issue- I am open to alternatives.",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "441f-8640-cfed-8e78",
+            "childName": "Fireteam",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11638,6 +35450,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "34c8-dd0b-8701-b04f",
+      "entryId": "441f-8640-cfed-8e78",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11649,10 +35462,64 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "b845-3e0e-899d-4114",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "constraint:b845-3e0e-899d-4114",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:b845-3e0e-899d-4114",
+          "value": "3",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "Due to being extremely jank and introducing many bugs, this iteration of Fireteams is being phased out. I won't delete them, as to not disrupt existing lists, but it is advised to use the new Fireteam selection. Further Fireteams cannot be to lists without Fireteams, and removing all Fireteams from your list will prevent them from being re-added. If you have strong negative opinions on this, please contact me on the Discord or via Report Data Issue- I am open to alternatives.",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "441f-8640-cfed-8e78",
+            "childName": "Fireteam",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11661,6 +35528,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "0ce7-425f-ff86-166f",
+      "entryId": "a41a-bff7-3736-d3c7",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -11672,18 +35540,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1aea-13ed-dba2-a604",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "d215-cf89-8b45-e79a",
+      "entryId": "a41a-bff7-3736-d3c7",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11695,18 +35566,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1aea-13ed-dba2-a604",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "7913-8551-cbd8-8dd4",
+      "entryId": "a41a-bff7-3736-d3c7",
       "name": "Assigned Sword",
       "type": "Battlekit",
       "range": "",
@@ -11718,18 +35592,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "1aea-13ed-dba2-a604",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "d469-8305-d8f7-a78b",
+      "entryId": "3f45-7074-d35b-9022",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -11741,10 +35618,33 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e1bc-7dc8-0f0f-3f64",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "3f45-7074-d35b-9022",
+            "childName": "Elite Ally"
+          }
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "As with normal Fireteams, this method of Fireteam selection is being phased out for being really, really janky. Please use the Assigned Sword feature and the \"Mamluk-Guarded\" Fireteam instead.",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -11753,6 +35653,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "8e6c-2882-f827-e44c",
+      "entryId": "3f45-7074-d35b-9022",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11764,10 +35665,33 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e1bc-7dc8-0f0f-3f64",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "3f45-7074-d35b-9022",
+            "childName": "Elite Ally"
+          }
+        },
+        {
+          "op": "add",
+          "field": "warning",
+          "value": "As with normal Fireteams, this method of Fireteam selection is being phased out for being really, really janky. Please use the Assigned Sword feature and the \"Mamluk-Guarded\" Fireteam instead.",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -11776,6 +35700,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "867a-dbfe-62da-2e28",
+      "entryId": "7dda-8f8f-2120-65de",
       "name": "Swiss Guard",
       "type": "Battlekit",
       "range": "",
@@ -11787,18 +35712,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "721b-1b43-bb3b-e885",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "91a5-be1f-3604-05ee",
+      "entryId": "3f47-cce2-c4a4-8feb",
       "name": "Cold Steel Discounts",
       "type": "Battlekit",
       "range": "",
@@ -11810,24 +35738,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3a6d-dd5c-2e6a-e5d7-min",
           "type": "min",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "3a6d-dd5c-2e6a-e5d7-max",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "ef92-4c10-4b69-05e3",
+      "entryId": "9b5f-0ad1-f219-b825",
       "name": "Third Party Subfactions",
       "type": "Battlekit",
       "range": "",
@@ -11838,12 +35770,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "7156-30e7-2538-f23c",
+      "entryId": "305e-6f51-7e12-fa17",
       "name": "Concerted Attack",
       "type": "Battlekit",
       "range": "",
@@ -11855,24 +35789,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e517-fc8b-79f8-eb38",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "da97-9453-07d9-9b4a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "7d15-6383-16ed-4313",
+      "entryId": "305e-6f51-7e12-fa17",
       "name": "Coordinated Engagement",
       "type": "Battlekit",
       "range": "",
@@ -11884,24 +35822,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e517-fc8b-79f8-eb38",
           "type": "max",
           "value": 1,
           "scope": "self",
           "includeChildSelections": false
         },
         {
+          "id": "da97-9453-07d9-9b4a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "dd85-f021-dec5-7a53",
+      "entryId": "3863-802b-f84f-d11c",
       "name": "Fireteam Alpha",
       "type": "Battlekit",
       "range": "",
@@ -11913,18 +35855,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f515-434e-c65b-ecc0",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "5f27-71d6-0e5a-d7e7",
+      "entryId": "8881-81fe-3192-2bdc",
       "name": "Fireteam Beta",
       "type": "Battlekit",
       "range": "",
@@ -11936,18 +35881,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "3cc6-37ea-45fb-2d05",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "1c48-5a77-bd9c-4678",
+      "entryId": "e928-ba8b-f70c-6edc",
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -11959,10 +35907,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ad91-d9d4-7b38-b6ff",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "440a-e3aa-60d7-7d9c",
+            "childName": "Stoßtruppen of the Free State of Prussia",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -11971,6 +35937,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4b9e-5284-97ed-af1b",
+      "entryId": "22d5-9278-17b3-d250",
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -11982,10 +35949,40 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2ccc-7bdf-bd69-ba84",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a41a-bff7-3736-d3c7",
+                "childName": "Assigned Sword",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -11994,6 +35991,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1b7b-167c-e0d7-94df",
+      "entryId": "f17c-a19b-da5d-c86f",
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -12005,10 +36003,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "0f67-faf0-a4d7-70ba",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b629-dd71-c863-5db4",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12017,6 +36033,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "277a-0208-cd17-f687",
+      "entryId": "38bb-90bc-633b-12c8",
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -12028,10 +36045,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "4748-7c07-3a7b-4ad0",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "2",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b629-dd71-c863-5db4",
+            "childName": "Man's Best Friend",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12040,6 +36075,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1d9f-bbe2-474b-b25f",
+      "entryId": "da2b-9808-47a6-f51d",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -12051,10 +36087,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9119-3917-7d3e-0847",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "155f-9854-c740-da37",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12063,6 +36117,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "1f8d-1b65-1dd2-9853",
+      "entryId": "1fac-077c-a663-f4f4",
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -12074,10 +36129,53 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c300-52bd-949b-cec2",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "7e92-a9c9-240d-6179",
+                    "childName": "Varangian Warlord",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3133-240a-a0cc-9cb4",
+                    "childName": "Mechanized Heavy Infantry"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -12086,6 +36184,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bd30-a567-830c-3ef6",
+      "entryId": "389b-6e56-7a02-f47f",
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -12097,10 +36196,73 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "2156-dd01-74e4-4561",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a911-0ba3-a9f7-17b7",
+                "childName": "Remnants of Byzantium",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "7e92-a9c9-240d-6179",
+                    "childName": "Varangian Warlord",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "instanceOf",
+                    "value": "1",
+                    "field": "selections",
+                    "scope": "model",
+                    "childId": "3133-240a-a0cc-9cb4",
+                    "childName": "Mechanized Heavy Infantry"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1200",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1200",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any",
+                    "includeChildSelections": true
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -12109,6 +36271,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f580-8b00-a18a-0d48",
+      "entryId": "5589-fa94-48a5-1d7f",
       "name": "Carried Grenades",
       "type": "GRENADE",
       "range": "8\"",
@@ -12126,18 +36289,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a036-eeeb-e581-92c6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "ba2c-f56a-e419-764f",
+      "entryId": "b173-4099-33bd-41b5",
       "name": "Carried Molotov",
       "type": "GRENADE",
       "range": "6\"",
@@ -12155,18 +36321,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5139-c6dc-fea6-36dc",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "109e-695b-e73d-e9f5",
+      "entryId": "b629-dd71-c863-5db4",
       "name": "Man's Best Friend",
       "type": "Battlekit",
       "range": "",
@@ -12178,24 +36347,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9b7f-21f4-1ff8-d931",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "16c0-ed65-44ba-15f1",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "a7b5-4e6d-1d0e-de50",
+      "entryId": "0de4-111f-503c-60f9",
       "name": "Atonement Bell",
       "type": "Battlekit",
       "range": "",
@@ -12207,24 +36380,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "606c-f89f-1d66-2867-min",
           "type": "min",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "606c-f89f-1d66-2867-max",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
       "sourceFile": "New Antioch.cat"
     },
     {
       "id": "037f-15ba-8ef3-332e",
+      "entryId": "19f3-086f-a5ad-f662",
       "name": "Anti-Material Rifle",
       "type": "2-Handed",
       "range": "36\"",
@@ -12239,12 +36416,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "b71e-ef7c-e836-72ec",
+      "entryId": "f294-f3b2-5577-bc17",
       "name": "Automatic Pistol",
       "type": "1-Handed",
       "range": "12\"/Melee",
@@ -12258,6 +36437,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "ELITE only, Limit: 3",
         "Limit: 2"
@@ -12267,6 +36447,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "057b-c114-772f-299c",
+      "entryId": "46cb-36ae-c7ea-cdd0",
       "name": "Automatic Rifle",
       "type": "2-Handed",
       "range": "24\"",
@@ -12280,6 +36461,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug, Limit: 1",
         "Bayonet Lug, Limit: 2"
@@ -12289,6 +36471,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "5b1a-ebaa-4d59-f2d7",
+      "entryId": "f8bd-481c-8364-3eb3",
       "name": "Automatic Shotgun",
       "type": "2-Handed",
       "range": "12\"",
@@ -12302,6 +36485,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug, Shield Combo, Limit: 2",
         "Bayonet Lug, Shield Combo"
@@ -12311,6 +36495,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2f82-6dd2-69c2-2fea",
+      "entryId": "fe85-959c-0d7a-ca0b",
       "name": "Blunderbuss",
       "type": "2-Handed",
       "range": "10\"",
@@ -12322,6 +36507,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Shield Combo"
       ],
@@ -12330,6 +36516,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2af8-2638-a777-f84e",
+      "entryId": "4c87-312e-7aa1-4de0",
       "name": "Bolt-Action Rifle",
       "type": "2-Handed",
       "range": "24\"",
@@ -12339,6 +36526,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug"
       ],
@@ -12347,6 +36535,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4c15-195e-0fd4-6f54",
+      "entryId": "985f-e0c3-b0e9-5f89",
       "name": "Flamethrower",
       "type": "2-Handed",
       "range": "8\"",
@@ -12361,6 +36550,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Limit: 3",
         "Limit: 2"
@@ -12370,6 +36560,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "a828-6f96-7eb8-7934",
+      "entryId": "65c0-a52a-03c8-575a",
       "name": "Grenade Launcher",
       "type": "2-Handed",
       "range": "36\"",
@@ -12384,6 +36575,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Limit: 2"
       ],
@@ -12392,6 +36584,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "b8e5-9d0c-ebd4-8208",
+      "entryId": "b754-bcf6-152f-69e7",
       "name": "Heavy Flamethrower",
       "type": "2-Handed",
       "range": "10\"",
@@ -12408,6 +36601,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Limit: 1",
         "Limit: 2"
@@ -12417,6 +36611,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "7bbb-8b13-8f13-49dd",
+      "entryId": "d16f-f704-d17a-ebc6",
       "name": "Heavy Shotgun",
       "type": "2-Handed",
       "range": "12\"",
@@ -12432,6 +36627,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Shield Combo, Limit: 2"
       ],
@@ -12440,6 +36636,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "057c-08d9-c23f-7b47",
+      "entryId": "45c3-9d88-09fa-ee11",
       "name": "Machine Gun",
       "type": "2-Handed",
       "range": "36\"",
@@ -12453,6 +36650,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Limit: 2",
         "Limit: 1",
@@ -12463,6 +36661,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "86be-7c29-216e-66b8",
+      "entryId": "d4e5-27cf-6c0d-1dad",
       "name": "Musket",
       "type": "2-Handed",
       "range": "18\"",
@@ -12474,6 +36673,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug"
       ],
@@ -12482,6 +36682,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ad8a-00d3-726b-b10c",
+      "entryId": "92fc-7eaf-8c33-3f87",
       "name": "Silenced Pistol",
       "type": "1-Handed",
       "range": "12\"/Melee",
@@ -12495,6 +36696,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "ELITE only"
       ],
@@ -12503,6 +36705,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "d44a-c775-04b2-e644",
+      "entryId": "4111-f437-2e81-899f",
       "name": "Semi-Automatic Rifle",
       "type": "2-Handed",
       "range": "24\"",
@@ -12514,6 +36717,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug"
       ],
@@ -12522,6 +36726,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "c339-21cd-0b06-15fe",
+      "entryId": "b5a3-faec-7613-ef0f",
       "name": "Shotgun",
       "type": "2-Handed",
       "range": "12\"",
@@ -12534,6 +36739,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug, Shield Combo",
         "Shield Combo"
@@ -12543,6 +36749,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "917f-2532-74e9-33ed",
+      "entryId": "48be-3a36-f9c0-a465",
       "name": "Pistol",
       "type": "1-Handed",
       "range": "12\"/Melee",
@@ -12554,12 +36761,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "b5a1-e8c3-24e5-a742",
+      "entryId": "808a-f077-4fec-ef82",
       "name": "Sniper Rifle",
       "type": "2-Handed",
       "range": "48\"",
@@ -12574,6 +36783,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Limit: 3",
         "ELITE & Janissaries only, Limit: 2"
@@ -12583,6 +36793,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "f536-9890-8f44-99d7",
+      "entryId": "0754-f896-3f97-65c7",
       "name": "Submachine Gun",
       "type": "2-Handed",
       "range": "16\"",
@@ -12595,6 +36806,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Bayonet Lug, Shield Combo, Limit: 2",
         "Bayonet Lug, Shield Combo",
@@ -12605,6 +36817,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "00d3-c557-3993-f094",
+      "entryId": "7f07-3b1b-85e7-6802",
       "name": "Frag Grenades",
       "type": "Grenade",
       "range": "8\"",
@@ -12622,18 +36835,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "62e7-14eb-3b39-7515",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "5f7a-f61c-c4cc-98ad",
+      "entryId": "ed69-d081-68a5-999e",
       "name": "Gas Grenades",
       "type": "Grenade",
       "range": "8\"",
@@ -12653,18 +36869,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "a212-db8f-1c0f-432f",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "316b-d210-767e-e340",
+      "entryId": "8adc-0183-0ef9-12a4",
       "name": "Incendiary Grenades",
       "type": "Grenade",
       "range": "8\"",
@@ -12682,12 +36901,14 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "82ef-33c4-3316-d7b7",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [
         "Limit: 2",
         "Jabirean Alchemist Only"
@@ -12697,6 +36918,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "414f-af63-666d-59d1",
+      "entryId": "6e1a-f31f-a4a9-58df",
       "name": "Molotov Cocktail",
       "type": "Grenade",
       "range": "6\"",
@@ -12715,18 +36937,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8c97-1aa7-54a5-62de",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
     {
       "id": "d07c-55fe-e41d-a57f",
+      "entryId": "f58e-81b4-c972-ed32",
       "name": "Satchel Charge",
       "type": "Grenade",
       "range": "6\"",
@@ -12745,6 +36970,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [
         "Consumable, Limit: 3 (1 per model)"
       ],
@@ -12753,6 +36979,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "e51e-7de9-7131-6994",
+      "entryId": "4c11-ec67-eaa0-fbdd",
       "name": "Sacrificial Lamb",
       "type": "Equipment",
       "range": "-",
@@ -12766,10 +36993,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f4ce-43e8-1acd-d5bc",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "8b6b-5bd4-c742-bb12",
+            "childName": "Cavalcade of the Tenth Plague",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12778,6 +37023,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "403b-687b-4044-77de",
+      "entryId": "5714-931f-09eb-f186",
       "name": "Henbrane",
       "type": "Equipment",
       "range": "-",
@@ -12789,16 +37035,47 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "e8e7-3b8c-92f7-eb3d",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "e629-b6f0-458a-f9bc",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "65bd-e9b5-eea8-5f65",
+                "childName": "Children of Yggdrasil",
+                "includeChildSelections": true
+              },
+              {
+                "type": "notInstanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "3de0-192c-3ec2-51be",
+                "childName": "Elite"
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -12807,6 +37084,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "986b-d504-38d0-832f",
+      "entryId": "3564-4f8d-d1e0-246c",
       "name": "Geirr",
       "type": "2-handed",
       "range": "Melee",
@@ -12820,12 +37098,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "55e3-793d-4961-e12f",
+      "entryId": "3da5-afdc-ed33-d56a",
       "name": "Blood Eagle Banner",
       "type": "Equipment",
       "range": "-",
@@ -12839,16 +37135,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6dab-b7df-284d-e2aa",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "6af1-db8d-ec64-4f32",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12857,6 +37172,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "61e5-6561-5d91-b9c5",
+      "entryId": "c691-83d8-dfb4-6dfa",
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -12868,16 +37184,35 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "9c98-9838-882f-45f8",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         },
         {
+          "id": "0b2b-2357-d2a4-ddf1",
           "type": "max",
           "value": 2,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "374c-9b11-8530-d0af",
+            "childName": "Jabirean Alchemical Book",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12886,6 +37221,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "fdd6-07ba-42a3-3578",
+      "entryId": "934a-994b-9a83-6663",
       "name": "Trench Shield (Nordic)",
       "type": "Shield",
       "range": "-",
@@ -12896,12 +37232,30 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "7ab4-3db7-414c-ba96",
+      "entryId": "2b6a-92de-ea42-85c4",
       "name": "Stormbreaker Shield",
       "type": "Battlekit",
       "range": "",
@@ -12912,12 +37266,42 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "65bd-e9b5-eea8-5f65",
+                "childName": "Children of Yggdrasil",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "f28e-7b89-120d-f905",
+                "childName": "Huscarl"
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "a915-3cb5-2de7-9338",
+      "entryId": "cd00-6765-b503-60b5",
       "name": "Catherine Wheel",
       "type": "1-Handed",
       "range": "Melee",
@@ -12933,18 +37317,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c14f-3932-400b-0152",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "5cef-9bbb-5aa1-f6f9",
+      "entryId": "e943-b0b0-7790-fb15",
       "name": "Trench Mortar",
       "type": "2-Handed",
       "range": "48\"",
@@ -12963,10 +37350,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f052-148d-e3fa-21cb",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -12975,6 +37380,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "ca96-4933-b496-593f",
+      "entryId": "bf35-3729-df69-7562",
       "name": "Gas Censer",
       "type": "2-Handed",
       "range": "6''",
@@ -12990,10 +37396,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "447c-fe10-a7ce-b7a8",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13002,6 +37426,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "e37a-b7ce-312c-3242",
+      "entryId": "844d-8df1-2006-2cf7",
       "name": "Autocannon (Bursts)",
       "type": "2-Handed",
       "range": "48\"",
@@ -13017,10 +37442,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f88a-b6cf-7189-081a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13029,6 +37472,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "584f-141d-ce83-d55d",
+      "entryId": "844d-8df1-2006-2cf7",
       "name": "Autocannon (Full Auto)",
       "type": "2-Handed",
       "range": "48\"",
@@ -13046,10 +37490,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "f88a-b6cf-7189-081a",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13058,6 +37520,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "69ba-974b-0e6f-7391",
+      "entryId": "01ce-2f99-f398-1a50",
       "name": "Gas Filters",
       "type": "Special",
       "range": "-",
@@ -13071,18 +37534,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "02c5-e8be-9826-4be6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "e6ee-0b99-239f-7120",
+      "entryId": "1298-0ecd-ca20-0e16",
       "name": "Holy Diesel Engine",
       "type": "Special",
       "range": "-",
@@ -13094,18 +37560,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "6b3d-a902-53a6-73fe",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "3869-f6f2-7f5a-92af",
+      "entryId": "4863-d3e6-bda5-f230",
       "name": "Sacred Geometry",
       "type": "Special",
       "range": "-",
@@ -13117,16 +37586,32 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "8182-6e8e-4415-1edb",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "e80d-0422-fcd5-5415",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:8182-6e8e-4415-1edb",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+1 DICE",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -13135,6 +37620,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "828c-64ab-63e9-051b",
+      "entryId": "a9cd-89ba-ea71-c282",
       "name": "Grand Anchorite",
       "type": "Special",
       "range": "-",
@@ -13146,16 +37632,26 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "c883-1915-5a8c-b372",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "dbc7-bb2e-3cc2-b5dd",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:c883-1915-5a8c-b372",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -13164,6 +37660,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "2359-5cf1-b45c-b058",
+      "entryId": "d93a-6190-7c98-1e4c",
       "name": "Wrathful Cherub Face",
       "type": "Special",
       "range": "-",
@@ -13175,18 +37672,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "dbf6-5c16-1990-3d6e",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "ef56-de02-03da-7fd7",
+      "entryId": "07cd-fdf6-9ff2-7873",
       "name": "Hallowed Anchorite",
       "type": "Special",
       "range": "-",
@@ -13198,16 +37698,26 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "51a8-f97c-9d12-2c03",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
         },
         {
+          "id": "5455-094a-ef77-44b2",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:51a8-f97c-9d12-2c03",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "restrictions": [],
@@ -13216,6 +37726,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "bd5a-aaba-367a-8f09",
+      "entryId": "82a8-f3ae-7726-1b79",
       "name": "Piston Legs",
       "type": "Special",
       "range": "-",
@@ -13227,18 +37738,21 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "d2a4-1bf2-37ff-dad6",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
         }
       ],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "78c1-4e06-7fff-4d4b",
+      "entryId": "0972-9632-56f2-b0cb",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -13250,10 +37764,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "025c-62dc-283e-1c68",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1d5d-442e-78c9-6bd2",
+            "childName": "Enslaved Mind",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13262,6 +37794,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "cdfe-5f3e-eefe-e3e1",
+      "entryId": "1a8c-d998-b42b-9e8b",
       "name": "Vengeful Fury",
       "type": "Battlekit",
       "range": "",
@@ -13273,10 +37806,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "5848-42c4-be38-e038",
           "type": "max",
           "value": 1,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0d88-774c-22af-e2fc",
+            "childName": "Procession of the Sacred Affliction",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13285,6 +37836,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "02e8-c715-06fe-e490",
+      "entryId": "46da-9ea5-bf45-3022",
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -13295,12 +37847,14 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
       "id": "3ee5-5ddf-dfdd-b3d4",
+      "entryId": "b32b-6d55-9163-8486",
       "name": "Beyond Death",
       "type": "Battlekit",
       "range": "",
@@ -13312,10 +37866,41 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "149a-ac2a-a9fe-6e87",
           "type": "max",
           "value": 1,
           "scope": "parent",
           "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "52bc-6b21-136a-608d",
+                "childName": "War Pilgrimage of Saint Methodius",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "8b6b-5bd4-c742-bb12",
+                "childName": "Cavalcade of the Tenth Plague",
+                "includeChildSelections": true
+              }
+            ]
+          }
         }
       ],
       "restrictions": [],
@@ -13324,6 +37909,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "8cbd-7395-617e-ef28",
+      "entryId": "e69f-0453-287c-25ce",
       "name": "Awaited",
       "type": "Battlekit",
       "range": "",
@@ -13335,10 +37921,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ee95-919c-30a1-c8bc",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13347,6 +37951,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "4283-0424-9334-02b2",
+      "entryId": "e69f-0453-287c-25ce",
       "name": "Martyrdom Device",
       "type": "Battlekit",
       "range": "",
@@ -13358,10 +37963,28 @@ export const DATASET: Dataset = {
       },
       "constraints": [
         {
+          "id": "ee95-919c-30a1-c8bc",
           "type": "max",
           "value": 4,
           "scope": "roster",
           "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
         }
       ],
       "restrictions": [],
@@ -13370,6 +37993,7 @@ export const DATASET: Dataset = {
     },
     {
       "id": "9e61-bd1d-33f1-f936",
+      "entryId": "9e64-d0cb-9b5a-3df9",
       "name": "Third Party Subfactions",
       "type": "Battlekit",
       "range": "",
@@ -13380,6 +38004,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"

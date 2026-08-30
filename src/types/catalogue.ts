@@ -108,10 +108,71 @@ export interface Keyword {
   description?: string;
 }
 
+/* -------------------------------------------------------------- modifiers */
+
+/**
+ * A conditional rule, read verbatim out of the BattleScribe catalogues.
+ *
+ * This is how the catalogues express everything that depends on a choice: the
+ * House of Wisdom renaming an Azeb to a Kavass, Armour derived from the armour
+ * you equipped, an option that adds Ducats. There are ~1,860 of them and they
+ * are the machine-readable form of rules the books state only as prose.
+ *
+ * Evaluated by `src/rules/modifiers.ts` against a roster selection.
+ */
+export interface Modifier {
+  /** BattleScribe's verbs. `set` is by far the most common. */
+  op: 'set' | 'increment' | 'decrement' | 'add' | 'remove'
+    | 'append' | 'prepend' | 'replace' | 'set-primary' | 'unset-primary';
+  /**
+   * Where it writes: a path on this entity ('stats.armour', 'cost.ducats',
+   * 'name', 'keywords'), or 'hidden' / 'category' / 'error', which gate
+   * availability rather than change a value.
+   */
+  field: string;
+  value: string;
+  /** Set only when the source field id could not be resolved to a name. */
+  rawField?: string;
+  /** 'entry', or 'profile:<name>' when it hung off a profile. */
+  origin: string;
+  /** Separator for append/prepend. Usually U+00A0, a non-breaking space. */
+  join?: string;
+  /** The modifier's own scope, e.g. 'model'. Distinct from a condition's. */
+  scope?: string;
+  /** Which constraint bound a `constraint:` modifier moves. */
+  constraintBound?: 'min' | 'max';
+  /** Absent means unconditional. */
+  when?: Condition;
+  /** The catalogue author's own label for the rule, e.g. 'armour adjustments'. */
+  comment?: string;
+}
+
+export type Condition =
+  | { all: Condition[] }
+  | { any: Condition[] }
+  | ConditionLeaf;
+
+export interface ConditionLeaf {
+  /** 'atLeast' | 'atMost' | 'equalTo' | 'instanceOf' … */
+  type: string;
+  value: string;
+  /** Usually 'selections'. */
+  field: string;
+  /** 'self' | 'parent' | 'roster' | 'force' | an entry id. */
+  scope: string;
+  /** The entry being counted. */
+  childId?: string;
+  /** That entry's name, resolved at build time so the rule is readable. */
+  childName?: string;
+  includeChildSelections?: boolean;
+}
+
 /* --------------------------------------------------------------- entities */
 
 export interface WeaponProfile {
   id: string;
+  /** The containing selectionEntry's id — what rosters select. */
+  entryId?: string;
   name: string;
   /** '1-Handed' | '2-Handed' | 'Equipment' | 'Special' … */
   type: string;
@@ -123,11 +184,16 @@ export interface WeaponProfile {
   constraints: Constraint[];
   /** Restriction text from the Armoury Tables, e.g. 'ELITE only'. */
   restrictions: string[];
+  /** Conditional rules from the catalogue. See `Modifier`. */
+  modifiers: Modifier[];
   factionId?: string;
 }
 
 export interface UnitProfile {
   id: string;
+  /** The containing selectionEntry's id — what roster exports and modifier
+   *  conditions address. Distinct from `id`, which is the profile's own. */
+  entryId?: string;
   name: string;
   factionId: string;
   /** From categoryLinks: 'Elite' | 'Troop' | 'Mercenary' … */
@@ -141,6 +207,8 @@ export interface UnitProfile {
   abilities: Ability[];
   options: UnitOption[];
   constraints: Constraint[];
+  /** Conditional rules from the catalogue. See `Modifier`. */
+  modifiers: Modifier[];
   lore?: string;
 }
 
