@@ -523,7 +523,11 @@ export const DATASET: Dataset = {
       "name": "Thrall",
       "factionId": "Black Grail",
       "roles": [],
-      "keywords": [],
+      "keywords": [
+        "BLACK GRAIL",
+        "FEAR",
+        "NEGATE GAS"
+      ],
       "stats": {
         "movement": "5\"/Infantry",
         "movementInches": 5,
@@ -534,12 +538,21 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 0,
+        "ducats": 25,
         "glory": 0
       },
       "min": null,
       "max": null,
-      "abilities": [],
+      "abilities": [
+        {
+          "name": "Overwhelming Horde",
+          "description": "A Grail Thrall can make a Melee Attack even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Grail Thrall for each other friendly model within 3” of the attacking model (not including the attacking model itself)."
+        },
+        {
+          "name": "Undead Fortitude",
+          "description": "Add -1 INJURY DICE to Injury Rolls for a Grail Thrall unless the attack has the FIRE Keyword."
+        }
+      ],
       "options": [
         {
           "id": "dispatch01-strain-bolgias-gut",
@@ -913,23 +926,22 @@ export const DATASET: Dataset = {
         "Troop"
       ],
       "keywords": [
-        "FEAR",
-        "TOUGH",
         "BLACK GRAIL",
+        "FEAR",
         "NEGATE GAS",
-        "STRONG"
+        "TOUGH"
       ],
       "stats": {
-        "movement": "6\"/Infantry",
+        "movement": "5\"/Infantry",
         "movementInches": 6,
         "movementType": "Infantry",
         "ranged": "+0 Dice",
-        "melee": "+0 Dice",
-        "armour": "0",
+        "melee": "-1 Dice",
+        "armour": "-1",
         "base": "60mm"
       },
       "cost": {
-        "ducats": 140,
+        "ducats": 150,
         "glory": 0
       },
       "min": null,
@@ -959,6 +971,14 @@ export const DATASET: Dataset = {
           "id": "a01c-f868-09d3-8cb7",
           "name": "Strong-ish",
           "description": "Two of the arms of the Amalgam have the Keyword STRONG. It can wield any two HEAVY weapons of its choice, each using one hand regardless of the weapon rules."
+        },
+        {
+          "name": "Absorb",
+          "description": "When a model (friend or foe) within 1” of an Amalgam is taken Out of Action, you may remove a BLOOD MARKER from the Amalgam’s model. If the model that is taken Out of Action is mounted on a base that is 40mm or larger and the Amalgam’s TOUGH Keyword has been used, the Amalgam no longer counts as having used the TOUGH Keyword and may use it again the next time it is taken Out of Action."
+        },
+        {
+          "name": "Curse on Creation",
+          "description": "If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have to 0-2, and immediately recruit an Amalgam at no cost."
         }
       ],
       "options": [],

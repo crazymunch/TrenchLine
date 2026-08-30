@@ -20,12 +20,14 @@
     "Dispatch. Their COSTS needed a maintainer ruling: the PDF prints the currency as a glyph and",
     "the text extraction drops it, so a bare number is all that survives. Ops whose",
     "maintainer confirmed against the printed page carry _costCurrencyConfirmed. All four",
-    "are Ducats. Still to transcribe: the Amalgam and Grail Thrall entry",
+    "are Ducats. The Amalgam and Grail Thrall entry replacements are now transcribed; still outstanding: the Mercenary entry",
     "replacements (full statlines), and the Mercenary keyword rewrites.",
     "",
     "The Dispatch's 'Grail Thrall' is the catalogues' 'Thrall'. The Strains ops target",
     "the catalogue name. Note the Dispatch extends Strains to Thralls, which the",
-    "catalogues currently offer only to the Matagot Hag and Gregori Gula."
+    "catalogues currently offer only to the Matagot Hag and Gregori Gula.",
+    "",
+    "UNRESOLVED, recorded rather than decided: the Dispatch's Amalgam ability list is Absorb, Corpulent, Curse on Creation, Trample ACTION and Unstoppable. The catalogue additionally has 'Six-armed Monstrosity' and 'Strong-ish'. Taken literally, a full entry replacement drops both, and dropping 'Strong-ish' agrees with the keyword row losing STRONG. They are NOT removed here: asserting the removal means asserting the PDF extraction captured a complete ability list, and an ability wrongly deleted is harder to notice than one wrongly kept. Confirm against the printed page."
   ],
   "ops": [
     {
@@ -301,6 +303,141 @@
       "_src": "p.9 Grail Strains — 'Tapeworm Throng (10)'",
       "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today.",
       "_costCurrencyConfirmed": "Confirmed as Ducats by the maintainer against p.9 of the printed Trench Dispatch (2026-08-30). The PDF prints the currency as a glyph and text extraction drops it, so the extracted source cannot carry this value — this confirmation is its authority, and it must not be silently re-derived from the .txt."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "field": "cost.ducats",
+      "value": 25,
+      "_src": "p.7 Strains & Amalgam — 'Grail Thralls - Cost: 25'",
+      "_note": "The catalogue leaves it at 0 because the price hangs off the armoury link; the Dispatch prints it."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "field": "keywords",
+      "value": [
+        "BLACK GRAIL",
+        "FEAR",
+        "NEGATE GAS"
+      ],
+      "_src": "p.7 Strains & Amalgam — 'Grail Thralls - Cost: 25'",
+      "_note": "The catalogue entry carries no keywords at all."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "ability": {
+        "name": "Overwhelming Horde",
+        "description": "A Grail Thrall can make a Melee Attack even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Grail Thrall for each other friendly model within 3” of the attacking model (not including the attacking model itself)."
+      },
+      "_src": "p.7 Strains & Amalgam — 'Grail Thralls - Cost: 25'"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Thrall"
+      },
+      "ability": {
+        "name": "Undead Fortitude",
+        "description": "Add -1 INJURY DICE to Injury Rolls for a Grail Thrall unless the attack has the FIRE Keyword."
+      },
+      "_src": "p.7 Strains & Amalgam — 'Grail Thralls - Cost: 25'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "cost.ducats",
+      "value": 150,
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'",
+      "_note": "Was 140 in the catalogue."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "stats.movement",
+      "value": "5\"/Infantry",
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'",
+      "_note": "Was 6\"/Infantry."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "stats.melee",
+      "value": "-1 Dice",
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'",
+      "_note": "Was +0 Dice."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "stats.armour",
+      "value": "-1",
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'",
+      "_note": "Was 0."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "ability": {
+        "name": "Absorb",
+        "description": "When a model (friend or foe) within 1” of an Amalgam is taken Out of Action, you may remove a BLOOD MARKER from the Amalgam’s model. If the model that is taken Out of Action is mounted on a base that is 40mm or larger and the Amalgam’s TOUGH Keyword has been used, the Amalgam no longer counts as having used the TOUGH Keyword and may use it again the next time it is taken Out of Action."
+      },
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "ability": {
+        "name": "Curse on Creation",
+        "description": "If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have to 0-2, and immediately recruit an Amalgam at no cost."
+      },
+      "_src": "p.8 Strains & Amalgam — '0-1 Amalgam - Cost: 150'",
+      "_note": "The two currency glyphs in this rule are lost in extraction; both read as Ducats from context (a Warband total, and a recruitment cost)."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "keywords",
+      "value": [
+        "BLACK GRAIL",
+        "FEAR",
+        "NEGATE GAS",
+        "TOUGH"
+      ],
+      "_src": "p.8 Strains & Amalgam — Amalgam keyword row",
+      "_note": "The Dispatch says \"Replace the Grail Thrall and Amalgam Warband Entries with the following\", and its keyword row prints exactly these four. The catalogue additionally carries STRONG, which the replacement drops — consistent with the printed row."
     }
   ]
 }
