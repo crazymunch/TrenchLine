@@ -308,10 +308,10 @@ fabricated (AUDIT §1.13).
 | # | Task |
 |---|---|
 | 3.1 | ✅ `src/components/ui/` primitives — `Sheet`, `Field`/`Input`/`Select`/`Textarea`, `Stepper`, `DataTable` |
-| 3.2 | 🟡 Migrate all 30 modals onto the primitive — 4 done (`LegalityStrip`, `RulesetSwitcher`, `ProvenanceTag`, `VariantPicker`) |
+| 3.2 | 🟡 4 modals fully on `Sheet`; the other 20 get scroll lock, focus trap and Escape via `useOverlay`. Structural migration outstanding. |
 | 3.3 | 🟡 `UnitCard` — header reflowed and type/target pass done; collapse-to-summary and the statline strip still to do |
 | 3.4 | Touch targets ≥44px and the type scale from [`MOBILE.md`](MOBILE.md) applied app-wide |
-| 3.5 | Replace 3,698 hardcoded hex values with theme tokens — makes the 7 themes real |
+| 3.5 | ✅ 3,815 hex values tokenised, and two bugs that stopped the themes working at all |
 | 3.6 | Play Mode phone pass: one-handed reachability, larger steppers, landscape tablet |
 | 3.7 | Playwright E2E at 375×667 and 768×1024 |
 
@@ -341,13 +341,53 @@ Measured in Chromium against a production build:
 |---|---|---|---|
 | horizontal page scroll | none | none | none |
 | page errors | 0 | 0 | 0 |
-| text under 12px | 31 | *by design* | *by design* |
-| targets under 44px | 116 | — | — |
+| text under 12px | 30 | *by design* | *by design* |
+| targets under 44px | 115 | — | — |
 
-The phone numbers are the honest remaining backlog, all of it in components 3.2
-and 3.4 have not reached yet — the sidebar, the dashboard, and the twenty-six
-modals still hand-rolling their own overlay. They are counted here rather than
-described so the next pass has a number to drive down.
+The phone numbers are the honest remaining backlog. They have barely moved,
+because 3.5 was about *colour* and these are about *size* — 3.4 is the pass that
+drives them down, and it has only touched `UnitCard` so far.
+
+### 3.5 — and the two bugs behind the dead theme switcher
+
+3,815 hex values across 47 files became tokens. Twelve values accounted for
+essentially all of them, which is what made a mechanical substitution safe.
+
+The audit blamed the hardcoded hexes for the theme switcher doing nothing. That
+was half of it. **Tailwind tree-shakes rules inside `@layer base` whose selectors
+it cannot find in the content globs**, and `[data-theme="heretic-legion"]`
+appears only in `globals.css` and `theme.ts` — never as a class. All six theme
+blocks were dropped from the build: 43 in the source, 1 in the compiled
+stylesheet. Moving components onto tokens would have changed nothing on its own,
+because the tokens never changed value. Custom properties need no layer, so they
+now sit at the top level.
+
+**And the theme was set on both `<html>` and `<body>`.** Body's own attribute
+shadows the inherited one for everything inside it, so a divergence would render
+the body's theme while the html one looked applied. Set on `<html>` only.
+
+Tokens are channel triplets — `rgb(var(--x) / <alpha-value>)` — because the app
+uses 257 opacity modifiers like `border-theme-primary/50`, and a plain
+`var(--x)` token drops the alpha silently on every one.
+
+Status colours are deliberately not themed: red means error whichever faction
+you are playing, and fixing them means verifying contrast once rather than seven
+times.
+
+Measured: switching theme moves the body ground across all six, and 324 of the
+358 elements carrying the default gold follow it. The 34 that do not are
+remaining one-off hexes.
+
+### 3.2 — behaviour first
+
+Across the thirty un-migrated modals there was **one** Escape handler, **one**
+body scroll lock and **one** focus trap, all three inside `Sheet`. `useOverlay`
+extracts that implementation so a modal still rendering its own overlay gets the
+guarantees from one hook; `Sheet` delegates to it. Applied to 20; `KeywordPopover`
+and `ConfirmModal` take no `onClose` and are named rather than skipped silently.
+
+Structural migration to `<Sheet>` is still outstanding for those 20 — this buys
+the correctness, not the layout.
 
 ---
 
