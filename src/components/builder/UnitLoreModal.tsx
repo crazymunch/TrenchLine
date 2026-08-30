@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { ActiveUnit, UnitTitleRecord } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
@@ -41,6 +42,9 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'titles' | 'deeds' | 'bio'>('titles');
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   
   // Clean base name
   const [baseName, setBaseName] = useState<string>(unit.customName || unit.profileSnapshot.name);
@@ -140,7 +144,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
     : safeBaseName;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto font-mono text-xs animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary rounded-lg max-w-3xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] bevel-container">
         
         {/* Modal Header */}

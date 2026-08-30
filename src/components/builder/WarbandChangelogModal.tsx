@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { Warband, WarbandSnapshot, ActiveUnit } from '../../types/warband';
 import { SULTANATE_WARBAND_SNAPSHOTS } from '../../data/warbandLore';
@@ -34,6 +35,9 @@ interface WarbandChangelogModalProps {
 
 export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ warband, onClose }) => {
   const { saveWarbandSnapshot } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   
   // Snapshots list: check if sultanate and needs canonical
   const isSultanate = warband.factionId === 'iron-sultanate' || warband.name.toLowerCase().includes('qarn') || warband.name.toLowerCase().includes('sultanate');
@@ -90,7 +94,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-5xl max-h-[90dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
         
         {/* Modal Header */}

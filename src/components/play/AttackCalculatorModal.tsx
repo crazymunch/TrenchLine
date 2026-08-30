@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { ActiveUnit, EquippedWeapon } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -38,6 +39,9 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   const [targetArmourMod, setTargetArmourMod] = useState<number>(0); // e.g. Heavy Armour gives -1 to injury
   const [isCharging, setIsCharging] = useState<boolean>(false);
   const [hasElevation, setHasElevation] = useState<boolean>(false);
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [customDiceMod, setCustomDiceMod] = useState<number>(0); // e.g. +1 DICE or -1 DICE
 
   const [rollResult, setRollResult] = useState<{
@@ -165,7 +169,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] bevel-container">
         
         {/* Header */}

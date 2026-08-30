@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { RuleDiffItem } from '../../types/diff';
 import { 
@@ -31,6 +32,9 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
 }) => {
   const { resolveDiff, units, saveCustomUnit } = useStore();
 
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
+
   const handleAcceptUpstream = (diff: RuleDiffItem) => {
     // Apply upstream changes to the unit
     const targetUnit = units.find((u) => u.id === diff.id);
@@ -57,7 +61,7 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden">
         
         {/* Header */}

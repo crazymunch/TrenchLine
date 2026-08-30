@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { Warband } from '../../types/warband';
 import { Faction } from '../../types/rules';
 import { X, Printer, Copy, Download, Check, Skull, Shield, FileText, Share2 } from 'lucide-react';
@@ -11,6 +12,9 @@ interface ExportModalProps {
 
 export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onClose }) => {
   const [copiedType, setCopiedType] = useState<'plain' | 'discord' | null>(null);
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [activeTab, setActiveTab] = useState<'cards' | 'text'>('cards');
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
 
@@ -78,7 +82,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in print:p-0 print:bg-white">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in print:p-0 print:bg-white">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden print:border-none print:max-h-full print:bg-white print:text-black bevel-container">
         
         {/* Modal Header (Hidden during print) */}

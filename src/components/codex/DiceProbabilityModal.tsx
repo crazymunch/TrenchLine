@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { 
   X, 
   Dices, 
@@ -17,6 +18,9 @@ interface DiceProbabilityModalProps {
 
 export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onClose }) => {
   const [modifier, setModifier] = useState<number>(0);
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
 
   // 2D6 probability table (sums from 2 to 12)
   const outcomes = [
@@ -46,7 +50,7 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

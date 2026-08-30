@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
@@ -36,6 +37,9 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   } = useStore();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [customNameInput, setCustomNameInput] = useState<Record<string, string>>({});
 
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
@@ -70,7 +74,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Modal Header */}

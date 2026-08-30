@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { 
@@ -21,6 +22,9 @@ interface WarbandComparatorModalProps {
 
 export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ onClose }) => {
   const { warbands, activeWarbandId, factions } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
 
   const [wb1Id, setWb1Id] = useState<string>(activeWarbandId || warbands[0]?.id || '');
   const [wb2Id, setWb2Id] = useState<string>(
@@ -59,7 +63,7 @@ export const WarbandComparatorModal: React.FC<WarbandComparatorModalProps> = ({ 
   const s2 = calculateStats(wb2);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

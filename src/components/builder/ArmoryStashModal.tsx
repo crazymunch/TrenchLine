@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -25,6 +26,9 @@ interface ArmoryStashModalProps {
 
 export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onClose }) => {
   const { weapons, armour, equipment, buyToStash, sellFromStash, assignStashToUnit } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [activeTab, setActiveTab] = useState<'stash' | 'buy'>('stash');
   const [selectedUnitId, setSelectedUnitId] = useState<string>(warband.units[0]?.id || '');
   const [buyCategory, setBuyCategory] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
@@ -45,7 +49,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

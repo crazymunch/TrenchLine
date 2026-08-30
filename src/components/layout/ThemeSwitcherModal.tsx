@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { THEMES } from '../../types/theme';
 import { 
@@ -23,6 +24,12 @@ interface ThemeSwitcherModalProps {
 
 export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, onClose }) => {
   const { currentTheme, setTheme, getActiveWarband, factions } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  // `isOpen`, not `true`: this modal stays mounted and returns null when
+  // closed, so a hardcoded `true` would hold the body scroll lock for the
+  // life of the page — and it is mounted three times over.
+  const overlayRef = useOverlay(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -51,7 +58,7 @@ export const ThemeSwitcherModal: React.FC<ThemeSwitcherModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
       <div className="relative w-full max-w-3xl bg-theme-surface border-2 border-theme-border rounded-sm shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
         
         {/* Header */}

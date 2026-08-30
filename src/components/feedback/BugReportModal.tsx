@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { soundEffects } from '../../services/soundEffects';
@@ -36,6 +37,12 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
   } = useStore();
 
   const { data: session } = useSession();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  // `isOpen`, not `true`: this modal stays mounted and returns null when
+  // closed, so a hardcoded `true` would hold the body scroll lock for the
+  // life of the page — and it is mounted three times over.
+  const overlayRef = useOverlay(isOpen, onClose);
 
   const [category, setCategory] = useState<string>('Visual / Layout Issue');
   const [severity, setSeverity] = useState<string>('Minor / Visual');
@@ -130,7 +137,7 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Header */}

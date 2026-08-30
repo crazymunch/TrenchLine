@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import {
@@ -32,6 +33,9 @@ interface PostBattleWizardModalProps {
 
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
   const { getActiveWarband, scenarios, applyPostBattleResults, campaign } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const warband = getActiveWarband();
 
   // The post-battle tables come from the generated dataset. The hand-written
@@ -205,7 +209,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   // is worse than not opening at all.
   if (datasetLoading || datasetError || !dataset) {
     return (
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm font-mono">
+      <div ref={overlayRef} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm font-mono">
         <div className="w-full sm:max-w-md bg-theme-surface border border-theme-border sm:rounded-md p-5 space-y-3">
           <h2 className="font-gothic font-bold text-base text-theme-text">Post-battle sequence</h2>
           <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">

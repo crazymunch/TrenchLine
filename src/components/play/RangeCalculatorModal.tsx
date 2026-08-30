@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { ActiveUnit } from '../../types/warband';
 import { 
   X, 
@@ -23,6 +24,9 @@ interface RangeCalculatorModalProps {
 export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit, onClose }) => {
   const baseMovInches = parseInt(unit.profileSnapshot.stats.movement.replace(/[^0-9]/g, '')) || 6;
   const [distanceToTarget, setDistanceToTarget] = useState<number>(12);
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [isCharging, setIsCharging] = useState(false);
   const [hasBarbedWire, setHasBarbedWire] = useState(false);
 
@@ -35,7 +39,7 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
   const isWithinCharge = distanceToTarget <= (isCharging ? chargeDistanceMax : standardMove);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

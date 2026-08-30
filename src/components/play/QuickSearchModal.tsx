@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
@@ -21,6 +22,9 @@ interface QuickSearchModalProps {
 
 export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) => {
   const { keywords, scenarios, weapons, armour } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [searchTerm, setSearchTerm] = useState('');
 
   const term = searchTerm.toLowerCase().trim();
@@ -48,7 +52,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ onClose }) =
       i.roll.includes(term));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[85dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Search Header */}

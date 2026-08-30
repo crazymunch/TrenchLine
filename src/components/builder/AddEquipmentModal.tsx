@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { 
@@ -46,6 +47,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   } = useStore();
 
   const [tab, setTab] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
   const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'formulae' | 'headgear' | 'relic' | 'gear'>('all');
   const [filterLegalOnly, setFilterLegalOnly] = useState<boolean>(true);
@@ -244,7 +248,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl h-[88dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Fixed Header */}

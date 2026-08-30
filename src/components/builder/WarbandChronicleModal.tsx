@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { Warband } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
@@ -26,6 +27,9 @@ interface WarbandChronicleModalProps {
 
 export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ warband, onClose }) => {
   const { updateWarbandLore, updateWarbandChronicleLog } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
 
   const [loreText, setLoreText] = useState(warband.lore || '');
   const [mottoText, setMottoText] = useState(warband.motto || '');
@@ -82,7 +86,7 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="bg-theme-surface border border-theme-primary/50 rounded-lg max-w-4xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
         
         {/* Modal Header */}

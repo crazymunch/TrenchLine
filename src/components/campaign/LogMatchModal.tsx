@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -20,6 +21,9 @@ interface LogMatchModalProps {
 
 export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
   const { campaign, scenarios, logCampaignMatch } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
 
   const members = campaign.members;
   const [p1WbId, setP1WbId] = useState<string>(members[0]?.warbandId || '');
@@ -56,7 +60,7 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

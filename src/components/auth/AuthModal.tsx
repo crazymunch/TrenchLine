@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { signIn } from 'next-auth/react';
 import { useStore } from '../../store/useStore';
 import { THEMES } from '../../types/theme';
@@ -24,6 +25,12 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { currentTheme } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  // `isOpen`, not `true`: this modal stays mounted and returns null when
+  // closed, so a hardcoded `true` would hold the body scroll lock for the
+  // life of the page — and it is mounted three times over.
+  const overlayRef = useOverlay(isOpen, onClose);
   const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
 
   const [email, setEmail] = useState('');
@@ -67,7 +74,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container">
         
         {/* Modal Header */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { importNewRecruitRoster } from '../../services/newRecruitImporter';
 import { Warband } from '../../types/warband';
@@ -20,6 +21,9 @@ interface ImportWarbandModalProps {
 
 export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose }) => {
   const { customUnits, warbands, factions, setActiveWarbandId } = useStore();
+
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
   const [inputText, setInputText] = useState('');
   const [parsedWarband, setParsedWarband] = useState<Warband | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -80,7 +84,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
   const totalCost = parsedWarband?.units.reduce((sum, u) => sum + u.totalCost, 0) || 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-2xl max-h-[90dvh] rounded-md flex flex-col shadow-2xl overflow-hidden bevel-container">
         
         {/* Header */}

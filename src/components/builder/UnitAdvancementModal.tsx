@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useOverlay } from '../ui/useOverlay';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -102,6 +103,9 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
 
+  // Scroll lock, focus trap and Escape (docs/MOBILE.md §7).
+  const overlayRef = useOverlay(true, onClose);
+
   const rulesetId = typeof window !== 'undefined'
     ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
     : DEFAULT_RULESET_ID;
@@ -182,7 +186,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const unitUpgrades = unit.specialUpgrades || [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[92dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
         
         {/* Header */}
