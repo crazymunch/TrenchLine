@@ -51,6 +51,8 @@ imagery.
 | 1.5 | New entity model in `src/types/rules.ts` — Glory cost, base size, movement type, constraints, `UnitOption` |
 | 1.6 | `rules:layer` — layer op engine + provenance stamping |
 | 1.7 | Transcribe `dispatch-01.layer.json` from the extracted Dispatch text |
+| 1.7a | Parse the 14 Warband Variants and their special rules out of the Warbands book |
+| 1.7b | Preserve the one kept warband: `scripts/extract-warband-lore.mjs` → `data-sources/fixtures/`, re-map onto corrected profiles, report anything unmatched |
 | 1.8 | `rules:verify` — fuzzy rulebook cross-check, `reports/crosscheck.md`, non-zero exit on conflict |
 | 1.9 | `rules:build` — emit `*.generated.ts` + `provenance.json` |
 | 1.10 | Define the two rulesets; delete `src/data/rulesets/index.ts` and the unsourced 1.0/1.0.2 metadata |
@@ -80,7 +82,8 @@ DICE`, Melee `+2 DICE`, Armour `0`, Base `32mm`, 70 Ducats — each traceable to
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
 | 2.5a | Faction Special Rules as engine rules — e.g. New Antioch "up to 2 Fireteams", granting FIRETEAM at no cost |
 | 2.6 | Surface violations in the builder: per-unit, per-roster, blocking vs advisory |
-| 2.7 | Ruleset switcher + the reconciliation review screen ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8) |
+| 2.7 | Ruleset switcher + reconciliation review screen — needed for *Latest GitHub* ⇄ *TrenchLine* switching; no longer blocks Phase 1 |
+| 2.10 | **Warband Variants** — `variantId` on `Warband`, variant selection at creation, variant ops applied to roster validation ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). 14 official variants. |
 | 2.8 | Provenance UI — "where does this number come from?" in the Codex |
 | 2.9 | Comprehensive unit tests for `src/rules/*` |
 
@@ -137,6 +140,7 @@ so a warband can be drafted before the box ships. Sources so far:
 |---|---|
 | 5.1 | Archive each article to `data-sources/preview/carcass-front/` with fetch date and URL — articles get edited and deleted |
 | 5.2 | Widen the search: other previews, designer commentary, event reports |
+| 5.2a | **Check what is already published first.** Two of the three linked articles name things that already exist in the current Warbands book — `Heretic Naval Raiders` and `Procession of the Sacred Affliction` are both existing Warband Variants with published special rules. Sort genuinely-new Carcass Front content from reworks of existing entries before predicting anything; published rules go in a normal layer, not the speculative one. |
 | 5.3 | Transcribe to `carcass-front.layer.json` with `status: 'speculative'`, per-field citation and `stated`/`inferred` confidence |
 | 5.4 | `carcass-front-preview` ruleset — opt-in only, never a layer on `trenchline` |
 | 5.5 | Speculative UI treatment: roster banner, per-entry badges, stamped exports |
@@ -169,7 +173,7 @@ skipped. Phases 0 and 4 can be picked up any time.
 | # | Decision | Status |
 |---|---|---|
 | 1 | Rulebook PDFs | **Partly resolved.** Changelog 1.0.2, Rules Commentaries 1.0.2 and All Out War are committed. **Still needed: Core Rulebook + Warbands of Trench Crusade** — the two that unblock statline verification. Delivery via GitHub release asset (verified reachable) or split uploads. |
-| 2 | Saved warbands | Open — confirm reconciliation-review over automatic migration ([`RULESET-MODEL.md`](RULESET-MODEL.md) §8). |
+| 2 | Saved warbands | **Closed.** No general migration. One warband is preserved (1,320-Ducat Iron Sultanate *House of Wisdom*, heavy lore); the rest are discarded. Its narrative fields are carried over verbatim and it becomes a regression fixture. See [`RULESET-MODEL.md`](RULESET-MODEL.md) §8. |
 | 3 | Licensing | **Closed.** Not a blocker; sources stay in `data-sources/`. |
 | 4 | Fabricated data | **Closed.** Delete what is verifiably invented — but verify each file first rather than tossing wholesale. All Out War data turned out to be correct; see [`FEATURES.md`](FEATURES.md). |
 | 5 | Faction rules | **Closed.** Keep the field, replace the content. The Warbands book gives each faction a real Special Rules section (New Antioch Fireteams / Concentrated Attack). They affect roster construction, so they belong in the rules engine, not only the Codex. See [`AUDIT.md`](AUDIT.md) §1.4. |

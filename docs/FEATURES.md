@@ -24,6 +24,7 @@ roster.
 | Feature | Status | Notes |
 |---|---|---|
 | Faction/warband selection | ✅ | 6 factions; Mercenaries orphaned (`AUDIT.md` §1.5) |
+| **Warband Variants / sub-factions** | ❌ | **14 official variants, zero support.** No `variantId` on `Warband`; variant rules change roster legality (`AUDIT.md` §1.6a) |
 | Add/remove/duplicate models | ✅ | |
 | Points budget with live total | 🟡 | Ducats only — **no Glory budget** |
 | **Unit min/max limits** (`0-2 Sniper Priests`) | ❌ | 0 of 45 units carry `maxCount`; catalogues have 1,187 constraints |

@@ -247,6 +247,41 @@ game depends on:
   are all "purchasable option attached to a model, with a cost and a limit". The
   app has no such concept.
 
+### 1.6a Warband Variants are entirely unsupported
+
+The Warbands book defines **14 official Warband Variants**:
+
+| | |
+|---|---|
+| Papal States Intervention Force | Procession of the Sacred Affliction |
+| War Pilgrimage of Saint Methodius | Fida'i of Alamut |
+| House of Wisdom | Defenders of the Iron Wall |
+| Stosstruppen of the Free State of Prussia | Kingdom of Alba Assault Detachment |
+| Expeditionary Forces of Abyssinia | Trench Ghosts |
+| Heretic Naval Raiders | Cavalcade of the Tenth Plague |
+| Knights of Avarice | Dirge of the Great Hegemon |
+
+The app supports **none of them**. The word "variant" does not appear in
+`src/types/`, `src/store/useStore.ts` or `src/data/defaultRules.ts` — there is no
+`variantId` on `Warband`, so a warband cannot even record which variant it is.
+
+This is not cosmetic. Variant special rules change roster legality:
+
+> **Far from Home:** A Papal States Intervention Force Warband cannot include
+> Trench Moles.
+> **Lector:** A Papal States Intervention Force Warband must include 1 Trench
+> Cleric.
+> **Face thy Fears:** Models in a Procession of the Sacred Affliction Warband
+> cannot have Iron Capirotes.
+
+They add and remove entries, change costs, force and forbid units, and alter
+starting budgets — the existing `src/data/rulesets/index.ts` even mentions
+"Papal States 500 D + 11 Glory" without modelling any of it.
+
+Confirmed against a real roster: the maintainer's own 1,320-Ducat Iron Sultanate
+warband carries a `Warband Variant → The House of Wisdom` selection that the app
+has nowhere to put.
+
 ### 1.7 Roster validation, the core feature, is absent
 
 `src/components/builder/WarbandBuilder.tsx:79-83` computes `eliteCount`,
@@ -283,6 +318,33 @@ must be deleted, not repaired.
 ("Trench Dispatch Preview") entry describes content that does not match the
 actual Trench Dispatch. The whole file is replaced by the model in
 [`RULESET-MODEL.md`](RULESET-MODEL.md).
+
+### 1.10 User content and game data are mixed in the same file
+
+`src/data/warbandLore.ts` (851 lines) holds the maintainer's own warband —
+*Al-Qarn Rihla* — and is genuinely valuable, hand-written content: warband
+identity, a markdown history, a chronicle log, 11 character biographies with
+titles, quotes and deeds, plus match history and snapshots.
+
+It also holds `profileSnapshot` blocks with full statlines, weapon profiles,
+armour and costs. That is game data, sitting in a file whose real purpose is
+narrative, in a directory the pipeline will regenerate.
+
+The consequence is a third, independent copy of the game data — and the three
+copies do not agree:
+
+| Source | Ranged | Melee | Armour |
+|---|---|---|---|
+| `warbandLore.ts` | +2 DICE | +1 DICE | **−2** |
+| `defaultRules.ts` | **+1 DICE** | **+0 DICE** | **−1** |
+| BattleScribe catalogue | +2 Dice | +1 Dice | **0** |
+
+*(Jabirean Alchemist. `warbandLore.ts` is closer to correct than the app's
+primary data file, and both get Armour wrong.)*
+
+Phase 1 splits the file: narrative moves to
+`data-sources/fixtures/al-qarn-rihla/` and is preserved verbatim; the
+`profileSnapshot` blocks are discarded and rebuilt from source.
 
 ---
 

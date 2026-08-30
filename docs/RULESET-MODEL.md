@@ -411,26 +411,73 @@ One engine, two uses.
 
 ---
 
+## 7a. Warband Variants
+
+A **Variant** (Papal States Intervention Force, House of Wisdom, Trench Ghosts…)
+is a named modifier a warband selects at creation, on top of its faction. There
+are 14 official ones and the app currently models none — see
+[`AUDIT.md`](AUDIT.md) §1.6a.
+
+Variants need no new machinery: a variant *is* a layer, scoped to one roster
+instead of the dataset.
+
+```ts
+interface Variant {
+  id: string;                 // 'house-of-wisdom'
+  factionId: string;          // 'iron-sultanate'
+  name: string;
+  loreText: string;
+  specialRules: FactionSpecialRule[];
+  budget?: Partial<Cost>;     // e.g. Papal States: 500 Ducats + 11 Glory
+  ops: LayerOp[];             // applied to the roster's view of the dataset
+}
+```
+
+The rules from the book map straight onto existing ops:
+
+| Book text | Op |
+|---|---|
+| "cannot include Trench Moles" | `remove` (or a `max: 0` constraint) |
+| "must include 1 Trench Cleric" | `add` constraint `{min:1}` |
+| "cannot have Iron Capirotes" | `remove` from the armoury, scoped to the roster |
+| "Ecclesiastic Prisoners do not have Iron Capirotes, but their cost remains the same" | `replace` on the entry |
+| "Papal States: 500 Ducats + 11 Glory" | `budget` |
+
+So the same engine serves three jobs: dataset errata (Dispatch, 1.0.2), per-model
+upgrades (`UnitOption.modifies`), and now per-roster variants. `Warband` gains a
+`variantId`, and roster validation resolves faction → variant → model options in
+that order.
+
 ## 8. Migration of saved warbands
 
-Correcting the data invalidates every warband saved against the old values.
-Deleting them is not acceptable; silently rewriting them is worse.
+**Decided (Aug 2026):** existing saved warbands are not worth a general migration
+path. The maintainer has confirmed that only **one** warband matters — a
+1,320-Ducat Iron Sultanate *House of Wisdom* roster carrying substantial
+hand-written lore. Everything else is discarded when the data is regenerated.
 
-**Saved units store a snapshot, plus a link.** `ActiveUnit` already carries
-`profileSnapshot` — keep it, and add `sourceProfileId` + `rulesetId` +
-`datasetVersion`.
+That removes the reconciliation-review screen from Phase 1's critical path. What
+replaces it:
 
-On load, the app reconciles the snapshot against the selected ruleset and
-presents differences as a **review screen**, not an automatic migration:
+1. **A one-off import for the preserved warband.** Export it from the running app
+   (`ExportModal` → Download JSON, which serialises the whole `Warband` object),
+   commit it to `data-sources/fixtures/`, and write a migration that re-maps it
+   onto corrected profiles.
+2. **Narrative content is preserved verbatim, never regenerated.** Warband `lore`,
+   `motto`, `patron`, `chronicleLog`, `notes`, and per-unit `lore`, `quote`,
+   `titles`, `titleRecords`, `deeds`, `notes` are copied across untouched. Only
+   *derived* fields — statlines, costs, keywords — are rebuilt from source.
+3. **It doubles as a test fixture.** A real roster with campaign rules enabled,
+   XP and advancements (`Ranged Proficiency [7]`, `Assassinate [4]`), an injury
+   (`Leg Wound [31]`), a Glory-costed item (`Sniper Scope — 2 Glory`), an armoury
+   stash and a Warband Variant is a far better regression test than anything
+   synthetic. It exercises Glory costs, variants and options — the three things
+   the current model cannot express.
+4. **Anything that cannot be re-mapped is surfaced, not silently dropped.** The
+   migration reports every unit it could not match rather than guessing.
 
-> **Lieutenant "Marcus"** — profile changed since this warband was saved
-> Ranged +1 → **+2** · Melee +1 → **+2** · Armour −1 → **0**
-> `[ Update to current ]  [ Keep as saved ]`
-
-Warbands keep working, the user stays in control, and the changes are visible.
-The same screen serves ruleset switching, so it is not migration-specific code.
-
----
+A general ruleset-switching diff is still wanted eventually — switching between
+*Latest GitHub* and *TrenchLine* needs it — but it moves to Phase 2.7 and stops
+blocking the data work.
 
 ## 9. Open questions
 
