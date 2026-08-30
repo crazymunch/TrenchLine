@@ -395,13 +395,35 @@ describe('the Trench Dispatch Grail Strains', () => {
    * extraction drops, so a bare number is all that survives. Recording one as
    * Ducats without saying so would be exactly the kind of plausible-but-unbacked
    * value this pipeline exists to prevent.
+   *
+   * The maintainer has since confirmed all three against the printed page, so
+   * the requirement is no longer a caveat but an attribution: the number is
+   * unreadable in `data-sources/`, and the only thing standing behind it is a
+   * person who looked. Dropping that note would leave a bare 10 that nothing
+   * in the repository can justify — so the test still insists on one or the
+   * other, and never neither.
    */
-  it('flags every cost whose currency could not be read from the source', () => {
+  it('never carries a cost whose currency is neither readable nor attributed', () => {
     const priced = strainOps.filter((o) => o.option.cost.ducats > 0 || o.option.cost.glory > 0);
     for (const o of priced) {
       // Hellfly Host is free, and the catalogues corroborate the rest by name.
       if (o.option.name === 'Hellfly Host') continue;
-      expect(o._costCurrencyUnresolved, `${o.option.name} should carry the caveat`).toBeTruthy();
+      expect(
+        o._costCurrencyUnresolved || o._costCurrencyConfirmed,
+        `${o.option.name} must either flag the unread currency or say who confirmed it`
+      ).toBeTruthy();
+    }
+  });
+
+  it('attributes the confirmed currencies to the printed page, not the extraction', () => {
+    const confirmed = strainOps.filter((o) => o._costCurrencyConfirmed);
+    expect(confirmed.length).toBe(3);
+    for (const o of confirmed) {
+      expect(o._costCurrencyConfirmed).toMatch(/maintainer/i);
+      expect(o._costCurrencyConfirmed).toMatch(/p\.9/);
+      // Ducats is the ruling; a Strain silently flipped to Glory later should fail.
+      expect(o.option.cost.glory, `${o.option.name} was ruled Ducats`).toBe(0);
+      expect(o.option.cost.ducats).toBeGreaterThan(0);
     }
   });
 

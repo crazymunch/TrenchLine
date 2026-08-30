@@ -136,37 +136,63 @@ All four are covered by regression tests.
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
 | 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
-| 2.6 | ⬜ Surface violations in the builder — blocked on the migration below |
-| 2.7 | ⬜ Ruleset switcher + reconciliation — blocked on the migration below |
+| 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
+| 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
 | 2.10 | ✅ **Warband Variants** — 17 variants, 16 with ops derived from catalogue modifiers; `validate.ts` uses them in preference to the prose reader. Roster-side `variantId` still needs the UI. ([`RULESET-MODEL.md`](RULESET-MODEL.md) §7a). **Scope reduced**: the mechanical effects derive from catalogue modifiers (§7b), so this is wiring rather than transcription. |
-| 2.8 | ⬜ Provenance UI — blocked on the migration below |
-| 2.9 | Comprehensive unit tests for `src/rules/*` |
+| 2.8 | ✅ Provenance UI — `ProvenanceTag`, per field, served per entity from `/api/dataset/provenance` |
+| 2.9 | ✅ 124 tests, including the real 1,320-Ducat roster against the real dataset |
 
-| 2.11 | ⬜ **Migrate the app onto the generated dataset** — the gate on 2.6-2.8 |
+| 2.11 | 🟡 **Migrate the app onto the generated dataset** — legality is migrated; **recruitment is not**. See below. |
 
 **Done when:** an illegal roster cannot be silently built; every violation names
 the rule and cites its source; switching rulesets shows a diff rather than
 mutating saved data.
 
-### 2.11 — the migration, and what it turned up
+Two of those three hold. The third does not yet: recruitment still runs on
+`defaultRules.ts`, so an illegal roster can still be *built* — it just cannot
+be built *silently*. See 2.11 below.
 
-No UI file imports `src/rules/` or `src/data/generated/` yet;
-`defaultRules.ts` is still read in four places including `useStore.ts`. Two
-things found while starting it change the shape of the job:
+### 2.11 — the migration: what moved, and what did not
 
-**Weapon pricing is per faction.** The catalogues leave shared weapon entries
-free — 363 of 543 came through at zero — because the price hangs off each
-faction's armoury link. The rulebook's Armoury Tables carry it, and the pipeline
-now applies them. But five names are priced two ways: an Automatic Rifle is
-**40 Ducats in one armoury and 2 Glory in another**. A single `cost` field
-cannot express that. The candidates are recorded as `priceOptions`, the cost is
-left unset, and the build names them every run. **Resolving this means pricing
-wargear per faction in the roster model, and it should be settled before the UI
-is wired to costs.**
+**Both blockers are resolved.** Weapon pricing is per faction, so the Armoury
+Table became its own entity (`src/rules/armoury.ts`) and is the pricing and
+legality authority: 6 armouries, 213 rows. The 1.6 MB dataset is served from
+`GET /api/dataset` rather than imported, and First Load JS stayed at 103 kB.
 
-**The dataset is 1.6 MB per ruleset.** It cannot be a static import. It needs to
-be served (an API route or RSC) or code-split, and that decision shapes how the
-store is restructured.
+**What is migrated: checking.** `LegalityStrip`, `RulesetSwitcher` and
+`ProvenanceTag` all read the generated dataset through `useDataset`, and
+`fromWarband.toRoster` joins the saved warband to it by name, re-pricing from
+the armoury.
+
+**What is not: recruiting.** `useStore.ts` still builds its unit list as
+`[...BASE_UNITS, ...customUnits]` from `defaultRules.ts`, and `AddUnitModal`
+reads it. So the models a player can *add* still come from the hand-written
+data the audit measured as 97% wrong on statlines, with 38% of its wargear
+invented. `QuickSearchModal`, `newRecruitImporter` and `warbandLore` read it too.
+
+This is the gap between the two halves of Phase 2's own acceptance test. A
+finished roster is now checked against sourced data and told exactly what is
+wrong with it — but it is still *assembled* from unsourced data, so the check
+fires after the fact rather than preventing the mistake. Until the recruit path
+moves, **"an illegal roster cannot be silently built" is not true**; only "an
+illegal roster does not stay silent" is.
+
+Moving it is a store restructure, not a data change, and `useStore.ts` is the
+2,364-line file Phase 4.2 exists to split — so it is sequenced with that work
+rather than bolted on ahead of it.
+
+### Also outstanding in Phase 2
+
+- **`variantId` is never set on a saved warband.** The field exists on
+  `Warband` and the validator honours it, but no UI writes it, so variant rules
+  do not fire. This is why a House of Wisdom warband still reports "must include
+  1 Yüzbaşı" — a correct rule applied to a warband that has not been told which
+  variant it is. Last mile of 2.10.
+- **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
+  Collections* extends the faction armoury; nothing reads that yet, so
+  `wargear-not-stocked` is advisory rather than blocking (2.4).
+- **2.5 budget presets** — required entries are enforced through variant ops;
+  per-faction starting budgets exist, but presets are not surfaced in the UI.
 
 ---
 

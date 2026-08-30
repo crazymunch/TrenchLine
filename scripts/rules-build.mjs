@@ -261,8 +261,17 @@ for (const ruleset of RULESETS) {
   // Ops whose cost currency could not be read from the source. Reported every
   // build, loudly, because a Ducat silently read as Glory is exactly the kind
   // of wrong-but-plausible value this pipeline exists to prevent.
+  //
+  // A maintainer ruling clears the flag but does not make the value ordinary
+  // source data: it is unreadable in the extraction and only a person holding
+  // the printed page can supply it, so those ops are listed separately rather
+  // than falling silent.
   const unresolvedCurrency = layers.flatMap((l) =>
     (l.ops ?? []).filter((o) => o._costCurrencyUnresolved)
+      .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
+
+  const confirmedCurrency = layers.flatMap((l) =>
+    (l.ops ?? []).filter((o) => o._costCurrencyConfirmed)
       .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
 
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
@@ -303,6 +312,11 @@ for (const ruleset of RULESETS) {
     for (const u of unresolvedCurrency) console.log(`      ${u}`);
     console.log('      The Dispatch prints currency as a glyph the text extraction drops.');
     console.log('      Recorded as Ducats. Confirm against the PDF before relying on them.');
+  }
+  if (confirmedCurrency.length) {
+    console.log(`\n  ${confirmedCurrency.length} cost(s) whose currency rests on a maintainer ruling:`);
+    for (const u of confirmedCurrency) console.log(`      ${u}`);
+    console.log('      Unreadable in data-sources/ — confirmed against the printed page.');
   }
   if (missingProv.length) console.log(`  fields with NO provenance: ${missingProv.length}`);
 

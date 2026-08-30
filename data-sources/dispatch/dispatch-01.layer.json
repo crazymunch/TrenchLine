@@ -17,10 +17,10 @@
     "INCOMPLETE. This covers the mechanical changes that map cleanly onto the",
     "",
     "Grail Strains transcribed (4). Their rules text is verbatim from the extracted",
-    "Dispatch. Their COSTS carry a caveat: the PDF prints the currency as a glyph and",
+    "Dispatch. Their COSTS needed a maintainer ruling: the PDF prints the currency as a glyph and",
     "the text extraction drops it, so a bare number is all that survives. Ops whose",
-    "currency could not be confirmed carry _costCurrencyUnresolved and the build",
-    "reports them. Still to transcribe: the Amalgam and Grail Thrall entry",
+    "maintainer confirmed against the printed page carry _costCurrencyConfirmed. All four",
+    "are Ducats. Still to transcribe: the Amalgam and Grail Thrall entry",
     "replacements (full statlines), and the Mercenary keyword rewrites.",
     "",
     "The Dispatch's 'Grail Thrall' is the catalogues' 'Thrall'. The Strains ops target",
@@ -237,8 +237,8 @@
         "description": "A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION. Burst ACTION: A model with the Bolgias Gut Strain can take a Burst ACTION. In addition, if an enemy model finishes a move within 3” of a model with the Bolgias Gut Strain, you can interrupt its Activation and explode without having to take a Burst ACTION."
       },
       "_src": "p.9 Grail Strains — 'Bolgias Gut (10)'",
-      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
-      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today.",
+      "_costCurrencyConfirmed": "Confirmed as Ducats by the maintainer against p.9 of the printed Trench Dispatch (2026-08-30). The PDF prints the currency as a glyph and text extraction drops it, so the extracted source cannot carry this value — this confirmation is its authority, and it must not be silently re-derived from the .txt."
     },
     {
       "op": "addOption",
@@ -278,8 +278,8 @@
         "description": "A model with the Leech Grip Strain has a Melee Characteristic of +0. In addition, whenever an enemy model takes a Retreat ACTION within 1” of a model with the Leech Grip Strain, place 1 BLOOD MARKER next to the model taking the retreat (before any melee attacks are made against the retreating model)."
       },
       "_src": "p.9 Grail Strains — 'Leech Grip (7)'",
-      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
-      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today.",
+      "_costCurrencyConfirmed": "Confirmed as Ducats by the maintainer against p.9 of the printed Trench Dispatch (2026-08-30). The PDF prints the currency as a glyph and text extraction drops it, so the extracted source cannot carry this value — this confirmation is its authority, and it must not be silently re-derived from the .txt."
     },
     {
       "op": "addOption",
@@ -299,8 +299,8 @@
         "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with the Tapeworm Throng Strain if they are within Short Range of the attacking model. This Strain has no effect if the model has the NEGATE FEAR Keyword. 03 -- 4 of 18 --"
       },
       "_src": "p.9 Grail Strains — 'Tapeworm Throng (10)'",
-      "_costCurrencyUnresolved": "The Dispatch PDF prints the currency as a glyph and the extraction drops it, so this number's currency is not readable from the source. Every Strain the catalogues carry is priced in Ducats except Devouring Jaws (Glory), which makes Ducats likely but not certain. Recorded as Ducats and flagged; a maintainer should confirm against the PDF.",
-      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today."
+      "_targetNote": "The Dispatch calls this entry 'Grail Thrall'; the catalogues call it 'Thrall'. Same entry — the Dispatch replaces it wholesale and renames it. Targeted by the catalogue's name so the op resolves today.",
+      "_costCurrencyConfirmed": "Confirmed as Ducats by the maintainer against p.9 of the printed Trench Dispatch (2026-08-30). The PDF prints the currency as a glyph and text extraction drops it, so the extracted source cannot carry this value — this confirmation is its authority, and it must not be silently re-derived from the .txt."
     }
   ]
 }
