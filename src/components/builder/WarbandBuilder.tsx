@@ -235,7 +235,7 @@ export const WarbandBuilder: React.FC = () => {
           </div>
         ) : dataset ? (
           <div className="mt-6 -mx-6 -mb-6">
-            <LegalityStrip warband={warband} dataset={dataset} />
+            <LegalityStrip warband={warband} dataset={dataset} rulesetId={rulesetId} />
           </div>
         ) : null}
 

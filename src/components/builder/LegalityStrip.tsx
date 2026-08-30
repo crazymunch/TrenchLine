@@ -23,23 +23,36 @@ import type { Dataset } from '@/types/catalogue';
 import type { Warband } from '@/types/warband';
 import { toRoster } from '@/rules/fromWarband';
 import { validateRoster, type Violation } from '@/rules/validate';
+import { ProvenanceTag } from './ProvenanceTag';
 
 interface Props {
   warband: Warband;
   dataset: Dataset;
+  rulesetId: string;
 }
 
-export const LegalityStrip: React.FC<Props> = ({ warband, dataset }) => {
+export const LegalityStrip: React.FC<Props> = ({ warband, dataset, rulesetId }) => {
   const [open, setOpen] = useState(false);
 
-  const { result, unmatched, variant } = useMemo(() => {
+  const { result, unmatched, variant, joined } = useMemo(() => {
     const { roster, unmatched } = toRoster(warband, dataset);
+    const byId = new Map(dataset.units.map((u) => [u.id, u]));
+    // One row per distinct profile actually in the roster — asking twice about
+    // two Kavasses would be noise.
+    const seen = new Set<string>();
+    const joined = roster.units.flatMap((u) => {
+      if (seen.has(u.profileId)) return [];
+      seen.add(u.profileId);
+      return [{ id: u.id, name: u.name, profileId: u.profileId,
+                profileName: byId.get(u.profileId)?.name ?? u.profileId }];
+    });
     const variants = (dataset as unknown as { variants?: { id: string; name: string;
       specialRules?: { name: string; description: string }[] }[] }).variants ?? [];
     return {
       result: validateRoster(roster, dataset),
       unmatched,
       variant: variants.find((v) => v.id === warband.variantId),
+      joined,
     };
   }, [warband, dataset]);
 
@@ -132,6 +145,33 @@ export const LegalityStrip: React.FC<Props> = ({ warband, dataset }) => {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                </section>
+              )}
+
+              {joined.length > 0 && (
+                <section>
+                  <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8E95A5] mb-2">
+                    Where these profiles come from
+                  </h3>
+                  <div className="space-y-1.5">
+                    {joined.map((j) => (
+                      <div
+                        key={j.id}
+                        className="flex items-center justify-between gap-3 p-2.5 rounded-sm bg-[#0C0E12] border border-[#323846]"
+                      >
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-mono text-[#ECEFF4] truncate">{j.name}</div>
+                          <div className="text-[10px] font-mono text-[#8E95A5] truncate">{j.profileName}</div>
+                        </div>
+                        <ProvenanceTag
+                          entity={`unit:${j.profileId}`}
+                          rulesetId={rulesetId}
+                          fields={['cost.ducats', 'stats.movement', 'stats.ranged', 'stats.melee',
+                                   'stats.armour', 'stats.base', 'keywords']}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </section>
               )}
