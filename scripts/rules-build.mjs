@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
-import { parseWarbandEntries, parseVariants } from './lib/parse-warbands.mjs';
+import { parseWarbandEntries, parseVariants, parseArmouryTables } from './lib/parse-warbands.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, findMissingProvenance, loadResolutions } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -54,6 +54,7 @@ function loadLayer(id) {
 
 const bookEntries = parseWarbandEntries();
 const variants = parseVariants();
+const armoury = parseArmouryTables();
 const resolutions = loadResolutions();
 
 if (!bookEntries.length) {
@@ -97,8 +98,36 @@ for (const ruleset of RULESETS) {
     includeBeta: ruleset.includeBeta,
   });
 
+  // Attach the Armoury Table restrictions ("ELITE only", "Limit: 2") to the
+  // weapons they govern. The catalogues carry the profiles; the rulebook
+  // carries the legality rules, and the roster validator needs both.
+  const armouryByName = new Map();
+  for (const row of armoury) {
+    const k = row.name.toLowerCase();
+    if (!armouryByName.has(k)) armouryByName.set(k, new Set());
+    if (row.restrictions) armouryByName.get(k).add(row.restrictions);
+  }
+  let restricted = 0;
+  for (const w of dataset.weapons) {
+    const hit = armouryByName.get(w.name.toLowerCase());
+    if (!hit || !hit.size) continue;
+    w.restrictions = [...hit];
+    restricted++;
+    provenance.stamp('weapon', w.id, 'restrictions', {
+      layer: 'base',
+      source: 'rulebook:warbands-of-trench-crusade#armoury',
+      verified: 'rulebook:warbands-of-trench-crusade',
+    });
+  }
+
   // Variants ride along as data; their ops apply per-roster, not here.
-  dataset.variants = variants;
+  dataset.variants = variants.map((v) => ({
+    id: v.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+    name: v.name,
+    factionId: '',
+    specialRules: v.specialRules,
+    ops: [],
+  }));
 
   // 3. verify
   const v = verify(dataset, bookEntries, provenance, resolutions);
@@ -110,6 +139,7 @@ for (const ruleset of RULESETS) {
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
   console.log(`  units ${dataset.units.length}  weapons ${dataset.weapons.length}  variants ${variants.length}`);
+  console.log(`  weapons carrying armoury restrictions: ${restricted}`);
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
   console.log(`  verified against the rulebook: ${v.compared} units`);
   console.log(`    confirmed   ${v.confirmed}`);

@@ -93,11 +93,33 @@ export function parseVariants(src = WARBANDS_TXT) {
     if (!m) continue;
     const name = m[1].trim();
     const rules = [];
-    for (let j = i + 1; j < Math.min(i + 60, lines.length); j++) {
-      if (/SPECIAL RULES\s*$/.test(lines[j])) break;
-      const r = lines[j].match(/^\*\*\s*([^:]{3,60}):\s*(.+)$/);
-      if (r) rules.push({ name: r[1].trim(), description: r[2].trim() });
+    let current = null;
+
+    // A rule's text wraps across lines — "cannot include a Yüzbaşı," ends one
+    // line and "Janissaries, or Sultanate Assassins." begins the next. Reading
+    // only the first line truncates the rule mid-clause, which silently
+    // defeats any downstream parsing of what it forbids.
+    const flush = () => {
+      if (current) rules.push({ name: current.name, description: current.parts.join(' ').replace(/\s+/g, ' ').trim() });
+      current = null;
+    };
+
+    for (let j = i + 1; j < Math.min(i + 80, lines.length); j++) {
+      const line = lines[j];
+      if (/SPECIAL RULES\s*$/.test(line)) break;
+
+      const r = line.match(/^\*\*\s*([^:]{3,60}):\s*(.*)$/);
+      if (r) { flush(); current = { name: r[1].trim(), parts: [r[2].trim()] }; continue; }
+
+      if (!current) continue;
+      const t = line.trim();
+      // Blank lines and the page's navigation furniture end a rule.
+      if (!t || /^(Warband|Creation|Special|Rules|Armoury|Tables|Battlekit|Elite|Troops|Entries|Variants|Starting a|Keywords|Mercenaries|New Antioch|Trench Pilgrims|Iron Sultanate|Heretic Legions|Black Grail|The Court|-- \d+ of \d+ --)$/.test(t)) { flush(); continue; }
+      if (/^[*•]/.test(t)) { current.parts.push(t.replace(/^[*•]\s*/, '')); continue; }
+      current.parts.push(t);
     }
+    flush();
+
     out.push({ name, specialRules: rules, line: i + 1 });
   }
   return out;

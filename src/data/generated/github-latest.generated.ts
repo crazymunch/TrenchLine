@@ -7274,7 +7274,11 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only",
+        "ELITE & Janissaries only",
+        "Anointed & ELITE only"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7339,7 +7343,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7364,7 +7370,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Consumable"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7388,7 +7396,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Headgear"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7502,7 +7512,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7520,7 +7532,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Consumable, Limit: 1"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7569,7 +7583,10 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Consumable, ELITE only, Limit: 2",
+        "Consumable, Limit: 3"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7615,7 +7632,11 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 4",
+        "Limit: 1",
+        "Limit: 2"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7640,7 +7661,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 1"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7663,7 +7686,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Wretched & Yoke Fiends only"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7728,7 +7753,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 1"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -7777,7 +7804,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Consumable"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -9046,7 +9075,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": true
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
       "factionId": "Iron Sultanate",
       "sourceFile": "Iron Sultanate.cat"
     },
@@ -10041,7 +10072,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
@@ -10065,7 +10098,9 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
@@ -10136,7 +10171,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Combat Medic only, Limit: 1",
+        "Limit: 1"
+      ],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
@@ -10154,7 +10192,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
       "factionId": "Melee Weapons",
       "sourceFile": "Melee Weapons.cat"
     },
@@ -12208,7 +12248,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only, Limit: 3",
+        "Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12227,7 +12270,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug, Limit: 1",
+        "Bayonet Lug, Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12246,7 +12292,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2",
+        "Bayonet Lug, Shield Combo"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12263,7 +12312,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Shield Combo"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12278,7 +12329,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12298,7 +12351,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 3",
+        "Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12318,7 +12374,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12340,7 +12398,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 1",
+        "Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12361,7 +12422,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Shield Combo, Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12380,7 +12443,11 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 2",
+        "Limit: 1",
+        "Amalgam only, Limit: 1"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12397,7 +12464,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12416,7 +12485,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE only"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12433,7 +12504,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12451,7 +12524,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo",
+        "Shield Combo"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12488,7 +12564,10 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 3",
+        "ELITE & Janissaries only, Limit: 2"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12506,7 +12585,11 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2",
+        "Bayonet Lug, Shield Combo",
+        "Bayonet Lug, Shield Combo, Limit: 1"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12592,7 +12675,10 @@ export const DATASET: Dataset = {
           "includeChildSelections": false
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "Limit: 2",
+        "Jabirean Alchemist Only"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -12645,7 +12731,9 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
-      "restrictions": [],
+      "restrictions": [
+        "Consumable, Limit: 3 (1 per model)"
+      ],
       "factionId": "Ranged Weapons",
       "sourceFile": "Ranged Weapons.cat"
     },
@@ -13292,291 +13380,341 @@ export const DATASET: Dataset = {
   },
   "variants": [
     {
+      "id": "papal-states-intervention-force",
       "name": "PAPAL STATES INTERVENTION FORCE",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Far from Home",
-          "description": "A Papal States Intervention Force Warband cannot"
+          "description": "A Papal States Intervention Force Warband cannot include Trench Moles."
         },
         {
           "name": "Lector",
-          "description": "A Papal States Intervention Force Warband must include 1 Trench"
+          "description": "A Papal States Intervention Force Warband must include 1 Trench Cleric, but does not have to include a Lieutenant. A Trench Cleric in a Papal States Intervention Force Warband has the LEADER Keyword and the following additional ability: Arise and be Healed! ACTION: A Papal States Intervention Force Trench Cleric can take an Arise and be Healed! ACTION. If they do so, take a Risky Success Roll for the Trench Cleric. If the roll is a Failure, nothing happens, and the Trench Cleric’s Activation ends. If the roll is a Success or Critical Success, pick the Trench Cleric or 1 friendly model within 3” of the Trench Cleric. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model."
         },
         {
           "name": "Specialist Force",
-          "description": "You have 500 👑  and 11 ☼ to recruit a Papal State Intervention"
+          "description": "You have 500 👑 and 11 ☼ to recruit a Papal State Intervention Force Warband for a campaign (▶ see Starting a Warband). A Papal States Intervention Force gains 4 ☼ each time it calls for Reinforcements. In a campaign, their Threshold Value is reduced by 200 👑 . When recruiting models as a latecomer for a campaign, or for a one-off game, after agreeing upon the size of the game, reduce the amount of 👑 a Papal States Intervention Force Warband has to spend by 200 👑 , and increase the amount of ☼ they have to spend by 11 ☼"
         },
         {
           "name": "Supreme Blessing",
-          "description": "When you recruit a Papal States Intervention Force"
+          "description": "When you recruit a Papal States Intervention Force Warband, you must give the Supreme Pontiff ’s Crucifix to one model in the Warband. The Supreme Pontiff ’s Crucifix taken when the Warband is created is free and does not cost any ☼ (if it is lost then the replacement must be paid for normally)."
         },
         {
           "name": "Swiss Guard",
-          "description": "The Lieutenant and up to 4 models in a Papal States"
+          "description": "The Lieutenant and up to 4 models in a Papal States Intervention Force Warband can have the NEGATE FEAR Keyword at no additional cost in 👑 ."
+        },
+        {
+          "name": "Inspiring Relic",
+          "description": "The bearer of this relic does not end their activation after a failed Risky Success Roll. PP"
         }
       ],
-      "line": 1876
+      "ops": []
     },
     {
+      "id": "kingdom-of-alba-assault-detachment",
       "name": "KINGDOM OF ALBA ASSAULT DETACHMENT",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Bagpipes",
-          "description": "One Musical Instrument in a Kingdom of Alba Assault Detachment"
+          "description": "One Musical Instrument in a Kingdom of Alba Assault Detachment Warband can be upgraded to a set of Bagpipes at no additional cost in 👑 . Friendly models within 8” of a model that has a set of Bagpipes have the NEGATE FEAR Keyword."
         },
         {
           "name": "Brave",
-          "description": "Add +1 DICE to the Success Rolls for a Morale Check for a Kingdom of"
+          "description": "Add +1 DICE to the Success Rolls for a Morale Check for a Kingdom of Alba Assault Detachment Warband."
         },
         {
           "name": "Celtic Machine Armour",
-          "description": "Models in a Kingdom of Alba Assault Detachment"
+          "description": "Models in a Kingdom of Alba Assault Detachment Warband with Machine Armour have a Charge Bonus of D6” (it is not reduced to D3” by Machine Armour)."
         },
         {
           "name": "Claymore Smiths",
-          "description": "Great Swords/Axes cost 7 👑  instead of 12 for models from a"
+          "description": "Great Swords/Axes cost 7 👑 instead of 12 for models from a Kingdom of Alba Assault Detachment Warband."
         },
         {
           "name": "Cold Steel",
-          "description": "Halve the cost of a Melee Weapon the first time that is purchased for"
+          "description": "Halve the cost of a Melee Weapon the first time that is purchased for a Kingdom of Alba Assault Detachment Warband. For example, the first Sword/ Axe purchased for a Warband would cost 2 👑 while any further Swords/Axes would cost 4 👑 each"
         },
         {
           "name": "Dum-Dum Ammunition",
-          "description": "Models in a Kingdom of Alba Assault Detachment"
+          "description": "Models in a Kingdom of Alba Assault Detachment Warband can have Dum-Dum Bullets (▶ see Battlekit in the Trench Crusade Digital Rulebook) at a cost of 5 👑 each. The Dum-Dum Bullets have the Limit: 3 stipulation."
         },
         {
           "name": "Highland Strength",
-          "description": "The Lieutenant and any Shock Troopers in a Kingdom"
+          "description": "The Lieutenant and any Shock Troopers in a Kingdom of Alba Assault Detachment Warband have the STRONG Keyword at no additional cost in 👑 ."
         },
         {
           "name": "Lightly-armoured",
-          "description": "Only the Lieutenant and Mechanized Heavy Infantry models"
+          "description": "Only the Lieutenant and Mechanized Heavy Infantry models in a Kingdom of Alba Assault Detachment Warband can have Reinforced Armour or Machine Armour."
         },
         {
           "name": "Melee-focused",
-          "description": "Mechanized Heavy Infantry in a Kingdom of Alba Assault"
+          "description": "Mechanized Heavy Infantry in a Kingdom of Alba Assault Detachment Warband have a Melee Characteristic of +1 DICE and a Ranged Characteristic of +0 DICE."
         },
         {
           "name": "Rampant Charge",
-          "description": "Models in a Kingdom of Alba Assault Detachment Warband"
+          "description": "Models in a Kingdom of Alba Assault Detachment Warband have the IGNORE DEFENDED OBSTACLE Keyword."
         },
         {
           "name": "Strained Supply",
-          "description": "Automatic Shotguns, Grenade Launchers, Machine Guns,"
+          "description": "Automatic Shotguns, Grenade Launchers, Machine Guns, Sniper Rifles, and Submachine Guns in a Kingdom of Alba Assault Detachment Warband have a Limit of 1. KINGDOM OF ALBA ASSAULT DETACHMENT ARMOURY & BATTLEKIT The following pieces of Battlekit are available to a Kingdom of Alba Warband. Lochaber Axe | 20 👑 Lochaber axes combine the power of the battle axe with the defensive qualities of a polearm. Its wicked spike has stopped many a Heretic in their tracks. Dùn Èideann Guard are especially adept at their use. Type Range Keywords 2 -Handed Melee +2 INJURY DICE, BLOCK, CRITICAL, CUMBERSOME, HEAVY"
         }
       ],
-      "line": 2113
+      "ops": []
     },
     {
+      "id": "stosstruppen-of-the-free-state-of-prussia",
       "name": "STOSSTRUPPEN OF THE FREE STATE OF PRUSSIA",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Athleticism",
-          "description": "The Lieutenant and Shock Troopers in a Stosstruppen of"
+          "description": "The Lieutenant and Shock Troopers in a Stosstruppen of the Free State of Prussia Warband can have the Rapid Assault ability at a cost of +5 👑 each. Rapid Assault: Add +1 DICE to the Risky Success Roll when a model with the Rapid Assault ability takes a Dash ACTION."
         },
         {
           "name": "Expert Fireteams",
-          "description": "A Stosstruppen of the Free State of Prussia Warband can"
+          "description": "A Stosstruppen of the Free State of Prussia Warband can include up to 3 Fireteams instead of only 2."
         },
         {
           "name": "Feldkaplane",
-          "description": "Trench Clerics in a Stosstruppen of the Free State of Prussia"
+          "description": "Trench Clerics in a Stosstruppen of the Free State of Prussia Warband can have 1 dose of Holy Smoke (▶ see the Stosstruppen of the Free State of Prussia Armoury)."
         },
         {
           "name": "Forward Positions",
-          "description": "Up to 2 Shock Troopers in a Stosstruppen of the Free"
+          "description": "Up to 2 Shock Troopers in a Stosstruppen of the Free State of Prussia Warband can have the INFILTRATOR Keyword at a cost of +10 👑 each."
         },
         {
           "name": "Lightly-armoured",
-          "description": "Only the Lieutenant and Mechanized Heavy Infantry model"
+          "description": "Only the Lieutenant and Mechanized Heavy Infantry model in a Stosstruppen of the Free State of Prussia Warband can have Reinforced Armour or Machine Armour."
         },
         {
           "name": "Light Melee",
-          "description": "Shock Troopers in a Stosstruppen of the Free State of Prussia"
+          "description": "Shock Troopers in a Stosstruppen of the Free State of Prussia Warband do not have the Assault Drill ability. They still cost 45 👑 ."
         },
         {
           "name": "Masters of the Grenade",
-          "description": "Add 4” to the Range of all Grenades used by models"
+          "description": "Add 4” to the Range of all Grenades used by models from a Stosstruppen of the Free State of Prussia Warband."
         },
         {
           "name": "Specialised Equipment",
-          "description": "Submachine Guns in a Stosstruppen of the Free State"
+          "description": "Submachine Guns in a Stosstruppen of the Free State of Prussia Warband have a Limit of 4, and Automatic Pistols do not have the ELITE only stipulation. However, Machine Guns in a Stosstruppen of the Free State of Prussia Warband have a Limit of 1, and models cannot have Grenade Launchers or Martyrdom Pills."
         },
         {
           "name": "Troop Selection",
-          "description": "A Stosstruppen of the Free State of Prussia Warband must"
+          "description": "A Stosstruppen of the Free State of Prussia Warband must include 2-8 Shock Troopers and cannot include Trench Moles. In addition, it cannot have more than 1 Sniper Priest or 1 Mechanized Heavy Infantry model. STOSSTRUPPEN OF THE FREE STATE OF PRUSSIA ARMOURY & BATTLEKIT The following pieces of Battlekit are available to a Stosstruppen of the Free State of Prussia Warband. Tank-Splitter Sword | 15 👑 | Limit: 2 It takes years of gruelling Mensur practice and field drills to acquire the precision and speed required to use the specialist tank-splitter swords of the Gardekorps. Despite their great size (often over 6 feet long), they are remarkably light, and due to the large quantities of orichalcum used in their forging process, they are virtually unbreakable. They are often used to disable tanks and other armoured vehicles, by either slicing their armour open or disabling them with an accurate swing to sever their tracks. Before any battle, they are treated with a special metal-corroding chemical compound which melts armour, making it far deadlier against armoured targets than those who wear none. Type Range Keywords 2-Handed Melee +1 INJURY DICE, CRITICAL, CUMBERSOME"
+        },
+        {
+          "name": "Melt Armour",
+          "description": "When you make an Injury Roll for an attack made with a Tank- Splitter Sword, determine if the target has an Armour Characteristic that is -1 or greater, or if it is wearing Armour or carrying a Shield. If it does, before rolling the dice for the Success Roll, put one dice aside and turn it so that it shows a roll of ‘6’. Roll the rest of the dice, and then return the dice you put to one side; it counts as having rolled a 6. In addition, attacks made with a Tank-Splitter Sword"
         }
       ],
-      "line": 2227
+      "ops": []
     },
     {
+      "id": "expeditionary-forces-of-abyssinia",
       "name": "EXPEDITIONARY FORCES OF ABYSSINIA",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Abyssinian Healers",
-          "description": "An Expeditionary Forces of Abyssinia Warband can"
+          "description": "An Expeditionary Forces of Abyssinia Warband can include 0-2 Combat Medics and Misericordia have the Limit: 2 stipulation instead of Limit: 1."
         },
         {
           "name": "Chieftain Panoply",
-          "description": "Mechanized Heavy Infantry in an Expeditionary Forces of"
+          "description": "Mechanized Heavy Infantry in an Expeditionary Forces of Abyssinia Warband cannot have Machine Armour."
         },
         {
           "name": "Faith of Ethiopia",
-          "description": "The sect of the Sniper Priests does not operate in the"
+          "description": "The sect of the Sniper Priests does not operate in the Solomonic Dynasty. An Expeditionary Forces of Abyssinia Warband cannot include Sniper Priests."
         },
         {
           "name": "Holy Warriors",
-          "description": "An Expeditionary Forces of Abyssinia Warband can include 0-1"
+          "description": "An Expeditionary Forces of Abyssinia Warband can include 0-1 Trench Cleric and 0-2 Holy Warriors. Use the Trench Clerics Warband Entry for Holy Warriors. In addition to the normal rules for a Trench Cleric, a Holy Warrior has the following abilities: Blessed Psalm ACTION: A Holy Warrior can take a Blessed Psalm ACTION. If they do so, you can remove 1 BLESSED MARKER from the Holy Warrior and place it beside a friendly model. A Success Roll is not required to carry out this Action. Arise and be Healed! ACTION: A Holy Warrior can take an Arise and be Healed! ACTION. If they do so, take a Risky Success Roll for the Holy Warrior. If the roll is a Failure, nothing happens, and the Holy Warrior’s Activation ends. If the roll is a Success or Critical Success, pick the Holy Warrior or 1 friendly model within 3” of the Holy Warrior. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model."
         },
         {
           "name": "Short-Range Marksmanship",
-          "description": "Add +1 DICE to the Success Rolls for Ranged"
+          "description": "Add +1 DICE to the Success Rolls for Ranged Attacks made at Short Range by the Lieutenant and any Yeomen in an Expeditionary Forces of Abyssinia Warband, unless the attacking Weapon is a Grenade or has the HEAVY Keyword."
         },
         {
           "name": "Vanguard Forces",
-          "description": "An Expeditionary Forces of Abyssinia Warband cannot"
+          "description": "An Expeditionary Forces of Abyssinia Warband cannot include Trench Moles. Instead, up to 4 Yeomen in an Expeditionary Forces of Abyssinia Warband can have the Flanking ability for +5 👑 each. Flanking: When a model with this ability is deployed for the first time in a game, it can be deployed normally in its own deployment zone or in contact with any edge of the battlefield and at least 8” away from any enemy models. Models with this ability are deployed before models with the INFILTRATOR Keyword, but after all other models. If a scenario has a special rule that says that models with the INFILTRATOR Keyword must deploy normally, then models with this ability must also deploy normally."
+        },
+        {
+          "name": "Warrior Nobles",
+          "description": "Shock Troopers and models with the ELITE Keyword in an Expeditionary Forces of Abyssinia Warband can have the Chewa ability for +5 👑 each. Chewa: Add +1 DICE to the Success Roll for a Melee Attack made by a model with the Chewa ability for each other friendly model within 1” of the target, up to a maximum of +2 DICE."
+        },
+        {
+          "name": "Weapons of Mobile Warfare",
+          "description": "An Expeditionary Forces of Abyssinia Warband can have a maximum of 3 Ranged Weapons with the HEAVY Keyword, not counting Satchel Charges."
         }
       ],
-      "line": 2365
+      "ops": []
     },
     {
+      "id": "procession-of-the-sacred-affliction",
       "name": "PROCESSION OF THE SACRED AFFLICTION",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Face thy Fears",
-          "description": "Models in a Procession of the Sacred Affliction Warband"
+          "description": "Models in a Procession of the Sacred Affliction Warband cannot have Iron Capirotes. Ecclesiastic Prisoners in a Procession of the Sacred Affliction Warband do not have Iron Capirotes, but their cost remains the same."
         },
         {
           "name": "Hammer and the Anvil",
-          "description": "Anti-Tank Hammers taken for a Procession of the"
+          "description": "Anti-Tank Hammers taken for a Procession of the Sacred Affliction Warband do not have the ELITE only stipulation."
         },
         {
           "name": "Melee-focused",
-          "description": "Models in a Procession of the Sacred Affliction Warband cannot"
+          "description": "Models in a Procession of the Sacred Affliction Warband cannot have any Machine Guns, and Punt Guns have the Limit: 1 stipulation."
         },
         {
           "name": "Punishing Millstones",
-          "description": "Add +1 INJURY DICE for Melee Attacks made by"
+          "description": "Add +1 INJURY DICE for Melee Attacks made by models from a Procession of the Sacred Affliction if the target is Down. This special rule does not apply to attacks made by Ecclesiastic Prisoners."
         },
         {
           "name": "Reliquary Armoury",
-          "description": "Holy Icon Shields cost 20 👑  for a Procession of the Sacred"
+          "description": "Holy Icon Shields cost 20 👑 for a Procession of the Sacred Affliction Warband and do not have the ELITE only stipulation."
         },
         {
           "name": "Wrath of God",
-          "description": "Up to 1 Castigator, or Trench Pilgrim, or Martyr Penitent can"
+          "description": "Up to 1 Castigator, or Trench Pilgrim, or Martyr Penitent can have the Wrath of God special rule at a cost of 15 👑 . BLOOD MARKERS are never placed next to a model with the Wrath of God special rule, and it has the NEGATE FEAR Keyword. It cannot be Broken on the Wheel by an Anchorite Shrine. A model with the Wrath of God special rule cannot have Ranged Weapons or Armour (it can have a Shield). In addition, change the base size of the model to 32mm."
         },
         {
           "name": "Zealot Strength",
-          "description": "Up to three Trench Pilgrims and/or Martyr-Penitents in"
+          "description": "Up to three Trench Pilgrims and/or Martyr-Penitents in a Procession of the Sacred Affliction Warband can have Zealot Strength instead of only one."
         }
       ],
-      "line": 3400
+      "ops": []
     },
     {
+      "id": "war-pilgrimage-of-saint-methodius",
       "name": "WAR PILGRIMAGE OF SAINT METHODIUS",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Anchorite Armoury",
-          "description": "Anchorite Shrines in a War Pilgrimage of Saint Methodius"
+          "description": "Anchorite Shrines in a War Pilgrimage of Saint Methodius Warband have a Ranged Characteristic of +0 DICE instead of -, and can have Anchorite Ranged Weapons and Anchorite Battlekit from the War Pilgrimage of Saint Methodius Armoury."
         },
         {
           "name": "Anchorite Cloister",
-          "description": "A War Pilgrimage of Saint Methodius Warband may include"
+          "description": "A War Pilgrimage of Saint Methodius Warband may include up to two Anchorite Shrines."
         },
         {
           "name": "Chaste Order",
-          "description": "While they revere the holy stigmata of the Nuns of the order,"
+          "description": "While they revere the holy stigmata of the Nuns of the order, the fathers of the monastery shun the ecstatic revelry of many Trench Pilgrims and insist on modest dress. All Stigmatic Nuns in a War Pilgrimage of Saint Methodius Warband must have Standard Armour, and cannot be used in a battle if they are not wearing Standard Armour. Additionally, the Warband cannot include more than 3 Stigmatic Nuns."
         },
         {
           "name": "Communicant Heresy",
-          "description": "The Pilgrims of Saint Methodius oppose the creation of"
+          "description": "The Pilgrims of Saint Methodius oppose the creation of Communicants. Ammo Monks, Communicants and Communicant Anti-Tank Hunters cannot be included in a War Pilgrimage of Saint Methodius Warband."
         },
         {
           "name": "Followers of Saint Methodius",
-          "description": "The Patron of a War Pilgrimage of Saint"
+          "description": "The Patron of a War Pilgrimage of Saint Methodius Warband is always a Learned Saint."
         },
         {
           "name": "Mortal Sin",
-          "description": "Ecclesiastic Prisoners in a War Pilgrimage of Saint Methodius"
+          "description": "Ecclesiastic Prisoners in a War Pilgrimage of Saint Methodius Warband cannot have a Martyrdom Device, and models in a War Pilgrimage of Saint Methodius Warband cannot be Broken on the Wheel of an Anchorite Shrine."
         },
         {
           "name": "Treasure in Heaven",
-          "description": "Trench Pilgrims in a War Pilgrimage of Saint Methodius"
+          "description": "Trench Pilgrims in a War Pilgrimage of Saint Methodius Warband cannot be resurrected as Martyr Penitents. WAR PILGRIMAGE OF SAINT METHODIUS ARMOURY & BATTLEKIT The following pieces of Battlekit are available to a War Pilgrimage of Saint Methodius Warband. The Machine Gun and Submachine Gun entries in the War Pilgrimage of Saint Methodius Armoury replace those in the standard Trench Pilgrim Armoury. Ranged Weapons Automatic Rifle Bayonet Lug, Limit: 1 40 👑 Machine Gun Limit: 2 50 👑 Submachine Gun Bayonet Lug, Shield Combo, Limit: 1 30 👑 Anchorite Ranged Weapons When you recruit an Anchorite Shrine, you can replace its Catherine Wheel with one of the following Ranged Weapons. Due to its immense size, all these weapons are counted as being 1-Handed weapons when they are used by an Anchorite Shrine. Anti-Materiel Rifle 40 👑 Autocannon 55 👑 Gas Censer 50 👑 Heavy Flamethrower 45 👑 Punt Gun 10 👑 Trench Mortar 40 👑 Anchorite Battlekit An Anchorite Shrine can have up to 2 of the following pieces of Battlekit. Once equipped, the Battlekit cannot be removed or lost from the Anchorite Shrine for any reason. Gas Filters 5 👑"
         }
       ],
-      "line": 3515
+      "ops": []
     },
     {
+      "id": "cavalcade-of-the-tenth-plague",
       "name": "CAVALCADE OF THE TENTH PLAGUE",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Blood of the Lamb",
-          "description": "Castigators in a Cavalcade of the Tenth Plague Warband"
+          "description": "Castigators in a Cavalcade of the Tenth Plague Warband have the TOUGH Keyword at no additional cost in 👑 ."
         },
         {
           "name": "Day of His Wrath",
-          "description": "The War Prophet of this Warband replaces their Laying on"
+          "description": "The War Prophet of this Warband replaces their Laying on Hands ACTION with the following Day of his Wrath ACTION. Day of His Wrath ACTION: A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3” of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3” of the War Prophet."
         },
         {
           "name": "Favour of the Lord",
-          "description": "At the start of each Turn, you can place 1 BLESSING"
+          "description": "At the start of each Turn, you can place 1 BLESSING MARKER next to a model from this Warband."
         },
         {
           "name": "Heaven Awaits",
-          "description": "The Cavalcade rejects the doctrine of the Meta-Christ. Trench"
+          "description": "The Cavalcade rejects the doctrine of the Meta-Christ. Trench Pilgrims in a Cavalcade of the Tenth Plague Warband cannot be resurrected as Martyr-Penitents."
         },
         {
           "name": "Only the Righteous",
-          "description": "Any model with the PILGRIM Keyword in a Cavalcade of"
+          "description": "Any model with the PILGRIM Keyword in a Cavalcade of the Tenth Plague Warband (including an Anchorite Shrine) can have a Sacrifical Lamb at a cost of 5 👑 each, except for Ecclesiastic Prisoners."
         },
         {
           "name": "Stolen Communicants",
-          "description": "Communicants cost 3 ☼ to recruit for a Cavalcade of"
+          "description": "Communicants cost 3 ☼ to recruit for a Cavalcade of the Tenth Plague Warband (they do not cost any 👑 )."
         },
         {
           "name": "The Unclean",
-          "description": "The Cavalcade detests using the unclean Ecclesiastic Prisoners. A"
+          "description": "The Cavalcade detests using the unclean Ecclesiastic Prisoners. A Cavalcade of the Tenth Plague Warband can only have 0-2 Ecclesiastic Prisoners."
+        },
+        {
+          "name": "Warded by Blood",
+          "description": "When you deploy a model that has a Sacrificial Lamb, you can say that they will sacrifice it and anoint themselves with its blood. If you do so, the first BLOOD MARKER placed on the model is ignored. MK"
         }
       ],
-      "line": 3838
+      "ops": []
     },
     {
+      "id": "fida-i-of-alamut",
       "name": "FIDA’I OF ALAMUT",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Alamut Alone",
-          "description": "A Fida’i of Alamut Warband cannot include a Yüzbaşı, a Jabirean"
+          "description": "A Fida’i of Alamut Warband cannot include a Yüzbaşı, a Jabirean Alchemist, any Janissaries, Lions of Jabir or Brazen Bulls."
         },
         {
           "name": "Art of Assassination",
-          "description": "Each Sultanate Assassin and Master Assassin in a Fida’i of"
+          "description": "Each Sultanate Assassin and Master Assassin in a Fida’i of Alamut Warband can have one of the following abilities at the additional cost in 👑 indicated below. You cannot give the same ability to more than one model (i.e. every Assassin that has an ability must have a different one). Hallucinogen Disguise (20 👑 ): If this Assassin is deployed using the INFILTRATOR Keyword, it must be deployed at least 8” away from any enemy models but you may ignore any and all other restrictions that apply to deploying an INFILTRATOR. For example, the model can be deployed in the Line of Sight of an enemy model, enemy Guard Dogs do not affect how it is deployed, and so on. Mirage of Time (15 👑 ): Add -1 DICE to the Success Roll for attacks that target this Assassin."
         },
         {
           "name": "Assassin Acolytes",
-          "description": "Up to three Azeb models in a Fida’i of Alamut Warband can"
+          "description": "Up to three Azeb models in a Fida’i of Alamut Warband can be given the INFILTRATOR Keyword at a cost of +10 👑 each."
         },
         {
           "name": "Dervishes",
-          "description": "A Fida’i of Alamut Warband can include 0-4 Dervishes. The"
+          "description": "A Fida’i of Alamut Warband can include 0-4 Dervishes. The Dervishes use the Janissaries Warband Entry, but cannot wear Reinforced Armour and replace the STRONG Keyword with the IGNORE OFF-HAND WEAPON Keyword and the Whirling Dervish ability: Whirling Dervish: The ritual dance of these Dervishes is hypnotic to witness, and it is as graceful as it is deadly. Add -1 DICE to the Success Rolls for Ranged Attacks that target a Dervish."
+        },
+        {
+          "name": "Flock of Assassins",
+          "description": "A Fida’i of Alamut Warband can include 0-2 Sultanate Assassins and 1 Master Assassin (▶ see below)."
+        },
+        {
+          "name": "Killing Squad",
+          "description": "A Fida’i of Alamut Warband can include 1 Fireteam, consisting of any 2 models from the Warband. Both of the models in the Fireteam are given the FIRETEAM Keyword at no additional cost in 👑 ."
+        },
+        {
+          "name": "Master Assassin",
+          "description": "A Fida’i of Alamut Warband must include 1 Master Assassin. The Master Assassin uses the Sultanate Assassin Warband Entry, except that it has the LEADER and TOUGH Keywords and has a cost of 95 👑 ."
         }
       ],
-      "line": 4962
+      "ops": []
     },
     {
+      "id": "house-of-wisdom",
       "name": "HOUSE OF WISDOM",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Alchemists",
-          "description": "A House of Wisdom Warband must include 1-2 Jabirean"
+          "description": "A House of Wisdom Warband must include 1-2 Jabirean Alchemists. In addition, Alchemist Armour in a House of Wisdom Warband has the Limit: 2 stipulation instead of Limit: 1."
         },
         {
           "name": "Kavasses",
-          "description": "Kavasses are sworn guardians of the House of Wisdom. You can"
+          "description": "Kavasses are sworn guardians of the House of Wisdom. You can change the Melee Characteristic of up to 3 Azebs in a House of Wisdom Warband from -1 DICE to +0 DICE at a cost of +5 👑 each. However, these Azebs lose the Light Skirmisher ability."
         },
         {
           "name": "Noble Guardians",
-          "description": "A House of Wisdom can include 0-2 Fāris. The Fāris use"
+          "description": "A House of Wisdom can include 0-2 Fāris. The Fāris use the Janissary Warband Entry, but have the ELITE Keyword at no additional cost in ducats."
         },
         {
           "name": "Pride of Jabir",
@@ -13584,59 +13722,67 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Private Venture",
-          "description": "A House of Wisdom Warband cannot include a Yüzbaşı,"
+          "description": "A House of Wisdom Warband cannot include a Yüzbaşı, Janissaries, or Sultanate Assassins."
         },
         {
           "name": "Secrets of the House of Wisdom",
-          "description": "Each Jabirean Alchemist in a House of Wisdom"
+          "description": "Each Jabirean Alchemist in a House of Wisdom Warband can have one of following abilities at the cost indicated below. You cannot give the same ability to more than one model (i.e. every Jabirean Alchemist that has an ability must have a different one). Medicine (15 👑 ): This Alchemist is a student of Ibn Sina’s School of Medicine. This Alchemist cannot have a Medi-kit. Instead, when you Activate this Alchemist it can take a School of Medicine ACTION as part of the Activation. If it does so, take a Success Roll for the Alchemist and add +1 DICE to the roll. If the roll is a Failure, nothing happens. If it is a Success or a Critical Success, you can do one of the following things: Remove 2 BLOOD MARKERS or 1 INFECTION MARKER from the Alchemist or a friendly model within 1” of the Alchemist. Stand up a friendly model that is Down and which is within 1” of the Alchemist. Cartography & Geometry (20 👑 ): The Alchemist has studied long and hard the sciences of cartography and Geometry. At the start of the game, before deployment, you can pick up to 2 models in the Warband that are mounted on a base of 32mm or less, giving them the INFILTRATOR Keyword for that game. Secrets of Takwin (20 👑 ): The Alchemist has bound their Takwin creature to themselves with unbreakable bonds. If this Alchemist is hit by an attack while within 1” of their Takwin Homunculus, you can apply the hit to the Homunculus and make the Injury Roll for it instead of the Alchemist. Chemistry & Alchemy (25 👑 ): At the start of the first Turn of the game, before any models have been Activated, you can set up an Elemental Obstacle terrain piece that is up to 2” wide and 6” long anywhere on the battlefield. It must be set up more than 1” away from any other terrain pieces and more than 6” from any models. The Elemental Obstacle has the DIFFICULT TERRAIN and DANGEROUS TERRAIN (X) Keywords. After setting it up, you must say if X is the FIRE, GAS, or SHRAPNEL Keyword."
+        },
+        {
+          "name": "Takwin Homunculus",
+          "description": ": A House of Wisdom Warband can include one Takwin"
         }
       ],
-      "line": 5215
+      "ops": []
     },
     {
+      "id": "defenders-of-the-iron-wall",
       "name": "DEFENDERS OF THE IRON WALL",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Far from the Sublime Gate",
-          "description": "A Defenders of the Iron Wall Warband cannot"
+          "description": "A Defenders of the Iron Wall Warband cannot include any Lions of Jabir, Yüzbaşı or Assassins, and models in the Warband cannot have a Cloak of Alamut or Wind Amulet."
         },
         {
           "name": "Grand Cannons",
-          "description": "A Defenders of the Iron Wall Warband can include 0-2"
+          "description": "A Defenders of the Iron Wall Warband can include 0-2 Sultanate Grand Cannons at a cost of 60 👑 each (▶ see Defenders of the Iron Wall Warband Armoury). When a Grand Cannon is added to a Defender of the Iron Wall Warband it must either be given to a Brazen Bull that is already part of the Warband, or added to the Armoury on the Warband’s roster sheet as a Grand Cannon gun battery. No more than 1 Grand Cannon can be given to a Brazen Bull model, and a Warband cannot have more than 2 Grand Cannons in total. The rules for using the Grand Cannon during a game can be found in the Defenders of the Iron Wall Warband Battlekit section."
         },
         {
           "name": "Janissary Officers",
-          "description": "A Defenders of the Iron Wall Warband can have 0-2"
+          "description": "A Defenders of the Iron Wall Warband can have 0-2 Janissaries, which have the ELITE Keyword at no additional cost in 👑 ."
         },
         {
           "name": "Marksmanship of the Iron Wall",
-          "description": "All the members of the Warband practise"
+          "description": "All the members of the Warband practise marksmanship from the dizzying heights of the Iron Wall against targets on the ground below. Add +2 DICE instead of +1 DICE to the Success Roll for a Ranged Attack made by models in a Defenders of the Iron Wall Warband when they have the Elevated Position modifier."
         },
         {
           "name": "Sappers Corps",
-          "description": "The standard divisions assigned to the Iron Wall have double-"
+          "description": "The standard divisions assigned to the Iron Wall have double- strength Sapper detachments. A Defenders of the Iron Wall Warband can have 0-4 Sultanate Sappers."
         },
         {
           "name": "Siege Jezzail Teams",
-          "description": "The Defenders of the Iron Wall are trained to use Siege"
+          "description": "The Defenders of the Iron Wall are trained to use Siege Jezzails in pairs. Add +1 DICE to the Success Roll for a Ranged Attack made with a Siege Jezzail if there is a friendly model within 1” of the model making the attack."
         },
         {
           "name": "Silahdar",
-          "description": "The commanders of the Iron Wall’s units come from the personal"
+          "description": "The commanders of the Iron Wall’s units come from the personal bodyguards of the Sultan known as Silahdar. A Defenders of the Iron Wall Warband must include 1 Silahdar. The Silahdar uses the Yüzbaşı Warband Entry, except that it replaces the Mubarizun ability with the STRONG Keyword, and they can have an Alaybozan from the Iron Sultanate Armoury (▶ see the Iron Sultanate Battlekit ), and an Anqā Guard and Explosive Charges from the Defenders of the Iron Wall Armoury (▶ see Defenders of the Iron Wall Warband Armoury), at the indicated cost in 👑 for each piece of Battlekit that is taken."
         },
         {
           "name": "Sipahi",
-          "description": "Sipahi Automaton Cavalry often serves as infantry in the Iron Wall’s"
+          "description": "Sipahi Automaton Cavalry often serves as infantry in the Iron Wall’s units to reinforce areas under severe pressure. A Defenders of the Iron Wall Warband can include up to 1 Sipahi Automaton Cavalry at a cost of 110 👑 . They use the Mercenary Entry for a Mamluk Faris but you cannot change their Battlekit in any way. Note that this does not stop you from recruiting a Mamluk Faris as a Mercenary as well."
         }
       ],
-      "line": 5546
+      "ops": []
     },
     {
+      "id": "trench-ghost",
       "name": "TRENCH GHOST",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Barbed Wire Banshee",
-          "description": "A Trench Ghost Warband can include a Barbed"
+          "description": "A Trench Ghost Warband can include a Barbed Wire Banshee instead of a Chorister. The Barbed Wire Banshee has the same Profile and Cost as a Chorister, but instead of the Unholy Hymns Ability add +1 INJURY DICE to rolls for enemy models that are within 8” of a Barbed Wire Banshee."
         },
         {
           "name": "Enemies of All",
@@ -13644,71 +13790,91 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Lost Souls",
-          "description": "A Trench Ghost Warband cannot include models with the"
+          "description": "A Trench Ghost Warband cannot include models with the ARTIFICIAL Keyword, and models in a Trench Ghost Warband cannot have Hellbound Soul Contracts or Infernal Brands. The Warband can include Anointed Heavy Infantry, but they do not have their Infernal Brand and still cost 95 👑 ."
         },
         {
           "name": "Semi-corporeal",
-          "description": "Add -1 INJURY DICE for Injury Rolls caused by Ranged"
+          "description": "Add -1 INJURY DICE for Injury Rolls caused by Ranged Attacks that hit a model from a Trench Ghost Warband."
         },
         {
           "name": "Slow and Creeping",
-          "description": "Treat a Trench Ghost model as having a Movement"
+          "description": "Treat a Trench Ghost model as having a Movement Characteristic of 3”/Infantry when it takes a Dash ACTION. In addition, add -1 DICE to the Success Roll for an attack made by a Trench Ghost model on an enemy model that is making a Retreat."
         },
         {
           "name": "Undead Horror",
-          "description": "Models in this Warband have the FEAR, NEGATE"
+          "description": "Models in this Warband have the FEAR, NEGATE DIFFICULT TERRAIN, and NEGATE GAS Keywords."
         },
         {
           "name": "Walking Bomb",
-          "description": "A model that has a Sarcophagus Mine cannot have any other"
+          "description": "A model that has a Sarcophagus Mine cannot have any other Battlekit. A model with a Sarcophagus Mine can take a Trigger ACTION (▶ see below). In addition, if an enemy model finishes a move within 3” of a model with a Sarcophagus Mine, you can interrupt its Activation and detonate the Sarcophagus Mine without having to take a Trigger ACTION. Trigger ACTION: When a model with a Sarcophagus Mine takes a Trigger ACTION, you must take a Risky Success Roll for the model with +1 DICE. If the roll is a Failure, nothing happens (but you can try again the next time the model is Activated). If the roll is a Success or Critical Success, the Sarcophagus Mine detonates as described below."
+        },
+        {
+          "name": "Detonation",
+          "description": "When a Sarcophagus Mine detonates, all models (friend or foe) within 3” of the model carrying the Sarcophagus Mine and in its Line of Sight are hit by a Ranged Attack with the SHRAPNEL Keyword. Add +1 INJURY DICE to the Injury Rolls for models that are within 1” of the model carrying the Sarcophagus Mine. The model carrying the Sarcophagus Mine is then taken Out of Action. Tank Palanquin | 60 👑 | Heretic Priest only Trench Ghost Heretic Priests sometimes ride into battle standing on top of an armoured platform called a Tank Palanquin. From their lofty vantage point, they rain destruction upon the foe. Type Range Keywords Armour - -3 INJURY MODIFIER, STRONG"
+        },
+        {
+          "name": "Bulky",
+          "description": "A model that has a Tank Palanquin must be mounted on a 50mm base and cannot be equipped with a Shield. In addition, it has a Charge Bonus of D3” instead of D6”."
         }
       ],
-      "line": 6677
+      "ops": []
     },
     {
+      "id": "knights-of-avarice",
       "name": "KNIGHTS OF AVARICE",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Corrupt Merchants",
-          "description": "When you create your starting Warband, you can purchase"
+          "description": "When you create your starting Warband, you can purchase 1 piece of Battlekit from the New Antioch Armoury, and 1 piece of Battlekit from the Iron Sultanate Armoury. Any stipulations that apply to it must still be followed (so there is little point in taking the Assassin’s Dagger, for example, as it can only be used by Assassins). You can repurchase the Battlekit later during the campaign if it is lost for any reason."
         },
         {
           "name": "Gas Bombs",
-          "description": "Artillery Witches in a Knights of Avarice Warband replace their"
+          "description": "Artillery Witches in a Knights of Avarice Warband replace their Infernal Bombs with Gas Bombs."
         },
         {
           "name": "Goetic Warlocks",
-          "description": "Goetic Warlocks are creations of Mammon. A Knights of"
+          "description": "Goetic Warlocks are creations of Mammon. A Knights of Avarice Warband can include up to 2 Goetic Warlocks as Mercenaries (▶ see Goetic Warlock). In addition, the first Goetic Warlock to be recruited in a Knights of Avarice Warband costs 110 👑 instead of its normal cost in ☼."
         },
         {
           "name": "Infernal Rivalry",
-          "description": "Mammon is a rival of Beleth, who is the Patron of"
+          "description": "Mammon is a rival of Beleth, who is the Patron of Death Commandos. A Knights of Avarice Warband cannot include Death Commandos."
         },
         {
           "name": "Mammon’s Chosen",
-          "description": "A Knights of Avarice Warband cannot include a"
+          "description": "A Knights of Avarice Warband cannot include a model if the cost of the model and its Battlekit is less than 80 👑 , unless the model is a Wretched."
         },
         {
           "name": "Preserve the Loot",
-          "description": "Models in a Knights of Avarice Warband cannot have"
+          "description": "Models in a Knights of Avarice Warband cannot have Battlekit that has, or would give another piece of Battlekit, the FIRE and/ or SHRAPNEL Keywords. Grenade Launchers can be taken, but replace the SHRAPNEL Keyword with the -1 INJURY DICE, GAS, and IGNORE ARMOUR Keywords."
         },
         {
           "name": "Price of Greed",
-          "description": "A Heretic Priest in a Knights of Avarice Warband has the"
+          "description": "A Heretic Priest in a Knights of Avarice Warband has the following Price of Greed ACTION instead of the Puppet Master ACTION. Price of Greed ACTION: Worldly wealth becomes the target of this curse, gradually crushing its victim under its weight. A Knights of Avarice Heretic"
+        },
+        {
+          "name": "Worship Mammon",
+          "description": "The Patron of a Knights of Avarice Warband is always Mammon. KNIGHTS OF AVARICE ARMOURY & BATTLEKIT The following pieces of Battlekit are available to a Knights of Avarice Warband. Coin Hammer | 20 👑 | Limit: 2 This double-handed hammer bears the rune of Mammon on its head. Its strike burns through even the heaviest armour, leaving a permanent, painful scar in the shape of the rune. Type Range Keywords 2-Handed Melee +1 INJURY DICE, HEAVY"
+        },
+        {
+          "name": "Rune of Mammon",
+          "description": "If the Injury Roll for an attack made by a Coin Hammer results in 1 or more BLOOD MARKERS being placed next to the target, place 1 BLESSING MARKER next to the model using the Coin Hammer. Golden Calf Altar | 20 👑 | Limit: 3"
         }
       ],
-      "line": 6802
+      "ops": []
     },
     {
+      "id": "heretic-naval-raiders",
       "name": "HERETIC NAVAL RAIDERS",
+      "factionId": "",
       "specialRules": [
         {
           "name": "Close Assault Weapons",
-          "description": "Submachine Guns cost 25 👑  for a Heretic Naval"
+          "description": "Submachine Guns cost 25 👑 for a Heretic Naval Raiders Warband."
         },
         {
           "name": "Fast as Lightning",
-          "description": "Add +1 DICE to the Risky Success Roll for models from a"
+          "description": "Add +1 DICE to the Risky Success Roll for models from a Heretic Naval Raiders Warband that are taking a Dash ACTION."
         },
         {
           "name": "Let Sleeping Dogs Lie",
@@ -13716,48 +13882,58 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Light Troops",
-          "description": "A Heretic Naval Raiders Warband cannot have more than two"
+          "description": "A Heretic Naval Raiders Warband cannot have more than two Anointed models or more than 1 Artillery Witch (even if the Warband has a value of 1,000 👑 or more)."
         },
         {
           "name": "Unseen Advance",
-          "description": "Up to three models without the ELITE Keyword in a Heretic"
+          "description": "Up to three models without the ELITE Keyword in a Heretic Naval Raiders Warband can be given the INFILTRATOR Keyword at a cost of +10 👑 each. MF"
         }
       ],
-      "line": 7030
+      "ops": []
     },
     {
+      "id": "dirge-of-the-great-hegemon",
       "name": "DIRGE OF THE GREAT HEGEMON",
+      "factionId": "",
       "specialRules": [
         {
           "name": "The Executor",
-          "description": "A Dirge of the Great Hegemon Warband must include 1 Executor."
+          "description": "A Dirge of the Great Hegemon Warband must include 1 Executor. The Executor uses the Plague Knight Warband Entry, except that it has a Ranged Characteristic of +1 DICE and the LEADER and TOUGH Keywords, and has a cost of 80 👑 . The Warband can still include 0-2 Plague Knights."
         },
         {
           "name": "The Fallen",
-          "description": "A Dirge of the Great Hegemon Warband cannot include a Lord of"
+          "description": "A Dirge of the Great Hegemon Warband cannot include a Lord of Tumours or an Amalgam."
         },
         {
           "name": "The Lost",
-          "description": "A Dirge of the Great Hegemon Warband Warband can only include 0-2"
+          "description": "A Dirge of the Great Hegemon Warband Warband can only include 0-2 Hounds of the Black Grail and can only include 0-2 Heralds of Beelzebub."
         },
         {
           "name": "The Bereaved",
-          "description": "The Grail Thralls or Fly Thralls in a Dirge of the Great Hegemon"
+          "description": "The Grail Thralls or Fly Thralls in a Dirge of the Great Hegemon Warband are called the Bereaved. They have a Ranged Characteristic of +0 DICE and a cost of 30 👑 , and can have Ranged Weapons, Grenades, a Musical Instrument or a Troop Flag from the Cult of the Black Grail Armoury."
         },
         {
           "name": "Dishonoured",
-          "description": "Models in a Dirge of the Great Hegemon Warband cannot have"
+          "description": "Models in a Dirge of the Great Hegemon Warband cannot have Beelzebub’s Axe or a Black Grail Shield."
         },
         {
           "name": "Hegemon’s Last Blessing",
-          "description": "Putrid Shotguns in this Warband have a Limit of 3, and"
+          "description": "Putrid Shotguns in this Warband have a Limit of 3, and Viscera Cannon have a Limit of 3 and do not have the ELITE only stipulation."
         },
         {
           "name": "Hegemon’s Will",
-          "description": "Using the remnants of the lingering power of a fallen Hegemon,"
+          "description": "Using the remnants of the lingering power of a fallen Hegemon, a Plague Knight of the Warband can directly command a nearby Bereaved. An Executor or Plague Knight in a Dirge of the Great Hegemon Warband can take a Command Bereaved ACTION. If it does so, you can remove any number of INFECTION MARKERS from enemy models. For each INFECTION MARKER you remove, you can then carry out one of the following Commands with a Bereaved (Grail Thrall or Fly Thrall) that is within 18” of the model taking the Command Bereaved ACTION. A Bereaved cannot be given more than 1 Command each Turn, but carrying out a Command does not stop it from also being Activated in the same Turn (before or after the Command was issued). Charge Command: The Bereaved carries out a charge move. Fight Command: The Bereaved carries out a Melee Attack. Move Command: The Bereaved carries out a Move (it cannot Charge or Retreat). Shoot Command: The Bereaved carries out a Ranged Attack."
+        },
+        {
+          "name": "Locus of Despair",
+          "description": "Each time the model with the Broken Crown is Activated, before carrying out any ACTIONS with the model, place 1 INFECTION MARKER next to each enemy model within 1” of the model with the Broken Crown. Urn of the Bitter Ashes | 40 👑 | ELITE only, Limit: 1 This black urn contains ashes from the burned body of the fallen Hegemon, which still retain a faint echo of its hateful will. Fragments swirl and churn in the air, and sinister whispers emanate from within. Type Range Keywords Equipment - -"
+        },
+        {
+          "name": "Sinister Whispers",
+          "description": "Add -1 DICE to the roll for Ranged Attacks that target a model that has the Urn of Bitter Ashes or that is within 3” of the model with the"
         }
       ],
-      "line": 8099
+      "ops": []
     }
   ]
 } as unknown as Dataset;

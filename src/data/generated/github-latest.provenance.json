@@ -12372,7 +12372,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12498,7 +12499,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12540,7 +12542,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12582,7 +12585,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12792,7 +12796,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12834,7 +12839,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -12918,7 +12924,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -13002,7 +13009,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -13044,7 +13052,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -13086,7 +13095,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -13212,7 +13222,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -13296,7 +13307,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Equipment.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -15648,7 +15660,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -17328,7 +17341,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -17370,7 +17384,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -17538,7 +17553,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -17580,7 +17596,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21192,7 +21209,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21234,7 +21252,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21276,7 +21295,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21318,7 +21338,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21360,7 +21381,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21402,7 +21424,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21444,7 +21467,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21486,7 +21510,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21528,7 +21553,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21570,7 +21596,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21612,7 +21639,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21654,7 +21682,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21696,7 +21725,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21738,7 +21768,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21822,7 +21853,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21864,7 +21896,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -21990,7 +22023,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
@@ -22074,7 +22108,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
