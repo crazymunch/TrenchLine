@@ -1,175 +1,163 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Sheet } from '../ui/Sheet';
+import { successOdds, describePool, formatSigned, successOutcome } from '../../rules/dice';
+
+/**
+ * The odds of a Success Roll at a given +/- DICE.
+ *
+ * What this replaced modelled a modifier as a number ADDED TO THE 2D6 SUM, and
+ * offered target numbers of 6, 8 and 9 to go with it. Both are wrong about the
+ * game, and in a way that matters for the decision a player is using this to
+ * make:
+ *
+ *   - Trench Crusade has no flat modifiers on a Success Roll. Every one is
+ *     +/- DICE, which changes the SHAPE of the distribution — roll more dice,
+ *     keep the best or worst two — rather than sliding it along. +1 DICE and
+ *     "+1 to the roll" are not the same bet.
+ *   - There is one target number, and it is 7. The three others were invented.
+ *   - Double 1 was labelled a "Fumble". There is no fumble band: 2-6 is a
+ *     Failure however it was rolled.
+ *
+ * The numbers come from `rules/dice.ts`, which enumerates every outcome rather
+ * than approximating, and the same function backs the tests that check 2D6
+ * against the 36 combinations anyone can count by hand.
+ */
+
+const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
 interface DiceProbabilityModalProps {
   onClose: () => void;
 }
 
 export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onClose }) => {
-  const [modifier, setModifier] = useState<number>(0);
+  const [dice, setDice] = useState(0);
 
+  const odds = useMemo(() => successOdds(dice), [dice]);
+  const base = useMemo(() => successOdds(0), []);
 
-  // 2D6 probability table (sums from 2 to 12)
-  const outcomes = [
-    { sum: 2, ways: 1, baseProb: 2.78, label: 'Double 1s (Fumble)' },
-    { sum: 3, ways: 2, baseProb: 5.56, label: '1+2, 2+1' },
-    { sum: 4, ways: 3, baseProb: 8.33, label: '1+3, 2+2, 3+1' },
-    { sum: 5, ways: 4, baseProb: 11.11, label: '1+4, 2+3, 3+2, 4+1' },
-    { sum: 6, ways: 5, baseProb: 13.89, label: '1+5, 2+4, 3+3...' },
-    { sum: 7, ways: 6, baseProb: 16.67, label: 'Average Roll (6 ways)' },
-    { sum: 8, ways: 5, baseProb: 13.89, label: '2+6, 3+5, 4+4...' },
-    { sum: 9, ways: 4, baseProb: 11.11, label: '3+6, 4+5, 5+4, 6+3' },
-    { sum: 10, ways: 3, baseProb: 8.33, label: '4+6, 5+5, 6+4' },
-    { sum: 11, ways: 2, baseProb: 5.56, label: '5+6, 6+5' },
-    { sum: 12, ways: 1, baseProb: 2.78, label: 'Double 6s (Critical)' }
-  ];
-
-  // Helper to calculate success rate given target number and modifier
-  const calcSuccessRate = (targetNumber: number) => {
-    const effectiveTN = targetNumber - modifier;
-    let passingWays = 0;
-    for (let d1 = 1; d1 <= 6; d1++) {
-      for (let d2 = 1; d2 <= 6; d2++) {
-        if (d1 + d2 >= effectiveTN) passingWays++;
-      }
-    }
-    return ((passingWays / 36) * 100).toFixed(1);
-  };
+  const rows = useMemo(() => {
+    const totals = [...odds.byTotal.entries()].sort((a, b) => a[0] - b[0]);
+    const peak = Math.max(...totals.map(([, p]) => p));
+    return totals.map(([total, p]) => ({ total, p, width: (p / peak) * 100 }));
+  }, [odds]);
 
   return (
     <Sheet
       open
       onClose={onClose}
       size="lg"
-      title="2D6 COMBAT PROBABILITY MATRIX & ODDS"
-      subtitle="Mathematical breakdown of Action tests, hit distributions, and modifiers"
+      title="Success Roll Odds"
+      subtitle="What +/- DICE actually does to the roll"
+      label="Success roll odds"
     >
-      {/* Content */}
-      <div className="p-6 overflow-y-auto space-y-6 flex-1">
-  
-        {/* Interactive Modifier Slider */}
+      <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 font-mono text-xs">
+
         <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
-          <div className="flex justify-between items-center text-xs font-mono">
-            <span className="text-theme-muted uppercase font-bold">Simulated Modifier (Cover / Weapon / Blood):</span>
+          <div className="flex flex-wrap justify-between items-center gap-2">
+            <span className="text-theme-muted uppercase font-bold">+/- DICE</span>
             <span className="text-sm font-bold text-theme-primary">
-              {modifier > 0 ? `+${modifier}` : modifier} Modifier
+              {dice === 0 ? 'No modifier' : `${formatSigned(dice)} DICE`}
+              {' — '}
+              <span className="text-theme-text">{describePool(2, dice)}</span>
             </span>
           </div>
 
-          <input
-            type="range"
-            min="-4"
-            max="4"
-            value={modifier}
-            onChange={(e) => setModifier(parseInt(e.target.value))}
-            className="w-full accent-theme-primary cursor-pointer"
-          />
-
-          <div className="flex justify-between text-xs sm:text-[10px] font-mono text-theme-muted">
-            <span>-4 (Heavy Trench + Blood)</span>
-            <span>0 (Neutral)</span>
-            <span>+4 (Point Blank + Elite)</span>
+          <div className="flex flex-wrap gap-1.5">
+            {[-4, -3, -2, -1, 0, 1, 2, 3, 4].map((d) => (
+              <button
+                key={d}
+                onClick={() => setDice(d)}
+                className={`px-2.5 py-2 rounded font-bold border transition-all min-h-[44px] sm:min-h-0 ${
+                  dice === d
+                    ? 'bg-theme-primary text-theme-base border-theme-primary shadow'
+                    : 'bg-theme-base text-theme-muted border-theme-border hover:text-theme-text'
+                }`}
+              >
+                {d === 0 ? '0' : formatSigned(d)}
+              </button>
+            ))}
           </div>
+
+          <p className="text-theme-muted leading-relaxed">
+            Every modifier in the game is dice, not points. Cover is -1 DICE, Long Range is
+            -1 DICE, an elevated position is +1 DICE, and opposite ones cancel before anything
+            is rolled.
+          </p>
         </div>
 
-        {/* Target Number Success Rates Grid */}
-        <div className="space-y-2">
-          <span className="text-xs font-mono uppercase text-theme-muted font-bold block">
-            Success Chance by Target Number (with {modifier >= 0 ? `+${modifier}` : modifier} mod):
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center">
+          {([
+            ['Failure', odds.failure, base.failure, 'text-status-error', '2-6'],
+            ['Success', odds.success, base.success, 'text-status-legal', '7-11'],
+            ['Critical Success', odds.critical, base.critical, 'text-theme-primary', '12+'],
+          ] as const).map(([label, p, basis, tone, band]) => (
+            <div key={label} className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
+              <span className="text-theme-muted block uppercase font-bold">{label}</span>
+              <span className={`text-xl font-bold block ${tone}`}>{pct(p)}</span>
+              <span className="text-theme-muted block">
+                {band}
+                {dice !== 0 && (
+                  <>
+                    {' · '}
+                    <span className={p > basis ? 'text-status-legal' : p < basis ? 'text-status-error' : ''}>
+                      {p === basis ? 'no change' : `${p > basis ? '+' : ''}${((p - basis) * 100).toFixed(1)} pts`}
+                    </span>
+                  </>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-3 bg-theme-base rounded border border-theme-border flex flex-wrap items-baseline justify-between gap-2">
+          <span className="text-theme-muted uppercase font-bold">Hits (7 or more)</span>
+          <span className="text-lg font-bold text-theme-text">
+            {pct(odds.hit)}
+            {dice !== 0 && (
+              <span className="text-theme-muted font-normal">
+                {' '}vs {pct(base.hit)} unmodified
+              </span>
+            )}
           </span>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-center">
-      
-            {[
-              { tn: 6, label: 'TN 6 (Easy)' },
-              { tn: 7, label: 'TN 7 (Standard Action)' },
-              { tn: 8, label: 'TN 8 (Challenging)' },
-              { tn: 9, label: 'TN 9 (Difficult)' }
-            ].map((item) => {
-              const rate = calcSuccessRate(item.tn);
-              const rateNum = parseFloat(rate);
-
-              return (
-                <div key={item.tn} className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
-                  <span className="text-xs sm:text-[10px] text-theme-muted block uppercase font-bold">{item.label}</span>
-                  <span className={`text-xl font-bold block ${
-                    rateNum >= 70 ? 'text-status-legal' : rateNum >= 50 ? 'text-theme-primary' : 'text-status-error'
-                  }`}>
-                    {rate}%
-                  </span>
-                  <span className="text-xs sm:text-[9px] text-theme-muted block">Target {item.tn}</span>
-                </div>
-              );
-            })}
-
-          </div>
         </div>
 
-        {/* Dynamic Bell Curve Distribution Visualizer */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase text-theme-muted font-bold block">
-              2D6 Probability Bell Curve (With {modifier >= 0 ? `+${modifier}` : modifier} Modifier):
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <span className="text-theme-muted uppercase font-bold">
+              Distribution of the total
             </span>
-            <span className="text-xs sm:text-[10px] font-mono text-theme-primary">
-              Standard TN 7 Pass: {calcSuccessRate(7)}%
+            <span className="text-theme-muted">
+              mean {odds.mean.toFixed(2)}
             </span>
           </div>
 
-          <div className="space-y-1.5 font-mono text-xs">
-            {outcomes.map((o) => {
-              const effectiveSum = o.sum + modifier;
-              const isCriticalFail = o.sum === 2;
-              const isCriticalSuccess = o.sum === 12 || effectiveSum >= 12;
-              const isSuccess = effectiveSum >= 7 && !isCriticalFail;
-
-              let barColor = 'bg-theme-muted';
-              let tagColor = 'text-theme-muted';
-              let tagLabel = 'Failure';
-
-              if (isCriticalFail) {
-                barColor = 'bg-status-error';
-                tagColor = 'text-status-error font-bold';
-                tagLabel = 'Fumble (Double 1s)';
-              } else if (isCriticalSuccess) {
-                barColor = 'bg-status-legal';
-                tagColor = 'text-status-legal font-bold';
-                tagLabel = 'Critical (12+)';
-              } else if (isSuccess) {
-                barColor = 'bg-theme-primary';
-                tagColor = 'text-theme-primary font-bold';
-                tagLabel = 'Success (≥7)';
-              } else {
-                barColor = 'bg-status-error/70';
-                tagColor = 'text-status-error';
-                tagLabel = 'Failure (<7)';
-              }
-
+          <div className="space-y-1.5">
+            {rows.map(({ total, p, width }) => {
+              const outcome = successOutcome(total);
+              const bar = outcome === 'critical' ? 'bg-theme-primary'
+                : outcome === 'success' ? 'bg-status-legal'
+                : 'bg-theme-muted';
               return (
-                <div key={o.sum} className="flex items-center space-x-3 bg-theme-base p-2 rounded border border-theme-border/60">
-                  <div className="w-16 flex items-center justify-between text-xs">
-                    <span className="text-theme-muted">[{o.sum}]</span>
-                    <span className="text-theme-text font-bold">➔ {effectiveSum}</span>
+                <div key={total} className="flex items-center gap-2">
+                  <span className="w-6 text-right tabular-nums text-theme-text flex-shrink-0">{total}</span>
+                  <div className="flex-1 min-w-0 h-4 bg-theme-elevated rounded-sm overflow-hidden">
+                    <div className={`h-full ${bar}`} style={{ width: `${width}%` }} />
                   </div>
-
-                  <div className="flex-1 bg-theme-surface h-3.5 rounded overflow-hidden">
-                    <div
-                      className={`h-full rounded transition-all duration-300 ${barColor}`}
-                      style={{ width: `${(o.baseProb / 16.67) * 100}%` }}
-                    />
-                  </div>
-
-                  <span className={`w-28 text-right text-xs sm:text-[10px] ${tagColor}`}>
-                    {tagLabel}
+                  <span className="w-14 text-right tabular-nums text-theme-muted flex-shrink-0">
+                    {pct(p)}
                   </span>
-
-                  <span className="w-12 text-right text-xs sm:text-[11px] text-theme-muted font-mono">{o.baseProb}%</span>
                 </div>
               );
             })}
           </div>
+
+          <p className="text-theme-muted leading-relaxed">
+            Bars are scaled to the most likely total, so the shape is comparable across
+            modifiers. Note that -DICE does not simply mirror +DICE: keeping the two lowest of
+            four is a different distribution from keeping the two highest.
+          </p>
         </div>
 
       </div>

@@ -2,505 +2,455 @@
 
 import React, { useState } from 'react';
 import { soundEffects } from '../../services/soundEffects';
-import { 
-  Dices, 
-  Skull, 
-  ChevronDown, 
-  ChevronUp, 
-  Volume2, 
-  VolumeX, 
-  Zap
+import {
+  rollSuccess, rollInjury, describePool, formatSigned, capInjuryModifier,
+  SUCCESS_LABEL, INJURY_LABEL, INJURY_EFFECT,
+  type SuccessRoll, type InjuryRoll,
+} from '../../rules/dice';
+import {
+  Dices,
+  Skull,
+  ChevronDown,
+  ChevronUp,
+  Volume2,
+  VolumeX,
+  Zap,
 } from 'lucide-react';
 
-type DiceMode = 'action' | 'injury' | 'pool';
+/**
+ * The dice console, rebuilt on `rules/dice.ts`.
+ *
+ * What it replaced kept the single highest die on an Injury Roll and threw the
+ * rest away, so a Bloodbath of 6, 5, 4 against -3 Armour read as 3 — a Minor
+ * Hit — where the book gives 12 and the model is Out of Action. It also
+ * invented both result tables, added a fumble band the game does not have, and
+ * offered a "3D6 (Bloodbath / +1 Inj)" button that conflated two unrelated
+ * rules: +1 INJURY DICE rolls three dice and keeps the two highest, while a
+ * Bloodbath rolls three and adds all three.
+ *
+ * So the arithmetic lives in `rules/dice.ts`, tested against the rulebook's own
+ * worked examples, and this file is the console around it. The controls now say
+ * what the book says — INJURY DICE and INJURY MODIFIER are two separate things
+ * and are two separate controls.
+ */
+
+type DiceMode = 'success' | 'injury' | 'pool';
+
+type PoolRoll = { kind: 'pool'; rolled: number[]; total: number; sixes: number; ones: number };
+type AnyRoll = SuccessRoll | InjuryRoll | PoolRoll;
+
+/** One line of the roll history. Built from the result, never from the inputs. */
+function describe(r: AnyRoll): string {
+  if (r.kind === 'pool') {
+    return `Pool ${r.rolled.length}D6: [${r.rolled.join(', ')}] = ${r.total}`;
+  }
+  const dice = r.kept.join(' + ');
+  const mod = r.modifier !== 0 ? ` ${formatSigned(r.modifier)}` : '';
+  if (r.kind === 'success') {
+    return `Success Roll: [${dice}] = ${r.total} — ${SUCCESS_LABEL[r.outcome]}`
+      + (r.risky && r.outcome === 'failure' ? ' (Activation ends)' : '');
+  }
+  const label = r.bloodbath ? (r.deadly ? 'Bloodbath (DEADLY)' : 'Bloodbath') : 'Injury Roll';
+  return `${label}: [${dice}]${mod} = ${r.total} — ${INJURY_LABEL[r.outcome]}`;
+}
+
+const SUCCESS_TONE: Record<SuccessRoll['outcome'], string> = {
+  failure: 'text-status-error',
+  success: 'text-status-legal',
+  critical: 'text-theme-primary',
+};
+
+const INJURY_TONE: Record<InjuryRoll['outcome'], string> = {
+  'no-effect': 'text-status-legal',
+  'minor-hit': 'text-status-warning',
+  down: 'text-status-warning',
+  'out-of-action': 'text-status-error',
+};
 
 export const DiceRoller: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeMode, setActiveMode] = useState<DiceMode>('action');
-  
-  // Action Modifiers
-  const [actionDiceModifier, setActionDiceModifier] = useState<number>(0); // -2, -1, 0, +1, +2
-  const [isRiskyAction, setIsRiskyAction] = useState<boolean>(false);
-  
-  // Injury Modifiers
-  const [injuryDiceCount, setInjuryDiceCount] = useState<number>(2); // 1 to 4
-  const [injuryFlatModifier, setInjuryFlatModifier] = useState<number>(0); // -3 to +3 (armor vs blood/ap)
-  
-  // Multi-D6 Pool
-  const [customPoolCount, setCustomPoolCount] = useState<number>(4);
+  const [activeMode, setActiveMode] = useState<DiceMode>('success');
 
-  const [diceHistory, setDiceHistory] = useState<string[]>([]);
-  const [lastResult, setLastResult] = useState<{
-    type: string;
-    rawDice: number[];
-    keptDice: number[];
-    discardedDice: number[];
-    modifier: number;
-    finalTotal: number;
-    label: string;
-    verdict: string;
-    verdictColor: string;
-    isCrit?: boolean;
-    isFumble?: boolean;
-  } | null>(null);
-  const [isRolling, setIsRolling] = useState(false);
+  // Success Roll: one signed number, because the book cancels +DICE against
+  // -DICE before rolling anything.
+  const [successDice, setSuccessDice] = useState(0);
+  const [isRisky, setIsRisky] = useState(false);
+
+  // Injury Roll: INJURY DICE and INJURY MODIFIER are different rules and get
+  // different controls. The console this replaced had one for both.
+  const [injuryDice, setInjuryDice] = useState(0);
+  const [injuryModifier, setInjuryModifier] = useState(0);
+  const [isBloodbath, setIsBloodbath] = useState(false);
+  const [isDeadly, setIsDeadly] = useState(false);
+
+  const [poolCount, setPoolCount] = useState(4);
+
+  const [history, setHistory] = useState<string[]>([]);
+  const [last, setLast] = useState<AnyRoll | null>(null);
   const [isMuted, setIsMuted] = useState(false);
 
-  const handleToggleMute = () => {
-    const next = soundEffects.toggleMute();
-    setIsMuted(next);
+  const handleToggleMute = () => setIsMuted(soundEffects.toggleMute());
+
+  const record = (r: AnyRoll) => {
+    setLast(r);
+    setHistory((prev) => [describe(r), ...prev.slice(0, 7)]);
   };
 
-  // 1. Roll Action / Success Test (2D6 base with +/- Dice modifiers)
-  const rollActionTest = () => {
-    setIsRolling(true);
+  const handleSuccess = () => {
     soundEffects.playDiceRoll();
-
-    setTimeout(() => {
-      // Total dice to roll = 2 + Math.abs(actionDiceModifier)
-      const numDiceToRoll = 2 + Math.abs(actionDiceModifier);
-      const rawDice: number[] = [];
-      for (let i = 0; i < numDiceToRoll; i++) {
-        rawDice.push(Math.floor(Math.random() * 6) + 1);
-      }
-
-      // Sort dice
-      const sorted = [...rawDice].sort((a, b) => b - a); // Descending
-
-      let keptDice: number[] = [];
-      let discardedDice: number[] = [];
-
-      if (actionDiceModifier >= 0) {
-        // Keep 2 highest
-        keptDice = sorted.slice(0, 2);
-        discardedDice = sorted.slice(2);
-      } else {
-        // Keep 2 lowest
-        keptDice = sorted.slice(sorted.length - 2);
-        discardedDice = sorted.slice(0, sorted.length - 2);
-      }
-
-      const sum = keptDice.reduce((a, b) => a + b, 0);
-      const isCrit = keptDice[0] === 6 && keptDice[1] === 6;
-      const isFumble = keptDice[0] === 1 && keptDice[1] === 1;
-
-      let verdict = '';
-      let verdictColor = 'text-theme-text';
-
-      if (isCrit) {
-        verdict = '⭐ CRITICAL SUCCESS!';
-        verdictColor = 'text-theme-primary';
-        soundEffects.playCathedralBell();
-      } else if (isFumble) {
-        verdict = '💀 FUMBLE / DISASTER!';
-        verdictColor = 'text-status-error';
-        soundEffects.playGunfire();
-      } else if (sum >= 7) {
-        verdict = '✅ SUCCESS (Passed TN 7)';
-        verdictColor = 'text-status-legal';
-      } else {
-        verdict = isRiskyAction ? '❌ FAILED (Activation Ends Immediately)' : '❌ FAILED (Missed TN 7)';
-        verdictColor = 'text-status-error';
-      }
-
-      const modStr = actionDiceModifier > 0 ? `+${actionDiceModifier} DICE` : actionDiceModifier < 0 ? `${actionDiceModifier} DICE` : 'Standard';
-      const label = `Action Roll (${modStr}): [${keptDice.join(' + ')} = ${sum}] — ${verdict}`;
-
-      const res = {
-        type: `Action Success Roll (${modStr})`,
-        rawDice,
-        keptDice,
-        discardedDice,
-        modifier: 0,
-        finalTotal: sum,
-        label,
-        verdict,
-        verdictColor,
-        isCrit,
-        isFumble
-      };
-
-      setLastResult(res);
-      setDiceHistory((prev) => [label, ...prev.slice(0, 7)]);
-      setIsRolling(false);
-    }, 200);
+    const r = rollSuccess({ dice: successDice, risky: isRisky });
+    if (r.outcome === 'critical') soundEffects.playCathedralBell();
+    record(r);
   };
 
-  // 2. Roll Injury / Bloodbath Multi-D6
-  const rollInjuryTest = () => {
-    setIsRolling(true);
+  const handleInjury = () => {
     soundEffects.playDiceRoll();
-
-    setTimeout(() => {
-      const rawDice: number[] = [];
-      for (let i = 0; i < injuryDiceCount; i++) {
-        rawDice.push(Math.floor(Math.random() * 6) + 1);
-      }
-
-      // Injury roll in Trench Crusade takes the HIGHEST single die (or sum depending on scenario/heavy) + modifiers
-      const sorted = [...rawDice].sort((a, b) => b - a);
-      const bestDie = sorted[0];
-      const discardedDice = sorted.slice(1);
-      const finalTotal = bestDie + injuryFlatModifier;
-
-      let verdict = '';
-      let verdictColor = 'text-theme-text';
-
-      if (finalTotal >= 9) {
-        verdict = '💀 OUT OF ACTION! (Fatal/Incapacitated)';
-        verdictColor = 'text-status-error';
-        soundEffects.playGunfire();
-      } else if (finalTotal >= 7) {
-        verdict = '🩸 SERIOUS INJURY (+1 Blood Marker)';
-        verdictColor = 'text-status-error';
-      } else if (finalTotal >= 4) {
-        verdict = '⚠️ DOWNED (Knocked Off Feet)';
-        verdictColor = 'text-status-warning';
-      } else {
-        verdict = '🛡️ FLESH WOUND / DEFLECTED BY ARMOUR';
-        verdictColor = 'text-status-legal';
-      }
-
-      const modStr = injuryFlatModifier > 0 ? `+${injuryFlatModifier}` : injuryFlatModifier < 0 ? `${injuryFlatModifier}` : '';
-      const label = `Injury Roll (${injuryDiceCount}D6 ${modStr}): Best Die [${bestDie}] ${modStr} = ${finalTotal} — ${verdict}`;
-
-      const res = {
-        type: `Injury Test (${injuryDiceCount}D6 ${modStr})`,
-        rawDice,
-        keptDice: [bestDie],
-        discardedDice,
-        modifier: injuryFlatModifier,
-        finalTotal,
-        label,
-        verdict,
-        verdictColor
-      };
-
-      setLastResult(res);
-      setDiceHistory((prev) => [label, ...prev.slice(0, 7)]);
-      setIsRolling(false);
-    }, 200);
+    const r = rollInjury({
+      injuryDice, modifier: injuryModifier, bloodbath: isBloodbath, deadly: isDeadly,
+    });
+    if (r.outcome === 'out-of-action') soundEffects.playGunfire();
+    record(r);
   };
 
-  // 3. Roll Multi-D6 Pool
-  const rollCustomPool = () => {
-    setIsRolling(true);
+  const handlePool = () => {
     soundEffects.playDiceRoll();
-
-    setTimeout(() => {
-      const rawDice: number[] = [];
-      for (let i = 0; i < customPoolCount; i++) {
-        rawDice.push(Math.floor(Math.random() * 6) + 1);
-      }
-
-      const sixes = rawDice.filter((d) => d === 6).length;
-      const ones = rawDice.filter((d) => d === 1).length;
-      const sum = rawDice.reduce((a, b) => a + b, 0);
-
-      const verdict = `${sixes} Sixes (Crits) • ${ones} Ones (Fumbles) • Sum: ${sum}`;
-      const label = `Pool (${customPoolCount}D6): [${rawDice.join(', ')}] — ${verdict}`;
-
-      const res = {
-        type: `Dice Pool (${customPoolCount}D6)`,
-        rawDice,
-        keptDice: rawDice,
-        discardedDice: [],
-        modifier: 0,
-        finalTotal: sum,
-        label,
-        verdict,
-        verdictColor: 'text-theme-primary'
-      };
-
-      setLastResult(res);
-      setDiceHistory((prev) => [label, ...prev.slice(0, 7)]);
-      setIsRolling(false);
-    }, 200);
+    const rolled = Array.from({ length: poolCount }, () => Math.floor(Math.random() * 6) + 1);
+    record({
+      kind: 'pool',
+      rolled,
+      total: rolled.reduce((a, b) => a + b, 0),
+      sixes: rolled.filter((d) => d === 6).length,
+      ones: rolled.filter((d) => d === 1).length,
+    });
   };
+
+  // The two Injury controls together decide the pool, so the button has to be
+  // built from both. `keep` mirrors rules/dice.ts.
+  const injuryKeep = isBloodbath ? (isDeadly ? 4 : 3) : 2;
+  const cappedModifier = capInjuryModifier(injuryModifier);
+
+  const tabClass = (active: boolean) =>
+    `flex items-center gap-1.5 px-3 py-2 rounded uppercase font-bold transition-all min-h-[44px] sm:min-h-0 ${
+      active
+        ? 'bg-theme-primary text-theme-base shadow'
+        : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
+    }`;
+
+  const chipClass = (active: boolean) =>
+    `px-2.5 py-1.5 rounded font-bold transition-all min-h-[44px] sm:min-h-0 ${
+      active
+        ? 'bg-theme-primary text-theme-base font-extrabold shadow'
+        : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
+    }`;
 
   return (
     <div className="bg-theme-surface border-2 border-theme-border rounded-md overflow-hidden shadow-xl bevel-container">
-      
-      {/* Header Bar */}
+
       <div
         className="px-4 py-3 bg-theme-elevated flex items-center justify-between cursor-pointer select-none border-b border-theme-border"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center space-x-2">
-          <Dices className="w-5 h-5 text-theme-primary" />
+        <div className="flex items-center space-x-2 min-w-0">
+          <Dices className="w-5 h-5 text-theme-primary flex-shrink-0" />
           <h3 className="font-gothic font-bold text-sm text-theme-text uppercase tracking-wider">
-            TABLETOP COMBAT DICE ENGINE
+            Tabletop Combat Dice Engine
           </h3>
-          {lastResult && !isOpen && (
+          {last && !isOpen && (
             <span className="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border truncate max-w-xs">
-              {lastResult.label}
+              {describe(last)}
             </span>
           )}
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 flex-shrink-0">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleToggleMute();
-            }}
+            onClick={(e) => { e.stopPropagation(); handleToggleMute(); }}
             className="p-1 text-theme-muted hover:text-theme-primary rounded"
-            title={isMuted ? 'Unmute Sound FX' : 'Mute Sound FX'}
+            title={isMuted ? 'Unmute sound' : 'Mute sound'}
           >
             {isMuted ? <VolumeX className="w-4 h-4 text-status-error" /> : <Volume2 className="w-4 h-4 text-status-legal" />}
           </button>
-
-          <button className="text-theme-muted hover:text-theme-text">
+          <button className="text-theme-muted hover:text-theme-text" aria-label={isOpen ? 'Collapse' : 'Expand'}>
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
       </div>
 
-      {/* Expanded Combat Dice Console */}
       {isOpen && (
-        <div className="p-4 space-y-4 bg-theme-base animate-fade-in font-mono text-xs">
-          
-          {/* Mode Tabs */}
-          <div className="flex items-center space-x-2 border-b border-theme-border pb-3">
-            {[
-              { id: 'action', label: 'Action & Success Test (2D6)', icon: <Zap className="w-3.5 h-3.5" /> },
-              { id: 'injury', label: 'Injury & Bloodbath (Multi-D6)', icon: <Skull className="w-3.5 h-3.5" /> },
-              { id: 'pool', label: 'Custom Dice Pool', icon: <Dices className="w-3.5 h-3.5" /> }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveMode(tab.id as DiceMode)}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded uppercase font-bold transition-all ${
-                  activeMode === tab.id
-                    ? 'bg-theme-primary text-theme-base shadow'
-                    : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
+        <div className="p-3 sm:p-4 space-y-4 bg-theme-base animate-fade-in font-mono text-xs">
+
+          {/* Mode tabs. Wrap rather than overflow — three of these do not fit a 375px phone. */}
+          <div className="flex flex-wrap items-center gap-2 border-b border-theme-border pb-3">
+            <button onClick={() => setActiveMode('success')} className={tabClass(activeMode === 'success')}>
+              <Zap className="w-3.5 h-3.5" /><span>Success Roll</span>
+            </button>
+            <button onClick={() => setActiveMode('injury')} className={tabClass(activeMode === 'injury')}>
+              <Skull className="w-3.5 h-3.5" /><span>Injury Roll</span>
+            </button>
+            <button onClick={() => setActiveMode('pool')} className={tabClass(activeMode === 'pool')}>
+              <Dices className="w-3.5 h-3.5" /><span>Dice Pool</span>
+            </button>
           </div>
 
-          {/* MODE 1: ACTION / SUCCESS TEST */}
-          {activeMode === 'action' && (
+          {/* ---------------------------------------------------- Success Roll */}
+          {activeMode === 'success' && (
             <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                
-                {/* Dice Modifiers Selector */}
-                <div className="flex items-center space-x-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px]">Dice Modifier:</span>
-                  {[-2, -1, 0, 1, 2].map((mod) => (
-                    <button
-                      key={mod}
-                      onClick={() => setActionDiceModifier(mod)}
-                      className={`px-2.5 py-1 rounded font-bold transition-all ${
-                        actionDiceModifier === mod
-                          ? 'bg-theme-primary text-theme-base font-extrabold shadow'
-                          : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
-                      }`}
-                    >
-                      {mod > 0 ? `+${mod} DICE` : mod < 0 ? `${mod} DICE` : 'Standard'}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-theme-muted uppercase font-bold">+/- Dice:</span>
+                  {[-3, -2, -1, 0, 1, 2, 3].map((mod) => (
+                    <button key={mod} onClick={() => setSuccessDice(mod)} className={chipClass(successDice === mod)}>
+                      {mod === 0 ? 'None' : `${formatSigned(mod)} DICE`}
                     </button>
                   ))}
                 </div>
 
-                {/* Risky Action Toggle */}
-                <label className="flex items-center space-x-2 cursor-pointer bg-theme-elevated px-3 py-1 rounded border border-theme-border">
+                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0">
                   <input
                     type="checkbox"
-                    checked={isRiskyAction}
-                    onChange={(e) => setIsRiskyAction(e.target.checked)}
+                    checked={isRisky}
+                    onChange={(e) => setIsRisky(e.target.checked)}
                     className="rounded border-theme-border text-theme-primary focus:ring-0"
                   />
-                  <span className={`font-bold uppercase text-xs sm:text-[11px] ${isRiskyAction ? 'text-status-error' : 'text-theme-muted'}`}>
-                    Risky Action
+                  <span className={`font-bold uppercase ${isRisky ? 'text-status-error' : 'text-theme-muted'}`}>
+                    Risky
                   </span>
                 </label>
-
               </div>
 
-              {/* Roll Trigger Button */}
+              <p className="text-theme-muted leading-relaxed">
+                {successDice === 0
+                  ? 'Roll 2D6 and add them together.'
+                  : `Roll ${describePool(2, successDice)} and add them together.`}
+                {' '}2-6 Failure · 7-11 Success · 12+ Critical Success.
+              </p>
+
               <button
-                onClick={rollActionTest}
-                disabled={isRolling}
-                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-theme-primary/20 text-xs tracking-wider"
+                onClick={handleSuccess}
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center gap-2 shadow-lg shadow-theme-primary/20 tracking-wider"
               >
                 <Zap className="w-4 h-4" />
-                <span>
-                  Roll Action Test ({actionDiceModifier > 0 ? `+${actionDiceModifier} DICE (Roll ${2 + actionDiceModifier} keep 2 high)` : actionDiceModifier < 0 ? `${actionDiceModifier} DICE (Roll ${2 - actionDiceModifier} keep 2 low)` : '2D6 Standard'})
-                </span>
+                <span>Roll {describePool(2, successDice)}</span>
               </button>
             </div>
           )}
 
-          {/* MODE 2: INJURY & BLOODBATH */}
+          {/* ----------------------------------------------------- Injury Roll */}
           {activeMode === 'injury' && (
             <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
-                {/* Dice Count */}
+
                 <div className="space-y-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px] block">
-                    Injury Dice Pool:
+                  <span className="text-theme-muted uppercase font-bold block">
+                    +/- Injury Dice
                   </span>
-                  <div className="flex space-x-1.5">
-                    {[
-                      { count: 1, label: '1D6 (Light)' },
-                      { count: 2, label: '2D6 (Standard)' },
-                      { count: 3, label: '3D6 (Bloodbath / +1 Inj)' },
-                      { count: 4, label: '4D6 (+2 Inj)' }
-                    ].map((btn) => (
-                      <button
-                        key={btn.count}
-                        onClick={() => setInjuryDiceCount(btn.count)}
-                        className={`flex-1 py-1.5 rounded font-bold uppercase text-xs sm:text-[10px] transition-all ${
-                          injuryDiceCount === btn.count
-                            ? 'bg-status-error text-white font-extrabold shadow'
-                            : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
-                        }`}
-                      >
-                        {btn.label}
+                  <div className="flex flex-wrap gap-1.5">
+                    {[-2, -1, 0, 1, 2].map((mod) => (
+                      <button key={mod} onClick={() => setInjuryDice(mod)} className={chipClass(injuryDice === mod)}>
+                        {mod === 0 ? 'None' : formatSigned(mod)}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Flat Modifiers (Armour vs Blood/AP) */}
                 <div className="space-y-1.5">
-                  <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px] block">
-                    Injury Modifier (Armour / Blood / AP):
+                  <span className="text-theme-muted uppercase font-bold block">
+                    Injury Modifier (Armour, AP)
                   </span>
-                  <div className="flex space-x-1">
+                  <div className="flex flex-wrap gap-1.5">
                     {[-3, -2, -1, 0, 1, 2, 3].map((mod) => (
-                      <button
-                        key={mod}
-                        onClick={() => setInjuryFlatModifier(mod)}
-                        className={`flex-1 py-1.5 rounded font-bold text-xs transition-all ${
-                          injuryFlatModifier === mod
-                            ? 'bg-theme-primary text-theme-base font-extrabold shadow'
-                            : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
-                        }`}
-                      >
-                        {mod > 0 ? `+${mod}` : mod}
+                      <button key={mod} onClick={() => setInjuryModifier(mod)} className={chipClass(injuryModifier === mod)}>
+                        {mod === 0 ? '0' : formatSigned(mod)}
                       </button>
                     ))}
                   </div>
                 </div>
-
               </div>
 
-              {/* Roll Trigger Button */}
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0">
+                  <input
+                    type="checkbox"
+                    checked={isBloodbath}
+                    onChange={(e) => { setIsBloodbath(e.target.checked); if (!e.target.checked) setIsDeadly(false); }}
+                    className="rounded border-theme-border text-theme-primary focus:ring-0"
+                  />
+                  <span className={`font-bold uppercase ${isBloodbath ? 'text-status-error' : 'text-theme-muted'}`}>
+                    Bloodbath
+                  </span>
+                </label>
+
+                {/* DEADLY sits inside the book's Bloodbath paragraph, so it is
+                    only offered once a Bloodbath is declared. */}
+                <label className={`flex items-center gap-2 px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0 ${
+                  isBloodbath ? 'cursor-pointer bg-theme-elevated' : 'opacity-40 cursor-not-allowed bg-theme-base'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={isDeadly}
+                    disabled={!isBloodbath}
+                    onChange={(e) => setIsDeadly(e.target.checked)}
+                    className="rounded border-theme-border text-theme-primary focus:ring-0"
+                  />
+                  <span className={`font-bold uppercase ${isDeadly ? 'text-status-error' : 'text-theme-muted'}`}>
+                    Deadly
+                  </span>
+                </label>
+              </div>
+
+              <p className="text-theme-muted leading-relaxed">
+                {isBloodbath
+                  ? `Roll ${describePool(injuryKeep, injuryDice)} and add ${isDeadly ? 'all 4' : 'all 3'} together.`
+                  : `Roll ${describePool(2, injuryDice)} and add them together.`}
+                {cappedModifier !== 0 && ` Then ${formatSigned(cappedModifier)}.`}
+                {' '}1 or less No Effect · 2-6 Minor Hit · 7-8 Down · 9+ Out of Action.
+                {injuryModifier < cappedModifier && (
+                  <span className="text-status-warning">
+                    {' '}The maximum -INJURY MODIFIER is -3 in total, so {injuryModifier} is applied as -3.
+                  </span>
+                )}
+              </p>
+
               <button
-                onClick={rollInjuryTest}
-                disabled={isRolling}
-                className="w-full py-3 bg-status-error hover:bg-status-error text-white font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg shadow-[#B22222]/30 text-xs tracking-wider"
+                onClick={handleInjury}
+                className="w-full py-3 bg-status-error hover:bg-status-error text-white font-bold uppercase rounded flex items-center justify-center gap-2 shadow-lg shadow-[#B22222]/30 tracking-wider"
               >
                 <Skull className="w-4 h-4" />
                 <span>
-                  Roll Injury Table ({injuryDiceCount}D6 {injuryFlatModifier > 0 ? `+${injuryFlatModifier}` : injuryFlatModifier < 0 ? `${injuryFlatModifier}` : ''})
+                  Roll {describePool(injuryKeep, injuryDice)}
+                  {cappedModifier !== 0 ? ` ${formatSigned(cappedModifier)}` : ''}
                 </span>
               </button>
             </div>
           )}
 
-          {/* MODE 3: CUSTOM MULTI-D6 POOL */}
+          {/* ------------------------------------------------------- Dice pool */}
           {activeMode === 'pool' && (
             <div className="space-y-3 p-3 bg-theme-surface border border-theme-border rounded-md">
-              <div className="flex items-center space-x-3">
-                <span className="text-theme-muted uppercase font-bold text-xs sm:text-[11px]">Number of D6s:</span>
-                {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => setCustomPoolCount(num)}
-                    className={`px-3 py-1 rounded font-bold transition-all ${
-                      customPoolCount === num
-                        ? 'bg-theme-primary text-theme-base font-extrabold shadow'
-                        : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
-                    }`}
-                  >
-                    {num}D6
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-theme-muted uppercase font-bold">Dice:</span>
+                {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => (
+                  <button key={n} onClick={() => setPoolCount(n)} className={chipClass(poolCount === n)}>
+                    {n}D6
                   </button>
                 ))}
               </div>
-
+              <p className="text-theme-muted">
+                A plain pool with no rule attached — for anything the book asks you to roll that is
+                neither a Success Roll nor an Injury Roll.
+              </p>
               <button
-                onClick={rollCustomPool}
-                disabled={isRolling}
-                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center space-x-2 shadow-lg text-xs"
+                onClick={handlePool}
+                className="w-full py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded flex items-center justify-center gap-2 shadow-lg tracking-wider"
               >
                 <Dices className="w-4 h-4" />
-                <span>Roll {customPoolCount} D6 Pool</span>
+                <span>Roll {poolCount}D6</span>
               </button>
             </div>
           )}
 
-          {/* Visual Interactive Result Box */}
-          {lastResult && (
-            <div className="p-4 bg-theme-surface border-2 border-theme-primary/60 rounded-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
-              
-              <div className="space-y-2">
-                <span className="text-xs sm:text-[10px] text-theme-muted uppercase font-bold block">
-                  {lastResult.type}
+          {/* ---------------------------------------------------------- Result */}
+          {last && (
+            <div className="p-3 sm:p-4 bg-theme-surface border-2 border-theme-primary/60 rounded-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+
+              <div className="space-y-2 min-w-0">
+                <span className="text-theme-muted uppercase font-bold block">
+                  {last.kind === 'pool'
+                    ? `Dice Pool (${last.rolled.length}D6)`
+                    : last.kind === 'success'
+                      ? `Success Roll (${describePool(2, 0)}${last.rolled.length > 2 ? ` from ${last.rolled.length}, ${last.keptEnd}` : ''})`
+                      : `${last.bloodbath ? (last.deadly ? 'Bloodbath, DEADLY' : 'Bloodbath') : 'Injury Roll'} (${last.rolled.length}D6, keep the ${last.keep} ${last.keptEnd})`}
                 </span>
 
-                {/* Dice Avatars */}
                 <div className="flex flex-wrap items-center gap-2">
-                  {/* Kept Dice */}
-                  {lastResult.keptDice.map((d, idx) => (
-                    <div
-                      key={`kept-${idx}`}
-                      className="w-11 h-11 rounded bg-theme-base border-2 border-theme-primary text-theme-primary flex items-center justify-center font-mono font-bold text-lg shadow-lg ring-1 ring-theme-primary/50"
-                      title="Kept Die"
-                    >
-                      {d}
-                    </div>
-                  ))}
-
-                  {/* Discarded Dice */}
-                  {lastResult.discardedDice.map((d, idx) => (
-                    <div
-                      key={`disc-${idx}`}
-                      className="w-11 h-11 rounded bg-theme-base border border-theme-border text-theme-muted line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
-                      title="Discarded / Dropped Die"
-                    >
-                      {d}
-                    </div>
-                  ))}
-
-                  {lastResult.modifier !== 0 && (
-                    <div className="px-2.5 py-1 rounded bg-theme-elevated text-theme-primary border border-theme-border font-bold text-sm">
-                      {lastResult.modifier > 0 ? `+${lastResult.modifier}` : lastResult.modifier} Mod
-                    </div>
+                  {last.kind === 'pool' ? (
+                    last.rolled.map((d, i) => (
+                      <div
+                        key={`p-${i}`}
+                        className="w-11 h-11 rounded bg-theme-base border-2 border-theme-primary text-theme-primary flex items-center justify-center font-mono font-bold text-lg shadow"
+                      >
+                        {d}
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      {last.kept.map((d, i) => (
+                        <div
+                          key={`k-${i}`}
+                          className="w-11 h-11 rounded bg-theme-base border-2 border-theme-primary text-theme-primary flex items-center justify-center font-mono font-bold text-lg shadow-lg ring-1 ring-theme-primary/50"
+                          title="Counted"
+                        >
+                          {d}
+                        </div>
+                      ))}
+                      {last.dropped.map((d, i) => (
+                        <div
+                          key={`d-${i}`}
+                          className="w-11 h-11 rounded bg-theme-base border border-theme-border text-theme-muted line-through flex items-center justify-center font-mono font-bold text-lg opacity-40"
+                          title="Not counted"
+                        >
+                          {d}
+                        </div>
+                      ))}
+                      {last.modifier !== 0 && (
+                        <div className="px-2.5 py-1 rounded bg-theme-elevated text-theme-primary border border-theme-border font-bold text-sm">
+                          {formatSigned(last.modifier)}
+                        </div>
+                      )}
+                    </>
                   )}
 
                   <span className="text-sm font-bold text-theme-text px-1">=</span>
                   <div className="px-3 py-1 rounded bg-theme-primary text-theme-base font-extrabold text-base shadow">
-                    {lastResult.finalTotal}
+                    {last.total}
                   </div>
                 </div>
               </div>
 
-              {/* Verdict Banner */}
-              <div className="text-right">
-                <span className="text-xs sm:text-[10px] text-theme-muted uppercase block">Result & Effect</span>
-                <span className={`font-gothic font-bold text-sm sm:text-base ${lastResult.verdictColor} block`}>
-                  {lastResult.verdict}
-                </span>
+              <div className="md:text-right md:max-w-xs">
+                <span className="text-theme-muted uppercase block">Result</span>
+                {last.kind === 'pool' ? (
+                  <span className="font-gothic font-bold text-sm sm:text-base text-theme-primary block">
+                    {last.sixes} × 6 · {last.ones} × 1 · total {last.total}
+                  </span>
+                ) : last.kind === 'success' ? (
+                  <>
+                    <span className={`font-gothic font-bold text-sm sm:text-base block ${SUCCESS_TONE[last.outcome]}`}>
+                      {SUCCESS_LABEL[last.outcome]}
+                    </span>
+                    {last.risky && last.outcome === 'failure' && (
+                      <span className="text-theme-muted block leading-relaxed">
+                        A failed Risky Success Roll ends the model&apos;s Activation.
+                      </span>
+                    )}
+                    {last.outcome === 'critical' && (
+                      <span className="text-theme-muted block leading-relaxed">
+                        The attack hits and you make an Injury Roll with +1 INJURY DICE.
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span className={`font-gothic font-bold text-sm sm:text-base block ${INJURY_TONE[last.outcome]}`}>
+                      {INJURY_LABEL[last.outcome]}
+                    </span>
+                    <span className="text-theme-muted block leading-relaxed">
+                      {INJURY_EFFECT[last.outcome]}
+                    </span>
+                  </>
+                )}
               </div>
-
             </div>
           )}
 
-          {/* Roll History Rollout */}
-          {diceHistory.length > 0 && (
+          {history.length > 0 && (
             <div className="space-y-1 border-t border-theme-border pt-2">
-              <span className="text-xs sm:text-[9px] font-mono uppercase text-theme-muted block">Recent Rolls:</span>
+              <span className="uppercase text-theme-muted block">Recent rolls</span>
               <div className="flex flex-wrap gap-1.5">
-                {diceHistory.map((item, idx) => (
+                {history.map((item, i) => (
                   <span
-                    key={idx}
-                    className="text-xs sm:text-[10px] font-mono bg-theme-surface px-2 py-0.5 rounded text-theme-muted border border-theme-border/60"
+                    key={i}
+                    className="bg-theme-surface px-2 py-0.5 rounded text-theme-muted border border-theme-border/60"
                   >
                     {item}
                   </span>
@@ -511,7 +461,6 @@ export const DiceRoller: React.FC = () => {
 
         </div>
       )}
-
     </div>
   );
 };

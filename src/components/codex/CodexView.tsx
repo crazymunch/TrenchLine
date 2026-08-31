@@ -194,7 +194,7 @@ export const CodexView: React.FC = () => {
             className="flex items-center space-x-2 px-4 py-2 bg-theme-elevated hover:bg-theme-border border border-theme-primary/50 text-theme-primary rounded font-mono text-xs font-bold uppercase transition-all shadow flex-shrink-0"
           >
             <BarChart3 className="w-4 h-4" />
-            <span>2D6 Probability Odds</span>
+            <span>Success Roll Odds</span>
           </button>
           </>}
         />
@@ -1120,7 +1120,7 @@ export const CodexView: React.FC = () => {
         )}
       </Sheet>
 
-      {/* 2D6 Probability Odds Modal */}
+      {/* Success Roll odds — what +/- DICE does to the distribution. */}
       {isProbabilityOpen && (
         <DiceProbabilityModal onClose={() => setIsProbabilityOpen(false)} />
       )}
