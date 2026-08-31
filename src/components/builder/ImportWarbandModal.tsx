@@ -21,6 +21,15 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
   const [inputText, setInputText] = useState('');
   const [parsedWarband, setParsedWarband] = useState<Warband | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  /*
+    Roster lines the catalogues have no profile for.
+
+    They are shown, not silently dropped and not silently invented. The import
+    used to give an unmatched line a made-up 35-Ducat Trooper with a made-up
+    statline, so a roster with one name spelled differently imported "cleanly"
+    and was wrong from that line on.
+  */
+  const [unmatched, setUnmatched] = useState<string[]>([]);
 
   const handleParse = () => {
     if (!inputText.trim()) {
@@ -29,12 +38,13 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     }
 
     try {
-      const result = importNewRecruitRoster(inputText, units);
-      if (result.units.length === 0) {
+      const { warband, unmatched } = importNewRecruitRoster(inputText, units);
+      setUnmatched(unmatched);
+      if (warband.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
         setParsedWarband(null);
       } else {
-        setParsedWarband(result);
+        setParsedWarband(warband);
         setErrorMsg(null);
       }
     } catch (_err) {
@@ -52,8 +62,9 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       const content = event.target?.result as string;
       setInputText(content);
       try {
-        const result = importNewRecruitRoster(content, units);
-        setParsedWarband(result);
+        const { warband, unmatched } = importNewRecruitRoster(content, units);
+        setParsedWarband(warband);
+        setUnmatched(unmatched);
         setErrorMsg(null);
       } catch (_err) {
         setErrorMsg('Error parsing uploaded file.');
@@ -147,6 +158,34 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             Parse Roster Data
           </button>
         </div>
+
+        {/*
+          Lines we could not resolve.
+
+          Shown above the preview, not below it, because the preview is what a
+          player checks before pressing Import — and a warrior that is missing
+          from it is the thing they most need to know about. Each name is
+          printed as written in their export, so they can see which spelling
+          the catalogues do not have.
+        */}
+        {unmatched.length > 0 && (
+          <div className="border border-status-warning bg-status-warning/10 p-3 space-y-1.5">
+            <span className="eyebrow text-status-warning flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {unmatched.length} {unmatched.length === 1 ? 'entry' : 'entries'} not imported
+            </span>
+            <p className="text-xs text-theme-text leading-relaxed">
+              These lines have no profile in the catalogues, so they were left out rather
+              than given invented statlines. Check the spelling against the Codex, or add
+              them by hand after importing.
+            </p>
+            <ul className="font-mono text-xs text-theme-muted space-y-0.5 pl-4">
+              {unmatched.map((n, i) => (
+                <li key={i} className="list-disc">{n}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Error Message */}
         {errorMsg && (

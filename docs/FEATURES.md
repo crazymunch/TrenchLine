@@ -7,6 +7,12 @@ working rather than merely present.
 This document is the checklist. `Status` is what the code genuinely does today,
 verified by reading it, not what the UI or the README claims.
 
+Which means it goes stale, and did: after Phase 2 shipped variants, unit
+limits, required entries and the legality summary, this file still listed all
+four as ❌ for weeks. A checklist that lags the code is worse than none,
+because it is the file someone reads to decide what to build next. Re-read it
+whenever a phase closes.
+
 | Status | Meaning |
 |---|---|
 | ✅ | Works |
@@ -24,25 +30,29 @@ roster.
 | Feature | Status | Notes |
 |---|---|---|
 | Faction/warband selection | ✅ | 6 factions; Mercenaries orphaned (`AUDIT.md` §1.5) |
-| **Warband Variants / sub-factions** | ❌ | **14 official variants, zero support.** No `variantId` on `Warband`; variant rules change roster legality (`AUDIT.md` §1.6a) |
+| **Warband Variants / sub-factions** | ✅ | 17 derived from the catalogues, `variantId` on `Warband`, `VariantPicker` in the builder, and variant ops that change legality and armoury |
 | Add/remove/duplicate models | ✅ | |
-| Points budget with live total | 🟡 | Ducats only — **no Glory budget** |
-| **Unit min/max limits** (`0-2 Sniper Priests`) | ❌ | 0 of 45 units carry `maxCount`; catalogues have 1,187 constraints |
-| **Required entries** (`must include 1 Lieutenant`) | ❌ | Only a generic "has a Leader" check |
-| **Wargear legality** (`ELITE only`, `Limit: 2`) | 🟡 | Ad-hoc filters in `AddEquipmentModal`, not rule-driven |
+| Points budget with live total | ✅ | Both currencies; `validate.ts` raises `over-budget-glory` as well as Ducats |
+| **Unit min/max limits** (`0-2 Sniper Priests`) | ✅ | Derived per unit, raised or lowered by a variant |
+| **Required entries** (`must include 1 Lieutenant`) | ✅ | `unit-min`, scoped to the roster's own faction, with variant overrides |
+| **Wargear legality** (`ELITE only`, `Limit: 2`) | ✅ | Rule-driven from the armouries, per faction and per variant |
 | Hand/slot capacity (1H/2H, shield combo) | 🟡 | Partial, hand-rolled |
-| **Roster legality summary** | ❌ | Only over-budget + no-leader |
+| **Roster legality summary** | ✅ | `LegalityStrip` renders the verdict, each violation naming the rule that produced it |
 | Per-model wargear costs rolled into total | ✅ | |
-| **Glory Items / per-model upgrades** | ❌ | Strains, Vile Corpus, Goetic Powers, Glory Items — no concept exists |
-| Import from NewRecruit / BattleScribe | 🟡 | `newRecruitImporter.ts` handles JSON/XML/text; maps onto wrong profiles |
+| **Glory Items / per-model upgrades** | 🟡 | `UnitOption` exists and the Grail Strains are derived onto the Thrall; Vile Corpus, Goetic Powers and Glory Items are not modelled yet |
+| Import from NewRecruit / BattleScribe | 🟡 | JSON/XML/text, resolved against the generated dataset. An entry it cannot match is now **reported, not invented** — it used to become a 35-Ducat Trooper with a made-up statline. Equipment is still not carried across from the export |
 | Export roster (print / text) | ✅ | `ExportModal` with real print styles |
-| Export to shareable file | 🟡 | |
+| Export to shareable file | 🟡 | `ExportModal` writes a file; a roster now also has a URL (`/roster/[id]`), though it is device-local until the owner is signed in |
 | Multiple saved rosters | ✅ | |
-| Ruleset version selection | 🟡 | Exists, but versions are unsourced (`AUDIT.md` §1.9) |
+| Ruleset version selection | ✅ | Two sourced rulesets, SHA-pinned, switchable with reconciliation |
 | Data freshness / upstream sync | 🟡 | `CustomizerView` diffs against GitHub; had a fabricated fallback |
-| Offline use | ⬜ | No service worker; PWA manifest not linked |
+| Offline use | ✅ | Service worker caches the shell and the ruleset; `e2e/offline.spec.ts` cuts the network for real |
 
-**The four ❌ rows are the whole point of the app.** They are Phase 2.
+**All four of the ❌ rows above are now done.** They were the whole point of
+the app and they were Phase 2.
+
+What is left in this table is honest rather than tidy: `🟡` means the feature
+works and something specific about it does not, and each row says which.
 
 ## Part 2 — TrenchLine's own ideas
 
