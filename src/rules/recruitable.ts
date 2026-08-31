@@ -33,7 +33,7 @@ import type {
 } from '@/types/rules';
 import { nameKey } from './names';
 import { sameFaction } from './variants';
-import { thirdPartyGate } from './thirdParty';
+import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -110,9 +110,17 @@ export function recruitable(
   const appId = (id: string) =>
     appFactionIds.find((f) => sameFaction(f, id)) ?? id;
 
+  /*
+    The entry ids of the third-party Warband Variants, so a unit's own reveal
+    condition can be joined to them. The gate is split across the data: the
+    condition sits on the unit, the thing it names sits in a group elsewhere in
+    the catalogue.
+  */
+  const tpVariants = thirdPartyVariantIds(dataset);
+
   const units: UnitProfile[] = dataset.units.map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
-    const gate = thirdPartyGate(u);
+    const gate = thirdPartyGate(u, tpVariants);
     return {
       id: u.entryId || u.id,
       name: u.name,

@@ -307,6 +307,7 @@ export const WarbandBuilder: React.FC = () => {
             factionId={warband.factionId}
             factionName={faction?.name}
             current={warband.variantId}
+            allowThirdParty={warband.allowThirdParty}
             onPick={(id) => {
               updateWarbandVariant(warband.id, id);
               setIsVariantOpen(false);

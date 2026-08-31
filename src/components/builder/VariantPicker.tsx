@@ -23,6 +23,13 @@ import { Sheet } from '@/components/ui';
 
 interface Props {
   dataset: Dataset;
+  /**
+   * Whether this Warband allows third-party content. Six of the catalogues'
+   * Variants are unofficial, and each one unlocks its own units — so hiding
+   * the units but still offering the Variant that reveals them would be half
+   * a switch.
+   */
+  allowThirdParty?: boolean;
   /** The app's faction id, e.g. `iron-sultanate`. */
   factionId: string;
   factionName?: string;
@@ -32,9 +39,12 @@ interface Props {
 }
 
 export const VariantPicker: React.FC<Props> = ({
-  dataset, factionId, factionName, current, onPick, onClose,
+  dataset, factionId, factionName, current, onPick, onClose, allowThirdParty,
 }) => {
-  const variants = variantsForFaction(dataset, factionId);
+  const variants = variantsForFaction(dataset, factionId)
+    // A Variant already chosen stays visible even if the switch is since off,
+    // so the roster never shows "Standard list" for a Warband that is not one.
+    .filter((v) => allowThirdParty || !v.thirdParty || v.id === current);
 
   return (
     <Sheet
@@ -60,6 +70,7 @@ export const VariantPicker: React.FC<Props> = ({
             description={v.lore}
             rules={v.specialRules}
             opCount={v.ops?.length ?? 0}
+            thirdParty={v.thirdParty}
             selected={current === v.id}
             onSelect={() => onPick(v.id)}
           />
@@ -85,9 +96,10 @@ const Choice: React.FC<{
   description?: string;
   rules?: { name: string; description: string }[];
   opCount?: number;
+  thirdParty?: boolean;
   selected: boolean;
   onSelect: () => void;
-}> = ({ name, description, rules, opCount = 0, selected, onSelect }) => (
+}> = ({ name, description, rules, opCount = 0, thirdParty, selected, onSelect }) => (
   <button
     onClick={onSelect}
     className={`w-full text-left p-3 rounded-sm border transition-colors min-h-[44px] ${
@@ -99,6 +111,11 @@ const Choice: React.FC<{
     <div className="flex items-center gap-2">
       {selected && <Check className="w-4 h-4 text-theme-primary flex-shrink-0" />}
       <span className="font-gothic font-bold text-sm text-theme-text">{name}</span>
+      {thirdParty && (
+        <span className="eyebrow px-1.5 py-0.5 rounded font-bold bg-status-warning/15 text-status-warning border border-status-warning/40">
+          Third party
+        </span>
+      )}
       {opCount > 0 && (
         <span className="ml-auto text-xs sm:text-[9px] font-mono text-theme-muted flex-shrink-0">
           {opCount} rule{opCount === 1 ? '' : 's'} enforced

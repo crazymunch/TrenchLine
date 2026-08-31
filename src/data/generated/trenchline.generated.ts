@@ -58555,6 +58555,284 @@ export const DATASET: Dataset = {
       ]
     },
     {
+      "id": "cadavercorps",
+      "entryId": "b0b0-1549-d4ec-7b5f",
+      "name": "Cadaver Corps",
+      "factionId": "Heretic Legion",
+      "specialRules": [
+        {
+          "name": "Cadaver Corps",
+          "description": "The Cadaver Corps may not use any ranged weapons with the HEAVY keyword. The Cadaver Corps cannot field Choristers. The Cadaver Corps cannot take Artillery Witches or War Wolf Assault Beasts, but can instead take Phosphor Witches and War Hyenas."
+        },
+        {
+          "name": "Profane Baptism",
+          "description": "The Cadaver Corps are limited to 0-2 Anointed Heavy Infantry, but these models are ELITE and gain the “Incandescent” rule."
+        },
+        {
+          "name": "Blitz",
+          "description": "When a non-ARTIFICIAL model in this Warband is set up during standard deployment, it can be placed up to 6” away from its player’s Deployment Zone. This ability cannot be used if playing a scenario that does not allow the use of INFILTRATORS."
+        },
+        {
+          "name": "It Will Not Stop",
+          "description": "When an ARTIFICIAL model in this Warband is hit by an attack or effect with the FIRE keyword, until the end of its next activation, any attacks with any melee weapons it holds gain the FIRE keyword, including unarmed attacks."
+        },
+        {
+          "name": "Scavenge",
+          "description": "The Cadaver Corps can scavenge and/or consume the fallen of the last battle. When they Explore, they roll and consult the relevant exploration table as normal. However, instead of gaining ducats equal to their Exploration score x10, the Cadaver Corps gain half that amount AND gain half of the ducat value of every model (friend and foe) that died (not just taken out action) last game as if they had been sold, including lost equipment. Units and Items bought with Glory are not applicable to Scavenge and are lost like normal, except Artificial Rebirth, which refunds its full 1 glory."
+        },
+        {
+          "name": "Restless",
+          "description": "The Cadaver Corps grow restless quickly. After each battle, they must Scavenge if they did not do so in the previous battle."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "constraint:2daf-dded-85a2-f21a",
+          "value": "2"
+        },
+        {
+          "op": "unset-primary",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489"
+        },
+        {
+          "op": "add",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be"
+        },
+        {
+          "op": "set-primary",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "category",
+          "value": "3de0-192c-3ec2-51be"
+        },
+        {
+          "op": "remove",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "category",
+          "value": "bd43-ddb1-262d-4489"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "15bf-43f1-0650-1070",
+            "name": "Anointed Heavy Infantry"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "8983-6564-96c7-fd33",
+            "name": "Heretic Priest"
+          },
+          "field": "e878-a54e-5461-5f68-min",
+          "value": "0"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fe81-08b2-7161-d4cb",
+            "name": "Chorister"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "name",
+          "value": "War Hyena"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "cost.ducats",
+          "value": "140"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "stats.armour",
+          "value": "-2"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "stats.base",
+          "value": "40mm"
+        },
+        {
+          "op": "increment",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "constraint:105c-8780-b389-2f18",
+          "value": "1"
+        },
+        {
+          "op": "remove",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "category",
+          "value": "914f-0020-0d97-e217"
+        },
+        {
+          "op": "add",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "category",
+          "value": "f0ef-ba0d-8963-331a"
+        },
+        {
+          "op": "add",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "category",
+          "value": "aa2f-f4b3-3003-4b43"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eab4-df0a-d8f3-302d",
+            "name": "War Wolf"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f2d9-0f99-61a1-fce5",
+            "name": "Artillery Witch"
+          },
+          "field": "name",
+          "value": "Phosphor Witch"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f2d9-0f99-61a1-fce5",
+            "name": "Artillery Witch"
+          },
+          "field": "cost.ducats",
+          "value": "95"
+        },
+        {
+          "op": "increment",
+          "target": {
+            "kind": "unit",
+            "id": "f2d9-0f99-61a1-fce5",
+            "name": "Artillery Witch"
+          },
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f2d9-0f99-61a1-fce5",
+            "name": "Artillery Witch"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f2d9-0f99-61a1-fce5",
+            "name": "Artillery Witch"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "ac3e-734d-ddbe-d291",
+            "name": "Technomancer"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "eeba-3e20-1de2-32d2",
+            "name": "Witch Coven Matriarch"
+          },
+          "field": "hidden",
+          "value": "false"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
+    },
+    {
       "id": "fidaiofalamutthecabalofassassins",
       "entryId": "cd91-f171-98d6-423e",
       "name": "Fida’i of Alamut – The Cabal of Assassins",
@@ -59013,6 +59291,320 @@ export const DATASET: Dataset = {
         "catalogue",
         "rulebook"
       ]
+    },
+    {
+      "id": "nomadsofalbadia",
+      "entryId": "7091-3f28-368f-eace",
+      "name": "Nomads of Al-Badia",
+      "factionId": "Iron Sultanate",
+      "specialRules": [
+        {
+          "name": "Hit and Run",
+          "description": "A model in a Nomads of Al-Badia warband making a Ranged Attack gains +1 to the result of their hit roll and +1 INJURY MODIFIER if they did not suffer a Long Range penalty. This does not apply to weapons with the GRENADE keyword or weapon that don’t require a Success Roll to hit."
+        },
+        {
+          "name": "Beyond the Wall",
+          "description": "The Nomads of al-Badia have long since been separated from the Iron Sultanate, and live on their own without help or supplies. As such, they do not have access to Alchemists, Sappers, Lions of Jabir, Brazen Bulls, Sniper Rifles, Alchemical Ammunition or Alchemist armour. They can instead field Bedu Sharpshooters, Archeologists, a “Zamburak” Weapons Platform, and may purchase Sparkpowder Ammunition, Heavy Bore Ammunition, Shayṭānic Shard Ammunition. They may also purchase RPGs for 30 ducats without needing access to the campaign Glory store, at LIMIT: 2 (separate to the LIMIT of the Glory store RPGs)."
+        },
+        {
+          "name": "Survival of the Fittest",
+          "description": "Yuzbasi of the Nomads of al-Badia may choose to replace their Mubarizum ability with Snap Shot. In exchange for losing their Counter-charge ability, Janissaries (and a Model that takes Janissary training) of the Nomads of al-Badia may allow any Siege Jezzails or Halberd Guns they have equipped to gain the SHIELD COMBO keyword while they use them. If they do, the maximum cumulative armour they can have is -2."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e874-ea2b-96ed-0f9a",
+            "name": "Sultanate Sapper"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "7c17-5f75-6fd9-73cf",
+            "name": "Jabirean Alchemist"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e62d-c06e-ce35-428b",
+            "name": "Brazen Bull"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "9c5a-601e-6b16-320d",
+            "name": "Yüzbaşı Captain"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f63f-ac9a-639b-b7ba",
+            "name": "Lion of Jabir"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "786e-0d01-8a9c-a3be",
+            "name": "\"Zamburak\" Weapon Platform"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "bc0a-c750-bc8b-0419",
+            "name": "Bedu Sharpshooter"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "b13b-7b29-752f-ab2e",
+            "name": "Archeologist"
+          },
+          "field": "hidden",
+          "value": "false"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
+    },
+    {
+      "id": "ghaziofthegoldenpath",
+      "entryId": "5df2-4c17-7c8c-4f1e",
+      "name": "Ghazi of the Golden Path",
+      "factionId": "Iron Sultanate",
+      "specialRules": [
+        {
+          "name": "Struggle by the Sword",
+          "description": "Anytime a member of this warband would take a model with the keyword ELITE or TOUGH Out of Action, it gains a BLESSING marker."
+        },
+        {
+          "name": "The Golden Path",
+          "description": "The warband may not include any Brazen Bulls, Lions of Jabir, Jabirean Alchemists, Sultanate Assassins, or the Cloak of Alamut."
+        },
+        {
+          "name": "Raider Dynasties",
+          "description": "You may optionally take an Akinji-Bey as the leader of your warband, these units use the same characteristic as a Yuzbasi Captain, however their Mubarizun ability is replaced with Guiding Strike."
+        },
+        {
+          "name": "Path for the Pathless",
+          "description": "This warband may take up to 4 units known as Günahkâr. These are special variants of the Janissary unit that replace them in the warband roster. Instead of Counter Charge, they gain the ability Djinn Hunter, which grants them NEGATE FEAR."
+        },
+        {
+          "name": "Raiding Party",
+          "description": "You may upgrade up to 6 Azeb into Akinji. Instead of the usual SKIRMISHER upgrade, an Akinji gains the ability Çekilmek."
+        },
+        {
+          "name": "Forward Scout",
+          "description": "Sultanate Sappers recruited to a Ghazi of the Golden Path are replaced by Abrek Sappers. An Abrek Sapper gains +1 dice to their melee characteristic and the ability Mine-Setting is replaced with Improvised Trap."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e874-ea2b-96ed-0f9a",
+            "name": "Sultanate Sapper"
+          },
+          "field": "stats.melee",
+          "value": "+1 Dice"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e874-ea2b-96ed-0f9a",
+            "name": "Sultanate Sapper"
+          },
+          "field": "name",
+          "value": "Abrek Sapper"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e874-ea2b-96ed-0f9a",
+            "name": "Sultanate Sapper"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e874-ea2b-96ed-0f9a",
+            "name": "Sultanate Sapper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "7c17-5f75-6fd9-73cf",
+            "name": "Jabirean Alchemist"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "4"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "name",
+          "value": "Günahkâr"
+        },
+        {
+          "op": "add",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "category",
+          "value": "7877-788b-2d58-c844"
+        },
+        {
+          "op": "increment",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "constraint:a33e-7153-a9b3-e446",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "58c8-0815-71a7-27fb",
+            "name": "Janissary"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e62d-c06e-ce35-428b",
+            "name": "Brazen Bull"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "62d4-d89a-f7e2-7d3b",
+            "name": "Sultanate Assassin"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f63f-ac9a-639b-b7ba",
+            "name": "Lion of Jabir"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "9bfc-c394-0056-4f3e",
+            "name": "Teğmen"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "d021-f84d-78e4-f486",
+            "name": "Shirdal"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "a98c-24cc-6885-daaa",
+            "name": "Pairika"
+          },
+          "field": "hidden",
+          "value": "false"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
     },
     {
       "id": "papalstatesinterventionforce",
@@ -59519,6 +60111,226 @@ export const DATASET: Dataset = {
       ]
     },
     {
+      "id": "remnantsofbyzantium",
+      "entryId": "a911-0ba3-a9f7-17b7",
+      "name": "Remnants of Byzantium",
+      "factionId": "New Antioch",
+      "specialRules": [
+        {
+          "name": "Variable Leadership",
+          "description": "The Warband does not have a regular Lieutenant as a leader. You may choose either a Menaulatoi Princeps or a Varangian Warlord to lead your soldiers. Your roster can never contain both at the same time. Should your current leader have died, you may recruit a replacement and choose between the two again."
+        },
+        {
+          "name": "Orthodox Patriarch",
+          "description": "Only one Sniper Priest can join the warband at first, but this limit rises to two in games with a threshold of 1200 or more."
+        },
+        {
+          "name": "Byzantine Battle Order",
+          "description": "This warband may neither buy Machine Armour, nor field any Mechanized Heavy Infantry or Shock Troopers, nor promote Yeoman to Trench Moles."
+        },
+        {
+          "name": "Cataphract Formations",
+          "description": "Two Cataphracti may form one additional FIRETEAM with each other, beyond the two regular ones. A second FIRETEAM between two other Cataphracti may be formed in games with a threshold of 1200 or more.s"
+        },
+        {
+          "name": "Lightly Armoured",
+          "description": "Apart from a Menaulatoi Princeps, no model in the Warband can be equipped with Reinforced Armour."
+        },
+        {
+          "name": "Disciplined Fighting Force",
+          "description": "When failing a Morale Test and choosing to stay in the fight, the onset of Shaken is delayed by one turn. The Remnants do not roll for Morale the following turn and become Shaken instead. If they fail the next Morale Test, they flee as normal."
+        },
+        {
+          "name": "Divergent Armoury",
+          "description": "Grenades are LIMIT:2. Incendiary Grenades are replaced by Molotovs for 5 ducats. The warband has no access to Automatic Shotguns, Automatic Pistols, Satchel Charges, or Grenade Launchers, but looting after Heretic assaults raised Automatic Rifles to LIMIT:2."
+        },
+        {
+          "name": "On the Move",
+          "description": "For +5 ducats per model, up to four Yeomen or Varangian Guards may be promoted to Vanguards, at any point during the campaign. They can be deployed on any board edge, as long as they are at least 8\" away from enemies. This only applies if INFILTRATORS are allowed in the battle. Vanguards are deployed after them. They can also be placed in your own deployment area as per usual."
+        },
+        {
+          "name": "Longspear Doctrine",
+          "description": "Menaulatoi Princeps and Yeomen treat Short Range as +4\" longer than usual."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e578-1122-47cb-10ad",
+            "name": "Lieutenant"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "dd59-a783-dbb5-242f",
+            "name": "Sniper Priest"
+          },
+          "field": "constraint:15b5-28fb-d0b3-9f5b",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "name",
+          "value": "Varangian Guard"
+        },
+        {
+          "op": "increment",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "cost.ducats",
+          "value": "5"
+        },
+        {
+          "op": "decrement",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "constraint:6995-3472-87b9-2803",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "stats.ranged",
+          "value": "-1 Dice"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "name",
+          "value": "Varangian Guard"
+        },
+        {
+          "op": "append",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "rules",
+          "value": "This ability does not function if the model is equipped with a 2-handed axe and a shield."
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "increment",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "constraint:80cb-0666-30a3-5540",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "stats.armour",
+          "value": "-1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "name",
+          "value": "Cataphract Mechanized Infantry"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "cost.ducats",
+          "value": "65"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "stats.base",
+          "value": "32mm"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3133-240a-a0cc-9cb4",
+            "name": "Heavy Infantry"
+          },
+          "field": "stats.armour",
+          "value": "-1"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
+    },
+    {
       "id": "processionofthesacredaffliction",
       "entryId": "0d88-774c-22af-e2fc",
       "name": "Procession of the Sacred Affliction",
@@ -59782,6 +60594,292 @@ export const DATASET: Dataset = {
         "catalogue",
         "rulebook"
       ]
+    },
+    {
+      "id": "childrenofyggdrasil",
+      "entryId": "65bd-e9b5-eea8-5f65",
+      "name": "Children of Yggdrasil",
+      "factionId": "Trench Pilgrims",
+      "specialRules": [
+        {
+          "name": "Warrior of the North",
+          "description": "The Children of Yggdrasil cannot field War Prophets, Communicants or Anchorite shrines, but instead can field Chieftains, Huscarls and Captive Giants respectively."
+        },
+        {
+          "name": "Shieldwall",
+          "description": "Trench shields equipped by the Children of Yggdrasil do not grant armour. Instead, they provide the benefit of cover at all times. Children of Yggdrasil equipped with Trench shields always count as having the defended obstacle bonus when charged. Additionally, a friendly model in base to base contact with a model equipped with a shield treats the shieldbearer as cover, following the normal rules."
+        },
+        {
+          "name": "Sagas",
+          "description": "The Children of Yggdrasil often are granted visions in their dreams of great deeds that must be done to spread the glory of their gods. When you begin or join a campaign, you may choose 3 Sagas to make them Active. At the beginning of the game, declare a model that will attempt to complete each active Saga. At the end of the game, each model that completed their Saga’s Task is rewarded the Saga’s Boon. The Saga is then Completed and no longer active or able to be attempted by any other model until the current model with its Boon dies. The listed Ducat cost of the Completed saga is added to the model’s ducat cost as if a purchased upgrade, to reflect their newfound power. A model can only have one Saga attached to it at any point, Active or Completed. Alternatively, you may spend 1 Glory to replace one active Saga with an inactive one. Only your warband may complete these Sagas. In one off games, 3 Completed Sagas may be bought at the listed Ducat cost as if they were an upgrade for the unit, counting towards ducat threshold as normal."
+        },
+        {
+          "name": "Pagans",
+          "description": "The Children of Yggdrasil cannot purchase or equip Iron Capirotes or Martyrdom pills, but can purchase Combat Helmets for 5 Ducats."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "d21f-81f7-cf6f-690e",
+            "name": "Communicant"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "3d5c-4325-5a12-5010",
+            "name": "War Prophet"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f2e8-cc7b-df49-4819",
+            "name": "Anchorite"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "68a1-e013-8b08-e9e8",
+            "name": "Chieftain"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f28e-7b89-120d-f905",
+            "name": "Huscarl"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "f4ac-a238-b6de-4b57",
+            "name": "Captive Giant"
+          },
+          "field": "hidden",
+          "value": "false"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
+    },
+    {
+      "id": "fangoftheseethingblack",
+      "entryId": "1fda-e6a9-7628-9c49",
+      "name": "Fang of the Seething Black",
+      "factionId": "Court of the Seven-Headed Serpent",
+      "specialRules": [
+        {
+          "name": "Eternal Eclipse",
+          "description": "A Fang of the Seething Black warband must choose to dedicate themselves to The Void, and no other Sin."
+        },
+        {
+          "name": "Hated by Creation",
+          "description": "Followers of the Seething Black seek to destroy all of creation, and are in turn reviled by everything. As a result, they cannot take Praetors, Hunters of the Left Hand Path, Yoke Fiends or Wretched. They instead can take Faceless, Stalkers and Cultists. The Fang of the Seething Black cannot purchase Mercenaries and don’t have access to the normal Glory Shop in a Campaign, and instead have their own unique Shop."
+        },
+        {
+          "name": "Void Magic",
+          "description": "When casting Goetic Spells, the Fang of the Seething Black add BLOOD MARKERS to models that are both Friendly and without the DEMONIC keyword, and must do so only with models within the Goetic Range of the caster, including the caster themselves if applicable. * Void Cultists have a Goetic Range of 1” ° Void Cultists have a Goetic Range of 1” ° Faceless and Hell Knights have a Goetic Range of 8” ° Sorcerers have a Goetic Range of 12” Special effects such as a Cultist’s Unstable may trigger as a result of paying a spell’s costs. These resolve before the spell does."
+        }
+      ],
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "68a4-5af6-6f09-aeab",
+            "name": "Praetor"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "bf89-44f3-36a0-c7b4",
+            "name": "Hunter of the Left-hand Path"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "name",
+          "value": "Cultist"
+        },
+        {
+          "op": "remove",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "category",
+          "value": "420c-0871-4283-b95b"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "name",
+          "value": "Void Cultist"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "a957-7766-e2fa-f4b3",
+            "name": "Wretched"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "0447-09f8-8cc2-64da",
+            "name": "Desecrated Saint"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "4c27-9424-de7d-b905",
+            "name": "Faceless"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "4703-d968-d52d-46b5",
+            "name": "Sin Eater"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "52e5-2006-85e1-a7c7",
+            "name": "Trench Dog"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "08cc-f1b9-e991-e191",
+            "name": "Scripture Guardian"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "e9cd-3848-885f-bdac",
+            "name": "Goetic Warlock"
+          },
+          "field": "hidden",
+          "value": "false"
+        }
+      ],
+      "sources": [
+        "catalogue"
+      ],
+      "thirdParty": true
     }
   ]
 } as unknown as Dataset;

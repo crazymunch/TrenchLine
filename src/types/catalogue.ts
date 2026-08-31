@@ -252,6 +252,12 @@ export interface WarbandVariant {
   name: string;
   /** Which sources carry it: 'catalogue', 'rulebook', or both. */
   sources?: string[];
+  /**
+   * Unofficial: condoned by Factory Fortress but written by other people. The
+   * catalogues hold these in a `Third Party` selectionEntryGroup, and the units
+   * they unlock are hidden until the variant is taken. See rules/thirdParty.ts.
+   */
+  thirdParty?: boolean;
   lore?: string;
   specialRules: FactionSpecialRule[];
   /** Papal States starts on a different budget, for example. */
