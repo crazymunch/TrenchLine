@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { OFFICIAL_CORE_RULES } from '../../data/officialCoreRules';
 import { buildArsenal, groupOf, offersDiffer, type ArsenalItem } from '../../rules/arsenal';
 import { Sheet } from '../ui/Sheet';
 import { useDataset } from '../../rules/useDataset';
@@ -32,42 +31,6 @@ import {
   Layers,
   CheckCircle2
 } from 'lucide-react';
-
-/**
- * A scenario section's body.
- *
- * The parser emits the book's own structure as markdown — `**Sub-heading**` for
- * a Title-Case heading, `- ` for a `**` bullet — and this is the smallest
- * renderer that keeps it. Not a markdown library: the vocabulary is two
- * constructs and the text is rules, so a dependency that might reflow or
- * swallow something is a worse trade than fifteen lines.
- */
-/**
- * A chapter's extracted text repeats its own title as the first `###` line,
- * because that heading is where the extractor cut the chapter. The card
- * already shows the title, so printing it again wastes the first line of
- * every one of them. Matched loosely — case and punctuation drift between the
- * heading in the PDF and the title in the index — and only ever removed from
- * the very first line, so no heading inside the body can be lost.
- */
-const normaliseHeading = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-
-function stripLeadingHeading(body: string, title: string): string {
-  const lines = body.split('\n');
-  const first = lines.findIndex((l) => l.trim() !== '');
-  if (first === -1) return body;
-  const heading = /^#{1,6}\s+(.*)$/.exec(lines[first].trim());
-  if (!heading) return body;
-  const h = normaliseHeading(heading[1]);
-  const t = normaliseHeading(title);
-  // Prefix either way, not equality: the index title carries a parenthetical
-  // the heading in the PDF does not ("Success Rolls & Dice Mechanics (+/-
-  // Dice)" against "Success Rolls & Dice Mechanics"), and occasionally the
-  // reverse. A one-word heading is never matched this way, so a chapter whose
-  // body genuinely opens on a short heading keeps it.
-  if (h.length < 8 || (!t.startsWith(h) && !h.startsWith(t))) return body;
-  return lines.slice(first + 1).join('\n');
-}
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
@@ -124,7 +87,21 @@ export const CodexView: React.FC = () => {
 
   const filterText = searchQuery.toLowerCase().trim();
 
-  const filteredRules = OFFICIAL_CORE_RULES.filter(
+  /**
+   * The Core Rules and Comprehensive Rules chapters, derived.
+   *
+   * The eight hand-written chapters this replaced were wrong about the three
+   * things a player is most likely to look up mid-game: Initiative went to
+   * whoever rolled highest on a D6 (the book gives it to the player with the
+   * FEWEST models, and only rolls on a tie), the Success table's failure band
+   * read 1-6 (1 is not a result on 2D6), and Morale triggered on "50% of
+   * starting models" rather than the book's "half the models in your Warband,
+   * rounded up". The Codex gets consulted precisely when the book is not to
+   * hand, so it has to be the book.
+   */
+  const coreRules = codexDataset?.coreRules ?? [];
+
+  const filteredRules = coreRules.filter(
     (r) => r.title.toLowerCase().includes(filterText) || r.content.toLowerCase().includes(filterText)
   );
 
@@ -298,11 +275,11 @@ export const CodexView: React.FC = () => {
                   <h3 className="font-gothic font-bold text-base text-theme-text">
                     {chapter.title}
                   </h3>
-                  <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold uppercase">
-                    {chapter.category}
+                  <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-primary border border-theme-primary/30 font-bold uppercase whitespace-nowrap">
+                    {chapter.category} p{chapter.page}
                   </span>
                 </div>
-                <RulesProse source={stripLeadingHeading(chapter.content, chapter.title)} />
+                <RulesProse source={chapter.content} />
               </div>
             ))}
           </div>

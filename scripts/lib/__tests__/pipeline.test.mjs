@@ -6,6 +6,7 @@ import { parseWarbandEntries, parseVariants } from '../parse-warbands.mjs';
 import { createProvenance, applyLayer, applyLayers, stampBase } from '../layers.mjs';
 import { normaliseStat, normaliseBase, nameKey, verify, applyResolutions } from '../verify.mjs';
 import { RULESETS, DEFAULT_RULESET } from '../rulesets.mjs';
+import { parseCoreRules } from '../parse-core-rules.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
 const hasCatalogues = fs.existsSync(`${CAT_DIR}/MANIFEST.json`);
@@ -514,6 +515,56 @@ describe('the Trench Dispatch Grail Strains', () => {
     for (const o of strainOps) {
       expect(o.target.id).toBe('Thrall');
       expect(o._targetNote).toMatch(/Grail Thrall/);
+    }
+  });
+});
+
+/*
+  The Codex's rules prose. Every assertion here is one of the errors the
+  hand-written `officialCoreRules.ts` shipped — a player looks these three up
+  mid-game more than anything else in the book.
+*/
+describe('core rules extraction', () => {
+  const { chapters, missing } = parseCoreRules();
+  const at = (title) => chapters.filter((c) => c.title === title).pop();
+
+  it('finds every section the table of contents lists', () => {
+    expect(missing).toEqual([]);
+    expect(chapters.length).toBeGreaterThan(50);
+  });
+
+  it('gives Initiative to the fewest models, not the highest roll', () => {
+    const c = at('The Initiative Phase');
+    expect(c.content).toMatch(/lowest number of models/i);
+    // The app said "both players roll a D6, highest wins" flatly. The roll is
+    // the tiebreaker, and only the tiebreaker.
+    expect(c.content).toMatch(/If both players have the same number of models/i);
+  });
+
+  it("puts the Success table's failure band at 2-6, not 1-6", () => {
+    const c = at('Success Roll Table');
+    expect(c.content).toMatch(/^- 2-6 — Failure/m);
+    expect(c.content).not.toMatch(/1-6/);
+  });
+
+  it('triggers Morale on half the Warband rounded up, not half at start', () => {
+    const c = at('The Morale Phase');
+    expect(c.content).toMatch(/half the models in your Warband/i);
+    expect(c.content).toMatch(/rounded up/i);
+    expect(c.content).not.toMatch(/starting models/i);
+  });
+
+  it('keeps the page furniture out of the prose', () => {
+    for (const c of chapters) {
+      expect(c.content, c.title).not.toMatch(/-- \d+ of \d+ --/);
+      expect(c.content, c.title).not.toMatch(/^\*\*(Movement|Combat|Winning)\*\*$/m);
+    }
+  });
+
+  it('cites a page for every section', () => {
+    for (const c of chapters) {
+      expect(c.page, c.title).toBeGreaterThan(0);
+      expect(c.source.file).toBe('rulebook:trench-crusade-digital-rulebook');
     }
   });
 });

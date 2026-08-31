@@ -25,6 +25,7 @@ import { parseThresholdTable, parseStartingBudget, parseExploration,
 import { parseBattlekit } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
+import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -117,6 +118,21 @@ for (const ruleset of RULESETS) {
     return { ...s, mapImage: `/${file}` };
   });
 
+  /*
+    The Core Rules and Comprehensive Rules chapters.
+
+    A heading the table of contents lists and the walk cannot find in the body
+    is a hole in the Codex, so it fails the build rather than shipping a
+    chapter list with a gap in it.
+  */
+  const coreRules = parseCoreRules();
+  if (coreRules.missing.length) {
+    throw new Error(
+      `rules-build: ${coreRules.missing.length} rulebook section(s) in the table of `
+      + `contents were not found in the body: ${coreRules.missing.join(', ')}. `
+      + 'Shipping the rest would leave the Codex silently short a chapter.');
+  }
+
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
   const dataset = {
@@ -143,6 +159,18 @@ for (const ruleset of RULESETS) {
     keywords,
     /** The twelve scenarios, as printed, with their maps resolved. */
     scenarios,
+    /**
+     * The Core Rules and Comprehensive Rules chapters, in the book's order.
+     *
+     * The Codex read eight hand-written chapters until this existed. They gave
+     * Initiative to whoever rolled highest on a D6 — the book gives it to the
+     * player with the FEWEST models, and rolls only on a tie — put the Success
+     * table's failure band at 1-6 when 1 is not a result on 2D6, and triggered
+     * Morale at "50% of starting models" rather than the book's "half the
+     * models in your Warband (rounded up)". A player checks the Codex exactly
+     * when they cannot check the book.
+     */
+    coreRules: coreRules.chapters,
     /**
      * The Battlekit chapter, verbatim.
      *
@@ -418,6 +446,9 @@ for (const ruleset of RULESETS) {
   const deeds = dataset.scenarios.reduce((n, s) =>
     n + (s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body.match(/^- /gm)?.length ?? 0), 0);
   console.log(`  scenarios: ${dataset.scenarios.length} with maps, ${deeds} Glorious Deeds`);
+  const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
+  console.log(`  core rules: ${dataset.coreRules.length} sections `
+            + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
   console.log(`  keywords: ${dataset.keywords.length} glossary entries ` +
               `(${dataset.keywords.filter((k) => k.type === 'Effect').length} Effect, ` +
               `${dataset.keywords.filter((k) => k.type === 'Tag').length} Tag)`);

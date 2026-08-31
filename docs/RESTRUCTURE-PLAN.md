@@ -567,7 +567,8 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
 - The Codex printed the rulebook prose through `whitespace-pre-line`, so
   players read `#### Success Roll Table (2D6)` and `- **1-6: Failure**`,
   asterisks and all — the app's largest body of text, harder to read than the
-  book it was transcribed from.
+  book it was transcribed from. (That `1-6` was itself wrong; the prose it came
+  from is gone — see below.)
 - Worse: `parseDeedsList` in Play Mode split the Glorious Deeds on `\n` and
   kept only the lines that *began* a bullet. The extractor hard-wraps at the
   source PDF's column width, so **54 of the deeds across the twelve scenarios
@@ -575,6 +576,23 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
   presented as the whole rule. `parseRulesProse` rejoins the fragments; a test
   asserts against the shipped dataset that no deed ends without terminal
   punctuation.
+
+### The Codex's rules prose was written, not extracted
+
+The Codex's first tab shipped `src/data/officialCoreRules.ts`: eight chapters
+of hand-written Core and Comprehensive Rules. It was wrong about the three
+things a player looks up mid-game — Initiative went to the highest D6 roll
+rather than the fewest models, the Success table's failure band read `1-6` when
+1 is not a result on 2D6, and Morale triggered on "50% of starting models"
+rather than "half the models in your Warband (rounded up)".
+
+Replaced by `scripts/lib/parse-core-rules.mjs`, which walks the rulebook's own
+table of contents through the body and emits 59 sections — 17 Core, 42
+Comprehensive — each carrying its printed page. The walk matches headings **in
+contents order**, which is what makes it structural rather than fuzzy:
+"Combat" appears dozens of times in running text and only once as the next
+heading due. A heading the contents lists and the walk cannot find fails the
+build. See [`AUDIT.md`](AUDIT.md) §1.14.
 
 And three tables were wrapped in `overflow-hidden`, which *clipped* them rather
 than scrolling: the campaign standings lost its Glory Points column on a phone

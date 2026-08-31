@@ -471,6 +471,28 @@ export interface TraumaRow {
   source: 'catalogue' | 'rulebook' | 'catalogue+rulebook';
 }
 
+/**
+ * One section of the rulebook's Core Rules or Comprehensive Rules chapter.
+ *
+ * This replaced `src/data/officialCoreRules.ts`, eight chapters of hand-written
+ * prose that gave Initiative to the highest D6 roll (the book gives it to the
+ * player with the fewest models), put the Success table's failure band at 1-6
+ * (1 is not a result on 2D6), and read Morale off "50% of starting models"
+ * rather than the book's "half the models in your Warband, rounded up".
+ */
+export interface CoreRuleSection {
+  /** Slugified title, stable across builds. */
+  id: string;
+  title: string;
+  /** 'Core Rules' or 'Comprehensive Rules' — the book's own chapter. */
+  category: string;
+  /** The printed page, so a player can check it against the PDF. */
+  page: number;
+  /** Markdown: `**Sub-heading**`, `- ` bullets, paragraphs. */
+  content: string;
+  source: { file: string; page: number; lines: [number, number] };
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -484,6 +506,8 @@ export interface Dataset {
   battlekit: BattlekitEntry[];
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
+  /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
+  coreRules: CoreRuleSection[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */

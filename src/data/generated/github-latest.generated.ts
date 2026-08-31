@@ -54937,6 +54937,893 @@ export const DATASET: Dataset = {
       "mapImage": "/maps/great-war.png"
     }
   ],
+  "coreRules": [
+    {
+      "id": "the-initiative-phase",
+      "title": "The Initiative Phase",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "The player with the lowest number of models in their Warband has the Initiative and can choose to Activate a model first or second. If both players have the same number of models, each player rolls a dice and whoever rolls the highest has the Initiative.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          783,
+          787
+        ]
+      }
+    },
+    {
+      "id": "the-activation-phase",
+      "title": "The Activation Phase",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "When it is your turn to Activate a model, you must choose a model in your Warband that has not yet been Activated and Activate it. Your opponent must then Activate a model, and so on, back and forth until all models have been Activated. A model cannot be Activated more than once per Turn.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          788,
+          792
+        ]
+      }
+    },
+    {
+      "id": "actions",
+      "title": "Actions",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "The Activated model can take the following ACTIONS once each, in any order you wish:\n\nMove or Charge or Retreat: You can use an ACTION to Move or Charge or Retreat with your model, but not more than one.\n- Move: You can move your model a number of inches equal to its Movement Characteristic in any direction (no roll is required). Obstacles up to 1” high can be crossed without penalty, and your model can climb sheer surfaces if you first pass a Risky Success Roll. Difficult terrain is crossed at half speed. A Move ACTION cannot be used to move a model within 1” of an enemy model (you must use a Charge Action instead).\n- Charge: Pick an enemy model that is visible to your model and within 12” of it as the target of the charge. Then roll a dice, add the result to your model’s Movement Characteristic and move it towards the target. If your model finishes its move within 1” of the target, it can Fight (▶ see Fight).\n- Retreat: You can only move a model that is within 1” of an enemy by taking a Retreat ACTION. A retreating model moves a number of inches equal to its Movement Characteristic in any direction but it must end its retreat move more than 1” away from all enemy models. Your opponent can take a Fight ACTION with 1 Melee Weapon before the retreating model is moved away. If this takes your model Down or Out of Action it is not moved.\n\nDash: A Dash ACTION can be carried out in addition to a Move, Charge or Retreat ACTION. You can move your model a number of inches equal to its Movement Characteristic in any direction, but you must take a Risky Success Roll for the model first. If you succeed, your model can move (it cannot charge or retreat). If you fail, the model’s Activation ends.\n\nShoot: You can make a Ranged Attack with your model if it is more than 1” from an enemy and has a Ranged Weapon (▶ see Ranged Attacks). Your model cannot Shoot and take a Charge or Fight ACTION in the same Activation, unless it uses a weapon that has the ASSAULT Keyword.\n\nFight: You can make a Melee Attack with your model if it is within 1” of an enemy and has a Melee Weapon (▶ see Melee Attacks).\n\nOther: Some models have other ACTIONS they can take during their Activations (▶ see Starting a Warband in Warbands of Trench Crusade) Success Rolls Many of the ACTIONS you take with a model require a Success Roll to be made. To take a Success Roll, roll two dice, add any +DICE or -DICE to the roll as described below, pick the two highest (or lowest if any -DICE were used), add them together, and consult the table below to see if you have succeeded. The instructions for the task you are carrying out will tell you what happens if you succeed or fail. If you are taking a Risky Success Roll and you fail, the model’s Activation is over and your opponent can now Activate one of their models!\n\n**Success Table**\n- Roll — Result\n- 2-6 — Failure.\n- 7-11 — Success.\n- 12+ — Critical Success. Add +1 INJURY DICE to Ranged or Melee Attacks if you roll a Critical Success.\n\n+Dice and -Dice Rules often have modifiers to Success Rolls marked as +DICE and -DICE.\n\nThese are shown in the format “+1 DICE” or “-1 DICE”.\n\nFor each +DICE, add 1 dice to the Success Roll. Then roll all the dice and pick the 2 highest rolls. For example, +1 DICE means you roll 3 dice and pick the 2 highest. If +2 DICE are added, roll 4 dice and pick the 2 highest, and so on.\n\nThe -DICE works in reverse. For each -DICE, add 1 dice to the Success Roll and pick the 2 lowest numbers. For example, -1 DICE means you roll 3 dice and pick the 2 lowest.\n\nIf both +DICE and -DICE are added to the same Success Roll, remove pairs of +DICE and -DICE until only one type is remaining. For example, if a roll had +2 DICE and -1 DICE, one of the +1 DICE and the -1 DICE would be removed, leaving +1 DICE to be added to the roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          793,
+          874
+        ]
+      }
+    },
+    {
+      "id": "combat",
+      "title": "Combat",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "Combat is divided into Ranged Attacks and Melee Attacks. Ranged Attacks are carried out when you take a Shoot ACTION with a model, and Melee Attacks when you take a Fight ACTION with a model.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          895,
+          898
+        ]
+      }
+    },
+    {
+      "id": "ranged-attacks",
+      "title": "Ranged Attacks",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "1. Choose a Ranged Weapon and then pick a target that is visible to your model and in range of the weapon.\n\n2. Take a Success Roll for the attacking model.\n\n3. If the roll is a Failure, the attack misses and has no effect. If the roll is a Success it hits, so make an Injury Roll roll for the target. Add +1 INJURY DICE if the attack was a Critical Success.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          899,
+          905
+        ]
+      }
+    },
+    {
+      "id": "shooting-into-melee",
+      "title": "Shooting Into Melee",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "If a target is within 1” of any friendly models, roll a dice to determine who is attacked: on a 1 – 3 you must target a friendly model; on a 4 – 6 you can target an enemy model. Take a Success Roll as normal once the target has been determined.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          906,
+          909
+        ]
+      }
+    },
+    {
+      "id": "ranged-attack-modifiers",
+      "title": "Ranged Attack Modifiers",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "Shooting from an elevated position: Add +1 DICE if the attacking model is at least 3” higher than the target.\n\nCover: Add -1 DICE if the target is in cover. A model is in cover if it is in contact with a terrain piece that is at least ½” high and as wide as its base, and the terrain piece lies between it and the attacking model.\n\nLong Range: Add -1 DICE if the range to the target is more than half of the weapon’s maximum range.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          910,
+          934
+        ]
+      }
+    },
+    {
+      "id": "melee-attacks",
+      "title": "Melee Attacks",
+      "category": "Core Rules",
+      "page": 17,
+      "content": "1. Choose a Melee Weapon and pick a target within 1” of your model.\n\n2. Take a Success Roll for the attacking model.\n\n3. If the roll is a Failure, the attack misses and has no effect. If the roll is a Success it hits, so make an Injury Roll roll for the target. Add +1 INJURY DICE if the attack was a Critical Success.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 17,
+        "lines": [
+          939,
+          944
+        ]
+      }
+    },
+    {
+      "id": "melee-attack-modifiers",
+      "title": "Melee Attack Modifiers",
+      "category": "Core Rules",
+      "page": 17,
+      "content": "The following modifiers are cumulative:\n\nMultiple Melee Weapons: If your model is armed with two Melee Weapons, it may attack with both, one after the other in the order of your choice. Add -1 DICE for the second attack.\n\nFear: Add -1 DICE if your opponent has the FEAR Keyword. If both models cause FEAR the effect is cancelled out.\n\nDefended Obstacle: Add -1 DICE if the target is in cover. A model is in cover if it is in contact with a terrain piece that is at least ½” high and as wide as its base, and the terrain piece lies between it and the attacking model.\n\nDiving Charge: A model may attempt a Diving Charge against enemy models that are at least 3” below it. Take a Risky Success Roll for the model. If the roll is a Failure the model is taken Down, and a Falling Injury Roll must then be taken for the model (▶ see Falling). If the roll is a Success, you do not have to take a Falling Injury Roll for the model, and you can add +1 DICE to the next Melee Attack that the model makes.\n\n**Falling**\n\n**When a model Jumps, Dives,**\n\nor Falls 3” or more, there is a chance it will be injured. To see if this happens, make an Injury Roll for the model, and add +1 INJURY DICE for every 3”\n\nthat the model fell.\n\n**Injury Rolls**\n\nTo make an Injury Roll, roll two dice and add any +INJURY DICE or -INJURY DICE to the roll. +/-INJURY DICE work in the same way as +/- DICE but modify Injury Rolls instead of Success Rolls.\n\nPick the two highest dice (or lowest if any -INJURY DICE were used).\n\nAny INJURY MODIFIERS that apply are then added to the roll, and the modified roll is looked up on the table below:\n\n**Injury Table**\n- Roll — Result\n- 1 or less — No Effect. The model is unharmed, and the injury has no effect.\n- 2-6 — Minor Hit. Place 1 BLOOD MARKER next to the model.\n- 7-8 — Down. Place 1 BLOOD MARKER next to the model and mark them as being Down (▶ see below). If the model is already Down, place 2 BLOOD MARKERS next to the model instead of 1.\n- 9+ — Out of Action. The model has been seriously injured or killed and is removed from play.\n\n**Injury Roll and Result Modifiers**\n\n**The following modifiers are cumulative. The maximum -INJURY**\n\nMODIFIER cannot be more than -3 in total.\n- Blessing Markers: Add -1 INJURY DICE for each BLESSING MARKER that is spent.\n- Blood Markers: Add +1 INJURY DICE for each BLOOD MARKER that is spent.\n- Critical Success: Add +1 INJURY DICE.\n- Down: Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Abilities or Keywords: Add any +/-INJURY DICE and/or any +/-INJURY MODIFIERS for abilities or Keywords that apply to the Injury Roll.\n- Armour Characteristic: Add the -INJURY MODIFIER of the model’s Armour Characteristic (if any).\n- Battlekit: Add the -INJURY MODIFIER for the model’s Battlekit (e.g. Armour, Shield, etc.).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 17,
+        "lines": [
+          945,
+          1023
+        ]
+      }
+    },
+    {
+      "id": "blood-markers",
+      "title": "Blood Markers",
+      "category": "Core Rules",
+      "page": 19,
+      "content": "During a battle your warriors can be wounded. Wounds are tracked with BLOOD MARKERS. A model cannot have more than 6 BLOOD MARKERS at any one time. We recommend using a red dice to keep track of the number of BLOOD MARKERS on a model.\n\nEach time one of your models suffers a wound, place a BLOOD MARKER next to it. When you make a Success Roll for the model, your opponent may choose to spend one or more BLOOD MARKERS to add -1 DICE.\n\nIn addition, each time your opponent makes an Injury Roll for the model, they may choose to spend one or more BLOOD MARKERS to add +1 INJURY DICE, making a serious injury far more likely.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 19,
+        "lines": [
+          1044,
+          1054
+        ]
+      }
+    },
+    {
+      "id": "bloodbath-rolls",
+      "title": "Bloodbath Rolls",
+      "category": "Core Rules",
+      "page": 19,
+      "content": "When you make an Injury Roll for an enemy model, you can spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if the target is Down) to convert the Injury Roll to a Bloodbath Roll. To make a Bloodbath Roll, roll 3 dice and add all three of them together, and then look up the roll on the Injury Table.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 19,
+        "lines": [
+          1055,
+          1060
+        ]
+      }
+    },
+    {
+      "id": "blessing-markers",
+      "title": "Blessing Markers",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "BLESSING MARKERS are similar to BLOOD MARKERS, but specifically aid Success Rolls for the model.\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. When you take a Success Roll for the model, you may choose to spend one or more BLESSING MARKERS to add +1 DICE, and each time an Injury Roll is made for the model you may spend one or more BLESSING MARKERS to add -1 INJURY DICE.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1081,
+          1088
+        ]
+      }
+    },
+    {
+      "id": "down-results",
+      "title": "Down Results",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "You can show that a model is Down by placing the model on its side. The following rules apply to a model that is Down:\n- If a model is taken Down during its Activation, its Activation ends immediately.\n- Add -1 DICE to any rolls you take for a model that is Down.\n- Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Until a model that is Down stands back up, it cannot be moved for any reason unless it falls ( ▶ see Falling).\n- A model that is Down stands back up when it is next Activated. However, its Movement Characteristic is halved for the rest of the Activation (including the bonus for charging).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1089,
+          1099
+        ]
+      }
+    },
+    {
+      "id": "ending-the-activation-phase",
+      "title": "Ending The Activation Phase",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "Once you have taken any and all ACTIONS you wish, or have failed a Risky Success Roll, your model’s Activation ends. Your opponent can now Activate one of their models. The players then alternate Activating models in this fashion until one player runs out of models to Activate. Their opponent can then Activate their remaining models one after the other until they have all been Activated, then proceed to the Morale Phase.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1100,
+          1107
+        ]
+      }
+    },
+    {
+      "id": "the-morale-phase",
+      "title": "The Morale Phase",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "In the Morale Phase, if half the models in your Warband are Down or Out of Action (rounded up), you must make a Success Roll. If the roll is a Success, your Warband carries on normally. If the roll is a Failure, your Warband becomes Shaken.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1128,
+          1132
+        ]
+      }
+    },
+    {
+      "id": "shaken-warbands",
+      "title": "Shaken Warbands",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "All Success Rolls made for a Shaken Warband are treated as Risky Success Rolls. In the Morale Phase at the end of the next Turn you must make another Success Roll for your Warband, even if less than half its models are Down or Out of Action. If you succeed, your Warband is no longer Shaken (though it may become so again if you fail a Morale check in a future turn). However, if you fail your Warband flees, and you immediately lose the game!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1133,
+          1139
+        ]
+      }
+    },
+    {
+      "id": "ending-the-turn",
+      "title": "Ending The Turn",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "After the Morale Phase the Turn ends and a new one begins.\n- coMPrehensiVe — rules The Comprehensive Rules section of the Trench Crusade rulebook expands on the Core Rules. It explains the rules in greater depth, adds additional rules, and provides examples of how the rules function, but does not alter the Core Rules in any way. The Comprehensive Rules are followed by supplemental sections that explain how to create a Warband and scenarios that will allow you to play a wide variety of different sorts of Trench Crusade games.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1140,
+          1169
+        ]
+      }
+    },
+    {
+      "id": "players",
+      "title": "Players",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "That’s you and your opponent! The following rules are written assuming the game is played between two players. ▶ If you want to play games with more than two players, you can find scenarios on the Trench Crusade website at www.trenchcrusade.com",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1171,
+          1175
+        ]
+      }
+    },
+    {
+      "id": "warbands-models",
+      "title": "Warbands & Models",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "Each player commands a Warband, which typically consists of 6-20 models (▶ see Starting a Warband in Warbands of Trench Crusade). While there is no ironclad rule on which models you should use, we recommend you use the Trench Crusade range for obvious reasons. However, if you prefer to use other models, do not worry – Witchburners will not be dispatched to cleanse you for your lack of purity!\n\n**Friendly & Enemy Models**\n\nThe models in your Warband are referred to as “friendly models” in the rules, while those in your opponent’s Warband are referred to as “enemy models”. If a rule that applies to a model (or to a piece of Battlekit carried by a model) says “you” can do something with it, it refers to the player commanding the Warband that the model is part of. Similarly, you “take a roll” for your own models, and “make a roll” against your opponent’s models.\n\n**Profiles**\n\nEach model in your Warband has a Profile which describes its effectiveness in combat and the Weapons it is armed with (▶ see Profiles).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1176,
+          1192
+        ]
+      }
+    },
+    {
+      "id": "battlefield",
+      "title": "Battlefield",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "You will also need a gaming surface to play on, which is referred to as “the battlefield” in the following rules. Most games can be played on a typical kitchen table, as long as it is at least 30” wide. Some games will require a larger battlefield:\n\n36” x 36” or 48” x 48” is the ideal size for these.\n\nYou can find more information on how to set up the battlefield and when you may need more space in the Scenarios section (▶ see Scenarios).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1193,
+          1221
+        ]
+      }
+    },
+    {
+      "id": "terrain",
+      "title": "Terrain",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Terrain is also necessary, and the more you have, the better! Trench Crusade is a game of position and tactics, so different types of elevation, cover, and varied terrain pieces, will all help to enhance your games. You can find rules for setting up the terrain for a game in the Terrain section (▶ see Trench Crusade Terrain).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1226,
+          1230
+        ]
+      }
+    },
+    {
+      "id": "tape-measure-or-ruler",
+      "title": "Tape Measure Or Ruler",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "To measure distances, you will need a tape measure or ruler. Trench Crusade uses the Imperial measurement system, meaning all measurements are in inches, so make sure your measuring tool reflects this.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1231,
+          1234
+        ]
+      }
+    },
+    {
+      "id": "dice-d6s-d3s",
+      "title": "Dice (D6s & D3s)",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Each player will need several 6-sided dice, referred to as “D6s” in the following rules. They are used to determine if a task being carried out by a model, like making an attack or leaping across a gap between two buildings, is carried out successfully (▶ see Actions).\n\n**D3 Rolls**\n\nOccasionally, you will be asked to roll a “D3”. To do so, roll a D6 and halve the result, rounding up: a 1 or 2 = 1, a 3 or 4 = 2, and a 5 or 6 = 3.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1235,
+          1242
+        ]
+      }
+    },
+    {
+      "id": "scenario",
+      "title": "Scenario",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Finally, you will need to pick a scenario for the game you are about to play.\n\nThe scenario tells you how to set up the terrain for the game, where to deploy your Warbands, how many Turns the game will last, and how the winner of the game is determined. If this is your first game, we recommend using Scenario 1: Claim No Man’s Land (▶ see Claim No Man's Land).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1243,
+          1248
+        ]
+      }
+    },
+    {
+      "id": "core-concepts",
+      "title": "Core Concepts",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "This section of the rules explains the essential principles that govern how a game of",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1249,
+          1250
+        ]
+      }
+    },
+    {
+      "id": "keywords",
+      "title": "Keywords",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Some words in the rules are written in CAPITAL LETTERS, such as ACTION or BLOOD MARKER. These words are called Keywords, and they define the core abilities, rules, troop types, and damage categories in the game. A glossary of all of the Keywords used in the game can be found below (▶ see Keywords Glossary).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1252,
+          1278
+        ]
+      }
+    },
+    {
+      "id": "success-rolls",
+      "title": "Success Rolls",
+      "category": "Comprehensive Rules",
+      "page": 24,
+      "content": "During a game of Trench Crusade, you will often have to take a Success Roll for a model and look up the result on the Success Roll table to see if the model has carried out a task successfully. For example, if you want a model to make a Ranged Attack, you must take a Success Roll for the model to see if the attack hits the target, and so on.\n\nThe rules say when you have to take a Success Roll, and what the result of the Success Roll means. For example, if the Success Roll for a Ranged Attack is a Failure, the attack misses the target. If it is a Success, the attack hits and you make an Injury Roll for the target. If it is a Critical Success, the attack hits and you make an Injury Roll for the target with +1 INJURY DICE.\n\n**Success Roll Procedure**\n\n**To take a Success Roll for a model, carry out the**\n\nfollowing steps:\n\n1. Take 2 D6.\n\n2. Add any +DICE or -DICE (▶ see “Combining +DICE and -DICE”).\n\n3. Roll all of the dice.\n\n4. Pick the 2 highest dice if any +DICE were added to the roll, or the 2 lowest if any -DICE were added to the roll.\n\n5. Add the 2 dice together and then look up the roll on the Success Roll Table.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 24,
+        "lines": [
+          1283,
+          1305
+        ]
+      }
+    },
+    {
+      "id": "success-roll-table",
+      "title": "Success Roll Table",
+      "category": "Comprehensive Rules",
+      "page": 24,
+      "content": "- Roll — Result\n- 2-6 — Failure. The roll is a Failure.\n- 7-11 — Success. The roll is a Success.\n- 12+ — Critical Success. The roll is a Critical Success.\n\n**Risky Success Rolls**\n\nSometimes you will be called on to take a Risky Success Roll for a model. A Risky Success Roll is taken in exactly the same way as a normal Success Roll. However, if the roll is failed the model’s Activation immediately ends (▶ see Activation Phase).\n\nIf a rule applies to a Success Roll, then it applies in the same way to a Risky Success Roll. If a model takes a Risky Success Roll as part of an ACTION outside of that model’s Activation and the roll is a Failure, that ACTION immediately ends.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 24,
+        "lines": [
+          1306,
+          1340
+        ]
+      }
+    },
+    {
+      "id": "dice-and-dice",
+      "title": "+Dice And -Dice",
+      "category": "Comprehensive Rules",
+      "page": 25,
+      "content": "The rules often require you to add extra dice to a roll. These are shown in the format “+1 DICE” or “-1 DICE” (for example, shooting from elevated positions adds +1 DICE to Ranged Attacks against enemies).\n\n+DICE: For each +DICE, add 1 dice to the Success Roll. Then roll all the dice and pick the 2 highest rolls. For example, +1 DICE means you roll 3 dice and pick the 2 highest. If +2 DICE were added, you would roll 4 dice and pick the 2 highest, and so on.\n\n-DICE: The -DICE works in reverse, so for each -1 DICE, add 1 dice to the Success Roll and pick the 2 lowest rolls. For example, -1 DICE means you roll 3 dice and pick the 2 lowest. If -2 DICE were added, you would roll 4 dice and pick the 2 lowest, and so on.\n\n**Combining +DICE and -DICE**\n\nIf both +DICE and -DICE are added to the same Success Roll, remove pairs of +DICE and -DICE until only one type is remaining. For example, if two +DICE and one -DICE were added to the same Success Roll, one +DICE would cancel out the -DICE, leaving a single +DICE to modify the roll.\n\n**Injury Dice**\n\nThe rules will sometimes refer to +/- INJURY DICE. These work in the same way as +/- DICE except that they add dice to an Injury Roll rather than a Success Roll (▶ see Injury Rolls).\n\n**Dice & Injury Dice**\n\n**Note that if a model or piece of**\n\n**Battlekit has the +/- DICE Keyword,**\n\nthen the Keyword only applies to Success Rolls, not to Injury Rolls.\n\n**By the same token, if a model or**\n\npiece of Battlekit has the +/- INJURY DICE Keyword, then the Keyword only applies to Injury Rolls and not to Success Rolls.\n\nGameplay example: A Success Roll is taken by a Trench Pilgrim to see if a Ranged Attack they are making with their Bolt-Action Rifle hits a Heretic model.\n\nThe Heretic is in Cover, which adds -1 DICE to the Success Rolls for the Trench Pilgrim’s Ranged Attack. No other modifiers apply to the attack. 3 dice are rolled for the attack, and come up 5, 5 and 1. The two lowest rolls are picked (a 5 and the 1) giving a Success Roll of 6. The Success Roll has failed and so the Trench Pilgrim’s shot misses!\n\nA Heretic Trooper model with +1 DICE bonus for Ranged Attack shoots at a Pilgrim model in cover. The -1 DICE penalty and the +1 DICE bonus cancel each other out, so the Heretic player simply rolls 2 dice. The result is 4 and 3, for a total of 7. The shot hits!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 25,
+        "lines": [
+          1345,
+          1436
+        ]
+      }
+    },
+    {
+      "id": "blood-markers",
+      "title": "Blood Markers",
+      "category": "Comprehensive Rules",
+      "page": 27,
+      "content": "During a battle, your warriors can be wounded due to enemy attacks, the use of supernatural powers, falling from great heights, and so on. In Trench Crusade, injuries are represented using BLOOD MARKERS. In addition to physical injuries, BLOOD MARKERS can represent exhaustion, concussion, shellshock, mental strain, and so on.\n\nA Trench Pilgrim has sustained a wound during the battle and has a BLOOD MARKER. A Heretic Trooper shoots at the Pilgrim with a bolt action rifle, rolls an 8 and hits! The Heretic player decides to use the BLOOD MARKER to make the shot more likely to injure. The Heretic player rolls 3D6 (2D6 +1 INJURY DICE from the spent marker) and consults the Injury Chart. The roll is 5, 1 and 4. Since one +1 INJURY DICE was used, the player picks the two highest numbers which total 9. The Pilgrim is taken out of action!\n\n**Placing Blood Markers**\n\nEach time one of your models suffers a wound, place a BLOOD MARKER next to it. A model cannot have more than 6 BLOOD MARKERS at any time.\n\nWhen a model gets to this point, ignore any instructions to place more BLOOD MARKERS next to it until there are less than 6.\n\n**Spending Blood Markers**\n\nEvery time you take a Success Roll for a friendly model that has BLOOD MARKERS, your opponent can declare that they are spending one or more of them, removing the model’s BLOOD MARKERS as they are spent. For each BLOOD MARKER that is spent, add -1 DICE to the Success Roll. For example, if you were making a Success Roll for a model that had 3 BLOOD MARKERS, then the opposing player could choose to spend 1, 2, or all 3 of the BLOOD MARKERS to add -1, -2, or -3 DICE to the Success Roll.\n\nAlternatively, when your opponent makes an Injury Roll for a model from your Warband that has BLOOD MARKERS, they can declare that they are spending one or more of them, removing the model’s BLOOD MARKERS as they are spent. For each BLOOD MARKER that is spent, add +1 INJURY DICE to the Injury Roll, making a serious injury far more likely (▶ see Injury Rolls).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 27,
+        "lines": [
+          1441,
+          1498
+        ]
+      }
+    },
+    {
+      "id": "blessing-markers",
+      "title": "Blessing Markers",
+      "category": "Comprehensive Rules",
+      "page": 28,
+      "content": "BLESSING MARKERS work in a similar way to BLOOD MARKERS.\n\nSupernatural powers, holy relics, and other sources may grant these to a model.\n\n**Placing Blessing Markers**\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. A model cannot have more than 6 BLESSING MARKERS at any time. When a model gets to this point, ignore any instructions to place more BLESSING MARKERS next to it until there are less than 6.\n\n**Spending Blessing Markers**\n\nEvery time you take a Success Roll for a friendly model that has BLESSING MARKERS, you can declare that you are spending one or more of them, removing the model’s BLESSING MARKERS as they are spent. For each BLESSING MARKER that is spent, add +1 DICE to the Success Roll.\n\nAlternatively, when your opponent makes an Injury Roll for a model from your Warband that has BLESSING MARKERS, you can declare that you are spending one or more of them, removing the model’s BLESSING MARKERS as they are spent. For each BLESSING MARKER that is spent, add -1 INJURY DICE to the Injury Roll, making a serious injury far less likely.\n\n**Tracking Blood & Blessing Markers**\n\nYou can keep track of the number of BLOOD MARKERS or BLESSING MARKERS a model has by placing a suitably coloured D6 next to the model.\n\nUse the pip number on the D6 to indicate the number of MARKERS that have been added to the model.\n\nAlternatively, you can keep track of them by using cardboard counters or wooden cubes. For example, you could use a red dice or red cubes for keeping track of BLOOD MARKERS, and a yellow dice or yellow cubes for keeping track of BLESSING MARKERS.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 28,
+        "lines": [
+          1499,
+          1547
+        ]
+      }
+    },
+    {
+      "id": "profiles",
+      "title": "Profiles",
+      "category": "Comprehensive Rules",
+      "page": 29,
+      "content": "**Every model has a Profile that defines**\n\nits effectiveness in the game. In addition, Battlekit Profiles cover the Weapons, Armour, and Equipment that a model can carry. Below, you will find examples of a model Profile and a Battlekit Profile. A detailed explanation of the model Profile is provided in the Starting a Warband (▶ see Starting a Warband in Warbands of Trench Crusade), and the Battlekit Profile is explained in the Battlekit section (▶ see Battlekit).\n\n**Azebs - Cost: 25 👑👑**\n\nAzebs are soldiers recruited from the multitude of provinces of the sultanate, where one house in every twenty is required to equip and provide a warrior to serve the prince of Those Who Believe. They are often used by their superiors as light skirmishers to harass and tie down the enemy while heavier troops close in for the kill.\n- Movement — Ranged — Melee — Armour — Base\n- 6”/Infantry — +0 DICE — -1 DICE — 0 — 25mm\n- Battlekit — An Azeb can have any Battlekit from the Iron Sultanate Armoury Tables.\n- Abilities — Light Skirmishers: Any number of Azebs can have the SKIRMISHER Keyword at a cost of +5 👑👑 each.\n- Keywords — SULTANATE\n- Movement — Ranged — Melee — Armour\n- 6”/Infantry — +1 DICE — +0 DICE — 0\n- Battlekit — A Sultanate Sapper always has a Shovel (▶ see standard which cannot be removed or lost over the course of th also have any Battlekit from the Iron Sultanate Armou\n- Abilities — Set Mine ACTION: A Sultanate Sapper can take a if they are in contact with a terrain piece that measu they do so, take a Success Roll for the model and add If the roll is a Failure, nothing happens. If the roll is Success, the terrain piece becomes Mined.\n\n**Defuse Mine: When you move a Sultanate Sapper in**\n\nrain piece that has been Mined, you can say the Sult and try to defuse the mine before it detonates (▶ see below). If you do so, take a Risky Success Roll for th Failure, the mine detonates anyway and the Sultanat ends. If the roll is a Success or a Critical Success, the nate and the terrain piece is no longer considered to 0-2 Sultanate Sappers - Cost: 50 👑👑 The Sultan’s Sappers are valued specialists, holding the great cannons of the Iron Wall no matter what their enemies throw at them.\n\n**They are easily identified by the terrible**\n\nburns all over their bodies as their mighty artillery is prone to overheating.\n\nª– Troops Warband Entries: Those Who Believ Shovel Battlefield shovels allow troops to dig in and fight from cover in virtually any battlefield.\n- Type — Range — Keywords\n- Equipment — - — - Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.\n\n**Tracer Bullets**\n\nTracer bullets allow soldiers to adjust their aim efficiently.\n- Type — Range — Keywords\n- Equipment — - — CONSUMABLE Tracers: When this Battlekit is taken, you must choose 1 Ranged Weapon that the model already has. The Weapon gains the +1 DICE Keyword.\n\n**Troop Flag**\n\nMost warbands and units carry banners, flags, standards, pennants or other symbols to rally the troops.\n- Type — Range — Keywords\n- Equipment — - — LEADER, HELD Unholy Relic An artefact bestowed with unholy power. Examples include nephilim heads, desecrated splinters of the True Cross or mummified body parts of fallen saints and bishops.\n- Type — Range — Keywords\n- Equipment — - — FEAR Unholy Trinket Many Heretic Troopers carry a talisman or charm that are sold by soothsayers and imps in the Heretic domains. Such a trinket might be a skull, preserved foetus, horn of a goat, and is often covered in Goetic runes.\n\n**QSY**\n\n**QSY**",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 29,
+        "lines": [
+          1552,
+          1655
+        ]
+      }
+    },
+    {
+      "id": "fractions",
+      "title": "Fractions",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "In all cases where the rules refer to fractions, retain any fractions if the value being modified is a distance, such as the range of a Weapon or the move of a model. In all other cases, round up to the nearest whole number.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1661,
+          1664
+        ]
+      }
+    },
+    {
+      "id": "measuring-distances",
+      "title": "Measuring Distances",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "When measuring to or from a model or terrain piece, always measure from its base. If the model or terrain piece doesn’t have a base, measure to the nearest part of the model. Something is ‘within’ a certain distance of another thing, if the distance between the nearest points of the two things is equal to or less than the stated distance.\n\n**In Contact**\n\nTwo models are in contact if any part of the models and/or their bases are in contact. A model is in contact with a terrain piece if any part of the model and/or its base is in contact with the terrain piece.\n\n**Within**\n\nSomething is within a certain distance of another thing if the distance between the nearest points of the two things is equal to or less than the stated distance. For example, if the distance between a model and a piece of terrain was 12”, then the model and the piece of terrain are within 12” of each other.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1665,
+          1679
+        ]
+      }
+    },
+    {
+      "id": "line-of-sight",
+      "title": "Line Of Sight",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "You will often need to check to see if a model has a “Line of Sight” to another model or terrain piece. If you are unsure whether a model has a Line of Sight to a target, stoop down and take a look from behind the attacking model and check if it can see any part of the target model (do not count the target’s base, its hands or feet, or anything that is carried by or attached to the target such as a weapon or banner), or any part of a target terrain piece. Models can see all around (i.e. 360°) and they may be pivoted to face any direction before the Line of Sight is checked.\n\n**Partial Line of Sight**\n\nA model that has a Line of Sight to a model is said to have a partial Line of Sight if it can draw a Line of Sight to part of the target model but not all of it.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1680,
+          1690
+        ]
+      }
+    },
+    {
+      "id": "points-on-the-battlefield-or-terrain-pieces",
+      "title": "Points on the Battlefield or Terrain Pieces",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "You may also need to check Line of Sight to a point on the battlefield or on a terrain piece. When this is the case, the point is considered to be 1mm across and 1mm high, and you have a Line of Sight to it if you can see any part of it.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1691,
+          1694
+        ]
+      }
+    },
+    {
+      "id": "model-accuracy",
+      "title": "Model Accuracy",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "When it comes to ensuring the models in your game match their stated size and actual equipment, weapons, and armour, we recommend the following maxim:\n\n“Be strict with yourself but lenient with others”.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1695,
+          1720
+        ]
+      }
+    },
+    {
+      "id": "model-placement",
+      "title": "Model Placement",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**When you set up or move a model,**\n\nit cannot be set up with its base overlapping Impassable terrain or the base of another model. You can set up a model so that part of its base is on the battlefield or in terrain and the rest of its base is “in the air”, as long as more than half of the model’s base is on the battlefield or in terrain. With your opponent’s permission you can place it in a safe location nearby so that there is no risk of it falling over and being damaged (it will still count as being at the location for all other purposes).\n\n**Deployment & Redeployment**\n\n**Some rules may ask you to deploy**\n\nor redeploy a model. When you do so, set up the model as described above. Redeploying a model is not treated as a move.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1725,
+          1745
+        ]
+      }
+    },
+    {
+      "id": "pre-measuring",
+      "title": "Pre-Measuring",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Unless the rules specifically tell you**\n\notherwise, you are allowed to measure distances at any time. For example, you can measure to see if you are in range for shooting, charging, and so on.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1746,
+          1751
+        ]
+      }
+    },
+    {
+      "id": "re-rolls",
+      "title": "Re-Rolls",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Some rules refer to re-rolls. To make**\n\na re-roll, roll the dice used for the roll again. You cannot re-roll a dice more than once. If the rules allow you to re-roll an XD6 roll (i.e. 2D6, 3D6 etc), you must re-roll all of the dice used for the roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1752,
+          1759
+        ]
+      }
+    },
+    {
+      "id": "rolling-off",
+      "title": "Rolling Off",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Sometimes a rule may require the**\n\nplayers to “roll-off ”. To roll-off, each player rolls a D6, and whoever rolls highest wins. You cannot re-roll or modify the dice in a roll-off unless the roll is a tie, in which case the players must take the roll-off again.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1760,
+          1769
+        ]
+      }
+    },
+    {
+      "id": "game-turns",
+      "title": "Game Turns",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "A game of Trench Crusade is divided into Turns. The scenario being used for the game will explain how many Turns the game will last and how the winner is determined once the game is over.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1770,
+          1798
+        ]
+      }
+    },
+    {
+      "id": "the-sequence-of-play",
+      "title": "The Sequence Of Play",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "A Trench Crusade Turn is split into the following phases:\n\n1. Initiative Phase: Determine which player has the Initiative and then carry out any “start of Turn” tasks.\n\n2. Activation Phase: The players alternate Activating their models, one at a time, until all of the models in both Warbands have been Activated once each.\n\n3. Morale Phase: A player must take a Morale Check if at least half their models are Down or Out of Action. A player loses the game if they fail a Morale Check two Turns in a row. Then the players carry out end of Turn tasks and a new Turn begins.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1799,
+          1808
+        ]
+      }
+    },
+    {
+      "id": "1-initiative-phase",
+      "title": "1. Initiative Phase",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "At the beginning of each Turn, you must determine which player has the Initiative for the Turn and then carry out any start of Turn tasks. The player with the Initiative chooses which player will carry out the first Activation in the Activation Phase.\n\n**Determining the Initiative**\n\nTo determine which player has the Initiative, count up the number of models in each Warband that are currently on the battlefield. Do not count models that are Down or Out of Action when determining which player has the least models. The player with the fewest number of models has the Initiative for the rest of the Turn.\n\nIf both players have the same number of models, they roll-off and the winner has the Initiative for the rest of the Turn.\n\n**Start of Turn Tasks**\n\nSome rules require the players to do things at “the start of the Turn”. These are referred to as start of Turn tasks. If more than one start of Turn task needs to be carried out, the player who has the Initiative determines the order in which they are carried out.\n\n**Simultaneous Activities**\n\nIf two things happen at the same time, the player who has the Initiative determines the order in which they are performed.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1809,
+          1850
+        ]
+      }
+    },
+    {
+      "id": "2-activation-phase",
+      "title": "2. Activation Phase",
+      "category": "Comprehensive Rules",
+      "page": 33,
+      "content": "**During the Activation Phase, the**\n\nplayers alternate Activating their models one at a time until both players have Activated all their models once each. The player with the Initiative chooses which player Activates a model first.\n\n**Carrying Out Activations**\n\n**When it is your turn to Activate a**\n\nmodel, you can choose to Activate any model in your Warband that has not yet been Activated. You can then take ACTIONS with the Activated model as explained below.\n\n**When your model’s Activation is over,**\n\nyour opponent can Activate one of their models. If one player runs out of models to Activate, their opponent Activates their remaining models one after the other until all of their models have been Activated. Play then proceeds to the Morale Phase.\n\n**You may wish to indicate that**\n\na model has been Activated by placing a small marker beside it.\n\n**In the heat of battle, it is all too**\n\neasy to forget if a model has had an Activation or not!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 33,
+        "lines": [
+          1855,
+          1906
+        ]
+      }
+    },
+    {
+      "id": "actions",
+      "title": "Actions",
+      "category": "Comprehensive Rules",
+      "page": 34,
+      "content": "When you Activate a model, you can take one or more ACTIONS with the model. You can take the ACTIONS in any order you choose. However, each type of ACTION can only be taken once per Activation unless otherwise stated in the rules. For example, you could Shoot, then Move, and then Dash with a model during its Activation, or Dash, then Charge, and then Fight, but you could not Shoot, then Dash, and then Shoot again.\n\n**Common Actions**\n\nCommon ACTIONS that all models can take are listed below. In addition to these, some models can take ACTIONS that are described in their Warband Entry or in the special rules for a piece of Battlekit or a Campaign Skill that the model has. These ACTIONS can be taken when the model is Activated in addition to any of the common ACTIONS listed below, but each can still only be taken once per Activation.\n- Move or Charge or Retreat: You can take one of the following ACTIONS with a model:\n\n* Move: You can move your model a number of inches up to its Movement Characteristic in any direction (▶ see Moves). A Move ACTION cannot be used to move a model within 1” of an enemy model (you must use a Charge ACTION instead.\n\n* Charge: Pick an enemy model that is in the Line of Sight of your model and within 12” of it as the target of the charge. Then roll a dice, add the roll to your model’s Movement Characteristic, and move your model towards the target (▶ see Charging). You cannot take a Charge ACTION with a model that is already within 1” of an enemy model. A model cannot take a Shoot ACTION and a Charge or Fight ACTION in the same Activation unless it uses a Weapon that has the ASSAULT Keyword.\n\n* Retreat: A Retreat is a special type of move that is used when a model is within 1” of an enemy model and wishes to move away (▶ see Retreating).\n- Dash: You can move your model a number of inches up to to its Movement Characteristic in any direction (▶ see Moves), but you must take a Risky Success Roll for the model first. If you succeed you can move with the model (it cannot charge or retreat); if you fail, the model’s Activation ends. A Dash can be carried out in addition to, and either before or after a Move, Charge, or Retreat ACTION. For example, a model could Dash, then Shoot, and then Move.\n- Shoot: This ACTION allows you to make a Ranged Attack with the model (▶ see Ranged Attacks).\n- Fight: This ACTION allows you to make a Melee Attack with the model (▶ see Melee Attacks).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 34,
+        "lines": [
+          1911,
+          1954
+        ]
+      }
+    },
+    {
+      "id": "movement",
+      "title": "Movement",
+      "category": "Comprehensive Rules",
+      "page": 35,
+      "content": "A Move, Charge, Retreat, or Dash ACTION allows you to pick up one of your models and move it across the battlefield. The move is carried out in the same way for a Move or Dash ACTION, except that you must take a Risky Success Roll before moving the model when you take a Dash ACTION. Charge and retreat moves are carried out in a similar way to a normal move, but in both cases additional rules apply to the way that the move is carried out.\n\n**Move and move**\n\nNote that when we say Move with a capital “M” we are referring to a Move ACTION. When we say move with a lowercase “m” we are referring to the process of moving your model.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 35,
+        "lines": [
+          1955,
+          1986
+        ]
+      }
+    },
+    {
+      "id": "moves",
+      "title": "Moves",
+      "category": "Comprehensive Rules",
+      "page": 35,
+      "content": "To move a model, pick it up and move it along a path across the battlefield or terrain. The length of the path cannot be longer than the model’s Movement Characteristic unless otherwise specified. You can move the model in any direction or combination of directions, and you can pivot the model freely to face in any direction as you move it, as long as the path along which it travels is not longer than its Movement Characteristic. In addition, when you move a model, the following rules apply:\n- A model can only move across a friendly model if it has enough movement to move past them entirely.\n- A model can only move off the battlefield if a rule states explicitly that it is allowed to do so.\n- A model can only move within 1” of enemy models if it charges (▶ see Charging).\n- A model that starts a move within 1” of enemy models can only move if:\n\n* It remains within 1” of every enemy model that it started within 1” of throughout the entire move, or * It retreats (▶ see Retreating).\n- At the end of the move, no part of the model’s base can finish further from its starting position than a number of inches equal to its Movement Characteristic.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 35,
+        "lines": [
+          1987,
+          2029
+        ]
+      }
+    },
+    {
+      "id": "charging",
+      "title": "Charging",
+      "category": "Comprehensive Rules",
+      "page": 36,
+      "content": "Taking a Charge ACTION with a model allows you to make a special type of move, called a charge, that is used to bring a model within 1” of an enemy model.\n\nYou can only move within 1” of an enemy model (measured from the base of each model) by taking a Charge ACTION. This applies to all enemy models, including those that are down or enemy models that are already within 1” of a different friendly model.\n\n**Declare Charge**\n\nAfter you take a Charge ACTION with a model, you must pick an enemy model that is visible to your model and within 12” of it as the target of the charge.\n\n**Interposing Enemy Models**\n\nYou cannot choose an enemy model as the target of a charge if the route it would have to take to reach the target would pass within 1” of a different enemy model before the charging model was within 1” of its target. In such a situation, you must choose the interposing enemy model as the target of the charge, or not make the charge at all.\n\n**Charge Bonus**\n\nAfter you have selected the target, roll a D6 and add the roll to the charging model’s Movement Characteristic, up to a maximum Movement Characteristic of 12”. The D6 roll is referred to as the model’s Charge Bonus.\n\n**Charge Moves**\n\nAfter determining the Charge Bonus, move the charging model toward the target.\n\nWhen you make a charge move with a model, the following additional rules apply to the move:\n- The model must move by the shortest route available that takes it directly towards the target.\n- Climbing, Jumping, Jumping Down or moving through Dangerous terrain is optional during a charge, as long as the route you use to avoid the obstacles is as short as possible.\n- The model must stop as soon as it moves into contact with the target, unless carrying on with its move allows it to stay in contact with the target and finish within 1” of any other enemy models.\n\nIf after completing the move the charging model is within 1” of the target, the charging model is considered to have successfully completed the charge. If the charging model does not reach its target, the charge is considered to have failed, but the charging model must remain where it was after the charge move was completed. Note that completing a charge does not automatically allow you to Fight – to make a Melee Attack after a charge you will need to take a Fight ACTION with the model, assuming it is allowed to do so.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 36,
+        "lines": [
+          2034,
+          2099
+        ]
+      }
+    },
+    {
+      "id": "retreating",
+      "title": "Retreating",
+      "category": "Comprehensive Rules",
+      "page": 37,
+      "content": "**Taking a Retreat ACTION with a model allows**\n\nyou to make a special type of move, called a retreat, that is used when a model is within 1” of an enemy model and wishes to move away. Before you make, or are forced to make, a retreat move with a model, your opponent can take a Fight ACTION with each enemy model that is within 1” of the retreating model. When a model attacks a retreating enemy model, it can only make 1 melee attack with 1 weapon (it cannot use the Multiple Melee Attacks rule, but if the attacking weapon has the CLEAVE (X) Keyword it will still apply). After carrying out the attack(s) you can move the retreating model as long as it did not suffer a Down or Out of Action result (▶ see Injury Rolls). A retreating model must end its retreat move more than 1” away from all enemy models. If this is impossible, it cannot move at all. Note that redeploying a model does not count as a retreat move.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 37,
+        "lines": [
+          2100,
+          2142
+        ]
+      }
+    },
+    {
+      "id": "terrain",
+      "title": "Terrain",
+      "category": "Comprehensive Rules",
+      "page": 38,
+      "content": "The terrain on a Trench Crusade battlefield is represented by scenic models called terrain pieces (▶ see Trench Crusade Terrain).\n\n**Terrain Types**\n\nAt the start of the game of Trench Crusade, the players must agree on what type of terrain each terrain piece represents. There are four types of terrain in Trench Crusade: Open, Difficult, Dangerous, and Impassable. Terrain can be both Difficult and Dangerous. The players will also need to agree on the boundary of each terrain piece so that they will be easily able to tell if a model has moved into it, and decide which surfaces on a terrain piece can be climbed or jumped from.\n- Open: Open terrain includes any area where there is nothing to impede a model, and is the most common terrain in Trench Crusade. Models can be moved freely across Open terrain.\n- Difficult: Difficult terrain includes rock beds, swamps, craters and so on, and has the DIFFICULT TERRAIN Keyword (▶ see DIFFICULT TERRAIN).\n- Dangerous: Dangerous terrain includes barbed wire, minefields, raging fires, areas covered in poisonous gas, and so on, and has the DANGEROUS TERRAIN Keyword (▶ see DANGEROUS TERRAIN).\n- Impassable: Impassable terrain includes cliffs, large monuments on which there is nowhere for a model to stand, pools of magma, and so on, and has the IMPASSABLE TERRAIN Keyword (▶ see IMPASSABLE TERRAIN).\n- Cover: A model has the COVER Keyword from another model if it is on or in contact with a terrain piece that is at least ½” high and at least as wide as its base, and the terrain piece lies between it and the other model in such a way that it partially blocks the Line of Sight between the two models (▶ see Partial Line of Sight).\n\nIn this example, the Line of Sight to model A is blocked by the terrain (the bayonet does not count) and therefore the model cannot be seen or attacked.\n\nModel B is in cover and there is only a partial line of sight to it, so attacks against the model will suffer -1 DICE penalty. Model C is in the open and gains no protection from any cover.\n\n**Moving into Terrain**\n\nA model is said to be “in” a piece of terrain if more than half of its base is within the boundary of that piece of terrain.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 38,
+        "lines": [
+          2147,
+          2202
+        ]
+      }
+    },
+    {
+      "id": "climbing-jumping",
+      "title": "Climbing & Jumping",
+      "category": "Comprehensive Rules",
+      "page": 39,
+      "content": "Terrain up to 1” high, Trench Walls up to 3\" high - and ladders, ramps, ropes, stairs, and other devices meant for climbing - are treated as Open terrain.\n\nIn addition, a model can Climb up sheer surfaces and Jump over gaps as described below.\n\n**Climbing Sheer Surfaces**\n\nIf one of your models moves within 1” of a sheer surface like a wall, you can say it will attempt to Climb up or down it. To do so the model must have enough movement to clear the entire surface it is climbing (i.e. it cannot finish the move halfway up a wall). You must take a Risky Success Roll for the model when it reaches the sheer surface. If the Risky Success Roll is a Success, you can move the model directly up or down so that they are standing at the top or bottom of the sheer surface, and can carry on with its move if it has any movement remaining. If the roll is a Failure, you cannot move the model any further and its Activation ends.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 39,
+        "lines": [
+          2207,
+          2228
+        ]
+      }
+    },
+    {
+      "id": "combat",
+      "title": "Combat",
+      "category": "Comprehensive Rules",
+      "page": 42,
+      "content": "**Jumping Over Gaps**\n\nYou may declare that a model is going to attempt to Jump as part of its move, which allows it to cross a gap that is no wider than half its Movement Characteristic, as long the move up to the gap and the distance that is to be Jumped does not exceed the distance the model can be moved. For example, a model with a Movement Characteristic of 6” could move 3” and then try to Jump over a gap up to 3” wide. Move the model up to the gap and then take a Risky Success Roll for the model. If the roll is a Success, you can move the model to the other side of the gap and carry on with its move if it has any movement remaining.\n\nIf the roll is a Failure, the model Falls as described below, and its Activation ends (your opponent can choose which side of the gap it Falls from).\n\nIn this example, the Trench Pilgrim model first moves moves normally 2”, then makes a Risky Success roll to climb 3” via a broken ladder, then takes another Risky Success roll to Dash, and follows up with one more move and takes yet another a Risky Success roll to jump over a gap!\n\n**Jumping Between Ledges of Unequal Heights**\n\nIf the gap that a model is Jumping across is higher on the side it is Jumping from, apply the rules for Jumping Down if the model Jumps the gap. If the gap is higher on the side that it is Jumping to, add the extra height to the horizontal distance of the Jump. (This may make the Jump impossible if the modified distance is greater than the distance the model can be moved.) Jumping Down When you move a model, it can Jump Down as part of the move.\n\nJumping Down does not affect the distance you can move the model (the Jump Down is “free”). However, if a model Jumps Down 3” or more, it counts as Falling and you must make an Injury Roll for the model before carrying on with its movement ( ▶ see Falling).\n\n41 Falling When a model Falls, it is moved from its current position to the first flat surface that it can occupy directly beneath the position that it fell from. If it Falls 3” or more, you must make an Injury Roll for the model to see if it was harmed. Add +1 INJURY DICE to the roll for every 3” it Falls (for example, a Fall of 3-5” would be rolled with +1 DICE, a Fall of 6-8” with +2 DICE, and so on).\n\nWhen you take a Shoot ACTION with a model, you make a Ranged Attack with it. When you take a Fight ACTION with a model, you make a Melee Attack with it. The rules in this section explain how each type of attack is made.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 42,
+        "lines": [
+          2229,
+          2339
+        ]
+      }
+    },
+    {
+      "id": "ranged-attacks",
+      "title": "Ranged Attacks",
+      "category": "Comprehensive Rules",
+      "page": 42,
+      "content": "**In order to make a Ranged Attack, a**\n\nmodel must have a Ranged Weapon and cannot be within 1” of an enemy model. A model cannot use a Shoot ACTION to make a Ranged Attack if it has used a Charge or Fight ACTION in the same Activation, unless it uses a Ranged Weapon that has the ASSAULT keyword.\n\n**Ranged Attack Sequence**\n\n**A Ranged Attack is made using the**\n\nfollowing sequence.\n\n1. Choose Weapon.\n\n2. Pick Target.\n\n3. Check Line of Sight.\n\n4. Check Range.\n\n5. Determine Modifiers.\n\n6. Take Success Roll for Attacking model.\n\n**Choosing the Weapon**\n\n**When you make a Ranged Attack with**\n\na model you must first pick a Ranged Weapon that the model is armed with to make the attack. The Weapons a model is armed with can be found on its Profile (▶ see Starting a Warband in Warbands of Trench Crusade).\n\n**Picking the Target**\n\n**When a model makes a Ranged Attack**\n\nyou must pick one enemy model to be the target of the attack. The target must be in the Line of Sight of the attacking model and within range of the Weapon being used to make the attack (▶ see Line of Sight) and (▶ see Measuring the Range).\n\n**Shooting into Melee**\n\n**If you want to shoot at an enemy**\n\nmodel that is within 1” of any of your models, you must roll a D6 to determine who is the target: on a 1-3 you must target one of your own models, on a 4-6 you can target an enemy model.\n\n**Note that, unless stated otherwise,**\n\nthe only time you randomly decide which model is affected by something is when you make a Ranged Attack with a model and the target is within 1” of another model from your Warband. For example, if a friendly model made a Ranged Attack with a Weapon that had the BLAST Keyword, and the target was within 1” of a model from your Warband, then you would randomly pick the target before making the Success Roll to see if the attack hits, but you would not randomise the Injury Rolls for any models that were caught in the blast radius of the Weapon after the hit had been scored.\n\n**Similarly, if a rule allowed you to**\n\nplace a BLOOD MARKER next to an enemy model, you would not randomly choose which model to place the marker beside if the enemy model was within 1” of a friendly model, and so on.\n\n**Measuring the Range**\n\nThe target is in range if the distance from the closest point of the attacking model’s base to the closest point of the target model’s base is less than or equal to the range of the Weapon being used. You can find the range of each Weapon on its Weapon Profile (▶ see Battlekit).\n\n**Short Range & Long Range**\n\nIf the distance between an attacking model and the target is less than or equal to half of the Weapon’s range, then the attack is being made at Short Range. If the distance between an attacking model and the target is greater than half of the Weapon’s range, then the attack is being made at Long Range. Add -1 DICE to the roll for a Ranged Attack that is being made at Long Range. Some Weapons and Skills may affect attacks made at either Short or Long Range, as stated in the Weapon Profile or Skill Description.\n\n**Determine Ranged Attack Modifiers**\n\nNext you must determine if there are any modifiers that will affect the attack.\n\nModifiers add +/- DICE to the Success Roll.\n- Elevated position (+1 DICE): Add +1 DICE to the roll if the attacking model is in a position at least than 3” higher than the target. Use the model’s bases when determining the difference in their heights.\n- Cover (-1 DICE): Add -1 DICE to the roll if the target is in cover from the attacking model (▶ see Cover).\n- Long Range (-1 DICE): Add -1 DICE to the roll if the attack is taking place at Long Range.\n\nA Trench Pilgrim is shooting at a Heretic Trooper with a musket. The Heretic is in cover, which adds -1 DICE to any Ranged Attacks. The Pilgrim rolls 3D6 and gets 5, 5 and 1. The two lowest dice are picked for a roll of 6. As the Pilgrim needed 7 to hit, the shot missed!\n\n**Ranged Attack Success Roll**\n\nFinally, make a Success Roll for the attacking model. If the roll is a Failure, the attack misses and nothing further happens. If the roll is a Success, the target is hit, and you must make an Injury Roll (▶ see Injury Rolls). If the roll is a Critical Success, the target is hit and +1 DICE is added to the Injury Roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 42,
+        "lines": [
+          2340,
+          2518
+        ]
+      }
+    },
+    {
+      "id": "melee-attacks",
+      "title": "Melee Attacks",
+      "category": "Comprehensive Rules",
+      "page": 45,
+      "content": "In order to make a Melee Attack, a model must have a Melee Weapon and be within 1” of a target.\n\n**Melee Attack Sequence**\n\n**A Melee Attack is made using the**\n\nfollowing Sequence:\n\n1. Choose Weapon.\n\n2. Choose Target.\n\n3. Determine Modifiers.\n\n4. Take Success Roll for Attacking model.\n\n**Choosing the Weapon**\n\n**When you make a Melee Attack with**\n\na model you must first pick a Melee Weapon that the model is armed with to make the attack. The Weapons a model is armed with can be found on its Profile.\n\n**Choosing The Target**\n\n**When a model makes a Melee Attack**\n\nyou must pick one enemy model to be the target of the attack. The target must be within 1” of the attacking model in its Line of Sight (▶ see Line of Sight).\n\n**Determine Melee Attack Modifiers**\n\n**Next you must determine if there are**\n\nany modifiers that will affect the attack.\n\n**Modifiers add +/- DICE to the Success**\n\nRoll for the attacking model.\n- Diving Charge (+1 DICE): Add +1 DICE to the roll if the attacker is making a Diving Charge (▶ see Diving Charge).\n- Defended Obstacle (-1 DICE):\n\n**Add -1 DICE to the roll if the target**\n\nis in cover and the terrain piece providing the cover lies between it and the attacking model.\n- Off-Hand Weapon (-1 DICE): Add -1 DICE to the roll if the attacking model is making the attack with an Off-Hand Weapon (▶ see Multiple Melee Weapons).\n\n**Melee Attack Success Roll**\n\n**Finally, you make a Success Roll for**\n\nthe attacking model. If the roll is a Failure, the attack misses and nothing further happens. If the roll is a Success, the target is hit and you must make an Injury Roll to see what effect the attack has had on the target model (▶ see Injuries). If the roll is a Critical Success, the target is hit and +1 DICE is added to the Injury Roll.\n\n**Multiple Melee Weapons**\n\n**A model that has two Melee**\n\n**Weapons can use a single Fight**\n\n**ACTION to make two separate**\n\n**Melee Attacks, one with each**\n\n**Weapon, in the order of your**\n\nchoice. The Weapon used for the second attack is referred to as the Off-Hand Weapon (▶ see Melee Attack Modifiers). You can pick the same or a different model as the target for each attack.\n\n**If a model has two Melee Weapons,**\n\nand one or both of them have the CLEAVE Keyword, pick one of them and make a Melee Attack with it; if it has the CLEAVE Keyword carry out all of its attacks one after the other. Then pick the other Melee Weapon and make a Melee Attack with it using the Off-Hand Modifier; if it has the CLEAVE Keyword carry out all of its attacks out one after the other with the Off-Hand modifier.\n\n**Diving Charge**\n\nYou can convert a charge for a friendly model into a Diving Charge if it Jumps Down at least 3” and lands within 1” of a target. If you do so, take a Risky Success Roll for the model after it Jumps Down. If the roll is a Failure the model is taken Down, and a Falling Injury Roll must then be taken for the model (▶ see Falling).\n\nIf the roll is a Success, you do not have to take a Falling Injury Roll for the model, and you can add +1 DICE to the Success Roll for the next Melee Attack that the model makes.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 45,
+        "lines": [
+          2523,
+          2635
+        ]
+      }
+    },
+    {
+      "id": "injuries",
+      "title": "Injuries",
+      "category": "Comprehensive Rules",
+      "page": 46,
+      "content": "During games of Trench Crusade, models can be injured by attacks, falling from high terrain, or when trying to move through Dangerous terrain. Regardless of how it occurs, when an enemy model suffers an injury, you must make an Injury Roll for the model.\n\n**Injury Rolls**\n\nAn Injury Roll is made in a similar way to a Success Roll, by taking 2D6, adding extra dice to the roll, and then picking the two highest or lowest dice and adding them together. However, when you make an Injury Roll, INJURY DICE and INJURY MODIFIERS may be added to the roll instead of +/- DICE.\n\nINJURY DICE: + or - INJURY DICE are added to an Injury Roll in the same way that + or - DICE are added to a Success Roll (▶ see Success Rolls).\n\n**INJURY MODIFIER: + or - INJURY MODIFIERS are applied to the**\n\nInjury Roll. Make the Injury Roll, adding any + or - INJURY DICE, and then add or subtract any INJURY MODIFIERS from the roll.\n\nThe maximum -INJURY MODIFIER cannot be more than -3 in total.\n\nFor example, an Injury Roll has a +1 INJURY DICE modifier and a -1 INJURY MODIFIER. 3 dice are rolled, resulting in a 2, 4 and 5. The two highest dice are used, giving a roll of 9. Then the -1 INJURY MODIFIER is applied, subtracting 1 from the roll and changing it to an 8. The roll is looked up on the Injury Table, which gives a Down result for the Injury Roll.\n\nNote that if a rule says a model is taken Down or Out of Action, apply the appropriate Result from the Injury Roll Table in full (which means a model that is taken Down will have a BLOOD MARKER placed beside it).\n\n47 Bloodbath Rolls When you make an Injury Roll for an enemy model, you can spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if the target is Down) to convert the Injury Roll to a Bloodbath Roll. To make a Bloodbath Roll, roll 3D6 and add all 3 dice together. Add +/- INJURY DICE and +/- INJURY MODIFIERS in the same way that you would to an Injury Roll, except that you pick the 3 highest or 3 lowest dice in the roll instead of the 2 highest or lowest.\n\nIf the Injury Roll has the DEADLY Keyword, instead roll 4D6 and add all 4 dice together.\n\n**Making an Injury Roll**\n\nTo make an Injury Roll for a model, carry out the following steps:\n\n1. Take 2 D6.\n\n2. Add any +/- INJURY DICE (▶ see “Combining +DICE and -DICE”).\n\n3. Roll all of the dice.\n\n4. Pick the 2 highest dice if any +INJURY DICE were added to the roll, or the 2 lowest if any -INJURY DICE were added to the roll.\n\n5. Add the 2 dice together.\n\n6. Add any +/- INJURY MODIFIERS to the roll.\n\n7. Look up the roll on the Injury Roll Table below.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 46,
+        "lines": [
+          2636,
+          2731
+        ]
+      }
+    },
+    {
+      "id": "injury-roll-table",
+      "title": "Injury Roll Table",
+      "category": "Comprehensive Rules",
+      "page": 48,
+      "content": "- Roll — Result\n- 1 or less — No Effect. The model is unharmed and the injury has no effect.\n- 2-6 — Minor Hit. Place 1 BLOOD MARKER next to the model.\n- 7-8 — Down. Place 1 BLOOD MARKER next to the model and mark them as being Down. If the model is already Down, place 2 BLOOD MARKERS next to it instead of 1.\n- 9+ — Out of Action. The model has been seriously injured or killed and is removed from the battlefield.\n\n**Common Injury Roll Modifiers**\n\nThe following modifiers are cumulative. The maximum -INJURY MODIFIER added to an Injury Roll cannot be more than -3 in total.\n- Blessing Markers: Add -1 INJURY DICE for each BLESSING MARKER that is spent.\n- Blood Markers: Add +1 INJURY DICE for each BLOOD MARKER that is spent.\n- Critical Success: Add +1 INJURY DICE.\n- Down: Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Abilities or Keywords: Add any +/-INJURY DICE and/or any +/-INJURY MODIFIERS for abilities or Keywords that apply to the Injury Roll.\n- Armour Characteristic: Add the -INJURY MODIFIER of the model’s Armour Characteristic (if any).\n- Battlekit: Add the -INJURY MODIFIER for the model’s Battlekit (e.g. Armour, Shield, etc.).\n\nGameplay Example: A Heretic Trooper makes a Ranged Attack that hits a Trench Pilgrim Castigator who has 2 BLOOD MARKERS and Standard Armour. The Heretic player decides to use both BLOOD MARKERS to make the shot more likely to injure. The Heretic player takes 4D6 (2D6 +2 INJURY DICE from the BLOOD MARKERS) and rolls 2, 5, 4 and 1. Since two +INJURY DICE were added to the roll, the two highest numbers are used for the Injury Roll, giving a total of 9. The Castigator’s armour adds -1 INJURY MODIFIER, so the total is reduced by 1, to give a modified roll of 8. The Heretic player consults the Injury Table and finds that the Pilgrim is Down!\n\n**Down Results**\n\nThe following rules apply to a model that is Down:\n- If a model is taken Down during its Activation, its Activation ends immediately.\n- Add -1 DICE to any Success Rolls you take for a model that is Down.\n- Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Until the model stands back up, it cannot be moved for any reason unless it falls.\n- A model that is Down stands back up when it is next Activated. However, its Movement Characteristic is halved for the rest of the Activation (including any Charge Bonus it receives).\n- A model that is within 1” of a ledge when it is taken down may Fall off the ledge.\n\nTake a Success Roll for the model before it is taken Down. If the roll is a Success, the model is taken Down but does not Fall off the ledge. If the roll is a Failure, the model Falls from the nearest ledge and is then taken Down (▶ see Falling).\n\nYou can show that a model is Down by placing a marker next to the model (such as a wooden cube) or by laying the model on its side. If you choose to place the model on its side, lay it down in such a way that the centre of the model lies over the point where the centre of its base was located. When measuring the range to or from a model that is Down, you can measure from any part of the model, not just from its base. Note: A model lying on its side will be more difficult to see, but otherwise the two methods are identical, and you may decide which to use for your models.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 48,
+        "lines": [
+          2732,
+          2834
+        ]
+      }
+    },
+    {
+      "id": "3-morale-phase",
+      "title": "3. Morale Phase",
+      "category": "Comprehensive Rules",
+      "page": 50,
+      "content": "Your Warband may abandon the battle if it suffers too many casualties. In the Morale Phase, if half the models in your Warband are Down or Out of Action (rounded up), you must take a special type of Success Roll called a Morale Check.\n\nA Morale Check is taken in the same way as a Success Roll for a model. If the Morale Check is a Success, your Warband carries on normally. If the Morale Check is a Failure, your Warband becomes Shaken.\n\nNote: Remember that when counting models, any fractions are rounded up. For example, a Warband that has 5 models will not need to make a Morale Check until 3 of its models are Down or Out of Action (half of 5 is 2.5, which rounds up to 3).\n\n**Shaken Warbands**\n\nAll Success Rolls taken for models from a Shaken Warband are treated as Risky Success Rolls (unless they are Risky Success Rolls already). In addition, in the Morale Phase at the end of the next Turn you must make another Morale Check for your Warband, even if fewer than half of its models are Down or Out of Action. If the Morale Check is a Success, your Warband is no longer Shaken (though it may become so again if you fail a Morale check in a future Turn). However, if the Morale Check is a failure, your Warband flees and you immediately lose the game!\n\n**Ending The Turn**\n\nAs long as neither player’s Warband flees, they can carry out any end of Turn tasks.\n\nA new Turn can then begin.\n\n**End of Turn Tasks**\n\nSome rules require the players to do things at “the end of the Turn”. These are referred to as end of Turn tasks. If more than one end of Turn task needs to be carried out, the player that as the Initiative determines the order in which they are carried out.\n\n**Sounding the Retreat**\n\nIf a Morale Check for your Warband is a Failure, you can choose to immediately flee and lose the game instead of becoming Shaken. Sometimes it is better to retreat to conserve your losses, rather than fighting on to the last man!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 50,
+        "lines": [
+          2839,
+          2892
+        ]
+      }
+    },
+    {
+      "id": "winning-the-game",
+      "title": "Winning The Game",
+      "category": "Comprehensive Rules",
+      "page": 51,
+      "content": "You win a game of Trench Crusade immediately if the opposing player’s Warband flees. If this doesn’t happen, the winner of the game is determined after the final Turn has been completed. The scenario chosen for the game will say how many Turns the game will last, and how the winner is decided.\n- 52 — Keyword- — Trench Crusade\n- keYWords — glossarY Rules governing all Keywords in the game are listed here. A model, a piece of Battlekit, a Marker or a terrain piece can have 1 or more Keywords. They define the core abilities, rules, troop types and damage categories in the game. Keywords appear in the rules in CAPITALS to make it easy for you to spot them.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 51,
+        "lines": [
+          2897,
+          2933
+        ]
+      }
+    }
+  ],
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",

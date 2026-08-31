@@ -5,13 +5,13 @@ import { parseRulesProse} from './rulesProse';
  * Renders the rulebook prose the pipeline extracts.
  *
  * The generated rules text carries the source document's light Markdown —
- * `###` chapter headings, `####` sub-headings, `-` and `1.` lists, and
- * `**bold**` for the terms the book itself sets in bold (keywords, roll
- * bands, phase names). The Codex used to print that string through
+ * `**Sub-heading**`, `-` and `1.` lists, and `**bold**` for the terms the book
+ * itself sets in bold (keywords, roll bands, phase names); `#` headings too,
+ * for a source that emits them. The Codex used to print that string through
  * `whitespace-pre-line`, so a player reading the Success Roll table saw
  *
- *     #### Success Roll Table (2D6)
- *     - **1-6: Failure / Mishap** - The action fails.
+ *     **Risky Success Rolls**
+ *     - 2-6 — Failure. The roll is a Failure.
  *
  * asterisks and all. It is the app's single largest body of text and the one
  * a player opens mid-game precisely because they are unsure, so the syntax

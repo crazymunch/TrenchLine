@@ -550,6 +550,32 @@ further bugs that were nothing to do with the data:
 `officialRulesData.ts` still holds the fabricated copies, and `CodexView` still
 reads them for reference display.
 
+### 1.14 The Codex's rules prose was written, not extracted
+
+`src/data/officialCoreRules.ts` held eight chapters of hand-written Core and
+Comprehensive Rules — the Codex tab a player opens mid-game, precisely when
+they do not have the book to hand. Three of its errors are on the rules looked
+up most:
+
+| | the app said | the rulebook says |
+|---|---|---|
+| Initiative | "Both players roll a D6. The player who rolls highest wins Initiative" | the player with the **fewest models** has the Initiative; the dice are only the tiebreaker |
+| Success table | "**1-6**: Failure / Mishap" | "**2-6** Failure" — 1 is not a result on 2D6 |
+| Morale | "50% or more of **starting** models" | "half the models in your Warband are Down or Out of Action **(rounded up)**" |
+
+The rest is the same shape: plausible, fluent, and unsourced. A "Bloodbath
+Roll" that converts an Injury Roll so "all doubles result in instant Out of
+Action"; a Charge that "grants a Charge Bonus (+1 DICE) on the initial melee
+attack" the book does not give; falling damage "with +1 INJURY DICE per 2\"
+fallen"; Light and Heavy Cover at -1 and -2 DICE, the same two invented cover
+tiers the keyword sweep found in §1.3.
+
+Replaced by `scripts/lib/parse-core-rules.mjs`, which walks the rulebook's own
+table of contents through the body and emits **59 sections** — 17 Core, 42
+Comprehensive — each carrying the printed page it came from. A heading the
+contents lists and the walk cannot find fails the build rather than leaving the
+Codex silently a chapter short.
+
 ## 2. Mobile and tablet
 
 ### 2.1 The hard bug

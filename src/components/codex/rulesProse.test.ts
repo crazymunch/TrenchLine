@@ -3,21 +3,27 @@ import { parseRulesProse } from './rulesProse';
 
 /**
  * Every input in this file is real: each one is a verbatim fragment of
- * `src/data/generated/trenchline.generated.ts` or of `OFFICIAL_CORE_RULES`,
- * not a construct invented to make the parser look good. The hard-wrapping in
- * `rejoins a bullet the extractor wrapped` in particular is exactly what
- * `parse-scenarios.mjs` emits, blank line and shouted continuation included.
+ * `src/data/generated/trenchline.generated.ts` — its scenarios or its
+ * `coreRules` chapters — not a construct invented to make the parser look
+ * good. The hard-wrapping in `rejoins a bullet the extractor wrapped` in
+ * particular is exactly what `parse-scenarios.mjs` emits, blank line and
+ * shouted continuation included.
+ *
+ * The `#`-heading cases are the exception and say so: nothing in the shipped
+ * data emits them today. They were verbatim from the hand-written
+ * `officialCoreRules.ts`, deleted in favour of the extracted chapters, and the
+ * support is kept because the renderer is shared and a future source may.
  */
 describe('parseRulesProse', () => {
-  it('reads a heading', () => {
-    expect(parseRulesProse('#### Success Roll Table (2D6)')).toEqual([
-      { kind: 'h', level: 3, text: 'Success Roll Table (2D6)' },
-    ]);
-  });
-
   it('treats a line that is only bold as a heading', () => {
     expect(parseRulesProse('**Objective Markers**')).toEqual([
       { kind: 'h', level: 3, text: 'Objective Markers' },
+    ]);
+  });
+
+  it('reads a heading (no source emits these now — see the note above)', () => {
+    expect(parseRulesProse('#### Success Roll Table (2D6)')).toEqual([
+      { kind: 'h', level: 3, text: 'Success Roll Table (2D6)' },
     ]);
   });
 
@@ -30,9 +36,10 @@ describe('parseRulesProse', () => {
   });
 
   it('collects a bulleted list', () => {
+    // The Success Roll Table, as the extractor emits it.
     const source = [
-      '- **1-6: Failure / Mishap** - The action fails.',
-      '- **7-11: Success** - The action succeeds normally.',
+      '- 2-6 — Failure. The roll is a Failure.',
+      '- 7-11 — Success. The roll is a Success.',
     ].join('\n');
 
     expect(parseRulesProse(source)).toEqual([
@@ -40,15 +47,19 @@ describe('parseRulesProse', () => {
         kind: 'list',
         ordered: false,
         items: [
-          '**1-6: Failure / Mishap** - The action fails.',
-          '**7-11: Success** - The action succeeds normally.',
+          '2-6 — Failure. The roll is a Failure.',
+          '7-11 — Success. The roll is a Success.',
         ],
       },
     ]);
   });
 
   it('collects a numbered list', () => {
-    const source = ['1. **Initiative Phase**: Both players roll a D6.', '2. **Activation Phase**: Players alternate.'].join('\n');
+    // The Sequence Of Play, verbatim.
+    const source = [
+      '1. Initiative Phase: Determine which player has the Initiative and then carry out any “start of Turn” tasks.',
+      '2. Activation Phase: The players alternate Activating their models, one at a time, until all of the models in both Warbands have been Activated once each.',
+    ].join('\n');
     const blocks = parseRulesProse(source);
     expect(blocks).toHaveLength(1);
     expect(blocks[0]).toMatchObject({ kind: 'list', ordered: true });
@@ -95,14 +106,13 @@ describe('parseRulesProse', () => {
 
   it('loses no words', () => {
     const source = [
-      '### The Sequence of Play',
+      '**Risky Success Rolls**',
       '',
-      'Trench Crusade is played in **Game Turns**.',
+      'Sometimes you will be called on to take a Risky Success Roll for a model.',
       '',
-      '1. **Initiative Phase**: Both players roll a D6. The player who rolls',
-      'highest wins Initiative.',
+      '1. Take 2 D6.',
       '',
-      '- a bullet',
+      '- 2-6 — Failure. The roll is a Failure.',
     ].join('\n');
 
     // List markers are structure, not words: the parser consumes them and the
