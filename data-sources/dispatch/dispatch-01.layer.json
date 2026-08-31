@@ -48,9 +48,16 @@
     "     entity model has no field for. They are rules, not flavour, and belong with the",
     "     Battlekit work rather than being dropped into a description string.",
     "",
-    "  3. The recruitment sentences need no ops: the catalogues express recruitment as",
-    "     per-warband visibility modifiers rather than as prose, and they already agree.",
-    "     Spot-checked on the Witchburner — New Antioch and Trench Pilgrims, as printed."
+    "  3. The recruitment sentences ARE transcribed, as allowedFactions ops. They were",
+    "     first left out on the reasoning that \"the catalogues already express recruitment",
+    "     as per-warband visibility modifiers and agree\" — which was checked against ONE",
+    "     entry, the Witchburner, and generalised. It does not hold: the Mendelist Ammo",
+    "     Monk, the Sin Eater, the Goetic Warlock and the Communicant Anti-Tank Hunter",
+    "     carry no host restriction at all in the catalogues, the Mamluk Faris's is keyed",
+    "     to an injury (\"Lost Arm [26]\"), and the Scripture Guardian is restricted to two",
+    "     Warbands where the Dispatch says any. Meanwhile the recruit list granted every",
+    "     Mercenary to every faction, so a Court of the Seven-Headed Serpent Warband was",
+    "     offered the Ammo Monk and the Observer. The printed sentences are the source."
   ],
   "ops": [
     {
@@ -780,6 +787,108 @@
         "description": "After making an Injury Roll for an attack made with Divine Judgement or a Gavel of Justice, place 1 extra BLOOD MARKER next to the model if the model is part of a Fallen Warband (even if the Injury Roll result is No Effect)."
       },
       "_src": "trench-dispatch-01-april-2026.txt L853-855 — 'Found Guilty: …'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Combat Biologist"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Iron Sultanate"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L559 — 'A Combat Biologist is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and SULTANATE Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Communicant Anti-Tank Hunter"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L571 — 'A Communicant Anti-Tank Hunter is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Mamluk Faris"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Iron Sultanate"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L583 — 'A Mamluk Faris is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and SULTANATE Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Mendelist Ammo Monk"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L602 — 'A Mendelist Ammo Monk is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Observer"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L635 — 'An Observer is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Scripture Guardian"
+      },
+      "field": "allowedFactions",
+      "value": null,
+      "_src": "trench-dispatch-01-april-2026.txt L729 — 'A Scripture Guardian is a Mercenary that can be recruited by any Warband.'",
+      "_note": "Explicitly unrestricted in the Dispatch — \"any Warband\". Null rather than a list of all six, so \"no restriction\" and \"we have not checked\" stay different states."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L778 — 'A Goetic Warlock is Fallen and can be recruited as a Mercenary by HERETIC and THE COURT Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L824 — 'A Witchburner is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
     }
   ]
 }

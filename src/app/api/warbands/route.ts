@@ -118,7 +118,7 @@ export async function GET(req: NextRequest) {
         // When the player last changed the roster, as against when the row was
         // last written. The sync merge compares this and nothing else — see
         // services/sync.ts for why `updatedAt` could not do the job.
-        editedAt: wb.editedAt ? wb.editedAt.toISOString() : undefined,
+        editedAt: parsedMetadata.editedAt || undefined,
       };
     });
 
@@ -201,14 +201,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Pack metadata (lore, motto, patron, chronicleLog, snapshots) into notes JSON
+    /*
+      Client-owned fields ride in the `notes` JSON, and `editedAt` is one of
+      them.
+
+      It was briefly a real column. That is arguably the tidier schema, but it
+      made the deploy require a `prisma db push` performed at exactly the right
+      moment: Prisma selects every column the schema declares, so between
+      shipping the code and running the migration, every GET here would 500 and
+      sync would be dead rather than degraded. A schema change that breaks the
+      app if a human forgets a step is a worse trade than a JSON field.
+
+      It also belongs with the fields already here. `editedAt` is the client's
+      statement about the client's copy — like `snapshots` and `chronicleLog`,
+      not like `ducatLimit`. Nothing server-side queries or sorts by it: the
+      merge runs on the device against the full fetched list.
+
+      If it ever needs to be indexed, add the column then and backfill from
+      here. Doing it now buys nothing and costs a migration window.
+    */
     const metadataPayload = JSON.stringify({
       rawNotes: notes || '',
       lore: lore || '',
       motto: motto || '',
       patron: patron || '',
       chronicleLog: chronicleLog || [],
-      snapshots: snapshots || []
+      snapshots: snapshots || [],
+      editedAt: editedAt || undefined
     });
 
     const warband = await prisma.warband.upsert({
@@ -222,10 +241,6 @@ export async function POST(req: NextRequest) {
         units: units || [],
         armoryStash: armoryStash || [],
         notes: metadataPayload,
-        // The client's edit time, not the server's write time. `updatedAt` is
-        // Prisma's `@updatedAt` and is rewritten on every push, which is
-        // exactly why it could not be the field the merge compares.
-        editedAt: editedAt ? new Date(editedAt) : undefined,
         userId: existingWarband ? existingWarband.userId : effectiveUserId,
       },
       create: {
@@ -238,7 +253,6 @@ export async function POST(req: NextRequest) {
         units: units || [],
         armoryStash: armoryStash || [],
         notes: metadataPayload,
-        editedAt: editedAt ? new Date(editedAt) : undefined,
         userId: effectiveUserId,
       },
     });

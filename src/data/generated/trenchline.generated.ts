@@ -18659,7 +18659,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ]
     },
     {
       "id": "8e7d-f104-423a-2b4a",
@@ -18748,7 +18752,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ]
     },
     {
       "id": "b5ac-1a57-c1d4-3f4c",
@@ -18838,7 +18846,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ]
     },
     {
       "id": "2d21-7af1-0770-da4c",
@@ -19034,7 +19046,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ]
     },
     {
       "id": "ce78-bd08-5b44-8e38",
@@ -19612,7 +19628,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Iron Sultanate"
+      ]
     },
     {
       "id": "2a1b-d09e-f965-06c9",
@@ -19891,7 +19911,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "New Antioch",
+        "Iron Sultanate"
+      ]
     },
     {
       "id": "3fe9-1530-6fcd-1855",
@@ -19972,7 +19996,8 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": null
     },
     {
       "id": "1a28-719d-fbd0-5bf0",
@@ -20141,7 +20166,11 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedFactions": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent"
+      ]
     },
     {
       "id": "bc90-d206-2b0d-b743",

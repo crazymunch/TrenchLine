@@ -150,3 +150,46 @@ describe('extracted prose does not swallow the next heading', () => {
     expect(bad, 'descriptions that ran into the next heading').toEqual([]);
   });
 });
+
+/**
+ * Who may hire a Mercenary.
+ *
+ * The recruit list granted every Mercenary to every faction, so a Court of the
+ * Seven-Headed Serpent Warband was offered the Mendelist Ammo Monk and the
+ * Observer — both NEW ANTIOCH and PILGRIM only. The comment justifying it said
+ * the catalogues "put them in their own faction rather than listing hosts, so
+ * the legality engine decides". Both halves were wrong: the catalogues do carry
+ * hosts, and the legality engine runs after a unit is already on the roster.
+ */
+describe('Mercenary recruitment restrictions', () => {
+  const merc = (name: string) => {
+    const u = DATASET.units.find((x) => x.name === name);
+    if (!u) throw new Error(`no unit named ${name}`);
+    return u;
+  };
+
+  it('keeps the Faithful Mercenaries out of a Fallen Warband', () => {
+    for (const name of ['Mendelist Ammo Monk', 'Observer', 'Witchburner', 'Communicant Anti-Tank Hunter']) {
+      expect(merc(name).allowedFactions, name).toEqual(['New Antioch', 'Trench Pilgrims']);
+      expect(merc(name).allowedFactions, `${name} must not be hireable by the Court`)
+        .not.toContain('Court of the Seven-Headed Serpent');
+    }
+  });
+
+  it('keeps the Fallen Mercenary out of a Faithful Warband', () => {
+    expect(merc('Goetic Warlock').allowedFactions)
+      .toEqual(['Heretic Legion', 'Court of the Seven-Headed Serpent']);
+  });
+
+  it('lets the Sultanate hire the two the book gives it', () => {
+    for (const name of ['Combat Biologist', 'Mamluk Faris']) {
+      expect(merc(name).allowedFactions, name).toEqual(['New Antioch', 'Iron Sultanate']);
+    }
+  });
+
+  it('leaves the one the book says any Warband may hire unrestricted', () => {
+    // Null, not a list of all six: "no restriction" and "not checked yet" must
+    // stay different states.
+    expect(merc('Scripture Guardian').allowedFactions).toBeNull();
+  });
+});

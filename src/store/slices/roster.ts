@@ -14,7 +14,7 @@ import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
 
-export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
+export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
 export const createRosterSlice = (init: InitialState): StateCreator<AppState, [], [], RosterSlice> =>
   (set, get) => ({
@@ -189,6 +189,56 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         updated = persistWarbands(updated, state.warbands);
         storage.setActiveWarbandId(enrichedWarband.id);
         return { warbands: updated, activeWarbandId: enrichedWarband.id };
+      });
+    },
+
+    /**
+     * Put a warband back to one of its own recorded milestones.
+     *
+     * The Growth History has always held everything needed for this — a
+     * snapshot carries the full `units` array, the stash, the treasury and the
+     * Glory at that moment — and there was no way to apply one. A player whose
+     * roster went backwards (a bad sync, a device that had a stale copy) could
+     * see the state they wanted listed in front of them and not get to it.
+     *
+     * It takes a snapshot of the CURRENT state first, so restoring is itself
+     * undoable. Overwriting a roster with no way back is how a recovery
+     * feature becomes a second data-loss bug.
+     */
+    restoreWarbandSnapshot: (warbandId, snapshotId) => {
+      set((state) => {
+        const now = new Date().toISOString();
+        const updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const snap = (w.snapshots ?? []).find((s) => s.id === snapshotId);
+          if (!snap) return w;
+
+          const safety: WarbandSnapshot = {
+            id: `snap-${Date.now()}`,
+            timestamp: now,
+            label: `Before restoring "${snap.label}"`,
+            type: 'manual',
+            ducatCost: w.units.reduce((sum, u) => sum + u.totalCost, 0),
+            treasuryDucats: w.treasuryDucats,
+            gloryPoints: w.gloryPoints,
+            unitCount: w.units.filter((u) => !u.isDead).length,
+            units: JSON.parse(JSON.stringify(w.units)),
+            armoryStash: JSON.parse(JSON.stringify(w.armoryStash)),
+            changesSummary: ['Automatic checkpoint taken before a restore, so the restore can be undone.'],
+          };
+
+          return {
+            ...w,
+            units: JSON.parse(JSON.stringify(snap.units)),
+            armoryStash: JSON.parse(JSON.stringify(snap.armoryStash ?? [])),
+            treasuryDucats: snap.treasuryDucats,
+            gloryPoints: snap.gloryPoints,
+            // The history grows; restoring never erases the milestones between
+            // here and there.
+            snapshots: [...(w.snapshots ?? []), safety],
+          };
+        });
+        return { warbands: persistWarbands(updated, state.warbands) };
       });
     },
 

@@ -17,6 +17,7 @@ import { variantById } from '../../rules/variants';
 import { forceLimits, campaignGameOf } from '../../rules/campaign';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { 
+  ChevronDown,
   UserPlus, 
   Coins, 
   Sparkles, 
@@ -64,6 +65,7 @@ export const WarbandBuilder: React.FC = () => {
   const [isStashOpen, setIsStashOpen] = useState(false);
   const [isChronicleOpen, setIsChronicleOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
+  const [collapseAll, setCollapseAll] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
   const [isNotesOpen, setIsNotesOpen] = useState(false);
 
@@ -467,8 +469,9 @@ export const WarbandBuilder: React.FC = () => {
         </div>
       )}
 
-      {/* Category Filter Pills */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-1">
+      {/* Category Filter Pills, and the roster-wide collapse. */}
+      <div className="flex items-center gap-2">
+      <div className="flex items-center space-x-2 overflow-x-auto pb-1 min-w-0">
         {['All', 'Leader', 'Elite', 'Trooper', 'Mercenary'].map((cat) => (
           <button
             key={cat}
@@ -482,6 +485,25 @@ export const WarbandBuilder: React.FC = () => {
             {cat} ({cat === 'All' ? warband.units.length : warband.units.filter((u) => u.profileSnapshot.category === cat).length})
           </button>
         ))}
+      </div>
+
+        {/*
+          Collapse the roster in one tap.
+
+          Nine warriors at full detail is roughly 6,000px of scroll on a phone,
+          and the common task — checking who is in the warband and what they
+          cost — needs the header and the statline. Collapse the lot, then open
+          the one you are editing; a card's own chevron overrides this.
+        */}
+        <button
+          onClick={() => setCollapseAll((c) => !c)}
+          aria-pressed={collapseAll}
+          className="flex items-center gap-1.5 px-3 py-2 bg-theme-surface hover:bg-theme-elevated text-theme-text border border-theme-border font-mono text-xs font-bold uppercase transition-colors flex-shrink-0 ml-auto"
+          title={collapseAll ? 'Show every warrior in full' : 'Collapse every warrior to a summary'}
+        >
+          <ChevronDown className={`w-4 h-4 transition-transform ${collapseAll ? '-rotate-90' : ''}`} />
+          <span className="hidden sm:inline">{collapseAll ? 'Expand all' : 'Collapse all'}</span>
+        </button>
       </div>
 
       {/* Unit Cards Grid */}
@@ -498,7 +520,7 @@ export const WarbandBuilder: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredUnits.map((unit) => (
-            <UnitCard key={unit.id} warbandId={warband.id} unit={unit} />
+            <UnitCard key={unit.id} warbandId={warband.id} unit={unit} collapseAll={collapseAll} />
           ))}
         </div>
       )}

@@ -128,6 +128,8 @@ export interface AppState {
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
+  /** Put a warband back to one of its own recorded milestones. */
+  restoreWarbandSnapshot: (warbandId: string, snapshotId: string) => void;
   saveWarbandSnapshot: (
     warbandId: string, 
     label: string, 

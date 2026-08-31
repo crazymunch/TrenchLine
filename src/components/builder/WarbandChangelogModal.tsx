@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { Warband, WarbandSnapshot, ActiveUnit } from '../../types/warband';
-import { SULTANATE_WARBAND_SNAPSHOTS } from '../../data/warbandLore';
 import { soundEffects } from '../../services/soundEffects';
+import { ConfirmModal } from '../ui/ConfirmModal';
 import { 
   History, 
   Shield, 
@@ -18,20 +18,38 @@ interface WarbandChangelogModalProps {
 }
 
 export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ warband, onClose }) => {
-  const { saveWarbandSnapshot } = useStore();
+  const { saveWarbandSnapshot, restoreWarbandSnapshot } = useStore();
 
-  
-  // Snapshots list: check if sultanate and needs canonical
-  const isSultanate = warband.factionId === 'iron-sultanate' || warband.name.toLowerCase().includes('qarn') || warband.name.toLowerCase().includes('sultanate');
-  const rawSnapshots = (warband.snapshots && warband.snapshots.length >= 3 && !warband.snapshots.some(s => s.id === 'snap-founding' || s.ducatCost === 1320)) 
-    ? warband.snapshots 
-    : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : (warband.snapshots || []));
+  /*
+    The warband's own history, always. Never a fixture standing in for it.
 
-  const [snapshots] = useState<WarbandSnapshot[]>(rawSnapshots);
+    This used to read:
+
+        const rawSnapshots = (warband.snapshots && warband.snapshots.length >= 3
+          && !warband.snapshots.some(s => s.id === 'snap-founding' || s.ducatCost === 1320))
+          ? warband.snapshots
+          : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : (warband.snapshots || []));
+
+    Read the condition carefully. A Sultanate warband whose real history had
+    **fewer than three entries**, or contained a snapshot **costing exactly
+    1320 Ducats**, had its entire Growth History replaced by
+    SULTANATE_WARBAND_SNAPSHOTS — the demo fixture, which tops out at 1000.
+
+    So the closer a real roster got to the hard-coded number, the more
+    certainly the app hid its actual history and showed someone else's. There
+    is no reading of 1320 that is anything but a magic number written to make a
+    specific roster display the fixture.
+
+    It is the fabricated-fallback rule (docs/README.md) in its most damaging
+    form: not invented data alongside real data, but invented data *in place
+    of* real data, keyed on the real data looking right.
+  */
+  const [snapshots] = useState<WarbandSnapshot[]>(warband.snapshots ?? []);
   const [selectedSnapshotId, setSelectedSnapshotId] = useState<string>(
-    rawSnapshots.length > 0 ? rawSnapshots[rawSnapshots.length - 1].id : ''
+    warband.snapshots?.length ? warband.snapshots[warband.snapshots.length - 1].id : ''
   );
   const [isCreatingSnapshot, setIsCreatingSnapshot] = useState(false);
+  const [pendingRestoreId, setPendingRestoreId] = useState<string | null>(null);
   const [customLabel, setCustomLabel] = useState('');
   const [customNote, setCustomNote] = useState('');
 
@@ -194,10 +212,39 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                         </div>
                         <div className="text-right">
                           <span className="text-xs sm:text-[9px] uppercase text-theme-muted block">Glory</span>
-                          <strong className="text-theme-primary">{snap.gloryPoints} ☼</strong>
+                          <strong className="text-theme-primary">{snap.gloryPoints}</strong>
                         </div>
                       </div>
                     </div>
+
+                    {/*
+                      Restore.
+
+                      A snapshot has always carried the whole roster — every
+                      unit, the stash, the treasury, the Glory — and there was
+                      no way to apply one. A player whose roster went backwards
+                      could read the state they wanted off this list and not
+                      get to it.
+
+                      Only on the selected card, so it cannot be hit while
+                      scrolling, and behind a confirm because it replaces the
+                      current roster. The restore itself takes a checkpoint
+                      first, so it is undoable from this same list.
+                    */}
+                    {isSelected && (
+                      <div className="flex items-center justify-between gap-3 border-t border-theme-border pt-2.5 mt-2.5">
+                        <span className="eyebrow">
+                          {snap.unitCount} warriors &middot; {snap.ducatCost} D
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setPendingRestoreId(snap.id); }}
+                          className="px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-primary border border-theme-primary/50 font-mono text-xs font-bold uppercase tracking-wider transition-colors flex-shrink-0"
+                          title="Put the warband back to this milestone"
+                        >
+                          Restore this state
+                        </button>
+                      </div>
+                    )}
 
                     {/* Changes Summary Bullets */}
                     {snap.changesSummary && snap.changesSummary.length > 0 && (
@@ -301,6 +348,28 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
         </div>
 
       </div>
+      {/* Restoring replaces the current roster, so it asks first — and the
+          message says exactly what is being replaced with what. */}
+      <ConfirmModal
+        isOpen={pendingRestoreId !== null}
+        title="RESTORE THIS MILESTONE"
+        message={(() => {
+          const snap = snapshots.find((x) => x.id === pendingRestoreId);
+          if (!snap) return '';
+          const nowCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
+          return `Put "${warband.name}" back to "${snap.label}" — ${snap.unitCount} warriors at ` +
+            `${snap.ducatCost} Ducats, ${snap.treasuryDucats} in the treasury and ${snap.gloryPoints} Glory.\n\n` +
+            `This replaces the current roster (${warband.units.length} warriors at ${nowCost} Ducats). ` +
+            `A checkpoint of the current state is saved to this list first, so you can undo it.`;
+        })()}
+        confirmLabel="Restore"
+        onConfirm={() => {
+          if (pendingRestoreId) restoreWarbandSnapshot(warband.id, pendingRestoreId);
+          setPendingRestoreId(null);
+          onClose();
+        }}
+        onCancel={() => setPendingRestoreId(null)}
+      />
     </Sheet>
   );
 };
