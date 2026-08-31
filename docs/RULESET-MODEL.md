@@ -403,6 +403,20 @@ interface UnitOption {         // NEW — Strains, Vile Corpus, Goetic Powers, G
 }
 ```
 
+### Roles, and who may lead
+
+A catalogue entry carries a `roles` list — `Elite`, `Troop`, `Mercenary`, and on
+nine entries `Leader`. The roster format has a single `category` field instead,
+and it means something different: it records what a model **is on this roster**,
+so a nominated Leader's category is `'Leader'` while every other copy of the
+same profile still reads `'Elite'`.
+
+The two cannot be collapsed. `recruitable()` therefore maps `roles` to
+`category` for the first three and carries the fourth separately as
+`UnitProfile.canLead`. That is what lets the builder nominate the first
+Leader-eligible recruit automatically without inferring leadership from cost,
+rarity or a recruitment limit of 1 — all of which would be invented rules.
+
 `UnitOption.modifies` reusing `LayerOp` is deliberate: *"A model with the Hellfly
 Host Strain replaces their Movement Characteristic with 6"/Flying and gains the
 FLYING Keyword"* is the same kind of operation as an errata change, just applied

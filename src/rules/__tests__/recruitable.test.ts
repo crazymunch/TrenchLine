@@ -121,3 +121,40 @@ describe('the second currency', () => {
     expect(sultanate.gloryPriced.length).toBeGreaterThan(0);
   });
 });
+
+describe('who may lead', () => {
+  /*
+    `category` cannot answer this: it says what a model is *on a roster*, and
+    'Leader' is set there by nomination. So the builder needs the catalogue's
+    own `Leader` role carried through, or auto-nomination has to guess from
+    cost or a limit of 1 — which is exactly the kind of invented rule the
+    audit found everywhere.
+  */
+  it('is the catalogue Leader role, carried onto the roster profile', () => {
+    const lt = sultanate.units.find((u) => u.name === 'Lieutenant');
+    expect(lt!.canLead).toBe(true);
+    // Elite, but not a Leader: the Iron Sultanate's Yüzbaşı Captain leads.
+    const azeb = sultanate.units.find((u) => u.name === 'Azeb');
+    expect(azeb?.canLead).toBeUndefined();
+  });
+
+  it('leaves no faction without an eligible Leader', () => {
+    // A faction whose list has none would recruit a whole Warband and never
+    // get a Leader nominated.
+    const byFaction = new Map<string, boolean>();
+    for (const u of sultanate.units) {
+      byFaction.set(u.factionId, (byFaction.get(u.factionId) ?? false) || !!u.canLead);
+    }
+    for (const f of APP_FACTIONS) {
+      // Mercenaries are their own catalogue faction and lead nothing.
+      if (!byFaction.has(f)) continue;
+      expect(byFaction.get(f), `${f} has no Leader-eligible entry`).toBe(true);
+    }
+  });
+
+  it('never marks a Mercenary as Leader-eligible', () => {
+    for (const u of sultanate.units) {
+      if (u.category === 'Mercenary') expect(u.canLead, u.name).toBeUndefined();
+    }
+  });
+});

@@ -37,11 +37,30 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
 
       const maxHp = profile.stats.keywords?.some(k => k.toLowerCase().includes('tough')) ? 2 : 1;
 
+      /*
+        The first Leader-eligible model recruited becomes the Leader.
+
+        A Warband has exactly one, and every faction's list is built around
+        theirs — so the recruit that *can* lead almost always *is* the leader,
+        and making the player find "Set as Leader" afterwards means a roster
+        that silently has none. `canLead` is the catalogue's own `Leader` role,
+        not a guess from cost or a limit of 1.
+
+        Only when the Warband has no Leader yet: a later eligible recruit (a
+        Technomancer joining a Heretic Priest) leaves the nomination alone,
+        because demoting the standing Leader is the player's call.
+      */
+      const warband = state.warbands.find((w) => w.id === warbandId);
+      const hasLeader = warband?.units.some((u) => u.profileSnapshot.category === 'Leader');
+      const snapshot = profile.canLead && warband && !hasLeader
+        ? { ...profile, category: 'Leader' as const }
+        : profile;
+
       const newUnit: ActiveUnit = {
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         customName: customName || profile.name,
         baseProfileId,
-        profileSnapshot: profile,
+        profileSnapshot: snapshot,
         equippedWeapons: defaultWeapons,
         equippedArmour: defaultArmour,
         equippedEquipment: [],
@@ -84,6 +103,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
         ...target,
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         customName: `${target.customName} (Copy)`,
+        /*
+          A Warband has one Leader. Copying the Leader used to copy the
+          nomination too, leaving two — and the roster then rendered two
+          crowns and the campaign narrative picked whichever came first.
+          The copy is the same profile, demoted to what the catalogue calls
+          it (Leader-role entries are Elite in the role list).
+        */
+        profileSnapshot: target.profileSnapshot.category === 'Leader'
+          ? { ...target.profileSnapshot, category: 'Elite' as const }
+          : target.profileSnapshot,
         equippedWeapons: target.equippedWeapons.map((w) => ({
           ...w,
           instanceId: `w-${Date.now()}-${Math.random()}`

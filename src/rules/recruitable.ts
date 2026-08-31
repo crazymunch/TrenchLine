@@ -129,6 +129,9 @@ export function recruitable(
       // The catalogue's recruitment limit. `defaultRules.ts` had none at all —
       // 69 of the 89 units carry one, and none of them was enforced before.
       maxCount: u.max ?? undefined,
+      // The catalogue's own `Leader` role — nine entries carry it, at least
+      // one per faction. Not derived from cost, rarity or a max of 1.
+      canLead: u.roles.some((r) => r.toLowerCase() === 'leader') || undefined,
       innateAbilities: u.abilities.map(abilityOf),
       /*
         Which Warbands may hire this Mercenary.

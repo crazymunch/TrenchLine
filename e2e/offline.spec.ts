@@ -39,36 +39,20 @@ test.describe('with no network', () => {
 
     await context.setOffline(true);
 
-    // Each route renders its own view, not a browser error page.
-    for (const [path, heading] of [
-      ['/play', /Match Designer/i],
-      ['/codex', /Rules Codex/i],
-      // Last, because the roster index redirects to the active warband's own
-      // URL client-side. Starting a fresh `goto` while that navigation is in
-      // flight aborts it, which reads as an offline failure and is not one.
-      ['/roster', /Al-Qarn Rihla|Warband Command/i],
-    ] as const) {
-      await page.goto(path, { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('h1').first(), `${path} offline`)
-        .toHaveText(heading, { timeout: 20_000 });
-    }
+    /*
+      The dataset first, because it is the assertion that matters most. The
+      ruleset is ~1.6 MB served from /api/dataset rather than bundled, so a
+      cached shell with no cached dataset would open to an app with no
+      statlines, no costs and no keywords — which is worse than not opening,
+      because it looks like it works.
 
-    /*
-      The one that matters most. The ruleset is ~1.6 MB served from
-      /api/dataset rather than bundled, so a cached shell with no cached
-      dataset would open to an app with no statlines, no costs and no
-      keywords — which is worse than not opening, because it looks like it
-      works.
+      Asked from /codex, which is where priming left the page. Not /roster: the
+      roster index redirects to the active warband's own URL client-side, and
+      evaluating during that navigation tears the execution context down
+      mid-call. The dataset request is origin-relative, so the page it is asked
+      from does not matter.
     */
-    /*
-      Asked from /codex, not /roster. The roster index redirects to the active
-      warband's own URL client-side, and evaluating during that navigation
-      tears the execution context down mid-call — which fails as
-      "Execution context was destroyed" and looks like an offline fault rather
-      than a race in the test. The dataset request is origin-relative, so the
-      page it is asked from does not matter.
-    */
-    await page.goto('/codex', { waitUntil: 'domcontentloaded' });
+    await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });
     const dataset = await page.evaluate(async () => {
       const res = await fetch('/api/dataset?ruleset=trenchline');
@@ -77,6 +61,21 @@ test.describe('with no network', () => {
     });
     expect(dataset.ok, 'the ruleset is served from cache offline').toBe(true);
     expect(dataset.units, 'the offline ruleset is the whole thing').toBeGreaterThan(80);
+
+    // Each route renders its own view, not a browser error page.
+    for (const [path, heading] of [
+      ['/play', /Match Designer/i],
+      ['/codex', /Rules Codex/i],
+      // Last, and nothing navigates after it. The roster index redirects to
+      // the active warband's own URL client-side; starting a fresh `goto`
+      // while that redirect is in flight aborts it, which reads as an offline
+      // failure and is not one.
+      ['/roster', /Al-Qarn Rihla|Warband Command/i],
+    ] as const) {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('h1').first(), `${path} offline`)
+        .toHaveText(heading, { timeout: 20_000 });
+    }
   });
 
   test('a signed-out session never writes to the warband API', async ({ page }, testInfo) => {
