@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useStore } from '../../store/useStore';
-import { Cloud, CloudOff, RefreshCw, Check, AlertTriangle, HardDrive } from 'lucide-react';
+import { Cloud, CloudOff, RefreshCw, Check, HardDrive } from 'lucide-react';
 
 /**
  * Whether the roster is backed up, in one glance.

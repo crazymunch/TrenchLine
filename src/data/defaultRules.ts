@@ -1,6 +1,5 @@
-import { Faction, UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, RuleKeyword, Scenario } from '../types/rules';
+import { Faction } from '../types/rules';
 import { OFFICIAL_CORE_RULES } from './officialCoreRules';
-import { ALL_OUT_WAR_SCENARIOS } from './allOutWarData';
 
 export const FACTIONS: Faction[] = [
   {

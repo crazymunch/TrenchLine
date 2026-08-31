@@ -4,18 +4,12 @@ import React, { useState } from 'react';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Dices, 
-  Sparkles, 
   Skull, 
-  RefreshCw, 
   ChevronDown, 
   ChevronUp, 
   Volume2, 
   VolumeX, 
-  Zap,
-  Shield,
-  Flame,
-  Crosshair,
-  Sliders
+  Zap
 } from 'lucide-react';
 
 type DiceMode = 'action' | 'injury' | 'pool';

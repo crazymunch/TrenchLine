@@ -16,7 +16,6 @@ import {
   X,
   UploadCloud,
   Scale,
-  ShieldAlert,
   Swords
 } from 'lucide-react';
 

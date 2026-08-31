@@ -1,5 +1,5 @@
 import { RuleDiffItem, RuleDiffField } from '../types/diff';
-import { UnitProfile, WeaponProfile, ArmourProfile } from '../types/rules';
+import { UnitProfile } from '../types/rules';
 import { parseBattleScribeXml, ParsedCatalogue } from './xmlParser';
 
 export interface GitHubCommit {

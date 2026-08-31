@@ -21,6 +21,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Was ignored during builds by a flag that suppressed a linter which did
+      # not exist. See next.config.mjs.
+      - name: Lint
+        run: npm run lint
+
       - name: Unit tests
         run: npm test
 

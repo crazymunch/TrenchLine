@@ -32,7 +32,7 @@ const OUT_DIR = 'data-sources/battlescribe';
  * blobless shallow clone and `git ls-tree`, the same tool `git ls-remote`
  * already relies on.
  */
-function discoverFiles(commit) {
+function discoverFiles(_commit) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tc-cat-'));
   try {
     execFileSync('git', ['clone', '--quiet', '--depth', '1', '--filter=blob:none',

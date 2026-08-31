@@ -9,19 +9,13 @@ import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
   Sparkles, 
-  Award, 
   Skull, 
-  X, 
   Plus, 
   Trash2, 
   Crown, 
-  Shield, 
   Flame, 
   BookOpen, 
   Users, 
-  Check,
-  Dices,
-  Zap,
   FlaskConical
 } from 'lucide-react';
 

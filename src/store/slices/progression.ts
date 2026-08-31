@@ -6,13 +6,12 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
 import type { UnitTitleRecord } from '../../types/warband';
 import { persistWarbands } from '../persist';
 
 export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords'>;
 
-export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, get) => ({
+export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, _get) => ({
     updateUnitAdvancement: (warbandId, unitId, xp, isElite) => {
       set((state) => {
         let updated = state.warbands.map((w) => {

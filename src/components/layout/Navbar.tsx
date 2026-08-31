@@ -9,7 +9,6 @@ import { AuthModal } from '../auth/AuthModal';
 import { BugReportModal } from '../feedback/BugReportModal';
 import { SyncStatus } from './SyncStatus';
 import { 
-  Skull,
   User,
   LogOut,
   LogIn,

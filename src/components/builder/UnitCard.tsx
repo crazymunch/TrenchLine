@@ -26,7 +26,6 @@ import {
   Scroll,
   Award,
   BookOpen,
-  Quote,
   Flame,
   Users,
   Star,
@@ -64,7 +63,6 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
-  const hasLore = !!(unit.lore || (unit.deeds && unit.deeds.length > 0) || (unit.titles && unit.titles.length > 0));
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);

@@ -572,7 +572,7 @@ precisely because the overflow was hidden.
 | 4.1 | ✅ Real routes — `/roster/[id]`, `/play`, `/campaign`, `/directory`, `/codex`, `/customizer`, with the view derived from the URL |
 | 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
 | 4.3 | ✅ Resolve the `localStorage` ⇄ Postgres dual source of truth — see [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins) |
-| 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
+| 4.4 | ✅ Remove `eslint.ignoreDuringBuilds` and fix the fallout — six real bugs, not lint |
 ### 4.1 — the route is the authority
 
 Six views rendered from one `page.tsx` switching on `currentView`, so the whole
@@ -639,6 +639,39 @@ a seed takes it as an argument instead of closing over a variable defined four
 hundred lines above it.
 
 ---
+
+### 4.4 — the linter that was not there
+
+`next.config.mjs` carried `eslint: { ignoreDuringBuilds: true }`, which reads
+like a backlog of violations being deferred. It was not: there was no ESLint
+config and no ESLint dependency. The flag was suppressing a linter that did not
+exist, and the build had never checked anything.
+
+Turning it on found **six real bugs**, not style:
+
+**Two hooks called after an early return.** `useScenarios` sat below
+`if (!viewingWarband) return` in `PlayModeView` and below `if (!warband) return
+null` in `PostBattleWizardModal`. React identifies a hook by its call order, so
+both components ran one fewer hook when there was nothing selected than when
+there was — and the render where a player picks their first warband is exactly
+the transition that breaks.
+
+**Four handlers wired to nothing.** `no-unused-vars` on a handler is usually a
+leftover. Four times here it was a feature with no way to reach it:
+
+| | |
+|---|---|
+| `ImportWarbandModal` | You could paste a NewRecruit export, watch it parse, read a preview of every warrior and their cost — and then only close the dialog. `handleConfirmImport` existed and had no button. |
+| `WarbandChronicleModal` | Edit your warband's motto, patron and lore; closing dropped all of it, silently. `handleSave` existed and had no button. |
+| `BugReportModal` | The form had no submit control at all — `handleSubmit` was reachable only by pressing Enter in a text input, which does nothing from the textarea the description is typed in. `handleCopyReport`, the fallback for when the server cannot be reached, was unwired too. |
+| `WarbandChangelogModal` | `handleResetToCanonical` replaced the warband's snapshots **and its entire unit list** with a hard-coded fixture. Here unreachable was the *correct* state, so it was deleted rather than wired: a button that silently overwrites a roster with demo data is one misclick from destroying a campaign. |
+
+The rest was 384 unused bindings, swept mechanically and verified by tsc and
+the suite. What is left is 108 warnings — mostly `no-explicit-any` in the older
+components, which is a real migration and not a build blocker, so it is visible
+and counted rather than failing CI on debt that predates the config.
+
+`npm run lint` is now `eslint .` and runs in CI.
 
 ### 4.5 — no signal
 

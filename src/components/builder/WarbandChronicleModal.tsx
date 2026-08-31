@@ -5,8 +5,6 @@ import { Sheet } from '../ui/Sheet';
 import { Warband } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
-  Scroll, 
-  X, 
   BookOpen, 
   Quote, 
   Landmark, 
@@ -90,6 +88,29 @@ export const WarbandChronicleModal: React.FC<WarbandChronicleModalProps> = ({ wa
       size="lg"
       title={`${warband.name}`}
       subtitle="Grand Warband Dossier, House Lineage, Oaths & Historical Timeline"
+      /*
+        The Chronicle had no way to save.
+
+        A player could edit their warband's motto, patron and lore here, and
+        `handleSave` existed to write all three — wired to nothing. Closing the
+        dialog dropped the lot, silently, with no hint that anything had been
+        lost. Found by turning the linter on (4.4): `no-unused-vars` on a
+        handler is usually a leftover, and twice in this codebase it was a
+        feature with no way to reach it.
+      */
+      footer={(
+        <div className="flex items-center justify-end gap-3">
+          {isSaved && (
+            <span className="eyebrow text-status-legal" role="status">Saved</span>
+          )}
+          <button
+            onClick={handleSave}
+            className="px-4 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase tracking-wider transition-colors"
+          >
+            Save Chronicle
+          </button>
+        </div>
+      )}
     >
       {/* Modal Body */}
       <div className="p-5 overflow-y-auto space-y-5 flex-1 font-mono text-xs">

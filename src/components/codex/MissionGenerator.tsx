@@ -3,25 +3,16 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { useScenarios } from '../../rules/useScenarios';
-import { Scenario } from '../../types/rules';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  Sparkles, 
   Dice6, 
   CloudRain, 
   AlertTriangle, 
   Target, 
-  Map, 
   RefreshCw, 
   Compass, 
-  Award, 
-  ChevronRight, 
-  Shield,
   Edit3,
-  Play,
-  Save,
-  Layers,
-  Copy
+  Play
 } from 'lucide-react';
 
 const WEATHER_TABLE = [
@@ -151,7 +142,7 @@ export const MissionGenerator: React.FC = () => {
   const [customGloriousDeeds, setCustomGloriousDeeds] = useState<string>(`- **Lord of War**: Take 2 enemy models Out of Action in a single turn.
 - **Sniper**: Take an enemy ELITE model Out of Action at Long Range in Cover.
 - **Resist and Bite**: Take an enemy Out of Action after starting the activation Down.`);
-  const [customSavedSuccess, setCustomSavedSuccess] = useState<boolean>(false);
+  const [customSavedSuccess] = useState<boolean>(false);
 
   // Load Template Scenario
   const handleLoadTemplate = (scenId: string) => {

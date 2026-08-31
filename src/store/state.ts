@@ -14,16 +14,12 @@
  * be the same coupling spread over more files. The split that matters is of the
  * 2,000 lines of *behaviour*, not of the type.
  */
-import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot, UnitTitleRecord } from '../types/warband';
-import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory, RulesetVersion } from '../types/rules';
+import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
+import { Campaign, CasualtyRecord } from '../types/campaign';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import { FACTIONS } from '../data/defaultRules';
 import type { Dataset } from '../types/catalogue';
-import { recruitable, type DroppedDetail } from '../rules/recruitable';
-import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
-import { storage } from '../services/storage';
+import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';

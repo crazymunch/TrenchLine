@@ -6,14 +6,7 @@ import { useStore } from '../../store/useStore';
 import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
-  Swords, 
-  Trophy, 
-  Sparkles, 
-  Coins, 
-  FileText, 
-  CheckCircle,
-  Skull
+  CheckCircle
 } from 'lucide-react';
 
 interface LogMatchModalProps {
@@ -39,8 +32,6 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
   const [p2Ducats, setP2Ducats] = useState<number>(15);
   const [narrative, setNarrative] = useState<string>('');
 
-  const p1Member = members.find((m) => m.warbandId === p1WbId) || members[0];
-  const p2Member = members.find((m) => m.warbandId === p2WbId) || members[1];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

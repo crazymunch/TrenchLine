@@ -3,19 +3,13 @@
 import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { signIn } from 'next-auth/react';
-import { useStore } from '../../store/useStore';
-import { THEMES } from '../../types/theme';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
   User, 
   Mail, 
   Lock, 
   LogIn, 
-  Shield, 
-  Sparkles, 
-  AlertCircle,
-  Crown
+  AlertCircle
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -24,9 +18,7 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const { currentTheme } = useStore();
 
-  const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +51,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         soundEffects.playCathedralBell();
         onClose();
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An error occurred during authentication.');
     } finally {
       setIsLoading(false);

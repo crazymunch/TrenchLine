@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseRulesProse, type Block } from './rulesProse';
+import { parseRulesProse} from './rulesProse';
 
 /**
  * Renders the rulebook prose the pipeline extracts.

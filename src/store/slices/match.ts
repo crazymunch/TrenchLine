@@ -7,13 +7,11 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
-import type { RuleKeyword } from '../../types/rules';
 import { persistWarbands } from '../persist';
 
 export type MatchSlice = Pick<AppState, 'playTurn' | 'incrementTurn' | 'resetMatchState' | 'updateUnitWounds' | 'updateUnitBloodMarkers' | 'setUnitStatus' | 'toggleUnitActed' | 'activeKeyword' | 'setActiveKeyword'>;
 
-export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set, get) => ({
+export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set, _get) => ({
     playTurn: 1,
     incrementTurn: () => {
       set((state) => {

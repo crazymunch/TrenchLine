@@ -7,25 +7,9 @@ import { Warband, WarbandSnapshot, ActiveUnit } from '../../types/warband';
 import { SULTANATE_WARBAND_SNAPSHOTS } from '../../data/warbandLore';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
   History, 
-  Sparkles, 
   Shield, 
-  Coins, 
-  Award, 
-  Skull, 
-  Swords, 
-  PlusCircle, 
-  Calendar, 
-  CheckCircle, 
-  ChevronRight, 
-  ChevronDown,
-  ChevronUp,
-  Eye, 
-  FileText,
-  Clock,
-  RotateCcw,
-  Zap
+  Clock
 } from 'lucide-react';
 
 interface WarbandChangelogModalProps {
@@ -43,7 +27,7 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
     ? warband.snapshots 
     : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : (warband.snapshots || []));
 
-  const [snapshots, setSnapshots] = useState<WarbandSnapshot[]>(rawSnapshots);
+  const [snapshots] = useState<WarbandSnapshot[]>(rawSnapshots);
   const [selectedSnapshotId, setSelectedSnapshotId] = useState<string>(
     rawSnapshots.length > 0 ? rawSnapshots[rawSnapshots.length - 1].id : ''
   );
@@ -53,26 +37,20 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
 
   const selectedSnapshot = snapshots.find(s => s.id === selectedSnapshotId) || snapshots[snapshots.length - 1];
 
-  const handleResetToCanonical = () => {
-    if (isSultanate) {
-      setSnapshots(SULTANATE_WARBAND_SNAPSHOTS);
-      setSelectedSnapshotId(SULTANATE_WARBAND_SNAPSHOTS[2].id);
-      useStore.setState((state) => {
-        const updated = state.warbands.map((wb) => {
-          if (wb.id === warband.id) {
-            return {
-              ...wb,
-              snapshots: SULTANATE_WARBAND_SNAPSHOTS,
-              units: SULTANATE_WARBAND_SNAPSHOTS[2].units
-            };
-          }
-          return wb;
-        });
-        return { warbands: updated };
-      });
-      soundEffects.playCathedralBell();
-    }
-  };
+  /*
+    `handleResetToCanonical` was DELETED, not wired up.
+
+    It replaced the warband's snapshots and its entire unit list with the
+    hard-coded SULTANATE_WARBAND_SNAPSHOTS fixture. Unreachable was the
+    correct state for it: a button that silently overwrites a player's roster
+    with demo data is one misclick from destroying a campaign's worth of work,
+    and the fixture is seed data for a specific warband rather than anything
+    "canonical" about a player's own.
+
+    Surfaced when the linter came on in 4.4. Two other unused handlers in this
+    pass were features with no way to reach them and got their buttons; this
+    one was a hazard with no way to reach it, and got deleted.
+  */
 
   const handleCreateManualSnapshot = (e: React.FormEvent) => {
     e.preventDefault();

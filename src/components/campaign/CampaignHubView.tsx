@@ -14,10 +14,6 @@ import {
   Scroll,
   Plus,
   X,
-  Flame,
-  Shield,
-  Coins,
-  MapPin,
   Swords
 } from 'lucide-react';
 

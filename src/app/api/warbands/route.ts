@@ -132,7 +132,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    let userId = (session?.user as any)?.id;
+    const userId = (session?.user as any)?.id;
     const userEmail = session?.user?.email?.toLowerCase().trim();
     const isAdmin = isUserAdmin(userEmail);
     const body = await req.json();

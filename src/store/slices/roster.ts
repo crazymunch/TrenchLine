@@ -226,9 +226,8 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       });
     },
 
-    enrollWarbandInCampaign: (warband, campaignId) => {
+    enrollWarbandInCampaign: (warband, _campaignId) => {
       set((state) => {
-        const targetCampId = campaignId || state.campaign.id;
         const exists = state.campaign.members.some((m) => m.warbandId === warband.id);
         if (exists) return state;
 
@@ -257,7 +256,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       });
     },
 
-    removeWarbandFromCampaign: (warbandId, campaignId) => {
+    removeWarbandFromCampaign: (warbandId, _campaignId) => {
       set((state) => {
         const updatedCampaign = {
           ...state.campaign,

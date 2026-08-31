@@ -56,7 +56,6 @@ const pick = (obj, keys) => {
   return out;
 };
 
-const identity = (u) => u?.id ?? u?.customName ?? null;
 
 /* ---------------- extract ---------------- */
 

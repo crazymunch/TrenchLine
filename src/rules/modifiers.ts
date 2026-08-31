@@ -63,9 +63,6 @@ export const emptyContext = (): SelectionContext => ({ self: new Set(), roster: 
 
 /* ------------------------------------------------------------- conditions */
 
-const isLeaf = (c: Condition): c is ConditionLeaf =>
-  !('all' in c) && !('any' in c);
-
 /** Three-valued: a condition we cannot decide is `null`, never `false`. */
 function countFor(leaf: ConditionLeaf, ctx: SelectionContext): number | null {
   if (leaf.field !== 'selections') return null;

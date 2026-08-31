@@ -12,20 +12,11 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
 import { 
-  X, 
-  Skull, 
-  Sparkles, 
-  Coins, 
   Dices, 
   Check, 
   ArrowRight, 
   ArrowLeft, 
-  AlertTriangle, 
-  Flag,
   Award,
-  MapPin,
-  Image as ImageIcon,
-  Edit3
 } from 'lucide-react';
 
 interface PostBattleWizardModalProps {
@@ -54,7 +45,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
-  const [narrativeLog, setNarrativeLog] = useState<string>('');
+  const [narrativeLog] = useState<string>('');
   
   // Narrative & Battle Report Fields
   const [opponentWarbandName, setOpponentWarbandName] = useState<string>('');
@@ -76,6 +67,17 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const [selectedExplorationTable, setSelectedExplorationTable] = useState<ExplorationTableName>('common');
   const [explorationResult, setExplorationResult] = useState<{ roll?: string; title: string; reward: string; description: string } | null>(null);
 
+  /*
+    Above the early return, and it has to be. React identifies a hook by its
+    call order, so calling this after `if (!warband) return null` meant the
+    component ran one fewer hook when there was no warband than when there
+    was — and the render where one appears is the transition that breaks.
+
+    The derived twelve plus the All Out War pack, in place of the hand-written
+    set whose game lengths and Glorious Deeds were invented.
+  */
+  const { scenarios } = useScenarios(rulesetId);
+
   if (!warband) return null;
 
   // Games already played drives both the dice count and which Location tables
@@ -88,9 +90,6 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       ? selectedExplorationTable
       : (openTables?.tables[0] ?? 'common');
 
-  // The derived twelve plus the All Out War pack, in place of the hand-written
-  // set whose game lengths and Glorious Deeds were invented.
-  const { scenarios } = useScenarios(rulesetId);
   const scenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   /**

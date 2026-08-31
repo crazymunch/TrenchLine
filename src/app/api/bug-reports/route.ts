@@ -3,9 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 // In-memory / file cache for bug reports
-let bugReports: any[] = [];
+const bugReports: any[] = [];
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   return NextResponse.json({ bugReports });
 }
 

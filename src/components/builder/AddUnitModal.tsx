@@ -7,18 +7,10 @@ import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
   Plus, 
-  Shield, 
-  Coins, 
-  Sparkles, 
   UserPlus, 
   Star, 
-  Trash2, 
-  Swords, 
-  Award, 
-  Crown,
-  BookOpen
+  Trash2
 } from 'lucide-react';
 
 interface AddUnitModalProps {

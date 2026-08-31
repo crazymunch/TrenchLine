@@ -38,7 +38,6 @@ export function parseBattleScribeXml(xmlContent: string): ParsedCatalogue {
   ];
 
   entries.forEach((entry: any) => {
-    const type = entry['@_type'];
     const name = entry['@_name'];
     const id = entry['@_id'] || name?.toLowerCase().replace(/\s+/g, '-');
 

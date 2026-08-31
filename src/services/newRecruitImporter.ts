@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../types/rules';
+import { UnitProfile } from '../types/rules';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore';
 
 /**
@@ -338,7 +338,7 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
   const roster = parsed.roster || parsed.gameSystem || parsed;
   const name = roster['@_name'] || 'Imported Roster XML';
 
-  let factionId = 'new-antioch';
+  const factionId = 'new-antioch';
   const units: ActiveUnit[] = [];
 
   const selections = roster.forces?.force?.selections?.selection || roster.selections?.selection || [];

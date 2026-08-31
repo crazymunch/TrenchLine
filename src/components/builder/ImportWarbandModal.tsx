@@ -4,15 +4,8 @@ import { useStore } from '../../store/useStore';
 import { importNewRecruitRoster } from '../../services/newRecruitImporter';
 import { Warband } from '../../types/warband';
 import { 
-  X, 
   UploadCloud, 
-  FileText, 
-  Check, 
-  AlertCircle, 
-  Shield, 
-  Coins, 
-  UserCheck, 
-  Sparkles 
+  AlertCircle 
 } from 'lucide-react';
 
 interface ImportWarbandModalProps {
@@ -23,7 +16,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
   // `units` already carries the dataset's profiles plus any custom ones. The
   // importer used to resolve against `defaultRules.ts` instead, which gave
   // every imported model a hand-written statline under a name that matched.
-  const { units, warbands, factions, setActiveWarbandId, catalogsLoaded } = useStore();
+  const { units, factions, setActiveWarbandId } = useStore();
 
   const [inputText, setInputText] = useState('');
   const [parsedWarband, setParsedWarband] = useState<Warband | null>(null);
@@ -44,7 +37,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
         setParsedWarband(result);
         setErrorMsg(null);
       }
-    } catch (err) {
+    } catch (_err) {
       setErrorMsg('Failed to parse roster data. Ensure it is valid NewRecruit JSON, XML, or Text.');
       setParsedWarband(null);
     }
@@ -62,7 +55,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
         const result = importNewRecruitRoster(content, units);
         setParsedWarband(result);
         setErrorMsg(null);
-      } catch (err) {
+      } catch (_err) {
         setErrorMsg('Error parsing uploaded file.');
       }
     };
@@ -89,8 +82,31 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       open
       onClose={onClose}
       size="lg"
-      title="IMPORT NEWRECRUIT WARBAND"
-      subtitle="Paste NewRecruit JSON, BattleScribe XML, or Plaintext roster"
+      title="Import a warband"
+      subtitle="Paste a NewRecruit JSON, BattleScribe XML or plaintext roster"
+      /*
+        The import had no way to finish.
+
+        `handleConfirmImport` existed and was wired to nothing: you could paste
+        a roster, watch it parse, read the preview of every warrior and their
+        cost — and then only close the dialog. The whole feature was
+        unreachable, and it looked like it worked right up to the last step.
+        Found by turning the linter on (4.4); it was the only call site
+        `no-unused-vars` flagged that was a bug rather than a leftover.
+      */
+      footer={parsedWarband ? (
+        <div className="flex items-center justify-between gap-3">
+          <span className="eyebrow truncate">
+            {parsedWarband.units.length} warriors &middot; {totalCost} Ducats
+          </span>
+          <button
+            onClick={handleConfirmImport}
+            className="px-4 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase tracking-wider transition-colors flex-shrink-0"
+          >
+            Import {parsedWarband.name}
+          </button>
+        </div>
+      ) : undefined}
     >
       {/* Content */}
       <div className="p-6 overflow-y-auto space-y-4 flex-1">

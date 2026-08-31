@@ -2,19 +2,14 @@
 
 import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
-import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { 
-  X, 
   Search, 
-  BookOpen, 
   Tag, 
   Skull, 
-  Compass, 
-  Swords, 
-  Shield 
+  Compass 
 } from 'lucide-react';
 
 interface QuickSearchModalProps {

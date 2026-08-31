@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
+import { UnitProfile, WeaponProfile, ArmourProfile } from '../../types/rules';
 import { GitHubDiffModal } from './GitHubDiffModal';
 import { fetchLatestRepoCommit } from '../../services/githubSync';
 import { soundEffects } from '../../services/soundEffects';
@@ -12,38 +12,25 @@ import {
   GitBranch, 
   Trash2, 
   Save, 
-  DownloadCloud, 
-  Check, 
   FileCode,
   Sparkles,
-  Layers,
   AlertCircle,
   Swords,
-  Shield,
-  Package,
-  Plus
+  Shield
 } from 'lucide-react';
 
 export const CustomizerView: React.FC = () => {
   const { 
     units, 
-    customUnits, 
     saveCustomUnit, 
     deleteCustomUnit, 
     weapons,
-    customWeapons,
     saveCustomWeapon,
     deleteCustomWeapon,
     armour,
-    customArmour,
     saveCustomArmour,
     deleteCustomArmour,
-    equipment,
-    customEquipment,
-    saveCustomEquipment,
-    deleteCustomEquipment,
     pendingDiffs, 
-    setPendingDiffs 
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'units' | 'weapons' | 'armour' | 'sync'>('units');

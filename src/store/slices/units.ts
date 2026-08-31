@@ -6,9 +6,7 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
 import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../../types/warband';
-import type { UnitCategory } from '../../types/rules';
 import { persistWarbands } from '../persist';
 
 export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;

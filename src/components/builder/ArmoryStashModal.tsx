@@ -6,17 +6,8 @@ import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
-  Archive, 
-  Plus, 
-  Trash2, 
-  Coins, 
-  Swords, 
-  Shield, 
   Package, 
-  UserCheck,
-  Sparkles,
-  ArrowRight
+  UserCheck
 } from 'lucide-react';
 
 interface ArmoryStashModalProps {

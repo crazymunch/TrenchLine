@@ -5,15 +5,10 @@ import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { Warband } from '../../types/warband';
 import { 
-  X, 
-  Scale, 
   Swords, 
   Crosshair, 
-  Shield, 
   Heart, 
-  Flame, 
-  Sparkles,
-  Zap
+  Flame
 } from 'lucide-react';
 
 interface WarbandComparatorModalProps {
