@@ -14,6 +14,7 @@ import {
   forceLimits, startingBudget, reinforcementAllowance,
   strongboxOf, reversible, type LedgerEntry,
   explorationDice, explorationTables, resolveExploration, explorationLedgerEntry,
+  hasPlayedAGame, canChangeVariant,
 } from '../campaign';
 import { checkForceLimits } from '../validate';
 
@@ -259,5 +260,71 @@ describe('resolveExploration', () => {
     const inApp = resolveExploration(DATASET, 9, 'common')!;
     const onTable = resolveExploration(DATASET, 9, 'common')!;
     expect(inApp).toEqual(onTable);
+  });
+});
+
+
+describe('when the Variant stops being a choice', () => {
+  /*
+    A Variant changes what the Warband may recruit. Re-declaring one three games
+    in retroactively makes models already on the roster legal or illegal, so it
+    is a founding decision — but only for a campaign force. An unrestricted list
+    exists to be rebuilt.
+  */
+  const founding: LedgerEntry[] = [
+    { id: 'l1', at: '2026-01-01', reason: 'founding', ducats: 700, glory: 0, game: 1 },
+  ];
+
+  it('is open on a freshly mustered Warband', () => {
+    const wb = { forceMode: 'campaign' as const, ledger: founding, snapshots: [{ type: 'founding' }] };
+    expect(hasPlayedAGame(wb)).toBe(false);
+    expect(canChangeVariant(wb)).toBe(true);
+  });
+
+  it('closes once a battle has been resolved', () => {
+    const wb = {
+      forceMode: 'campaign' as const,
+      ledger: founding,
+      snapshots: [{ type: 'founding' }, { type: 'post_battle' }],
+    };
+    expect(hasPlayedAGame(wb)).toBe(true);
+    expect(canChangeVariant(wb)).toBe(false);
+  });
+
+  it('closes on Exploration loot, which only happens after a battle', () => {
+    const wb = {
+      forceMode: 'campaign' as const,
+      ledger: [...founding,
+        { id: 'l2', at: '2026-01-02', reason: 'exploration' as const, ducats: 90, glory: 0, game: 1 }],
+    };
+    expect(hasPlayedAGame(wb)).toBe(true);
+  });
+
+  it('is not closed by buying things before the first game', () => {
+    // The Quartermaster Step is how a Warband is assembled. Spending is not
+    // evidence of having fought.
+    const wb = {
+      forceMode: 'campaign' as const,
+      ledger: [...founding,
+        { id: 'l2', at: '2026-01-01', reason: 'quartermaster' as const, ducats: -70, glory: 0, game: 1 }],
+    };
+    expect(hasPlayedAGame(wb)).toBe(false);
+    expect(canChangeVariant(wb)).toBe(true);
+  });
+
+  it('stays open forever on an unrestricted Warband', () => {
+    const wb = {
+      forceMode: 'unrestricted' as const,
+      snapshots: [{ type: 'post_battle' }],
+    };
+    expect(hasPlayedAGame(wb)).toBe(true);
+    expect(canChangeVariant(wb)).toBe(true);
+  });
+
+  it('treats a Warband with no history at all as unfought, not unknown', () => {
+    // Imported and legacy Warbands carry neither ledger nor snapshots. Locking
+    // them would leave a Variant that can never be set.
+    expect(hasPlayedAGame({})).toBe(false);
+    expect(canChangeVariant({})).toBe(true);
   });
 });

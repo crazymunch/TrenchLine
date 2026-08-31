@@ -111,7 +111,8 @@ export interface AppState {
    * player set both, for one-off games, imports and testing a list.
    */
   createWarband: (name: string, factionId: string, ducatLimit?: number,
-                  forceMode?: 'campaign' | 'unrestricted') => Warband;
+                  forceMode?: 'campaign' | 'unrestricted',
+                  founding?: { variantId?: string; gloryPoints?: number }) => Warband;
   deleteWarband: (id: string) => void;
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;

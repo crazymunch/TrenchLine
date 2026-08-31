@@ -46,6 +46,12 @@ export interface SheetProps {
   dismissible?: boolean;
   /** Accessible name when there is no visible title. */
   label?: string;
+  /**
+   * Pinned to the top-right of the header, left of the close button. For a
+   * live figure the player needs while they work in the sheet — the Ducats
+   * left while recruiting — rather than a second action.
+   */
+  headerAside?: React.ReactNode;
 }
 
 /** Static class names: Tailwind cannot see an interpolated one (MOBILE.md §5). */
@@ -58,7 +64,7 @@ const WIDTH: Record<NonNullable<SheetProps['size']>, string> = {
 
 export const Sheet: React.FC<SheetProps> = ({
   open, onClose, title, subtitle, footer, children,
-  size = 'md', dismissible = true, label,
+  size = 'md', dismissible = true, label, headerAside,
 }) => {
   // Scroll lock, focus trap and Escape live in `useOverlay`, so the thirty
   // modals that have not moved to `Sheet` yet can have them too.
@@ -98,6 +104,9 @@ export const Sheet: React.FC<SheetProps> = ({
                 <p className="text-xs sm:text-[11px] font-mono text-theme-muted mt-0.5">{subtitle}</p>
               )}
             </div>
+            {headerAside && (
+              <div className="flex-shrink-0 ml-auto self-center">{headerAside}</div>
+            )}
             {dismissible && (
               <button
                 onClick={onClose}

@@ -107,7 +107,15 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       return state.warbands.find((w) => w.id === state.activeWarbandId) || null;
     },
 
-    createWarband: (name, factionId, ducatLimit = 700, forceMode = 'campaign') => {
+    /*
+      `founding` carries the two things that are decided at muster and nowhere
+      else. The Variant changes what the Warband may recruit, so choosing it
+      after the first models are on the roster means recruiting against a list
+      that was not the one in force. Glory is a starting balance an unrestricted
+      Warband sets alongside its Ducats — a campaign Warband starts on zero,
+      which is published, so the field is ignored for one.
+    */
+    createWarband: (name, factionId, ducatLimit = 700, forceMode = 'campaign', founding) => {
       const foundingSnapshot: WarbandSnapshot = {
         id: `snap-${Date.now()}`,
         timestamp: new Date().toISOString(),
@@ -115,7 +123,10 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         type: 'founding',
         ducatCost: 0,
         treasuryDucats: 0,
-        gloryPoints: 0,
+        // The founding snapshot records the Warband as it was founded, so a
+        // starting Glory balance belongs in it — restoring to the founding
+        // state otherwise silently zeroed it.
+        gloryPoints: forceMode === 'unrestricted' ? (founding?.gloryPoints ?? 0) : 0,
         unitCount: 0,
         units: [],
         armoryStash: [],
@@ -128,6 +139,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         name,
         factionId,
         forceMode,
+        variantId: founding?.variantId,
         // A campaign warband opens its ledger with the founding allowance, so
         // the Strongbox is the sum of a history from the first Ducat rather than
         // a number that was set and is later edited.
@@ -144,7 +156,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           : [],
         ducatLimit,
         treasuryDucats: 0,
-        gloryPoints: 0,
+        // 0 for a campaign Warband: the book starts one on no Glory, and that
+        // is not the player's to set.
+        gloryPoints: forceMode === 'unrestricted' ? (founding?.gloryPoints ?? 0) : 0,
         units: [],
         armoryStash: [],
         snapshots: [foundingSnapshot],

@@ -550,6 +550,32 @@ upgrades (`UnitOption.modifies`), and now per-roster variants. `Warband` gains a
 `variantId`, and roster validation resolves faction → variant → model options in
 that order.
 
+### When the Variant is chosen, and when it stops being a choice
+
+A Variant changes **what the Warband may recruit**, so it is a founding decision
+and is offered on the muster screen alongside the faction. Choosing it later
+means the models already on the roster were recruited against a list that was
+not the one in force — which is the failure the variant work existed to stop,
+just moved one step earlier.
+
+It stays editable from the roster screen until the Warband's **first game**, so a
+list can be reconsidered while it is still being built. `canChangeVariant()` in
+`rules/campaign.ts` decides, and it reads the Warband's own record rather than a
+flag anyone sets:
+
+- a `post_battle` snapshot, written when a game is resolved;
+- a ledger entry for `exploration` or `reinforcements`, neither of which
+  happens before a battle;
+- any ledger entry attributed to a game after the first.
+
+An **unrestricted** Warband is exempt and stays editable for good: it exists to
+try lists out, has no campaign to stay consistent with, and already owns its
+budget. Its starting **Glory** is set at muster too, beside its Ducats — the
+screen offered one currency, so an unrestricted list could not include anything
+the catalogues price in Glory (a Witch Coven Matriarch is 0 Ducats and 5 Glory).
+A campaign Warband starts on 0 Glory, which is published, so the field is
+ignored for one.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

@@ -152,6 +152,12 @@ Replace all of them with one primitive:
 The primitive owns body scroll lock, focus trap, `Escape`, and the safe-area and
 `dvh` handling — so those are fixed once rather than thirty times.
 
+`headerAside` pins a live figure to the top-right of the sticky header, left of
+the close button. The recruit sheet uses it for Ducats remaining: on a phone the
+budget is otherwise a scroll away on the view behind, so it was only ever
+discovered after the Warband had been built. It is for a *figure*, not a second
+action — a control there competes with Close for the same thumb.
+
 ### 8. Images
 
 102 MB currently ships from `public/`, including a 5.9 MB world-map PNG, via
