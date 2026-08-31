@@ -1,4 +1,5 @@
 import { Warband } from '../types/warband';
+import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { UnitProfile, WeaponProfile } from '../types/rules';
 
@@ -9,6 +10,41 @@ const CUSTOM_UNITS_KEY = 'tc_custom_units_v1';
 const CUSTOM_WEAPONS_KEY = 'tc_custom_weapons_v1';
 
 const isBrowser = typeof window !== 'undefined';
+
+/**
+ * One fetch wrapper, so every cloud call classifies its failure the same way.
+ *
+ * 401 is called out separately because it is not an error the user should be
+ * asked to retry — it means "sign in to sync", which is a normal state of the
+ * app, not a fault.
+ */
+async function request<T>(
+  url: string,
+  init: RequestInit,
+  parse: (data: any) => T,
+): Promise<CloudResult<T>> {
+  let res: Response;
+  try {
+    res = await fetch(url, init);
+  } catch (e) {
+    // A rejected fetch is the network, not the server: DNS, no signal, CORS,
+    // or the tab going offline mid-request.
+    return { ok: false, reason: 'offline', detail: e instanceof Error ? e.message : String(e) };
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    return { ok: false, reason: 'unauthenticated', detail: `HTTP ${res.status}` };
+  }
+  if (!res.ok) {
+    return { ok: false, reason: 'server', detail: `HTTP ${res.status}` };
+  }
+
+  try {
+    return { ok: true, data: parse(await res.json().catch(() => ({}))) };
+  } catch (e) {
+    return { ok: false, reason: 'server', detail: e instanceof Error ? e.message : String(e) };
+  }
+}
 
 export const storage = {
   getWarbands(): Warband[] {
@@ -30,60 +66,47 @@ export const storage = {
     }
   },
 
-  async syncWarbandToCloud(warband: Warband): Promise<void> {
-    if (!isBrowser) return;
-    try {
-      await fetch('/api/warbands', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(warband),
-      });
-    } catch (e) {
-      console.warn('Cloud sync warband failed:', e);
-    }
+  /*
+    The cloud calls return what happened rather than swallowing it.
+
+    They used to catch their own errors, log a warning and return `null` or
+    `undefined`. The caller could not then tell "the cloud has nothing for you"
+    from "the request never left the building" — and the sync merge read the
+    first meaning, treated the cloud as empty and pushed the local list over
+    the top. An offline sync could overwrite good cloud data with a stale local
+    copy, and the only trace was a console warning nobody was reading.
+
+    `CloudResult` makes the distinction a value. A caller that ignores it gets
+    a type error, which is the point.
+  */
+  async syncWarbandToCloud(warband: Warband): Promise<CloudResult<void>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request<void>('/api/warbands', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(warband),
+    }, () => undefined);
   },
 
-  async deleteWarbandFromCloud(id: string): Promise<void> {
-    if (!isBrowser) return;
-    try {
-      await fetch(`/api/warbands?id=${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-    } catch (e) {
-      console.warn('Cloud delete warband failed:', e);
-    }
+  async deleteWarbandFromCloud(id: string): Promise<CloudResult<void>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request<void>(
+      `/api/warbands?id=${encodeURIComponent(id)}`,
+      { method: 'DELETE' },
+      () => undefined,
+    );
   },
 
-  async fetchWarbandsFromCloud(): Promise<Warband[] | null> {
-    if (!isBrowser) return null;
-    try {
-      const res = await fetch('/api/warbands');
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (Array.isArray(data.warbands)) {
-        return data.warbands;
-      }
-      return null;
-    } catch (e) {
-      console.warn('Fetch warbands from cloud failed:', e);
-      return null;
-    }
+  async fetchWarbandsFromCloud(): Promise<CloudResult<Warband[]>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request<Warband[]>('/api/warbands', {}, (data) =>
+      Array.isArray(data?.warbands) ? data.warbands : []);
   },
 
-  async fetchAllWarbandsFromCloud(): Promise<Warband[] | null> {
-    if (!isBrowser) return null;
-    try {
-      const res = await fetch('/api/warbands?all=true');
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (Array.isArray(data.warbands)) {
-        return data.warbands;
-      }
-      return null;
-    } catch (e) {
-      console.warn('Fetch all warbands from cloud failed:', e);
-      return null;
-    }
+  async fetchAllWarbandsFromCloud(): Promise<CloudResult<Warband[]>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request<Warband[]>('/api/warbands?all=true', {}, (data) =>
+      Array.isArray(data?.warbands) ? data.warbands : []);
   },
 
   getActiveWarbandId(): string | null {

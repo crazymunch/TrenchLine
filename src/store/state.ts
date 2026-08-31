@@ -24,6 +24,7 @@ import type { Dataset } from '../types/catalogue';
 import { recruitable, type DroppedDetail } from '../rules/recruitable';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
 import { storage } from '../services/storage';
+import type { SyncState } from '../services/sync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
 
@@ -78,6 +79,17 @@ export interface AppState {
   allCloudWarbands: Warband[];
   fetchAllCloudWarbands: () => Promise<void>;
   syncUserWarbandsWithCloud: (userEmail?: string, userName?: string) => Promise<void>;
+
+  /**
+   * What the cloud copy is doing, as a value the UI can render.
+   *
+   * It used to be nothing: every cloud call caught its own error, logged a
+   * console warning and carried on, so "your roster is backed up" and "the
+   * request never left the building" looked identical from the outside. A
+   * player at a table with no signal had no way to tell. See
+   * `services/sync.ts`.
+   */
+  sync: SyncState;
 
   // Warband Management
   warbands: Warband[];

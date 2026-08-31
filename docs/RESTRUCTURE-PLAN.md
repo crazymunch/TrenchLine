@@ -571,7 +571,7 @@ precisely because the overflow was hidden.
 |---|---|
 | 4.1 | Real routes — `/roster/[id]`, `/play/[matchId]`, `/campaign/[id]`, `/codex/[...slug]` |
 | 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
-| 4.3 | Resolve the `localStorage` ⇄ Postgres dual source of truth |
+| 4.3 | ✅ Resolve the `localStorage` ⇄ Postgres dual source of truth — see [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins) |
 | 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
 | 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
 

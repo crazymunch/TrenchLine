@@ -9,6 +9,7 @@ import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign } from '../seed';
 import type { Campaign, MatchRecord, CasualtyRecord, TerritoryNode, CampaignMember } from '../../types/campaign';
 import type { ActiveUnit, Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
 import type { InitialState } from '../init';
+import { persistWarbands } from '../persist';
 
 export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
@@ -173,9 +174,13 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         snapshots: [...existingSnapshots, matchSnapshot]
       };
 
-      const updatedWarbands = state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w));
-      storage.saveWarbands(updatedWarbands);
-      storage.syncWarbandToCloud(updatedWarband);
+      // Through the choke point like every other write. This one is the post-
+      // battle payout — Glory, Ducats and a snapshot — so a lost push here is
+      // a lost game's worth of campaign progress.
+      const updatedWarbands = persistWarbands(
+        state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w)),
+        state.warbands,
+      );
 
       // Create Match Record
       const newMatch: MatchRecord = {

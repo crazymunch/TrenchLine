@@ -147,6 +147,30 @@ export interface Warband {
   snapshots?: WarbandSnapshot[];
 
   createdAt: string;
+
+  /**
+   * When this device last wrote the warband, for any reason.
+   *
+   * Kept for display. It is NOT what sync compares: the store stamps it on
+   * every write, including transient Play Mode state, so it moves during a
+   * game without the roster having changed.
+   */
   updatedAt: string;
+
+  /**
+   * When the player last changed the roster itself — recruited, equipped,
+   * renamed, spent, advanced.
+   *
+   * This is what the cloud merge compares, and the only reason it exists as a
+   * separate field is that `updatedAt` could not do the job: the server's copy
+   * of it is a *push* time (Prisma rewrites `@updatedAt` on every write), so
+   * merely opening the app on a second device made that device's copies look
+   * newer than the first device's real edits, and the first device's work lost
+   * on the next sync. See `services/sync.ts`.
+   *
+   * Optional because warbands saved before this field existed do not carry it;
+   * `mergeWarbands` falls back to `updatedAt` for those.
+   */
+  editedAt?: string;
 }
 

@@ -11,6 +11,18 @@ export async function GET(req: NextRequest) {
     const isAdmin = isUserAdmin(userEmail);
 
     const { searchParams } = new URL(req.url);
+    /*
+      `all=true` is the public Warband Directory, which is a deliberate feature.
+      Anything else is "my warbands", and for a signed-out caller that is an
+      empty list.
+
+      It used to be the opposite. The where clause was
+      `(!fetchAll && userId) ? { userId } : {}`, so with no session `userId` was
+      undefined and the query collapsed to `{}` — a signed-out visitor was
+      served EVERY warband in the database. The client then merged them into
+      local storage as its own and pushed them back. That is how a visitor
+      ended up owning other people's rosters.
+    */
     const fetchAll = searchParams.get('all') === 'true' || isAdmin;
 
     // If userId not found by session.id, look up user by email
@@ -39,8 +51,14 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // No `all=true` and no resolved user: nothing is yours, so nothing comes
+    // back. Never the unfiltered table.
+    if (!fetchAll && !userId) {
+      return NextResponse.json({ warbands: [] });
+    }
+
     const warbands = await prisma.warband.findMany({
-      where: (!fetchAll && userId) ? { userId } : {},
+      where: fetchAll ? {} : { userId },
       include: {
         user: {
           select: {
@@ -97,6 +115,10 @@ export async function GET(req: NextRequest) {
         campaignMembers: wb.campaignMembers,
         createdAt: wb.createdAt.toISOString(),
         updatedAt: wb.updatedAt.toISOString(),
+        // When the player last changed the roster, as against when the row was
+        // last written. The sync merge compares this and nothing else — see
+        // services/sync.ts for why `updatedAt` could not do the job.
+        editedAt: wb.editedAt ? wb.editedAt.toISOString() : undefined,
       };
     });
 
@@ -129,14 +151,22 @@ export async function POST(req: NextRequest) {
       motto,
       patron,
       chronicleLog,
-      snapshots
+      snapshots,
+      editedAt
     } = body;
 
     if (!name || !factionId) {
       return NextResponse.json({ error: 'Missing required fields: name and factionId are required' }, { status: 400 });
     }
 
-    // Resolve or upsert user in database
+    /*
+      Signing in is what enables the cloud. Without it the app is local-only,
+      which is a supported way to use it — not a reason to invent an owner.
+
+      This used to upsert a shared `commander@trenchline.org` account and file
+      every anonymous warband under it, so unrelated visitors accumulated in one
+      bucket and, with the old GET, read each other's rosters back out.
+    */
     let effectiveUserId = userId;
     if (!effectiveUserId && userEmail) {
       const user = await prisma.user.upsert({
@@ -151,15 +181,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (!effectiveUserId) {
-      const defaultUser = await prisma.user.upsert({
-        where: { email: 'commander@trenchline.org' },
-        update: {},
-        create: {
-          email: 'commander@trenchline.org',
-          name: 'Crusade Commander',
-        },
-      });
-      effectiveUserId = defaultUser.id;
+      return NextResponse.json(
+        { error: 'Sign in to sync a warband to the cloud. Your roster is saved on this device either way.' },
+        { status: 401 }
+      );
     }
 
     const warbandId = id || `wb-${Date.now()}`;
@@ -197,6 +222,10 @@ export async function POST(req: NextRequest) {
         units: units || [],
         armoryStash: armoryStash || [],
         notes: metadataPayload,
+        // The client's edit time, not the server's write time. `updatedAt` is
+        // Prisma's `@updatedAt` and is rewritten on every push, which is
+        // exactly why it could not be the field the merge compares.
+        editedAt: editedAt ? new Date(editedAt) : undefined,
         userId: existingWarband ? existingWarband.userId : effectiveUserId,
       },
       create: {
@@ -209,6 +238,7 @@ export async function POST(req: NextRequest) {
         units: units || [],
         armoryStash: armoryStash || [],
         notes: metadataPayload,
+        editedAt: editedAt ? new Date(editedAt) : undefined,
         userId: effectiveUserId,
       },
     });
@@ -238,6 +268,13 @@ export async function DELETE(req: NextRequest) {
     if (!userId && userEmail) {
       const dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
       if (dbUser) userId = dbUser.id;
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Sign in to delete a warband from the cloud.' },
+        { status: 401 }
+      );
     }
 
     const existingWarband = await prisma.warband.findUnique({ where: { id } });

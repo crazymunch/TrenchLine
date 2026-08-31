@@ -11,64 +11,92 @@ import { enrichUnitWithLore } from '../../data/warbandLore';
 import type { Warband, ActiveUnit, StashedItem, WarbandSnapshot } from '../../types/warband';
 import type { CampaignMember } from '../../types/campaign';
 import type { InitialState } from '../init';
+import { persistWarbands, mergeWarbands } from '../persist';
+import { outbox } from '../../services/sync';
 
-export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
+export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
 export const createRosterSlice = (init: InitialState): StateCreator<AppState, [], [], RosterSlice> =>
   (set, get) => ({
     allCloudWarbands: [],
     fetchAllCloudWarbands: async () => {
-      const cloudWbs = await storage.fetchAllWarbandsFromCloud();
-      if (cloudWbs) {
-        set({ allCloudWarbands: cloudWbs });
-      }
+      const res = await storage.fetchAllWarbandsFromCloud();
+      // The public directory. A failure leaves the previous list alone rather
+      // than blanking the view; the sync banner carries the reason.
+      if (res.ok) set({ allCloudWarbands: res.data });
     },
 
+    sync: { kind: 'local-only' },
+
+    /**
+     * Reconcile the device with the cloud.
+     *
+     * The order is the fix. Fetch first, and if the fetch fails, **stop** — do
+     * not push. The previous version treated a failed fetch as an empty cloud,
+     * merged against nothing and then pushed the local list over the top, so
+     * syncing while offline could overwrite good cloud data with a stale local
+     * copy.
+     *
+     * Then push only what the outbox says is unpushed. The previous version
+     * pushed every warband it held on every run, which rewrote each one's
+     * server timestamp to now — so merely opening the app on a second device
+     * made that device's copies look newer than the first device's real edits,
+     * and the first device's work lost on its next sync. That is the defect
+     * that compounded, because every sync made it worse.
+     */
     syncUserWarbandsWithCloud: async (userEmail?: string, userName?: string) => {
-      try {
-        const cloudWbs = await storage.fetchWarbandsFromCloud();
-        const state = get();
-        
-        let mergedMap = new Map<string, Warband>();
-        // 1. Put current local state
-        state.warbands.forEach(w => mergedMap.set(w.id, w));
-
-        // 2. Merge cloud warbands (cloud takes precedence if present)
-        if (cloudWbs && cloudWbs.length > 0) {
-          cloudWbs.forEach(cw => {
-            const local = mergedMap.get(cw.id);
-            if (!local || new Date(cw.updatedAt) >= new Date(local.updatedAt)) {
-              mergedMap.set(cw.id, {
-                ...cw,
-                creatorName: cw.creatorName || userName || 'Crusade Commander',
-                units: cw.units.map(enrichUnitWithLore)
-              });
-            }
-          });
-        }
-
-        const mergedList = Array.from(mergedMap.values());
-        storage.saveWarbands(mergedList);
-
-        // 3. Sync any local warbands that aren't yet in the cloud database
-        mergedList.forEach(w => {
-          storage.syncWarbandToCloud({
-            ...w,
-            creatorName: w.creatorName || userName || 'Crusade Commander'
-          });
-        });
-
-        const activeId = state.activeWarbandId && mergedMap.has(state.activeWarbandId)
-          ? state.activeWarbandId
-          : mergedList[0]?.id || null;
-
-        set({
-          warbands: mergedList,
-          activeWarbandId: activeId
-        });
-      } catch (e) {
-        console.warn('Cloud sync on auth failed:', e);
+      // No signed-in user is not a failure. Local-only is a supported way to
+      // use the app, and saying so beats a spinner that never resolves.
+      if (!userEmail) {
+        set({ sync: { kind: 'local-only' } });
+        return;
       }
+
+      set({ sync: { kind: 'syncing' } });
+
+      const fetched = await storage.fetchWarbandsFromCloud();
+      if (!fetched.ok) {
+        set({ sync: { kind: 'error', reason: fetched.reason, detail: fetched.detail, pending: outbox.size() } });
+        return;
+      }
+
+      const state = get();
+      const named = fetched.data.map((cw) => ({
+        ...cw,
+        creatorName: cw.creatorName || userName || 'Crusade Commander',
+        units: (cw.units ?? []).map(enrichUnitWithLore),
+      }));
+
+      // Deliberately not through persistWarbands: taking a warband from the
+      // cloud is not the player editing it, and stamping it here would queue
+      // it straight back for a push and make it beat the copy it came from.
+      const { merged } = mergeWarbands(state.warbands, named, new Set(outbox.ids()));
+      storage.saveWarbands(merged);
+
+      const activeId = state.activeWarbandId && merged.some((w) => w.id === state.activeWarbandId)
+        ? state.activeWarbandId
+        : merged[0]?.id || null;
+      set({ warbands: merged, activeWarbandId: activeId });
+
+      // Push the backlog. A warband leaves the outbox only once the server has
+      // taken it, so a failure keeps it queued rather than losing it.
+      let firstFailure: { reason: 'offline' | 'unauthenticated' | 'server'; detail: string } | null = null;
+
+      for (const id of outbox.ids()) {
+        const wb = merged.find((w) => w.id === id);
+        if (!wb) { outbox.clear(id); continue; }
+        const res = await storage.syncWarbandToCloud({
+          ...wb,
+          creatorName: wb.creatorName || userName || 'Crusade Commander',
+        });
+        if (res.ok) outbox.clear(id);
+        else if (!firstFailure) firstFailure = { reason: res.reason, detail: res.detail };
+      }
+
+      const pending = outbox.size();
+      if (firstFailure) set({ sync: { kind: 'error', ...firstFailure, pending } });
+      else if (pending) set({ sync: { kind: 'pending', count: pending } });
+      else set({ sync: { kind: 'synced', at: new Date().toISOString() } });
     },
 
     warbands: init.warbands,
@@ -125,10 +153,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       };
 
       set((state) => {
-        const updated = [...state.warbands, newWarband];
-        storage.saveWarbands(updated);
+        let updated = [...state.warbands, newWarband];
+        updated = persistWarbands(updated, state.warbands);
         storage.setActiveWarbandId(newWarband.id);
-        storage.syncWarbandToCloud(newWarband);
         return { warbands: updated, activeWarbandId: newWarband.id };
       });
 
@@ -158,17 +185,16 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       };
 
       set((state) => {
-        const updated = [...state.warbands.filter(w => w.id !== enrichedWarband.id), enrichedWarband];
-        storage.saveWarbands(updated);
+        let updated = [...state.warbands.filter(w => w.id !== enrichedWarband.id), enrichedWarband];
+        updated = persistWarbands(updated, state.warbands);
         storage.setActiveWarbandId(enrichedWarband.id);
-        storage.syncWarbandToCloud(enrichedWarband);
         return { warbands: updated, activeWarbandId: enrichedWarband.id };
       });
     },
 
     saveWarbandSnapshot: (warbandId, label, type, changesSummary = [], matchId, scenarioName, outcome) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const newSnapshot: WarbandSnapshot = {
             id: `snap-${Date.now()}`,
@@ -192,11 +218,10 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             ...w,
             snapshots: [...existingSnapshots, newSnapshot]
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
 
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -246,8 +271,8 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
 
     deleteWarband: (id) => {
       set((state) => {
-        const updated = state.warbands.filter((w) => w.id !== id);
-        storage.saveWarbands(updated);
+        let updated = state.warbands.filter((w) => w.id !== id);
+        updated = persistWarbands(updated, state.warbands);
         storage.deleteWarbandFromCloud(id);
         const nextActive = updated[0]?.id || null;
         storage.setActiveWarbandId(nextActive);
@@ -269,10 +294,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       };
 
       set((s) => {
-        const updated = [...s.warbands, cloned];
-        storage.saveWarbands(updated);
+        let updated = [...s.warbands, cloned];
+        updated = persistWarbands(updated, s.warbands);
         storage.setActiveWarbandId(cloned.id);
-        storage.syncWarbandToCloud(cloned);
         return { warbands: updated, activeWarbandId: cloned.id };
       });
     },
@@ -284,71 +308,67 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
 
     updateWarbandNotes: (warbandId, notes) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = { ...w, notes };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandDucatLimit: (warbandId, ducatLimit) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
             ducatLimit: Math.max(100, Number(ducatLimit) || 700),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandTreasury: (warbandId, treasuryDucats) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
             treasuryDucats: Math.max(0, Number(treasuryDucats) || 0),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandGlory: (warbandId, gloryPoints) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
             gloryPoints: Math.max(0, Number(gloryPoints) || 0),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandVariant: (warbandId, variantId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
@@ -359,17 +379,16 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             variantId: variantId || undefined,
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandLore: (warbandId, lore, motto, patron) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
@@ -378,34 +397,32 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             patron: patron !== undefined ? patron : w.patron,
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateWarbandChronicleLog: (warbandId, chronicleLog) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb: Warband = {
             ...w,
             chronicleLog,
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     addWarbandChronicleEntry: (warbandId, entry) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const existing = w.chronicleLog || [];
           const updatedWb: Warband = {
@@ -413,10 +430,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             chronicleLog: [entry, ...existing],
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -455,17 +471,16 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           hasActedThisTurn: false
         };
 
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
             units: [...w.units, newUnit],
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -473,7 +488,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
     // Armory Stash Management
     buyToStash: (warbandId, item) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const existing = w.armoryStash.find((i) => i.id === item.id);
           let newStash: StashedItem[];
@@ -487,17 +502,16 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             armoryStash: newStash,
             treasuryDucats: Math.max(0, w.treasuryDucats - item.cost)
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     sellFromStash: (warbandId, stashItemId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const item = w.armoryStash.find((i) => i.id === stashItemId);
           if (!item) return w;
@@ -515,10 +529,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             armoryStash: newStash,
             treasuryDucats: w.treasuryDucats + sellValue
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -540,7 +553,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
 
       // Deduct from stash
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           let newStash: StashedItem[];
           if (stashItem.quantity > 1) {
@@ -549,10 +562,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
           }
           const updatedWb = { ...w, armoryStash: newStash };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },

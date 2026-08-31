@@ -7,6 +7,7 @@ import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { AuthModal } from '../auth/AuthModal';
 import { BugReportModal } from '../feedback/BugReportModal';
+import { SyncStatus } from './SyncStatus';
 import { 
   Skull,
   User,
@@ -155,7 +156,16 @@ export const Navbar: React.FC = () => {
               long. Shrinking is the *title's* job: it truncates, and these are
               controls that stop being usable the moment they are clipped.
             */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+
+              {/* Icon-only below `md:`, where the top bar has no room for a
+                  word — the tooltip and the screen-reader label carry the rest.
+                  The group's gap drops to 4px on a phone to pay for it: adding
+                  the icon at 6px gaps put the Login button 4px past the right
+                  edge and gave the whole page a sideways scroll. */}
+              <span className="hidden md:flex"><SyncStatus /></span>
+              <span className="flex md:hidden"><SyncStatus compact /></span>
+
               
               {/* Ruleset Version Switcher */}
               <div className="relative">
