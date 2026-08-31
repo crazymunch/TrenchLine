@@ -19,6 +19,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
+import { nameKey } from '../../rules/names';
 import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -96,15 +97,31 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
   */
   const allowThirdParty = !!warband?.allowThirdParty;
 
+  /*
+    A model locked to a Warband Variant is offered only to a Warband on that
+    Variant. The Technomancer belongs to the Cadaver Corps, the Matagot Hag to
+    The Great Hunger; every one of them used to be offered to the whole faction,
+    so a standard Black Grail list could recruit a Leader it is not entitled to.
+
+    Matched on the normalised name as well as the id: a Warband saved before the
+    picker existed may carry either.
+  */
+  const wbVariant = warband?.variantId ? nameKey(warband.variantId) : undefined;
+  const onVariant = (u: UnitProfile) =>
+    !u.requiresVariant
+    || u.requiresVariant.some((v) => nameKey(v.id) === wbVariant || nameKey(v.name) === wbVariant);
+
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
   const availableUnits = useMemo(() => units.filter((u) => {
     if (u.thirdParty && !allowThirdParty) return false;
+    if (!onVariant(u)) return false;
     if (u.factionId === factionId) return true;
     if (u.category === 'Mercenary' || u.factionId === 'mercenaries') {
       return Array.isArray(u.allowedFactions) && u.allowedFactions.includes(factionId);
     }
     return false;
-  }), [units, factionId, allowThirdParty]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [units, factionId, allowThirdParty, wbVariant]);
 
   const categories = ['All', ...CATEGORY_ORDER, `⭐ Favourites (${favouriteUnits.length})`];
 
@@ -423,6 +440,11 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                         {unit.thirdParty && (
                           <span className="eyebrow px-2 py-0.5 rounded font-bold bg-status-warning/15 text-status-warning border border-status-warning/40">
                             Third party
+                          </span>
+                        )}
+                        {unit.requiresVariant && (
+                          <span className="eyebrow px-2 py-0.5 rounded font-bold bg-theme-primary/15 text-theme-primary border border-theme-primary/40">
+                            {unit.requiresVariant.map((v) => v.name).join(' / ')} only
                           </span>
                         )}
                         {unit.maxCount !== undefined && (

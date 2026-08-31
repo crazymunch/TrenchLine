@@ -17,6 +17,7 @@ import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury } from './variantArmoury';
 import { thirdPartyGate } from './thirdParty';
+import { variantLocks, unlockedBy } from './variantLocks';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -38,7 +39,8 @@ export interface Violation {
     | 'force-over-threshold'
     | 'force-over-field-strength'
     | 'unparsed-restriction'
-    | 'third-party-not-allowed';
+    | 'third-party-not-allowed'
+    | 'variant-locked';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
   rule?: string;
@@ -513,6 +515,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     ?.find((f) => factionMatches(f.id, roster.factionId) || factionMatches(f.name, roster.factionId));
   violations.push(...checkFactionRules(roster, faction, variant));
   violations.push(...checkThirdParty(roster, profiles));
+  violations.push(...checkVariantLocks(roster, dataset, variant));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
@@ -521,6 +524,39 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * Models rostered outside the Variant that unlocks them.
+ *
+ * The recruit list will not offer one, so this fires when the Variant is
+ * changed afterwards — which the roster screen allows until the first game.
+ * An error, not a warning: the model is not one this Warband may field. The
+ * fix is the player's, either Variant or model; nothing is removed for them.
+ */
+function checkVariantLocks(
+  roster: Roster,
+  dataset: Dataset,
+  variant: WarbandVariant | undefined,
+): Violation[] {
+  const locks = variantLocks(dataset);
+  if (!locks.size) return [];
+
+  const entryIdOf = new Map(dataset.units.map((u) => [u.id, u.entryId || u.id]));
+  const out: Violation[] = [];
+
+  for (const u of roster.units) {
+    const lock = locks.get(entryIdOf.get(u.profileId) ?? u.profileId);
+    if (!lock || unlockedBy(lock, variant)) continue;
+    out.push(err({
+      code: 'variant-locked',
+      message: `${u.name} may only be fielded by a ${lock.variantNames.join(' or ')} ` +
+               'Warband.',
+      rule: 'Warband Variant',
+      unitId: u.id,
+    }));
+  }
+  return out;
 }
 
 /**

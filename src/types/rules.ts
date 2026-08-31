@@ -115,6 +115,11 @@ export interface UnitProfile {
    * Warband opts in — see `rules/thirdParty.ts`.
    */
   thirdParty?: boolean;
+  /**
+   * Warband Variants this model is exclusive to — it exists only inside one of
+   * them. Absent means it is offered as normal. See `rules/variantLocks.ts`.
+   */
+  requiresVariant?: { id: string; name: string }[];
   /** The source's own disclaimer, shown rather than paraphrased. */
   thirdPartyNotice?: string;
   innateAbilities?: Ability[];

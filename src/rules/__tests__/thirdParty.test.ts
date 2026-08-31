@@ -50,12 +50,30 @@ describe('the third-party gate', () => {
     */
     const marked = DATASET.units.filter((u) => gate(u).thirdParty).map((u) => u.name).sort();
     expect(marked).toEqual([
-      '"Zamburak" Weapon Platform', 'Anointed Heavy Infantry', 'Archeologist',
-      'Bedu Sharpshooter', 'Captive Giant', 'Chieftain', 'Desecrated Saint',
-      'Disciple of St. Roch', 'Faceless', 'Goetic Warlock', 'Huscarl', 'Pairika',
-      'Shirdal', 'Shocktrooper', 'Sin Eater', 'Stalker', 'Sultanate Sapper',
-      'Technomancer', 'Teğmen', 'War Wolf', 'Witch Coven Matriarch', 'Yoke Fiend',
+      '"Zamburak" Weapon Platform', 'Archeologist', 'Bedu Sharpshooter',
+      'Captive Giant', 'Chieftain', 'Disciple of St. Roch', 'Faceless',
+      'Goetic Warlock', 'Huscarl', 'Pairika', 'Shirdal', 'Sin Eater', 'Stalker',
+      'Technomancer', 'Teğmen', 'Witch Coven Matriarch',
     ]);
+  });
+
+  it('does not mark an ordinary unit a Variant merely re-reveals', () => {
+    /*
+      This list is the correction to the first version, which read any
+      variant-conditioned `set hidden false` as a third-party gate and so hid
+      six ordinary faction units from anyone who had not opted in.
+
+      On a **visible** entry that op undoes another Variant's ban rather than
+      granting access. The War Wolf is a Heretic Legion beast, the Shocktrooper
+      a New Antioch trooper; neither needs a third-party Variant to be fielded.
+    */
+    for (const name of ['Anointed Heavy Infantry', 'Sultanate Sapper', 'Shocktrooper',
+                        'Desecrated Saint', 'Yoke Fiend', 'War Wolf']) {
+      const u = DATASET.units.find((x) => x.name === name);
+      expect(u, name).toBeDefined();
+      expect(u!.hiddenByDefault, `${name} is visible by default`).toBeFalsy();
+      expect(gate(u!).thirdParty, `${name} is an ordinary unit`).toBe(false);
+    }
   });
 
   it('names the Variant that unlocks each one', () => {
@@ -63,7 +81,9 @@ describe('the third-party gate', () => {
     expect(of('Technomancer')).toBe('Cadaver Corps');
     expect(of('Chieftain')).toBe('Children of Yggdrasil');
     expect(of('Faceless')).toBe('Fang of the Seething Black');
-    expect(of('Shocktrooper')).toBe('Remnants of Byzantium');
+    // Not the Shocktrooper: it is visible by default, so the Remnants of
+    // Byzantium re-reveal is a ban being undone, not a gate.
+    expect(of('Witch Coven Matriarch')).toBe('Cadaver Corps');
   });
 
   it('does not mistake hidden-by-default for third-party', () => {

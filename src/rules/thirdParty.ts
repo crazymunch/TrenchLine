@@ -39,6 +39,8 @@ import type { Modifier } from '@/types/catalogue';
 export interface Gateable {
   abilities?: { name: string; description: string }[];
   modifiers?: Modifier[];
+  /** See `UnitProfile.hiddenByDefault`. A reveal only gates a hidden entry. */
+  hiddenByDefault?: boolean;
 }
 
 /**
@@ -134,11 +136,23 @@ export function thirdPartyGate(
   const reveals = revealers(unit);
   const gated = reveals.find((m) => flatten(m.when).some(isTheToggle));
 
+  /*
+    A variant reveal only marks third-party content on an entry that is hidden
+    to begin with.
+
+    On a visible entry the same op is a re-reveal undoing another variant's ban,
+    and reading it as a gate is wrong in the direction that hurts: the first
+    version of this hid the Anointed Heavy Infantry, Sultanate Sapper,
+    Shocktrooper, Desecrated Saint, Yoke Fiend and War Wolf — six ordinary
+    faction units — from anyone who had not opted into third-party content.
+  */
   let variant: string | undefined;
-  for (const m of reveals) {
-    const hit = flatten(m.when)
-      .find((c) => c.childId && variantIds.has(c.childId));
-    if (hit) { variant = hit.childName ?? hit.childId; break; }
+  if (unit.hiddenByDefault) {
+    for (const m of reveals) {
+      const hit = flatten(m.when)
+        .find((c) => c.childId && variantIds.has(c.childId));
+      if (hit) { variant = hit.childName ?? hit.childId; break; }
+    }
   }
 
   const hosts = gated

@@ -644,6 +644,20 @@ export function parseCatalogues(dir) {
           // exports and modifier conditions both address entries, not
           // profiles, so evaluation needs it.
           entryId: attr(node, 'id'),
+          /*
+            The entry's own `hidden` attribute — whether it is off the list
+            until something reveals it.
+
+            Load-bearing, and not recoverable from the modifiers. A
+            `set hidden false` conditioned on a Warband Variant means two
+            different things depending on this flag: on a hidden entry it is
+            the gate that makes the model available at all (the Technomancer
+            exists only inside the Cadaver Corps), and on a visible one it is
+            a re-reveal undoing some other variant's `set hidden true` (the
+            Janissary is a core Sultanate troop that two variants forbid).
+            Reading the reveal without this cannot tell them apart.
+          */
+          hiddenByDefault: attr(node, 'hidden') === 'true' || undefined,
           name: clean(attr(unitProfile, 'name')),
           factionId: faction,
           roles: cats.filter((x) => ROLE_NAMES.has(x)),
@@ -676,6 +690,9 @@ export function parseCatalogues(dir) {
           // As with units: the containing selectionEntry, which is what a
           // roster selects and what a model-scoped modifier is attached to.
           entryId: attr(node, 'id'),
+          // And as with units, whether the entry is off the list until
+          // something reveals it — see the note on the unit field.
+          hiddenByDefault: attr(node, 'hidden') === 'true' || undefined,
           name: clean(attr(g, 'name')),
           type: clean(c.Type) || attr(g, 'typeName'),
           range: clean(c.Range) || '',
