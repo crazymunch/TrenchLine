@@ -4,6 +4,12 @@ on:
   pull_request:
   push:
     branches: [main]
+  # By hand, when a run needs forcing. `deploy.yml` has had this from the
+  # start; CI not having it was an inconsistency rather than a decision, and it
+  # bit today: GitHub delivered no `pull_request` event for one PR, so the only
+  # ways to get a check onto that head were an empty commit or a close-and-
+  # reopen — both of which are worse than a button.
+  workflow_dispatch:
 
 jobs:
   check:
