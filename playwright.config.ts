@@ -72,6 +72,17 @@ export default defineConfig({
   webServer: {
     command: `npx next start -p ${PORT}`,
     url: `http://127.0.0.1:${PORT}`,
+    /*
+      `reuseExistingServer` is a real trap locally, and it fails in a way that
+      looks like a product bug rather than a stale process: `next start` holds
+      the prerendered HTML and the build manifest in memory, so a server left
+      running across a rebuild keeps serving HTML that names chunks the new
+      `.next` no longer contains. Those 400, React never hydrates, and every
+      button on the page is inert — which reads as "the sheet does not open".
+
+      So after `next build`, kill the old server before running these. CI is
+      unaffected: it starts fresh.
+    */
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
