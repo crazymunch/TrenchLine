@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
+import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { 
   Shield, 
@@ -182,8 +183,25 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     return true;
   };
 
+  /*
+    Gear the model already has.
+
+    The catalogue forces Standard Armour, a Gas Mask and a Medi-kit onto a
+    Combat Medic and then hides those Armoury rows from it, because a model
+    cannot buy what it is already wearing. The app carried neither half of
+    that, so it would sell a Medic a second 5-Ducat Gas Mask.
+
+    Hidden rather than greyed out: the list is what a player can spend on, and
+    a row they can never take is noise at a table. The kit itself is shown on
+    the model's own card, where it belongs.
+  */
+  const kit = forcedBattlekit(unit?.profileSnapshot);
+  const alreadyCarried = <T extends { id?: string; name: string }>(item: T) =>
+    carriesAsBattlekit(unit?.profileSnapshot, item);
+
   // Filtering Weapons
-  let displayedWeapons = filterLegalOnly ? weapons.filter(isWeaponLegal) : weapons;
+  let displayedWeapons = (filterLegalOnly ? weapons.filter(isWeaponLegal) : weapons)
+    .filter((w) => !alreadyCarried(w));
   if (weaponSubCategory === 'ranged') {
     displayedWeapons = displayedWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range.startsWith('Melee') && !/shield/i.test(w.name)));
   } else if (weaponSubCategory === 'melee') {
@@ -195,10 +213,12 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   }
 
   // Filtering Armour
-  const displayedArmour = filterLegalOnly ? armour.filter(isArmourLegal) : armour;
+  let displayedArmour = (filterLegalOnly ? armour.filter(isArmourLegal) : armour)
+    .filter((a) => !alreadyCarried(a));
 
   // Filtering Equipment
-  let displayedEquipment = filterLegalOnly ? equipment.filter(isEquipmentLegal) : equipment;
+  let displayedEquipment = (filterLegalOnly ? equipment.filter(isEquipmentLegal) : equipment)
+    .filter((e) => !alreadyCarried(e));
   if (equipmentSubCategory === 'formulae') {
     displayedEquipment = displayedEquipment.filter(e => 
       e.category === 'Formula' || 
@@ -218,7 +238,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const sQuery = searchFilter.toLowerCase().trim();
   if (sQuery) {
     displayedWeapons = displayedWeapons.filter(w => w.name.toLowerCase().includes(sQuery) || (w.description || '').toLowerCase().includes(sQuery));
-    displayedArmour.filter(a => a.name.toLowerCase().includes(sQuery) || (a.description || '').toLowerCase().includes(sQuery));
+    // Was `displayedArmour.filter(...)` with the result thrown away, so typing
+    // in the search box filtered weapons and equipment but never armour.
+    displayedArmour = displayedArmour.filter(a => a.name.toLowerCase().includes(sQuery) || (a.description || '').toLowerCase().includes(sQuery));
     displayedEquipment = displayedEquipment.filter(e => e.name.toLowerCase().includes(sQuery) || (e.effect || '').toLowerCase().includes(sQuery));
   }
 
@@ -253,6 +275,24 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             </button>
       </div>}
     >
+
+        {/*
+          What the model is already wearing.
+
+          Shown because the rows for these are deliberately absent from the
+          lists below, and a player looking for the Gas Mask they know the
+          Armoury stocks needs to be told why it is not there.
+        */}
+        {kit.length > 0 && (
+          <div className="px-4 py-2 bg-theme-base border-b border-theme-border flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xs flex-shrink-0">
+            <span className="font-bold uppercase text-theme-muted tracking-wide">Battlekit:</span>
+            <span className="text-theme-text">
+              a {unitProfileName} always has{' '}
+              {kit.map((b) => b.name).join(', ')}.
+            </span>
+            <span className="text-theme-muted">Already carried, so not listed below.</span>
+          </div>
+        )}
 
         {/* Loadout Status & Hand Limits Banner */}
         <div className="px-4 py-2 bg-theme-elevated border-b border-theme-border flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">

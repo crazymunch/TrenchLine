@@ -164,15 +164,24 @@ All are covered by regression tests.
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.
-- **Forced Battlekit is not modelled.** The catalogues attach mandatory gear to
-  a model with a `min="1"` entryLink — a Combat Medic's Standard Armour, Gas
-  Mask and Medi-kit, a Combat Engineer's Engineer Body Armour, an Anchorite
-  Shrine's Sacrificial Lamb. The parser drops those links, so a model in the
-  app carries neither the gear nor the keywords it grants (`NEGATE GAS`), and
-  the matching Armoury row stays purchasable when the catalogue hides it. The
-  Combat Medic's cost is right by resolution, but a player can still add a
-  second Gas Mask for 5 Ducats it should not cost. Needs the parser to emit
-  forced kit and the armoury to read the catalogue's conditional `hidden`.
+- **Forced Battlekit is modelled** (was outstanding). The catalogues attach
+  mandatory gear to a model with a `min="1"` entryLink, and the book states the
+  same thing as a Battlekit line — "A Combat Medic always has Standard Armour,
+  a Gas Mask, a Medi-kit, and a Misericordia". The parser dropped those links,
+  so **18 models** carried neither the gear nor the keywords it grants (no
+  `NEGATE GAS` on a model wearing a gas mask) and the Armoury would sell a
+  Medic a second Gas Mask for 5 Ducats.
+
+  `forcedKitOf` reads them; the kit rides on `UnitProfile.battlekit`, shows on
+  the model's card, and is filtered out of the equip lists. It also confirms
+  the Combat Medic cost resolution from the other direction: the three forced
+  links at Armoury prices are 15 + 5 + 5, and 40 + 25 is the book's 65.
+
+  Still open: the catalogue states the same exclusion as a conditional
+  `hidden` modifier on the Armoury link, which the pipeline does not read. The
+  app gets the same answer from the forced kit, so nothing is wrong today, but
+  a model the catalogue hides a row from for some *other* reason would still
+  be offered it.
 - **`defaultRules.ts` is not deleted yet.** The app still reads the old model;
   migrating the UI onto `src/data/generated/` is Phase 2, so both exist for now.
   Phase 1 is verifiable on its own without a UI rewrite.
@@ -752,6 +761,21 @@ The worker does not register in development: `next dev` rebuilds the shell on
 every edit, and a cached one serves yesterday's bundle against today's chunks —
 a blank page with a chunk 404 that looks like a code bug for as long as it
 takes to remember the worker is there.
+
+### Warband codes
+
+Every warband has a five-character code — `warbandCode(id)` — used to search
+for one and to read one out across a table. **Derived from the id rather than
+stored on the warband**, which is the whole design: every roster that already
+exists gets one immediately, offline, with no migration and no backfill, and
+the code never changes. A stored field would have needed all three, and a code
+lost in a sync would have made a warband unfindable by the code someone had
+already written down.
+
+The alphabet leaves out `0`, `O`, `1` and `I`, because the point of a short
+code is that it survives being spoken and typed. 32^5 is 33.5 million codes;
+`collidingCodes()` reports a duplicate rather than letting the UI show the
+wrong roster.
 
 ## Phase 5 — Carcass Front preview (backburner)
 

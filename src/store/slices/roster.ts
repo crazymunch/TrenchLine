@@ -333,15 +333,35 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       });
     },
 
-    deleteWarband: (id) => {
+    /*
+      Local first, then the cloud, and the cloud's answer is returned rather
+      than dropped.
+
+      The Directory needs it: deleting someone else's warband there comes back
+      403, and with the old fire-and-forget shape the row just disappeared from
+      the list and reappeared on the next refresh, with nothing said. It also
+      has to leave `allCloudWarbands` — the Directory reads that list, not the
+      local one, so a deleted warband stayed on screen until a manual refresh.
+    */
+    deleteWarband: async (id) => {
       set((state) => {
         let updated = state.warbands.filter((w) => w.id !== id);
         updated = persistWarbands(updated, state.warbands);
-        storage.deleteWarbandFromCloud(id);
         const nextActive = updated[0]?.id || null;
         storage.setActiveWarbandId(nextActive);
-        return { warbands: updated, activeWarbandId: nextActive };
+        return {
+          warbands: updated,
+          activeWarbandId: nextActive,
+          allCloudWarbands: state.allCloudWarbands.filter((w) => w.id !== id),
+        };
       });
+
+      const res = await storage.deleteWarbandFromCloud(id);
+      if (res.ok) return { ok: true };
+
+      // It is gone from this device either way, but the caller must be able to
+      // say that the copy in the cloud is not.
+      return { ok: false, error: res.detail || res.reason };
     },
 
     cloneWarband: (id) => {

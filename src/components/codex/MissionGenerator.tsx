@@ -1,118 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
+import { parseUnforeseenEvents, rollUnforeseen } from '../../rules/unforeseen';
 import { 
   Dice6, 
   CloudRain, 
   AlertTriangle, 
-  Target, 
   RefreshCw, 
   Compass, 
   Edit3,
   Play
 } from 'lucide-react';
 
-const WEATHER_TABLE = [
-  {
-    name: 'Toxic Mustard Fog',
-    effect: 'Models entering craters or trenches must pass an Action test or suffer 1 Poison wound.',
-    badge: 'Chemical Hazard'
-  },
-  {
-    name: 'Incessant Shrapnel Barrage',
-    effect: 'Any model ending their activation in Open Ground suffers an immediate +0 Shrapnel strike.',
-    badge: 'Artillery Hazard'
-  },
-  {
-    name: 'Pitch Black Night & Signal Flares',
-    effect: 'Maximum ranged visibility is capped at 16" unless firing at targets illuminated by previous attacks.',
-    badge: 'Night Fighting'
-  },
-  {
-    name: 'Ash Blizzard & Trench Frost',
-    effect: 'Deep mud and freezing ice impose a -1" penalty to all Movement and Dash actions.',
-    badge: 'Environmental'
-  },
-  {
-    name: 'Distant Creeping Artillery Barrage',
-    effect: 'At the end of each battle round, roll a D6. On a 1, a random battlefield quadrant is bombarded (Blast 3").',
-    badge: 'High Hazard'
-  },
-  {
-    name: 'Choking Smoke & Clear Sky',
-    effect: 'Standard visibility conditions. Standard rules apply across the sector.',
-    badge: 'Clear'
-  }
-];
-
-const COMPLICATIONS_TABLE = [
-  {
-    name: 'Barbed Wire & Hidden Minefield',
-    effect: 'The central 12" wasteland is strewn with mines. Any model Dashing rolls a D6; on a 1 they suffer D3 wounds.',
-    type: 'Hazard'
-  },
-  {
-    name: 'Desecrated Blood Well',
-    effect: 'The central objective marker radiates demonic hum. Heretic models gain +1 Melee within 6", Crusaders suffer -1 Morale.',
-    type: 'Occult'
-  },
-  {
-    name: 'Downed Zeppelin Wreckage',
-    effect: 'A massive iron airship sits broken in the center, granting +2 Heavy Trench Cover and blocking line of sight.',
-    type: 'Terrain'
-  },
-  {
-    name: 'Mutated No Man\'s Land Scavengers',
-    effect: 'On Round 3, a neutral pack of starving mutant hounds arrives and charges the nearest wounded warrior.',
-    type: 'Hostile Neutral'
-  },
-  {
-    name: 'Cracked Underground Munitions Depot',
-    effect: 'Models searching the central bunker can claim D6+15 Ducats or a Frag Grenade as a free Action.',
-    type: 'Bonus Objective'
-  },
-  {
-    name: 'Intercepted Field Radio Transmissions',
-    effect: 'The player who wins priority in Turn 1 may redeploy up to 2 friendly Troopers anywhere in their zone.',
-    type: 'Tactical Intel'
-  }
-];
-
-const SECONDARY_AGENDAS = [
-  {
-    name: 'Decapitation Strike',
-    description: 'Take the opposing enemy Leader Out of Action before the end of Turn 4.',
-    reward: '+2 Campaign Glory & +15 Ducats'
-  },
-  {
-    name: 'Consecrate / Desecrate the Fallen',
-    description: 'Have a friendly warrior perform a 1-Action ritual over 2 fallen enemy casualties.',
-    reward: '+1 Campaign Glory & +10 Ducats'
-  },
-  {
-    name: 'Hold the High Redoubt',
-    description: 'Control the highest terrain piece or bunker on the board at game end with at least 2 warriors.',
-    reward: '+2 Campaign Glory'
-  },
-  {
-    name: 'Blood Harvest',
-    description: 'Inflict at least 3 enemy casualties without losing any friendly Elite or Leader units.',
-    reward: '+2 Campaign Glory & +20 Ducats'
-  },
-  {
-    name: 'Iron Wall Discipline',
-    description: 'End the battle with zero friendly units fleeing, routed, or failing Morale checks.',
-    reward: '+1 Campaign Glory'
-  },
-  {
-    name: 'Scavenge Archeotech Ammo Caches',
-    description: 'Search at least 2 separate craters or ruins with standard Trooper units.',
-    reward: '+25 Bonus Ducats'
-  }
-];
+/**
+ * The battlefield-conditions roller.
+ *
+ * It used to roll three invented tables: six weather conditions, six
+ * "complications" and six "Secret Secondary Agendas" with their own Glory and
+ * Ducat rewards. None of the eighteen appears anywhere in the sources, and they
+ * gave themselves away on vocabulary: they deal "Poison wounds" and "D3
+ * wounds", fire "at the end of each battle round", impose "-1 Morale", and
+ * reward "the player who wins priority in Turn 1". Trench Crusade has no
+ * wounds, no battle rounds, no Morale characteristic and no priority — it has
+ * BLOOD MARKERS, Turns, Morale Checks and the Initiative. A generator that
+ * hands a table three rules the game does not contain is worse than no
+ * generator, because the players will use them.
+ *
+ * What the game actually publishes is one table, and it belongs to one
+ * scenario: UNFORESEEN EVENTS in Hunt for Heroes. That is what this rolls, read
+ * from the scenario itself (▶ `rules/unforeseen.ts`). For the other eleven
+ * scenarios it offers nothing, and says so.
+ */
 
 export const MissionGenerator: React.FC = () => {
   const { setCurrentView } = useStore();
@@ -121,13 +42,14 @@ export const MissionGenerator: React.FC = () => {
   const { scenarios } = useScenarios();
   const [activeMode, setActiveMode] = useState<'designer' | 'procedural'>('designer');
 
-  // Procedural Generator State
-  const [proceduralMission, setProceduralMission] = useState<{
-    weather: typeof WEATHER_TABLE[0];
-    complication: typeof COMPLICATIONS_TABLE[0];
-    secondaryA: typeof SECONDARY_AGENDAS[0];
-    secondaryB: typeof SECONDARY_AGENDAS[0];
-  } | null>(null);
+  /*
+    Which scenario's table to roll. Only Hunt for Heroes has one, so it is the
+    default — but the picker stays, because a scenario gaining one is exactly
+    the kind of change the pipeline is meant to carry through without a code
+    edit, and because a player needs to see WHICH scenario a rule comes from.
+  */
+  const [eventScenarioId, setEventScenarioId] = useState<string>('');
+  const [lastEvent, setLastEvent] = useState<ReturnType<typeof rollUnforeseen> | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Custom Mission Designer State
@@ -185,25 +107,29 @@ export const MissionGenerator: React.FC = () => {
     setCurrentView('play');
   };
 
+  /** The scenarios that print an Unforeseen Events table. Today: one. */
+  const withEvents = useMemo(
+    () => scenarios
+      .map((s) => ({
+        scenario: s,
+        events: parseUnforeseenEvents(
+          s.entry?.sections.find((x) => x.heading === 'UNFORESEEN EVENTS')?.body),
+      }))
+      .filter((x) => x.events.length > 0),
+    [scenarios],
+  );
+
+  const chosen = withEvents.find((x) => x.scenario.id === eventScenarioId) ?? withEvents[0];
+
   const handleGenerate = () => {
+    if (!chosen) return;
     setIsGenerating(true);
     soundEffects.playDiceRoll();
 
     setTimeout(() => {
-      const weatherIdx = Math.floor(Math.random() * WEATHER_TABLE.length);
-      const compIdx = Math.floor(Math.random() * COMPLICATIONS_TABLE.length);
-      const secAIdx = Math.floor(Math.random() * SECONDARY_AGENDAS.length);
-      let secBIdx = Math.floor(Math.random() * SECONDARY_AGENDAS.length);
-      if (secBIdx === secAIdx) secBIdx = (secAIdx + 1) % SECONDARY_AGENDAS.length;
-
-      setProceduralMission({
-        weather: WEATHER_TABLE[weatherIdx],
-        complication: COMPLICATIONS_TABLE[compIdx],
-        secondaryA: SECONDARY_AGENDAS[secAIdx],
-        secondaryB: SECONDARY_AGENDAS[secBIdx]
-      });
-
-      soundEffects.playTrenchWhistle();
+      const result = rollUnforeseen(chosen.events);
+      setLastEvent(result);
+      if (result.triggered) soundEffects.playTrenchWhistle();
       setIsGenerating(false);
     }, 250);
   };
@@ -401,94 +327,108 @@ export const MissionGenerator: React.FC = () => {
         </div>
       )}
 
-      {/* MODE 2: PROCEDURAL HAZARDS ROLLER */}
+      {/* MODE 2: UNFORESEEN EVENTS — the game's one published conditions table */}
       {activeMode === 'procedural' && (
-        <div className="space-y-5 animate-fade-in">
-          <div className="flex justify-end">
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="flex items-center space-x-2 px-5 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow transition-all"
-            >
-              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-              <span>Roll Random Battlefield Hazards</span>
-            </button>
-          </div>
+        <div className="space-y-5 animate-fade-in font-mono text-xs">
 
-          {proceduralMission ? (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                
-                {/* Weather Condition */}
-                <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-[10px] uppercase text-theme-muted flex items-center space-x-1">
-                      <CloudRain className="w-3.5 h-3.5 text-theme-primary" />
-                      <span>Atmospheric Weather</span>
-                    </span>
-                    <span className="text-xs sm:text-[9px] uppercase bg-theme-surface text-theme-primary px-2 py-0.5 rounded border border-theme-border">
-                      {proceduralMission.weather.badge}
-                    </span>
-                  </div>
-                  <h4 className="font-gothic font-bold text-base text-theme-text">{proceduralMission.weather.name}</h4>
-                  <p className="text-xs text-theme-text bg-theme-base p-2.5 rounded border border-theme-border/60">
-                    {proceduralMission.weather.effect}
-                  </p>
-                </div>
-
-                {/* Battlefield Complication */}
-                <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-[10px] uppercase text-theme-muted flex items-center space-x-1">
-                      <AlertTriangle className="w-3.5 h-3.5 text-status-error" />
-                      <span>Sector Hazard / Complication</span>
-                    </span>
-                    <span className="text-xs sm:text-[9px] uppercase bg-theme-surface text-status-error px-2 py-0.5 rounded border border-theme-border">
-                      {proceduralMission.complication.type}
-                    </span>
-                  </div>
-                  <h4 className="font-gothic font-bold text-base text-theme-text">{proceduralMission.complication.name}</h4>
-                  <p className="text-xs text-theme-text bg-theme-base p-2.5 rounded border border-theme-border/60">
-                    {proceduralMission.complication.effect}
-                  </p>
-                </div>
-
-              </div>
-
-              {/* Secondary Agendas */}
-              <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3 font-mono text-xs">
-                <div className="flex items-center space-x-2">
-                  <Target className="w-4 h-4 text-status-legal" />
-                  <span className="uppercase font-bold text-status-legal">
-                    Secret Secondary Agendas (Choose 1 per Warband):
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-theme-surface rounded border border-theme-border space-y-1">
-                    <div className="flex justify-between items-center text-xs">
-                      <strong className="text-theme-text font-gothic">{proceduralMission.secondaryA.name}</strong>
-                      <span className="text-theme-primary font-bold">{proceduralMission.secondaryA.reward}</span>
-                    </div>
-                    <p className="text-xs text-theme-muted">{proceduralMission.secondaryA.description}</p>
-                  </div>
-
-                  <div className="p-3 bg-theme-surface rounded border border-theme-border space-y-1">
-                    <div className="flex justify-between items-center text-xs">
-                      <strong className="text-theme-text font-gothic">{proceduralMission.secondaryB.name}</strong>
-                      <span className="text-theme-primary font-bold">{proceduralMission.secondaryB.reward}</span>
-                    </div>
-                    <p className="text-xs text-theme-muted">{proceduralMission.secondaryB.description}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
+          {withEvents.length === 0 ? (
             <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">
               <Dice6 className="w-8 h-8 text-theme-primary mx-auto opacity-60" />
-              <h4 className="font-gothic font-bold text-base text-theme-text">NO ACTIVE HAZARD BRIEF GENERATED</h4>
-              <p className="text-xs font-mono text-theme-muted">Click &quot;Roll Random Battlefield Hazards&quot; to roll dynamic weather conditions and secondary victory objectives.</p>
+              <h4 className="font-gothic font-bold text-base text-theme-text">No table to roll</h4>
+              <p className="text-theme-muted">
+                No scenario in this ruleset prints an Unforeseen Events table.
+              </p>
             </div>
+          ) : (
+            <>
+              <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <label className="uppercase font-bold text-theme-muted block">
+                      Scenario
+                    </label>
+                    <select
+                      value={chosen?.scenario.id ?? ''}
+                      onChange={(e) => { setEventScenarioId(e.target.value); setLastEvent(null); }}
+                      className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
+                    >
+                      {withEvents.map((x) => (
+                        <option key={x.scenario.id} value={x.scenario.id}>
+                          {x.scenario.number}. {x.scenario.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={handleGenerate}
+                    disabled={isGenerating}
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow transition-all flex-shrink-0 min-h-[44px]"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+                    <span>Roll D6</span>
+                  </button>
+                </div>
+
+                <p className="text-theme-muted leading-relaxed">
+                  At the start of each Turn after the first, one player rolls a D6. On 1-4 nothing
+                  happens; on a 5 or 6 an Unforeseen Event takes place, and you roll a D3 for which.
+                  Do not roll again to see if a further event takes place.
+                </p>
+              </div>
+
+              {lastEvent && (
+                <div className={`p-4 rounded border space-y-2 ${
+                  lastEvent.triggered
+                    ? 'bg-theme-elevated border-theme-primary'
+                    : 'bg-theme-base border-theme-border'
+                }`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="uppercase text-theme-muted flex items-center gap-1.5">
+                      <CloudRain className="w-3.5 h-3.5 text-theme-primary" />
+                      <span>D6 {lastEvent.d6}{lastEvent.d3 ? ` · D3 ${lastEvent.d3}` : ''}</span>
+                    </span>
+                    {!lastEvent.triggered && (
+                      <span className="uppercase bg-theme-surface text-theme-muted px-2 py-0.5 rounded border border-theme-border">
+                        Nothing happens
+                      </span>
+                    )}
+                  </div>
+
+                  {lastEvent.event && (
+                    <>
+                      <h4 className="font-gothic font-bold text-base text-theme-text">
+                        {lastEvent.event.name}
+                      </h4>
+                      <p className="text-theme-text bg-theme-base p-2.5 rounded border border-theme-border/60 leading-relaxed">
+                        {lastEvent.event.effect}
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* The whole table, so a player can read it rather than roll it. */}
+              {chosen && (
+                <div className="space-y-2">
+                  <span className="uppercase font-bold text-theme-muted flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-status-error" />
+                    <span>{chosen.scenario.name} — Unforeseen Events</span>
+                  </span>
+                  <div className="space-y-2">
+                    {chosen.events.map((e) => (
+                      <div key={e.roll} className="p-3 bg-theme-base rounded border border-theme-border flex gap-3">
+                        <span className="font-bold text-theme-primary flex-shrink-0">{e.roll}</span>
+                        <div className="min-w-0">
+                          <strong className="block text-theme-text">{e.name}</strong>
+                          <p className="text-theme-muted leading-relaxed pt-0.5">{e.effect}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

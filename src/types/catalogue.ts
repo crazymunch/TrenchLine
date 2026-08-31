@@ -204,6 +204,25 @@ export interface WeaponProfile {
   unlockedBy?: string[];
 }
 
+/** One piece of gear a model always has. See `UnitProfile.battlekit`. */
+export interface ForcedBattlekit {
+  /** The gear entry's id, shared with the Armoury row that also stocks it. */
+  id: string;
+  /** The link on the model, which is what a roster selection addresses. */
+  linkId: string;
+  name: string;
+  /** How many the model carries — 1 for everything the catalogues force today. */
+  quantity: number;
+  /** Keywords the gear grants the model: NEGATE GAS, NEGATE SHRAPNEL. */
+  keywords: string[];
+  /**
+   * Almost always zero. The catalogue prices the model to include the kit, so
+   * a non-zero cost here is the model's, not an extra the player chose.
+   */
+  cost: Cost;
+  profileId?: string;
+}
+
 export interface UnitProfile {
   id: string;
   /** The containing selectionEntry's id — what roster exports and modifier
@@ -221,6 +240,16 @@ export interface UnitProfile {
   keywords: string[];
   abilities: Ability[];
   options: UnitOption[];
+  /**
+   * Gear the model always has, from the catalogue's `min="1"` entryLinks.
+   *
+   * The Warbands book states it as a Battlekit line — "A Combat Medic always
+   * has Standard Armour, a Gas Mask, a Medi-kit, and a Misericordia". The
+   * parser used to drop those links, so the model carried neither the gear nor
+   * the keywords it grants (no NEGATE GAS on a model wearing a gas mask), and
+   * the player could buy a second Gas Mask for 5 Ducats it should not cost.
+   */
+  battlekit: ForcedBattlekit[];
   constraints: Constraint[];
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];

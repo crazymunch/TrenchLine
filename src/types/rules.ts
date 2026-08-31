@@ -1,5 +1,15 @@
 export interface Statline {
-  movement: string; // e.g. "6\""
+  movement: string; // e.g. "6\"/Infantry"
+  /**
+   * The two halves of `movement`, already split by the pipeline.
+   *
+   * Carried separately because they are two facts and the card has to show
+   * them as two: printing `6"/Infantry` whole into a stat cell sized for
+   * `+3 Dice` overflowed it onto the value beside it on every roster card.
+   * Optional — a warband saved before these existed has only the string.
+   */
+  movementInches?: number;
+  movementType?: string; // 'Infantry' | 'Cavalry' | 'Flying' | …
   ranged: string;   // e.g. "+1" or "-"
   melee: string;    // e.g. "+2"
   armour: string;   // e.g. "+1" or "0"
@@ -83,6 +93,17 @@ export interface EquipmentItem {
   isCustom?: boolean;
 }
 
+/** One piece of gear a model always has. See `UnitProfile.battlekit`. */
+export interface ForcedBattlekit {
+  id: string;
+  linkId: string;
+  name: string;
+  quantity: number;
+  keywords: string[];
+  cost: { ducats: number; glory: number };
+  profileId?: string;
+}
+
 export interface UnitProfile {
   id: string;
   name: string;
@@ -123,6 +144,16 @@ export interface UnitProfile {
   /** The source's own disclaimer, shown rather than paraphrased. */
   thirdPartyNotice?: string;
   innateAbilities?: Ability[];
+  /**
+   * Gear the model always has, from the catalogue's `min="1"` entryLinks.
+   *
+   * NOT a default loadout: the player cannot remove it and cannot buy a second
+   * copy. The Warbands book states it as a Battlekit line — "A Combat Medic
+   * always has Standard Armour, a Gas Mask, a Medi-kit, and a Misericordia" —
+   * and the catalogue hides those Armoury rows from the model for that reason.
+   * See `rules/battlekit.ts`.
+   */
+  battlekit?: ForcedBattlekit[];
   defaultWeapons?: string[]; // weapon IDs
   defaultArmour?: string[]; // armour IDs
   allowedFactions?: string[];

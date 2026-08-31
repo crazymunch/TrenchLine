@@ -175,6 +175,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "f025-ee7a-4125-ce80",
@@ -430,6 +431,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "e5df-0eb4-a3c5-8cf7",
@@ -599,6 +601,7 @@ export const DATASET: Dataset = {
           "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with the Tapeworm Throng Strain if they are within Short Range of the attacking model. This Strain has no effect if the model has the NEGATE FEAR Keyword. 03 -- 4 of 18 --"
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "4e72-36fe-21b7-986d",
@@ -696,6 +699,7 @@ export const DATASET: Dataset = {
       "max": null,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "e184-8bff-3cab-0f3b",
@@ -814,6 +818,7 @@ export const DATASET: Dataset = {
       "max": 4,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "904b-6f39-0451-bd48",
@@ -982,6 +987,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "a898-9a6a-c027-2c75",
@@ -1171,6 +1177,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "14da-6cb8-f66e-7ad6",
@@ -1480,6 +1487,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "d823-e8a8-3761-c40e",
@@ -1961,6 +1969,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "642a-ff71-0b2e-76db-min",
@@ -2396,6 +2405,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "7480-0914-6929-e8eb",
@@ -2910,6 +2920,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "df57-0935-69d8-9112",
@@ -3790,6 +3801,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "5da1-9568-2d09-2030",
@@ -4647,6 +4659,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "fbca-352e-df39-8dd7",
@@ -5037,6 +5050,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "3ddf-9a2c-9351-f29c",
@@ -5783,6 +5797,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "a095-835e-9689-f1ed",
@@ -6639,6 +6654,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -7053,6 +7069,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "f823-9f28-5302-57af",
@@ -7222,6 +7239,22 @@ export const DATASET: Dataset = {
               "origin": "entry"
             }
           ]
+        }
+      ],
+      "battlekit": [
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "c6c1-c0fe-52a4-251c",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
         }
       ],
       "constraints": [
@@ -7409,6 +7442,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "9b1b-be8d-d21d-90ae",
@@ -8298,6 +8332,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "c8a8-9e5b-ef7d-4d8f",
@@ -8718,6 +8753,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "d26e-4f50-5a77-99a3",
@@ -8995,6 +9031,36 @@ export const DATASET: Dataset = {
               "origin": "entry"
             }
           ]
+        }
+      ],
+      "battlekit": [
+        {
+          "id": "0198-2836-2591-f0ad",
+          "linkId": "6cee-a7bc-0164-bcec",
+          "name": "Infernal Brand",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE FIRE"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "e5d0-2e53-965c-1b78"
+        },
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "57bd-e1e4-14b8-14de",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
         }
       ],
       "constraints": [
@@ -9376,6 +9442,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "e878-a54e-5461-5f68-min",
@@ -9721,6 +9788,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "154a-1d9d-959e-d915",
@@ -9984,6 +10052,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "a315-a1b6-dd13-ba1c",
@@ -10299,6 +10368,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "105c-8780-b389-2f18",
@@ -10628,6 +10698,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "ceb2-bf00-2a24-aa1d",
@@ -11021,6 +11092,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "fdf2-72c7-8ada-82f0",
@@ -11177,6 +11249,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -11566,6 +11639,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "f9fd-f8bb-f0a6-e390",
@@ -11793,6 +11867,34 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "3090-d5f2-2bf7-0f4c",
+          "linkId": "c418-020a-d181-d525",
+          "name": "Byzantinium Hearth",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "a28d-5ed5-5c1e-3b58"
+        },
+        {
+          "id": "0aa4-71b3-4c9c-5848",
+          "linkId": "4632-579c-ef00-5d89",
+          "name": "Thermal Shielding",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE FIRE"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ba85-939c-d69d-5734"
+        }
+      ],
       "constraints": [
         {
           "id": "0567-3201-6664-47c0",
@@ -12441,6 +12543,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "4c03-6abb-7900-2095",
@@ -13190,6 +13293,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -13612,6 +13716,20 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [
+        {
+          "id": "d0a8-ad68-ad47-83f5",
+          "linkId": "d60c-acba-1daf-af1d",
+          "name": "Shovel",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "41f3-4b8e-6736-1db8"
+        }
+      ],
       "constraints": [
         {
           "id": "b58f-20a0-c247-b933",
@@ -14025,6 +14143,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "f3ed-4f4b-c773-61a7",
@@ -14442,6 +14561,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "a33e-7153-a9b3-e446",
@@ -15179,6 +15299,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "4796-111c-7f8d-fcad",
@@ -15648,6 +15769,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "a7ba-73fe-fc91-ca18",
@@ -16088,6 +16210,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "1905-92a3-4759-3875-min",
@@ -16657,6 +16780,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -16911,6 +17035,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "c80f-b5eb-7a75-4bae",
@@ -17275,6 +17400,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "1fd2-5dcc-0444-f4cc",
@@ -17482,6 +17608,35 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [
+        {
+          "id": "e4e4-ca27-aa27-d93b",
+          "linkId": "c842-40b6-66b0-8b75",
+          "name": "Cloak of Alamut",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          }
+        },
+        {
+          "id": "808a-f077-4fec-ef82",
+          "linkId": "d4b6-c803-f501-becf",
+          "name": "Sniper Rifle",
+          "quantity": 1,
+          "keywords": [
+            "+1 DICE",
+            "CRITICAL",
+            "RISKY"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "b5a1-e8c3-24e5-a742"
+        }
+      ],
       "constraints": [
         {
           "id": "16c4-da8e-b6ce-9859",
@@ -17683,6 +17838,20 @@ export const DATASET: Dataset = {
               }
             }
           ]
+        }
+      ],
+      "battlekit": [
+        {
+          "id": "d0a8-ad68-ad47-83f5",
+          "linkId": "379b-7651-7ad1-6afa",
+          "name": "Shovel",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "41f3-4b8e-6736-1db8"
         }
       ],
       "constraints": [
@@ -17952,6 +18121,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "2084-47b2-7fbb-7862",
@@ -18171,6 +18341,33 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "24fc-5657-8a0e-ea8d",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
+        },
+        {
+          "id": "e89c-c62f-d3e0-6dfc",
+          "linkId": "c5cd-9392-6bc8-402d",
+          "name": "Wind Amulet",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          }
+        }
+      ],
       "constraints": [
         {
           "id": "3731-98ea-d19a-d813",
@@ -18377,6 +18574,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "4bd8-dab8-a6d7-c16c",
@@ -18559,6 +18757,60 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "8927-946d-c993-14ee",
+          "linkId": "d6ed-d4a1-2ecd-c528",
+          "name": "Gas Mask",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE GAS"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "29d4-73f4-67aa-ecbb"
+        },
+        {
+          "id": "05b0-3aaa-2e29-c69f",
+          "linkId": "8c08-ffc6-d6f3-883c",
+          "name": "Medikit",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "cb36-de41-f960-6526"
+        },
+        {
+          "id": "1fac-60d6-f476-9c4d",
+          "linkId": "4faa-7dbe-7dd7-18cc",
+          "name": "Misericordia",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "bd4b-593e-5a79-09fd"
+        },
+        {
+          "id": "fc21-c383-cc54-c15c",
+          "linkId": "20f5-a215-4825-ba90",
+          "name": "Standard Armour",
+          "quantity": 1,
+          "keywords": [
+            "-1 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "71ec-000e-5999-ba1c"
+        }
+      ],
       "constraints": [
         {
           "id": "28e8-6cb9-21c3-edca",
@@ -18636,6 +18888,49 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "80dd-5d7c-c33e-a950",
+          "linkId": "169f-cebd-c348-ca47",
+          "name": "Polearm",
+          "quantity": 1,
+          "keywords": [
+            "BLOCK",
+            "CUMBERSOME"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "1c55-92d4-5367-2e27"
+        },
+        {
+          "id": "05b0-3aaa-2e29-c69f",
+          "linkId": "f7a7-4df7-21da-ee25",
+          "name": "Medikit",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "cb36-de41-f960-6526"
+        },
+        {
+          "id": "fc21-c383-cc54-c15c",
+          "linkId": "7809-7f97-7607-9641",
+          "name": "Standard Armour",
+          "quantity": 1,
+          "keywords": [
+            "-1 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "71ec-000e-5999-ba1c"
+        }
+      ],
       "constraints": [
         {
           "id": "2129-ccd3-56ef-6bcb",
@@ -18717,6 +19012,39 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "19f3-086f-a5ad-f662",
+          "linkId": "0cf4-fd19-22e5-922b",
+          "name": "Anti-Material Rifle",
+          "quantity": 1,
+          "keywords": [
+            "+1 INJURY DICE",
+            "CRITICAL",
+            "HEAVY",
+            "IGNORE ARMOUR"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "037f-15ba-8ef3-332e"
+        },
+        {
+          "id": "dd63-2453-14d7-7e00",
+          "linkId": "19a1-10da-27eb-1334",
+          "name": "Combat Helmet",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE SHRAPNEL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "f742-ff2c-671c-3e20"
+        }
+      ],
       "constraints": [
         {
           "id": "956e-4c42-f303-0aca",
@@ -18825,6 +19153,36 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "dd63-2453-14d7-7e00",
+          "linkId": "1499-1226-a279-9d0c",
+          "name": "Combat Helmet",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE SHRAPNEL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "f742-ff2c-671c-3e20"
+        },
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "4ae1-2b09-8682-b1f2",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
+        }
+      ],
       "constraints": [
         {
           "id": "baab-302a-7af9-204e",
@@ -18906,6 +19264,36 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "dd63-2453-14d7-7e00",
+          "linkId": "b03d-f733-2457-b34c",
+          "name": "Combat Helmet",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE SHRAPNEL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "f742-ff2c-671c-3e20"
+        },
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "c023-df32-c909-8a46",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
+        }
+      ],
       "constraints": [
         {
           "id": "ccfa-5d05-18db-3c76",
@@ -19014,6 +19402,22 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "8927-946d-c993-14ee",
+          "linkId": "2725-a0ce-236e-31ff",
+          "name": "Gas Mask",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE GAS"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "29d4-73f4-67aa-ecbb"
+        }
+      ],
       "constraints": [
         {
           "id": "5aff-b082-b12a-a7a5",
@@ -19108,6 +19512,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "22ee-cd8f-9929-aa6b",
@@ -19321,6 +19726,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "3932-e824-7713-45b8",
@@ -19396,6 +19802,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "7123-6d69-2b7a-aefa",
@@ -19454,6 +19861,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "e5e6-d539-4d10-1cb4",
@@ -19510,6 +19918,7 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "ee60-7b0a-3bed-63a3",
@@ -19614,6 +20023,7 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "afe6-45e9-ff41-16df",
@@ -19728,6 +20138,34 @@ export const DATASET: Dataset = {
               "scope": "model"
             }
           ]
+        }
+      ],
+      "battlekit": [
+        {
+          "id": "8927-946d-c993-14ee",
+          "linkId": "677d-7821-1588-dad8",
+          "name": "Gas Mask",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE GAS"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "29d4-73f4-67aa-ecbb"
+        },
+        {
+          "id": "05b0-3aaa-2e29-c69f",
+          "linkId": "ea2a-d67c-a1fd-1362",
+          "name": "Medikit",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "cb36-de41-f960-6526"
         }
       ],
       "constraints": [],
@@ -19857,6 +20295,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -19981,6 +20420,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "6e44-7b89-6f05-d44e",
@@ -20072,6 +20512,22 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "c0ad-7629-2013-6cb3",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
+        }
+      ],
       "constraints": [
         {
           "id": "1333-7410-bbe0-6aea",
@@ -20635,6 +21091,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "60b5-ee85-3103-d42e",
@@ -20886,6 +21343,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "7f30-2514-baef-c492-min",
@@ -21312,6 +21770,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "16e2-020d-1d3b-6a0f",
@@ -21582,6 +22041,7 @@ export const DATASET: Dataset = {
       "max": null,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -21779,6 +22239,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "15b5-28fb-d0b3-9f5b",
@@ -22076,6 +22537,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "6995-3472-87b9-2803",
@@ -22512,6 +22974,20 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "d0a8-ad68-ad47-83f5",
+          "linkId": "ec4b-cc5d-4ff1-f623",
+          "name": "Shovel",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "41f3-4b8e-6736-1db8"
+        }
+      ],
       "constraints": [
         {
           "id": "daa3-c5e8-36e2-48c5",
@@ -22714,6 +23190,48 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "8927-946d-c993-14ee",
+          "linkId": "580a-4168-0a4f-89dc",
+          "name": "Gas Mask",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE GAS"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "29d4-73f4-67aa-ecbb"
+        },
+        {
+          "id": "05b0-3aaa-2e29-c69f",
+          "linkId": "2b1c-50e3-61d1-f2ab",
+          "name": "Medikit",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "cb36-de41-f960-6526"
+        },
+        {
+          "id": "fc21-c383-cc54-c15c",
+          "linkId": "e5a5-aabb-ce4f-5ad9",
+          "name": "Standard Armour",
+          "quantity": 1,
+          "keywords": [
+            "-1 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "71ec-000e-5999-ba1c"
+        }
+      ],
       "constraints": [
         {
           "id": "697d-8353-cd4d-2999",
@@ -22858,6 +23376,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "80cb-0666-30a3-5540",
@@ -23138,6 +23657,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "8ad8-a1f0-ebd3-34ff",
@@ -23278,6 +23798,7 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "7244-54b5-9984-9f85",
@@ -23314,6 +23835,7 @@ export const DATASET: Dataset = {
       "max": 2,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "b098-d485-a286-ba4e",
@@ -23350,6 +23872,7 @@ export const DATASET: Dataset = {
       "max": null,
       "abilities": [],
       "options": [],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [],
       "sourceFile": "New Antioch.cat"
@@ -23391,6 +23914,7 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [],
       "constraints": [
         {
           "id": "6b28-6340-4a94-d517",
@@ -23984,6 +24508,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "d572-2703-5027-d31e",
@@ -24541,6 +25066,7 @@ export const DATASET: Dataset = {
           "modifiers": []
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "e8d8-2095-d7db-78e8",
@@ -25090,6 +25616,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "b90d-c191-26bd-76df",
@@ -25607,6 +26134,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -25912,6 +26440,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "1aa1-9e86-d59f-f8be",
@@ -26178,6 +26707,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "8964-247e-4f1c-6eff-min",
@@ -26669,6 +27199,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [],
       "modifiers": [
         {
@@ -27088,6 +27619,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "40e9-292f-3ade-d4f5",
@@ -27256,6 +27788,22 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
+      "battlekit": [
+        {
+          "id": "dd63-2453-14d7-7e00",
+          "linkId": "5270-250b-b8a7-b70a",
+          "name": "Combat Helmet",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE SHRAPNEL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "f742-ff2c-671c-3e20"
+        }
+      ],
       "constraints": [
         {
           "id": "9509-6e8f-57f6-ac7e",
@@ -27770,6 +28318,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "1aa4-9c3f-703d-8692",
@@ -28137,6 +28686,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "b768-7b40-dd27-88ce",
@@ -28509,6 +29059,7 @@ export const DATASET: Dataset = {
           ]
         }
       ],
+      "battlekit": [],
       "constraints": [
         {
           "id": "9a61-62c8-7422-11a3",

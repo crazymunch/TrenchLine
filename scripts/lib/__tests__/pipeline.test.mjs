@@ -568,3 +568,57 @@ describe('core rules extraction', () => {
     }
   });
 });
+
+/*
+  Forced Battlekit. Every assertion is a line the Warbands book prints as a
+  `Battlekit` entry on the model, checked against what the catalogue's
+  `min="1"` entryLinks produce.
+*/
+describe('forced Battlekit', () => {
+  const ds = parseCatalogues('data-sources/battlescribe');
+  const unit = (name, faction) =>
+    ds.units.find((u) => u.name === name && (!faction || u.factionId === faction));
+  const kitOf = (name, faction) => (unit(name, faction)?.battlekit ?? []).map((b) => b.name);
+
+  it('gives the Combat Medic the kit the book says it always has', () => {
+    // "A Combat Medic always has Standard Armour, a Gas Mask, a Medi-kit, and
+    // a Misericordia" — warbands-of-trench-crusade, New Antioch entry.
+    expect(kitOf('Combat Medic', 'New Antioch').sort())
+      .toEqual(['Gas Mask', 'Medikit', 'Standard Armour']);
+  });
+
+  /*
+    And the arithmetic behind the cost resolution, in the open: 40 Ducats in
+    the catalogue plus this kit at Armoury prices is the book's printed 65.
+    If a future catalogue prices the forced links directly, this breaks rather
+    than double-charging the model in silence.
+  */
+  it('leaves the forced links unpriced, because the model already pays', () => {
+    const kit = unit('Combat Medic', 'New Antioch').battlekit;
+    expect(kit.every((b) => b.cost.ducats === 0 && b.cost.glory === 0)).toBe(true);
+  });
+
+  it('carries the keywords the gear grants', () => {
+    const kit = unit('Combat Medic', 'New Antioch').battlekit;
+    expect(kit.find((b) => b.name === 'Gas Mask').keywords).toContain('NEGATE GAS');
+  });
+
+  it('reads a Shovel onto the Sultanate Sapper', () => {
+    // "A Sultanate Sapper always has a Shovel."
+    expect(kitOf('Sultanate Sapper', 'Iron Sultanate')).toEqual(['Shovel']);
+  });
+
+  it('leaves a model with no Battlekit line empty rather than guessing', () => {
+    expect(kitOf('Trench Pilgrim')).toEqual([]);
+  });
+
+  /*
+    A `min` that is not also the `max` is a choice, not a fixture — "a Mamluk
+    Faris always has either a Greatsword, or a ..." — and belongs with options.
+  */
+  it('never reads an either/or group as forced kit', () => {
+    for (const u of ds.units) {
+      for (const b of u.battlekit) expect(b.quantity, `${u.name}: ${b.name}`).toBe(1);
+    }
+  });
+});
