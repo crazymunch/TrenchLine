@@ -42,9 +42,11 @@ src/
 
 ### Known structural problems
 
-**Everything is one route.** `page.tsx` renders all six views and switches on
-`currentView` from the store. No code splitting (266 kB first-load JS), no deep
-links, no shareable roster URLs, and the back button does nothing.
+**Everything is one route** — fixed in 4.1. Each view now has a real route
+under the `(app)` group, `/roster/[id]` gives a warband its own URL, and the
+route is what decides the view (`currentView` is derived from it, not the other
+way round). Code splitting came with it: first-load JS is 145 kB on `/campaign`
+against 257 kB when every view shipped in one bundle.
 
 **One store for everything.** ~~`useStore.ts` is 2,364 lines~~ — split into
 seven slices in 4.2. See the plan.

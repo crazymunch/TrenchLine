@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import { mergeWarbands } from '../persist';
 import { hasRosterChange } from '../../services/sync';
 import type { Warband } from '../../types/warband';
@@ -147,7 +149,13 @@ describe('hasRosterChange', () => {
  * declare it.
  */
 describe('the persistence choke point is not bypassed', () => {
-  const slices = import.meta.glob('../slices/*.ts', { eager: true, query: '?raw', import: 'default' }) as Record<string, string>;
+  // Read from disk rather than through a bundler glob: the guard is about what
+  // is committed, and it should not depend on Vite's import graph.
+  const dir = path.resolve(__dirname, '../slices');
+  const slices = Object.fromEntries(
+    fs.readdirSync(dir).filter((f) => f.endsWith('.ts'))
+      .map((f) => [f, fs.readFileSync(path.join(dir, f), 'utf8')]),
+  ) as Record<string, string>;
 
   it('is not empty, or the glob is wrong and this test proves nothing', () => {
     expect(Object.keys(slices).length).toBeGreaterThan(5);
@@ -159,7 +167,7 @@ describe('the persistence choke point is not bypassed', () => {
       // roster.ts writes the merge result deliberately: warbands arriving FROM
       // the cloud are not a local edit, and stamping them would queue them
       // straight back and let them beat the copy they came from.
-      const allowed = file.endsWith('roster.ts') ? 1 : 0;
+      const allowed = file === 'roster.ts' ? 1 : 0;
       const hits = (src.match(/storage\.saveWarbands\(/g) ?? []).length;
       if (hits > allowed) offenders.push(`${file} (${hits})`);
     }
@@ -170,7 +178,7 @@ describe('the persistence choke point is not bypassed', () => {
     const offenders: string[] = [];
     for (const [file, src] of Object.entries(slices)) {
       // Only the sync routine pushes, and only what the outbox holds.
-      const allowed = file.endsWith('roster.ts') ? 1 : 0;
+      const allowed = file === 'roster.ts' ? 1 : 0;
       const hits = (src.match(/storage\.syncWarbandToCloud\(/g) ?? []).length;
       if (hits > allowed) offenders.push(`${file} (${hits})`);
     }

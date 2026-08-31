@@ -28,9 +28,22 @@ import type { SyncState } from '../services/sync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
 
+/**
+ * How the store asks for a navigation.
+ *
+ * Registered by the app shell, because a Zustand store lives outside React and
+ * cannot call `useRouter` itself. Null before the shell mounts and on the
+ * server, where `setCurrentView` falls back to a plain state write.
+ */
+export type Navigate = (view: AppView, rosterId?: string) => void;
+
 export interface AppState {
   currentView: AppView;
   setCurrentView: (view: AppView) => void;
+  /** Set the view without navigating — the shell's route sync uses this. */
+  setCurrentViewLocal: (view: AppView) => void;
+  navigate: Navigate | null;
+  registerNavigate: (nav: Navigate | null) => void;
 
   /*
     Rule catalogs — from the generated dataset, not from `defaultRules.ts`.

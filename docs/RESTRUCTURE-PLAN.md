@@ -569,10 +569,43 @@ precisely because the overflow was hidden.
 
 | # | Task |
 |---|---|
-| 4.1 | Real routes — `/roster/[id]`, `/play/[matchId]`, `/campaign/[id]`, `/codex/[...slug]` |
+| 4.1 | ✅ Real routes — `/roster/[id]`, `/play`, `/campaign`, `/directory`, `/codex`, `/customizer`, with the view derived from the URL |
 | 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
 | 4.3 | ✅ Resolve the `localStorage` ⇄ Postgres dual source of truth — see [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins) |
 | 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
+### 4.1 — the route is the authority
+
+Six views rendered from one `page.tsx` switching on `currentView`, so the whole
+app had a single URL. No deep links, no way to send a teammate your list, and a
+back button that did nothing.
+
+Each view now has a route under the `(app)` group, which shares one shell
+layout. `/roster/[id]` is the one that carries a parameter, because a warband
+is the thing people want to link to.
+
+**The direction matters.** The URL decides, and `currentView` is derived from
+it in the shell — not the reverse, and not both. Two sources of truth for where
+the user is would be the same shape of bug the roster persistence had in 4.3,
+and the back button is what exposes it: a click handler can keep state and URL
+in step, but nothing runs on a history pop.
+
+The nineteen `setCurrentView('play')` call sites are unchanged. The store
+action navigates instead of writing state, through a router the shell registers
+into it — a Zustand store lives outside React and cannot call `useRouter`
+itself. Where no router is registered (server rendering, and unit tests that
+exercise the store with no tree around it) it falls back to a plain write.
+
+Code splitting came free with the route split:
+
+| | before | after |
+|---|---:|---:|
+| first-load JS, `/campaign` | 257 kB | 145 kB |
+| first-load JS, `/codex` | 257 kB | 154 kB |
+| first-load JS, `/play` | 257 kB | 162 kB |
+
+An unknown path falls back to the roster rather than throwing. A URL is user
+input, and a blank screen is a worse answer to a stale link than the front door.
+
 | 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
 
 ### 4.2 — the store, in pieces
