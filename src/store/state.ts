@@ -114,7 +114,15 @@ export interface AppState {
                   forceMode?: 'campaign' | 'unrestricted',
                   founding?: { variantId?: string; gloryPoints?: number;
                                allowThirdParty?: boolean }) => Warband;
-  deleteWarband: (id: string) => void;
+  /**
+   * Delete a warband from this device and from the cloud.
+   *
+   * Awaits the cloud call and resolves with what happened, so a caller that
+   * needs to tell the user whether it worked can. `void` was the old shape and
+   * the Directory could not report a 403 with it — the row simply vanished
+   * locally and came back on the next refresh.
+   */
+  deleteWarband: (id: string) => Promise<{ ok: boolean; error?: string }>;
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
   updateWarbandNotes: (warbandId: string, notes: string) => void;

@@ -16,6 +16,7 @@ import { useDataset } from '../../rules/useDataset';
 import { variantById } from '../../rules/variants';
 import { forceLimits, campaignGameOf, canChangeVariant } from '../../rules/campaign';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
+import { warbandCode } from '../../rules/warbandCode';
 import { 
   ChevronDown,
   UserPlus, 
@@ -30,6 +31,7 @@ import {
   History,
   Edit2,
   Check,
+  Copy,
   Flag,
   FlaskConical,
   Lock,
@@ -66,6 +68,7 @@ export const WarbandBuilder: React.FC = () => {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isStashOpen, setIsStashOpen] = useState(false);
   const [isChronicleOpen, setIsChronicleOpen] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
   const [collapseAll, setCollapseAll] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
@@ -176,6 +179,26 @@ export const WarbandBuilder: React.FC = () => {
           <h1 className="font-gothic text-[1.75rem] leading-[1.05] sm:text-4xl lg:text-5xl text-theme-text tracking-tight break-words">
             {warband.name}
           </h1>
+
+          {/*
+            The warband's code: what you read out to whoever is setting up the
+            match, and what they type into the opponent picker. Derived from
+            the id, so it has been the same since the day the roster was made
+            and will not change. Copies on tap.
+          */}
+          <button
+            onClick={() => {
+              navigator.clipboard?.writeText(warbandCode(warband.id)).catch(() => {});
+              setCodeCopied(true);
+              window.setTimeout(() => setCodeCopied(false), 1500);
+            }}
+            className="tap inline-flex items-center gap-1.5 font-mono text-xs tracking-widest text-theme-primary hover:text-theme-text"
+            title="Copy this warband's code"
+          >
+            <span>{warbandCode(warband.id)}</span>
+            <Copy className="w-3 h-3" />
+            {codeCopied && <span className="text-status-legal tracking-normal">copied</span>}
+          </button>
 
           {warband.motto ? (
             <button

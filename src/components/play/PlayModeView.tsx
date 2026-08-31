@@ -15,6 +15,8 @@ import { RulesProse } from '../codex/RulesProse';
 import { ViewMasthead } from '../ui/ViewMasthead';
 import { parseDeeds } from './deeds';
 import { parseUnforeseenEvents } from '../../rules/unforeseen';
+import { WarbandCombobox } from '../ui/WarbandCombobox';
+import { warbandCode } from '../../rules/warbandCode';
 import { 
   Heart, 
   Droplet, 
@@ -600,7 +602,13 @@ export const PlayModeView: React.FC = () => {
                     </div>
 
                     <div>
-                      <h3 className="font-gothic font-bold text-base text-theme-text">{wb?.name}</h3>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h3 className="font-gothic font-bold text-base text-theme-text truncate">{wb?.name}</h3>
+                        {/* The code, so it can be read out to whoever is adding you. */}
+                        <span className="text-xs sm:text-[10px] font-mono text-theme-primary tracking-widest flex-shrink-0">
+                          {wb && warbandCode(wb.id)}
+                        </span>
+                      </div>
                       <span className="text-xs sm:text-[10px] text-theme-muted block">
                         Faction: {wb?.factionId}
                       </span>
@@ -639,24 +647,22 @@ export const PlayModeView: React.FC = () => {
                     Add Opponent / Ally ({matchWarbandIds.length + 1} of 4)
                   </span>
                   
-                  <select
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        handleAddPlayerWarband(e.target.value);
-                        e.target.value = '';
-                      }
-                    }}
-                    className="bg-theme-surface border border-theme-border rounded p-2 text-xs text-theme-primary focus:outline-none"
-                  >
-                    <option value="">+ Add Warband to Match</option>
-                    {warbands
-                      .filter((w) => !matchWarbandIds.includes(w.id))
-                      .map((w) => (
-                        <option key={w.id} value={w.id}>
-                          {w.name} ({w.factionId})
-                        </option>
-                      ))}
-                  </select>
+                  {/*
+                    A select sizes itself to its widest option, so one long
+                    warband name pushed this straight out of the dashed box it
+                    sits in. And an alphabetical list is the wrong way to find a
+                    roster you can already name — so: type the name, the
+                    faction, or the five-character code.
+                  */}
+                  <div className="w-full min-w-0">
+                    <WarbandCombobox
+                      label="Add a warband to the match"
+                      placeholder="+ Add warband — name or code"
+                      warbands={warbands.filter((w) => !matchWarbandIds.includes(w.id))}
+                      onSelect={(w) => handleAddPlayerWarband(w.id)}
+                      secondary={(w) => `${w.factionId} · ${w.units.length} models`}
+                    />
+                  </div>
                 </div>
               )}
             </div>

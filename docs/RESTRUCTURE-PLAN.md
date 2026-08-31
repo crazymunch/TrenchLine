@@ -762,6 +762,21 @@ every edit, and a cached one serves yesterday's bundle against today's chunks �
 a blank page with a chunk 404 that looks like a code bug for as long as it
 takes to remember the worker is there.
 
+### Warband codes
+
+Every warband has a five-character code — `warbandCode(id)` — used to search
+for one and to read one out across a table. **Derived from the id rather than
+stored on the warband**, which is the whole design: every roster that already
+exists gets one immediately, offline, with no migration and no backfill, and
+the code never changes. A stored field would have needed all three, and a code
+lost in a sync would have made a warband unfindable by the code someone had
+already written down.
+
+The alphabet leaves out `0`, `O`, `1` and `I`, because the point of a short
+code is that it survives being spoken and typed. 32^5 is 33.5 million codes;
+`collidingCodes()` reports a duplicate rather than letting the UI show the
+wrong roster.
+
 ## Phase 5 — Carcass Front preview (backburner)
 
 *Blocked on Phases 1–2. Do not start before the pipeline and rules engine work.*

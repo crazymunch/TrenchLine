@@ -7,6 +7,8 @@ import { soundEffects } from '../../services/soundEffects';
 import { WarbandChangelogModal } from '../builder/WarbandChangelogModal';
 import { useSession } from 'next-auth/react';
 import { ViewMasthead } from '../ui/ViewMasthead';
+import { ConfirmModal } from '../ui/ConfirmModal';
+import { matchesWarband, warbandCode } from '../../rules/warbandCode';
 import { 
   Users, 
   Search, 
@@ -38,6 +40,7 @@ export const RosterDirectoryView: React.FC = () => {
     enrollWarbandInCampaign,
     removeWarbandFromCampaign,
     cloneWarband,
+    deleteWarband,
     importWarband
   } = useStore();
 
@@ -63,6 +66,9 @@ export const RosterDirectoryView: React.FC = () => {
   const [isBugListOpen, setIsBugListOpen] = useState(false);
   const [bugTickets, setBugTickets] = useState<any[]>([]);
   const [isCopiedAll, setIsCopiedAll] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [warbandToDelete, setWarbandToDelete] = useState<Warband | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAllCloudWarbands();
@@ -88,9 +94,11 @@ export const RosterDirectoryView: React.FC = () => {
 
   const filteredWarbands = allWarbandsList.filter((wb) => {
     const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = 
-      !q || 
-      wb.name.toLowerCase().includes(q) || 
+    const matchesSearch =
+      !q ||
+      // Name, faction and the five-character code, so a warband someone read
+      // out to you can be found without knowing how it is spelled.
+      matchesWarband(wb, searchQuery) ||
       (wb.creatorName || '').toLowerCase().includes(q) ||
       (wb.patron || '').toLowerCase().includes(q) ||
       wb.units.some((u) => u.customName.toLowerCase().includes(q) || u.profileSnapshot.name.toLowerCase().includes(q));
@@ -244,6 +252,24 @@ export const RosterDirectoryView: React.FC = () => {
                     <span className="text-xs sm:text-[11px] font-mono text-theme-muted block">
                       Commander: <strong className="text-theme-text">{wb.creatorName || 'Crusade Commander'}</strong>
                     </span>
+                    {/*
+                      The warband's code. Shown here because this is the page
+                      you are on when you want to give someone a roster to add
+                      to a match — copies on tap, five characters, no O or I.
+                    */}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard?.writeText(warbandCode(wb.id)).catch(() => {});
+                        setCopiedCode(wb.id);
+                        window.setTimeout(() => setCopiedCode((c) => (c === wb.id ? null : c)), 1500);
+                      }}
+                      className="mt-1 inline-flex items-center gap-1 font-mono text-xs sm:text-[11px] tracking-widest text-theme-primary hover:text-theme-text"
+                      title="Copy this warband's code"
+                    >
+                      <span>{warbandCode(wb.id)}</span>
+                      <Copy className="w-3 h-3" />
+                      {copiedCode === wb.id && <span className="text-status-legal tracking-normal">copied</span>}
+                    </button>
                   </div>
 
                   {/* Campaign Status Badge */}
@@ -343,6 +369,21 @@ export const RosterDirectoryView: React.FC = () => {
                         <Shield className="w-3.5 h-3.5" />
                         <span>Manage</span>
                       </button>
+
+                      {/*
+                        Delete, on the same gate as everything else on this row:
+                        your own warband, or an admin's. The API enforces it
+                        independently — a client that hid the button would not
+                        be a permission — and the row spans both columns so it
+                        cannot be hit while reaching for Manage.
+                      */}
+                      <button
+                        onClick={() => { setDeleteError(null); setWarbandToDelete(wb); }}
+                        className="col-span-2 py-1.5 px-2 bg-theme-base hover:bg-status-error/20 text-status-error border border-status-error/40 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors min-h-[44px] sm:min-h-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete warband</span>
+                      </button>
                     </>
                   ) : (
                     <>
@@ -375,6 +416,44 @@ export const RosterDirectoryView: React.FC = () => {
           );
         })}
       </div>
+
+      {/*
+        Deleting is irreversible and reaches the cloud, so it asks first and
+        names what it is deleting — the roster, its history and its enrolment.
+      */}
+      <ConfirmModal
+        isOpen={Boolean(warbandToDelete)}
+        title="Delete this warband?"
+        message={warbandToDelete
+          ? `${warbandToDelete.name} (${warbandCode(warbandToDelete.id)}) — `
+            + `${warbandToDelete.units.length} warriors and `
+            + `${warbandToDelete.snapshots?.length ?? 0} snapshots. This deletes it from the `
+            + 'cloud as well as from this device, and cannot be undone.'
+          : ''}
+        confirmLabel="Delete permanently"
+        onCancel={() => setWarbandToDelete(null)}
+        onConfirm={async () => {
+          const target = warbandToDelete;
+          setWarbandToDelete(null);
+          if (!target) return;
+          const res = await deleteWarband(target.id);
+          if (res.ok) {
+            soundEffects.playGunfire();
+          } else {
+            // Never silent: a 403 from the API used to make the row vanish
+            // locally and reappear on the next refresh with nothing said.
+            setDeleteError(`${target.name} was removed from this device, but the cloud `
+              + `refused to delete it: ${res.error}`);
+          }
+        }}
+      />
+
+      {deleteError && (
+        <div className="p-3 bg-status-error/15 border border-status-error rounded text-xs font-mono text-status-error flex items-start justify-between gap-3">
+          <span className="leading-relaxed">{deleteError}</span>
+          <button onClick={() => setDeleteError(null)} className="font-bold flex-shrink-0">Dismiss</button>
+        </div>
+      )}
 
       {/* Detailed Warband Inspection Modal */}
       {inspectingWarband && (
