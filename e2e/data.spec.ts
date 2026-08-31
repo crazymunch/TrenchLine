@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goTo } from './helpers';
+import { goTo, openApp } from './helpers';
 
 /**
  * The data the app shows is the data the sources carry.
@@ -10,8 +10,7 @@ import { goTo } from './helpers';
  * as it did. Every string here was wrong in the app before it was derived.
  */
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-  await page.waitForTimeout(2500);
+  await openApp(page);
 });
 
 test('the recruit list comes from the catalogues', async ({ page }) => {

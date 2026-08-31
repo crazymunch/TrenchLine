@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openApp } from './helpers';
 
 /**
  * Mustering a Warband.
@@ -11,8 +12,7 @@ import { test, expect } from '@playwright/test';
  */
 
 const openMuster = async (page: import('@playwright/test').Page) => {
-  await page.goto('/roster');
-  await page.waitForTimeout(2500);
+  await openApp(page, '/roster');
   await page.getByRole('button', { name: /new warband/i }).first().click();
   await expect(page.getByText('MUSTER NEW WARBAND')).toBeVisible();
   // The labels are `htmlFor`-bound, so getByLabel is the real association a

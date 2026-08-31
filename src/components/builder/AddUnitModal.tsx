@@ -443,8 +443,14 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                           onChange={(e) =>
                             setCustomNameInput({ ...customNameInput, [unit.id]: e.target.value })
                           }
-                          // 16px, or iOS zooms the whole page on focus (MOBILE.md §3).
-                          className="bg-theme-surface border border-theme-border rounded px-3 py-2 min-h-[44px] text-base sm:text-sm text-theme-text focus:outline-none focus:border-theme-primary w-full sm:w-64"
+                          /*
+                            16px at every width, not `text-base sm:text-sm`.
+                            The zoom rule is about phones, but this sheet is
+                            also the tablet's main building surface and a 14px
+                            field there is just harder to hit for nothing
+                            (MOBILE.md §3).
+                          */
+                          className="bg-theme-surface border border-theme-border rounded px-3 py-2 min-h-[44px] text-base text-theme-text focus:outline-none focus:border-theme-primary w-full sm:w-64"
                         />
                       </label>
                     </div>

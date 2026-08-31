@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
-  goTo, expectNoHorizontalScroll, expectTouchTargets, expectReadableText, expectNoZoomingInputs,
+  goTo, openApp,
+  expectNoHorizontalScroll, expectTouchTargets, expectReadableText, expectNoZoomingInputs,
 } from './helpers';
 
 /**
@@ -28,10 +29,10 @@ for (const view of VIEWS) {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(String(e)));
 
-    await page.goto('/');
-    // The rule catalogs are fetched, so the view is not finished rendering
-    // when the document is.
-    await page.waitForTimeout(2500);
+    // The rule catalogs are fetched and the roster index redirects to the
+    // active warband, so the view is not finished rendering when the document
+    // is. `openApp` waits for both.
+    await openApp(page);
     await goTo(page, view);
 
     await expectNoHorizontalScroll(page);
@@ -45,8 +46,7 @@ for (const view of VIEWS) {
 
 test('no view renders text below 12px on a phone', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'the desktop type scale is deliberately denser');
-  await page.goto('/');
-  await page.waitForTimeout(2500);
+  await openApp(page);
   for (const view of VIEWS) {
     await goTo(page, view);
     await expectReadableText(page);
@@ -55,8 +55,7 @@ test('no view renders text below 12px on a phone', async ({ page }, testInfo) =>
 
 test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'the bottom nav is phone-only');
-  await page.goto('/');
-  await page.waitForTimeout(1500);
+  await openApp(page);
   /*
     Raising these to 12px in 3.4 clipped "Campaign" to "Campaig…", which is
     worse than the 10px label it replaced.

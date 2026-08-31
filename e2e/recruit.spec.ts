@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { expectTouchTargets, expectReadableText, expectNoZoomingInputs } from './helpers';
+import {
+  openApp, expectTouchTargets, expectReadableText, expectNoZoomingInputs,
+} from './helpers';
 
 /**
  * Building a Warband, which is the app's main job.
@@ -18,8 +20,7 @@ import { expectTouchTargets, expectReadableText, expectNoZoomingInputs } from '.
   that is entirely its own.
 */
 const openRecruit = async (page: import('@playwright/test').Page) => {
-  await page.goto('/roster');
-  await page.waitForTimeout(2500);
+  await openApp(page, '/roster');
   await page.getByRole('button', { name: /recruit warrior/i }).first().click();
   const dialog = page.locator('[role="dialog"]');
   await expect(dialog).toBeVisible();

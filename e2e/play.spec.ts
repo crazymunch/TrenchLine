@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goTo } from './helpers';
+import { goTo, openApp } from './helpers';
 
 /**
  * Play Mode on a phone (Phase 3.6).
@@ -11,8 +11,7 @@ import { goTo } from './helpers';
 test('the turn controls stay reachable through the whole match', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'the combat strip is phone-only');
 
-  await page.goto('/');
-  await page.waitForTimeout(2500);
+  await openApp(page);
   await goTo(page, 'Play');
 
   await page.getByRole('button', { name: /Select Squad/ }).click();
