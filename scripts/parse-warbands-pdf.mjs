@@ -22,6 +22,8 @@
  * yet — see docs/RULESET-MODEL.md § "Adding a brand-new faction".
  */
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const SRC = 'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt';
 
@@ -92,24 +94,33 @@ for (let i = 0; i < lines.length; i++) {
 
 const withStats = entries.filter((e) => e.stats);
 
-const jsonArg = process.argv.indexOf('--json');
-if (jsonArg !== -1) {
-  const out = process.argv[jsonArg + 1] ?? 'warband-entries.json';
-  fs.writeFileSync(out, JSON.stringify(entries, null, 2) + '\n');
-  console.log(`wrote ${out}`);
-}
+/*
+  Report only when run directly. This file is also imported as a module by
+  rules-threeway.mjs, and printing a summary table on import put twelve lines
+  of unrelated output above that script's own findings.
+*/
+const main = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-console.log(`entries found:        ${entries.length}`);
-console.log(`with a parsed statline: ${withStats.length}`);
-console.log(`with keywords:          ${entries.filter((e) => e.keywords).length}`);
-console.log();
-console.log('name                          limit   ducats  M/R/Me/A/Base');
-for (const e of entries.slice(0, 12)) {
-  const s = e.stats
-    ? `${e.stats.movement} ${e.stats.ranged} ${e.stats.melee} ${e.stats.armour} ${e.stats.base}`
-    : '(no statline parsed)';
-  const limit = e.min === e.max ? `${e.min}` : `${e.min}-${e.max}`;
-  console.log(`${e.name.padEnd(30)}${limit.padEnd(8)}${String(e.ducats).padEnd(8)}${s}`);
+if (main) {
+  const jsonArg = process.argv.indexOf('--json');
+  if (jsonArg !== -1) {
+    const out = process.argv[jsonArg + 1] ?? 'warband-entries.json';
+    fs.writeFileSync(out, JSON.stringify(entries, null, 2) + '\n');
+    console.log(`wrote ${out}`);
+  }
+
+  console.log(`entries found:          ${entries.length}`);
+  console.log(`with a parsed statline: ${withStats.length}`);
+  console.log(`with keywords:          ${entries.filter((e) => e.keywords).length}`);
+  console.log();
+  console.log('name                          limit   ducats  M/R/Me/A/Base');
+  for (const e of entries) {
+    const s = e.stats
+      ? `${e.stats.movement} ${e.stats.ranged} ${e.stats.melee} ${e.stats.armour} ${e.stats.base}`
+      : '(no statline parsed)';
+    const limit = e.min === e.max ? `${e.min}` : `${e.min}-${e.max}`;
+    console.log(`${e.name.padEnd(30)}${limit.padEnd(8)}${String(e.ducats).padEnd(8)}${s}`);
+  }
 }
 
 export { entries };

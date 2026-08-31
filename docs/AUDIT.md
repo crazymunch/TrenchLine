@@ -108,22 +108,37 @@ Running the same comparison between the **rulebook** and the **catalogues**
 (`npm run rules:threeway`):
 
 ```
-rulebook vs catalogue  compared   41
-                       DISAGREE    7
-app      vs rulebook   DISAGREE   26
+rulebook vs catalogue  compared   42
+                       DISAGREE    3
+app      vs rulebook   DISAGREE    0
 ```
 
-Of those 7, five are formatting rather than substance — `-` vs `N/A` for "no
-ranged attack", `30 by 60mm` vs `30x60mm`, `+1 DICE` vs `1`. Only two are real:
-the **Scripture Guardian**'s Ranged characteristic, and the **Mamluk Faris**,
-where the book records a conditional `-2 (-3)` that the catalogue flattens
-to `-2`.
+All three are real, and all three now carry a written resolution:
 
-This is good news for the plan. The catalogues are a sound base; the rulebook
-layer is a light correction pass plus the constraint data, not a rewrite. It
-also means the normalisation rules in `rules:verify` matter as much as the
-comparison itself — five of seven "conflicts" are the tool's fault, not the
-sources'.
+| Entry | Disagreement | Resolved |
+|---|---|---|
+| Scripture Guardian | Ranged `-` (book) vs `+1 Dice` (catalogue) | book, then superseded by the Dispatch's `+2 DICE` |
+| Mamluk Faris | Armour `-2 (-3)` (book) vs `-2` (catalogue) | catalogue — the conditional is not yet expressible |
+| Combat Medic | Cost `65` (book) vs `40` (catalogue) | book — see below |
+
+The earlier run of this comparison reported **7**, of which five were the
+tool's own formatting rather than the sources' — `-` vs `N/A`, `30 by 60mm`
+vs `30x60mm`, `+1 DICE` vs `1`. Both this script and the build had their own
+copy of the normalisation rules and the copies had drifted; they now share one
+definition in `scripts/lib/verify.mjs`.
+
+The **Combat Medic** was not in that count at all. The book prints 65 Ducats
+and `New Antioch.cat` 40, and the check skipped the entry entirely because two
+catalogues carry a model of that name — the New Antioch troop and the Mercenary
+hireling — and it gave up on any duplicated name rather than choose. The book
+names each entry's faction in its keywords, so it can now choose, and the
+25-Ducat gap it had been hiding turns out to be exactly the Battlekit the book
+says a Medic always has (Standard Armour 15 + Gas Mask 5 + Medi-kit 5). The
+catalogue forces all three onto the model and then leaves them unpriced.
+
+This is still good news for the plan. The catalogues are a sound base; the
+rulebook layer is a light correction pass plus the constraint data, not a
+rewrite.
 
 ### 1.3 Keywords are partly fabricated
 
@@ -534,6 +549,32 @@ further bugs that were nothing to do with the data:
 
 `officialRulesData.ts` still holds the fabricated copies, and `CodexView` still
 reads them for reference display.
+
+### 1.14 The Codex's rules prose was written, not extracted
+
+`src/data/officialCoreRules.ts` held eight chapters of hand-written Core and
+Comprehensive Rules — the Codex tab a player opens mid-game, precisely when
+they do not have the book to hand. Three of its errors are on the rules looked
+up most:
+
+| | the app said | the rulebook says |
+|---|---|---|
+| Initiative | "Both players roll a D6. The player who rolls highest wins Initiative" | the player with the **fewest models** has the Initiative; the dice are only the tiebreaker |
+| Success table | "**1-6**: Failure / Mishap" | "**2-6** Failure" — 1 is not a result on 2D6 |
+| Morale | "50% or more of **starting** models" | "half the models in your Warband are Down or Out of Action **(rounded up)**" |
+
+The rest is the same shape: plausible, fluent, and unsourced. A "Bloodbath
+Roll" that converts an Injury Roll so "all doubles result in instant Out of
+Action"; a Charge that "grants a Charge Bonus (+1 DICE) on the initial melee
+attack" the book does not give; falling damage "with +1 INJURY DICE per 2\"
+fallen"; Light and Heavy Cover at -1 and -2 DICE, the same two invented cover
+tiers the keyword sweep found in §1.3.
+
+Replaced by `scripts/lib/parse-core-rules.mjs`, which walks the rulebook's own
+table of contents through the body and emits **59 sections** — 17 Core, 42
+Comprehensive — each carrying the printed page it came from. A heading the
+contents lists and the walk cannot find fails the build rather than leaving the
+Codex silently a chapter short.
 
 ## 2. Mobile and tablet
 

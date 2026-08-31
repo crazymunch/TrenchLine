@@ -22691,7 +22691,7 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 40,
+        "ducats": 65,
         "glory": 0
       },
       "min": null,
@@ -28574,6 +28574,9 @@ export const DATASET: Dataset = {
       "id": "c403-778c-1c4f-ec6e",
       "entryId": "23c3-ce02-f625-47d4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Plague Blade",
       "type": "1-Handed",
       "range": "Melee",
@@ -28650,6 +28653,11 @@ export const DATASET: Dataset = {
       "id": "6c2c-bd2c-d794-fb34",
       "entryId": "5d56-00d0-4830-83f0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon",
+        "Elite",
+        "The Great Hunger"
+      ],
       "name": "Beelzebub's Axe",
       "type": "2-Handed",
       "range": "Melee",
@@ -28781,6 +28789,10 @@ export const DATASET: Dataset = {
       "id": "a595-aa3e-986e-edf0",
       "entryId": "6cee-3d21-3554-4c1d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite"
+      ],
       "name": "Pestilent Fang",
       "type": "2-Handed",
       "range": "Melee",
@@ -28877,6 +28889,11 @@ export const DATASET: Dataset = {
       "id": "7428-8c1b-d5a5-bae5",
       "entryId": "9eea-4e25-e838-01e4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite",
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Viscera Cannon",
       "type": "2-Handed",
       "range": "24\"",
@@ -29058,6 +29075,10 @@ export const DATASET: Dataset = {
       "id": "e476-2dae-7eb7-f469",
       "entryId": "b7ef-33c1-721f-a55d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite"
+      ],
       "name": "Black Spot Rifle",
       "type": "2-Handed",
       "range": "24\"",
@@ -29181,6 +29202,9 @@ export const DATASET: Dataset = {
       "id": "d488-9020-4ba3-a3a2",
       "entryId": "481e-f5d8-f8e7-1ba1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Shield",
       "range": "-",
@@ -29234,6 +29258,9 @@ export const DATASET: Dataset = {
       "id": "7cac-e423-0e4d-b763",
       "entryId": "ed7f-e91c-7eca-840a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Broken Crown",
       "type": "Equipment",
       "range": "-",
@@ -29277,6 +29304,9 @@ export const DATASET: Dataset = {
       "id": "cc13-67a7-5431-2fdd",
       "entryId": "f451-eff3-bd36-29ff",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Urn of Bitter Ashes",
       "type": "Equipment",
       "range": "-",
@@ -29361,6 +29391,11 @@ export const DATASET: Dataset = {
       "id": "fe5c-8b4d-7a52-73d0",
       "entryId": "698c-0858-ccf4-a63d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite",
+        "Heralds of Beelzebub"
+      ],
       "name": "Compound Eyes Helmet",
       "type": "Battlekit",
       "range": "",
@@ -30201,6 +30236,9 @@ export const DATASET: Dataset = {
       "id": "7fd0-a83c-445b-40ff",
       "entryId": "8858-f2cf-be66-80ce",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -30277,6 +30315,9 @@ export const DATASET: Dataset = {
       "id": "3ba1-5e5a-3d9e-1042",
       "entryId": "1987-02a7-3f2f-bd5f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Matagot Hag"
+      ],
       "name": "Mother's Call",
       "type": "Spell (Cost 1)",
       "range": "8\"",
@@ -30526,6 +30567,9 @@ export const DATASET: Dataset = {
       "id": "1063-b1d1-807f-91ec",
       "entryId": "32a4-70a4-fd79-c4e7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger"
+      ],
       "name": "Butcher Bayonet",
       "type": "2-handed",
       "range": "Melee",
@@ -30579,6 +30623,9 @@ export const DATASET: Dataset = {
       "id": "ad78-80b9-dee7-9bf2",
       "entryId": "0526-f0b0-ecbe-7893",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Led by a Plague Knight"
+      ],
       "name": "Leader",
       "type": "Battlekit",
       "range": "",
@@ -30972,6 +31019,9 @@ export const DATASET: Dataset = {
       "id": "9aa7-5a1a-cbf9-b1b5",
       "entryId": "83de-02a7-ba19-3570",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Matagot Hag"
+      ],
       "name": "Foetid Palanquin",
       "type": "Armour",
       "range": "",
@@ -31038,6 +31088,9 @@ export const DATASET: Dataset = {
       "id": "f9f0-47a6-b77d-16b7",
       "entryId": "a6af-5458-9dbb-7dd4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger"
+      ],
       "name": "Pummel",
       "type": "Special",
       "range": "Melee",
@@ -31308,6 +31361,10 @@ export const DATASET: Dataset = {
       "id": "0443-8d91-dd96-34c6",
       "entryId": "6983-6ce4-7c38-4fcf",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
       "name": "Learned Saint",
       "type": "Battlekit",
       "range": "",
@@ -31390,6 +31447,10 @@ export const DATASET: Dataset = {
       "id": "7dd2-6c14-7cb1-a6d1",
       "entryId": "69f1-5fbe-ef33-ea5b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
       "name": "Warrior Saint",
       "type": "Battlekit",
       "range": "",
@@ -31436,6 +31497,10 @@ export const DATASET: Dataset = {
       "id": "b53b-b824-f8ad-58dc",
       "entryId": "af5d-a290-bd7f-2f4d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent"
+      ],
       "name": "Infernal Noble",
       "type": "Battlekit",
       "range": "",
@@ -31482,6 +31547,9 @@ export const DATASET: Dataset = {
       "id": "71d8-cd96-9818-751c",
       "entryId": "c9e0-f02f-788d-56ad",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Iron Sultanate"
+      ],
       "name": "Sublime Gate",
       "type": "Battlekit",
       "range": "",
@@ -31516,6 +31584,9 @@ export const DATASET: Dataset = {
       "id": "67ad-de30-318c-4c56",
       "entryId": "880e-2c46-f553-5fab",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Black Grail"
+      ],
       "name": "The Order of the Fly",
       "type": "Battlekit",
       "range": "",
@@ -31550,6 +31621,10 @@ export const DATASET: Dataset = {
       "id": "bf2f-f7a7-2c82-fcaa",
       "entryId": "c9f6-a7c1-cd75-06fe",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Greed"
+      ],
       "name": "Mammon",
       "type": "Battlekit",
       "range": "",
@@ -31633,6 +31708,9 @@ export const DATASET: Dataset = {
       "id": "5174-2827-852b-b097",
       "entryId": "3646-8192-6e5c-3253",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Black Grail"
+      ],
       "name": "Anti-Pope of Avignon",
       "type": "Battlekit",
       "range": "",
@@ -31667,6 +31745,9 @@ export const DATASET: Dataset = {
       "id": "0486-321b-dafd-e641",
       "entryId": "d457-01c7-0edd-c7b6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Temporal Lord",
       "type": "Battlekit",
       "range": "",
@@ -32158,6 +32239,9 @@ export const DATASET: Dataset = {
       "id": "8c06-3e5e-14ee-2494",
       "entryId": "2986-1070-2fb0-de35",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims"
+      ],
       "name": "Found a Sniper Scope",
       "type": "Battlekit",
       "range": "",
@@ -32660,6 +32744,9 @@ export const DATASET: Dataset = {
       "id": "7884-d070-ef44-b45b",
       "entryId": "a632-593c-63b3-de75",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Money can buy Anything"
+      ],
       "name": "Legacy Inventory",
       "type": "Battlekit",
       "range": "",
@@ -32751,6 +32838,9 @@ export const DATASET: Dataset = {
       "id": "7030-fa22-471a-d8f2",
       "entryId": "39f8-37bc-f857-ca21",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Anti-Material Rifles",
       "type": "Battlekit",
       "range": "",
@@ -32789,6 +32879,10 @@ export const DATASET: Dataset = {
       "id": "e70b-0a47-c7d2-dbf3",
       "entryId": "f7c8-82d1-a9cc-36d4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "New Antioch"
+      ],
       "name": "Leveraged on Automatic Rifles",
       "type": "Battlekit",
       "range": "",
@@ -32835,6 +32929,10 @@ export const DATASET: Dataset = {
       "id": "f15d-3c2b-138e-8f54",
       "entryId": "cfac-603e-607e-58f1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Coin Hammers",
       "type": "Battlekit",
       "range": "",
@@ -32882,6 +32980,10 @@ export const DATASET: Dataset = {
       "id": "ac72-93ff-8dd8-65ca",
       "entryId": "2407-821b-3a79-20e8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -32929,6 +33031,10 @@ export const DATASET: Dataset = {
       "id": "fba1-6d76-49cf-f264",
       "entryId": "637c-4134-8734-152e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Grenade Launchers",
       "type": "Battlekit",
       "range": "",
@@ -32975,6 +33081,10 @@ export const DATASET: Dataset = {
       "id": "811b-3858-c341-80f3",
       "entryId": "2faa-0945-7b24-2282",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Heavy Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -33022,6 +33132,10 @@ export const DATASET: Dataset = {
       "id": "31bb-45a3-d510-8959",
       "entryId": "8ac1-169a-17b8-8e10",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Hellblades",
       "type": "Battlekit",
       "range": "",
@@ -33069,6 +33183,10 @@ export const DATASET: Dataset = {
       "id": "aedc-c2b6-d21d-cf81",
       "entryId": "8de0-69a6-1628-25e3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Machine Guns",
       "type": "Battlekit",
       "range": "",
@@ -33115,6 +33233,9 @@ export const DATASET: Dataset = {
       "id": "fe36-747f-7e9d-662b",
       "entryId": "c7fe-69f0-1ac0-f61a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Sacrificial Blades",
       "type": "Battlekit",
       "range": "",
@@ -33153,6 +33274,10 @@ export const DATASET: Dataset = {
       "id": "914d-c786-75e2-f91c",
       "entryId": "6468-c8ce-b731-fb2d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -34716,6 +34841,10 @@ export const DATASET: Dataset = {
       "id": "fe6e-1c07-510c-52ea",
       "entryId": "9837-88e7-12ef-1be6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Cup of Filth",
       "type": "Equipment",
       "range": "-",
@@ -34779,6 +34908,10 @@ export const DATASET: Dataset = {
       "id": "de1c-c937-a89f-d76c",
       "entryId": "cd8e-22a5-02c4-ab9a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Holy Grenade",
       "type": "GRENADE",
       "range": "8\"",
@@ -34849,6 +34982,11 @@ export const DATASET: Dataset = {
       "id": "7704-7ad0-2d9b-71f9",
       "entryId": "ed85-9433-ea76-60c4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Donkey's Jawbone",
       "type": "1-handed",
       "range": "Melee",
@@ -34926,6 +35064,10 @@ export const DATASET: Dataset = {
       "id": "960e-e3f4-9d4f-187c",
       "entryId": "e365-c945-740f-e764",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "RPG",
       "type": "Equipment",
       "range": "36\"",
@@ -35022,6 +35164,11 @@ export const DATASET: Dataset = {
       "id": "36d4-9b55-fd0a-150f",
       "entryId": "10ca-4f2b-2f01-6de4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Tormentor Chain",
       "type": "1-Handed",
       "range": "10\"",
@@ -35095,6 +35242,10 @@ export const DATASET: Dataset = {
       "id": "4c95-f212-101f-f07f",
       "entryId": "b537-34fb-bae6-2cbb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Demonic Grenade",
       "type": "GRENADE",
       "range": "8\"",
@@ -35164,6 +35315,11 @@ export const DATASET: Dataset = {
       "id": "d31f-9638-3044-4892",
       "entryId": "446f-35b5-6d7e-5fb2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "The Mark of Cain",
       "type": "Equipment",
       "range": "-",
@@ -35239,6 +35395,10 @@ export const DATASET: Dataset = {
       "id": "a465-cc89-17eb-185c",
       "entryId": "a9ef-f6d0-107c-2441",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Salvage Golem",
       "type": "Special",
       "range": "-",
@@ -35302,6 +35462,11 @@ export const DATASET: Dataset = {
       "id": "599f-5738-a80b-64ab",
       "entryId": "9857-a324-046f-5d41",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Masterwork Jezzail",
       "type": "2-handed",
       "range": "36\"",
@@ -35409,6 +35574,11 @@ export const DATASET: Dataset = {
       "id": "e900-d699-609f-10c2",
       "entryId": "2958-0f21-a1a5-74fb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Book of Battle Prayers",
       "type": "Equipment",
       "range": "-",
@@ -35484,6 +35654,11 @@ export const DATASET: Dataset = {
       "id": "90f7-bbfc-d41c-2fb8",
       "entryId": "4a11-8e06-0271-3973",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Armour of Cobar",
       "type": "Armour",
       "range": "-",
@@ -35561,6 +35736,11 @@ export const DATASET: Dataset = {
       "id": "b24b-1f30-3ef1-00cb",
       "entryId": "6db3-6176-dc20-c6b8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Smoke Screen",
       "type": "Equipment",
       "range": "-",
@@ -35638,6 +35818,10 @@ export const DATASET: Dataset = {
       "id": "cd74-1e16-33db-01b6",
       "entryId": "85ba-f5ac-54dd-1aa5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Locust Spitter",
       "type": "2-handed",
       "range": "24\"",
@@ -35704,6 +35888,11 @@ export const DATASET: Dataset = {
       "id": "ca1b-2007-8968-9d4b",
       "entryId": "639d-bf8f-60b5-1585",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Knighthood",
       "type": "Equipment",
       "range": "-",
@@ -35779,6 +35968,11 @@ export const DATASET: Dataset = {
       "id": "06c4-5a96-4182-9c79",
       "entryId": "8beb-299d-e303-63c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Battlefield Title",
       "type": "Equipment",
       "range": "-",
@@ -35854,6 +36048,10 @@ export const DATASET: Dataset = {
       "id": "34bd-94d9-7eac-2499",
       "entryId": "b3a8-7dea-49be-d447",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Executioner's Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -35920,6 +36118,11 @@ export const DATASET: Dataset = {
       "id": "a68a-42a0-7fd5-d633",
       "entryId": "f7fa-6048-8a05-53c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Kilij",
       "type": "1-handed",
       "range": "Melee",
@@ -35991,6 +36194,11 @@ export const DATASET: Dataset = {
       "id": "6f72-4947-54b8-efc7",
       "entryId": "66c3-c1a5-004d-3c68",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Armour of the Fly",
       "type": "Armour",
       "range": "-",
@@ -36069,6 +36277,13 @@ export const DATASET: Dataset = {
       "id": "303c-e35a-9668-0fe8",
       "entryId": "03eb-5358-03ae-8046",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled",
+        "Battlefield Title",
+        "Knighthood"
+      ],
       "name": "Ducal Winged Armour",
       "type": "Armour",
       "range": "-",
@@ -36175,6 +36390,10 @@ export const DATASET: Dataset = {
       "id": "6989-ce35-b217-5676",
       "entryId": "d954-b3b8-db5f-0026",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Horn of Joshua",
       "type": "Equipment",
       "range": "-",
@@ -36238,6 +36457,10 @@ export const DATASET: Dataset = {
       "id": "caee-8b72-72be-c864",
       "entryId": "eb62-f33b-0d57-cd92",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Field Hospital",
       "type": "Special",
       "range": "-",
@@ -36301,6 +36524,11 @@ export const DATASET: Dataset = {
       "id": "8b57-bf47-6a34-7732",
       "entryId": "54b8-464a-88c3-3244",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Damascus Armour",
       "type": "Armour",
       "range": "-",
@@ -36379,6 +36607,10 @@ export const DATASET: Dataset = {
       "id": "cc1a-f917-862d-26dc",
       "entryId": "53fc-b3e3-e7f6-6ce5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Great Banner of New Antioch",
       "type": "Equipment",
       "range": "-",
@@ -36444,6 +36676,11 @@ export const DATASET: Dataset = {
       "id": "f10c-88b8-0b18-3833",
       "entryId": "28c1-351c-12d0-1f26",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Resurrection Engine",
       "type": "Special",
       "range": "-",
@@ -36521,6 +36758,12 @@ export const DATASET: Dataset = {
       "id": "55cc-bfda-1fd4-0633",
       "entryId": "d9f1-b37e-ff7c-cffe",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled",
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Brazen Bull Grand Cannon",
       "type": "1-handed",
       "range": "48\"",
@@ -36598,6 +36841,11 @@ export const DATASET: Dataset = {
       "id": "0172-5d62-14d9-7627",
       "entryId": "46b5-59af-5d44-2cb0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Beelzebub's Embrace",
       "type": "Equipment",
       "range": "-",
@@ -36673,6 +36921,11 @@ export const DATASET: Dataset = {
       "id": "9be9-4295-fbb8-116e",
       "entryId": "46b5-59af-5d44-2cb0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Many-Limbed End",
       "type": "SPECIAL",
       "range": "Melee",
@@ -36851,6 +37104,9 @@ export const DATASET: Dataset = {
       "id": "df62-4e07-25a1-d03b",
       "entryId": "f6fb-8677-c747-229e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fruit from the Tree of Knowledge of Good and Evil"
+      ],
       "name": "Consumed the Fruit from the Tree of Knowledge of Good and Evil",
       "type": "Dietary Supplement",
       "range": "-",
@@ -36942,6 +37198,9 @@ export const DATASET: Dataset = {
       "id": "48e6-5bba-1352-f9bc",
       "entryId": "ac5b-0ae8-e0cd-5fda",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Skull of a Saint"
+      ],
       "name": "Saintly Guidance",
       "type": "Battlekit",
       "range": "",
@@ -37094,6 +37353,9 @@ export const DATASET: Dataset = {
       "id": "279b-559d-2b08-d3ae",
       "entryId": "ac5b-0ae8-e0cd-5fda",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Skull of a Saint"
+      ],
       "name": "Blasphemous Banner",
       "type": "Battlekit",
       "range": "",
@@ -37246,6 +37508,9 @@ export const DATASET: Dataset = {
       "id": "e3d8-620c-8528-159f",
       "entryId": "0e49-dfa5-4190-ee69",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ransacked Alchemist Workshop"
+      ],
       "name": "Curative Fluids",
       "type": "Special",
       "range": "-",
@@ -37298,6 +37563,9 @@ export const DATASET: Dataset = {
       "id": "7e17-aeb6-60d3-a2af",
       "entryId": "9b61-d0a4-dd30-2d32",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Lock of Samson's Hair"
+      ],
       "name": "Lock of Samson's Hair",
       "type": "Battlekit",
       "range": "",
@@ -37355,6 +37623,10 @@ export const DATASET: Dataset = {
       "id": "c35a-d304-0b12-be6c",
       "entryId": "cf19-f306-c26c-1537",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Saints Reliquary",
+        "Elite"
+      ],
       "name": "Saint's Reliquary",
       "type": "-",
       "range": "-",
@@ -37431,6 +37703,11 @@ export const DATASET: Dataset = {
       "id": "7735-5567-9b74-b8f2",
       "entryId": "9ab3-2522-a7dd-e902",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled",
+        "Praetor"
+      ],
       "name": "Lordship of this World",
       "type": "Equipment",
       "range": "-",
@@ -37517,6 +37794,11 @@ export const DATASET: Dataset = {
       "id": "6155-24e1-c8ac-e4fc",
       "entryId": "2d7d-d9ed-a9c1-2ab1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Wretched",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Cruel Helmet",
       "type": "Equipment",
       "range": "-",
@@ -37592,6 +37874,11 @@ export const DATASET: Dataset = {
       "id": "583b-2a75-d7f7-e227",
       "entryId": "9e76-7d20-071d-c8cd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Piece of Silver",
       "type": "Equipment",
       "range": "-",
@@ -37667,6 +37954,11 @@ export const DATASET: Dataset = {
       "id": "c05f-a1a1-50f7-afab",
       "entryId": "d88a-78c6-8e31-75be",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Koraktor, the Great Tome of Hell",
       "type": "Equipment",
       "range": "-",
@@ -37742,6 +38034,11 @@ export const DATASET: Dataset = {
       "id": "d4f7-37c4-ce83-0e37",
       "entryId": "58a3-64fb-8c2d-5105",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Bestial Skin Cloak",
       "type": "Equipment",
       "range": "-",
@@ -37981,6 +38278,9 @@ export const DATASET: Dataset = {
       "id": "c755-7cc0-778c-8a88",
       "entryId": "d8b6-6041-9e3b-7adc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Experience",
       "type": "Battlekit",
       "range": "",
@@ -38023,6 +38323,10 @@ export const DATASET: Dataset = {
       "id": "61e9-7a36-04f0-8582",
       "entryId": "4bea-b5e2-2b9d-fcd3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Heavy Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -38077,6 +38381,9 @@ export const DATASET: Dataset = {
       "id": "5e70-9ebd-b81a-cb5c",
       "entryId": "0330-4e75-a7be-2db6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Pistols",
       "type": "Battlekit",
       "range": "",
@@ -38123,6 +38430,9 @@ export const DATASET: Dataset = {
       "id": "8fa3-b53f-c08c-702f",
       "entryId": "4cf3-bdfa-9260-a828",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Submachine Guns",
       "type": "Battlekit",
       "range": "",
@@ -38169,6 +38479,10 @@ export const DATASET: Dataset = {
       "id": "2e46-7b20-fcf1-73f7",
       "entryId": "b3b1-2e89-19e9-624d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38223,6 +38537,9 @@ export const DATASET: Dataset = {
       "id": "7c07-1a59-04ab-7d66",
       "entryId": "6ef1-51b6-9a26-cc36",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Shotguns",
       "type": "Battlekit",
       "range": "",
@@ -38269,6 +38586,9 @@ export const DATASET: Dataset = {
       "id": "5611-1109-e379-83a2",
       "entryId": "e6ef-68d4-a0e4-379d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Machine Armour",
       "type": "Battlekit",
       "range": "",
@@ -38315,6 +38635,9 @@ export const DATASET: Dataset = {
       "id": "eb2a-463b-9c4a-e20e",
       "entryId": "a252-0110-1823-e0f9",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Sniper Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38361,6 +38684,10 @@ export const DATASET: Dataset = {
       "id": "323b-8d17-a5b8-869b",
       "entryId": "edfb-8199-6bb5-7556",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Grenade Launchers",
       "type": "Battlekit",
       "range": "",
@@ -38415,6 +38742,9 @@ export const DATASET: Dataset = {
       "id": "7b3c-21f9-dc69-42cb",
       "entryId": "c8f3-1e8b-6a3c-b453",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Incendiary Grenades",
       "type": "Battlekit",
       "range": "",
@@ -38461,6 +38791,10 @@ export const DATASET: Dataset = {
       "id": "7768-e960-5313-055c",
       "entryId": "c15a-6239-aeb2-3229",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Machine Guns",
       "type": "Battlekit",
       "range": "",
@@ -38515,6 +38849,10 @@ export const DATASET: Dataset = {
       "id": "735d-318e-5f35-3aa3",
       "entryId": "7a2b-8955-0ed6-426c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -38569,6 +38907,9 @@ export const DATASET: Dataset = {
       "id": "8aea-2a61-9ad6-1c32",
       "entryId": "d523-deea-cb75-403e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Heavy Shotguns",
       "type": "Battlekit",
       "range": "",
@@ -38615,6 +38956,9 @@ export const DATASET: Dataset = {
       "id": "3dd8-da69-6ac5-bdca",
       "entryId": "b39d-c158-fd2d-7f3d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Satchel Charges",
       "type": "Battlekit",
       "range": "",
@@ -38661,6 +39005,9 @@ export const DATASET: Dataset = {
       "id": "da9e-6d24-6c55-f45c",
       "entryId": "8802-f3e8-dd87-f06e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Hellblades",
       "type": "Battlekit",
       "range": "",
@@ -38707,6 +39054,9 @@ export const DATASET: Dataset = {
       "id": "176a-1759-a80c-ea2d",
       "entryId": "ad7e-8af4-357c-b8ef",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Anti-Material Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38753,6 +39103,10 @@ export const DATASET: Dataset = {
       "id": "405f-d81b-3d6f-2074",
       "entryId": "94fd-1ae4-a167-310c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -38808,6 +39162,9 @@ export const DATASET: Dataset = {
       "id": "b666-f7eb-ac6f-ac41",
       "entryId": "e9ef-e201-bd31-38c6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Sacrificial Blades",
       "type": "Battlekit",
       "range": "",
@@ -38854,6 +39211,10 @@ export const DATASET: Dataset = {
       "id": "f750-d97a-5fcf-b22d",
       "entryId": "20f6-68af-9eae-0e73",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Coin Hammers",
       "type": "Battlekit",
       "range": "",
@@ -38909,6 +39270,14 @@ export const DATASET: Dataset = {
       "id": "25ba-4c30-92ec-cf3a",
       "entryId": "c6c7-bb5b-f638-5506",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Yoke Fiend",
+        "Hell Knight",
+        "Pit Locust",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Apex Form",
       "type": "Equipment",
       "range": "",
@@ -39012,6 +39381,14 @@ export const DATASET: Dataset = {
       "id": "5c42-9d35-f204-8da2",
       "entryId": "fe6c-3b3b-a756-9387",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Desecrated Saint",
+        "Hell Knight",
+        "Yoke Fiend",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Orphaned Failures",
       "type": "Equipment",
       "range": "",
@@ -39116,6 +39493,12 @@ export const DATASET: Dataset = {
       "id": "4dd5-9b7d-69da-b77a",
       "entryId": "98da-209c-28a1-890c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Entropital Dermis",
       "type": "Equipment",
       "range": "",
@@ -39197,6 +39580,12 @@ export const DATASET: Dataset = {
       "id": "1579-00f4-ef39-5244",
       "entryId": "abcb-b151-f83d-636d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Herald of the Void",
       "type": "Equipment",
       "range": "",
@@ -39278,6 +39667,11 @@ export const DATASET: Dataset = {
       "id": "538c-76dc-547d-5458",
       "entryId": "ca1e-ab83-ae4e-8c8d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Unnatural Conduit",
       "type": "Equipment",
       "range": "",
@@ -39608,6 +40002,9 @@ export const DATASET: Dataset = {
       "id": "d8fe-561c-9243-f9b8",
       "entryId": "7e7d-82f7-5f9f-d356",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Ophidian Rifle",
       "type": "2-handed",
       "range": "30\"",
@@ -39676,6 +40073,11 @@ export const DATASET: Dataset = {
       "id": "a745-cf5c-0178-84df",
       "entryId": "a299-79e5-204e-1923",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Enabled",
+        "Musical Instrument"
+      ],
       "name": "Living Instrument",
       "type": "2-handed",
       "range": "",
@@ -39741,6 +40143,9 @@ export const DATASET: Dataset = {
       "id": "6dec-b744-5999-b2b0",
       "entryId": "b3f0-bf19-e420-304f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -39791,6 +40196,10 @@ export const DATASET: Dataset = {
       "id": "acb9-b7e1-1db0-86b2",
       "entryId": "23e2-917e-bc76-9ad9",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Too Proud to Fall",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -39845,6 +40254,10 @@ export const DATASET: Dataset = {
       "id": "46ac-67c1-bb50-8196",
       "entryId": "332e-325f-e1cb-d0ac",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Light of Samael",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -40731,6 +41144,10 @@ export const DATASET: Dataset = {
       "id": "8d72-52c6-08af-34b5",
       "entryId": "01b0-1455-dbd3-8e80",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Coveted Position",
       "type": "Spell (Cost 2)",
       "range": "12\"",
@@ -40785,6 +41202,9 @@ export const DATASET: Dataset = {
       "id": "02a0-968e-d2e1-09c6",
       "entryId": "a2ba-2877-7293-0675",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "What is Yours is Mine",
       "type": "Spell (Cost 1)",
       "range": "-",
@@ -40827,6 +41247,9 @@ export const DATASET: Dataset = {
       "id": "7b6f-566f-3690-6a06",
       "entryId": "c598-d0e1-26bb-4d64",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Uncaring Gluttony",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -40876,6 +41299,9 @@ export const DATASET: Dataset = {
       "id": "3a38-b172-9d70-ee94",
       "entryId": "8a96-4a3d-9183-b2bb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Exquisite Pain",
       "type": "Spell (1-2)",
       "range": "",
@@ -40918,6 +41344,10 @@ export const DATASET: Dataset = {
       "id": "f957-a6db-7309-b93f",
       "entryId": "e962-b9a5-17a9-4c29",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Call of Flesh",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -40972,6 +41402,9 @@ export const DATASET: Dataset = {
       "id": "b1e9-f895-8cab-5c0b",
       "entryId": "6563-3cee-7f89-8d1e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Morphean Mind",
       "type": "Ability",
       "range": "",
@@ -41021,6 +41454,9 @@ export const DATASET: Dataset = {
       "id": "655a-5c5e-a497-248f",
       "entryId": "34d0-ca9d-a23f-0d9b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Charm of Acedia",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -41063,6 +41499,9 @@ export const DATASET: Dataset = {
       "id": "7cbe-aaa1-8d58-dd69",
       "entryId": "a442-f722-3112-8153",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Daemonium Meridianum",
       "type": "Ability",
       "range": "",
@@ -41112,6 +41551,9 @@ export const DATASET: Dataset = {
       "id": "684d-fb32-d817-7a19",
       "entryId": "38c0-d3a4-a30a-d43b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Black Heart",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -41193,6 +41635,9 @@ export const DATASET: Dataset = {
     {
       "id": "79b8-db30-6294-d5e3",
       "entryId": "fb8a-8c3b-e04b-68ab",
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Coagulation",
       "type": "Spell (Cost 3)",
       "range": "",
@@ -41334,6 +41779,9 @@ export const DATASET: Dataset = {
       "id": "de39-4798-436c-d3a3",
       "entryId": "79d0-a521-12d1-5158",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer"
+      ],
       "name": "Event Horizon",
       "type": "Spell (Cost 1-3)",
       "range": "",
@@ -41404,6 +41852,9 @@ export const DATASET: Dataset = {
       "id": "9b7a-8ca7-9868-cc02",
       "entryId": "42bc-f444-0c78-b0f6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer"
+      ],
       "name": "Burning Inferno",
       "type": "Spell (Cost 1-3)",
       "range": "36\"",
@@ -41450,6 +41901,9 @@ export const DATASET: Dataset = {
       "id": "662c-894d-16fb-3b8c",
       "entryId": "2e3f-096e-2668-9f4e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Slavemaster",
       "type": "Spell (Cost 1)",
       "range": "18\"",
@@ -41544,6 +41998,9 @@ export const DATASET: Dataset = {
       "id": "f012-3a44-5c5d-5460",
       "entryId": "314f-8656-a0c6-d246",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -41927,6 +42384,9 @@ export const DATASET: Dataset = {
       "id": "2873-9e7a-3ad9-a547",
       "entryId": "49fd-8f83-901e-e948",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Experience",
       "type": "Battlekit",
       "range": "",
@@ -42634,6 +43094,9 @@ export const DATASET: Dataset = {
       "id": "835c-9624-303f-5792",
       "entryId": "61b5-8cd2-9946-22fd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Ghosts"
+      ],
       "name": "Tank Palanquin",
       "type": "Armour",
       "range": "-",
@@ -42679,6 +43142,9 @@ export const DATASET: Dataset = {
       "id": "9395-0d4e-5cdb-6377",
       "entryId": "cdaf-763d-01d8-3c81",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Ghosts"
+      ],
       "name": "Sarcophagus Mine",
       "type": "Battlekit",
       "range": "",
@@ -43494,6 +43960,9 @@ export const DATASET: Dataset = {
       "id": "0999-4c6b-539f-d1b2",
       "entryId": "af47-33c1-b1fc-f2bd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Death Commando"
+      ],
       "name": "Tartarus Claws",
       "type": "2-handed",
       "range": "Melee",
@@ -43534,6 +44003,9 @@ export const DATASET: Dataset = {
       "id": "4e92-442c-e2fc-4583",
       "entryId": "cd7e-904f-67b2-2d24",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice"
+      ],
       "name": "Coin Hammer",
       "type": "2-Handed",
       "range": "Melee",
@@ -43729,6 +44201,10 @@ export const DATASET: Dataset = {
       "id": "77d6-2ff5-90cb-b1a8",
       "entryId": "c9ba-7a03-eaae-1c00",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched"
+      ],
       "name": "Golden Calf Altar",
       "type": "Equipment",
       "range": "",
@@ -43828,6 +44304,11 @@ export const DATASET: Dataset = {
       "id": "68aa-f526-16fe-39a6",
       "entryId": "bb9f-a973-1114-dc21",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial Rebirth",
+        "Heretic",
+        "Artificial"
+      ],
       "name": "Artificial Rebirth",
       "type": "Equipment",
       "range": "-",
@@ -43918,6 +44399,9 @@ export const DATASET: Dataset = {
       "id": "3404-bb75-a82a-b773",
       "entryId": "2ee4-7f35-8086-2f2a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Thermal Shielding",
       "type": "Equipment",
       "range": "-",
@@ -43963,6 +44447,9 @@ export const DATASET: Dataset = {
       "id": "ed64-3975-4671-5ab2",
       "entryId": "6b11-a83d-8aba-872a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Sonomatic Sculpture",
       "type": "Equipment",
       "range": "-",
@@ -44006,6 +44493,9 @@ export const DATASET: Dataset = {
       "id": "a497-c45b-d2de-16d5",
       "entryId": "732a-29eb-ad77-d384",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Enhanced Agility",
       "type": "Equipment",
       "range": "-",
@@ -44049,6 +44539,9 @@ export const DATASET: Dataset = {
       "id": "dd25-ee30-7576-7b32",
       "entryId": "2ea9-6b43-8872-1f15",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -44092,6 +44585,9 @@ export const DATASET: Dataset = {
       "id": "4d39-10aa-ae9d-162e",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -44135,6 +44631,9 @@ export const DATASET: Dataset = {
       "id": "d82e-4c7b-28ac-1413",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Misericordia",
       "type": "1-handed",
       "range": "Melee",
@@ -44181,6 +44680,9 @@ export const DATASET: Dataset = {
       "id": "f469-b712-2233-ac79",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Scourge/Battle Whip/Flail",
       "type": "1-handed",
       "range": "Melee",
@@ -44226,6 +44728,9 @@ export const DATASET: Dataset = {
       "id": "0da4-88a6-6cc3-bcd8",
       "entryId": "26ad-abf9-50ff-8311",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Essence Extractor",
       "type": "Equipment",
       "range": "-",
@@ -44276,6 +44781,12 @@ export const DATASET: Dataset = {
       "id": "debb-b1ea-a645-92dd",
       "entryId": "d703-b13e-c546-327c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Standard of Mammon",
       "type": "Equipment",
       "range": "",
@@ -44362,6 +44873,10 @@ export const DATASET: Dataset = {
       "id": "7555-188e-e8fb-6a31",
       "entryId": "c2f1-1e4f-2374-a6a5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book",
+        "Wretched"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -44427,6 +44942,10 @@ export const DATASET: Dataset = {
       "id": "b2e8-94d9-2ff1-7cdd",
       "entryId": "a6fb-9aa2-1030-b5bf",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched"
+      ],
       "name": "Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -44513,6 +45032,9 @@ export const DATASET: Dataset = {
       "id": "bc3d-26f8-182e-d523",
       "entryId": "30bc-1025-53a4-1ecc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -44669,6 +45191,9 @@ export const DATASET: Dataset = {
       "id": "ec64-7a03-2155-796b",
       "entryId": "fdd0-11e7-0db6-acb2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Hashashin Leaf",
       "type": "Battlekit",
       "range": "-",
@@ -44728,6 +45253,12 @@ export const DATASET: Dataset = {
       "id": "7d3a-4d24-677e-bb71",
       "entryId": "e4a9-be6a-c7fe-9d16",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The House of Wisdom",
+        "Brazen Bull",
+        "Lion of Jabir",
+        "Takwin Homunculus"
+      ],
       "name": "Elixir of Al-Khidr",
       "type": "Equipment",
       "range": "",
@@ -44812,6 +45343,11 @@ export const DATASET: Dataset = {
       "id": "9902-c422-18ce-ab2b",
       "entryId": "b535-89b0-70c0-a86f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Defenders of the Iron Wall",
+        "Sultanate Sapper",
+        "Yüzbaşı Captain"
+      ],
       "name": "Explosive Charges",
       "type": "Equipment",
       "range": "",
@@ -44880,6 +45416,9 @@ export const DATASET: Dataset = {
     {
       "id": "0888-90bb-c320-ca0f",
       "entryId": "3f63-ae26-fd5d-3411",
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Takwin Anqā Bird",
       "type": "Equipment",
       "range": "-",
@@ -44924,6 +45463,9 @@ export const DATASET: Dataset = {
       "id": "c76e-7839-f61f-df09",
       "entryId": "d93a-0370-2f55-2f63",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Rocket-Propelled Grenade",
       "type": "Equipment",
       "range": "36\"",
@@ -44979,6 +45521,10 @@ export const DATASET: Dataset = {
       "id": "4e9a-9a98-557d-c2d1",
       "entryId": "176e-55a7-5f50-3286",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Janissary"
+      ],
       "name": "Marid Pelt",
       "type": "Equipment",
       "range": "-",
@@ -45048,6 +45594,18 @@ export const DATASET: Dataset = {
       "id": "71fb-43b5-da89-15f1",
       "entryId": "3be9-5225-347c-c8f5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Elite",
+        "Halberd-Gun",
+        "Jezzail",
+        "Siege Jezzail",
+        "Alaybozan",
+        "Shield-Paired Siege Jezzail",
+        "Shield-Paired Halberd-Gun",
+        "Machine Gun",
+        "Relic Alaybozan"
+      ],
       "name": "Sparkpowder Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45182,6 +45740,13 @@ export const DATASET: Dataset = {
       "id": "2bfa-f76b-086f-249e",
       "entryId": "8ccf-c0b6-efff-4c4f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Siege Jezzail",
+        "Alaybozan",
+        "Shield-Paired Siege Jezzail",
+        "Relic Alaybozan"
+      ],
       "name": "Heavy Bore Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45276,6 +45841,15 @@ export const DATASET: Dataset = {
       "id": "ece5-a8b9-b42e-cdfe",
       "entryId": "7f27-bb98-20d0-0a10",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Siege Jezzail",
+        "Shield-Paired Siege Jezzail",
+        "Jezzail",
+        "Sniper Rifle",
+        "Shield-Paired Halberd-Gun",
+        "Halberd-Gun"
+      ],
       "name": "Shayṭānic Shard Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45386,6 +45960,14 @@ export const DATASET: Dataset = {
       "id": "1704-e9c5-80e1-74e5",
       "entryId": "cb03-3d32-ca15-fd88",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Siege Jezzail",
+        "Jezzail",
+        "Alaybozan",
+        "Halberd-Gun",
+        "Alchemical Ammunition"
+      ],
       "name": "Scrap Shot",
       "type": "Equipment",
       "range": "-",
@@ -45473,6 +46055,9 @@ export const DATASET: Dataset = {
       "id": "df3a-aed2-fa57-750e",
       "entryId": "3f2a-95a4-6029-8faa",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Limpet Mine",
       "type": "GRENADE",
       "range": "6\"",
@@ -45521,6 +46106,9 @@ export const DATASET: Dataset = {
       "id": "3b60-009c-4bfb-6c75",
       "entryId": "ff14-6bda-4958-a507",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Chain Kura",
       "type": "Grenade",
       "range": "8\"",
@@ -45576,6 +46164,9 @@ export const DATASET: Dataset = {
       "id": "4549-32db-4b08-2bdf",
       "entryId": "2896-2fc6-1ccd-621b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin"
+      ],
       "name": "Assassin's Dagger",
       "type": "1-Handed",
       "range": "Melee",
@@ -45613,6 +46204,10 @@ export const DATASET: Dataset = {
       "id": "c035-9cfd-250c-73bc",
       "entryId": "35e9-a137-73b4-c73e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Titan Zulfiqar",
       "type": "1-Handed",
       "range": "Melee",
@@ -45666,6 +46261,10 @@ export const DATASET: Dataset = {
       "id": "f9a1-ea01-d4b8-e52f",
       "entryId": "e7b5-4ba3-2813-a11f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin",
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Golden Khanjar",
       "type": "1-handed",
       "range": "Melee",
@@ -45723,6 +46322,9 @@ export const DATASET: Dataset = {
       "id": "1003-02a4-ae72-4503",
       "entryId": "0a63-27a9-9db3-5a32",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Khyber Knife",
       "type": "1-handed",
       "range": "Melee",
@@ -45761,6 +46363,10 @@ export const DATASET: Dataset = {
       "id": "1779-f308-8bbc-5885",
       "entryId": "6caf-ec1d-e1ed-66d3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Elite"
+      ],
       "name": "Kayanin Mace",
       "type": "2-handed",
       "range": "Melee",
@@ -45820,6 +46426,11 @@ export const DATASET: Dataset = {
       "id": "f692-f0ef-3d09-399a",
       "entryId": "f5fe-26c3-c542-2bcb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Shield Training",
+        "Elite"
+      ],
       "name": "Shield-Paired Halberd-Gun",
       "type": "2-handed",
       "range": "24\"",
@@ -45879,6 +46490,10 @@ export const DATASET: Dataset = {
       "id": "8af2-2771-9c86-65f3",
       "entryId": "c650-4b48-ccfb-899a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Elite"
+      ],
       "name": "Anaza Spear",
       "type": "2-handed",
       "range": "Melee",
@@ -45938,6 +46553,10 @@ export const DATASET: Dataset = {
       "id": "556c-7009-6fc2-d658",
       "entryId": "fd50-ed77-b67d-f053",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "MURAD Bombard",
       "type": "1-Handed",
       "range": "36\"",
@@ -45997,6 +46616,10 @@ export const DATASET: Dataset = {
       "id": "ac5c-14a9-8462-8ddd",
       "entryId": "f2de-aa0a-6254-2e20",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Flame Cannon",
       "type": "1-Handed",
       "range": "12\"",
@@ -46058,6 +46681,10 @@ export const DATASET: Dataset = {
       "id": "1bff-0694-c7a5-a7f8",
       "entryId": "b9c5-9ea8-b9e0-00ac",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin",
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Bow of Alamut",
       "type": "2-handed",
       "range": "40\"",
@@ -46117,6 +46744,9 @@ export const DATASET: Dataset = {
       "id": "f3a8-7fad-4a06-c27b",
       "entryId": "ffb6-34ac-c895-4d37",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Relic Alaybozan",
       "type": "2-handed",
       "range": "12\"",
@@ -46156,6 +46786,9 @@ export const DATASET: Dataset = {
       "id": "3d9f-050e-4682-7f81",
       "entryId": "61aa-fb82-8fe6-99db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Abus Gun",
       "type": "2-handed",
       "range": "30\"",
@@ -46210,6 +46843,11 @@ export const DATASET: Dataset = {
       "id": "6dbb-ba95-c903-3c8c",
       "entryId": "4f0f-a0cf-e8e8-b332",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Sapper",
+        "Yüzbaşı Captain",
+        "Defenders of the Iron Wall"
+      ],
       "name": "Alaybozan",
       "type": "2-handed",
       "range": "12\"",
@@ -46273,6 +46911,10 @@ export const DATASET: Dataset = {
       "id": "061e-eaaa-0b9b-b878",
       "entryId": "d039-5982-7011-334e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Shield Training"
+      ],
       "name": "Shield-Paired Siege Jezzail",
       "type": "2-handed",
       "range": "30\"",
@@ -46408,6 +47050,9 @@ export const DATASET: Dataset = {
       "id": "f51d-4a48-6b34-7342",
       "entryId": "4377-b71d-92f5-3c05",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Banner of the Eagle",
       "type": "Equipment",
       "range": "-",
@@ -46481,6 +47126,11 @@ export const DATASET: Dataset = {
       "id": "ce56-ea31-c691-08eb",
       "entryId": "bf62-7e77-d895-711f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Machine Armour",
+        "Jabirean Alchemical Book",
+        "The House of Wisdom"
+      ],
       "name": "Fire Shield",
       "type": "Shield",
       "range": "",
@@ -46560,6 +47210,11 @@ export const DATASET: Dataset = {
       "id": "bfda-ea24-3f37-828d",
       "entryId": "b246-355b-f3ba-f72e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Defenders of the Iron Wall",
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Iron Wall Kalkan",
       "type": "SHIELD",
       "range": "",
@@ -46848,6 +47503,10 @@ export const DATASET: Dataset = {
       "id": "d8ef-4597-49bd-8c2f",
       "entryId": "5782-5d13-1025-abdb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -46903,6 +47562,9 @@ export const DATASET: Dataset = {
       "id": "21f1-4a29-ae87-7cf2",
       "entryId": "d309-00e2-6fe8-a939",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Killing Squad",
       "type": "Battlekit",
       "range": "",
@@ -46946,6 +47608,10 @@ export const DATASET: Dataset = {
       "id": "e412-732c-30a6-9790",
       "entryId": "f035-115c-4a4d-62ad",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Sipahi-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -47001,6 +47667,9 @@ export const DATASET: Dataset = {
       "id": "7e5c-ba89-c669-191a",
       "entryId": "29e8-f9d5-9bb1-7137",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind-Linked",
       "type": "Battlekit",
       "range": "",
@@ -47769,6 +48438,9 @@ export const DATASET: Dataset = {
       "id": "e028-d503-dcf3-b3cf",
       "entryId": "da5c-280f-9d08-42b4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The House of Wisdom"
+      ],
       "name": "Pummelling Blows",
       "type": "Battlekit",
       "range": "",
@@ -48093,6 +48765,9 @@ export const DATASET: Dataset = {
       "id": "0a72-3d4c-48ea-dd92",
       "entryId": "9f3e-f682-ff22-8184",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Pistol"
+      ],
       "name": "Purgation Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -48372,6 +49047,9 @@ export const DATASET: Dataset = {
       "id": "4b3d-28cf-cb23-aeba",
       "entryId": "1f47-9c34-ef9b-914b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Dog's Friend",
       "type": "Battlekit",
       "range": "",
@@ -48442,6 +49120,9 @@ export const DATASET: Dataset = {
       "id": "d455-9d26-0f2d-3b30",
       "entryId": "1f47-9c34-ef9b-914b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Concerted Attack",
       "type": "Ability",
       "range": "-",
@@ -48574,6 +49255,9 @@ export const DATASET: Dataset = {
       "id": "999f-be77-8027-46c0",
       "entryId": "b4d4-3da2-7157-f15b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia"
+      ],
       "name": "Holy Water of Lalibela",
       "type": "Equipment",
       "range": "-",
@@ -48624,6 +49308,10 @@ export const DATASET: Dataset = {
       "id": "57f1-1ef0-9659-e9e6",
       "entryId": "ffda-4bec-1b59-f267",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Holy Warrior",
+        "Expeditionary Forces of Abyssinia"
+      ],
       "name": "Tabot",
       "type": "Equipment",
       "range": "-",
@@ -48680,6 +49368,9 @@ export const DATASET: Dataset = {
       "id": "4f6a-a92d-d7a7-d512",
       "entryId": "114b-97a7-6011-55c2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Blood Cloak",
       "type": "Battlekit",
       "range": "",
@@ -48737,6 +49428,9 @@ export const DATASET: Dataset = {
       "id": "8bd6-c237-de4c-2e9a",
       "entryId": "95a5-9e57-57dc-d63a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Phosphorous Rounds",
       "type": "Battlekit",
       "range": "",
@@ -48780,6 +49474,10 @@ export const DATASET: Dataset = {
       "id": "c562-c611-15d4-54c7",
       "entryId": "a9d2-fb36-792e-d69e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Cleric",
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Holy Smoke",
       "type": "Equipment",
       "range": "-",
@@ -48837,6 +49535,11 @@ export const DATASET: Dataset = {
       "id": "4f39-6eb0-3ad1-6338",
       "entryId": "0bbf-0f8a-df4f-2f45",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia",
+        "Chewa",
+        "Elite"
+      ],
       "name": "Anfarro",
       "type": "Equipment",
       "range": "-",
@@ -48914,6 +49617,9 @@ export const DATASET: Dataset = {
       "id": "3a61-396b-8340-2ce3",
       "entryId": "b15e-e3c1-f53b-dedc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Greek Fire",
       "type": "GRENADE",
       "range": "6\"",
@@ -48984,6 +49690,11 @@ export const DATASET: Dataset = {
       "id": "d678-de0f-c92b-f9ea",
       "entryId": "ae50-9c6f-a718-8767",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia",
+        "Chewa",
+        "Elite"
+      ],
       "name": "Shotel",
       "type": "1-Handed",
       "range": "Melee",
@@ -49045,6 +49756,9 @@ export const DATASET: Dataset = {
       "id": "e02d-fb45-cb6c-34f0",
       "entryId": "adba-b7f8-83fd-a35c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Kingdom of Alba Assault Detachment"
+      ],
       "name": "Lochaber Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -49085,6 +49799,9 @@ export const DATASET: Dataset = {
       "id": "4bc1-a897-8ad3-e239",
       "entryId": "2c09-3968-682f-af03",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Tank-Splitter Sword",
       "type": "2-handed",
       "range": "Melee",
@@ -49138,6 +49855,9 @@ export const DATASET: Dataset = {
       "id": "b984-ef6c-1b2a-6c68",
       "entryId": "0084-2122-f8c1-537a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Dane Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -49185,6 +49905,9 @@ export const DATASET: Dataset = {
       "id": "1818-099d-77ef-0ad7",
       "entryId": "7151-74bd-c678-4c41",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Red Banner",
       "type": "Battlekit",
       "range": "",
@@ -49228,6 +49951,11 @@ export const DATASET: Dataset = {
       "id": "b719-9833-e8fd-f089",
       "entryId": "f914-0bc3-a983-1e48",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book",
+        "Ducal Winged Armour",
+        "Machine Armour"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -49313,6 +50041,12 @@ export const DATASET: Dataset = {
       "id": "d777-d95f-f173-9c07",
       "entryId": "831d-0f3f-be36-9b1d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Kingdom of Alba Assault Detachment",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Bagpipes",
       "type": "Battlekit",
       "range": "",
@@ -49403,6 +50137,13 @@ export const DATASET: Dataset = {
       "id": "bf4f-e324-29c3-1527",
       "entryId": "2b13-5e5c-b810-c791",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Remnants of Byzantium",
+        "Shocktrooper",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "War Horn",
       "type": "Battlekit",
       "range": "",
@@ -49501,6 +50242,12 @@ export const DATASET: Dataset = {
       "id": "2ddb-f3e4-5ad4-7d7e",
       "entryId": "54c8-6df8-9942-13b8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Eire Rangers",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Carnyx",
       "type": "Battlekit",
       "range": "",
@@ -49709,6 +50456,9 @@ export const DATASET: Dataset = {
       "id": "5153-8b77-2941-daa3",
       "entryId": "df86-048e-5b6c-fb1f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -49752,6 +50502,10 @@ export const DATASET: Dataset = {
       "id": "b4d7-4d3d-3993-d73b",
       "entryId": "9569-393f-f2d2-252b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -49807,6 +50561,9 @@ export const DATASET: Dataset = {
       "id": "04ff-1014-c632-3867",
       "entryId": "4da7-e087-f7ab-b89b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -49850,6 +50607,9 @@ export const DATASET: Dataset = {
       "id": "f10d-341e-5e15-05ec",
       "entryId": "c5ee-6047-898f-a5de",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -49893,6 +50653,9 @@ export const DATASET: Dataset = {
       "id": "f592-a9ac-af5c-4a17",
       "entryId": "1846-bfb6-9551-a3e6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -49936,6 +50699,11 @@ export const DATASET: Dataset = {
       "id": "b51c-b117-6a6c-d98f",
       "entryId": "2f44-24c6-beb8-a457",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -50004,6 +50772,11 @@ export const DATASET: Dataset = {
       "id": "f36e-dddb-8a6f-e34b",
       "entryId": "0c98-5f09-1094-7c57",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -50092,6 +50865,9 @@ export const DATASET: Dataset = {
       "id": "7b83-acba-914a-38c8",
       "entryId": "856b-ba44-04c5-fdf5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Papal States Intervention Force"
+      ],
       "name": "Blessing of the Pontiff",
       "type": "Equipment",
       "range": "-",
@@ -50269,6 +51045,9 @@ export const DATASET: Dataset = {
       "id": "7cae-a8a7-46f0-a2c6",
       "entryId": "e500-5c2c-04d3-ae8a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -50312,6 +51091,10 @@ export const DATASET: Dataset = {
       "id": "b59f-143c-5c28-7765",
       "entryId": "153d-e4c2-3390-fb44",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Mamluk Faris",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -50367,6 +51150,9 @@ export const DATASET: Dataset = {
       "id": "6096-b9bf-a81f-b08e",
       "entryId": "766c-ab11-eda6-22d2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Gunslinger",
       "type": "Battlekit",
       "range": "",
@@ -50402,6 +51188,9 @@ export const DATASET: Dataset = {
       "id": "66e9-8f4f-e3bf-5d93",
       "entryId": "7927-0db7-57c0-fa65",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Papal States Intervention Force"
+      ],
       "name": "Papal Courage",
       "type": "Battlekit",
       "range": "",
@@ -51245,6 +52034,9 @@ export const DATASET: Dataset = {
       "id": "1c48-5a77-bd9c-4678",
       "entryId": "e928-ba8b-f70c-6edc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -51288,6 +52080,10 @@ export const DATASET: Dataset = {
       "id": "4b9e-5284-97ed-af1b",
       "entryId": "22d5-9278-17b3-d250",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -51343,6 +52139,9 @@ export const DATASET: Dataset = {
       "id": "1b7b-167c-e0d7-94df",
       "entryId": "f17c-a19b-da5d-c86f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -51386,6 +52185,9 @@ export const DATASET: Dataset = {
       "id": "277a-0208-cd17-f687",
       "entryId": "38bb-90bc-633b-12c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -51429,6 +52231,9 @@ export const DATASET: Dataset = {
       "id": "1d9f-bbe2-474b-b25f",
       "entryId": "da2b-9808-47a6-f51d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -51472,6 +52277,11 @@ export const DATASET: Dataset = {
       "id": "1f8d-1b65-1dd2-9853",
       "entryId": "1fac-077c-a663-f4f4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -51540,6 +52350,11 @@ export const DATASET: Dataset = {
       "id": "bd30-a567-830c-3ef6",
       "entryId": "389b-6e56-7a02-f47f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -52335,6 +53150,9 @@ export const DATASET: Dataset = {
       "id": "e51e-7de9-7131-6994",
       "entryId": "4c11-ec67-eaa0-fbdd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Cavalcade of the Tenth Plague"
+      ],
       "name": "Sacrificial Lamb",
       "type": "Equipment",
       "range": "-",
@@ -52380,6 +53198,10 @@ export const DATASET: Dataset = {
       "id": "403b-687b-4044-77de",
       "entryId": "5714-931f-09eb-f186",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil",
+        "Elite"
+      ],
       "name": "Henbrane",
       "type": "Equipment",
       "range": "-",
@@ -52442,6 +53264,9 @@ export const DATASET: Dataset = {
       "id": "986b-d504-38d0-832f",
       "entryId": "3564-4f8d-d1e0-246c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Geirr",
       "type": "2-handed",
       "range": "Melee",
@@ -52480,6 +53305,9 @@ export const DATASET: Dataset = {
       "id": "55e3-793d-4961-e12f",
       "entryId": "3da5-afdc-ed33-d56a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Blood Eagle Banner",
       "type": "Equipment",
       "range": "-",
@@ -52532,6 +53360,9 @@ export const DATASET: Dataset = {
       "id": "61e5-6561-5d91-b9c5",
       "entryId": "c691-83d8-dfb4-6dfa",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -52582,6 +53413,9 @@ export const DATASET: Dataset = {
       "id": "fdd6-07ba-42a3-3578",
       "entryId": "934a-994b-9a83-6663",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Trench Shield (Nordic)",
       "type": "Shield",
       "range": "-",
@@ -52617,6 +53451,10 @@ export const DATASET: Dataset = {
       "id": "7ab4-3db7-414c-ba96",
       "entryId": "2b6a-92de-ea42-85c4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil",
+        "Huscarl"
+      ],
       "name": "Stormbreaker Shield",
       "type": "Battlekit",
       "range": "",
@@ -52694,6 +53532,9 @@ export const DATASET: Dataset = {
       "id": "5cef-9bbb-5aa1-f6f9",
       "entryId": "e943-b0b0-7790-fb15",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Trench Mortar",
       "type": "2-Handed",
       "range": "48\"",
@@ -52744,6 +53585,9 @@ export const DATASET: Dataset = {
       "id": "ca96-4933-b496-593f",
       "entryId": "bf35-3729-df69-7562",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Gas Censer",
       "type": "2-Handed",
       "range": "6''",
@@ -52791,6 +53635,9 @@ export const DATASET: Dataset = {
       "id": "e37a-b7ce-312c-3242",
       "entryId": "844d-8df1-2006-2cf7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Autocannon (Bursts)",
       "type": "2-Handed",
       "range": "48\"",
@@ -52838,6 +53685,9 @@ export const DATASET: Dataset = {
       "id": "584f-141d-ce83-d55d",
       "entryId": "844d-8df1-2006-2cf7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Autocannon (Full Auto)",
       "type": "2-Handed",
       "range": "48\"",
@@ -53119,6 +53969,9 @@ export const DATASET: Dataset = {
       "id": "78c1-4e06-7fff-4d4b",
       "entryId": "0972-9632-56f2-b0cb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -53162,6 +54015,9 @@ export const DATASET: Dataset = {
       "id": "cdfe-5f3e-eefe-e3e1",
       "entryId": "1a8c-d998-b42b-9e8b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Procession of the Sacred Affliction"
+      ],
       "name": "Vengeful Fury",
       "type": "Battlekit",
       "range": "",
@@ -54236,6 +55092,893 @@ export const DATASET: Dataset = {
         }
       ],
       "mapImage": "/maps/great-war.png"
+    }
+  ],
+  "coreRules": [
+    {
+      "id": "the-initiative-phase",
+      "title": "The Initiative Phase",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "The player with the lowest number of models in their Warband has the Initiative and can choose to Activate a model first or second. If both players have the same number of models, each player rolls a dice and whoever rolls the highest has the Initiative.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          783,
+          787
+        ]
+      }
+    },
+    {
+      "id": "the-activation-phase",
+      "title": "The Activation Phase",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "When it is your turn to Activate a model, you must choose a model in your Warband that has not yet been Activated and Activate it. Your opponent must then Activate a model, and so on, back and forth until all models have been Activated. A model cannot be Activated more than once per Turn.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          788,
+          792
+        ]
+      }
+    },
+    {
+      "id": "actions",
+      "title": "Actions",
+      "category": "Core Rules",
+      "page": 14,
+      "content": "The Activated model can take the following ACTIONS once each, in any order you wish:\n\nMove or Charge or Retreat: You can use an ACTION to Move or Charge or Retreat with your model, but not more than one.\n- Move: You can move your model a number of inches equal to its Movement Characteristic in any direction (no roll is required). Obstacles up to 1” high can be crossed without penalty, and your model can climb sheer surfaces if you first pass a Risky Success Roll. Difficult terrain is crossed at half speed. A Move ACTION cannot be used to move a model within 1” of an enemy model (you must use a Charge Action instead).\n- Charge: Pick an enemy model that is visible to your model and within 12” of it as the target of the charge. Then roll a dice, add the result to your model’s Movement Characteristic and move it towards the target. If your model finishes its move within 1” of the target, it can Fight (▶ see Fight).\n- Retreat: You can only move a model that is within 1” of an enemy by taking a Retreat ACTION. A retreating model moves a number of inches equal to its Movement Characteristic in any direction but it must end its retreat move more than 1” away from all enemy models. Your opponent can take a Fight ACTION with 1 Melee Weapon before the retreating model is moved away. If this takes your model Down or Out of Action it is not moved.\n\nDash: A Dash ACTION can be carried out in addition to a Move, Charge or Retreat ACTION. You can move your model a number of inches equal to its Movement Characteristic in any direction, but you must take a Risky Success Roll for the model first. If you succeed, your model can move (it cannot charge or retreat). If you fail, the model’s Activation ends.\n\nShoot: You can make a Ranged Attack with your model if it is more than 1” from an enemy and has a Ranged Weapon (▶ see Ranged Attacks). Your model cannot Shoot and take a Charge or Fight ACTION in the same Activation, unless it uses a weapon that has the ASSAULT Keyword.\n\nFight: You can make a Melee Attack with your model if it is within 1” of an enemy and has a Melee Weapon (▶ see Melee Attacks).\n\nOther: Some models have other ACTIONS they can take during their Activations (▶ see Starting a Warband in Warbands of Trench Crusade) Success Rolls Many of the ACTIONS you take with a model require a Success Roll to be made. To take a Success Roll, roll two dice, add any +DICE or -DICE to the roll as described below, pick the two highest (or lowest if any -DICE were used), add them together, and consult the table below to see if you have succeeded. The instructions for the task you are carrying out will tell you what happens if you succeed or fail. If you are taking a Risky Success Roll and you fail, the model’s Activation is over and your opponent can now Activate one of their models!\n\n**Success Table**\n- Roll — Result\n- 2-6 — Failure.\n- 7-11 — Success.\n- 12+ — Critical Success. Add +1 INJURY DICE to Ranged or Melee Attacks if you roll a Critical Success.\n\n+Dice and -Dice Rules often have modifiers to Success Rolls marked as +DICE and -DICE.\n\nThese are shown in the format “+1 DICE” or “-1 DICE”.\n\nFor each +DICE, add 1 dice to the Success Roll. Then roll all the dice and pick the 2 highest rolls. For example, +1 DICE means you roll 3 dice and pick the 2 highest. If +2 DICE are added, roll 4 dice and pick the 2 highest, and so on.\n\nThe -DICE works in reverse. For each -DICE, add 1 dice to the Success Roll and pick the 2 lowest numbers. For example, -1 DICE means you roll 3 dice and pick the 2 lowest.\n\nIf both +DICE and -DICE are added to the same Success Roll, remove pairs of +DICE and -DICE until only one type is remaining. For example, if a roll had +2 DICE and -1 DICE, one of the +1 DICE and the -1 DICE would be removed, leaving +1 DICE to be added to the roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 14,
+        "lines": [
+          793,
+          874
+        ]
+      }
+    },
+    {
+      "id": "combat",
+      "title": "Combat",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "Combat is divided into Ranged Attacks and Melee Attacks. Ranged Attacks are carried out when you take a Shoot ACTION with a model, and Melee Attacks when you take a Fight ACTION with a model.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          895,
+          898
+        ]
+      }
+    },
+    {
+      "id": "ranged-attacks",
+      "title": "Ranged Attacks",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "1. Choose a Ranged Weapon and then pick a target that is visible to your model and in range of the weapon.\n\n2. Take a Success Roll for the attacking model.\n\n3. If the roll is a Failure, the attack misses and has no effect. If the roll is a Success it hits, so make an Injury Roll roll for the target. Add +1 INJURY DICE if the attack was a Critical Success.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          899,
+          905
+        ]
+      }
+    },
+    {
+      "id": "shooting-into-melee",
+      "title": "Shooting Into Melee",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "If a target is within 1” of any friendly models, roll a dice to determine who is attacked: on a 1 – 3 you must target a friendly model; on a 4 – 6 you can target an enemy model. Take a Success Roll as normal once the target has been determined.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          906,
+          909
+        ]
+      }
+    },
+    {
+      "id": "ranged-attack-modifiers",
+      "title": "Ranged Attack Modifiers",
+      "category": "Core Rules",
+      "page": 16,
+      "content": "Shooting from an elevated position: Add +1 DICE if the attacking model is at least 3” higher than the target.\n\nCover: Add -1 DICE if the target is in cover. A model is in cover if it is in contact with a terrain piece that is at least ½” high and as wide as its base, and the terrain piece lies between it and the attacking model.\n\nLong Range: Add -1 DICE if the range to the target is more than half of the weapon’s maximum range.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 16,
+        "lines": [
+          910,
+          934
+        ]
+      }
+    },
+    {
+      "id": "melee-attacks",
+      "title": "Melee Attacks",
+      "category": "Core Rules",
+      "page": 17,
+      "content": "1. Choose a Melee Weapon and pick a target within 1” of your model.\n\n2. Take a Success Roll for the attacking model.\n\n3. If the roll is a Failure, the attack misses and has no effect. If the roll is a Success it hits, so make an Injury Roll roll for the target. Add +1 INJURY DICE if the attack was a Critical Success.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 17,
+        "lines": [
+          939,
+          944
+        ]
+      }
+    },
+    {
+      "id": "melee-attack-modifiers",
+      "title": "Melee Attack Modifiers",
+      "category": "Core Rules",
+      "page": 17,
+      "content": "The following modifiers are cumulative:\n\nMultiple Melee Weapons: If your model is armed with two Melee Weapons, it may attack with both, one after the other in the order of your choice. Add -1 DICE for the second attack.\n\nFear: Add -1 DICE if your opponent has the FEAR Keyword. If both models cause FEAR the effect is cancelled out.\n\nDefended Obstacle: Add -1 DICE if the target is in cover. A model is in cover if it is in contact with a terrain piece that is at least ½” high and as wide as its base, and the terrain piece lies between it and the attacking model.\n\nDiving Charge: A model may attempt a Diving Charge against enemy models that are at least 3” below it. Take a Risky Success Roll for the model. If the roll is a Failure the model is taken Down, and a Falling Injury Roll must then be taken for the model (▶ see Falling). If the roll is a Success, you do not have to take a Falling Injury Roll for the model, and you can add +1 DICE to the next Melee Attack that the model makes.\n\n**Falling**\n\n**When a model Jumps, Dives,**\n\nor Falls 3” or more, there is a chance it will be injured. To see if this happens, make an Injury Roll for the model, and add +1 INJURY DICE for every 3”\n\nthat the model fell.\n\n**Injury Rolls**\n\nTo make an Injury Roll, roll two dice and add any +INJURY DICE or -INJURY DICE to the roll. +/-INJURY DICE work in the same way as +/- DICE but modify Injury Rolls instead of Success Rolls.\n\nPick the two highest dice (or lowest if any -INJURY DICE were used).\n\nAny INJURY MODIFIERS that apply are then added to the roll, and the modified roll is looked up on the table below:\n\n**Injury Table**\n- Roll — Result\n- 1 or less — No Effect. The model is unharmed, and the injury has no effect.\n- 2-6 — Minor Hit. Place 1 BLOOD MARKER next to the model.\n- 7-8 — Down. Place 1 BLOOD MARKER next to the model and mark them as being Down (▶ see below). If the model is already Down, place 2 BLOOD MARKERS next to the model instead of 1.\n- 9+ — Out of Action. The model has been seriously injured or killed and is removed from play.\n\n**Injury Roll and Result Modifiers**\n\n**The following modifiers are cumulative. The maximum -INJURY**\n\nMODIFIER cannot be more than -3 in total.\n- Blessing Markers: Add -1 INJURY DICE for each BLESSING MARKER that is spent.\n- Blood Markers: Add +1 INJURY DICE for each BLOOD MARKER that is spent.\n- Critical Success: Add +1 INJURY DICE.\n- Down: Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Abilities or Keywords: Add any +/-INJURY DICE and/or any +/-INJURY MODIFIERS for abilities or Keywords that apply to the Injury Roll.\n- Armour Characteristic: Add the -INJURY MODIFIER of the model’s Armour Characteristic (if any).\n- Battlekit: Add the -INJURY MODIFIER for the model’s Battlekit (e.g. Armour, Shield, etc.).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 17,
+        "lines": [
+          945,
+          1023
+        ]
+      }
+    },
+    {
+      "id": "blood-markers",
+      "title": "Blood Markers",
+      "category": "Core Rules",
+      "page": 19,
+      "content": "During a battle your warriors can be wounded. Wounds are tracked with BLOOD MARKERS. A model cannot have more than 6 BLOOD MARKERS at any one time. We recommend using a red dice to keep track of the number of BLOOD MARKERS on a model.\n\nEach time one of your models suffers a wound, place a BLOOD MARKER next to it. When you make a Success Roll for the model, your opponent may choose to spend one or more BLOOD MARKERS to add -1 DICE.\n\nIn addition, each time your opponent makes an Injury Roll for the model, they may choose to spend one or more BLOOD MARKERS to add +1 INJURY DICE, making a serious injury far more likely.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 19,
+        "lines": [
+          1044,
+          1054
+        ]
+      }
+    },
+    {
+      "id": "bloodbath-rolls",
+      "title": "Bloodbath Rolls",
+      "category": "Core Rules",
+      "page": 19,
+      "content": "When you make an Injury Roll for an enemy model, you can spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if the target is Down) to convert the Injury Roll to a Bloodbath Roll. To make a Bloodbath Roll, roll 3 dice and add all three of them together, and then look up the roll on the Injury Table.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 19,
+        "lines": [
+          1055,
+          1060
+        ]
+      }
+    },
+    {
+      "id": "blessing-markers",
+      "title": "Blessing Markers",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "BLESSING MARKERS are similar to BLOOD MARKERS, but specifically aid Success Rolls for the model.\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. When you take a Success Roll for the model, you may choose to spend one or more BLESSING MARKERS to add +1 DICE, and each time an Injury Roll is made for the model you may spend one or more BLESSING MARKERS to add -1 INJURY DICE.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1081,
+          1088
+        ]
+      }
+    },
+    {
+      "id": "down-results",
+      "title": "Down Results",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "You can show that a model is Down by placing the model on its side. The following rules apply to a model that is Down:\n- If a model is taken Down during its Activation, its Activation ends immediately.\n- Add -1 DICE to any rolls you take for a model that is Down.\n- Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Until a model that is Down stands back up, it cannot be moved for any reason unless it falls ( ▶ see Falling).\n- A model that is Down stands back up when it is next Activated. However, its Movement Characteristic is halved for the rest of the Activation (including the bonus for charging).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1089,
+          1099
+        ]
+      }
+    },
+    {
+      "id": "ending-the-activation-phase",
+      "title": "Ending The Activation Phase",
+      "category": "Core Rules",
+      "page": 20,
+      "content": "Once you have taken any and all ACTIONS you wish, or have failed a Risky Success Roll, your model’s Activation ends. Your opponent can now Activate one of their models. The players then alternate Activating models in this fashion until one player runs out of models to Activate. Their opponent can then Activate their remaining models one after the other until they have all been Activated, then proceed to the Morale Phase.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 20,
+        "lines": [
+          1100,
+          1107
+        ]
+      }
+    },
+    {
+      "id": "the-morale-phase",
+      "title": "The Morale Phase",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "In the Morale Phase, if half the models in your Warband are Down or Out of Action (rounded up), you must make a Success Roll. If the roll is a Success, your Warband carries on normally. If the roll is a Failure, your Warband becomes Shaken.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1128,
+          1132
+        ]
+      }
+    },
+    {
+      "id": "shaken-warbands",
+      "title": "Shaken Warbands",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "All Success Rolls made for a Shaken Warband are treated as Risky Success Rolls. In the Morale Phase at the end of the next Turn you must make another Success Roll for your Warband, even if less than half its models are Down or Out of Action. If you succeed, your Warband is no longer Shaken (though it may become so again if you fail a Morale check in a future turn). However, if you fail your Warband flees, and you immediately lose the game!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1133,
+          1139
+        ]
+      }
+    },
+    {
+      "id": "ending-the-turn",
+      "title": "Ending The Turn",
+      "category": "Core Rules",
+      "page": 21,
+      "content": "After the Morale Phase the Turn ends and a new one begins.\n- coMPrehensiVe — rules The Comprehensive Rules section of the Trench Crusade rulebook expands on the Core Rules. It explains the rules in greater depth, adds additional rules, and provides examples of how the rules function, but does not alter the Core Rules in any way. The Comprehensive Rules are followed by supplemental sections that explain how to create a Warband and scenarios that will allow you to play a wide variety of different sorts of Trench Crusade games.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 21,
+        "lines": [
+          1140,
+          1169
+        ]
+      }
+    },
+    {
+      "id": "players",
+      "title": "Players",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "That’s you and your opponent! The following rules are written assuming the game is played between two players. ▶ If you want to play games with more than two players, you can find scenarios on the Trench Crusade website at www.trenchcrusade.com",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1171,
+          1175
+        ]
+      }
+    },
+    {
+      "id": "warbands-models",
+      "title": "Warbands & Models",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "Each player commands a Warband, which typically consists of 6-20 models (▶ see Starting a Warband in Warbands of Trench Crusade). While there is no ironclad rule on which models you should use, we recommend you use the Trench Crusade range for obvious reasons. However, if you prefer to use other models, do not worry – Witchburners will not be dispatched to cleanse you for your lack of purity!\n\n**Friendly & Enemy Models**\n\nThe models in your Warband are referred to as “friendly models” in the rules, while those in your opponent’s Warband are referred to as “enemy models”. If a rule that applies to a model (or to a piece of Battlekit carried by a model) says “you” can do something with it, it refers to the player commanding the Warband that the model is part of. Similarly, you “take a roll” for your own models, and “make a roll” against your opponent’s models.\n\n**Profiles**\n\nEach model in your Warband has a Profile which describes its effectiveness in combat and the Weapons it is armed with (▶ see Profiles).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1176,
+          1192
+        ]
+      }
+    },
+    {
+      "id": "battlefield",
+      "title": "Battlefield",
+      "category": "Comprehensive Rules",
+      "page": 22,
+      "content": "You will also need a gaming surface to play on, which is referred to as “the battlefield” in the following rules. Most games can be played on a typical kitchen table, as long as it is at least 30” wide. Some games will require a larger battlefield:\n\n36” x 36” or 48” x 48” is the ideal size for these.\n\nYou can find more information on how to set up the battlefield and when you may need more space in the Scenarios section (▶ see Scenarios).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 22,
+        "lines": [
+          1193,
+          1221
+        ]
+      }
+    },
+    {
+      "id": "terrain",
+      "title": "Terrain",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Terrain is also necessary, and the more you have, the better! Trench Crusade is a game of position and tactics, so different types of elevation, cover, and varied terrain pieces, will all help to enhance your games. You can find rules for setting up the terrain for a game in the Terrain section (▶ see Trench Crusade Terrain).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1226,
+          1230
+        ]
+      }
+    },
+    {
+      "id": "tape-measure-or-ruler",
+      "title": "Tape Measure Or Ruler",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "To measure distances, you will need a tape measure or ruler. Trench Crusade uses the Imperial measurement system, meaning all measurements are in inches, so make sure your measuring tool reflects this.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1231,
+          1234
+        ]
+      }
+    },
+    {
+      "id": "dice-d6s-d3s",
+      "title": "Dice (D6s & D3s)",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Each player will need several 6-sided dice, referred to as “D6s” in the following rules. They are used to determine if a task being carried out by a model, like making an attack or leaping across a gap between two buildings, is carried out successfully (▶ see Actions).\n\n**D3 Rolls**\n\nOccasionally, you will be asked to roll a “D3”. To do so, roll a D6 and halve the result, rounding up: a 1 or 2 = 1, a 3 or 4 = 2, and a 5 or 6 = 3.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1235,
+          1242
+        ]
+      }
+    },
+    {
+      "id": "scenario",
+      "title": "Scenario",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Finally, you will need to pick a scenario for the game you are about to play.\n\nThe scenario tells you how to set up the terrain for the game, where to deploy your Warbands, how many Turns the game will last, and how the winner of the game is determined. If this is your first game, we recommend using Scenario 1: Claim No Man’s Land (▶ see Claim No Man's Land).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1243,
+          1248
+        ]
+      }
+    },
+    {
+      "id": "core-concepts",
+      "title": "Core Concepts",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "This section of the rules explains the essential principles that govern how a game of",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1249,
+          1250
+        ]
+      }
+    },
+    {
+      "id": "keywords",
+      "title": "Keywords",
+      "category": "Comprehensive Rules",
+      "page": 23,
+      "content": "Some words in the rules are written in CAPITAL LETTERS, such as ACTION or BLOOD MARKER. These words are called Keywords, and they define the core abilities, rules, troop types, and damage categories in the game. A glossary of all of the Keywords used in the game can be found below (▶ see Keywords Glossary).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 23,
+        "lines": [
+          1252,
+          1278
+        ]
+      }
+    },
+    {
+      "id": "success-rolls",
+      "title": "Success Rolls",
+      "category": "Comprehensive Rules",
+      "page": 24,
+      "content": "During a game of Trench Crusade, you will often have to take a Success Roll for a model and look up the result on the Success Roll table to see if the model has carried out a task successfully. For example, if you want a model to make a Ranged Attack, you must take a Success Roll for the model to see if the attack hits the target, and so on.\n\nThe rules say when you have to take a Success Roll, and what the result of the Success Roll means. For example, if the Success Roll for a Ranged Attack is a Failure, the attack misses the target. If it is a Success, the attack hits and you make an Injury Roll for the target. If it is a Critical Success, the attack hits and you make an Injury Roll for the target with +1 INJURY DICE.\n\n**Success Roll Procedure**\n\n**To take a Success Roll for a model, carry out the**\n\nfollowing steps:\n\n1. Take 2 D6.\n\n2. Add any +DICE or -DICE (▶ see “Combining +DICE and -DICE”).\n\n3. Roll all of the dice.\n\n4. Pick the 2 highest dice if any +DICE were added to the roll, or the 2 lowest if any -DICE were added to the roll.\n\n5. Add the 2 dice together and then look up the roll on the Success Roll Table.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 24,
+        "lines": [
+          1283,
+          1305
+        ]
+      }
+    },
+    {
+      "id": "success-roll-table",
+      "title": "Success Roll Table",
+      "category": "Comprehensive Rules",
+      "page": 24,
+      "content": "- Roll — Result\n- 2-6 — Failure. The roll is a Failure.\n- 7-11 — Success. The roll is a Success.\n- 12+ — Critical Success. The roll is a Critical Success.\n\n**Risky Success Rolls**\n\nSometimes you will be called on to take a Risky Success Roll for a model. A Risky Success Roll is taken in exactly the same way as a normal Success Roll. However, if the roll is failed the model’s Activation immediately ends (▶ see Activation Phase).\n\nIf a rule applies to a Success Roll, then it applies in the same way to a Risky Success Roll. If a model takes a Risky Success Roll as part of an ACTION outside of that model’s Activation and the roll is a Failure, that ACTION immediately ends.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 24,
+        "lines": [
+          1306,
+          1340
+        ]
+      }
+    },
+    {
+      "id": "dice-and-dice",
+      "title": "+Dice And -Dice",
+      "category": "Comprehensive Rules",
+      "page": 25,
+      "content": "The rules often require you to add extra dice to a roll. These are shown in the format “+1 DICE” or “-1 DICE” (for example, shooting from elevated positions adds +1 DICE to Ranged Attacks against enemies).\n\n+DICE: For each +DICE, add 1 dice to the Success Roll. Then roll all the dice and pick the 2 highest rolls. For example, +1 DICE means you roll 3 dice and pick the 2 highest. If +2 DICE were added, you would roll 4 dice and pick the 2 highest, and so on.\n\n-DICE: The -DICE works in reverse, so for each -1 DICE, add 1 dice to the Success Roll and pick the 2 lowest rolls. For example, -1 DICE means you roll 3 dice and pick the 2 lowest. If -2 DICE were added, you would roll 4 dice and pick the 2 lowest, and so on.\n\n**Combining +DICE and -DICE**\n\nIf both +DICE and -DICE are added to the same Success Roll, remove pairs of +DICE and -DICE until only one type is remaining. For example, if two +DICE and one -DICE were added to the same Success Roll, one +DICE would cancel out the -DICE, leaving a single +DICE to modify the roll.\n\n**Injury Dice**\n\nThe rules will sometimes refer to +/- INJURY DICE. These work in the same way as +/- DICE except that they add dice to an Injury Roll rather than a Success Roll (▶ see Injury Rolls).\n\n**Dice & Injury Dice**\n\n**Note that if a model or piece of**\n\n**Battlekit has the +/- DICE Keyword,**\n\nthen the Keyword only applies to Success Rolls, not to Injury Rolls.\n\n**By the same token, if a model or**\n\npiece of Battlekit has the +/- INJURY DICE Keyword, then the Keyword only applies to Injury Rolls and not to Success Rolls.\n\nGameplay example: A Success Roll is taken by a Trench Pilgrim to see if a Ranged Attack they are making with their Bolt-Action Rifle hits a Heretic model.\n\nThe Heretic is in Cover, which adds -1 DICE to the Success Rolls for the Trench Pilgrim’s Ranged Attack. No other modifiers apply to the attack. 3 dice are rolled for the attack, and come up 5, 5 and 1. The two lowest rolls are picked (a 5 and the 1) giving a Success Roll of 6. The Success Roll has failed and so the Trench Pilgrim’s shot misses!\n\nA Heretic Trooper model with +1 DICE bonus for Ranged Attack shoots at a Pilgrim model in cover. The -1 DICE penalty and the +1 DICE bonus cancel each other out, so the Heretic player simply rolls 2 dice. The result is 4 and 3, for a total of 7. The shot hits!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 25,
+        "lines": [
+          1345,
+          1436
+        ]
+      }
+    },
+    {
+      "id": "blood-markers",
+      "title": "Blood Markers",
+      "category": "Comprehensive Rules",
+      "page": 27,
+      "content": "During a battle, your warriors can be wounded due to enemy attacks, the use of supernatural powers, falling from great heights, and so on. In Trench Crusade, injuries are represented using BLOOD MARKERS. In addition to physical injuries, BLOOD MARKERS can represent exhaustion, concussion, shellshock, mental strain, and so on.\n\nA Trench Pilgrim has sustained a wound during the battle and has a BLOOD MARKER. A Heretic Trooper shoots at the Pilgrim with a bolt action rifle, rolls an 8 and hits! The Heretic player decides to use the BLOOD MARKER to make the shot more likely to injure. The Heretic player rolls 3D6 (2D6 +1 INJURY DICE from the spent marker) and consults the Injury Chart. The roll is 5, 1 and 4. Since one +1 INJURY DICE was used, the player picks the two highest numbers which total 9. The Pilgrim is taken out of action!\n\n**Placing Blood Markers**\n\nEach time one of your models suffers a wound, place a BLOOD MARKER next to it. A model cannot have more than 6 BLOOD MARKERS at any time.\n\nWhen a model gets to this point, ignore any instructions to place more BLOOD MARKERS next to it until there are less than 6.\n\n**Spending Blood Markers**\n\nEvery time you take a Success Roll for a friendly model that has BLOOD MARKERS, your opponent can declare that they are spending one or more of them, removing the model’s BLOOD MARKERS as they are spent. For each BLOOD MARKER that is spent, add -1 DICE to the Success Roll. For example, if you were making a Success Roll for a model that had 3 BLOOD MARKERS, then the opposing player could choose to spend 1, 2, or all 3 of the BLOOD MARKERS to add -1, -2, or -3 DICE to the Success Roll.\n\nAlternatively, when your opponent makes an Injury Roll for a model from your Warband that has BLOOD MARKERS, they can declare that they are spending one or more of them, removing the model’s BLOOD MARKERS as they are spent. For each BLOOD MARKER that is spent, add +1 INJURY DICE to the Injury Roll, making a serious injury far more likely (▶ see Injury Rolls).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 27,
+        "lines": [
+          1441,
+          1498
+        ]
+      }
+    },
+    {
+      "id": "blessing-markers",
+      "title": "Blessing Markers",
+      "category": "Comprehensive Rules",
+      "page": 28,
+      "content": "BLESSING MARKERS work in a similar way to BLOOD MARKERS.\n\nSupernatural powers, holy relics, and other sources may grant these to a model.\n\n**Placing Blessing Markers**\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. A model cannot have more than 6 BLESSING MARKERS at any time. When a model gets to this point, ignore any instructions to place more BLESSING MARKERS next to it until there are less than 6.\n\n**Spending Blessing Markers**\n\nEvery time you take a Success Roll for a friendly model that has BLESSING MARKERS, you can declare that you are spending one or more of them, removing the model’s BLESSING MARKERS as they are spent. For each BLESSING MARKER that is spent, add +1 DICE to the Success Roll.\n\nAlternatively, when your opponent makes an Injury Roll for a model from your Warband that has BLESSING MARKERS, you can declare that you are spending one or more of them, removing the model’s BLESSING MARKERS as they are spent. For each BLESSING MARKER that is spent, add -1 INJURY DICE to the Injury Roll, making a serious injury far less likely.\n\n**Tracking Blood & Blessing Markers**\n\nYou can keep track of the number of BLOOD MARKERS or BLESSING MARKERS a model has by placing a suitably coloured D6 next to the model.\n\nUse the pip number on the D6 to indicate the number of MARKERS that have been added to the model.\n\nAlternatively, you can keep track of them by using cardboard counters or wooden cubes. For example, you could use a red dice or red cubes for keeping track of BLOOD MARKERS, and a yellow dice or yellow cubes for keeping track of BLESSING MARKERS.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 28,
+        "lines": [
+          1499,
+          1547
+        ]
+      }
+    },
+    {
+      "id": "profiles",
+      "title": "Profiles",
+      "category": "Comprehensive Rules",
+      "page": 29,
+      "content": "**Every model has a Profile that defines**\n\nits effectiveness in the game. In addition, Battlekit Profiles cover the Weapons, Armour, and Equipment that a model can carry. Below, you will find examples of a model Profile and a Battlekit Profile. A detailed explanation of the model Profile is provided in the Starting a Warband (▶ see Starting a Warband in Warbands of Trench Crusade), and the Battlekit Profile is explained in the Battlekit section (▶ see Battlekit).\n\n**Azebs - Cost: 25 👑👑**\n\nAzebs are soldiers recruited from the multitude of provinces of the sultanate, where one house in every twenty is required to equip and provide a warrior to serve the prince of Those Who Believe. They are often used by their superiors as light skirmishers to harass and tie down the enemy while heavier troops close in for the kill.\n- Movement — Ranged — Melee — Armour — Base\n- 6”/Infantry — +0 DICE — -1 DICE — 0 — 25mm\n- Battlekit — An Azeb can have any Battlekit from the Iron Sultanate Armoury Tables.\n- Abilities — Light Skirmishers: Any number of Azebs can have the SKIRMISHER Keyword at a cost of +5 👑👑 each.\n- Keywords — SULTANATE\n- Movement — Ranged — Melee — Armour\n- 6”/Infantry — +1 DICE — +0 DICE — 0\n- Battlekit — A Sultanate Sapper always has a Shovel (▶ see standard which cannot be removed or lost over the course of th also have any Battlekit from the Iron Sultanate Armou\n- Abilities — Set Mine ACTION: A Sultanate Sapper can take a if they are in contact with a terrain piece that measu they do so, take a Success Roll for the model and add If the roll is a Failure, nothing happens. If the roll is Success, the terrain piece becomes Mined.\n\n**Defuse Mine: When you move a Sultanate Sapper in**\n\nrain piece that has been Mined, you can say the Sult and try to defuse the mine before it detonates (▶ see below). If you do so, take a Risky Success Roll for th Failure, the mine detonates anyway and the Sultanat ends. If the roll is a Success or a Critical Success, the nate and the terrain piece is no longer considered to 0-2 Sultanate Sappers - Cost: 50 👑👑 The Sultan’s Sappers are valued specialists, holding the great cannons of the Iron Wall no matter what their enemies throw at them.\n\n**They are easily identified by the terrible**\n\nburns all over their bodies as their mighty artillery is prone to overheating.\n\nª– Troops Warband Entries: Those Who Believ Shovel Battlefield shovels allow troops to dig in and fight from cover in virtually any battlefield.\n- Type — Range — Keywords\n- Equipment — - — - Shovel: A model equipped with a Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a model equipped with a Shovel can use it as a 2-Handed Melee Weapon instead of using any other Melee Weapons it has.\n\n**Tracer Bullets**\n\nTracer bullets allow soldiers to adjust their aim efficiently.\n- Type — Range — Keywords\n- Equipment — - — CONSUMABLE Tracers: When this Battlekit is taken, you must choose 1 Ranged Weapon that the model already has. The Weapon gains the +1 DICE Keyword.\n\n**Troop Flag**\n\nMost warbands and units carry banners, flags, standards, pennants or other symbols to rally the troops.\n- Type — Range — Keywords\n- Equipment — - — LEADER, HELD Unholy Relic An artefact bestowed with unholy power. Examples include nephilim heads, desecrated splinters of the True Cross or mummified body parts of fallen saints and bishops.\n- Type — Range — Keywords\n- Equipment — - — FEAR Unholy Trinket Many Heretic Troopers carry a talisman or charm that are sold by soothsayers and imps in the Heretic domains. Such a trinket might be a skull, preserved foetus, horn of a goat, and is often covered in Goetic runes.\n\n**QSY**\n\n**QSY**",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 29,
+        "lines": [
+          1552,
+          1655
+        ]
+      }
+    },
+    {
+      "id": "fractions",
+      "title": "Fractions",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "In all cases where the rules refer to fractions, retain any fractions if the value being modified is a distance, such as the range of a Weapon or the move of a model. In all other cases, round up to the nearest whole number.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1661,
+          1664
+        ]
+      }
+    },
+    {
+      "id": "measuring-distances",
+      "title": "Measuring Distances",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "When measuring to or from a model or terrain piece, always measure from its base. If the model or terrain piece doesn’t have a base, measure to the nearest part of the model. Something is ‘within’ a certain distance of another thing, if the distance between the nearest points of the two things is equal to or less than the stated distance.\n\n**In Contact**\n\nTwo models are in contact if any part of the models and/or their bases are in contact. A model is in contact with a terrain piece if any part of the model and/or its base is in contact with the terrain piece.\n\n**Within**\n\nSomething is within a certain distance of another thing if the distance between the nearest points of the two things is equal to or less than the stated distance. For example, if the distance between a model and a piece of terrain was 12”, then the model and the piece of terrain are within 12” of each other.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1665,
+          1679
+        ]
+      }
+    },
+    {
+      "id": "line-of-sight",
+      "title": "Line Of Sight",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "You will often need to check to see if a model has a “Line of Sight” to another model or terrain piece. If you are unsure whether a model has a Line of Sight to a target, stoop down and take a look from behind the attacking model and check if it can see any part of the target model (do not count the target’s base, its hands or feet, or anything that is carried by or attached to the target such as a weapon or banner), or any part of a target terrain piece. Models can see all around (i.e. 360°) and they may be pivoted to face any direction before the Line of Sight is checked.\n\n**Partial Line of Sight**\n\nA model that has a Line of Sight to a model is said to have a partial Line of Sight if it can draw a Line of Sight to part of the target model but not all of it.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1680,
+          1690
+        ]
+      }
+    },
+    {
+      "id": "points-on-the-battlefield-or-terrain-pieces",
+      "title": "Points on the Battlefield or Terrain Pieces",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "You may also need to check Line of Sight to a point on the battlefield or on a terrain piece. When this is the case, the point is considered to be 1mm across and 1mm high, and you have a Line of Sight to it if you can see any part of it.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1691,
+          1694
+        ]
+      }
+    },
+    {
+      "id": "model-accuracy",
+      "title": "Model Accuracy",
+      "category": "Comprehensive Rules",
+      "page": 30,
+      "content": "When it comes to ensuring the models in your game match their stated size and actual equipment, weapons, and armour, we recommend the following maxim:\n\n“Be strict with yourself but lenient with others”.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 30,
+        "lines": [
+          1695,
+          1720
+        ]
+      }
+    },
+    {
+      "id": "model-placement",
+      "title": "Model Placement",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**When you set up or move a model,**\n\nit cannot be set up with its base overlapping Impassable terrain or the base of another model. You can set up a model so that part of its base is on the battlefield or in terrain and the rest of its base is “in the air”, as long as more than half of the model’s base is on the battlefield or in terrain. With your opponent’s permission you can place it in a safe location nearby so that there is no risk of it falling over and being damaged (it will still count as being at the location for all other purposes).\n\n**Deployment & Redeployment**\n\n**Some rules may ask you to deploy**\n\nor redeploy a model. When you do so, set up the model as described above. Redeploying a model is not treated as a move.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1725,
+          1745
+        ]
+      }
+    },
+    {
+      "id": "pre-measuring",
+      "title": "Pre-Measuring",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Unless the rules specifically tell you**\n\notherwise, you are allowed to measure distances at any time. For example, you can measure to see if you are in range for shooting, charging, and so on.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1746,
+          1751
+        ]
+      }
+    },
+    {
+      "id": "re-rolls",
+      "title": "Re-Rolls",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Some rules refer to re-rolls. To make**\n\na re-roll, roll the dice used for the roll again. You cannot re-roll a dice more than once. If the rules allow you to re-roll an XD6 roll (i.e. 2D6, 3D6 etc), you must re-roll all of the dice used for the roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1752,
+          1759
+        ]
+      }
+    },
+    {
+      "id": "rolling-off",
+      "title": "Rolling Off",
+      "category": "Comprehensive Rules",
+      "page": 31,
+      "content": "**Sometimes a rule may require the**\n\nplayers to “roll-off ”. To roll-off, each player rolls a D6, and whoever rolls highest wins. You cannot re-roll or modify the dice in a roll-off unless the roll is a tie, in which case the players must take the roll-off again.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 31,
+        "lines": [
+          1760,
+          1769
+        ]
+      }
+    },
+    {
+      "id": "game-turns",
+      "title": "Game Turns",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "A game of Trench Crusade is divided into Turns. The scenario being used for the game will explain how many Turns the game will last and how the winner is determined once the game is over.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1770,
+          1798
+        ]
+      }
+    },
+    {
+      "id": "the-sequence-of-play",
+      "title": "The Sequence Of Play",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "A Trench Crusade Turn is split into the following phases:\n\n1. Initiative Phase: Determine which player has the Initiative and then carry out any “start of Turn” tasks.\n\n2. Activation Phase: The players alternate Activating their models, one at a time, until all of the models in both Warbands have been Activated once each.\n\n3. Morale Phase: A player must take a Morale Check if at least half their models are Down or Out of Action. A player loses the game if they fail a Morale Check two Turns in a row. Then the players carry out end of Turn tasks and a new Turn begins.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1799,
+          1808
+        ]
+      }
+    },
+    {
+      "id": "1-initiative-phase",
+      "title": "1. Initiative Phase",
+      "category": "Comprehensive Rules",
+      "page": 32,
+      "content": "At the beginning of each Turn, you must determine which player has the Initiative for the Turn and then carry out any start of Turn tasks. The player with the Initiative chooses which player will carry out the first Activation in the Activation Phase.\n\n**Determining the Initiative**\n\nTo determine which player has the Initiative, count up the number of models in each Warband that are currently on the battlefield. Do not count models that are Down or Out of Action when determining which player has the least models. The player with the fewest number of models has the Initiative for the rest of the Turn.\n\nIf both players have the same number of models, they roll-off and the winner has the Initiative for the rest of the Turn.\n\n**Start of Turn Tasks**\n\nSome rules require the players to do things at “the start of the Turn”. These are referred to as start of Turn tasks. If more than one start of Turn task needs to be carried out, the player who has the Initiative determines the order in which they are carried out.\n\n**Simultaneous Activities**\n\nIf two things happen at the same time, the player who has the Initiative determines the order in which they are performed.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 32,
+        "lines": [
+          1809,
+          1850
+        ]
+      }
+    },
+    {
+      "id": "2-activation-phase",
+      "title": "2. Activation Phase",
+      "category": "Comprehensive Rules",
+      "page": 33,
+      "content": "**During the Activation Phase, the**\n\nplayers alternate Activating their models one at a time until both players have Activated all their models once each. The player with the Initiative chooses which player Activates a model first.\n\n**Carrying Out Activations**\n\n**When it is your turn to Activate a**\n\nmodel, you can choose to Activate any model in your Warband that has not yet been Activated. You can then take ACTIONS with the Activated model as explained below.\n\n**When your model’s Activation is over,**\n\nyour opponent can Activate one of their models. If one player runs out of models to Activate, their opponent Activates their remaining models one after the other until all of their models have been Activated. Play then proceeds to the Morale Phase.\n\n**You may wish to indicate that**\n\na model has been Activated by placing a small marker beside it.\n\n**In the heat of battle, it is all too**\n\neasy to forget if a model has had an Activation or not!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 33,
+        "lines": [
+          1855,
+          1906
+        ]
+      }
+    },
+    {
+      "id": "actions",
+      "title": "Actions",
+      "category": "Comprehensive Rules",
+      "page": 34,
+      "content": "When you Activate a model, you can take one or more ACTIONS with the model. You can take the ACTIONS in any order you choose. However, each type of ACTION can only be taken once per Activation unless otherwise stated in the rules. For example, you could Shoot, then Move, and then Dash with a model during its Activation, or Dash, then Charge, and then Fight, but you could not Shoot, then Dash, and then Shoot again.\n\n**Common Actions**\n\nCommon ACTIONS that all models can take are listed below. In addition to these, some models can take ACTIONS that are described in their Warband Entry or in the special rules for a piece of Battlekit or a Campaign Skill that the model has. These ACTIONS can be taken when the model is Activated in addition to any of the common ACTIONS listed below, but each can still only be taken once per Activation.\n- Move or Charge or Retreat: You can take one of the following ACTIONS with a model:\n\n* Move: You can move your model a number of inches up to its Movement Characteristic in any direction (▶ see Moves). A Move ACTION cannot be used to move a model within 1” of an enemy model (you must use a Charge ACTION instead.\n\n* Charge: Pick an enemy model that is in the Line of Sight of your model and within 12” of it as the target of the charge. Then roll a dice, add the roll to your model’s Movement Characteristic, and move your model towards the target (▶ see Charging). You cannot take a Charge ACTION with a model that is already within 1” of an enemy model. A model cannot take a Shoot ACTION and a Charge or Fight ACTION in the same Activation unless it uses a Weapon that has the ASSAULT Keyword.\n\n* Retreat: A Retreat is a special type of move that is used when a model is within 1” of an enemy model and wishes to move away (▶ see Retreating).\n- Dash: You can move your model a number of inches up to to its Movement Characteristic in any direction (▶ see Moves), but you must take a Risky Success Roll for the model first. If you succeed you can move with the model (it cannot charge or retreat); if you fail, the model’s Activation ends. A Dash can be carried out in addition to, and either before or after a Move, Charge, or Retreat ACTION. For example, a model could Dash, then Shoot, and then Move.\n- Shoot: This ACTION allows you to make a Ranged Attack with the model (▶ see Ranged Attacks).\n- Fight: This ACTION allows you to make a Melee Attack with the model (▶ see Melee Attacks).",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 34,
+        "lines": [
+          1911,
+          1954
+        ]
+      }
+    },
+    {
+      "id": "movement",
+      "title": "Movement",
+      "category": "Comprehensive Rules",
+      "page": 35,
+      "content": "A Move, Charge, Retreat, or Dash ACTION allows you to pick up one of your models and move it across the battlefield. The move is carried out in the same way for a Move or Dash ACTION, except that you must take a Risky Success Roll before moving the model when you take a Dash ACTION. Charge and retreat moves are carried out in a similar way to a normal move, but in both cases additional rules apply to the way that the move is carried out.\n\n**Move and move**\n\nNote that when we say Move with a capital “M” we are referring to a Move ACTION. When we say move with a lowercase “m” we are referring to the process of moving your model.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 35,
+        "lines": [
+          1955,
+          1986
+        ]
+      }
+    },
+    {
+      "id": "moves",
+      "title": "Moves",
+      "category": "Comprehensive Rules",
+      "page": 35,
+      "content": "To move a model, pick it up and move it along a path across the battlefield or terrain. The length of the path cannot be longer than the model’s Movement Characteristic unless otherwise specified. You can move the model in any direction or combination of directions, and you can pivot the model freely to face in any direction as you move it, as long as the path along which it travels is not longer than its Movement Characteristic. In addition, when you move a model, the following rules apply:\n- A model can only move across a friendly model if it has enough movement to move past them entirely.\n- A model can only move off the battlefield if a rule states explicitly that it is allowed to do so.\n- A model can only move within 1” of enemy models if it charges (▶ see Charging).\n- A model that starts a move within 1” of enemy models can only move if:\n\n* It remains within 1” of every enemy model that it started within 1” of throughout the entire move, or * It retreats (▶ see Retreating).\n- At the end of the move, no part of the model’s base can finish further from its starting position than a number of inches equal to its Movement Characteristic.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 35,
+        "lines": [
+          1987,
+          2029
+        ]
+      }
+    },
+    {
+      "id": "charging",
+      "title": "Charging",
+      "category": "Comprehensive Rules",
+      "page": 36,
+      "content": "Taking a Charge ACTION with a model allows you to make a special type of move, called a charge, that is used to bring a model within 1” of an enemy model.\n\nYou can only move within 1” of an enemy model (measured from the base of each model) by taking a Charge ACTION. This applies to all enemy models, including those that are down or enemy models that are already within 1” of a different friendly model.\n\n**Declare Charge**\n\nAfter you take a Charge ACTION with a model, you must pick an enemy model that is visible to your model and within 12” of it as the target of the charge.\n\n**Interposing Enemy Models**\n\nYou cannot choose an enemy model as the target of a charge if the route it would have to take to reach the target would pass within 1” of a different enemy model before the charging model was within 1” of its target. In such a situation, you must choose the interposing enemy model as the target of the charge, or not make the charge at all.\n\n**Charge Bonus**\n\nAfter you have selected the target, roll a D6 and add the roll to the charging model’s Movement Characteristic, up to a maximum Movement Characteristic of 12”. The D6 roll is referred to as the model’s Charge Bonus.\n\n**Charge Moves**\n\nAfter determining the Charge Bonus, move the charging model toward the target.\n\nWhen you make a charge move with a model, the following additional rules apply to the move:\n- The model must move by the shortest route available that takes it directly towards the target.\n- Climbing, Jumping, Jumping Down or moving through Dangerous terrain is optional during a charge, as long as the route you use to avoid the obstacles is as short as possible.\n- The model must stop as soon as it moves into contact with the target, unless carrying on with its move allows it to stay in contact with the target and finish within 1” of any other enemy models.\n\nIf after completing the move the charging model is within 1” of the target, the charging model is considered to have successfully completed the charge. If the charging model does not reach its target, the charge is considered to have failed, but the charging model must remain where it was after the charge move was completed. Note that completing a charge does not automatically allow you to Fight – to make a Melee Attack after a charge you will need to take a Fight ACTION with the model, assuming it is allowed to do so.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 36,
+        "lines": [
+          2034,
+          2099
+        ]
+      }
+    },
+    {
+      "id": "retreating",
+      "title": "Retreating",
+      "category": "Comprehensive Rules",
+      "page": 37,
+      "content": "**Taking a Retreat ACTION with a model allows**\n\nyou to make a special type of move, called a retreat, that is used when a model is within 1” of an enemy model and wishes to move away. Before you make, or are forced to make, a retreat move with a model, your opponent can take a Fight ACTION with each enemy model that is within 1” of the retreating model. When a model attacks a retreating enemy model, it can only make 1 melee attack with 1 weapon (it cannot use the Multiple Melee Attacks rule, but if the attacking weapon has the CLEAVE (X) Keyword it will still apply). After carrying out the attack(s) you can move the retreating model as long as it did not suffer a Down or Out of Action result (▶ see Injury Rolls). A retreating model must end its retreat move more than 1” away from all enemy models. If this is impossible, it cannot move at all. Note that redeploying a model does not count as a retreat move.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 37,
+        "lines": [
+          2100,
+          2142
+        ]
+      }
+    },
+    {
+      "id": "terrain",
+      "title": "Terrain",
+      "category": "Comprehensive Rules",
+      "page": 38,
+      "content": "The terrain on a Trench Crusade battlefield is represented by scenic models called terrain pieces (▶ see Trench Crusade Terrain).\n\n**Terrain Types**\n\nAt the start of the game of Trench Crusade, the players must agree on what type of terrain each terrain piece represents. There are four types of terrain in Trench Crusade: Open, Difficult, Dangerous, and Impassable. Terrain can be both Difficult and Dangerous. The players will also need to agree on the boundary of each terrain piece so that they will be easily able to tell if a model has moved into it, and decide which surfaces on a terrain piece can be climbed or jumped from.\n- Open: Open terrain includes any area where there is nothing to impede a model, and is the most common terrain in Trench Crusade. Models can be moved freely across Open terrain.\n- Difficult: Difficult terrain includes rock beds, swamps, craters and so on, and has the DIFFICULT TERRAIN Keyword (▶ see DIFFICULT TERRAIN).\n- Dangerous: Dangerous terrain includes barbed wire, minefields, raging fires, areas covered in poisonous gas, and so on, and has the DANGEROUS TERRAIN Keyword (▶ see DANGEROUS TERRAIN).\n- Impassable: Impassable terrain includes cliffs, large monuments on which there is nowhere for a model to stand, pools of magma, and so on, and has the IMPASSABLE TERRAIN Keyword (▶ see IMPASSABLE TERRAIN).\n- Cover: A model has the COVER Keyword from another model if it is on or in contact with a terrain piece that is at least ½” high and at least as wide as its base, and the terrain piece lies between it and the other model in such a way that it partially blocks the Line of Sight between the two models (▶ see Partial Line of Sight).\n\nIn this example, the Line of Sight to model A is blocked by the terrain (the bayonet does not count) and therefore the model cannot be seen or attacked.\n\nModel B is in cover and there is only a partial line of sight to it, so attacks against the model will suffer -1 DICE penalty. Model C is in the open and gains no protection from any cover.\n\n**Moving into Terrain**\n\nA model is said to be “in” a piece of terrain if more than half of its base is within the boundary of that piece of terrain.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 38,
+        "lines": [
+          2147,
+          2202
+        ]
+      }
+    },
+    {
+      "id": "climbing-jumping",
+      "title": "Climbing & Jumping",
+      "category": "Comprehensive Rules",
+      "page": 39,
+      "content": "Terrain up to 1” high, Trench Walls up to 3\" high - and ladders, ramps, ropes, stairs, and other devices meant for climbing - are treated as Open terrain.\n\nIn addition, a model can Climb up sheer surfaces and Jump over gaps as described below.\n\n**Climbing Sheer Surfaces**\n\nIf one of your models moves within 1” of a sheer surface like a wall, you can say it will attempt to Climb up or down it. To do so the model must have enough movement to clear the entire surface it is climbing (i.e. it cannot finish the move halfway up a wall). You must take a Risky Success Roll for the model when it reaches the sheer surface. If the Risky Success Roll is a Success, you can move the model directly up or down so that they are standing at the top or bottom of the sheer surface, and can carry on with its move if it has any movement remaining. If the roll is a Failure, you cannot move the model any further and its Activation ends.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 39,
+        "lines": [
+          2207,
+          2228
+        ]
+      }
+    },
+    {
+      "id": "combat",
+      "title": "Combat",
+      "category": "Comprehensive Rules",
+      "page": 42,
+      "content": "**Jumping Over Gaps**\n\nYou may declare that a model is going to attempt to Jump as part of its move, which allows it to cross a gap that is no wider than half its Movement Characteristic, as long the move up to the gap and the distance that is to be Jumped does not exceed the distance the model can be moved. For example, a model with a Movement Characteristic of 6” could move 3” and then try to Jump over a gap up to 3” wide. Move the model up to the gap and then take a Risky Success Roll for the model. If the roll is a Success, you can move the model to the other side of the gap and carry on with its move if it has any movement remaining.\n\nIf the roll is a Failure, the model Falls as described below, and its Activation ends (your opponent can choose which side of the gap it Falls from).\n\nIn this example, the Trench Pilgrim model first moves moves normally 2”, then makes a Risky Success roll to climb 3” via a broken ladder, then takes another Risky Success roll to Dash, and follows up with one more move and takes yet another a Risky Success roll to jump over a gap!\n\n**Jumping Between Ledges of Unequal Heights**\n\nIf the gap that a model is Jumping across is higher on the side it is Jumping from, apply the rules for Jumping Down if the model Jumps the gap. If the gap is higher on the side that it is Jumping to, add the extra height to the horizontal distance of the Jump. (This may make the Jump impossible if the modified distance is greater than the distance the model can be moved.) Jumping Down When you move a model, it can Jump Down as part of the move.\n\nJumping Down does not affect the distance you can move the model (the Jump Down is “free”). However, if a model Jumps Down 3” or more, it counts as Falling and you must make an Injury Roll for the model before carrying on with its movement ( ▶ see Falling).\n\n41 Falling When a model Falls, it is moved from its current position to the first flat surface that it can occupy directly beneath the position that it fell from. If it Falls 3” or more, you must make an Injury Roll for the model to see if it was harmed. Add +1 INJURY DICE to the roll for every 3” it Falls (for example, a Fall of 3-5” would be rolled with +1 DICE, a Fall of 6-8” with +2 DICE, and so on).\n\nWhen you take a Shoot ACTION with a model, you make a Ranged Attack with it. When you take a Fight ACTION with a model, you make a Melee Attack with it. The rules in this section explain how each type of attack is made.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 42,
+        "lines": [
+          2229,
+          2339
+        ]
+      }
+    },
+    {
+      "id": "ranged-attacks",
+      "title": "Ranged Attacks",
+      "category": "Comprehensive Rules",
+      "page": 42,
+      "content": "**In order to make a Ranged Attack, a**\n\nmodel must have a Ranged Weapon and cannot be within 1” of an enemy model. A model cannot use a Shoot ACTION to make a Ranged Attack if it has used a Charge or Fight ACTION in the same Activation, unless it uses a Ranged Weapon that has the ASSAULT keyword.\n\n**Ranged Attack Sequence**\n\n**A Ranged Attack is made using the**\n\nfollowing sequence.\n\n1. Choose Weapon.\n\n2. Pick Target.\n\n3. Check Line of Sight.\n\n4. Check Range.\n\n5. Determine Modifiers.\n\n6. Take Success Roll for Attacking model.\n\n**Choosing the Weapon**\n\n**When you make a Ranged Attack with**\n\na model you must first pick a Ranged Weapon that the model is armed with to make the attack. The Weapons a model is armed with can be found on its Profile (▶ see Starting a Warband in Warbands of Trench Crusade).\n\n**Picking the Target**\n\n**When a model makes a Ranged Attack**\n\nyou must pick one enemy model to be the target of the attack. The target must be in the Line of Sight of the attacking model and within range of the Weapon being used to make the attack (▶ see Line of Sight) and (▶ see Measuring the Range).\n\n**Shooting into Melee**\n\n**If you want to shoot at an enemy**\n\nmodel that is within 1” of any of your models, you must roll a D6 to determine who is the target: on a 1-3 you must target one of your own models, on a 4-6 you can target an enemy model.\n\n**Note that, unless stated otherwise,**\n\nthe only time you randomly decide which model is affected by something is when you make a Ranged Attack with a model and the target is within 1” of another model from your Warband. For example, if a friendly model made a Ranged Attack with a Weapon that had the BLAST Keyword, and the target was within 1” of a model from your Warband, then you would randomly pick the target before making the Success Roll to see if the attack hits, but you would not randomise the Injury Rolls for any models that were caught in the blast radius of the Weapon after the hit had been scored.\n\n**Similarly, if a rule allowed you to**\n\nplace a BLOOD MARKER next to an enemy model, you would not randomly choose which model to place the marker beside if the enemy model was within 1” of a friendly model, and so on.\n\n**Measuring the Range**\n\nThe target is in range if the distance from the closest point of the attacking model’s base to the closest point of the target model’s base is less than or equal to the range of the Weapon being used. You can find the range of each Weapon on its Weapon Profile (▶ see Battlekit).\n\n**Short Range & Long Range**\n\nIf the distance between an attacking model and the target is less than or equal to half of the Weapon’s range, then the attack is being made at Short Range. If the distance between an attacking model and the target is greater than half of the Weapon’s range, then the attack is being made at Long Range. Add -1 DICE to the roll for a Ranged Attack that is being made at Long Range. Some Weapons and Skills may affect attacks made at either Short or Long Range, as stated in the Weapon Profile or Skill Description.\n\n**Determine Ranged Attack Modifiers**\n\nNext you must determine if there are any modifiers that will affect the attack.\n\nModifiers add +/- DICE to the Success Roll.\n- Elevated position (+1 DICE): Add +1 DICE to the roll if the attacking model is in a position at least than 3” higher than the target. Use the model’s bases when determining the difference in their heights.\n- Cover (-1 DICE): Add -1 DICE to the roll if the target is in cover from the attacking model (▶ see Cover).\n- Long Range (-1 DICE): Add -1 DICE to the roll if the attack is taking place at Long Range.\n\nA Trench Pilgrim is shooting at a Heretic Trooper with a musket. The Heretic is in cover, which adds -1 DICE to any Ranged Attacks. The Pilgrim rolls 3D6 and gets 5, 5 and 1. The two lowest dice are picked for a roll of 6. As the Pilgrim needed 7 to hit, the shot missed!\n\n**Ranged Attack Success Roll**\n\nFinally, make a Success Roll for the attacking model. If the roll is a Failure, the attack misses and nothing further happens. If the roll is a Success, the target is hit, and you must make an Injury Roll (▶ see Injury Rolls). If the roll is a Critical Success, the target is hit and +1 DICE is added to the Injury Roll.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 42,
+        "lines": [
+          2340,
+          2518
+        ]
+      }
+    },
+    {
+      "id": "melee-attacks",
+      "title": "Melee Attacks",
+      "category": "Comprehensive Rules",
+      "page": 45,
+      "content": "In order to make a Melee Attack, a model must have a Melee Weapon and be within 1” of a target.\n\n**Melee Attack Sequence**\n\n**A Melee Attack is made using the**\n\nfollowing Sequence:\n\n1. Choose Weapon.\n\n2. Choose Target.\n\n3. Determine Modifiers.\n\n4. Take Success Roll for Attacking model.\n\n**Choosing the Weapon**\n\n**When you make a Melee Attack with**\n\na model you must first pick a Melee Weapon that the model is armed with to make the attack. The Weapons a model is armed with can be found on its Profile.\n\n**Choosing The Target**\n\n**When a model makes a Melee Attack**\n\nyou must pick one enemy model to be the target of the attack. The target must be within 1” of the attacking model in its Line of Sight (▶ see Line of Sight).\n\n**Determine Melee Attack Modifiers**\n\n**Next you must determine if there are**\n\nany modifiers that will affect the attack.\n\n**Modifiers add +/- DICE to the Success**\n\nRoll for the attacking model.\n- Diving Charge (+1 DICE): Add +1 DICE to the roll if the attacker is making a Diving Charge (▶ see Diving Charge).\n- Defended Obstacle (-1 DICE):\n\n**Add -1 DICE to the roll if the target**\n\nis in cover and the terrain piece providing the cover lies between it and the attacking model.\n- Off-Hand Weapon (-1 DICE): Add -1 DICE to the roll if the attacking model is making the attack with an Off-Hand Weapon (▶ see Multiple Melee Weapons).\n\n**Melee Attack Success Roll**\n\n**Finally, you make a Success Roll for**\n\nthe attacking model. If the roll is a Failure, the attack misses and nothing further happens. If the roll is a Success, the target is hit and you must make an Injury Roll to see what effect the attack has had on the target model (▶ see Injuries). If the roll is a Critical Success, the target is hit and +1 DICE is added to the Injury Roll.\n\n**Multiple Melee Weapons**\n\n**A model that has two Melee**\n\n**Weapons can use a single Fight**\n\n**ACTION to make two separate**\n\n**Melee Attacks, one with each**\n\n**Weapon, in the order of your**\n\nchoice. The Weapon used for the second attack is referred to as the Off-Hand Weapon (▶ see Melee Attack Modifiers). You can pick the same or a different model as the target for each attack.\n\n**If a model has two Melee Weapons,**\n\nand one or both of them have the CLEAVE Keyword, pick one of them and make a Melee Attack with it; if it has the CLEAVE Keyword carry out all of its attacks one after the other. Then pick the other Melee Weapon and make a Melee Attack with it using the Off-Hand Modifier; if it has the CLEAVE Keyword carry out all of its attacks out one after the other with the Off-Hand modifier.\n\n**Diving Charge**\n\nYou can convert a charge for a friendly model into a Diving Charge if it Jumps Down at least 3” and lands within 1” of a target. If you do so, take a Risky Success Roll for the model after it Jumps Down. If the roll is a Failure the model is taken Down, and a Falling Injury Roll must then be taken for the model (▶ see Falling).\n\nIf the roll is a Success, you do not have to take a Falling Injury Roll for the model, and you can add +1 DICE to the Success Roll for the next Melee Attack that the model makes.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 45,
+        "lines": [
+          2523,
+          2635
+        ]
+      }
+    },
+    {
+      "id": "injuries",
+      "title": "Injuries",
+      "category": "Comprehensive Rules",
+      "page": 46,
+      "content": "During games of Trench Crusade, models can be injured by attacks, falling from high terrain, or when trying to move through Dangerous terrain. Regardless of how it occurs, when an enemy model suffers an injury, you must make an Injury Roll for the model.\n\n**Injury Rolls**\n\nAn Injury Roll is made in a similar way to a Success Roll, by taking 2D6, adding extra dice to the roll, and then picking the two highest or lowest dice and adding them together. However, when you make an Injury Roll, INJURY DICE and INJURY MODIFIERS may be added to the roll instead of +/- DICE.\n\nINJURY DICE: + or - INJURY DICE are added to an Injury Roll in the same way that + or - DICE are added to a Success Roll (▶ see Success Rolls).\n\n**INJURY MODIFIER: + or - INJURY MODIFIERS are applied to the**\n\nInjury Roll. Make the Injury Roll, adding any + or - INJURY DICE, and then add or subtract any INJURY MODIFIERS from the roll.\n\nThe maximum -INJURY MODIFIER cannot be more than -3 in total.\n\nFor example, an Injury Roll has a +1 INJURY DICE modifier and a -1 INJURY MODIFIER. 3 dice are rolled, resulting in a 2, 4 and 5. The two highest dice are used, giving a roll of 9. Then the -1 INJURY MODIFIER is applied, subtracting 1 from the roll and changing it to an 8. The roll is looked up on the Injury Table, which gives a Down result for the Injury Roll.\n\nNote that if a rule says a model is taken Down or Out of Action, apply the appropriate Result from the Injury Roll Table in full (which means a model that is taken Down will have a BLOOD MARKER placed beside it).\n\n47 Bloodbath Rolls When you make an Injury Roll for an enemy model, you can spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if the target is Down) to convert the Injury Roll to a Bloodbath Roll. To make a Bloodbath Roll, roll 3D6 and add all 3 dice together. Add +/- INJURY DICE and +/- INJURY MODIFIERS in the same way that you would to an Injury Roll, except that you pick the 3 highest or 3 lowest dice in the roll instead of the 2 highest or lowest.\n\nIf the Injury Roll has the DEADLY Keyword, instead roll 4D6 and add all 4 dice together.\n\n**Making an Injury Roll**\n\nTo make an Injury Roll for a model, carry out the following steps:\n\n1. Take 2 D6.\n\n2. Add any +/- INJURY DICE (▶ see “Combining +DICE and -DICE”).\n\n3. Roll all of the dice.\n\n4. Pick the 2 highest dice if any +INJURY DICE were added to the roll, or the 2 lowest if any -INJURY DICE were added to the roll.\n\n5. Add the 2 dice together.\n\n6. Add any +/- INJURY MODIFIERS to the roll.\n\n7. Look up the roll on the Injury Roll Table below.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 46,
+        "lines": [
+          2636,
+          2731
+        ]
+      }
+    },
+    {
+      "id": "injury-roll-table",
+      "title": "Injury Roll Table",
+      "category": "Comprehensive Rules",
+      "page": 48,
+      "content": "- Roll — Result\n- 1 or less — No Effect. The model is unharmed and the injury has no effect.\n- 2-6 — Minor Hit. Place 1 BLOOD MARKER next to the model.\n- 7-8 — Down. Place 1 BLOOD MARKER next to the model and mark them as being Down. If the model is already Down, place 2 BLOOD MARKERS next to it instead of 1.\n- 9+ — Out of Action. The model has been seriously injured or killed and is removed from the battlefield.\n\n**Common Injury Roll Modifiers**\n\nThe following modifiers are cumulative. The maximum -INJURY MODIFIER added to an Injury Roll cannot be more than -3 in total.\n- Blessing Markers: Add -1 INJURY DICE for each BLESSING MARKER that is spent.\n- Blood Markers: Add +1 INJURY DICE for each BLOOD MARKER that is spent.\n- Critical Success: Add +1 INJURY DICE.\n- Down: Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Abilities or Keywords: Add any +/-INJURY DICE and/or any +/-INJURY MODIFIERS for abilities or Keywords that apply to the Injury Roll.\n- Armour Characteristic: Add the -INJURY MODIFIER of the model’s Armour Characteristic (if any).\n- Battlekit: Add the -INJURY MODIFIER for the model’s Battlekit (e.g. Armour, Shield, etc.).\n\nGameplay Example: A Heretic Trooper makes a Ranged Attack that hits a Trench Pilgrim Castigator who has 2 BLOOD MARKERS and Standard Armour. The Heretic player decides to use both BLOOD MARKERS to make the shot more likely to injure. The Heretic player takes 4D6 (2D6 +2 INJURY DICE from the BLOOD MARKERS) and rolls 2, 5, 4 and 1. Since two +INJURY DICE were added to the roll, the two highest numbers are used for the Injury Roll, giving a total of 9. The Castigator’s armour adds -1 INJURY MODIFIER, so the total is reduced by 1, to give a modified roll of 8. The Heretic player consults the Injury Table and finds that the Pilgrim is Down!\n\n**Down Results**\n\nThe following rules apply to a model that is Down:\n- If a model is taken Down during its Activation, its Activation ends immediately.\n- Add -1 DICE to any Success Rolls you take for a model that is Down.\n- Add +1 INJURY DICE for a Melee Attack if the target is Down.\n- Until the model stands back up, it cannot be moved for any reason unless it falls.\n- A model that is Down stands back up when it is next Activated. However, its Movement Characteristic is halved for the rest of the Activation (including any Charge Bonus it receives).\n- A model that is within 1” of a ledge when it is taken down may Fall off the ledge.\n\nTake a Success Roll for the model before it is taken Down. If the roll is a Success, the model is taken Down but does not Fall off the ledge. If the roll is a Failure, the model Falls from the nearest ledge and is then taken Down (▶ see Falling).\n\nYou can show that a model is Down by placing a marker next to the model (such as a wooden cube) or by laying the model on its side. If you choose to place the model on its side, lay it down in such a way that the centre of the model lies over the point where the centre of its base was located. When measuring the range to or from a model that is Down, you can measure from any part of the model, not just from its base. Note: A model lying on its side will be more difficult to see, but otherwise the two methods are identical, and you may decide which to use for your models.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 48,
+        "lines": [
+          2732,
+          2834
+        ]
+      }
+    },
+    {
+      "id": "3-morale-phase",
+      "title": "3. Morale Phase",
+      "category": "Comprehensive Rules",
+      "page": 50,
+      "content": "Your Warband may abandon the battle if it suffers too many casualties. In the Morale Phase, if half the models in your Warband are Down or Out of Action (rounded up), you must take a special type of Success Roll called a Morale Check.\n\nA Morale Check is taken in the same way as a Success Roll for a model. If the Morale Check is a Success, your Warband carries on normally. If the Morale Check is a Failure, your Warband becomes Shaken.\n\nNote: Remember that when counting models, any fractions are rounded up. For example, a Warband that has 5 models will not need to make a Morale Check until 3 of its models are Down or Out of Action (half of 5 is 2.5, which rounds up to 3).\n\n**Shaken Warbands**\n\nAll Success Rolls taken for models from a Shaken Warband are treated as Risky Success Rolls (unless they are Risky Success Rolls already). In addition, in the Morale Phase at the end of the next Turn you must make another Morale Check for your Warband, even if fewer than half of its models are Down or Out of Action. If the Morale Check is a Success, your Warband is no longer Shaken (though it may become so again if you fail a Morale check in a future Turn). However, if the Morale Check is a failure, your Warband flees and you immediately lose the game!\n\n**Ending The Turn**\n\nAs long as neither player’s Warband flees, they can carry out any end of Turn tasks.\n\nA new Turn can then begin.\n\n**End of Turn Tasks**\n\nSome rules require the players to do things at “the end of the Turn”. These are referred to as end of Turn tasks. If more than one end of Turn task needs to be carried out, the player that as the Initiative determines the order in which they are carried out.\n\n**Sounding the Retreat**\n\nIf a Morale Check for your Warband is a Failure, you can choose to immediately flee and lose the game instead of becoming Shaken. Sometimes it is better to retreat to conserve your losses, rather than fighting on to the last man!",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 50,
+        "lines": [
+          2839,
+          2892
+        ]
+      }
+    },
+    {
+      "id": "winning-the-game",
+      "title": "Winning The Game",
+      "category": "Comprehensive Rules",
+      "page": 51,
+      "content": "You win a game of Trench Crusade immediately if the opposing player’s Warband flees. If this doesn’t happen, the winner of the game is determined after the final Turn has been completed. The scenario chosen for the game will say how many Turns the game will last, and how the winner is decided.\n- 52 — Keyword- — Trench Crusade\n- keYWords — glossarY Rules governing all Keywords in the game are listed here. A model, a piece of Battlekit, a Marker or a terrain piece can have 1 or more Keywords. They define the core abilities, rules, troop types and damage categories in the game. Keywords appear in the rules in CAPITALS to make it easy for you to spot them.",
+      "source": {
+        "file": "rulebook:trench-crusade-digital-rulebook",
+        "page": 51,
+        "lines": [
+          2897,
+          2933
+        ]
+      }
     }
   ],
   "battlekit": [

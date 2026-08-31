@@ -6302,27 +6302,33 @@
     },
     "stats.ranged": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.armour": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.base": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "layer": "resolution",
+      "source": "resolutions.json:Combat Medic.cost.ducats — rulebook:warbands-of-trench-crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "min": {
       "layer": "base",
@@ -7936,6 +7942,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -7987,6 +7997,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8045,6 +8059,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8096,6 +8114,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8154,6 +8176,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8205,6 +8231,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8263,6 +8293,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8315,6 +8349,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8373,6 +8411,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8424,6 +8466,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8482,6 +8528,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8533,6 +8583,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8590,6 +8644,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8641,6 +8699,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8698,6 +8760,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8749,6 +8815,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8806,6 +8876,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8857,6 +8931,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -8914,6 +8992,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -8965,6 +9047,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9022,6 +9108,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9073,6 +9163,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9130,6 +9224,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9181,6 +9279,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9238,6 +9340,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9289,6 +9395,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9346,6 +9456,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9397,6 +9511,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9454,6 +9572,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9505,6 +9627,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9562,6 +9688,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9613,6 +9743,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9670,6 +9804,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9721,6 +9859,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9778,6 +9920,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9829,6 +9975,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9886,6 +10036,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -9937,6 +10091,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -9994,6 +10152,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10045,6 +10207,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10102,6 +10268,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10153,6 +10323,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10210,6 +10384,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10261,6 +10439,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10318,6 +10500,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10369,6 +10555,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10426,6 +10616,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10477,6 +10671,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10534,6 +10732,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10585,6 +10787,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10642,6 +10848,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10693,6 +10903,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10750,6 +10964,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10801,6 +11019,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10858,6 +11080,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -10909,6 +11135,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -10966,6 +11196,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11017,6 +11251,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11074,6 +11312,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11125,6 +11367,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11182,6 +11428,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11233,6 +11483,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11290,6 +11544,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11341,6 +11599,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11398,6 +11660,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11449,6 +11715,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11506,6 +11776,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11557,6 +11831,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11614,6 +11892,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11665,6 +11947,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
@@ -11722,6 +12008,10 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -11773,6 +12063,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -11830,6 +12124,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -11881,6 +12179,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -11938,6 +12240,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -11989,6 +12295,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12046,6 +12356,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12097,6 +12411,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12154,6 +12472,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12205,6 +12527,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12262,6 +12588,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12313,6 +12643,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12370,6 +12704,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12421,6 +12759,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12478,6 +12820,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12529,6 +12875,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12586,6 +12936,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12637,6 +12991,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12694,6 +13052,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12745,6 +13107,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12802,6 +13168,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12853,6 +13223,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -12910,6 +13284,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -12961,6 +13339,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13018,6 +13400,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13069,6 +13455,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13126,6 +13516,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13177,6 +13571,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13234,6 +13632,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13285,6 +13687,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13342,6 +13748,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13393,6 +13803,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13450,6 +13864,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13501,6 +13919,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13558,6 +13980,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13609,6 +14035,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13666,6 +14096,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13717,6 +14151,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13774,6 +14212,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13825,6 +14267,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13882,6 +14328,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -13933,6 +14383,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -13990,6 +14444,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14041,6 +14499,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14098,6 +14560,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14149,6 +14615,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14206,6 +14676,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14257,6 +14731,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14314,6 +14792,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14365,6 +14847,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14422,6 +14908,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14473,6 +14963,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14530,6 +15024,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14581,6 +15079,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14638,6 +15140,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14689,6 +15195,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14746,6 +15256,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14797,6 +15311,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14854,6 +15372,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -14905,6 +15427,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -14962,6 +15488,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15013,6 +15543,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15070,6 +15604,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15121,6 +15659,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15178,6 +15720,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15229,6 +15775,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15286,6 +15836,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15337,6 +15891,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15394,6 +15952,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15445,6 +16007,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15502,6 +16068,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15553,6 +16123,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15610,6 +16184,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15661,6 +16239,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15718,6 +16300,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15769,6 +16355,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15826,6 +16416,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15877,6 +16471,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -15934,6 +16532,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -15985,6 +16587,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16042,6 +16648,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16093,6 +16703,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16150,6 +16764,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16201,6 +16819,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16258,6 +16880,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16309,6 +16935,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16366,6 +16996,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16417,6 +17051,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16474,6 +17112,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16525,6 +17167,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16582,6 +17228,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16633,6 +17283,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16690,6 +17344,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16741,6 +17399,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16798,6 +17460,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16849,6 +17515,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -16906,6 +17576,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -16957,6 +17631,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17014,6 +17692,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17065,6 +17747,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17122,6 +17808,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17173,6 +17863,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17230,6 +17924,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17281,6 +17979,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17338,6 +18040,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17389,6 +18095,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17446,6 +18156,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17497,6 +18211,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17554,6 +18272,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17605,6 +18327,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17662,6 +18388,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17713,6 +18443,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17770,6 +18504,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17821,6 +18559,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17878,6 +18620,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -17929,6 +18675,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -17986,6 +18736,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18037,6 +18791,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18094,6 +18852,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18145,6 +18907,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18202,6 +18968,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18253,6 +19023,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18310,6 +19084,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18361,6 +19139,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18418,6 +19200,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18469,6 +19255,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18526,6 +19316,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18577,6 +19371,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18634,6 +19432,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18685,6 +19487,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18742,6 +19548,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18793,6 +19603,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18850,6 +19664,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -18901,6 +19719,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -18958,6 +19780,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19009,6 +19835,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19066,6 +19896,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19117,6 +19951,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19174,6 +20012,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19225,6 +20067,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19282,6 +20128,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19333,6 +20183,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19390,6 +20244,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19441,6 +20299,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19498,6 +20360,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19549,6 +20415,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19606,6 +20476,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19657,6 +20531,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19714,6 +20592,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19765,6 +20647,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19822,6 +20708,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19873,6 +20763,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -19930,6 +20824,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -19981,6 +20879,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -20038,6 +20940,10 @@
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
@@ -20089,6 +20995,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
@@ -20146,6 +21056,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20197,6 +21111,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20254,6 +21172,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20305,6 +21227,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20362,6 +21288,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20413,6 +21343,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20471,6 +21405,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20523,6 +21461,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20580,6 +21522,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20631,6 +21577,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20689,6 +21639,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20741,6 +21695,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20798,6 +21756,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20849,6 +21811,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -20906,6 +21872,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -20957,6 +21927,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21014,6 +21988,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21065,6 +22043,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21122,6 +22104,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21173,6 +22159,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21230,6 +22220,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21281,6 +22275,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21338,6 +22336,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21389,6 +22391,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21446,6 +22452,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21497,6 +22507,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21554,6 +22568,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21605,6 +22623,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21662,6 +22684,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21713,6 +22739,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21770,6 +22800,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21821,6 +22855,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21878,6 +22916,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -21929,6 +22971,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -21986,6 +23032,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22037,6 +23087,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22094,6 +23148,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22145,6 +23203,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22202,6 +23264,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22253,6 +23319,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22310,6 +23380,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22361,6 +23435,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22418,6 +23496,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22469,6 +23551,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22526,6 +23612,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22577,6 +23667,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22634,6 +23728,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22685,6 +23783,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22742,6 +23844,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22793,6 +23899,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22850,6 +23960,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -22901,6 +24015,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -22958,6 +24076,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23009,6 +24131,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23066,6 +24192,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23117,6 +24247,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23174,6 +24308,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23225,6 +24363,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23282,6 +24424,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23333,6 +24479,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23390,6 +24540,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23441,6 +24595,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23498,6 +24656,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23549,6 +24711,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23606,6 +24772,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23657,6 +24827,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23714,6 +24888,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23765,6 +24943,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23822,6 +25004,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23873,6 +25059,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -23930,6 +25120,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -23981,6 +25175,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -24038,6 +25236,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -24089,6 +25291,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
@@ -24146,6 +25352,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -24200,6 +25410,10 @@
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -24251,6 +25465,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24309,6 +25527,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24361,6 +25583,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24418,6 +25644,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24469,6 +25699,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24527,6 +25761,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24579,6 +25817,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24637,6 +25879,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24688,6 +25934,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24745,6 +25995,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24799,6 +26053,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24850,6 +26108,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -24908,6 +26170,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -24963,6 +26229,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25014,6 +26284,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -25072,6 +26346,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25123,6 +26401,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -25181,6 +26463,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25233,6 +26519,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -25291,6 +26581,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25345,6 +26639,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25396,6 +26694,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -25454,6 +26756,10 @@
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
@@ -25505,6 +26811,10 @@
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
     },
@@ -25563,6 +26873,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -25614,6 +26928,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -25671,6 +26989,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -25722,6 +27044,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -25779,6 +27105,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -25830,6 +27160,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -25887,6 +27221,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -25938,6 +27276,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -25995,6 +27337,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26046,6 +27392,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26103,6 +27453,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26154,6 +27508,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26211,6 +27569,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26262,6 +27624,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26319,6 +27685,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26370,6 +27740,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26427,6 +27801,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26478,6 +27856,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26535,6 +27917,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26586,6 +27972,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26643,6 +28033,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26694,6 +28088,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26751,6 +28149,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26802,6 +28204,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26859,6 +28265,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -26910,6 +28320,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -26967,6 +28381,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27018,6 +28436,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27075,6 +28497,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27126,6 +28552,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27183,6 +28613,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27234,6 +28668,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27291,6 +28729,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27342,6 +28784,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27399,6 +28845,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27450,6 +28900,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27508,6 +28962,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27559,6 +29017,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27616,6 +29078,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27667,6 +29133,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27724,6 +29194,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27775,6 +29249,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27832,6 +29310,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27883,6 +29365,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -27940,6 +29426,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -27994,6 +29484,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28045,6 +29539,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -28103,6 +29601,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28154,6 +29656,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -28211,6 +29717,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28262,6 +29772,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -28319,6 +29833,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28370,6 +29888,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -28427,6 +29949,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28481,6 +30007,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28532,6 +30062,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
@@ -28590,6 +30124,10 @@
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -28642,6 +30180,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -28699,6 +30241,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -28750,6 +30296,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -28807,6 +30357,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -28858,6 +30412,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -28916,6 +30474,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -28967,6 +30529,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29024,6 +30590,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29075,6 +30645,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29132,6 +30706,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29183,6 +30761,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29240,6 +30822,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29291,6 +30877,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29348,6 +30938,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29399,6 +30993,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29457,6 +31055,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29508,6 +31110,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29565,6 +31171,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29616,6 +31226,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29673,6 +31287,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29727,6 +31345,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29778,6 +31400,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29836,6 +31462,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29887,6 +31517,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -29944,6 +31578,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -29995,6 +31633,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30053,6 +31695,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30104,6 +31750,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30161,6 +31811,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30212,6 +31866,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30269,6 +31927,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30320,6 +31982,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30377,6 +32043,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30428,6 +32098,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30485,6 +32159,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30536,6 +32214,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30593,6 +32275,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30644,6 +32330,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30701,6 +32391,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30752,6 +32446,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30809,6 +32507,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30860,6 +32562,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -30917,6 +32623,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -30968,6 +32678,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31026,6 +32740,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31078,6 +32796,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31135,6 +32857,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31186,6 +32912,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31243,6 +32973,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31297,6 +33031,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31348,6 +33086,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31406,6 +33148,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31458,6 +33204,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31516,6 +33266,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31571,6 +33325,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31622,6 +33380,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31680,6 +33442,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31732,6 +33498,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31790,6 +33560,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31842,6 +33616,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -31900,6 +33678,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -31954,6 +33736,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32005,6 +33791,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -32063,6 +33853,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32115,6 +33909,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -32173,6 +33971,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32225,6 +34027,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -32283,6 +34089,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32335,6 +34145,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -32393,6 +34207,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32444,6 +34262,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
@@ -32501,6 +34323,10 @@
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
@@ -32552,6 +34378,10 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
@@ -32610,6 +34440,10 @@
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
@@ -32662,6 +34496,10 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
@@ -32719,6 +34557,10 @@
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
@@ -32773,6 +34615,10 @@
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
@@ -32824,6 +34670,10 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
@@ -32882,6 +34732,10 @@
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
@@ -32934,6 +34788,10 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
@@ -32991,6 +34849,10 @@
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
@@ -33042,6 +34904,10 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Melee Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     },
@@ -33099,6 +34965,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33150,6 +35020,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33207,6 +35081,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33258,6 +35136,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33315,6 +35197,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33366,6 +35252,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33423,6 +35313,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33474,6 +35368,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33532,6 +35430,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33583,6 +35485,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33640,6 +35546,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33691,6 +35601,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33748,6 +35662,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33799,6 +35717,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -33856,6 +35778,10 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -33907,6 +35833,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -33964,6 +35894,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34015,6 +35949,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34072,6 +36010,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34123,6 +36065,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34180,6 +36126,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34231,6 +36181,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34288,6 +36242,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34339,6 +36297,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34396,6 +36358,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34447,6 +36413,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34504,6 +36474,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34555,6 +36529,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34612,6 +36590,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34663,6 +36645,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34720,6 +36706,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34771,6 +36761,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34828,6 +36822,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34879,6 +36877,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -34936,6 +36938,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -34987,6 +36993,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35044,6 +37054,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35095,6 +37109,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35152,6 +37170,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35203,6 +37225,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35260,6 +37286,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35311,6 +37341,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35368,6 +37402,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35419,6 +37457,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35476,6 +37518,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35527,6 +37573,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35584,6 +37634,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35635,6 +37689,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35692,6 +37750,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35743,6 +37805,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35800,6 +37866,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35851,6 +37921,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -35908,6 +37982,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -35959,6 +38037,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36016,6 +38098,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36067,6 +38153,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36124,6 +38214,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36175,6 +38269,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36232,6 +38330,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36283,6 +38385,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36340,6 +38446,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36391,6 +38501,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36448,6 +38562,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36499,6 +38617,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36556,6 +38678,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36607,6 +38733,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36664,6 +38794,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36715,6 +38849,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36772,6 +38910,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36823,6 +38965,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36880,6 +39026,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -36931,6 +39081,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -36988,6 +39142,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37039,6 +39197,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37096,6 +39258,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37147,6 +39313,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37204,6 +39374,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37255,6 +39429,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37312,6 +39490,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37363,6 +39545,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37420,6 +39606,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37471,6 +39661,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37528,6 +39722,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37579,6 +39777,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
@@ -37636,6 +39838,10 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -37690,6 +39896,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -37741,6 +39951,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -37799,6 +40013,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -37851,6 +40069,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -37909,6 +40131,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -37961,6 +40187,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38019,6 +40249,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38071,6 +40305,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38129,6 +40367,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38181,6 +40423,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38239,6 +40485,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38291,6 +40541,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38349,6 +40603,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38401,6 +40659,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38459,6 +40721,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38514,6 +40780,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38565,6 +40835,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38623,6 +40897,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38675,6 +40953,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38732,6 +41014,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38783,6 +41069,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38841,6 +41131,10 @@
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
@@ -38892,6 +41186,10 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
@@ -38950,6 +41248,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39001,6 +41303,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39058,6 +41364,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39109,6 +41419,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39166,6 +41480,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39217,6 +41535,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39274,6 +41596,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39325,6 +41651,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39382,6 +41712,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39433,6 +41767,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39490,6 +41828,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39541,6 +41883,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39598,6 +41944,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39649,6 +41999,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39706,6 +42060,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39757,6 +42115,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39814,6 +42176,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39865,6 +42231,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -39922,6 +42292,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -39973,6 +42347,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -40030,6 +42408,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -40081,6 +42463,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -40138,6 +42524,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -40189,6 +42579,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
@@ -40246,6 +42640,10 @@
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
@@ -40297,6 +42695,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },

@@ -82,6 +82,8 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   /** Roster lines with no resolvable statline. Reported, not invented. */
   const unmatched: string[] = [];
   const armoryStash: StashedItem[] = [];
+  /** Named by the export's Warband Variant node; matched by id or name. */
+  let variantId: string | undefined;
 
   rawSelections.forEach((sel: any, idx: number) => {
     const isConfig = (sel.categories || []).some((c: any) => c.name === 'Configuration');
@@ -123,7 +125,21 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
       return;
     }
 
-    // Skip Configuration nodes (Campaign Rules, Warband Variant, Patron Selection, etc.)
+    /*
+      The Warband Variant is a Configuration node, and its child names the
+      Variant. Read it before skipping the node — dropping it meant every
+      imported roster was validated as the faction's *standard* list, so a
+      House of Wisdom Warband came back with two errors it does not have: the
+      base 0-1 Jabirean Alchemist limit (the Variant raises it to 2) and "must
+      include 1 Yüzbaşı Captain" (the Variant forbids the Yüzbaşı).
+    */
+    if (sel.name === 'Warband Variant') {
+      const picked = (sel.selections ?? [])[0]?.name;
+      if (picked) variantId = picked;
+      return;
+    }
+
+    // Skip Configuration nodes (Campaign Rules, Patron Selection, etc.)
     if (isConfig && !sel.profiles?.some((p: any) => p.typeName === 'Unit')) {
       return;
     }
@@ -346,6 +362,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
       id: `wb-${Date.now()}`,
       name: warbandName,
       factionId,
+      variantId,
       ducatLimit: ducatsLimit,
       treasuryDucats: 0,
       gloryPoints,
@@ -379,6 +396,28 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
   const unmatched: string[] = [];
 
   const selections = roster.forces?.force?.selections?.selection || roster.selections?.selection || [];
+
+  /*
+    The Warband Variant, which the export states and this used to throw away.
+
+    `Warband Variant` is a Configuration node, so it was skipped along with
+    `Campaign Rules` — but its child names the Variant, and dropping it meant
+    every imported roster was validated as the faction's standard list. A House
+    of Wisdom Warband came back with two errors it does not have: "0-1 Jabirean
+    Alchemist" (the Variant raises it to 2) and "must include 1 Yüzbaşı Captain"
+    (the Variant forbids the Yüzbaşı outright).
+
+    Stored as the name. `variantById` matches on id or name, and the name is
+    what the export carries.
+  */
+  let variantId: string | undefined;
+  for (const sel of selections as { '@_name'?: string; selections?: { selection?: unknown } }[]) {
+    if (sel['@_name'] !== 'Warband Variant') continue;
+    const inner = sel.selections?.selection;
+    const first = Array.isArray(inner) ? inner[0] : inner;
+    const picked = (first as { '@_name'?: string } | undefined)?.['@_name'];
+    if (picked) variantId = picked;
+  }
 
   selections.forEach((sel: any, idx: number) => {
     const selName = sel['@_name'] || `Unit ${idx + 1}`;
@@ -435,6 +474,7 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
       id: `wb-${Date.now()}`,
       name,
       factionId,
+      variantId,
       ducatLimit: 700,
       treasuryDucats: 0,
       gloryPoints: 0,

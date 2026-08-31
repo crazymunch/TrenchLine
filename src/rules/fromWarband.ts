@@ -133,7 +133,18 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
       name: u.customName || profile.name,
       cost: profile.cost,
       items: itemsOf(u, dataset, warband.factionId, unmatched),
-      options: [],
+      /*
+        The model's own upgrades — Alchemical Formulae, Strains, Sagas.
+        Dropped until now, which is why a Takwin Homunculus with Gargantuan
+        Size was told it could not take a Titan Zulfiqar: the catalogue reveals
+        that weapon to a Brazen Bull *or* to anything with Gargantuan Size, and
+        the roster carried no record of the Formula.
+      */
+      options: (u.specialUpgrades ?? []).map((o) => ({
+        optionId: o.id,
+        name: o.name,
+        cost: { ducats: o.cost ?? 0, glory: 0 },
+      })),
       fireteam: u.fireteam,
     });
   }

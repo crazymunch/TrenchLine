@@ -140,9 +140,20 @@ Worth recording, because each one would have looked like a data conflict:
 - The precedence check used `??`, which stopped at the truthy `base` record and
   never saw the layer override, so the Dispatch looked like a conflict.
 - `Combat Medic` exists as both a New Antioch and a Mercenary entry while the
-  book has one; comparing both manufactured a conflict.
+  book has one; comparing both manufactured a conflict. The first fix skipped
+  every duplicated name, which then *hid* a real 25-Ducat conflict on that very
+  entry for as long as the check existed. The book names each entry's faction
+  in its keywords — match on it rather than giving up.
+- **`resolutions.json` was inert.** It silenced a conflict and nothing more, so
+  an entry could record a decision the data had never taken; one claimed the
+  Scripture Guardian's Ranged had been set to the book's `-` while the app
+  shipped the catalogue's `+1 Dice`. Resolutions are now applied, and the value
+  each one states is checked against the source it cites.
+- **Two copies of the normalisation rules**, one in `rules:threeway` and one in
+  `verify.mjs`, had drifted far enough that the first reported five formatting
+  differences as source conflicts the second had long since settled.
 
-All four are covered by regression tests.
+All are covered by regression tests.
 
 ### Still outstanding
 
@@ -153,6 +164,15 @@ All four are covered by regression tests.
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.
+- **Forced Battlekit is not modelled.** The catalogues attach mandatory gear to
+  a model with a `min="1"` entryLink — a Combat Medic's Standard Armour, Gas
+  Mask and Medi-kit, a Combat Engineer's Engineer Body Armour, an Anchorite
+  Shrine's Sacrificial Lamb. The parser drops those links, so a model in the
+  app carries neither the gear nor the keywords it grants (`NEGATE GAS`), and
+  the matching Armoury row stays purchasable when the catalogue hides it. The
+  Combat Medic's cost is right by resolution, but a player can still add a
+  second Gas Mask for 5 Ducats it should not cost. Needs the parser to emit
+  forced kit and the armoury to read the catalogue's conditional `hidden`.
 - **`defaultRules.ts` is not deleted yet.** The app still reads the old model;
   migrating the UI onto `src/data/generated/` is Phase 2, so both exist for now.
   Phase 1 is verifiable on its own without a UI rewrite.
@@ -547,7 +567,8 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
 - The Codex printed the rulebook prose through `whitespace-pre-line`, so
   players read `#### Success Roll Table (2D6)` and `- **1-6: Failure**`,
   asterisks and all — the app's largest body of text, harder to read than the
-  book it was transcribed from.
+  book it was transcribed from. (That `1-6` was itself wrong; the prose it came
+  from is gone — see below.)
 - Worse: `parseDeedsList` in Play Mode split the Glorious Deeds on `\n` and
   kept only the lines that *began* a bullet. The extractor hard-wraps at the
   source PDF's column width, so **54 of the deeds across the twelve scenarios
@@ -555,6 +576,23 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
   presented as the whole rule. `parseRulesProse` rejoins the fragments; a test
   asserts against the shipped dataset that no deed ends without terminal
   punctuation.
+
+### The Codex's rules prose was written, not extracted
+
+The Codex's first tab shipped `src/data/officialCoreRules.ts`: eight chapters
+of hand-written Core and Comprehensive Rules. It was wrong about the three
+things a player looks up mid-game — Initiative went to the highest D6 roll
+rather than the fewest models, the Success table's failure band read `1-6` when
+1 is not a result on 2D6, and Morale triggered on "50% of starting models"
+rather than "half the models in your Warband (rounded up)".
+
+Replaced by `scripts/lib/parse-core-rules.mjs`, which walks the rulebook's own
+table of contents through the body and emits 59 sections — 17 Core, 42
+Comprehensive — each carrying its printed page. The walk matches headings **in
+contents order**, which is what makes it structural rather than fuzzy:
+"Combat" appears dozens of times in running text and only once as the next
+heading due. A heading the contents lists and the walk cannot find fails the
+build. See [`AUDIT.md`](AUDIT.md) §1.14.
 
 And three tables were wrapped in `overflow-hidden`, which *clipped* them rather
 than scrolling: the campaign standings lost its Glory Points column on a phone

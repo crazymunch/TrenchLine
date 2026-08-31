@@ -1,5 +1,4 @@
 import { Faction } from '../types/rules';
-import { OFFICIAL_CORE_RULES } from './officialCoreRules';
 
 export const FACTIONS: Faction[] = [
   {
@@ -156,4 +155,9 @@ export const FACTIONS: Faction[] = [
   tables from the rulebook. See AUDIT §1.13.
 */
 
-export { OFFICIAL_CORE_RULES };
+/*
+  OFFICIAL_CORE_RULES was eight chapters of hand-written rules prose and is
+  deleted with the rest of them. The Codex reads `dataset.coreRules`, extracted
+  from the Comprehensive Rulebook by scripts/lib/parse-core-rules.mjs. See
+  AUDIT §1.14.
+*/
