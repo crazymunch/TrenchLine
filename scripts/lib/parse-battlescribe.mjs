@@ -329,7 +329,7 @@ function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
   // statement, which is the one that survives if the profile is restructured.
   const seen = new Set();
   return out.filter((m) => {
-    const { ...rule } = m;
+    const { origin, ...rule } = m;
     const k = JSON.stringify(rule);
     if (seen.has(k)) return false;
     seen.add(k);

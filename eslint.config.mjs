@@ -55,6 +55,21 @@ export default [
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
+        /*
+          `ignoreRestSiblings` is not a convenience. Destructure-to-omit —
+
+              const { origin, ...rule } = m;   // dedupe ignoring `origin`
+
+          — has an unused binding BY DESIGN: the binding is how the key is
+          removed. Flagging it invites exactly the fix that breaks it, and
+          that is not hypothetical. Sweeping the first run of this rule
+          deleted `origin` from that very line in `parse-battlescribe.mjs`,
+          which stopped modifiers differing only by `origin` from deduping
+          and put 452 duplicate modifiers into both generated datasets. CI's
+          "generated data is up to date" check caught it; nothing else would
+          have, because the app still rendered.
+        */
+        ignoreRestSiblings: true,
       }],
 
       /*
