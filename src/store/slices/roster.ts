@@ -14,7 +14,7 @@ import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
 
-export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
+export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
 export const createRosterSlice = (init: InitialState): StateCreator<AppState, [], [], RosterSlice> =>
   (set, get) => ({
@@ -140,6 +140,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         factionId,
         forceMode,
         variantId: founding?.variantId,
+        allowThirdParty: founding?.allowThirdParty ?? false,
         // A campaign warband opens its ledger with the founding allowance, so
         // the Strongbox is the sum of a history from the first Ducat rather than
         // a number that was set and is later edited.
@@ -424,6 +425,15 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           };
           return updatedWb;
         });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    setWarbandAllowThirdParty: (warbandId, allow) => {
+      set((state) => {
+        let updated = state.warbands.map((w) =>
+          (w.id === warbandId ? { ...w, allowThirdParty: allow } : w));
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });

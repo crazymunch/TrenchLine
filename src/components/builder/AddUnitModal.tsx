@@ -87,14 +87,24 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
     }, {}),
   );
 
+  /*
+    Third-party content is hidden unless this Warband has opted in, which is the
+    catalogues' own default: those entries are `hidden="true"` until the roster
+    takes the "Allow Third-Party Mercenaries?" option. Filtered here rather than
+    greyed out — an entry a Warband cannot hire is noise in a list of what it
+    can, and the toggle that reveals them says plainly where they went.
+  */
+  const allowThirdParty = !!warband?.allowThirdParty;
+
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
   const availableUnits = useMemo(() => units.filter((u) => {
+    if (u.thirdParty && !allowThirdParty) return false;
     if (u.factionId === factionId) return true;
     if (u.category === 'Mercenary' || u.factionId === 'mercenaries') {
       return Array.isArray(u.allowedFactions) && u.allowedFactions.includes(factionId);
     }
     return false;
-  }), [units, factionId]);
+  }), [units, factionId, allowThirdParty]);
 
   const categories = ['All', ...CATEGORY_ORDER, `⭐ Favourites (${favouriteUnits.length})`];
 
@@ -334,6 +344,12 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <span className="font-mono text-xs text-theme-muted tabular-nums truncate">
                         {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · A {unit.stats.armour}
                         {isMercenary && <span className="text-status-legal"> · Merc</span>}
+                        {/* On the collapsed row, not only in the expanded panel:
+                            an entry that is not official has to be readable as
+                            such without opening it. */}
+                        {unit.thirdParty && (
+                          <span className="text-status-warning"> · Third party</span>
+                        )}
                       </span>
                     </button>
 
@@ -404,6 +420,11 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                             May lead
                           </span>
                         )}
+                        {unit.thirdParty && (
+                          <span className="eyebrow px-2 py-0.5 rounded font-bold bg-status-warning/15 text-status-warning border border-status-warning/40">
+                            Third party
+                          </span>
+                        )}
                         {unit.maxCount !== undefined && (
                           <span className="eyebrow text-theme-muted">Limit {unit.maxCount}</span>
                         )}
@@ -420,6 +441,13 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                             </span>
                           ))}
                         </div>
+                      )}
+
+                      {/* The source's own disclaimer, not a paraphrase of it. */}
+                      {unit.thirdParty && unit.thirdPartyNotice && (
+                        <p className="text-xs text-status-warning/90 leading-relaxed border-l-2 border-status-warning/40 pl-2">
+                          {unit.thirdPartyNotice}
+                        </p>
                       )}
 
                       {unit.innateAbilities && unit.innateAbilities.length > 0 && (

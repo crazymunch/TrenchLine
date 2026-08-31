@@ -108,6 +108,15 @@ export interface UnitProfile {
    * through so the builder can nominate without guessing.
    */
   canLead?: boolean;
+  /**
+   * Content the catalogues mark as third-party: condoned by Factory Fortress
+   * but written by other people, with, in the source's own words, "no
+   * assurances ... to balance or consistency with rules". Hidden unless the
+   * Warband opts in — see `rules/thirdParty.ts`.
+   */
+  thirdParty?: boolean;
+  /** The source's own disclaimer, shown rather than paraphrased. */
+  thirdPartyNotice?: string;
   innateAbilities?: Ability[];
   defaultWeapons?: string[]; // weapon IDs
   defaultArmour?: string[]; // armour IDs

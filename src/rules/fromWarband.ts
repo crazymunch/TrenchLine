@@ -143,6 +143,7 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
     name: warband.name,
     factionId: warband.factionId,
     variantId: warband.variantId,
+    allowThirdParty: warband.allowThirdParty,
     units,
     stash: (warband.armoryStash ?? []).map((s) => {
       const w = dataset.weapons.find((x) => key(x.name) === key((s as { name?: string }).name ?? ''));

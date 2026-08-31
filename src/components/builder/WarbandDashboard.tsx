@@ -61,6 +61,9 @@ export const WarbandDashboard: React.FC = () => {
   const [newDucatLimit, setNewDucatLimit] = useState(700);
   const [newGlory, setNewGlory] = useState(0);
   const [newVariantId, setNewVariantId] = useState<string | undefined>(undefined);
+  // Off by default, which is the catalogues' default: third-party entries are
+  // hidden until the roster takes the "Allow Third-Party Mercenaries?" option.
+  const [newAllowThirdParty, setNewAllowThirdParty] = useState(false);
   // How the budget is governed. 'campaign' is the published economy and is the
   // default, because it is what the book describes and what a campaign needs.
   const [newForceMode, setNewForceMode] = useState<'campaign' | 'unrestricted'>('campaign');
@@ -96,11 +99,12 @@ export const WarbandDashboard: React.FC = () => {
       // only the player's to set in unrestricted mode.
       newForceMode === 'campaign' ? 700 : newDucatLimit,
       newForceMode,
-      { variantId: newVariantId, gloryPoints: newGlory },
+      { variantId: newVariantId, gloryPoints: newGlory, allowThirdParty: newAllowThirdParty },
     );
     setNewWarbandName('');
     setNewVariantId(undefined);
     setNewGlory(0);
+    setNewAllowThirdParty(false);
     setIsCreateModalOpen(false);
   };
 
@@ -435,6 +439,38 @@ export const WarbandDashboard: React.FC = () => {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Third-party content.
+
+                  Not a house rule the app invented: the catalogues carry an
+                  "Allow Third-Party Mercenaries?" roster option and hide the
+                  entries until it is taken. This is that option, and it stays
+                  editable from the roster — it is a table agreement, not a
+                  founding decision like the Variant. */}
+              <div>
+                <label
+                  htmlFor="muster-third-party"
+                  className="flex items-start gap-3 p-3 min-h-[44px] rounded-sm border border-theme-border cursor-pointer hover:border-theme-primary/50"
+                >
+                  <input
+                    id="muster-third-party"
+                    type="checkbox"
+                    checked={newAllowThirdParty}
+                    onChange={(e) => setNewAllowThirdParty(e.target.checked)}
+                    className="mt-0.5 w-5 h-5 flex-shrink-0 accent-theme-primary"
+                  />
+                  <span className="min-w-0">
+                    <span className="block font-gothic font-bold text-sm text-theme-text">
+                      Allow third-party Mercenaries
+                    </span>
+                    <span className="block text-xs text-theme-muted mt-1 leading-relaxed">
+                      Community entries that Factory Fortress condones but does not
+                      guarantee for balance. Off by default, and worth agreeing with
+                      your opponents first.
+                    </span>
+                  </span>
+                </label>
               </div>
 
               <div className="pt-4 border-t border-theme-border flex items-center justify-end space-x-3">
