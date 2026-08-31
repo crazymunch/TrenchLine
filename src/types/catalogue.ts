@@ -195,6 +195,8 @@ export interface WeaponProfile {
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];
   factionId?: string;
+  /** See `UnitProfile.hiddenByDefault`. */
+  hiddenByDefault?: boolean;
 }
 
 export interface UnitProfile {
@@ -236,6 +238,13 @@ export interface UnitProfile {
   allowedFactions?: string[];
 
   lore?: string;
+  /**
+   * The catalogue entry is `hidden="true"`: off the list until a modifier
+   * reveals it. See `rules/variantLocks.ts` — a variant's `set hidden false`
+   * means "this is what unlocks the model" on a hidden entry and "undo another
+   * variant's ban" on a visible one.
+   */
+  hiddenByDefault?: boolean;
 }
 
 export interface FactionSpecialRule {

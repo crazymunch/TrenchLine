@@ -652,6 +652,40 @@ hiding what it unlocks would be half a switch.
 > bare form, so a reader that only walks `all`/`any` returns nothing and matches
 > nothing. That bug found 1 entry where there are 22.
 
+### Models a Variant unlocks
+
+Twenty-one entries exist only inside one Variant — the Technomancer in the
+Cadaver Corps, the Matagot Hag in The Great Hunger, the Mendelist Ammo Monk in
+the War Pilgrimage of Saint Methodius. The app offered every one of them to
+every Warband of the faction, so a standard Black Grail list could recruit a
+Leader it is not entitled to. `rules/variantLocks.ts` reads the lock;
+`validate.ts` raises `variant-locked` when the Variant is changed out from under
+a rostered model.
+
+**The lock needs both halves, and this is the whole subtlety:**
+
+| entry | + variant `set hidden false` | means |
+|---|---|---|
+| `hidden="true"` | yes | the Variant is what unlocks it — **a lock** |
+| `hidden="false"` | yes | a re-reveal undoing another Variant's ban — **not a lock** |
+
+The Janissary proves it: a core Iron Sultanate troop, banned by Nomads of
+Al-Badia and Ghazi of the Golden Path, and re-revealed under Fida'i of Alamut.
+Reading that reveal as a lock makes Janissaries exclusive to the Cabal of
+Assassins — the opposite of the book. So the entry's own `hidden` attribute is
+now carried through as `hiddenByDefault`; it is not recoverable from the
+modifiers, and without it the two cases are indistinguishable.
+
+An entry reachable another way is not locked either: the Desecrated Saint and
+the Yoke Fiend answer to the Court's Chosen Sin selections as well as to the
+Fang of the Seething Black.
+
+> This cut both ways. Third-party detection originally read *any*
+> variant-conditioned reveal as a gate, and so hid six ordinary faction units —
+> Anointed Heavy Infantry, Sultanate Sapper, Shocktrooper, Desecrated Saint,
+> Yoke Fiend and War Wolf — from every Warband that had not opted in. Same
+> missing datum, opposite symptom.
+
 ### Wargear
 
 Thirty-three weapons hang off the same six Variants — Greek Fire off the

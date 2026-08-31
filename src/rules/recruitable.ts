@@ -34,6 +34,7 @@ import type {
 import { nameKey } from './names';
 import { sameFaction } from './variants';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
+import { variantLocks } from './variantLocks';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -118,6 +119,15 @@ export function recruitable(
   */
   const tpVariants = thirdPartyVariantIds(dataset);
 
+  /*
+    Models that exist only inside one Warband Variant — the Technomancer in the
+    Cadaver Corps, the Matagot Hag in The Great Hunger. Every one of them was
+    offered to every Warband of the faction.
+  */
+  const locks = variantLocks(dataset);
+  const variantsById = new Map(
+    (dataset.variants ?? []).filter((v) => v.entryId).map((v) => [v.entryId as string, v]));
+
   const units: UnitProfile[] = dataset.units.map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
@@ -186,6 +196,12 @@ export function recruitable(
             : u.allowedFactions ? u.allowedFactions.map(appId) : appFactionIds)
         : undefined,
       thirdParty: gate.thirdParty || undefined,
+      requiresVariant: locks.get(u.entryId || u.id)
+        ? [...locks.get(u.entryId || u.id)!.variantIds]
+            .map((vid) => variantsById.get(vid))
+            .filter((v): v is NonNullable<typeof v> => !!v)
+            .map((v) => ({ id: v.id, name: v.name }))
+        : undefined,
       thirdPartyNotice: gate.notice,
       // Deliberately absent: the catalogues do not give models default gear.
       // `defaultRules.ts` invented starting loadouts, which is where a chunk of
