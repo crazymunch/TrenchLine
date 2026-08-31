@@ -68,9 +68,42 @@ with all 7 buttons at exactly 44px.
 | 1.4a | Parse the rulebook's warband entries and variants | ✅ `scripts/lib/parse-warbands.mjs` |
 | 1.5 | New entity model | ✅ `src/types/catalogue.ts` |
 | 1.6 | Layer engine + provenance stamping | ✅ `scripts/lib/layers.mjs` |
-| 1.7 | Transcribe `dispatch-01.layer.json` | 🟡 the four Grail Strains done; Amalgam/Thrall entry replacements and the Mercenary keyword rewrites outstanding |
+| 1.7 | Transcribe `dispatch-01.layer.json` | ✅ 58 ops — Grail Strains, the Amalgam and Grail Thrall entry replacements, and the whole Mercenary section |
 | 1.7a | Parse the 14 Warband Variants | ✅ all 14, with their special rules |
 | 1.7b | Preserve the kept warband | ⬜ deferred to Phase 2 with the roster model |
+
+### 1.7 — the Mercenary section
+
+The Dispatch turns ten entries into MERCENARY units, and the section is the
+longest single piece of errata in the document: nine keyword rows, two costs,
+three statline corrections and eleven ability replacements or additions.
+
+**None of the rules text was retyped.** Every string is cut from
+`trench-dispatch-01-april-2026.txt` by line range and de-wrapped, and each op
+carries the range it came from in `_src`. That is the only way a transcription
+this size can be trusted — and the one place a range was picked by eye it was
+wrong: the MERCENARY glossary entry initially ran one line long and ended
+"…included in the model's Profile. **Combat Biologist**", swallowing the next
+heading. `src/rules/__tests__/dispatch.test.ts` now fails on any description
+that ends with a finished sentence followed by another entry's name, which is
+the signature of exactly that error anywhere in the dataset.
+
+**The costs did not need a maintainer ruling.** The PDF sets the currency as a
+glyph the extraction drops, which is why the Strains carry
+`_costCurrencyConfirmed`. Here it is *derived* instead: the catalogue prices
+every Mercenary in the section in Glory, and on the two entries the Dispatch
+reprints without changing the number — Scripture Guardian 7, Goetic Warlock 4 —
+it matches the catalogue's Glory value exactly. Two independent agreements fix
+the currency; the two numbers that differ are the errata. Those ops carry
+`_costCurrencyDerived`, reported under its own heading, because "confirmed
+against the printed page" is not true of them and a report that overstates how
+a value was established is the same failure as a value with no provenance.
+
+Three things are recorded rather than guessed: the Sister of Saint Cosmas has a
+keyword rewrite and no catalogue entry to target; the Battlekit sentences and
+the Goetic Warlock's Powers paragraph are constraints the entity model has no
+field for; and the recruitment sentences need no ops because the catalogues
+already express recruitment as per-warband visibility modifiers and agree.
 | 1.8 | `rules:verify` | ✅ `scripts/lib/verify.mjs`; fails on unresolved conflicts |
 | 1.9 | `rules:build` → `*.generated.ts` + provenance | ✅ |
 | 1.10 | Define the two rulesets | ✅ `scripts/lib/rulesets.mjs` |
@@ -135,7 +168,7 @@ All four are covered by regression tests.
 | 2.3 | ✅ `UnitOption` support — 315 options across 55 units in 22 groups. **Catalogue modifiers done** ([`RULESET-MODEL.md` §7b](RULESET-MODEL.md#7b-catalogue-modifiers--the-conditional-layer)): 820 parsed, evaluated by `src/rules/modifiers.ts`, verified against the real roster. |
 | 2.4 | Wargear legality — "ELITE only", "Limit: 2", hand/slot capacity, faction armoury scoping |
 | 2.5 | Warband creation rules — required entries ("must include 1 Yüzbaşı"), budget presets |
-| 2.5 | 🟡 Warband creation rules — force mode, Strongbox and the derived Threshold done; Exploration income blocked on AUDIT §1.13 |
+| 2.5 | ✅ Warband creation rules — force mode, Strongbox, the derived Threshold, and Exploration income paid from the derived tables |
 | 2.5a | ✅ Faction Special Rules — 6 factions with budgets, the Fireteam cap enforced and overridable by a variant |
 | 2.6 | ✅ Surface violations in the builder — `LegalityStrip` renders the verdict, every violation naming the rule that produced it |
 | 2.7 | ✅ Ruleset switcher + reconciliation — `RulesetSwitcher` shows a computed diff, roster entries first, before anything is applied |
@@ -307,9 +340,16 @@ Two rules the old D66 model could not express, both now honoured:
 physical roll typed in produce identical records — which is what lets two
 players in the same battle each use whichever they prefer.
 
-**Still to do:** the post-battle wizard reads `officialRulesData.ts`, not this.
-Migrating it is the remaining half, and the four Skills tables there are still
-fabricated (AUDIT §1.13).
+**Both halves are wired now.** `PostBattleWizardModal` takes its dice count,
+its open tables and its result from `explorationDice` / `explorationTables` /
+`resolveExploration` against the dataset, and `UnitAdvancementModal` reads
+`dataset.campaign.skills`. `officialRulesData.ts` has no exports left — the
+seven tables that used to live there are deleted rather than moved, so an
+import cannot quietly reach for a fabricated one, and
+`npm run rules:audit:campaign` fails the build if any of their names reappears.
+
+The audit now reports `CONFLICT 0  UNBACKED 0` against the catalogue's Trauma
+entries, and 78 derived Exploration and Skills rows.
 - The four entries still unmatched on the seeded warband are all
   `defaultRules.ts` artifacts — `Alchemical Ammunition (Loaded)` carries an app
   state marker in its name, `Polearm and Shield` and `Alchemical Jezzail` are
@@ -529,11 +569,44 @@ precisely because the overflow was hidden.
 
 | # | Task |
 |---|---|
-| 4.1 | Real routes — `/roster/[id]`, `/play/[matchId]`, `/campaign/[id]`, `/codex/[...slug]` |
+| 4.1 | ✅ Real routes — `/roster/[id]`, `/play`, `/campaign`, `/directory`, `/codex`, `/customizer`, with the view derived from the URL |
 | 4.2 | ✅ Split `useStore.ts` (2,471 lines) into seven slices — see below |
-| 4.3 | Resolve the `localStorage` ⇄ Postgres dual source of truth |
-| 4.4 | Remove `eslint.ignoreDuringBuilds` and fix the fallout |
-| 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
+| 4.3 | ✅ Resolve the `localStorage` ⇄ Postgres dual source of truth — see [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins) |
+| 4.4 | ✅ Remove `eslint.ignoreDuringBuilds` and fix the fallout — six real bugs, not lint |
+### 4.1 — the route is the authority
+
+Six views rendered from one `page.tsx` switching on `currentView`, so the whole
+app had a single URL. No deep links, no way to send a teammate your list, and a
+back button that did nothing.
+
+Each view now has a route under the `(app)` group, which shares one shell
+layout. `/roster/[id]` is the one that carries a parameter, because a warband
+is the thing people want to link to.
+
+**The direction matters.** The URL decides, and `currentView` is derived from
+it in the shell — not the reverse, and not both. Two sources of truth for where
+the user is would be the same shape of bug the roster persistence had in 4.3,
+and the back button is what exposes it: a click handler can keep state and URL
+in step, but nothing runs on a history pop.
+
+The nineteen `setCurrentView('play')` call sites are unchanged. The store
+action navigates instead of writing state, through a router the shell registers
+into it — a Zustand store lives outside React and cannot call `useRouter`
+itself. Where no router is registered (server rendering, and unit tests that
+exercise the store with no tree around it) it falls back to a plain write.
+
+Code splitting came free with the route split:
+
+| | before | after |
+|---|---:|---:|
+| first-load JS, `/campaign` | 257 kB | 145 kB |
+| first-load JS, `/codex` | 257 kB | 154 kB |
+| first-load JS, `/play` | 257 kB | 162 kB |
+
+An unknown path falls back to the roster rather than throwing. A URL is user
+input, and a blank screen is a worse answer to a stale link than the front door.
+
+| 4.5 | ✅ Offline-first PWA — service worker, cached rules data for table use with no signal |
 
 ### 4.2 — the store, in pieces
 
@@ -566,6 +639,81 @@ a seed takes it as an argument instead of closing over a variable defined four
 hundred lines above it.
 
 ---
+
+### 4.4 — the linter that was not there
+
+`next.config.mjs` carried `eslint: { ignoreDuringBuilds: true }`, which reads
+like a backlog of violations being deferred. It was not: there was no ESLint
+config and no ESLint dependency. The flag was suppressing a linter that did not
+exist, and the build had never checked anything.
+
+Turning it on found **six real bugs**, not style:
+
+**Two hooks called after an early return.** `useScenarios` sat below
+`if (!viewingWarband) return` in `PlayModeView` and below `if (!warband) return
+null` in `PostBattleWizardModal`. React identifies a hook by its call order, so
+both components ran one fewer hook when there was nothing selected than when
+there was — and the render where a player picks their first warband is exactly
+the transition that breaks.
+
+**Four handlers wired to nothing.** `no-unused-vars` on a handler is usually a
+leftover. Four times here it was a feature with no way to reach it:
+
+| | |
+|---|---|
+| `ImportWarbandModal` | You could paste a NewRecruit export, watch it parse, read a preview of every warrior and their cost — and then only close the dialog. `handleConfirmImport` existed and had no button. |
+| `WarbandChronicleModal` | Edit your warband's motto, patron and lore; closing dropped all of it, silently. `handleSave` existed and had no button. |
+| `BugReportModal` | The form had no submit control at all — `handleSubmit` was reachable only by pressing Enter in a text input, which does nothing from the textarea the description is typed in. `handleCopyReport`, the fallback for when the server cannot be reached, was unwired too. |
+| `WarbandChangelogModal` | `handleResetToCanonical` replaced the warband's snapshots **and its entire unit list** with a hard-coded fixture. Here unreachable was the *correct* state, so it was deleted rather than wired: a button that silently overwrites a roster with demo data is one misclick from destroying a campaign. |
+
+The rest was 384 unused bindings, swept mechanically and verified by tsc and
+the suite. What is left is 108 warnings — mostly `no-explicit-any` in the older
+components, which is a real migration and not a build blocker, so it is visible
+and counted rather than failing CI on debt that predates the config.
+
+`npm run lint` is now `eslint .` and runs in CI.
+
+### 4.5 — no signal
+
+The app is used in a hall, a shop basement, a garage. Opening it there gave a
+browser error page.
+
+`public/sw.js` caches three things three different ways, and the differences
+are the design:
+
+| | | |
+|---|---|---|
+| `/_next/static/`, icons, maps | cache-first | Next fingerprints its output, so a URL names one immutable file. A new build asks for new URLs. |
+| `/api/dataset` | stale-while-revalidate | Serve the cached ruleset at once so a phone with no signal has statlines; refresh in the background. Not cache-first-forever — a deploy can change the dataset without changing the URL, and rules that silently never update are the quietly-wrong data this project exists to stop shipping. |
+| navigations | network-first, cache fallback | The network wins when it is there, so a deploy is picked up on the next load rather than after an eviction. |
+
+**`/api/warbands` and the other user-data routes are never cached.** That data
+already has an authoritative copy in `localStorage` and a merge rule that knows
+how to reconcile it (4.3). A cached HTTP response would be a third copy with no
+merge rule, handed back as if it were current. Offline for a roster is the
+store's job, not the service worker's.
+
+The ruleset is the part that matters most and the part it would have been easy
+to miss: it is ~1.6 MB served from `/api/dataset` rather than bundled, so a
+cached shell without it opens an app with no costs, no keywords and no
+statlines — which is worse than not opening, because it looks like it works.
+`e2e/offline.spec.ts` cuts the network for real and asserts the offline dataset
+still has all 89 units.
+
+**One trap, found by that test rather than by hand.** Next answers a navigation
+with `Vary: RSC, Next-Router-State-Tree, …`, and `cache.match` honours `Vary` —
+so a cached page only matches a request whose values for every one of those
+headers are identical. A cold load and a client navigation differ in exactly
+those headers, so the shell missed and `/play` failed offline with
+`ERR_ABORTED` while having been cached correctly the whole time. Every
+`cache.match` passes `ignoreVary: true`; there is one document per URL here, so
+the Vary axes carry nothing worth matching on. A manual browser check had
+passed, because it happened to reuse identical headers.
+
+The worker does not register in development: `next dev` rebuilds the shell on
+every edit, and a cached one serves yesterday's bundle against today's chunks —
+a blank page with a chunk 404 that looks like a code bug for as long as it
+takes to remember the worker is there.
 
 ## Phase 5 — Carcass Front preview (backburner)
 

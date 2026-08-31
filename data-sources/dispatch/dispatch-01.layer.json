@@ -14,20 +14,50 @@
     "Trench Wire updates, and most of it is marked Public Beta — hence",
     "status: public-beta, which a ruleset can exclude.",
     "",
-    "INCOMPLETE. This covers the mechanical changes that map cleanly onto the",
+    "COMPLETE for every change that maps onto the entity model. The Mercenary section (pp.11-16) is now transcribed: the MERCENARY glossary entry, nine keyword rewrites, two cost changes, three statline corrections, and eleven ability replacements or additions.",
     "",
     "Grail Strains transcribed (4). Their rules text is verbatim from the extracted",
     "Dispatch. Their COSTS needed a maintainer ruling: the PDF prints the currency as a glyph and",
     "the text extraction drops it, so a bare number is all that survives. Ops whose",
     "maintainer confirmed against the printed page carry _costCurrencyConfirmed. All four",
-    "are Ducats. The Amalgam and Grail Thrall entry replacements are now transcribed; still outstanding: the Mercenary entry",
+    "are Ducats. The Amalgam and Grail Thrall entry replacements are transcribed too.",
     "replacements (full statlines), and the Mercenary keyword rewrites.",
     "",
     "The Dispatch's 'Grail Thrall' is the catalogues' 'Thrall'. The Strains ops target",
     "the catalogue name. Note the Dispatch extends Strains to Thralls, which the",
     "catalogues currently offer only to the Matagot Hag and Gregori Gula.",
     "",
-    "UNRESOLVED, recorded rather than decided: the Dispatch's Amalgam ability list is Absorb, Corpulent, Curse on Creation, Trample ACTION and Unstoppable. The catalogue additionally has 'Six-armed Monstrosity' and 'Strong-ish'. Taken literally, a full entry replacement drops both, and dropping 'Strong-ish' agrees with the keyword row losing STRONG. They are NOT removed here: asserting the removal means asserting the PDF extraction captured a complete ability list, and an ability wrongly deleted is harder to notice than one wrongly kept. Confirm against the printed page."
+    "UNRESOLVED, recorded rather than decided: the Dispatch's Amalgam ability list is Absorb, Corpulent, Curse on Creation, Trample ACTION and Unstoppable. The catalogue additionally has 'Six-armed Monstrosity' and 'Strong-ish'. Taken literally, a full entry replacement drops both, and dropping 'Strong-ish' agrees with the keyword row losing STRONG. They are NOT removed here: asserting the removal means asserting the PDF extraction captured a complete ability list, and an ability wrongly deleted is harder to notice than one wrongly kept. Confirm against the printed page.",
+    "",
+    "The Mercenary costs did NOT need a maintainer ruling, unlike the Strains, and they carry",
+    "_costCurrencyDerived rather than _costCurrencyConfirmed to say so. The currency is derived",
+    "in-repo: the catalogue prices every Mercenary in this section in Glory, and on the two",
+    "entries the Dispatch reprints WITHOUT changing the number (Scripture Guardian 7, Goetic",
+    "Warlock 4) the printed number matches the catalogue Glory value exactly. Two independent",
+    "agreements fix the currency; the two numbers that differ are the errata. Anyone can check",
+    "that against the committed catalogues without holding the PDF.",
+    "",
+    "STILL OUTSTANDING, recorded rather than guessed:",
+    "",
+    "  1. The Sister of Saint Cosmas has a keyword rewrite on p.12 and no entry in the",
+    "     catalogues, so there is nothing to target and no op is written. Creating the entry to",
+    "     hold the keywords would be inventing a unit.",
+    "",
+    "  2. The Battlekit sentences ('A Witchburner always has Reinforced Armour, a Combat Helmet,",
+    "     and a Gavel of Justice') and the Goetic Warlock's Powers paragraph are constraints the",
+    "     entity model has no field for. They are rules, not flavour, and belong with the",
+    "     Battlekit work rather than being dropped into a description string.",
+    "",
+    "  3. The recruitment sentences ARE transcribed, as allowedFactions ops. They were",
+    "     first left out on the reasoning that \"the catalogues already express recruitment",
+    "     as per-warband visibility modifiers and agree\" — which was checked against ONE",
+    "     entry, the Witchburner, and generalised. It does not hold: the Mendelist Ammo",
+    "     Monk, the Sin Eater, the Goetic Warlock and the Communicant Anti-Tank Hunter",
+    "     carry no host restriction at all in the catalogues, the Mamluk Faris's is keyed",
+    "     to an injury (\"Lost Arm [26]\"), and the Scripture Guardian is restricted to two",
+    "     Warbands where the Dispatch says any. Meanwhile the recruit list granted every",
+    "     Mercenary to every faction, so a Court of the Seven-Headed Serpent Warband was",
+    "     offered the Ammo Monk and the Observer. The printed sentences are the source."
   ],
   "ops": [
     {
@@ -438,6 +468,427 @@
       ],
       "_src": "p.8 Strains & Amalgam — Amalgam keyword row",
       "_note": "The Dispatch says \"Replace the Grail Thrall and Amalgam Warband Entries with the following\", and its keyword row prints exactly these four. The catalogue additionally carries STRONG, which the replacement drops — consistent with the printed row."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "keyword",
+        "id": "MERCENARY"
+      },
+      "field": "description",
+      "value": "This model is a Mercenary and can be recruited by various Factions. Mercenaries do not benefit from Faction special rules that refer to ‘models in a [Faction] Warband’, such as the New Antioch Concentrated Attack rule, including Warband Variant special rules, such as the Éire Rangers Light Infantry rule. They do count as friendly models for the purposes of other rules used by their Warband, such as the Kingdom of Alba Assault Detachment Bagpipe rules, unless stated otherwise. In a campaign, this includes counting towards Threshold Limits and Field Strength, completing Glorious Deeds, rolling on the Trauma Table for them if they are ELITE and taken Out of Action, being Promoted and gaining Experience Points, and so on. A Mercenaries’ Battlekit cannot be removed or lost over the course of the campaign for any reason, and they cannot have any other Battlekit. Note that the Injury Modifier for any Armour they have has been included in the model’s Profile.",
+      "_src": "trench-dispatch-01-april-2026.txt L543-552 — 'Add the following Keyword to the Keyword Glossary: MERCENARY (Effect): …'",
+      "_note": "The glossary already had MERCENARY, abridged: it dropped the Éire Rangers and Kingdom of Alba examples and the whole final sentence — \"A Mercenaries’ Battlekit cannot be removed or lost over the course of the campaign for any reason, and they cannot have any other Battlekit.\" That sentence is a campaign rule with mechanical force, so the Dispatch text replaces the abridgement rather than sitting beside it."
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Combat Biologist"
+      },
+      "keywords": [
+        "MERCENARY",
+        "NEGATE FEAR"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L564-564 — 'Replace the Keywords with: MERCENARY NEGATE FEAR'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Communicant Anti-Tank Hunter"
+      },
+      "keywords": [
+        "MERCENARY",
+        "REGENERATE 1",
+        "STRONG",
+        "TOUGH"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L576-576 — 'Replace the Keywords with: MERCENARY REGENERATE 1 STRONG TOUGH'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Mamluk Faris"
+      },
+      "keywords": [
+        "MERCENARY",
+        "FIRETEAM (see Sworn Brethren)",
+        "IGNORE OFF-HAND WEAPON"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L588-589 — 'Replace the Keywords with: MERCENARY FIRETEAM (see Sworn Brethren) IGNORE OFF-HAND WEAPON'",
+      "_note": "The row wraps: \"FIRETEAM (▶ see Sworn Brethren)\" ends L588 and \"IGNORE OFF-HAND WEAPON\" is L589. The ▶ is the book’s cross-reference glyph, dropped here."
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Mendelist Ammo Monk"
+      },
+      "keywords": [
+        "MERCENARY"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L628-628 — 'Replace the Keywords with: MERCENARY'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Observer"
+      },
+      "keywords": [
+        "MERCENARY"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L643-643 — 'Replace the Keywords with: MERCENARY'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Sin Eater"
+      },
+      "keywords": [
+        "MERCENARY",
+        "DEMONIC",
+        "FEAR",
+        "STRONG",
+        "TOUGH"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L716-716 — 'Replace the Keywords with: MERCENARY DEMONIC FEAR STRONG TOUGH'",
+      "_note": "Drops HERETIC, which the catalogue carries. That is the point of the change: the entry becomes a MERCENARY recruitable beyond one faction, and none of the other Mercenaries carry a faction keyword. Adds DEMONIC."
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Scripture Guardian"
+      },
+      "keywords": [
+        "MERCENARY",
+        "GOLEM"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L756-756 — 'Replace the Keywords with: MERCENARY GOLEM'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "keywords": [
+        "MERCENARY",
+        "ARTIFICIAL",
+        "DEMONIC",
+        "FEAR"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L796-796 — 'Replace the Keywords with: MERCENARY ARTIFICIAL DEMONIC FEAR'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "keywords": [
+        "MERCENARY",
+        "ELITE",
+        "FEAR",
+        "TOUGH",
+        "NEGATE DIFFICULT TERRAIN",
+        "NEGATE FIRE"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L856-857 — 'Replace the Keywords with: MERCENARY ELITE FEAR TOUGH NEGATE DIFFICULT TERRAIN NEGATE FIRE'",
+      "_note": "The row wraps: NEGATE FIRE is on L857. Replaces the catalogue’s lone NEGATE FEAR, which the Dispatch row does not contain."
+    },
+    {
+      "op": "setCost",
+      "target": {
+        "kind": "unit",
+        "id": "Observer"
+      },
+      "currency": "glory",
+      "value": 5,
+      "_src": "trench-dispatch-01-april-2026.txt L641-641 — 'Replace an Observer’s Cost with 5'",
+      "_note": "Was 3 Glory in the catalogue.",
+      "_costCurrencyDerived": "Derived, not assumed. The Dispatch prints a bare number; the catalogue prices every Mercenary in this section in Glory, and the Dispatch’s unchanged Scripture Guardian (7) and Goetic Warlock (4) match the catalogue’s Glory values exactly."
+    },
+    {
+      "op": "setCost",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "currency": "glory",
+      "value": 6,
+      "_src": "trench-dispatch-01-april-2026.txt L822-822 — '0-1 Witchburner - Cost: 6'",
+      "_note": "Was 5 Glory in the catalogue.",
+      "_costCurrencyDerived": "Same derivation as the Observer op above."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Scripture Guardian"
+      },
+      "field": "stats.ranged",
+      "value": "+2 DICE",
+      "_src": "trench-dispatch-01-april-2026.txt L741-741 — '6”/Infantry +2 DICE +1DICE -2 40mm'",
+      "_note": "Was +1 Dice. Movement, Melee, Armour and Base already match."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "field": "stats.ranged",
+      "value": "+0 DICE",
+      "_src": "trench-dispatch-01-april-2026.txt L833-833 — '6”/Infantry +0 DICE +2DICE -2 32mm'",
+      "_note": "The catalogue holds the bare string \"0\" here, which is a parse artefact rather than a characteristic; the Dispatch prints it properly."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "field": "stats.melee",
+      "value": "+2 DICE",
+      "_src": "trench-dispatch-01-april-2026.txt L833-833 — '6”/Infantry +0 DICE +2DICE -2 32mm'",
+      "_note": "The catalogue holds the bare string \"1\". Same parse artefact as Ranged."
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Mendelist Ammo Monk"
+      },
+      "name": "The Ammunition Sacrement",
+      "ability": {
+        "name": "Ammunition Sacrament ACTION",
+        "description": "A Mendelist Ammo Monk can take an Ammunition Sacrament ACTION. If they do so, take a Risky Success Roll for the Mendelist Ammo Monk. If the roll is a Failure, the Mendelist Ammo Monk’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model within 1\" of the Mendelist Ammo Monk and in their Line of Sight, and then pick one of the following Ammunition Sacraments. The Sacrament you pick applies to the model until the end of its next Activation. A model cannot have more than one Sacrament at any given time. Bullet of the Guided Path Sacrament: Add the IGNORE COVER and IGNORE LONG RANGE Keywords to Ranged Attacks made by Ranged Weapons used by the model. Cartridge of his Wrath Sacrament: Add the BLAST 2” and SHRAPNEL Keywords to Ranged Weapons used by the model that do not have the AUTOMATIC, BLAST, HEAVY, or FLAMETHROWER Keywords. Echo of his Word Sacrament: Add +1 INJURY DICE to rolls for Ranged Attacks made by the model."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L606-624 — 'Replace the Ammunition Sacrament ACTION ability with: …'",
+      "_note": "Matched on the catalogue’s spelling, \"The Ammunition Sacrement\". The op renames it to the Dispatch’s \"Ammunition Sacrament ACTION\" and carries the three Sacraments — Bullet of the Guided Path, Cartridge of his Wrath, Echo of his Word."
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Sin Eater"
+      },
+      "name": "Devour the Guilty",
+      "ability": {
+        "name": "Devour the Guilty ACTION",
+        "description": "A Sin Eater can take a Devour the Guilty ACTION. If they do so, pick 1 model (friend or foe) that is within 1” of the Sin Eater and is mounted on a base that is 40mm or smaller. If the model is an enemy, take a Risky Success Roll for the Sin Eater. If the model is friendly, take a Success Roll for the Sin Eater with +1 DICE. If the roll is a Failure, nothing happens and the Sin Eater’s Activation ends. If the roll is a Success or a Critical Success, the model you picked is devoured, and the following rules apply to it: Place the model to one side, along with any MARKERS it may have. It is inside the Sin Eater and cannot be affected in any way or carry out any ACTIONS except as described below. However, BLOOD MARKERS on the devoured model can be removed to pay the cost of Goetic Spells. While it is in the Sin Eater, it is considered to be Down for the purposes of Morale Checks. A Sin Eater can only have 1 devoured model at a time. In addition, the Sin Eater has the REGENERATE 1 Keyword when it has a devoured model. When a Sin Eater suffers an Out of Action result on the Injury table (even if it becomes a Down result due to the TOUGH Keyword), deploy the devoured model within 1” of the Sin Eater and place it Down. Models deployed this way may be placed within 1” of enemy models. If this is impossible, the model is taken Out of Action. If the Sin Eater was taken Out of Action, remove it from the battlefield after deploying the devoured model. If a devoured model is still inside a Sin Eater when the game ends, it is considered to have been taken Out of Action. Each time the Sin Eater is Activated, place 1 BLOOD MARKER next to the devoured model. As soon as a devoured model has 6 BLOOD MARKERS, it is immediately taken Out of Action (even if the model has TOUGH or another rule that would prevent the model from being taken Out of Action) and is no longer considered to be inside the Sin Eater. A Sin Eater that has a devoured model inside it can take a Purge ACTION. If it does so, deploy the devoured model within 1” of the Sin Eater and place it Down. If you cannot deploy the devoured model within 1” of the Sin Eater due to terrain or other models, then it remains inside the Sin Eater. Note that unlike the normal rules for model placement, you can deploy the enemy model within 1” of the Sin Eater in such a manner that they would fall. Once released the model can be Activated normally. A Sin Eater may not target a model with the Devour the Guilty ACTION that it has purged in the same Activation."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L665-698 — 'Replace the Devour the Guilty ACTION ability with: …'"
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "name": "Barbed Embrace",
+      "ability": {
+        "name": "Barbed Embrace",
+        "description": "An enemy model within 1” of a Goetic Warlock cannot take a Retreat ACTION. In addition, place 1 BLOOD MARKER next to enemy models that Activate within 1” of a Goetic Warlock."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L790-791 — 'Barbed Embrace: An enemy model within 1” of a Goetic Warlock …'",
+      "_note": "The catalogue has only the first sentence; the Dispatch adds the BLOOD MARKER clause."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "ability": {
+        "name": "Disturbing Presence",
+        "description": "Your opponent cannot remove BLOOD MARKERS from models they own whilst they are within 1” of a Goetic Warlock."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L794-795 — 'Disturbing Presence: Your opponent cannot remove BLOOD MARKERS …'",
+      "_note": "Not in the catalogue at all."
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "name": "Goetic Portal",
+      "ability": {
+        "name": "Goetic Portal | Spell (Cost 2) | Goetic Warlock only",
+        "description": "You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, pick up the Goetic Warlock and deploy it anywhere on the battlefield within 6” of the location it originally occupied (measured from the centre of its base to the centre of its base). This does not count as Moving or Retreating for the purposes of other rules. In addition, if the Goetic Warlock is within 1” of any enemy models on a base that is 32mm or smaller, then the Goetic Warlock can take 1 of the enemy models with it. If you do so, you must deploy the Goetic Warlock first and then deploy the enemy model within 1” of the Goetic Warlock. If you cannot deploy the enemy model within 1” of the Goetic Warlock due to terrain or other models, then the enemy model stays in its original location. Note that you can deploy the enemy model within 1” of the Goetic Warlock in such a manner that they would fall"
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L800-808 — 'Goetic Portal | Spell (Cost 2) | Goetic Warlock only'",
+      "_note": "A different rule, not a rewording. The catalogue’s version is an ACTION needing a Risky Success Roll; the Dispatch’s is a Cast Spell with no roll that can drag one enemy model on a 32mm-or-smaller base through the portal."
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "name": "Goetic Gaze",
+      "ability": {
+        "name": "Necrotic Gaze | Spell (Cost 0) | Goetic Warlock only",
+        "description": "You must take a Cast Spell ACTION with the Goetic Warlock in order for it to cast this spell. If you do so, make a Ranged Attack with a Range of 24”. If the Success Roll for the Ranged Attack is a Success or Critical Success, do not make an Injury Roll. Instead, double the number of BLOOD MARKERS the target model has (a model still cannot have more than 6 BLOOD MARKERS). If the target model has no BLOOD MARKERS, place 1 BLOOD MARKER next to them."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L809-814 — 'Necrotic Gaze | Spell (Cost 0) | Goetic Warlock only'",
+      "_note": "Renamed and rewritten. The catalogue’s Goetic Gaze places 1–2 BLOOD MARKERS on a Success Roll; the Dispatch’s Necrotic Gaze is a 24” Ranged Attack that doubles the target’s BLOOD MARKERS instead of making an Injury Roll. L789 confirms the name: \"A Goetic Warlock always has the Goetic Portal and Necrotic Gaze Goetic Powers.\""
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "ability": {
+        "name": "Dignified Conduct",
+        "description": "Witchburners are well aware of the dignity of their status. A Witchburner cannot take the Dash ACTION. In addition, do not halve the Movement Characteristic of a Witchburner when it stands up at the start of an Activation, and a Witchburner can never be moved by an ability or ACTION taken by an enemy model."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L835-838 — 'Dignified Conduct: …'"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "ability": {
+        "name": "Divine Judgement ACTION",
+        "description": "A Witchburner can take a Divine Judgement ACTION. If you do so, the Witchburner can make a Ranged Attack with a Range of 18”. The attack has the FIRE, IGNORE COVER, and IGNORE LONG RANGE Keywords, and does not require Line of Sight. In addition, when a model suffers an Out of Action result on the Injury Table from an attack made with Divine Judgement, it is treated as a Down result instead."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L841-845 — 'Divine Judgement ACTION: …'"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "ability": {
+        "name": "Elitist",
+        "description": "Enemy models that do not have the ELITE Keyword are not allowed to make a Melee Attack when a Witchburner that is within 1” of them retreats. In addition, a Witchburner can make a Move or Charge ACTION if no enemy models within 1” of it have the ELITE Keyword."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L848-850 — 'Elitist: …'"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "ability": {
+        "name": "Found Guilty",
+        "description": "After making an Injury Roll for an attack made with Divine Judgement or a Gavel of Justice, place 1 extra BLOOD MARKER next to the model if the model is part of a Fallen Warband (even if the Injury Roll result is No Effect)."
+      },
+      "_src": "trench-dispatch-01-april-2026.txt L853-855 — 'Found Guilty: …'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Combat Biologist"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Iron Sultanate"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L559 — 'A Combat Biologist is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and SULTANATE Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Communicant Anti-Tank Hunter"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L571 — 'A Communicant Anti-Tank Hunter is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Mamluk Faris"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Iron Sultanate"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L583 — 'A Mamluk Faris is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and SULTANATE Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Mendelist Ammo Monk"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L602 — 'A Mendelist Ammo Monk is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Observer"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L635 — 'An Observer is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Scripture Guardian"
+      },
+      "field": "allowedFactions",
+      "value": null,
+      "_src": "trench-dispatch-01-april-2026.txt L729 — 'A Scripture Guardian is a Mercenary that can be recruited by any Warband.'",
+      "_note": "Explicitly unrestricted in the Dispatch — \"any Warband\". Null rather than a list of all six, so \"no restriction\" and \"we have not checked\" stay different states."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L778 — 'A Goetic Warlock is Fallen and can be recruited as a Mercenary by HERETIC and THE COURT Warbands.'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Witchburner"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
+      "_src": "trench-dispatch-01-april-2026.txt L824 — 'A Witchburner is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
     }
   ]
 }

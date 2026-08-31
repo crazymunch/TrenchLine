@@ -4,16 +4,10 @@ import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { ActiveUnit } from '../../types/warband';
 import { 
-  X, 
-  Ruler, 
   Footprints, 
   Zap, 
   Crosshair, 
-  ShieldAlert, 
-  Compass, 
-  Info,
-  Flame,
-  ArrowRight
+  ShieldAlert
 } from 'lucide-react';
 
 interface RangeCalculatorModalProps {
@@ -25,16 +19,12 @@ export const RangeCalculatorModal: React.FC<RangeCalculatorModalProps> = ({ unit
   const baseMovInches = parseInt(unit.profileSnapshot.stats.movement.replace(/[^0-9]/g, '')) || 6;
   const [distanceToTarget, setDistanceToTarget] = useState<number>(12);
 
-  const [isCharging, setIsCharging] = useState(false);
-  const [hasBarbedWire, setHasBarbedWire] = useState(false);
 
   // Movement calculations
   const standardMove = baseMovInches;
   const dashMove = baseMovInches * 2;
-  const crawlMove = 2; // For Downed models
   const chargeDistanceMax = baseMovInches + 6; // Standard movement + D6 charge bonus
 
-  const isWithinCharge = distanceToTarget <= (isCharging ? chargeDistanceMax : standardMove);
 
   return (
     <Sheet

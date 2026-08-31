@@ -1,24 +1,35 @@
 'use client';
 
-import React, { useState } from 'react';
+/**
+ * Recruiting, reworked.
+ *
+ * What it was: every entry rendered at whatever height its rules text happened
+ * to need — a Trooper with no abilities was three lines, a Praetor with four
+ * was twenty — so the list read as inconsistent rather than dense. Adding one
+ * model closed the sheet, so building a Warband of eight meant opening the
+ * sheet eight times and re-finding your place in it each time. And nothing
+ * showed what you had left to spend, so the budget was only discovered
+ * afterwards, back on the roster.
+ *
+ * What it is: one uniform row per entry with an expand toggle for the rules; a
+ * quantity stepper capped at the entry's own recruitment limit; and the Ducats
+ * remaining, live, in the header.
+ */
+
+import React, { useMemo, useRef, useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { UnitProfile } from '../../types/rules';
 import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
-import { 
-  X, 
-  Plus, 
-  Shield, 
-  Coins, 
-  Sparkles, 
-  UserPlus, 
-  Star, 
-  Trash2, 
-  Swords, 
-  Award, 
+import {
+  ChevronDown,
   Crown,
-  BookOpen
+  Minus,
+  Plus,
+  Star,
+  Trash2,
+  UserPlus,
 } from 'lucide-react';
 
 interface AddUnitModalProps {
@@ -27,44 +38,107 @@ interface AddUnitModalProps {
   onClose: () => void;
 }
 
+/**
+ * The order the list is read in.
+ *
+ * 'Leader' is deliberately absent, and so is its filter tab: a profile is never
+ * categorised as Leader — the store sets that on a *model* when one is
+ * nominated — so the tab matched nothing and always would. Whether an entry
+ * *may* lead is `canLead`, which sorts it to the top of Elite instead.
+ */
+const CATEGORY_ORDER = ['Elite', 'Trooper', 'Mercenary'] as const;
+
+const rank = (u: UnitProfile) => {
+  const i = (CATEGORY_ORDER as readonly string[]).indexOf(u.category);
+  return i === -1 ? CATEGORY_ORDER.length : i;
+};
+
 export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId, onClose }) => {
-  const { 
-    units, 
-    addUnitToWarband, 
-    favouriteUnits, 
-    addUnitFromFavourite, 
+  const {
+    units,
+    warbands,
+    addUnitToWarband,
+    removeUnitFromWarband,
+    favouriteUnits,
+    addUnitFromFavourite,
     removeUnitFromFavourites,
     catalogsLoaded,
     catalogsError,
   } = useStore();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [customNameInput, setCustomNameInput] = useState<Record<string, string>>({});
 
+  const warband = warbands.find((w) => w.id === warbandId);
+
+  /*
+    How many of each profile the Warband already had when the sheet opened.
+
+    The stepper's minus removes a model, and it must only ever remove one this
+    session put there. A veteran of six games with a bought sword and two
+    advancements shares a `baseProfileId` with the recruit added ten seconds
+    ago; without a floor, decrementing past zero-added would delete them.
+  */
+  const baseline = useRef<Record<string, number>>(
+    (warband?.units ?? []).reduce<Record<string, number>>((acc, u) => {
+      acc[u.baseProfileId] = (acc[u.baseProfileId] ?? 0) + 1;
+      return acc;
+    }, {}),
+  );
+
   // Filter units belonging to this faction, or mercenaries specifically allowed for this faction
-  const availableUnits = units.filter((u) => {
+  const availableUnits = useMemo(() => units.filter((u) => {
     if (u.factionId === factionId) return true;
     if (u.category === 'Mercenary' || u.factionId === 'mercenaries') {
       return Array.isArray(u.allowedFactions) && u.allowedFactions.includes(factionId);
     }
     return false;
-  });
+  }), [units, factionId]);
 
-  const categories = ['All', 'Leader', 'Elite', 'Trooper', 'Mercenary', `⭐ Favourites (${favouriteUnits.length})`];
+  const categories = ['All', ...CATEGORY_ORDER, `⭐ Favourites (${favouriteUnits.length})`];
 
   const isFavouritesTab = selectedCategory.startsWith('⭐');
 
-  const filtered = availableUnits.filter((u) => {
-    if (selectedCategory === 'All') return true;
-    return u.category === selectedCategory;
-  });
+  /*
+    'All' is sorted Elite -> Trooper -> Mercenary, which is the order a Warband
+    is actually built in and the order the rulebook lists them. Within Elite,
+    the Leader-eligible entry comes first: it is the one model a Warband must
+    have, and it is nominated automatically when recruited.
+  */
+  const filtered = useMemo(() => {
+    const list = availableUnits.filter((u) =>
+      selectedCategory === 'All' ? true : u.category === selectedCategory);
+    return [...list].sort((a, b) =>
+      rank(a) - rank(b)
+      || Number(!!b.canLead) - Number(!!a.canLead)
+      || a.name.localeCompare(b.name));
+  }, [availableUnits, selectedCategory]);
+
+  const countOf = (unitId: string) =>
+    warband?.units.filter((u) => u.baseProfileId === unitId).length ?? 0;
+
+  const spentDucats = warband?.units.reduce((sum, u) => sum + u.totalCost, 0) ?? 0;
+  const remainingDucats = (warband?.ducatLimit ?? 0) - spentDucats;
 
   const handleAdd = (unit: UnitProfile) => {
     const customName = customNameInput[unit.id] || unit.name;
     addUnitToWarband(warbandId, unit.id, customName);
     soundEffects.playGunfire();
-    onClose();
+    // Deliberately no onClose(): a Warband is eight to twelve models, and
+    // closing after each one is what made building a list from scratch tedious.
+  };
+
+  /*
+    Remove the most recently recruited model of this profile — never below the
+    count the sheet opened on, so the minus can only undo this session's adds.
+    Models are appended, so the last match is the newest.
+  */
+  const handleRemove = (unit: UnitProfile) => {
+    if (!warband) return;
+    if (countOf(unit.id) <= (baseline.current[unit.id] ?? 0)) return;
+    const newest = [...warband.units].reverse().find((u) => u.baseProfileId === unit.id);
+    if (newest) removeUnitFromWarband(warbandId, newest.id);
   };
 
   const handleInductFavourite = (favUnit: ActiveUnit) => {
@@ -79,19 +153,31 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
       onClose={onClose}
       size="xl"
       title="RECRUIT WARRIOR"
-      subtitle="Select a unit profile or induct a saved veteran from your Favourites"
+      subtitle="Add as many as you need — the sheet stays open"
       label="Recruit a warrior"
+      headerAside={warband ? (
+        <div className="text-right leading-tight" aria-live="polite">
+          <span className="eyebrow block text-theme-muted">Ducats left</span>
+          <span
+            className={`font-mono font-bold tabular-nums text-base ${
+              remainingDucats < 0 ? 'text-status-error' : 'text-theme-primary'
+            }`}
+          >
+            {remainingDucats} D
+          </span>
+        </div>
+      ) : undefined}
     >
       {/* The filter row stays with the content rather than the header:
           Sheet's header is sticky, and a second sticky bar costs a
           quarter of a phone screen before a single result is shown. */}
     {/* Filter Tabs */}
-    <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
+    <div className="flex items-center space-x-2 pb-3 mb-3 border-b border-theme-border overflow-x-auto">
       {categories.map((cat) => (
         <button
           key={cat}
           onClick={() => setSelectedCategory(cat)}
-          className={`px-3 py-1 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap ${
+          className={`px-3 py-2 text-xs font-mono rounded font-semibold uppercase transition-colors whitespace-nowrap min-h-[44px] ${
             selectedCategory === cat
               ? 'bg-theme-primary text-theme-base shadow-md'
               : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
@@ -101,7 +187,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
         </button>
       ))}
     </div>
-          
+
           {/* TAB: FAVOURITES HALL */}
           {isFavouritesTab ? (
             <div className="space-y-3">
@@ -157,14 +243,14 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <div className="flex items-center space-x-2 flex-shrink-0">
                         <button
                           onClick={() => removeUnitFromFavourites(fav.id)}
-                          className="p-2 text-theme-muted hover:text-status-error rounded border border-theme-border hover:bg-theme-accent/20"
+                          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-theme-muted hover:text-status-error rounded border border-theme-border hover:bg-theme-accent/20"
                           title="Remove from Favourites"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleInductFavourite(fav)}
-                          className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-1.5"
+                          className="px-4 py-2 min-h-[44px] bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow flex items-center space-x-1.5"
                         >
                           <UserPlus className="w-4 h-4" />
                           <span>Induct Veteran</span>
@@ -201,98 +287,178 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
             </div>
           ) : (
             /* TAB: STANDARD PROFILES */
-            filtered.map((unit) => {
+            <div className="divide-y divide-theme-border border border-theme-border rounded overflow-hidden">
+            {filtered.map((unit) => {
               const isMercenary = unit.category === 'Mercenary' || unit.factionId === 'mercenaries';
+              const count = countOf(unit.id);
+              const floor = baseline.current[unit.id] ?? 0;
+              // The catalogue's own recruitment limit. Absent means unlimited —
+              // 20 of the 89 entries genuinely have none.
+              const atLimit = unit.maxCount !== undefined && count >= unit.maxCount;
+              const isOpen = !!expanded[unit.id];
+              const hasDetail = (unit.innateAbilities?.length ?? 0) > 0
+                || (unit.stats.keywords?.length ?? 0) > 0;
+
               return (
                 <div
                   key={unit.id}
-                  className="p-4 bg-theme-elevated border border-theme-border rounded hover:border-theme-primary/60 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className="bg-theme-elevated"
+                  data-recruit-row={unit.name}
+                  data-category={unit.category}
+                  data-ducats={unit.baseCost}
                 >
-                  {/* Unit Details */}
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
-                          unit.category === 'Leader'
-                            ? 'bg-theme-primary text-theme-base'
-                            : unit.category === 'Elite'
-                            ? 'bg-theme-primary text-white'
-                            : unit.category === 'Mercenary'
-                            ? 'bg-status-legal text-white'
-                            : 'bg-theme-border text-theme-text'
-                        }`}
-                      >
-                        {unit.category}
-                      </span>
-                      <h3 className="font-gothic font-bold text-base text-theme-text">{unit.name}</h3>
-                      {isMercenary && (
-                        <span className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-status-legal/15 text-status-legal border border-status-legal/40 font-bold uppercase">
-                          Mercenary
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-4 gap-2 font-mono text-xs max-w-xs bg-theme-surface p-1.5 rounded border border-theme-border">
-                      <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">MOV</span>
-                        <span className="font-bold text-theme-text">{unit.stats.movement}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">RNG</span>
-                        <span className="font-bold text-theme-text">{unit.stats.ranged}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">MEL</span>
-                        <span className="font-bold text-theme-text">{unit.stats.melee}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARM</span>
-                        <span className="font-bold text-theme-text">{unit.stats.armour}</span>
-                      </div>
-                    </div>
-
-                    {/* Innate Abilities */}
-                    {unit.innateAbilities && unit.innateAbilities.length > 0 && (
-                      <div className="text-xs sm:text-[11px] text-theme-muted space-y-0.5 pt-1">
-                        {unit.innateAbilities.map((ab) => (
-                          <div key={ab.id}>
-                            <strong className="text-theme-primary">{ab.name}:</strong> {ab.description}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right side: Custom Name & Recruit Button */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                    <input
-                      type="text"
-                      placeholder="Custom warrior name..."
-                      value={customNameInput[unit.id] || ''}
-                      onChange={(e) =>
-                        setCustomNameInput({ ...customNameInput, [unit.id]: e.target.value })
-                      }
-                      className="bg-theme-surface border border-theme-border rounded px-3 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary w-full sm:w-44"
-                    />
-
+                  {/* ---------------------------------------- the summary row */}
+                  <div className="flex items-center gap-2 p-2 sm:p-3">
                     <button
-                      onClick={() => handleAdd(unit)}
-                      className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow flex items-center justify-center space-x-1.5 transition-colors whitespace-nowrap"
+                      onClick={() => setExpanded((e) => ({ ...e, [unit.id]: !isOpen }))}
+                      className="flex-1 min-w-0 text-left flex flex-col gap-1 py-1.5"
+                      aria-expanded={isOpen}
+                      aria-label={`${unit.name} details`}
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      {/* Both currencies. This read "0 D" for every Mercenary
-                          the catalogues price in Glory — free, and hireable
-                          without limit. */}
-                      <span>
-                        {unit.baseCost > 0 || !unit.gloryCost ? `${unit.baseCost} D` : ''}
-                        {unit.gloryCost ? `${unit.baseCost > 0 ? ' + ' : ''}${unit.gloryCost} Glory` : ''}
+                      <span className="flex items-center gap-1.5 min-w-0">
+                        {unit.canLead && (
+                          <Crown className="w-3.5 h-3.5 text-theme-primary flex-shrink-0" aria-label="May lead the Warband" />
+                        )}
+                        <span className="font-gothic font-bold text-sm text-theme-text truncate">
+                          {unit.name}
+                        </span>
+                        {hasDetail && (
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 text-theme-muted flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          />
+                        )}
+                      </span>
+                      {/* The statline, on one line and always present. This is
+                          what made the old list ragged: it was shown, then the
+                          abilities under it were shown only sometimes. */}
+                      <span className="font-mono text-xs text-theme-muted tabular-nums truncate">
+                        {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · A {unit.stats.armour}
+                        {isMercenary && <span className="text-status-legal"> · Merc</span>}
                       </span>
                     </button>
+
+                    {/* -------------------------------------- cost + stepper */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="font-mono text-xs font-bold text-theme-text tabular-nums text-right leading-tight">
+                        {/* Both currencies. This read "0 D" for every Mercenary
+                            the catalogues price in Glory — free, and hireable
+                            without limit. */}
+                        {unit.baseCost > 0 || !unit.gloryCost ? `${unit.baseCost} D` : ''}
+                        {unit.gloryCost ? (
+                          <span className="block text-theme-primary">{unit.gloryCost} Glory</span>
+                        ) : null}
+                      </span>
+
+                      {count > 0 ? (
+                        <div className="flex items-center border border-theme-border rounded overflow-hidden">
+                          <button
+                            onClick={() => handleRemove(unit)}
+                            disabled={count <= floor}
+                            className="w-11 h-11 flex items-center justify-center text-theme-muted hover:text-status-error hover:bg-theme-base disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            aria-label={`Remove one ${unit.name}`}
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-8 text-center font-mono text-sm font-bold text-theme-text tabular-nums">
+                            {count}
+                          </span>
+                          <button
+                            onClick={() => handleAdd(unit)}
+                            disabled={atLimit}
+                            className="w-11 h-11 flex items-center justify-center text-theme-primary hover:bg-theme-base disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            aria-label={`Recruit another ${unit.name}`}
+                            title={atLimit ? `Limit ${unit.maxCount} per Warband` : undefined}
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleAdd(unit)}
+                          className="w-11 h-11 flex items-center justify-center bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded transition-colors"
+                          aria-label={`Recruit ${unit.name}`}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   </div>
+
+                  {/* ------------------------------------------- the details */}
+                  {isOpen && (
+                    <div className="px-3 pb-3 space-y-2 bg-theme-base border-t border-theme-border">
+                      <div className="flex flex-wrap items-center gap-2 pt-2">
+                        <span
+                          className={`eyebrow px-2 py-0.5 rounded font-bold ${
+                            unit.category === 'Elite'
+                              ? 'bg-theme-primary text-theme-base'
+                              : unit.category === 'Mercenary'
+                              ? 'bg-status-legal text-white'
+                              : 'bg-theme-border text-theme-text'
+                          }`}
+                        >
+                          {unit.category}
+                        </span>
+                        {unit.canLead && (
+                          <span className="eyebrow px-2 py-0.5 rounded font-bold bg-theme-primary/15 text-theme-primary border border-theme-primary/40">
+                            May lead
+                          </span>
+                        )}
+                        {unit.maxCount !== undefined && (
+                          <span className="eyebrow text-theme-muted">Limit {unit.maxCount}</span>
+                        )}
+                        {unit.stats.baseSize && (
+                          <span className="eyebrow text-theme-muted">{unit.stats.baseSize} base</span>
+                        )}
+                      </div>
+
+                      {unit.stats.keywords && unit.stats.keywords.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {unit.stats.keywords.map((k) => (
+                            <span key={k} className="eyebrow px-1.5 py-0.5 rounded bg-theme-surface text-theme-text border border-theme-border">
+                              {k}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {unit.innateAbilities && unit.innateAbilities.length > 0 && (
+                        <div className="text-xs text-theme-muted space-y-1 leading-relaxed">
+                          {unit.innateAbilities.map((ab) => (
+                            <p key={ab.id}>
+                              <strong className="text-theme-primary">{ab.name}:</strong> {ab.description}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+
+                      <label className="block">
+                        <span className="eyebrow text-theme-muted block mb-1">
+                          Name the next one (optional)
+                        </span>
+                        <input
+                          type="text"
+                          placeholder={unit.name}
+                          value={customNameInput[unit.id] || ''}
+                          onChange={(e) =>
+                            setCustomNameInput({ ...customNameInput, [unit.id]: e.target.value })
+                          }
+                          /*
+                            16px at every width, not `text-base sm:text-sm`.
+                            The zoom rule is about phones, but this sheet is
+                            also the tablet's main building surface and a 14px
+                            field there is just harder to hit for nothing
+                            (MOBILE.md §3).
+                          */
+                          className="bg-theme-surface border border-theme-border rounded px-3 py-2 min-h-[44px] text-base text-theme-text focus:outline-none focus:border-theme-primary w-full sm:w-64"
+                        />
+                      </label>
+                    </div>
+                  )}
                 </div>
               );
-            })
+            })}
+            </div>
           )}
     </Sheet>
   );

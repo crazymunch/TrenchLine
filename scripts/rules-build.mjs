@@ -358,6 +358,20 @@ for (const ruleset of RULESETS) {
     (l.ops ?? []).filter((o) => o._costCurrencyConfirmed)
       .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
 
+  // A third case, and the only one of the three that is checkable in-repo: the
+  // glyph is still unreadable, but the currency follows from the data rather
+  // than from a person holding the page. The Mercenary costs are the example —
+  // the catalogue prices that whole section in Glory, and the entries the
+  // Dispatch reprints without changing agree with it to the number.
+  //
+  // Kept apart from `confirmedCurrency` because the line printed under that
+  // heading — "confirmed against the printed page" — is not true of these, and
+  // a report that overstates how a value was established is the same failure as
+  // a value with no provenance at all.
+  const derivedCurrency = layers.flatMap((l) =>
+    (l.ops ?? []).filter((o) => o._costCurrencyDerived)
+      .map((o) => `${l.id}: ${o.option?.name ?? o.target?.id} — ${o._src ?? ''}`));
+
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
   const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
 
@@ -418,6 +432,12 @@ for (const ruleset of RULESETS) {
     console.log(`\n  ${confirmedCurrency.length} cost(s) whose currency rests on a maintainer ruling:`);
     for (const u of confirmedCurrency) console.log(`      ${u}`);
     console.log('      Unreadable in data-sources/ — confirmed against the printed page.');
+  }
+  if (derivedCurrency.length) {
+    console.log(`\n  ${derivedCurrency.length} cost(s) whose currency is derived from the catalogues:`);
+    for (const u of derivedCurrency) console.log(`      ${u}`);
+    console.log('      The glyph is unreadable, but the surrounding entries fix the currency.');
+    console.log('      Checkable in-repo — see the op\'s _costCurrencyDerived note.');
   }
   if (missingProv.length) console.log(`  fields with NO provenance: ${missingProv.length}`);
 

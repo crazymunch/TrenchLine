@@ -5,10 +5,11 @@
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import { storage } from '../../services/storage';
-import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign } from '../seed';
-import type { Campaign, MatchRecord, CasualtyRecord, TerritoryNode, CampaignMember } from '../../types/campaign';
-import type { ActiveUnit, Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
+import { defaultFreshCampaign } from '../seed';
+import type { Campaign, MatchRecord, CampaignMember } from '../../types/campaign';
+import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
 import type { InitialState } from '../init';
+import { persistWarbands } from '../persist';
 
 export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
@@ -38,7 +39,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         const cas = casualties.find((c) => c.unitId === u.id);
         const adv = advancements.find((a) => a.unitId === u.id);
 
-        let newInjuries = [...u.injuries];
+        const newInjuries = [...u.injuries];
         let isDead = u.isDead;
         let currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
           title: t,
@@ -100,13 +101,13 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             }
           }
         }
-        let newAdvancements = [...u.advancements];
-        let newXp = u.xp + 1;
+        const newAdvancements = [...u.advancements];
+        const newXp = u.xp + 1;
         if (adv) {
           newAdvancements.push(adv.advancement);
         }
 
-        let newDeeds = u.deeds ? [...u.deeds] : [];
+        const newDeeds = u.deeds ? [...u.deeds] : [];
         if (mvpUnitName && (u.customName.toLowerCase().includes(mvpUnitName.toLowerCase()) || mvpUnitName.toLowerCase().includes(u.customName.toLowerCase()))) {
           newDeeds.unshift(`Match MVP: ${scenarioName} (${outcome})`);
         }
@@ -173,9 +174,13 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         snapshots: [...existingSnapshots, matchSnapshot]
       };
 
-      const updatedWarbands = state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w));
-      storage.saveWarbands(updatedWarbands);
-      storage.syncWarbandToCloud(updatedWarband);
+      // Through the choke point like every other write. This one is the post-
+      // battle payout — Glory, Ducats and a snapshot — so a lost push here is
+      // a lost game's worth of campaign progress.
+      const updatedWarbands = persistWarbands(
+        state.warbands.map((w) => (w.id === activeWb.id ? updatedWarband : w)),
+        state.warbands,
+      );
 
       // Create Match Record
       const newMatch: MatchRecord = {

@@ -98,6 +98,16 @@ export interface UnitProfile {
   gloryCost?: number;
   stats: Statline;
   maxCount?: number;
+  /**
+   * Whether this entry may be the Warband's Leader.
+   *
+   * `category` cannot answer this. It says what a model *is on a roster* —
+   * and 'Leader' is set there by nomination, so once a Lieutenant is
+   * recruited its category is 'Leader' and every other Lieutenant profile
+   * still reads 'Elite'. This is the catalogue's `Leader` role, carried
+   * through so the builder can nominate without guessing.
+   */
+  canLead?: boolean;
   innateAbilities?: Ability[];
   defaultWeapons?: string[]; // weapon IDs
   defaultArmour?: string[]; // armour IDs

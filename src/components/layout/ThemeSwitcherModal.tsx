@@ -13,7 +13,6 @@ import {
   Cross, 
   Crown, 
   Biohazard, 
-  X,
   Sparkles
 } from 'lucide-react';
 

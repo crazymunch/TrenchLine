@@ -1,5 +1,40 @@
 import { expect, type Page } from '@playwright/test';
 
+/**
+ * Open the app and wait for it to stop moving.
+ *
+ * `/` redirects to `/roster`, which then redirects *client-side* to the active
+ * warband's own URL. A fixed `waitForTimeout` after `goto('/')` races that
+ * second hop: the test clicks a button on a tree that is about to be replaced,
+ * the handler goes with it, and the failure reads as "the sheet did not open"
+ * rather than as the race it is. Waiting for the settled URL is the same wait,
+ * expressed as the condition instead of a guess at how long it takes.
+ */
+export async function openApp(page: Page, path = '/') {
+  await page.goto(path);
+  // The dataset is fetched, not bundled, so the roster is empty until it lands.
+  await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });
+  await page.waitForLoadState('networkidle');
+
+  /*
+    Then wait for the address to stop moving.
+
+    Not `waitForURL`: the roster index redirects with `router.replace`, a
+    same-document navigation that fires no `load` event, so waiting on one
+    hangs for the full timeout. And not a fixed sleep either — that is the
+    guess this replaces. Two consecutive unchanged reads is the condition.
+  */
+  let url = page.url();
+  let steady = 0;
+  for (let i = 0; i < 40 && steady < 2; i += 1) {
+    await page.waitForTimeout(250);
+    if (page.url() === url) { steady += 1; continue; }
+    url = page.url();
+    steady = 0;
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });
+  }
+}
+
 /** Go to a view through whichever nav the viewport shows. */
 export async function goTo(page: Page, view: 'Roster' | 'Play' | 'Crusade' | 'Players' | 'Codex') {
   const bottomNav = page.locator('nav.fixed');

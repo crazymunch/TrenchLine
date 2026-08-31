@@ -403,6 +403,20 @@ interface UnitOption {         // NEW — Strains, Vile Corpus, Goetic Powers, G
 }
 ```
 
+### Roles, and who may lead
+
+A catalogue entry carries a `roles` list — `Elite`, `Troop`, `Mercenary`, and on
+nine entries `Leader`. The roster format has a single `category` field instead,
+and it means something different: it records what a model **is on this roster**,
+so a nominated Leader's category is `'Leader'` while every other copy of the
+same profile still reads `'Elite'`.
+
+The two cannot be collapsed. `recruitable()` therefore maps `roles` to
+`category` for the first three and carries the fourth separately as
+`UnitProfile.canLead`. That is what lets the builder nominate the first
+Leader-eligible recruit automatically without inferring leadership from cost,
+rarity or a recruitment limit of 1 — all of which would be invented rules.
+
 `UnitOption.modifies` reusing `LayerOp` is deliberate: *"A model with the Hellfly
 Host Strain replaces their Movement Characteristic with 6"/Flying and gains the
 FLYING Keyword"* is the same kind of operation as an errata change, just applied
@@ -535,6 +549,32 @@ So the same engine serves three jobs: dataset errata (Dispatch, 1.0.2), per-mode
 upgrades (`UnitOption.modifies`), and now per-roster variants. `Warband` gains a
 `variantId`, and roster validation resolves faction → variant → model options in
 that order.
+
+### When the Variant is chosen, and when it stops being a choice
+
+A Variant changes **what the Warband may recruit**, so it is a founding decision
+and is offered on the muster screen alongside the faction. Choosing it later
+means the models already on the roster were recruited against a list that was
+not the one in force — which is the failure the variant work existed to stop,
+just moved one step earlier.
+
+It stays editable from the roster screen until the Warband's **first game**, so a
+list can be reconsidered while it is still being built. `canChangeVariant()` in
+`rules/campaign.ts` decides, and it reads the Warband's own record rather than a
+flag anyone sets:
+
+- a `post_battle` snapshot, written when a game is resolved;
+- a ledger entry for `exploration` or `reinforcements`, neither of which
+  happens before a battle;
+- any ledger entry attributed to a game after the first.
+
+An **unrestricted** Warband is exempt and stays editable for good: it exists to
+try lists out, has no campaign to stay consistent with, and already owns its
+budget. Its starting **Glory** is set at muster too, beside its Ducats — the
+screen offered one currency, so an unrestricted list could not include anything
+the catalogues price in Glory (a Witch Coven Matriarch is 0 Ducats and 5 Glory).
+A campaign Warband starts on 0 Glory, which is published, so the field is
+ignored for one.
 
 ## 8. Migration of saved warbands
 

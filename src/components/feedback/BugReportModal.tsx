@@ -6,19 +6,10 @@ import { useStore } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  Bug, 
-  Copy, 
   Check, 
-  Send, 
-  X, 
-  AlertTriangle, 
   Monitor, 
   Smartphone, 
-  Tablet, 
-  Shield, 
-  Sparkles,
-  Layers,
-  FileText
+  Tablet
 } from 'lucide-react';
 
 interface BugReportModalProps {
@@ -32,7 +23,6 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
     rulesetVersion, 
     currentTheme, 
     getActiveWarband, 
-    activeWarbandId,
     factions
   } = useStore();
 
@@ -89,8 +79,13 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  /*
+    `e` is optional because this is now reachable two ways: submitting the form
+    (Enter in a field) and the footer button, which sits outside the <form>
+    element and so cannot be a `type="submit"`.
+  */
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!description.trim()) return;
 
     setIsSubmitting(true);
@@ -136,6 +131,44 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
       size="md"
       title="REPORT A BUG / FEEDBACK"
       subtitle="Generate an instant diagnostic dump or submit feedback directly to the AI agent"
+      /*
+        The bug reporter had no submit button.
+
+        `handleSubmit` was reachable only by pressing Enter inside a text
+        input — which does nothing from the textarea the description is
+        actually typed in — so the form could be filled out completely and
+        never sent. `handleCopyReport` was unwired too, which mattered more
+        than it looks: it is the fallback when the API cannot be reached, and
+        the app is meant to work with no signal.
+
+        Both surfaced when the linter came on in 4.4.
+      */
+      footer={(
+        <div className="flex items-center justify-end gap-2">
+          {submittedSuccess && (
+            <span className="eyebrow text-status-legal" role="status">Report sent</span>
+          )}
+          {copied && (
+            <span className="eyebrow text-status-legal" role="status">Copied</span>
+          )}
+          <button
+            type="button"
+            onClick={handleCopyReport}
+            className="px-3 py-2.5 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border font-mono text-xs font-bold uppercase transition-colors"
+            title="Copy the report as Markdown — the fallback when the server cannot be reached"
+          >
+            Copy
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSubmit()}
+            disabled={isSubmitting || !description.trim()}
+            className="px-4 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Sending…' : 'Send Report'}
+          </button>
+        </div>
+      )}
     >
       {/* Content Body */}
       <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">

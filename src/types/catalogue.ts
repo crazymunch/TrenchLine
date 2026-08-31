@@ -217,6 +217,24 @@ export interface UnitProfile {
   constraints: Constraint[];
   /** Conditional rules from the catalogue. See `Modifier`. */
   modifiers: Modifier[];
+
+  /**
+   * Which Warbands may hire this entry, for a MERCENARY.
+   *
+   * Catalogue faction names, as printed. `undefined` means unrestricted — any
+   * Warband — which is a real answer for a few (the Scripture Guardian) and
+   * must not be confused with "we do not know".
+   *
+   * It exists because the recruit list was granting every Mercenary to every
+   * faction: a Court of the Seven-Headed Serpent Warband was offered the
+   * Mendelist Ammo Monk and the Observer, which are NEW ANTIOCH and PILGRIM
+   * only. The catalogues do carry host restrictions, in `modifiers`, but
+   * unevenly — several Mercenaries have none and one is keyed to an injury —
+   * so the Trench Dispatch's recruitment sentences are the source, quoted per
+   * op in `dispatch-01.layer.json`.
+   */
+  allowedFactions?: string[];
+
   lore?: string;
 }
 

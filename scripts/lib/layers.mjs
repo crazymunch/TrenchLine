@@ -69,8 +69,25 @@ function setPath(obj, dotted, value) {
 export function applyLayer(dataset, layer, provenance, notes = []) {
   const unresolved = [];
   const source = `${layer.id}:${layer.sourceRef ?? ''}`;
-  const stamp = (ref, field) =>
-    provenance.stamp(ref.kind, ref.id, field, { layer: layer.id, source });
+
+  /*
+    Stamp against the entity that was FOUND, not the reference the op used.
+
+    A layer transcribed from a PDF addresses entries by name, because the
+    source has no ids; a catalogue-derived op addresses them by id. This used
+    to key the provenance entry on `ref.id` — whatever string the op happened
+    to carry — so a name-addressed op stamped `unit:Witchburner` while the
+    verifier looked for `unit:b5ac-1a57-c1d4-3f4c`.
+
+    It went unnoticed because every field the Dispatch touched already had a
+    base stamp from `stampBase`, so the check passed on the base entry and the
+    layer's own stamp sat unread beside it. The first op to write a field that
+    did NOT exist in the catalogues — `allowedFactions` — had no base stamp to
+    hide behind, and the build correctly refused to emit: a value that cannot
+    say where it came from is exactly what this system exists to stop.
+  */
+  const stamp = (ref, field, found) =>
+    provenance.stamp(ref.kind, found?.id ?? ref.id, field, { layer: layer.id, source });
 
   for (const op of layer.ops) {
     if (op.op === 'add') {
@@ -90,13 +107,13 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
     switch (op.op) {
       case 'set':
         setPath(target, op.field, op.value);
-        stamp(op.target, op.field);
+        stamp(op.target, op.field, target);
         break;
 
       case 'replace':
         for (const [k, v] of Object.entries(op.entity)) {
           target[k] = v;
-          stamp(op.target, k);
+          stamp(op.target, k, target);
         }
         break;
 
@@ -110,12 +127,12 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
       case 'addKeyword':
         target.keywords ??= [];
         if (!target.keywords.includes(op.keyword)) target.keywords.push(op.keyword);
-        stamp(op.target, 'keywords');
+        stamp(op.target, 'keywords', target);
         break;
 
       case 'setKeywords':
         target.keywords = [...op.keywords];
-        stamp(op.target, 'keywords');
+        stamp(op.target, 'keywords', target);
         break;
 
       case 'addAbility': {
@@ -137,7 +154,7 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
         } else {
           target.abilities.push(op.ability);
         }
-        stamp(op.target, 'abilities');
+        stamp(op.target, 'abilities', target);
         break;
       }
 
@@ -147,7 +164,7 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
           (a) => a.name?.toLowerCase() === op.name.toLowerCase());
         if (i < 0) { unresolved.push({ op, why: `no ability named ${op.name}` }); break; }
         target.abilities[i] = op.ability;
-        stamp(op.target, 'abilities');
+        stamp(op.target, 'abilities', target);
         break;
       }
 
@@ -163,14 +180,14 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
         } else {
           target.options.push(op.option);
         }
-        stamp(op.target, 'options');
+        stamp(op.target, 'options', target);
         break;
       }
 
       case 'setCost':
         target.cost ??= { ducats: 0, glory: 0 };
         target.cost[op.currency] = op.value;
-        stamp(op.target, `cost.${op.currency}`);
+        stamp(op.target, `cost.${op.currency}`, target);
         break;
 
       default:

@@ -1,4 +1,4 @@
-import { ActiveUnit, Warband, WarbandSnapshot, StashedItem } from '../types/warband';
+import { ActiveUnit, WarbandSnapshot } from '../types/warband';
 import { MatchRecord } from '../types/campaign';
 
 export interface KnownUnitLore {

@@ -17,7 +17,7 @@
 import React from 'react';
 import { Check, ShieldQuestion } from 'lucide-react';
 
-import type { Dataset, WarbandVariant } from '@/types/catalogue';
+import type { Dataset } from '@/types/catalogue';
 import { variantsForFaction } from '@/rules/variants';
 import { Sheet } from '@/components/ui';
 

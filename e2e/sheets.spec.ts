@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { goTo } from './helpers';
+import { goTo, openApp } from './helpers';
 
 /**
  * What every overlay owes the user (docs/MOBILE.md §7).
@@ -37,8 +37,7 @@ async function assertSheet(page: Page, open: () => Promise<void>) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-  await page.waitForTimeout(2500);
+  await openApp(page);
 });
 
 test('the recruit sheet', async ({ page }) => {

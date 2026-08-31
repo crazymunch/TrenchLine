@@ -25,18 +25,12 @@ import {
   Dice6, 
   BarChart3, 
   Scroll, 
-  MapPin, 
   ChevronDown, 
   ChevronUp,
-  Award,
   Zap,
-  X,
   ExternalLink,
-  Info,
   Layers,
-  Coins,
-  CheckCircle2,
-  AlertTriangle
+  CheckCircle2
 } from 'lucide-react';
 
 /**
@@ -76,7 +70,7 @@ function stripLeadingHeading(body: string, title: string): string {
 }
 
 export const CodexView: React.FC = () => {
-  const { rulesetVersion, setRulesetVersion, setActiveKeyword } = useStore();
+  const { rulesetVersion, setRulesetVersion } = useStore();
   const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets'>('rules');
 
   /**

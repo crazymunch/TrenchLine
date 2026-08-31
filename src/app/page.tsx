@@ -1,103 +1,16 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import React, { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useStore } from '@/store/useStore';
-import { useDataset } from '@/rules/useDataset';
-import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
-import { Navbar } from '@/components/layout/Navbar';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { MobileNav } from '@/components/layout/MobileNav';
-import { WarbandDashboard } from '@/components/builder/WarbandDashboard';
-import { PlayModeView } from '@/components/play/PlayModeView';
-import { CampaignHubView } from '@/components/campaign/CampaignHubView';
-import { CodexView } from '@/components/codex/CodexView';
-import { CustomizerView } from '@/components/customizer/CustomizerView';
-import { RosterDirectoryView } from '@/components/admin/RosterDirectoryView';
-
+/**
+ * The front door.
+ *
+ * Everything the app does now lives under a real route in the `(app)` group,
+ * so `/` has nothing of its own to render. It sends you to the roster, which
+ * then forwards to whichever warband is active — `/roster/wb-al-qarn-rihla`.
+ *
+ * A redirect rather than a copy of the dashboard: two places rendering the
+ * same view is how they drift, and one of them ends up with a URL you cannot
+ * share.
+ */
 export default function Home() {
-  const { data: session } = useSession();
-  const {
-    currentView, currentTheme, syncUserWarbandsWithCloud,
-    hydrateCatalogs, getActiveWarband,
-  } = useStore();
-
-  /**
-   * Fill the store's rule catalogs from the generated dataset.
-   *
-   * Until this runs the catalogs are empty, and that is the honest state — the
-   * alternative is what the app did before: seed them from `defaultRules.ts`,
-   * whose statlines the audit measured as 97% wrong. There is deliberately no
-   * fallback here for the same reason `useDataset` has none.
-   *
-   * Re-runs when the active warband's faction changes, because wargear is
-   * priced per faction: an Automatic Rifle is 40 Ducats in one Armoury and 2
-   * Glory in another, so there is no faction-neutral gear list to load once.
-   */
-  const rulesetId = typeof window !== 'undefined'
-    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
-    : DEFAULT_RULESET_ID;
-  const { dataset } = useDataset(rulesetId);
-  const factionId = getActiveWarband()?.factionId;
-
-  useEffect(() => {
-    if (dataset) hydrateCatalogs(dataset, factionId);
-  }, [dataset, factionId, hydrateCatalogs]);
-
-  useEffect(() => {
-    syncUserWarbandsWithCloud(session?.user?.email || undefined, session?.user?.name || undefined);
-  }, [session, syncUserWarbandsWithCloud]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && currentTheme) {
-      // Set on <html> only. Setting it on <body> as well meant body carried its
-      // own value, which shadows the inherited one for everything inside it —
-      // so if the two ever diverged, the whole app would silently render the
-      // body's theme and the html one would look applied but do nothing.
-      document.documentElement.setAttribute('data-theme', currentTheme);
-      document.body?.removeAttribute('data-theme');
-    }
-  }, [currentTheme]);
-
-  return (
-    /*
-      The Iron Ledger shell: a dark chrome frame around a cream sheet.
-
-      The rail, the top bar and the phone nav are the *app*; everything inside
-      `<main>` is the *document*. `.sheet` on main is what flips the whole token
-      set to paper for its subtree, so no view had to be recoloured by hand.
-
-      `min-h-[100dvh]` on the frame and `flex-1` on the sheet mean the paper
-      always reaches the bottom of the viewport even when a view is short —
-      otherwise the sheet ends mid-screen and the dark ground shows through
-      below it, which reads as a rendering fault rather than a design.
-    */
-    <div className="min-h-[100dvh] bg-theme-base text-theme-text flex flex-row selection:bg-theme-primary selection:text-theme-base">
-      {/* Desktop rail / tablet icon rail */}
-      <Sidebar />
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <Navbar />
-
-        {/*
-          Not a flex container. Making the sheet `flex flex-col` to get it to
-          fill the viewport height also made its children size to their content
-          on the cross axis, which put 200px of sideways scroll on the phone.
-          `flex-1` alone already stretches it in the parent column, and the
-          content decides its own layout.
-        */}
-        <main className="sheet flex-1 min-w-0 pb-nav-safe lg:pb-0">
-          {currentView === 'builder' && <WarbandDashboard />}
-          {currentView === 'play' && <PlayModeView />}
-          {currentView === 'campaign' && <CampaignHubView />}
-          {currentView === 'directory' && <RosterDirectoryView />}
-          {currentView === 'codex' && <CodexView />}
-          {currentView === 'customizer' && <CustomizerView />}
-        </main>
-      </div>
-
-      {/* Mobile Bottom Tactical Nav */}
-      <MobileNav />
-    </div>
-  );
+  redirect('/roster');
 }

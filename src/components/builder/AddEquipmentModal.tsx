@@ -5,21 +5,12 @@ import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { 
-  X, 
   Shield, 
   Swords, 
   Package, 
   Plus, 
-  Filter, 
-  AlertCircle, 
-  CheckCircle2, 
-  Crosshair, 
-  Flame, 
   Search,
-  Sparkles,
-  Layers,
   AlertTriangle,
-  Zap,
   FlaskConical
 } from 'lucide-react';
 
@@ -50,7 +41,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
   const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'formulae' | 'headgear' | 'relic' | 'gear'>('all');
-  const [filterLegalOnly, setFilterLegalOnly] = useState<boolean>(true);
+  const [filterLegalOnly] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>('');
 
   const activeWarband = getActiveWarband();
@@ -60,14 +51,12 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   // Unit Type Flags
   const isHomunculus = /homunculus/i.test(unitProfileName) || /homunculus/i.test(unitName);
-  const isAlchemist = /alchemist|kasim|zayd/i.test(unitProfileName) || /alchemist/i.test(unitName);
   const isBeast = /lion|dog|hound|beast/i.test(unitProfileName) || /lion|dog|hound/i.test(unitName);
   const isHeavyConstruct = /brazen|golem|mamluk|mechanized/i.test(unitProfileName);
 
   // Equipment arrays
   const currentWeapons = unit?.equippedWeapons || [];
   const currentArmour = unit?.equippedArmour || [];
-  const currentEquipment = unit?.equippedEquipment || [];
 
   // Check special traits: STRONG and Extra Limbs (3rd Arm / Homunculus)
   const isStrong = Boolean(

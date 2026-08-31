@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from '../types/rules';
+import { UnitProfile } from '../types/rules';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore';
 
 /**
@@ -13,10 +13,25 @@ import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore'
  *
  * The caller passes the store's `units`, which the dataset fills.
  */
+/**
+ * What an import produced, and what it could not.
+ *
+ * `unmatched` is the part that used to be missing. A roster line the
+ * catalogues have no profile for was given an invented one — category
+ * Trooper, 35 Ducats, a made-up statline — so the import always "worked" and
+ * the player's roster total was quietly wrong from that line on. Now the
+ * names come back and the caller shows them.
+ */
+export interface ImportResult {
+  warband: Warband;
+  /** Roster lines with no profile in the catalogues. Never guessed at. */
+  unmatched: string[];
+}
+
 export function importNewRecruitRoster(
   rawInput: string,
   knownUnits: UnitProfile[] = []
-): Warband {
+): ImportResult {
   const trimmed = rawInput.trim();
   const allUnits = knownUnits;
 
@@ -43,7 +58,7 @@ export function importNewRecruitRoster(
   return parseNewRecruitText(trimmed, allUnits);
 }
 
-function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
+function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   const rosterData = data.roster || data;
   const force = rosterData.forces?.[0] || rosterData;
   const warbandName = force.customName || rosterData.customName || rosterData.name || 'Imported Warband';
@@ -64,6 +79,8 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
 
   const rawSelections = force.selections || rosterData.selections || [];
   const units: ActiveUnit[] = [];
+  /** Roster lines with no resolvable statline. Reported, not invented. */
+  const unmatched: string[] = [];
   const armoryStash: StashedItem[] = [];
 
   rawSelections.forEach((sel: any, idx: number) => {
@@ -266,6 +283,27 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
     const baseProfileName = unitProfile?.name || sel.name;
     const baseProfileId = (matchedProfile?.id || baseProfileName.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 
+    /*
+      Every characteristic must come from the export or from a matched profile.
+
+      The four `|| '6"'` / `|| '+0 DICE'` / `|| '-1'` tails below used to invent
+      one when neither had it, which is a statline with no source presented as
+      the player's own. An export that carries its characteristics is fine —
+      that IS the player's roster — and a name we can match is fine. Neither is
+      a line we can import, so it is reported instead.
+    */
+    const stats = {
+      movement: charMap['Movement'] || matchedProfile?.stats.movement,
+      ranged: charMap['Ranged'] || matchedProfile?.stats.ranged,
+      melee: charMap['Melee'] || matchedProfile?.stats.melee,
+      armour: charMap['Armour'] || matchedProfile?.stats.armour,
+    };
+    if (!stats.movement || !stats.ranged || !stats.melee || !stats.armour) {
+      unmatched.push(sel.customName || sel.name);
+      return;
+    }
+    const resolvedStats = stats as { movement: string; ranged: string; melee: string; armour: string };
+
     units.push({
       id: `u-imp-${Date.now()}-${idx}`,
       customName: sel.customName || sel.name,
@@ -276,13 +314,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
         factionId,
         category,
         baseCost: totalUnitCost,
-        stats: {
-          movement: charMap['Movement'] || matchedProfile?.stats.movement || '6"',
-          ranged: charMap['Ranged'] || matchedProfile?.stats.ranged || '+0 DICE',
-          melee: charMap['Melee'] || matchedProfile?.stats.melee || '+0 DICE',
-          armour: charMap['Armour'] || matchedProfile?.stats.armour || '-1',
-          keywords: catNames
-        },
+        stats: { ...resolvedStats, keywords: catNames },
         innateAbilities: (sel.profiles || []).filter((p: any) => p.typeName === 'Ability').map((a: any) => ({
           id: a.id || a.name,
           name: a.name,
@@ -310,24 +342,27 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): Warband {
   const isSultanate = factionId === 'iron-sultanate' || warbandName.toLowerCase().includes('qarn') || warbandName.toLowerCase().includes('sultanate');
 
   return {
-    id: `wb-${Date.now()}`,
-    name: warbandName,
-    factionId,
-    ducatLimit: ducatsLimit,
-    treasuryDucats: 0,
-    gloryPoints,
-    units: enrichedUnits,
-    armoryStash,
-    lore: isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined,
-    motto: isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined,
-    patron: isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined,
-    chronicleLog: isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    warband: {
+      id: `wb-${Date.now()}`,
+      name: warbandName,
+      factionId,
+      ducatLimit: ducatsLimit,
+      treasuryDucats: 0,
+      gloryPoints,
+      units: enrichedUnits,
+      armoryStash,
+      lore: isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined,
+      motto: isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined,
+      patron: isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined,
+      chronicleLog: isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    unmatched,
   };
 }
 
-function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warband {
+function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): ImportResult {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '@_',
@@ -338,8 +373,10 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
   const roster = parsed.roster || parsed.gameSystem || parsed;
   const name = roster['@_name'] || 'Imported Roster XML';
 
-  let factionId = 'new-antioch';
+  const factionId = 'new-antioch';
   const units: ActiveUnit[] = [];
+  /** Roster lines with no profile in the catalogues. Reported, not invented. */
+  const unmatched: string[] = [];
 
   const selections = roster.forces?.force?.selections?.selection || roster.selections?.selection || [];
 
@@ -347,17 +384,30 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
     const selName = sel['@_name'] || `Unit ${idx + 1}`;
     if (selName === 'Campaign Rules' || selName === 'Warband Variant') return;
 
+    /*
+      An entry we cannot match is REPORTED, never invented.
+
+      This used to fall back to a made-up profile: category Trooper, baseCost
+      35, and the statline `6" / +0 DICE / +1 DICE / -1` — numbers that came
+      from nowhere. A player importing a roster with one name the catalogues
+      spell differently got a warrior with a plausible statline and a plausible
+      cost, silently, and their roster total was wrong from that moment on.
+      It is the same failure as the fabricated GitHub commit deleted in Phase 0
+      and the 97%-wrong statlines the whole pipeline exists to stop: data with
+      no source, presented as if it had one.
+
+      The unmatched names are collected and handed back to the caller, which
+      shows them. An import that cannot resolve a line is a question for the
+      player, not a number for the app to guess.
+    */
     const matchedProfile = allUnits.find(
       (p) => p.name.toLowerCase() === selName.toLowerCase() || selName.toLowerCase().includes(p.name.toLowerCase())
-    ) || {
-      id: `custom-unit-${Date.now()}-${idx}`,
-      name: selName,
-      factionId,
-      category: 'Trooper' as const,
-      baseCost: 35,
-      stats: { movement: '6"', ranged: '+0 DICE', melee: '+1 DICE', armour: '-1', keywords: [] },
-      innateAbilities: []
-    };
+    );
+
+    if (!matchedProfile) {
+      unmatched.push(selName);
+      return;
+    }
 
     units.push({
       id: `u-xml-${Date.now()}-${idx}`,
@@ -381,20 +431,30 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Warban
   });
 
   return {
-    id: `wb-${Date.now()}`,
-    name,
-    factionId,
-    ducatLimit: 700,
-    treasuryDucats: 0,
-    gloryPoints: 0,
-    units,
-    armoryStash: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    warband: {
+      id: `wb-${Date.now()}`,
+      name,
+      factionId,
+      ducatLimit: 700,
+      treasuryDucats: 0,
+      gloryPoints: 0,
+      units,
+      armoryStash: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    unmatched,
   };
 }
 
-function parseNewRecruitText(text: string, allUnits: UnitProfile[]): Warband {
+function parseNewRecruitText(text: string, allUnits: UnitProfile[]): ImportResult {
+  /*
+    Always empty here, and that is honest rather than lazy: this parser only
+    creates a unit when a line CONTAINS a known profile name, so a line it
+    cannot resolve produces nothing rather than a guess. It never had the
+    invented-profile fallback the XML and JSON parsers did.
+  */
+  const unmatched: string[] = [];
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   let name = 'Imported Plaintext Warband';
   let factionId = 'new-antioch';
@@ -438,15 +498,18 @@ function parseNewRecruitText(text: string, allUnits: UnitProfile[]): Warband {
   });
 
   return {
-    id: `wb-${Date.now()}`,
-    name,
-    factionId,
-    ducatLimit: 700,
-    treasuryDucats: 0,
-    gloryPoints: 0,
-    units,
-    armoryStash: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    warband: {
+      id: `wb-${Date.now()}`,
+      name,
+      factionId,
+      ducatLimit: 700,
+      treasuryDucats: 0,
+      gloryPoints: 0,
+      units,
+      armoryStash: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    unmatched,
   };
 }

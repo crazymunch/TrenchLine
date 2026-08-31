@@ -6,15 +6,15 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
 import type { UnitTitleRecord } from '../../types/warband';
+import { persistWarbands } from '../persist';
 
 export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords'>;
 
-export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, get) => ({
+export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, _get) => ({
     updateUnitAdvancement: (warbandId, unitId, xp, isElite) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -32,17 +32,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     addUnitSkill: (warbandId, unitId, skill) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -57,17 +56,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     removeUnitSkill: (warbandId, unitId, skillName) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -80,17 +78,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     addUnitScar: (warbandId, unitId, scar) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -148,17 +145,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     removeUnitScar: (warbandId, unitId, scarName) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -171,17 +167,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     setUnitFireteam: (warbandId, unitId, fireteam) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -194,17 +189,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     toggleUnitSpecialUpgrade: (warbandId, unitId, upgrade) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -229,17 +223,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     addUnitDeed: (warbandId, unitId, deed) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -251,17 +244,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     removeUnitDeed: (warbandId, unitId, deedIndex) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -272,17 +264,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     setUnitTitles: (warbandId, unitId, titles) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -297,17 +288,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     addUnitTitleRecord: (warbandId, unitId, title, source = 'user', origin, active = true) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -334,17 +324,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     toggleUnitTitleActive: (warbandId, unitId, title) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -365,17 +354,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     removeUnitTitleRecord: (warbandId, unitId, title) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -396,17 +384,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     setUnitTitleRecords: (warbandId, unitId, records) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -421,10 +408,9 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },

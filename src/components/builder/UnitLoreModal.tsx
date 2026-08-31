@@ -5,8 +5,6 @@ import { Sheet } from '../ui/Sheet';
 import { ActiveUnit, UnitTitleRecord } from '../../types/warband';
 import { useStore } from '../../store/useStore';
 import { 
-  Scroll, 
-  X, 
   Sparkles, 
   Award, 
   Quote, 
@@ -14,13 +12,8 @@ import {
   Trash2, 
   Check, 
   BookOpen, 
-  Skull, 
-  Shield, 
   Edit3, 
-  Flame, 
   Trophy, 
-  CheckSquare, 
-  Square,
   Eye,
   EyeOff
 } from 'lucide-react';
@@ -35,9 +28,6 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
   const { 
     updateUnitLore, 
     updateUnitName, 
-    addUnitTitleRecord, 
-    toggleUnitTitleActive, 
-    removeUnitTitleRecord,
     setUnitTitleRecords 
   } = useStore();
 

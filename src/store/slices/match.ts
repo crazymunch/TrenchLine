@@ -7,12 +7,11 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
-import type { RuleKeyword } from '../../types/rules';
+import { persistWarbands } from '../persist';
 
 export type MatchSlice = Pick<AppState, 'playTurn' | 'incrementTurn' | 'resetMatchState' | 'updateUnitWounds' | 'updateUnitBloodMarkers' | 'setUnitStatus' | 'toggleUnitActed' | 'activeKeyword' | 'setActiveKeyword'>;
 
-export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set, get) => ({
+export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set, _get) => ({
     playTurn: 1,
     incrementTurn: () => {
       set((state) => {
@@ -25,10 +24,10 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
           hasActedThisTurn: false
         }));
 
-        const updatedWarbands = state.warbands.map((w) =>
+        let updatedWarbands = state.warbands.map((w) =>
           w.id === activeWb.id ? { ...w, units: updatedUnits } : w
         );
-        storage.saveWarbands(updatedWarbands);
+        updatedWarbands = persistWarbands(updatedWarbands, state.warbands);
         return { playTurn: nextTurn, warbands: updatedWarbands };
       });
     },
@@ -46,17 +45,17 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
           hasActedThisTurn: false
         }));
 
-        const updatedWarbands = state.warbands.map((w) =>
+        let updatedWarbands = state.warbands.map((w) =>
           w.id === activeWb.id ? { ...w, units: updatedUnits } : w
         );
-        storage.saveWarbands(updatedWarbands);
+        updatedWarbands = persistWarbands(updatedWarbands, state.warbands);
         return { playTurn: 1, warbands: updatedWarbands };
       });
     },
 
     updateUnitWounds: (warbandId, unitId, delta) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           return {
             ...w,
@@ -72,14 +71,14 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
             })
           };
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateUnitBloodMarkers: (warbandId, unitId, delta) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           return {
             ...w,
@@ -92,14 +91,14 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
             })
           };
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     setUnitStatus: (warbandId, unitId, status) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           return {
             ...w,
@@ -109,21 +108,21 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
             })
           };
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     toggleUnitActed: (warbandId, unitId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           return {
             ...w,
             units: w.units.map((u) => (u.id === unitId ? { ...u, hasActedThisTurn: !u.hasActedThisTurn } : u))
           };
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },

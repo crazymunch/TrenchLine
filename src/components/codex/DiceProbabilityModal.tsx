@@ -2,15 +2,6 @@
 
 import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
-import { 
-  X, 
-  Dices, 
-  BarChart3, 
-  Sparkles, 
-  TrendingUp, 
-  ShieldCheck, 
-  Percent 
-} from 'lucide-react';
 
 interface DiceProbabilityModalProps {
   onClose: () => void;

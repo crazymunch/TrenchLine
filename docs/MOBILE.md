@@ -152,6 +152,12 @@ Replace all of them with one primitive:
 The primitive owns body scroll lock, focus trap, `Escape`, and the safe-area and
 `dvh` handling — so those are fixed once rather than thirty times.
 
+`headerAside` pins a live figure to the top-right of the sticky header, left of
+the close button. The recruit sheet uses it for Ducats remaining: on a phone the
+budget is otherwise a scroll away on the view behind, so it was only ever
+discovered after the Warband had been built. It is for a *figure*, not a second
+action — a control there competes with Close for the same thumb.
+
 ### 8. Images
 
 102 MB currently ships from `public/`, including a 5.9 MB world-map PNG, via
@@ -186,6 +192,27 @@ Ordered by how much time a user spends in them on a phone:
    sheet treatment plus a real mobile filter UI.
 5. **`WarbandBuilder`** — header/budget bar reflow.
 6. **`CodexView`**, **`CampaignHubView`** — reference reading; lower frequency.
+
+## Offline
+
+The app opens with no signal, and says so honestly when it cannot reach the
+server.
+
+- The shell, the static chunks, the icons and the scenario maps are cached by
+  `public/sw.js`.
+- The ruleset is cached stale-while-revalidate. It is ~1.6 MB served from
+  `/api/dataset` rather than bundled, so without it a cached shell opens an app
+  with no statlines — which looks like it works.
+- A roster's own data is **not** served from the service worker. It lives in
+  `localStorage` with a merge rule (see
+  [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins)); a
+  cached HTTP response would be a third copy with no rule for reconciling it.
+- `SyncStatus` in the top bar says which of local-only, syncing, backed up,
+  pending or failed is true, and why. "Did my roster save?" is a question
+  asked at a table with no signal, and the app used to answer it only in the
+  console.
+
+`e2e/offline.spec.ts` cuts the network for real rather than mocking a route.
 
 ## Definition of done
 

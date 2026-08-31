@@ -11,6 +11,18 @@ export async function GET(req: NextRequest) {
     const isAdmin = isUserAdmin(userEmail);
 
     const { searchParams } = new URL(req.url);
+    /*
+      `all=true` is the public Warband Directory, which is a deliberate feature.
+      Anything else is "my warbands", and for a signed-out caller that is an
+      empty list.
+
+      It used to be the opposite. The where clause was
+      `(!fetchAll && userId) ? { userId } : {}`, so with no session `userId` was
+      undefined and the query collapsed to `{}` — a signed-out visitor was
+      served EVERY warband in the database. The client then merged them into
+      local storage as its own and pushed them back. That is how a visitor
+      ended up owning other people's rosters.
+    */
     const fetchAll = searchParams.get('all') === 'true' || isAdmin;
 
     // If userId not found by session.id, look up user by email
@@ -39,8 +51,14 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // No `all=true` and no resolved user: nothing is yours, so nothing comes
+    // back. Never the unfiltered table.
+    if (!fetchAll && !userId) {
+      return NextResponse.json({ warbands: [] });
+    }
+
     const warbands = await prisma.warband.findMany({
-      where: (!fetchAll && userId) ? { userId } : {},
+      where: fetchAll ? {} : { userId },
       include: {
         user: {
           select: {
@@ -97,6 +115,10 @@ export async function GET(req: NextRequest) {
         campaignMembers: wb.campaignMembers,
         createdAt: wb.createdAt.toISOString(),
         updatedAt: wb.updatedAt.toISOString(),
+        // When the player last changed the roster, as against when the row was
+        // last written. The sync merge compares this and nothing else — see
+        // services/sync.ts for why `updatedAt` could not do the job.
+        editedAt: parsedMetadata.editedAt || undefined,
       };
     });
 
@@ -110,7 +132,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    let userId = (session?.user as any)?.id;
+    const userId = (session?.user as any)?.id;
     const userEmail = session?.user?.email?.toLowerCase().trim();
     const isAdmin = isUserAdmin(userEmail);
     const body = await req.json();
@@ -129,14 +151,22 @@ export async function POST(req: NextRequest) {
       motto,
       patron,
       chronicleLog,
-      snapshots
+      snapshots,
+      editedAt
     } = body;
 
     if (!name || !factionId) {
       return NextResponse.json({ error: 'Missing required fields: name and factionId are required' }, { status: 400 });
     }
 
-    // Resolve or upsert user in database
+    /*
+      Signing in is what enables the cloud. Without it the app is local-only,
+      which is a supported way to use it — not a reason to invent an owner.
+
+      This used to upsert a shared `commander@trenchline.org` account and file
+      every anonymous warband under it, so unrelated visitors accumulated in one
+      bucket and, with the old GET, read each other's rosters back out.
+    */
     let effectiveUserId = userId;
     if (!effectiveUserId && userEmail) {
       const user = await prisma.user.upsert({
@@ -151,15 +181,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (!effectiveUserId) {
-      const defaultUser = await prisma.user.upsert({
-        where: { email: 'commander@trenchline.org' },
-        update: {},
-        create: {
-          email: 'commander@trenchline.org',
-          name: 'Crusade Commander',
-        },
-      });
-      effectiveUserId = defaultUser.id;
+      return NextResponse.json(
+        { error: 'Sign in to sync a warband to the cloud. Your roster is saved on this device either way.' },
+        { status: 401 }
+      );
     }
 
     const warbandId = id || `wb-${Date.now()}`;
@@ -176,14 +201,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Pack metadata (lore, motto, patron, chronicleLog, snapshots) into notes JSON
+    /*
+      Client-owned fields ride in the `notes` JSON, and `editedAt` is one of
+      them.
+
+      It was briefly a real column. That is arguably the tidier schema, but it
+      made the deploy require a `prisma db push` performed at exactly the right
+      moment: Prisma selects every column the schema declares, so between
+      shipping the code and running the migration, every GET here would 500 and
+      sync would be dead rather than degraded. A schema change that breaks the
+      app if a human forgets a step is a worse trade than a JSON field.
+
+      It also belongs with the fields already here. `editedAt` is the client's
+      statement about the client's copy — like `snapshots` and `chronicleLog`,
+      not like `ducatLimit`. Nothing server-side queries or sorts by it: the
+      merge runs on the device against the full fetched list.
+
+      If it ever needs to be indexed, add the column then and backfill from
+      here. Doing it now buys nothing and costs a migration window.
+    */
     const metadataPayload = JSON.stringify({
       rawNotes: notes || '',
       lore: lore || '',
       motto: motto || '',
       patron: patron || '',
       chronicleLog: chronicleLog || [],
-      snapshots: snapshots || []
+      snapshots: snapshots || [],
+      editedAt: editedAt || undefined
     });
 
     const warband = await prisma.warband.upsert({
@@ -238,6 +282,13 @@ export async function DELETE(req: NextRequest) {
     if (!userId && userEmail) {
       const dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
       if (dbUser) userId = dbUser.id;
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Sign in to delete a warband from the cloud.' },
+        { status: 401 }
+      );
     }
 
     const existingWarband = await prisma.warband.findUnique({ where: { id } });

@@ -13,9 +13,6 @@ import {
   Flag, 
   BookOpen, 
   SlidersHorizontal, 
-  Sparkles, 
-  Coins, 
-  Skull,
   User,
   Palette,
   ChevronLeft,
@@ -23,7 +20,6 @@ import {
   Users,
   Crown,
   LogIn,
-  LogOut,
   Bug
 } from 'lucide-react';
 

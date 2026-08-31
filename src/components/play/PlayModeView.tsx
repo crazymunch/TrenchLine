@@ -4,14 +4,12 @@ import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
 import { DiceRoller } from './DiceRoller';
-import { KeywordPopover } from './KeywordPopover';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
-import { RangeCalculatorModal } from './RangeCalculatorModal';
 import { QuickSearchModal } from './QuickSearchModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { AllOutWarCardConsole } from './AllOutWarCardConsole';
-import { ActiveUnit, Warband } from '../../types/warband';
+import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { RulesProse } from '../codex/RulesProse';
 import { ViewMasthead } from '../ui/ViewMasthead';
@@ -24,27 +22,16 @@ import {
   ArrowRight,
   Crosshair,
   UserCheck,
-  Zap,
   Search,
-  BookOpen,
-  Ruler,
   Compass,
   Award,
   Sparkles,
   Users,
-  CheckSquare,
-  Square,
-  Plus,
-  Minus,
   XCircle,
-  Shield,
   Layers,
   ChevronDown,
   ChevronUp,
-  Settings,
   Swords,
-  MapPin,
-  Flame,
   Check,
   Sliders,
   Play,
@@ -57,8 +44,6 @@ import {
 export const PlayModeView: React.FC = () => {
   const { 
     warbands,
-    activeWarbandId,
-    setActiveWarbandId,
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
@@ -67,10 +52,8 @@ export const PlayModeView: React.FC = () => {
     updateUnitBloodMarkers, 
     setUnitStatus, 
     toggleUnitActed,
-    setActiveKeyword,
     isPostBattleOpen,
     setIsPostBattleOpen,
-    setCurrentView
   } = useStore();
 
   const primaryWarband = getActiveWarband();
@@ -111,7 +94,6 @@ export const PlayModeView: React.FC = () => {
   // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
-  const [rangingUnit, setRangingUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
   /**
    * Whether the phone HUD is showing its secondary controls.
@@ -125,6 +107,20 @@ export const PlayModeView: React.FC = () => {
   const [isAbortConfirmOpen, setIsAbortConfirmOpen] = useState(false);
   const [isCardConsoleOpen, setIsCardConsoleOpen] = useState(false);
   const [isMapLightboxOpen, setIsMapLightboxOpen] = useState(false);
+
+  /*
+    Above the early return, and it has to be.
+
+    The derived twelve plus the All Out War pack, in place of the hand-written
+    set whose game lengths and Glorious Deeds were invented.
+
+    This used to sit 30 lines further down, after `if (!viewingWarband)
+    return`. React identifies a hook by its call order, so the component ran
+    one fewer hook when no warband was selected than when one was — and the
+    render where a player picks their first warband is exactly the transition
+    that breaks. Every hook in this component now runs before any return.
+  */
+  const { scenarios } = useScenarios();
 
   if (!viewingWarband) {
     return (
@@ -142,19 +138,12 @@ export const PlayModeView: React.FC = () => {
   const deployedCost = deployedUnits.reduce((sum, u) => sum + u.totalCost, 0);
 
   // Statistics
-  const activeCount = deployedUnits.filter((u) => u.status === 'Active').length;
-  const downedCount = deployedUnits.filter((u) => u.status === 'Downed').length;
-  const ooaCount = deployedUnits.filter((u) => u.status === 'Out of Action').length;
-  const totalBlood = deployedUnits.reduce((sum, u) => sum + (Number(u.bloodMarkers) || 0), 0);
 
   const filteredUnits = deployedUnits.filter((u) => {
     if (filterStatus === 'All') return true;
     return u.status === filterStatus;
   });
 
-  // The derived twelve plus the All Out War pack, in place of the hand-written
-  // set whose game lengths and Glorious Deeds were invented.
-  const { scenarios } = useScenarios();
   const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   // Check if scenario is All Out War (Multiplayer card deck applies only here)
@@ -823,7 +812,6 @@ export const PlayModeView: React.FC = () => {
               {/* Middle: Live Multi-Player VP Meters */}
               <div className="flex flex-wrap items-center gap-2">
                 {matchWarbandIds.map((wbId, pIdx) => {
-                  const wb = warbands.find((w) => w.id === wbId);
                   const pScore = warbandScores[wbId]?.vp || 0;
                   const isCurrent = wbId === viewingWarband.id;
 
@@ -1010,7 +998,7 @@ export const PlayModeView: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {matchWarbandIds.map((wbId, pIdx) => {
+                  {matchWarbandIds.map((wbId, _pIdx) => {
                     const wb = warbands.find((w) => w.id === wbId);
                     const scores = warbandScores[wbId] || { vp: 0, completedDeeds: {}, turnScores: {} };
                     const turns = [1, 2, 3, 4, 5];

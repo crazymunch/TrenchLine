@@ -176,6 +176,51 @@ export function campaignGameOf(
 }
 
 
+/* --------------------------------------------------------------- lifecycle */
+
+/**
+ * Whether this Warband has fought a game yet.
+ *
+ * Read from the Warband's own record, not from a flag someone sets: a
+ * post-battle snapshot is written when a game is resolved, and Exploration and
+ * Calling for Reinforcements only happen after a battle. Any of the three is
+ * evidence the campaign has started. Absent all of them, it has not.
+ *
+ * `game > 1` on a ledger entry counts too — a Warband joining a campaign
+ * mid-season is credited against the game in progress.
+ */
+export function hasPlayedAGame(warband: {
+  snapshots?: { type?: string }[];
+  ledger?: LedgerEntry[];
+}): boolean {
+  if ((warband.snapshots ?? []).some((s) => s.type === 'post_battle')) return true;
+  return (warband.ledger ?? []).some((e) =>
+    e.reason === 'exploration'
+    || e.reason === 'reinforcements'
+    || (e.game ?? 1) > 1);
+}
+
+/**
+ * Whether the Warband Variant may still be changed.
+ *
+ * A Variant is a founding decision — it changes what the Warband may recruit,
+ * so re-declaring one three games in would retroactively make models on the
+ * roster illegal (or legal). It is therefore fixed once the campaign has
+ * started.
+ *
+ * An unrestricted Warband is exempt: it exists to try lists out, has no
+ * campaign to be consistent with, and its budget is already the player's to
+ * set at any time.
+ */
+export function canChangeVariant(warband: {
+  forceMode?: 'campaign' | 'unrestricted';
+  snapshots?: { type?: string }[];
+  ledger?: LedgerEntry[];
+}): boolean {
+  if (warband.forceMode === 'unrestricted') return true;
+  return !hasPlayedAGame(warband);
+}
+
 /* ------------------------------------------------------------- exploration */
 
 /**

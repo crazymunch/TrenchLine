@@ -6,15 +6,12 @@ import { TerritoryNode } from '../../types/campaign';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  Flag, 
   Shield, 
   MapPin, 
   CheckCircle, 
-  Crosshair, 
   Award, 
   X, 
   Swords, 
-  Sparkles, 
   ZoomIn, 
   ZoomOut, 
   RotateCcw, 
@@ -22,9 +19,6 @@ import {
   EyeOff, 
   Layers, 
   Globe, 
-  Flame, 
-  Castle, 
-  Maximize2,
   Users,
   Check
 } from 'lucide-react';
@@ -47,7 +41,6 @@ export const TerritoryMap: React.FC = () => {
   const [viewMode, setViewMode] = useState<'map' | 'grid'>('map');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [showLabels, setShowLabels] = useState<boolean>(true);
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,7 +95,7 @@ export const TerritoryMap: React.FC = () => {
     });
   };
 
-  const handleChallenge = (node: TerritoryNode) => {
+  const handleChallenge = (_node: TerritoryNode) => {
     soundEffects.playTrenchWhistle();
     setSelectedTerritory(null);
     setCurrentView('play');

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goTo } from './helpers';
+import { goTo, openApp } from './helpers';
 
 /**
  * The data the app shows is the data the sources carry.
@@ -10,8 +10,7 @@ import { goTo } from './helpers';
  * as it did. Every string here was wrong in the app before it was derived.
  */
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-  await page.waitForTimeout(2500);
+  await openApp(page);
 });
 
 test('the recruit list comes from the catalogues', async ({ page }) => {
@@ -23,14 +22,14 @@ test('the recruit list comes from the catalogues', async ({ page }) => {
   await expect(dialog.getByText(/Loading the roster/)).toHaveCount(0);
   await expect(dialog.getByText(/could not be loaded/)).toHaveCount(0);
 
-  // Count the profile cards themselves rather than a price string: an entry
-  // priced in Glory carries no Ducat figure at all, which is the point of the
-  // next test.
-  const profiles = await dialog.getByRole('heading', { level: 3 }).count();
-  expect(profiles, 'no recruitable profiles are listed').toBeGreaterThan(5);
+  // Count the rows themselves rather than a price string: an entry priced in
+  // Glory carries no Ducat figure at all, which is the point of the next test.
+  const rows = dialog.locator('[data-recruit-row]');
+  expect(await rows.count(), 'no recruitable profiles are listed').toBeGreaterThan(5);
 
-  // And they are real catalogue entries, with real rules text.
-  await expect(dialog.getByRole('heading', { level: 3 }).first()).toBeVisible();
+  // And they are real catalogue entries, named from the catalogues.
+  await expect(rows.first()).toBeVisible();
+  expect(await rows.first().getAttribute('data-recruit-row')).toBeTruthy();
 });
 
 test('a Glory-priced entry is not shown as free', async ({ page }) => {

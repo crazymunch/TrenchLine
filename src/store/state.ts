@@ -14,22 +14,32 @@
  * be the same coupling spread over more files. The split that matters is of the
  * 2,000 lines of *behaviour*, not of the type.
  */
-import { create } from 'zustand';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandSnapshot, UnitTitleRecord } from '../types/warband';
-import { Campaign, MatchRecord, CasualtyRecord, CampaignMember, TerritoryNode } from '../types/campaign';
-import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, Scenario, UnitCategory, RulesetVersion } from '../types/rules';
+import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
+import { Campaign, CasualtyRecord } from '../types/campaign';
+import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import { FACTIONS } from '../data/defaultRules';
 import type { Dataset } from '../types/catalogue';
-import { recruitable, type DroppedDetail } from '../rules/recruitable';
-import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
-import { storage } from '../services/storage';
+import { type DroppedDetail } from '../rules/recruitable';
+import type { SyncState } from '../services/sync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
+
+/**
+ * How the store asks for a navigation.
+ *
+ * Registered by the app shell, because a Zustand store lives outside React and
+ * cannot call `useRouter` itself. Null before the shell mounts and on the
+ * server, where `setCurrentView` falls back to a plain state write.
+ */
+export type Navigate = (view: AppView, rosterId?: string) => void;
 
 export interface AppState {
   currentView: AppView;
   setCurrentView: (view: AppView) => void;
+  /** Set the view without navigating — the shell's route sync uses this. */
+  setCurrentViewLocal: (view: AppView) => void;
+  navigate: Navigate | null;
+  registerNavigate: (nav: Navigate | null) => void;
 
   /*
     Rule catalogs — from the generated dataset, not from `defaultRules.ts`.
@@ -79,6 +89,17 @@ export interface AppState {
   fetchAllCloudWarbands: () => Promise<void>;
   syncUserWarbandsWithCloud: (userEmail?: string, userName?: string) => Promise<void>;
 
+  /**
+   * What the cloud copy is doing, as a value the UI can render.
+   *
+   * It used to be nothing: every cloud call caught its own error, logged a
+   * console warning and carried on, so "your roster is backed up" and "the
+   * request never left the building" looked identical from the outside. A
+   * player at a table with no signal had no way to tell. See
+   * `services/sync.ts`.
+   */
+  sync: SyncState;
+
   // Warband Management
   warbands: Warband[];
   activeWarbandId: string | null;
@@ -90,7 +111,8 @@ export interface AppState {
    * player set both, for one-off games, imports and testing a list.
    */
   createWarband: (name: string, factionId: string, ducatLimit?: number,
-                  forceMode?: 'campaign' | 'unrestricted') => Warband;
+                  forceMode?: 'campaign' | 'unrestricted',
+                  founding?: { variantId?: string; gloryPoints?: number }) => Warband;
   deleteWarband: (id: string) => void;
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
@@ -107,6 +129,8 @@ export interface AppState {
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;
   addWarbandChronicleEntry: (warbandId: string, entry: string) => void;
+  /** Put a warband back to one of its own recorded milestones. */
+  restoreWarbandSnapshot: (warbandId: string, snapshotId: string) => void;
   saveWarbandSnapshot: (
     warbandId: string, 
     label: string, 

@@ -6,9 +6,8 @@
  */
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
-import { storage } from '../../services/storage';
 import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../../types/warband';
-import type { UnitCategory } from '../../types/rules';
+import { persistWarbands } from '../persist';
 
 export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
@@ -38,11 +37,30 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
 
       const maxHp = profile.stats.keywords?.some(k => k.toLowerCase().includes('tough')) ? 2 : 1;
 
+      /*
+        The first Leader-eligible model recruited becomes the Leader.
+
+        A Warband has exactly one, and every faction's list is built around
+        theirs — so the recruit that *can* lead almost always *is* the leader,
+        and making the player find "Set as Leader" afterwards means a roster
+        that silently has none. `canLead` is the catalogue's own `Leader` role,
+        not a guess from cost or a limit of 1.
+
+        Only when the Warband has no Leader yet: a later eligible recruit (a
+        Technomancer joining a Heretic Priest) leaves the nomination alone,
+        because demoting the standing Leader is the player's call.
+      */
+      const warband = state.warbands.find((w) => w.id === warbandId);
+      const hasLeader = warband?.units.some((u) => u.profileSnapshot.category === 'Leader');
+      const snapshot = profile.canLead && warband && !hasLeader
+        ? { ...profile, category: 'Leader' as const }
+        : profile;
+
       const newUnit: ActiveUnit = {
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         customName: customName || profile.name,
         baseProfileId,
-        profileSnapshot: profile,
+        profileSnapshot: snapshot,
         equippedWeapons: defaultWeapons,
         equippedArmour: defaultArmour,
         equippedEquipment: [],
@@ -59,17 +77,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
             units: [...w.units, newUnit],
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },
@@ -86,6 +103,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
         ...target,
         id: `u-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         customName: `${target.customName} (Copy)`,
+        /*
+          A Warband has one Leader. Copying the Leader used to copy the
+          nomination too, leaving two — and the roster then rendered two
+          crowns and the campaign narrative picked whichever came first.
+          The copy is the same profile, demoted to what the catalogue calls
+          it (Leader-role entries are Elite in the role list).
+        */
+        profileSnapshot: target.profileSnapshot.category === 'Leader'
+          ? { ...target.profileSnapshot, category: 'Elite' as const }
+          : target.profileSnapshot,
         equippedWeapons: target.equippedWeapons.map((w) => ({
           ...w,
           instanceId: `w-${Date.now()}-${Math.random()}`
@@ -101,58 +128,55 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
             units: [...w.units, clonedUnit],
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },
 
     removeUnitFromWarband: (warbandId, unitId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
             units: w.units.filter((u) => u.id !== unitId),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateUnitName: (warbandId, unitId, name) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
             units: w.units.map((u) => (u.id === unitId ? { ...u, customName: name } : u)),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
     updateUnitCategory: (warbandId, unitId, category) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedUnits = w.units.map((u) => {
             if (u.id === unitId) {
@@ -181,10 +205,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             units: updatedUnits,
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -195,7 +218,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
 
     updateUnitLore: (warbandId, unitId, lore, quote, titles, deeds) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -211,10 +234,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             }),
             updatedAt: new Date().toISOString()
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -230,7 +252,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -244,17 +266,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },
 
     removeWeapon: (warbandId, unitId, instanceId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -269,10 +290,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -288,7 +308,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -301,17 +321,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },
 
     removeArmour: (warbandId, unitId, instanceId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -326,10 +345,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
@@ -345,7 +363,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
-        const updated = s.warbands.map((w) => {
+        let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -358,17 +376,16 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
       });
     },
 
     removeEquipment: (warbandId, unitId, instanceId) => {
       set((state) => {
-        const updated = state.warbands.map((w) => {
+        let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
             ...w,
@@ -383,10 +400,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          storage.syncWarbandToCloud(updatedWb);
           return updatedWb;
         });
-        storage.saveWarbands(updated);
+        updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },

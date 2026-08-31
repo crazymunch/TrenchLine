@@ -10,7 +10,7 @@
  * can be tested without rendering anything.
  */
 import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule } from '@/types/catalogue';
-import type { Roster, RosterUnit } from './costs';
+import type { Roster } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
 import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';

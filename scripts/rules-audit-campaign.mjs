@@ -56,7 +56,7 @@ function arrayLiteral(src, name) {
 }
 
 /** Every `"roll"`/`"title"` pair, in order, without evaluating the source. */
-function entriesOf(literal) {
+function _entriesOf(literal) {
   if (!literal) return [];
   const out = [];
   const re = /\{[^{}]*\}/gs;

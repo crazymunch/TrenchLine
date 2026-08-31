@@ -129,13 +129,33 @@ export function recruitable(
       // The catalogue's recruitment limit. `defaultRules.ts` had none at all —
       // 69 of the 89 units carry one, and none of them was enforced before.
       maxCount: u.max ?? undefined,
+      // The catalogue's own `Leader` role — nine entries carry it, at least
+      // one per faction. Not derived from cost, rarity or a max of 1.
+      canLead: u.roles.some((r) => r.toLowerCase() === 'leader') || undefined,
       innateAbilities: u.abilities.map(abilityOf),
-      // Mercenaries are hired by anyone, and the roster filter asks an entry
-      // which factions may take it. The catalogues put them in their own
-      // faction rather than listing hosts, so every faction is allowed and the
-      // *legality* engine decides — inventing a shorter list here would silently
-      // hide hires a warband is entitled to.
-      allowedFactions: categoryOf(u) === 'Mercenary' ? appFactionIds : undefined,
+      /*
+        Which Warbands may hire this Mercenary.
+
+        This used to hand every Mercenary the full faction list, on the
+        reasoning that "the catalogues put them in their own faction rather
+        than listing hosts, so the legality engine decides". Both halves were
+        wrong. The catalogues DO carry hosts (in `modifiers`, as `hidden`
+        conditions), and the legality engine runs *after* a unit is on the
+        roster — it cannot stop the recruit list offering one. The result was a
+        Court of the Seven-Headed Serpent Warband being offered the Mendelist
+        Ammo Monk and the Observer, which are NEW ANTIOCH and PILGRIM only.
+
+        `u.allowedFactions` comes from the Trench Dispatch's own recruitment
+        sentences, quoted per op in `dispatch-01.layer.json`. Where it is
+        absent the entry is unrestricted, which is a real answer for some —
+        the Scripture Guardian is hired by any Warband — and where the source
+        does not say, the old permissive behaviour stands rather than a
+        guessed-at shorter list, because hiding a hire a Warband is entitled to
+        is the worse error.
+      */
+      allowedFactions: categoryOf(u) === 'Mercenary'
+        ? (u.allowedFactions ? u.allowedFactions.map(appId) : appFactionIds)
+        : undefined,
       // Deliberately absent: the catalogues do not give models default gear.
       // `defaultRules.ts` invented starting loadouts, which is where a chunk of
       // its 38% invented wargear came from.

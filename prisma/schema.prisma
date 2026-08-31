@@ -75,6 +75,15 @@ model Warband {
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaignMembers CampaignMember[]
   createdAt       DateTime         @default(now())
+
+  // When this row was last written, set by Prisma. A PUSH time, not an edit
+  // time — which is the trap: sync used to compare it, so a device that merely
+  // opened the app made its copies look newer than another device's real work.
+  //
+  // `editedAt`, the time the PLAYER last changed the roster and the field the
+  // sync merge actually compares, is deliberately NOT a column here. It rides
+  // in the `notes` metadata JSON with the other client-owned fields. See the
+  // note in src/app/api/warbands/route.ts for why.
   updatedAt       DateTime         @updatedAt
 }
 

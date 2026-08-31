@@ -5,15 +5,7 @@ import { Sheet } from '../ui/Sheet';
 import { ActiveUnit, EquippedWeapon } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
-  X, 
-  Crosshair, 
-  Shield, 
   Dices, 
-  Skull, 
-  Check, 
-  AlertTriangle,
-  Flame,
-  Swords,
   Heart,
   Droplet,
   Sparkles
@@ -27,8 +19,7 @@ interface AttackCalculatorModalProps {
 
 export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({ 
   attacker, 
-  onClose,
-  onApplyDamage 
+  onClose
 }) => {
   const [selectedWeapon, setSelectedWeapon] = useState<EquippedWeapon | null>(
     attacker.equippedWeapons[0] || null
@@ -40,7 +31,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   const [isCharging, setIsCharging] = useState<boolean>(false);
   const [hasElevation, setHasElevation] = useState<boolean>(false);
 
-  const [customDiceMod, setCustomDiceMod] = useState<number>(0); // e.g. +1 DICE or -1 DICE
+  const [customDiceMod] = useState<number>(0); // e.g. +1 DICE or -1 DICE
 
   const [rollResult, setRollResult] = useState<{
     attackD1: number;

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   PlayingCard, 
   CardSuit, 
-  CardRank, 
   PlayerCardState 
 } from '../../types/allOutWar';
 import { 
@@ -18,21 +17,14 @@ import { soundEffects } from '../../services/soundEffects';
 import { 
   Layers, 
   Sparkles, 
-  Crown, 
-  Flame, 
   Clock, 
   Users, 
-  Play, 
   RotateCcw, 
   Eye, 
   EyeOff, 
-  Check, 
   X, 
   Gift, 
-  ShieldAlert, 
   Swords, 
-  ChevronRight,
-  Send,
   Zap,
   DollarSign,
   ArrowRight
@@ -49,7 +41,6 @@ interface AllOutWarCardConsoleProps {
 
 export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
   warbands,
-  activeWarbandId,
   round,
   warbandScores,
   onAdjustVp,

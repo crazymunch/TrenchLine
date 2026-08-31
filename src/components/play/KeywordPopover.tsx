@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useStore } from '../../store/useStore';
-import { X, BookOpen, Tag } from 'lucide-react';
+import { X, Tag } from 'lucide-react';
 
 export const KeywordPopover: React.FC = () => {
   const { activeKeyword, setActiveKeyword } = useStore();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { Warband } from '../../types/warband';
 import { Faction } from '../../types/rules';
-import { X, Printer, Copy, Download, Check, Skull, Shield, FileText, Share2 } from 'lucide-react';
+import { Printer, Copy, Download, Check, Share2 } from 'lucide-react';
 
 interface ExportModalProps {
   warband: Warband;
@@ -13,7 +13,6 @@ interface ExportModalProps {
 export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onClose }) => {
   const [copiedType, setCopiedType] = useState<'plain' | 'discord' | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'cards' | 'text'>('cards');
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
 
   const generatePlainText = () => {

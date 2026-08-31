@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { ActiveUnit } from '../../types/warband';
 import { UnitCategory } from '../../types/rules';
@@ -26,7 +26,6 @@ import {
   Scroll,
   Award,
   BookOpen,
-  Quote,
   Flame,
   Users,
   Star,
@@ -37,9 +36,11 @@ import {
 interface UnitCardProps {
   unit: ActiveUnit;
   warbandId: string;
+  /** The roster-level collapse state. A card can still be opened on its own. */
+  collapseAll?: boolean;
 }
 
-export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
+export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll = false }) => {
   const { 
     removeUnitFromWarband, 
     duplicateUnit,
@@ -64,7 +65,6 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
-  const hasLore = !!(unit.lore || (unit.deeds && unit.deeds.length > 0) || (unit.titles && unit.titles.length > 0));
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);
@@ -99,6 +99,22 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
   const fullDisplayName = titlesToAppend.length > 0
     ? `${unit.customName}, ${titlesToAppend.join(', ')}`
     : unit.customName;
+
+  /*
+    Collapse-to-summary (3.3).
+
+    Nine warriors at full detail is about 6,000px of scroll on a phone, and
+    what you are usually doing — checking who is in the roster and what they
+    cost — needs the header and the statline and nothing else. Collapsed, a
+    card is those two bands; expanded, it is everything.
+
+    `collapseAll` is the roster-level control and the local state overrides it
+    per card: collapse the lot, then open the one warrior you are editing.
+    Re-seeding when `collapseAll` changes is what keeps the roster button
+    working after you have touched individual cards.
+  */
+  const [collapsed, setCollapsed] = useState(collapseAll);
+  useEffect(() => { setCollapsed(collapseAll); }, [collapseAll]);
 
   const toggleAbilityExpand = (id: string) => {
     setExpandedAbilities(prev => ({ ...prev, [id]: !prev[id] }));
@@ -212,6 +228,20 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               {unit.totalCost} D
             </div>
 
+            {/* Collapse toggle, beside the cost: the cost is the other thing
+                you read when scanning, and the two are what a collapsed card
+                still shows. */}
+            <button
+              onClick={() => setCollapsed((c) => !c)}
+              aria-expanded={!collapsed}
+              className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
+                isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+              }`}
+              title={collapsed ? 'Show the full warrior card' : 'Collapse to summary'}
+            >
+              <ChevronDown className={`w-4 h-4 transition-transform ${collapsed ? '-rotate-90' : ''}`} />
+            </button>
+
             {/* 3-Dots Dropdown Trigger */}
             <div className="relative">
               <button
@@ -285,7 +315,16 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
 
         {/* Card Body */}
         <div className="p-3.5 space-y-2.5 flex-1">
-          
+
+          {/*
+            Everything but the statline hides when the card is collapsed.
+
+            What survives is what you scan a roster for: who they are, what they
+            cost, and the four characteristics. Nine warriors at full detail is
+            about 6,000px of scroll on a phone.
+          */}
+          {!collapsed && (<>
+
           {/* Base Profile Subtitle & XP */}
           <div className="text-xs sm:text-[11px] font-mono text-theme-muted flex items-center justify-between">
             <span>Base Profile: <strong className="text-theme-text">{unit.profileSnapshot.name}</strong></span>
@@ -337,6 +376,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           )}
 
+          </>)}
+
           {/* Stat Block */}
           {/*
             The statline as the rulebook prints it: a ruled row of cells, not
@@ -360,6 +401,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
               </div>
             ))}
           </div>
+
+          {!collapsed && (<>
 
           {/* Innate Abilities & Rules: Collapsed by Default with Expand Arrow */}
           {unit.profileSnapshot.innateAbilities && unit.profileSnapshot.innateAbilities.length > 0 && (
@@ -557,9 +600,13 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             </div>
           )}
 
+          </>)}
+
         </div>
 
-        {/* Card Footer Actions */}
+        {/* Card Footer Actions. Hidden when collapsed: Bio, Skills and Equip
+            all open something, and a summary row is for scanning, not acting. */}
+        {!collapsed && (
         <div className="p-2 bg-theme-elevated border-t border-theme-border grid grid-cols-3 gap-1.5 text-xs font-mono">
           <button
             onClick={() => setIsLoreModalOpen(true)}
@@ -586,6 +633,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId }) => {
             <span>Equip</span>
           </button>
         </div>
+        )}
 
       </div>
 

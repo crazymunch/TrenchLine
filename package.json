@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "rules:fetch": "node scripts/rules-fetch.mjs",
     "rules:pdfs": "node scripts/rules-fetch-pdfs.mjs",
     "rules:crosscheck": "node scripts/rules-crosscheck.mjs",
@@ -22,7 +22,8 @@
     "postinstall": "prisma generate",
     "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:phone": "playwright test --project=phone"
+    "test:e2e:phone": "playwright test --project=phone",
+    "lint:fix": "eslint . --fix"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -51,6 +52,8 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "autoprefixer": "^10.4.20",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.24",
     "pdf-parse": "^2.4.5",
     "pdf2json": "^4.0.3",
     "postcss": "^8.4.49",
@@ -58,6 +61,7 @@
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.3",
     "typescript": "~5.7.3",
+    "typescript-eslint": "^8.68.0",
     "vitest": "^4.1.11"
   }
 }

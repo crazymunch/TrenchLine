@@ -6,7 +6,7 @@
  * variable defined 400 lines above them.
  */
 import type { Warband } from '../types/warband';
-import type { Campaign, TerritoryNode } from '../types/campaign';
+import type { Campaign } from '../types/campaign';
 import type { UnitProfile, WeaponProfile, RulesetVersion } from '../types/rules';
 import { storage } from '../services/storage';
 import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';

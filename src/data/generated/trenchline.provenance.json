@@ -193,8 +193,8 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -225,8 +225,8 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.glory": {
       "layer": "base",
@@ -241,12 +241,12 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "constraints": {
       "layer": "base",
@@ -445,12 +445,12 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movementInches": {
       "layer": "base",
@@ -466,12 +466,12 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.armour": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.base": {
       "layer": "base",
@@ -479,8 +479,8 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.glory": {
       "layer": "base",
@@ -496,8 +496,8 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -3086,8 +3086,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -3107,8 +3107,8 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8",
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt",
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.armour": {
@@ -3117,13 +3117,13 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.base": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8",
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt",
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.glory": {
       "layer": "base",
@@ -3139,8 +3139,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -3261,8 +3261,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -3297,8 +3297,8 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.glory": {
       "layer": "base",
@@ -3314,8 +3314,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -4092,8 +4092,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4133,9 +4133,8 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "min": {
       "layer": "base",
@@ -4160,6 +4159,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:8e7d-f104-423a-2b4a": {
@@ -4180,8 +4183,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4248,6 +4251,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:b5ac-1a57-c1d4-3f4c": {
@@ -4268,8 +4275,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4284,14 +4291,13 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "stats.ranged": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt",
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.armour": {
       "layer": "base",
@@ -4309,9 +4315,8 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8",
-      "verified": "rulebook:warbands-of-trench-crusade"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "min": {
       "layer": "base",
@@ -4322,8 +4327,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -4336,6 +4341,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:2d21-7af1-0770-da4c": {
@@ -4356,8 +4365,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4410,8 +4419,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -4444,8 +4453,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4498,8 +4507,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -4512,6 +4521,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:ce78-bd08-5b44-8e38": {
@@ -4942,8 +4955,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -5010,6 +5023,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:2a1b-d09e-f965-06c9": {
@@ -5112,8 +5129,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -5179,6 +5196,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:3fe9-1530-6fcd-1855": {
@@ -5199,8 +5220,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -5215,8 +5236,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "stats.ranged": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.melee": {
       "layer": "base",
@@ -5266,6 +5287,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:1a28-719d-fbd0-5bf0": {
@@ -5286,8 +5311,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -5340,8 +5365,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -5354,6 +5379,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:bc90-d206-2b0d-b743": {
@@ -7560,8 +7589,8 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -15916,8 +15945,8 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -29802,8 +29831,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -30107,16 +30136,16 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.glory": {
       "layer": "base",
@@ -36030,8 +36059,8 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -36080,8 +36109,8 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -37564,42 +37593,6 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
-  "unit:Yüzbaşı Captain": {
-    "cost.ducats": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "abilities": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "unit:Brazen Bull": {
-    "cost.ducats": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "stats.melee": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "stats.base": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "abilities": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
   "keyword:FUMBLE": {
     "name": {
       "layer": "dispatch-01",
@@ -37624,90 +37617,6 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "description": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Frag Grenades": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Gas Grenades": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Incendiary Grenades": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "cost.ducats": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Molotov Cocktail": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Holy Grenade": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "weapon:Parasite Grenades": {
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "unit:Thrall": {
-    "options": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "cost.ducats": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "keywords": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "abilities": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    }
-  },
-  "unit:Amalgam": {
-    "cost.ducats": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "stats.movement": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "stats.melee": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "stats.armour": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "abilities": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
-    },
-    "keywords": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }

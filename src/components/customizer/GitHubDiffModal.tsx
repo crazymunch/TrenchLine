@@ -5,16 +5,9 @@ import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { RuleDiffItem } from '../../types/diff';
 import { 
-  X, 
-  GitBranch, 
   GitCommit, 
-  Check, 
   CheckCheck, 
-  AlertCircle, 
-  ArrowRight,
-  Shield,
-  Coins,
-  Sparkles
+  AlertCircle
 } from 'lucide-react';
 
 interface GitHubDiffModalProps {
