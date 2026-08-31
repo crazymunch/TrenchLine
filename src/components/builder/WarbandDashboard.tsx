@@ -84,10 +84,20 @@ export const WarbandDashboard: React.FC = () => {
     return window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
   });
   const { dataset } = useDataset(rulesetId);
-  const variantsHere = dataset ? variantsForFaction(dataset, newFactionId) : [];
+  // Third-party Variants each unlock their own units, so they follow the same
+  // switch: offering the Variant while hiding what it reveals is half a switch.
+  const variantsHere = (dataset ? variantsForFaction(dataset, newFactionId) : [])
+    .filter((v) => newAllowThirdParty || !v.thirdParty);
 
   // Changing faction invalidates the variant: they belong to one faction each.
   useEffect(() => { setNewVariantId(undefined); }, [newFactionId]);
+  // Turning the switch off must not leave a third-party Variant selected.
+  useEffect(() => {
+    if (!newAllowThirdParty) {
+      setNewVariantId((id) => (variantsHere.some((v) => v.id === id) ? id : undefined));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newAllowThirdParty]);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -342,7 +352,7 @@ export const WarbandDashboard: React.FC = () => {
                       <option value="" className="bg-theme-surface">Standard list (no Variant)</option>
                       {variantsHere.map((v) => (
                         <option key={v.id} value={v.id} className="bg-theme-surface">
-                          {v.name}
+                          {v.name}{v.thirdParty ? ' (third party)' : ''}
                         </option>
                       ))}
                     </select>

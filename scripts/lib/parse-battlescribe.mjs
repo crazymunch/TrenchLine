@@ -458,20 +458,70 @@ export function parseCatalogues(dir) {
   // Their special rules come with them, as Ability profiles carrying the full
   // published text — the same rules the Warbands PDF states as prose.
   const variantEntries = [];
+
+  /*
+    Third-party variants, found by the group that holds them rather than by
+    where that group hangs.
+
+    Five factions nest "Third Party" under `Warband Variant > Variant
+    Selection`. The Court of the Seven-Headed Serpent has no "Warband Variant"
+    entry at all — its Fang of the Seething Black sits under
+    `Seven Deadly Sins > Chosen Sin > Third Party`. Keying on the variant
+    ancestry therefore finds five of six. The group's own name is the signal
+    that holds everywhere, so that is what this keys on.
+  */
+  const thirdPartyVariantIds = new Set();
+  const thirdPartyVariantNodes = [];
+  for (const { file, doc } of docs) {
+    walk(doc, (n) => {
+      for (const g of arr(n?.selectionEntryGroups?.selectionEntryGroup)) {
+        if (clean(attr(g, 'name')) !== 'Third Party') continue;
+        const inner = (node) => {
+          for (const e of arr(node?.selectionEntries?.selectionEntry)) {
+            const id = attr(e, 'id');
+            if (!id || thirdPartyVariantIds.has(id)) continue;
+            thirdPartyVariantIds.add(id);
+            thirdPartyVariantNodes.push({ e, file });
+          }
+          for (const sub of arr(node?.selectionEntryGroups?.selectionEntryGroup)) inner(sub);
+        };
+        inner(g);
+      }
+    });
+  }
+
   for (const { file, doc } of docs) {
     walk(doc, (n) => {
       // "Warband Variant" is a selectionEntry, not a group: the variants are
       // selectionEntries nested in the groups beneath it.
       for (const holder of arr(n?.selectionEntries?.selectionEntry)) {
         if (clean(attr(holder, 'name')) !== 'Warband Variant') continue;
-        // Direct children only. A full walk descends into each variant's own
-        // equipment list and returns the armoury as "variants".
-        const kids = [
-          ...arr(holder?.selectionEntries?.selectionEntry),
-          ...arr(holder?.selectionEntryGroups?.selectionEntryGroup)
-            .flatMap((g) => arr(g?.selectionEntries?.selectionEntry)),
-        ];
-        for (const e of kids) {
+        /*
+          The variants are the entries beneath "Warband Variant", but they are
+          not all at the same depth: each faction nests a **"Third Party"**
+          group inside "Variant Selection", holding the unofficial variants
+          (Cadaver Corps, Children of Yggdrasil, Nomads of Al-Badia, …). Reading
+          one group level deep found the official ones and silently dropped all
+          six of those — and the units they gate then had nothing to be gated
+          on, so they were offered unconditionally.
+
+          So: descend groups to any depth, but never into a variant's own
+          `selectionEntries` (that is its equipment list, and walking it returns
+          the armoury as "variants"). `underThirdParty` carries down whether any
+          enclosing group is the third-party one.
+        */
+        const kids = [];
+        const collect = (node, underThirdParty) => {
+          for (const e of arr(node?.selectionEntries?.selectionEntry)) {
+            kids.push({ e, thirdParty: underThirdParty });
+          }
+          for (const g of arr(node?.selectionEntryGroups?.selectionEntryGroup)) {
+            collect(g, underThirdParty || clean(attr(g, 'name')) === 'Third Party');
+          }
+        };
+        collect(holder, false);
+
+        for (const { e, thirdParty } of kids) {
           if (attr(e, 'id') === attr(holder, 'id')) continue;
           // A Warband Variant states its special rules as Ability profiles.
           // An entry with none is something else that happens to sit here.
@@ -482,6 +532,12 @@ export function parseCatalogues(dir) {
             id: attr(e, 'id'),
             name: clean(attr(e, 'name')),
             factionId: path.basename(file, path.extname(file)),
+            /*
+              Unofficial: condoned by Factory Fortress but written by other
+              people. Carried so the app can hide it unless the Warband opts
+              in, rather than showing it as published material.
+            */
+            thirdParty: (thirdParty || thirdPartyVariantIds.has(attr(e, 'id'))) || undefined,
             specialRules: arr(e?.profiles?.profile)
               .filter((pr) => attr(pr, 'typeName') === 'Ability')
               .map((pr) => ({
@@ -493,6 +549,28 @@ export function parseCatalogues(dir) {
       }
     });
   }
+  /*
+    Then any third-party variant the "Warband Variant" walk could not reach —
+    the Court's Fang of the Seething Black, which hangs off Chosen Sin instead.
+    Same shape as the others: a variant states its rules as Ability profiles.
+  */
+  for (const { e, file } of thirdPartyVariantNodes) {
+    if (variantEntries.some((v) => v.id === attr(e, 'id'))) continue;
+    const rules = arr(e?.profiles?.profile)
+      .filter((pr) => attr(pr, 'typeName') === 'Ability');
+    if (!rules.length) continue;
+    variantEntries.push({
+      id: attr(e, 'id'),
+      name: clean(attr(e, 'name')),
+      factionId: path.basename(file, path.extname(file)),
+      thirdParty: true,
+      specialRules: rules.map((pr) => ({
+        name: clean(attr(pr, 'name')),
+        description: clean(charMap(pr).Description),
+      })),
+    });
+  }
+
   // The same variant is reachable more than once through links.
   {
     const seen = new Set();

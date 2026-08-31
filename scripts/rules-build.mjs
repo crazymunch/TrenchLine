@@ -321,6 +321,7 @@ for (const ruleset of RULESETS) {
       specialRules: v.specialRules,
       ops: opsByVariantId.get(v.id) ?? [],
       sources: book ? ['catalogue', 'rulebook'] : ['catalogue'],
+      thirdParty: v.thirdParty || undefined,
     };
   });
 

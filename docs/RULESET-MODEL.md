@@ -578,39 +578,95 @@ ignored for one.
 
 ## 7c. Third-party content
 
-A small amount of what the community catalogues carry is **not official**:
+A meaningful slice of what the community catalogues carry is **not official**:
 condoned by Factory Fortress, but written by other people and, in the source's
 own words, offering *"no assurances ... to balance or consistency with rules"*.
-The app showed it beside the published entries with nothing to tell them apart.
+The builder showed it beside the published entries with nothing to tell them
+apart.
 
-The catalogues mark it themselves, twice, and both marks reach the generated
-dataset — so this is read, never maintained by hand:
+It is marked in the data, in **two different places**, and the two are not
+equivalent — the small one is easy to find and the large one is easy to miss:
 
-1. The entry carries an Ability profile literally named **`Third Party`**, whose
-   description is that disclaimer.
-2. The entry is `hidden="true"`, with a `set hidden false` modifier conditioned
-   on the roster having taken **`Allow Third-Party Mercenaries?`** — a real
-   `selectionEntry` in `Campaign Rules.cat` (`8397-95ab-8729-eb60`).
+### 1. The `Third Party` Ability profile — one entry
 
-`rules/thirdParty.ts` reads both; either is enough, because requiring both would
-mean that dropping one upstream silently promotes unofficial content to
-official. `Warband.allowThirdParty` is the app's copy of that roster option and
-defaults **off**, matching the catalogue default. Unlike the Variant it is not a
-founding decision — it is a table agreement — so it stays editable from the
-roster screen at any time, and `validate.ts` raises `third-party-not-allowed`
-if a model is left rostered after it is switched off.
+The Disciple of St. Roch carries an Ability profile literally named
+`Third Party`, whose description is that disclaimer, and is revealed by the
+`Allow Third-Party Mercenaries?` roster option in `Campaign Rules.cat`
+(`8397-95ab-8729-eb60`).
 
+### 2. Third-party **Warband Variants** — twenty-one units and thirty-three wargear entries
+
+The larger mechanism by far. Each faction catalogue holds a
+`selectionEntryGroup` named **`Third Party`** containing unofficial Variants,
+and the entries they unlock are `hidden="true"` with a `set hidden false`
+modifier naming that Variant:
+
+| Variant | Faction | Unlocks |
+|---|---|---|
+| Cadaver Corps | Heretic Legion | Technomancer *(Leader)*, Witch Coven Matriarch, Anointed Heavy Infantry, War Wolf |
+| Children of Yggdrasil | Trench Pilgrims | Chieftain *(Leader)*, Huscarl, Captive Giant |
+| Nomads of Al-Badia | Iron Sultanate | Archeologist, Bedu Sharpshooter, "Zamburak" Weapon Platform |
+| Ghazi of the Golden Path | Iron Sultanate | Teğmen, Shirdal, Sultanate Sapper, Pairika |
+| Fang of the Seething Black | Court of the Seven-Headed Serpent | Faceless, Stalker, Desecrated Saint, Yoke Fiend, Sin Eater, Goetic Warlock |
+| Remnants of Byzantium | New Antioch | Shocktrooper |
+
+Two of those are their faction's **Leader**, which is why this cannot be waved
+through: a Warband that never opted in was being offered the Technomancer and
+the Chieftain as though they were published.
+
+**The data is split across the tree.** The gate condition lives on the *unit*;
+the Variant it names lives in a group somewhere else. Detection has to join the
+two, and neither half means anything alone.
+
+**The group's name is the signal, not its position.** Five factions nest
+`Third Party` under `Warband Variant > Variant Selection`. The Court of the
+Seven-Headed Serpent has no `Warband Variant` entry at all — its Fang of the
+Seething Black sits under `Seven Deadly Sins > Chosen Sin > Third Party`. Keying
+on the variant ancestry finds five of six.
+
+### How it is read
+
+`parse-battlescribe.mjs` flags any variant inside a `Third Party` group, at any
+depth and under any parent, as `WarbandVariant.thirdParty`.
+`rules/thirdParty.ts` then joins a unit's reveal condition to those ids. Three
+independent marks, any one of which is enough — requiring agreement would mean
+that dropping one upstream silently promotes unofficial content to official.
+
+`Warband.allowThirdParty` is the app's copy of the roster option and defaults
+**off**, matching the catalogue default. Unlike the Variant it is a table
+agreement rather than a founding decision, so it is set at muster and stays
+editable from the roster; `validate.ts` raises `third-party-not-allowed` if a
+model is left rostered after it is switched off. The Variant picker hides
+third-party Variants under the same switch, since offering a Variant while
+hiding what it unlocks would be half a switch.
+
+> **Two traps, both of which this code hit.**
+>
 > **`hidden="true"` is not the marker.** Thirty-three model entries are hidden by
-> default and twenty-six of them ship. It is simply how BattleScribe expresses
-> "available under a condition", and most are ordinary official units — the
-> Matagot Hag, the Chieftain and the Technomancer are all hidden-by-default *and*
-> are their faction's Leader. Gating on it would delete a third of the roster.
+> default and twenty-six ship. It is how BattleScribe expresses "available under
+> a condition", and plenty are ordinary official units — the Matagot Hag, the
+> Witchburner, the Observer. Gating on it would delete a third of the roster.
+>
+> **A modifier's `when` is either a group or a bare condition.** `{all: [...]}`
+> / `{any: [...]}` *or* a single condition object. Every real gate here uses the
+> bare form, so a reader that only walks `all`/`any` returns nothing and matches
+> nothing. That bug found 1 entry where there are 22.
 
-The same modifier also carries the entry's **hosts**. The Disciple of St. Roch —
-currently the only marked entry — is Iron Sultanate, New Antioch and Trench
-Pilgrims only, and the Trench Dispatch (where every other Mercenary's hosts come
-from, §7b) never mentions it, so before this it fell through to the permissive
-default and all six Warbands were offered it.
+### Wargear
+
+Thirty-three weapons hang off the same six Variants — Greek Fire off the
+Remnants of Byzantium, the Dane Axe, the Blood Eagle Banner, the Khyber Knife.
+**None reaches the app today**, because the arsenal is built from the rulebook's
+Armoury Tables (§3) and those are official. That is a property of how the
+arsenal is sourced, not a guarantee, so a test asserts it rather than leaving it
+to hold by accident.
+
+### Hosts
+
+The Disciple's `set hidden false` modifier also names its hosts — Iron
+Sultanate, New Antioch and Trench Pilgrims. The Trench Dispatch, where every
+other Mercenary's hosts come from (§7b), never mentions it, so before this it
+fell through to the permissive default and all six Warbands were offered it.
 
 ## 8. Migration of saved warbands
 
