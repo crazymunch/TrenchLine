@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { parseCatalogues, splitMovement } from '../parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants } from '../parse-warbands.mjs';
 import { createProvenance, applyLayer, applyLayers, stampBase } from '../layers.mjs';
-import { normaliseStat, normaliseBase, nameKey, verify } from '../verify.mjs';
+import { normaliseStat, normaliseBase, nameKey, verify, applyResolutions } from '../verify.mjs';
 import { RULESETS, DEFAULT_RULESET } from '../rulesets.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
@@ -142,17 +142,100 @@ describe('verification', () => {
     expect(r.conflicts.map((c) => c.field)).toContain('cost.ducats');
   });
 
-  // Two catalogue entries can share a name (Combat Medic exists as both New
-  // Antioch and Mercenary) while the book has one. Comparing both invents a
-  // conflict.
-  it('skips a name that matches more than one catalogue entry', () => {
-    const ds = emptyDataset([
-      unit({ id: 'a', name: 'Combat Medic', factionId: 'New Antioch', cost: { ducats: 40, glory: 0 }, stats: {} }),
-      unit({ id: 'b', name: 'Combat Medic', factionId: 'Mercenaries', cost: { ducats: 0, glory: 2 }, stats: {} }),
-    ]);
-    const r = verify(ds, [{ name: 'Combat Medic', ducats: 65, glory: 0, stats: { armour: '0' } }], createProvenance(), {});
+  /*
+    Two catalogue entries can share a name — Combat Medic exists as both a New
+    Antioch model and a Mercenary hireling — while the book has one entry for
+    each. This used to skip every such name as 'ambiguous', which is how the
+    New Antioch Medic's cost sat 25 Ducats under the book's unnoticed. The
+    book names the faction in its keywords, so use it.
+  */
+  const twoMedics = () => emptyDataset([
+    unit({ id: 'a', name: 'Combat Medic', factionId: 'New Antioch', cost: { ducats: 40, glory: 0 }, stats: {} }),
+    unit({ id: 'b', name: 'Combat Medic', factionId: 'Mercenaries', cost: { ducats: 0, glory: 2 }, stats: {} }),
+  ]);
+  const bookMedic = (keywords) => [{
+    name: 'Combat Medic', ducats: 65, glory: 0, keywords, stats: { armour: '0' },
+  }];
+
+  it("compares a duplicated name against the book entry's own faction", () => {
+    const r = verify(twoMedics(), bookMedic(['NEW ANTIOCH']), createProvenance(), {});
+    expect(r.conflicts.map((c) => c.field)).toEqual(['cost.ducats']);
+    expect(r.ambiguous).toHaveLength(0);
+  });
+
+  it('leaves the other faction alone rather than inventing a conflict for it', () => {
+    // The Mercenary hireling is 2 Glory and matches nothing the book says
+    // about the New Antioch model. It must not be reported against it.
+    const r = verify(twoMedics(), bookMedic(['NEW ANTIOCH']), createProvenance(), {});
+    expect(r.conflicts.every((c) => c.unit === 'Combat Medic')).toBe(true);
+    expect(r.conflicts.map((c) => c.ours)).toEqual([40]);
+  });
+
+  it('an entry with no faction keyword is a Mercenary', () => {
+    // Compared against the 0D/2G hireling, so both currencies disagree with
+    // the book's flat 65 — and the New Antioch model is not touched.
+    const r = verify(twoMedics(), bookMedic([]), createProvenance(), {});
+    expect(r.conflicts.map((c) => c.field))
+      .toEqual(['cost.ducats', 'cost.glory']);
+    expect(r.conflicts.map((c) => c.ours)).toEqual([0, 2]);
+  });
+
+  it('still reports ambiguity when no unit carries the book entry\'s faction', () => {
+    const r = verify(twoMedics(), bookMedic(['PILGRIM']), createProvenance(), {});
     expect(r.conflicts).toHaveLength(0);
-    expect(r.ambiguous.length).toBe(2);
+    expect(r.ambiguous).toHaveLength(2);
+  });
+});
+
+describe('maintainer resolutions', () => {
+  const book = [{
+    name: 'Thing', ducats: 65, glory: 0, keywords: [], stats: { armour: '-1' },
+  }];
+  const dsWith = () => emptyDataset([
+    unit({ id: 'u1', name: 'Thing', factionId: 'Mercenaries', cost: { ducats: 40, glory: 0 }, stats: { armour: '-1' } }),
+  ]);
+
+  it("writes the book's value into the dataset when the maintainer chose it", () => {
+    const ds = dsWith();
+    const p = createProvenance();
+    const r = applyResolutions(ds, {
+      'Thing.cost.ducats': { chose: 'rulebook', value: 65, because: 'the book is authoritative' },
+    }, p, book);
+    expect(r.errors).toEqual([]);
+    expect(ds.units[0].cost.ducats).toBe(65);
+    expect(p.get('unit', 'u1', 'cost.ducats').layer).toBe('resolution');
+  });
+
+  it('keeps the catalogue value when the maintainer chose battlescribe', () => {
+    const ds = dsWith();
+    const r = applyResolutions(ds, {
+      'Thing.cost.ducats': { chose: 'battlescribe', value: 40, because: 'the book folds in Battlekit' },
+    }, createProvenance(), book);
+    expect(r.errors).toEqual([]);
+    expect(ds.units[0].cost.ducats).toBe(40);
+  });
+
+  /*
+    The file is a record of decisions, so it has to stay true to the pages it
+    cites. An entry claiming the book says 70 when the book says 65 is exactly
+    the fabricated-provenance failure the pipeline exists to prevent.
+  */
+  it('fails when the stated value is not what the source it names says', () => {
+    const r = applyResolutions(dsWith(), {
+      'Thing.cost.ducats': { chose: 'rulebook', value: 70, because: 'wrong' },
+    }, createProvenance(), book);
+    expect(r.errors[0]).toMatch(/the book says/);
+  });
+
+  it('does not undo a layer that already superseded the field', () => {
+    const ds = dsWith();
+    const p = createProvenance();
+    p.stamp('unit', 'u1', 'cost.ducats', { layer: 'dispatch-01', source: 'dispatch' });
+    const r = applyResolutions(ds, {
+      'Thing.cost.ducats': { chose: 'rulebook', value: 65, because: 'the book is authoritative' },
+    }, p, book);
+    expect(ds.units[0].cost.ducats).toBe(40);
+    expect(r.applied[0]).toMatch(/superseded by layer/);
   });
 });
 

@@ -330,12 +330,14 @@ three outcomes.
 | `unconfirmed` | Extraction could not locate it — not evidence of an error | passes, counted in the report |
 | `conflict` | Rulebook clearly states a different value | **fails** until resolved |
 
-Conflicts are resolved by hand in `data-sources/resolutions.json`:
+Conflicts are resolved by hand in `data-sources/resolutions.json`, keyed
+`<Unit Name>.<field>`:
 
 ```json
 {
-  "na-lieutenant.stats.armour": {
+  "Lieutenant.stats.armour": {
     "chose": "battlescribe",
+    "value": "0",
     "because": "Rulebook p.27 column extraction interleaved the Sniper Priest row; visual check of the PDF confirms Armour 0.",
     "reviewed": "2026-08-30",
     "reviewer": "crazymunch"
@@ -345,6 +347,25 @@ Conflicts are resolved by hand in `data-sources/resolutions.json`:
 
 Every resolution needs a reason. The file is the project's record of *why* the
 data says what it says — the thing the original build never had.
+
+A resolution is **applied, not merely recorded**:
+
+| `chose` | Effect |
+|---|---|
+| `rulebook` | the book's value is written into the dataset, with provenance `layer: 'resolution'` |
+| `battlescribe` | the catalogue's value is kept |
+
+Either way the build checks the stated `value` against the source it names and
+**fails** if the two have drifted apart, so the file cannot describe a decision
+the data has not taken. It used to only silence the conflict, and one entry
+claimed the Scripture Guardian's Ranged had been set to the book's `-` while
+the app shipped the catalogue's `+1 Dice` — the file said one thing and the app
+did another.
+
+A field a layer has already written is **skipped**, not overwritten: the
+Dispatch outranks the rulebook, so there is nothing left to choose. The same
+entry can still be doing real work in the unlayered base ruleset, which is why
+it is skipped rather than rejected.
 
 Precedence when sources genuinely disagree, absent an explicit resolution:
 

@@ -26,7 +26,7 @@ import { parseBattlekit } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
-import { verify, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
+import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
@@ -339,7 +339,21 @@ for (const ruleset of RULESETS) {
   const withOps = dataset.variants.filter((v) => v.ops.length).length;
   const bookOnlyCount = bookOnly.length;
 
-  // 3. verify
+  /*
+    3. apply the maintainer's decisions, then verify.
+
+    Order matters: a resolution is a value the maintainer chose over one of the
+    sources, so it has to be in the dataset before the dataset is checked
+    against those sources. Applying it afterwards is what let resolutions.json
+    describe decisions the app had never taken.
+  */
+  const res = applyResolutions(dataset, resolutions, provenance, bookEntries);
+  if (res.errors.length) {
+    failed = true;
+    console.log('\n  Resolutions that do not match the source they cite:');
+    for (const e of res.errors) console.log(`    ${e}`);
+  }
+
   const v = verify(dataset, bookEntries, provenance, resolutions);
   const missingProv = findMissingProvenance(dataset, provenance);
 
@@ -420,6 +434,10 @@ for (const ruleset of RULESETS) {
   console.log(`    confirmed   ${v.confirmed}`);
   console.log(`    unconfirmed ${v.unconfirmed}`);
   console.log(`    resolved    ${v.resolved.length}`);
+  if (res.applied.length) {
+    console.log('  maintainer resolutions (data-sources/resolutions.json):');
+    for (const a of res.applied) console.log(`    ${a}`);
+  }
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);

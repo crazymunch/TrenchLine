@@ -19823,7 +19823,7 @@ export const DATASET: Dataset = {
         "movement": "6\"/Infantry",
         "movementInches": 6,
         "movementType": "Infantry",
-        "ranged": "+1 Dice",
+        "ranged": "-",
         "melee": "+1 Dice",
         "armour": "-2",
         "base": "40mm"
@@ -22550,7 +22550,7 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 40,
+        "ducats": 65,
         "glory": 0
       },
       "min": null,

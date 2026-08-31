@@ -108,22 +108,37 @@ Running the same comparison between the **rulebook** and the **catalogues**
 (`npm run rules:threeway`):
 
 ```
-rulebook vs catalogue  compared   41
-                       DISAGREE    7
-app      vs rulebook   DISAGREE   26
+rulebook vs catalogue  compared   42
+                       DISAGREE    3
+app      vs rulebook   DISAGREE    0
 ```
 
-Of those 7, five are formatting rather than substance — `-` vs `N/A` for "no
-ranged attack", `30 by 60mm` vs `30x60mm`, `+1 DICE` vs `1`. Only two are real:
-the **Scripture Guardian**'s Ranged characteristic, and the **Mamluk Faris**,
-where the book records a conditional `-2 (-3)` that the catalogue flattens
-to `-2`.
+All three are real, and all three now carry a written resolution:
 
-This is good news for the plan. The catalogues are a sound base; the rulebook
-layer is a light correction pass plus the constraint data, not a rewrite. It
-also means the normalisation rules in `rules:verify` matter as much as the
-comparison itself — five of seven "conflicts" are the tool's fault, not the
-sources'.
+| Entry | Disagreement | Resolved |
+|---|---|---|
+| Scripture Guardian | Ranged `-` (book) vs `+1 Dice` (catalogue) | book, then superseded by the Dispatch's `+2 DICE` |
+| Mamluk Faris | Armour `-2 (-3)` (book) vs `-2` (catalogue) | catalogue — the conditional is not yet expressible |
+| Combat Medic | Cost `65` (book) vs `40` (catalogue) | book — see below |
+
+The earlier run of this comparison reported **7**, of which five were the
+tool's own formatting rather than the sources' — `-` vs `N/A`, `30 by 60mm`
+vs `30x60mm`, `+1 DICE` vs `1`. Both this script and the build had their own
+copy of the normalisation rules and the copies had drifted; they now share one
+definition in `scripts/lib/verify.mjs`.
+
+The **Combat Medic** was not in that count at all. The book prints 65 Ducats
+and `New Antioch.cat` 40, and the check skipped the entry entirely because two
+catalogues carry a model of that name — the New Antioch troop and the Mercenary
+hireling — and it gave up on any duplicated name rather than choose. The book
+names each entry's faction in its keywords, so it can now choose, and the
+25-Ducat gap it had been hiding turns out to be exactly the Battlekit the book
+says a Medic always has (Standard Armour 15 + Gas Mask 5 + Medi-kit 5). The
+catalogue forces all three onto the model and then leaves them unpriced.
+
+This is still good news for the plan. The catalogues are a sound base; the
+rulebook layer is a light correction pass plus the constraint data, not a
+rewrite.
 
 ### 1.3 Keywords are partly fabricated
 

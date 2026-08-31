@@ -6302,27 +6302,33 @@
     },
     "stats.ranged": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.armour": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.base": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
-      "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "layer": "resolution",
+      "source": "resolutions.json:Combat Medic.cost.ducats — rulebook:warbands-of-trench-crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:New Antioch.cat@1b463a8"
+      "source": "battlescribe:New Antioch.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "min": {
       "layer": "base",

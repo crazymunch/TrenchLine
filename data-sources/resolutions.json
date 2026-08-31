@@ -6,12 +6,25 @@
     "project's record of why the data says what it says — the thing the",
     "original build never had. Every entry needs a written reason.",
     "",
+    "Entries are APPLIED, not merely recorded: 'chose: rulebook' writes the",
+    "book's value into the dataset with provenance, and 'chose: battlescribe'",
+    "keeps the catalogue's. Either way the build checks the stated value",
+    "against the source it names and fails if the two have drifted apart.",
+    "",
     "A layer superseding the rulebook is NOT a conflict and does not belong",
     "here: the pipeline resolves that by precedence (Dispatch > rulebook >",
     "catalogue). Only add an entry when two sources of the same standing",
     "state different things, or when one is more precise than the model can",
     "currently express."
   ],
+
+  "Scripture Guardian.stats.ranged": {
+    "chose": "rulebook",
+    "value": "-",
+    "because": "The book gives the Scripture Guardian no Ranged characteristic ('-'); the catalogue lists '+1 Dice'. The book is authoritative over the community catalogue, and the entry's own text supports it — the Guardian attacks with Vengeful Scripture, a Special-type weapon with its own profile, rather than a normal Ranged characteristic. Flagged for upstream correction. Applies to the unlayered base ruleset only: Trench Dispatch 01 sets this field to +2 DICE and supersedes both sources in the layered ruleset.",
+    "reviewed": "2026-08-30",
+    "reviewer": "claude, pending maintainer confirmation"
+  },
 
   "Mamluk Faris.stats.armour": {
     "chose": "battlescribe",
@@ -21,11 +34,11 @@
     "reviewer": "claude, pending maintainer confirmation"
   },
 
-  "Scripture Guardian.stats.ranged": {
+  "Combat Medic.cost.ducats": {
     "chose": "rulebook",
-    "value": "-",
-    "because": "The book gives the Scripture Guardian no Ranged characteristic ('-'); the catalogue lists '+1 Dice'. The book is authoritative over the community catalogue, and the entry's own text supports it — the Guardian attacks with Vengeful Scripture, a Special-type weapon with its own profile, rather than a normal Ranged characteristic. Flagged for upstream correction.",
-    "reviewed": "2026-08-30",
+    "value": 65,
+    "because": "The book prints 'Cost: 65' for the New Antioch Combat Medic; New Antioch.cat prices the same model at 40. The gap is exactly the Battlekit the book says a Medic always has: Standard Armour 15 + Gas Mask 5 + Medi-kit 5 = 25, and 40 + 25 = 65. The catalogue forces those three onto the model (min=1 entryLinks) and hides the matching Armoury rows from it, but leaves all three entryLinks unpriced, so its roster total comes to 40 — the split cost was never charged. The book is authoritative over the community catalogue and its figure is the one a player computes at the table. CAVEAT: nothing yet stops a Medic buying a second Gas Mask or Medi-kit from the New Antioch Armoury, which would double-charge by 10; the catalogue expresses that as a conditional 'hidden' modifier the pipeline does not read. Tracked with the forced-Battlekit gap below.",
+    "reviewed": "2026-08-31",
     "reviewer": "claude, pending maintainer confirmation"
   }
 }

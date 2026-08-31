@@ -22691,7 +22691,7 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 40,
+        "ducats": 65,
         "glory": 0
       },
       "min": null,
