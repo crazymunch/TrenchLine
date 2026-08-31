@@ -197,6 +197,11 @@ export interface WeaponProfile {
   factionId?: string;
   /** See `UnitProfile.hiddenByDefault`. */
   hiddenByDefault?: boolean;
+  /**
+   * Names of the models or options that reveal this entry — the catalogue's
+   * own answer to an Armoury row's "X only" shorthand. See rules/restrictions.
+   */
+  unlockedBy?: string[];
 }
 
 export interface UnitProfile {

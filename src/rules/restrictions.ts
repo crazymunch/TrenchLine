@@ -80,7 +80,17 @@ function toRestriction(raw: string): Restriction {
  */
 export function satisfiesOnlyFor(
   requires: string,
-  unit: { name: string; keywords?: string[]; roles?: string[] }
+  unit: { name: string; keywords?: string[]; roles?: string[] },
+  /**
+   * What the model has taken, and what the catalogue says unlocks the entry.
+   *
+   * An Armoury row's "X only" is shorthand. "Brazen Bull only" on the Titan
+   * Zulfiqar reads, in the catalogue, as *a Brazen Bull **or** anything with
+   * the Gargantuan Size Alchemical Formula* — and the rulebook says the same in
+   * words: "The Homunculus can use 1 Weapon that can usually only be taken by a
+   * Brazen Bull." Matched on the name alone, a legal Homunculus is rejected.
+   */
+  context?: { selections?: string[]; unlockedBy?: string[] },
 ): boolean {
   const want = requires.trim().toLowerCase();
   if (!want) return true;
@@ -96,5 +106,13 @@ export function satisfiesOnlyFor(
     ...(unit.roles ?? []),
   ].map((s) => String(s).toLowerCase());
 
-  return hay.some((h) => h === want || h.includes(want) || want.includes(h));
+  if (hay.some((h) => h === want || h.includes(want) || want.includes(h))) return true;
+
+  // Then the catalogue's own answer: does the model hold something the entry
+  // is revealed by? Only names the entry itself names count.
+  const unlocks = (context?.unlockedBy ?? []).map((s) => s.trim().toLowerCase());
+  if (!unlocks.length) return false;
+  return (context?.selections ?? [])
+    .map((s) => s.trim().toLowerCase())
+    .some((sel) => unlocks.includes(sel));
 }

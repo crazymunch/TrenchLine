@@ -223,6 +223,30 @@ const FIELD_PATHS = {
 /** Fields BattleScribe names directly rather than by id. */
 const LITERAL_FIELDS = new Set(['name', 'hidden', 'category', 'error', 'warning', 'forces']);
 
+/**
+ * The names a `set hidden false` on this entry tests for — the models and
+ * options that make it available. Empty when nothing reveals it.
+ */
+function revealNames(node, nameOf) {
+  const out = new Set();
+  const walkConds = (n) => {
+    if (!n || typeof n !== 'object') return;
+    for (const c of arr(n.condition)) {
+      const id = attr(c, 'childId');
+      const name = id && nameOf(id);
+      if (name) out.add(clean(name));
+    }
+    for (const g of arr(n.conditionGroup)) walkConds(g);
+    if (n.conditions) walkConds(n.conditions);
+    if (n.conditionGroups) walkConds(n.conditionGroups);
+  };
+  for (const m of arr(node?.modifiers?.modifier)) {
+    if (attr(m, 'field') !== 'hidden' || String(attr(m, 'value')) !== 'false') continue;
+    walkConds(m);
+  }
+  return out.size ? [...out] : undefined;
+}
+
 function conditionOf(c, nameOf) {
   const childId = attr(c, 'childId');
   const out = {
@@ -693,6 +717,18 @@ export function parseCatalogues(dir) {
           // And as with units, whether the entry is off the list until
           // something reveals it — see the note on the unit field.
           hiddenByDefault: attr(node, 'hidden') === 'true' || undefined,
+          /*
+            What qualifies a model to take it, read off the entry's own reveal
+            conditions.
+
+            The Armoury Table states these as prose — "Brazen Bull only" — and
+            the prose is a shorthand. The catalogue reveals the Titan Zulfiqar
+            on a model that is a Brazen Bull **or** has the Gargantuan Size
+            Alchemical Formula, and the rulebook agrees: "The Homunculus can use
+            1 Weapon that can usually only be taken by a Brazen Bull." Matching
+            the prose against the model's name alone rejects that Homunculus.
+          */
+          unlockedBy: revealNames(node, nameOf),
           name: clean(attr(g, 'name')),
           type: clean(c.Type) || attr(g, 'typeName'),
           range: clean(c.Range) || '',

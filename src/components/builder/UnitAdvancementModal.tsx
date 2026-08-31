@@ -26,44 +26,28 @@ interface UnitAdvancementModalProps {
 }
 
 // Special Faction Options Definition
-const FACTION_SPECIAL_UPGRADES: Record<string, { category: string; maxSelect: number; options: { id: string; name: string; cost: number; description: string }[] }> = {
-  'iron-sultanate': {
-    category: 'Secrets of the House of Wisdom',
-    maxSelect: 1,
-    options: [
-      { id: 'how-medicine', name: 'Medicine', cost: 15, description: 'Grants ability to treat wounded warriors with advanced alchemical balms (+1 DICE to Treat actions).' },
-      { id: 'how-cartography', name: 'Cartography & Geometry', cost: 20, description: 'Mastery of ballistic trigonometry and siege angles (+1 DICE on long range shooting).' },
-      { id: 'how-takwin', name: 'Secrets of Takwin', cost: 20, description: 'Synthetic biology and artificial creation. Can brew Homunculi and reinforce Golems/Mamluks.' },
-      { id: 'how-chemistry', name: 'Chemistry & Alchemy', cost: 25, description: 'Synthesize potent alchemical Greek Fire, caustic acids, and smoke screening agents.' },
-      { id: 'how-philosophy', name: 'Philosophy, Poetry and Theology', cost: 20, description: 'Profound mystical understanding of the cosmos and divine geometry (+1 Morale to squad).' },
-    ]
-  },
-  'new-antioch': {
-    category: 'Papal Injunctions & Holy Orders',
-    maxSelect: 1,
-    options: [
-      { id: 'na-order-saint-lazarus', name: 'Order of Saint Lazarus', cost: 15, description: 'Immunity to plague rot and toxic contagion (+1 DICE on Survival checks).' },
-      { id: 'na-mechanized-doctrine', name: 'Mechanized Armor Rite', cost: 20, description: 'Warrior is certified to operate pneumatic power harnesses and heavy ordinance.' },
-    ]
-  }
-};
 
-const HOMUNCULUS_ALCHEMICAL_FORMULAS = [
-  { id: 'form-third-arm', name: 'Third Arm (Extra Limb)', cost: 10, category: 'Alchemical Formula', description: 'Grafts an additional functional arm, increasing melee and weapon capacity by +1 hand.' },
-  { id: 'form-compound-eyes', name: 'Compound Alchemical Eyes', cost: 10, category: 'Alchemical Formula', description: 'True sight that penetrates smoke & shroud penalties, granting +1 DICE on Ranged attacks.' },
-  { id: 'form-tough-hide', name: 'Toughened Hide (TOUGH)', cost: 15, category: 'Alchemical Formula', description: 'Dense synthetic carapace. Gains TOUGH keyword (+1 Injury defense, ignores first Down result).' },
-  { id: 'form-muscle-graft', name: 'Muscle Grafting (STRONG)', cost: 15, category: 'Alchemical Formula', description: 'Enhanced muscle fibers. Gains STRONG keyword (can wield 2-handed melee weapons in 1 hand).' },
-  { id: 'form-acid-blood', name: 'Mercury / Acidic Blood', cost: 10, category: 'Alchemical Formula', description: 'When wounded in melee combat, the attacker suffers D3 caustic chemical damage.' },
-  { id: 'form-elongated-tendons', name: 'Elongated Tendons', cost: 10, category: 'Alchemical Formula', description: 'Lengthened sinew cords granting +2" Movement.' },
-  { id: 'form-regenerative-bile', name: 'Regenerative Bile (REGENERATE 1)', cost: 20, category: 'Alchemical Formula', description: 'Self-repairing bio-organ that regenerates 1 wound or clears Downed on a 4+ at start of turn.' },
-  { id: 'form-chameleon-skin', name: 'Chameleon Skin', cost: 10, category: 'Alchemical Formula', description: 'Adaptive pigmentation. Counts as being in hard cover when targeted from > 12" away.' }
-];
+/*
+  The Alchemical Formulae, Fireteams and faction upgrades used to be three
+  hand-written arrays in this file — and they were invented.
 
-const FIRETEAMS = [
-  { id: 'ft-mamluk-guarded', name: 'Fireteam: Mamluk-Guarded', cost: 0, description: 'Warrior forms a symbiotic protective bond with an adjacent heavy Mamluk warrior.' },
-  { id: 'ft-mind-linked', name: 'Fireteam: Mind-Linked', cost: 0, description: 'Telepathic battlefield synchronization via alchemical or holy frequency.' },
-  { id: 'ft-trench-breachers', name: 'Fireteam: Trench Breachers', cost: 0, description: 'Assault duo trained to clear bunkers and barbed parapets simultaneously.' }
-];
+  Eight "Alchemical Formulae" (Third Arm, Compound Alchemical Eyes, Toughened
+  Hide, Muscle Grafting, Mercury / Acidic Blood, Elongated Tendons, Regenerative
+  Bile, Chameleon Skin) appear in neither the catalogues nor the Warbands book.
+  The real Formula is `Additional Arm` at 15 Ducats granting CLEAVE 2, so a
+  player saw a "Third Arm" beside it and had no way to tell which was real —
+  they are not the same thing, and one of them does not exist.
+
+  Worse, the entries whose *names* are real carried invented rules. Ours said
+  Cartography & Geometry gives "+1 DICE on long range shooting"; the book says
+  it grants INFILTRATOR to up to 2 models on 32mm bases. A player reading that
+  at the table is reading fiction.
+
+  So this is now derived from the unit's own catalogue options, grouped by the
+  catalogue's own group names — Alchemical Formulae, Eye Options, Sagas,
+  Strains, Martial Disciplines. A unit with no options in the ruleset shows
+  none, which is the honest answer rather than a plausible list.
+*/
 
 export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   warbandId,
@@ -77,12 +61,9 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     addUnitScar, 
     removeUnitScar,
     setUnitFireteam,
-    toggleUnitSpecialUpgrade,
-    getActiveWarband
+    toggleUnitSpecialUpgrade
   } = useStore();
 
-  const activeWarband = getActiveWarband();
-  const factionId = activeWarband?.factionId || 'universal';
 
   const isHomunculus = Boolean(
     /homunculus|takwin/i.test(unit.profileSnapshot.name) ||
@@ -110,6 +91,29 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
    */
   const traumaRows = (dataset?.campaign.trauma ?? []).filter((t) => !/^dead$/i.test(t.name));
 
+  /*
+    This model's purchasable options, as the catalogues carry them: real names,
+    real costs, real rules text. Matched on the profile name, which is what a
+    saved warband stores.
+  */
+  const catalogueUnit = dataset?.units.find(
+    (u) => u.name === unit.profileSnapshot?.name || u.name === unit.customName);
+  const optionGroups = (catalogueUnit?.options ?? []).reduce<
+    Record<string, { id: string; name: string; cost: number; description: string }[]>
+  >((acc, o) => {
+    (acc[o.group] ??= []).push({
+      id: o.id,
+      name: o.name,
+      // The legacy upgrade shape carries one currency; Glory is surfaced in
+      // the label rather than silently dropped to zero.
+      cost: o.cost.ducats,
+      description: o.cost.glory
+        ? `${o.description} (${o.cost.glory} Glory)`
+        : o.description,
+    });
+    return acc;
+  }, {});
+
   /**
    * The Advancement Skills, from the derived tables.
    *
@@ -134,7 +138,18 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
   const currentCategorySkills = allSkillsList.filter(s => s.category.toLowerCase() === selectedSkillCategory.toLowerCase());
 
-  const factionUpgrades = FACTION_SPECIAL_UPGRADES[factionId];
+  /*
+    The faction's own upgrade groups for this model, from the catalogues — the
+    Sagas, Strains, Arts of Assassination and Martial Disciplines a unit can
+    actually buy. This replaces a hand-written table whose four real names
+    carried invented rules and whose other two entries ("Order of Saint
+    Lazarus", "Mechanized Armor Rite") exist in no source at all.
+
+    The Fireteams group renders in its own section below, so it is excluded here
+    rather than listed twice.
+  */
+  const factionUpgradeGroups = Object.entries(optionGroups)
+    .filter(([group]) => group !== 'Fireteams');
 
   const handleAdjustXp = (delta: number) => {
     const newXp = Math.max(0, (unit.xp || 0) + delta);
@@ -281,7 +296,12 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
               </div>
 
               <div className="space-y-2">
-                {HOMUNCULUS_ALCHEMICAL_FORMULAS.map((formula) => {
+                {Object.entries(optionGroups).flatMap(([, opts]) => opts).length === 0 && (
+                  <p className="text-xs text-theme-muted leading-relaxed">
+                    This model has no purchasable options in the current ruleset.
+                  </p>
+                )}
+                {Object.entries(optionGroups).flatMap(([, opts]) => opts).map((formula) => {
                   const isSelected = unitUpgrades.some(u => u.id === formula.id);
                   return (
                     <div
@@ -565,20 +585,20 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
             <div className="space-y-4">
               
               {/* Faction Special Abilities (e.g. Secrets of the House of Wisdom) */}
-              {factionUpgrades && (
-                <div className="space-y-2">
+              {factionUpgradeGroups.map(([group, opts]) => (
+                <div className="space-y-2" key={group}>
                   <div className="flex items-center justify-between border-b border-theme-border pb-2">
                     <strong className="text-xs uppercase text-theme-primary font-bold flex items-center space-x-1.5">
                       <Flame className="w-3.5 h-3.5" />
-                      <span>{factionUpgrades.category} (Max {factionUpgrades.maxSelect})</span>
+                      <span>{group}</span>
                     </strong>
                     <span className="text-xs sm:text-[10px] text-theme-muted">
-                      {unitUpgrades.filter(u => u.category === factionUpgrades.category).length} / {factionUpgrades.maxSelect} Selected
+                      {unitUpgrades.filter(u => u.category === group).length} selected
                     </span>
                   </div>
 
                   <div className="space-y-2">
-                    {factionUpgrades.options.map((opt) => {
+                    {opts.map((opt) => {
                       const isSelected = unitUpgrades.some(u => u.id === opt.id);
                       return (
                         <div
@@ -587,7 +607,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                             id: opt.id,
                             name: opt.name,
                             cost: opt.cost,
-                            category: factionUpgrades.category
+                            category: group
                           })}
                           className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
                             isSelected
@@ -619,7 +639,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     })}
                   </div>
                 </div>
-              )}
+              ))}
 
               {/* Fireteam Protocols */}
               <div className="space-y-2 pt-2 border-t border-theme-border">
@@ -634,7 +654,12 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  {FIRETEAMS.map((ft) => {
+                  {(optionGroups['Fireteams'] ?? []).length === 0 && (
+                    <p className="text-xs text-theme-muted leading-relaxed">
+                      No Fireteams are published for this model in the current ruleset.
+                    </p>
+                  )}
+                  {(optionGroups['Fireteams'] ?? []).map((ft) => {
                     const isSelected = unit.fireteam === ft.name;
                     return (
                       <div

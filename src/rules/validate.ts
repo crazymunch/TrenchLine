@@ -221,7 +221,13 @@ function checkWargear(
       }
 
       for (const r of restrictionsOf(w, armoury)) {
-        if (r.kind === 'onlyFor' && profile && !satisfiesOnlyFor(r.requires, profile)) {
+        const catalogueWeapon = item.weaponId ? weapons.get(item.weaponId) : undefined;
+        const onlyForContext = {
+          selections: u.options?.map((o) => o.name ?? '').filter(Boolean) ?? [],
+          unlockedBy: (catalogueWeapon as { unlockedBy?: string[] } | undefined)?.unlockedBy,
+        };
+        if (r.kind === 'onlyFor' && profile
+            && !satisfiesOnlyFor(r.requires, profile, onlyForContext)) {
           out.push(err({
             code: 'wargear-restricted',
             message: `${profile.name} cannot take ${w.name} — ${r.raw}.`,

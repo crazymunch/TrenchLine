@@ -28432,6 +28432,9 @@ export const DATASET: Dataset = {
       "id": "c403-778c-1c4f-ec6e",
       "entryId": "23c3-ce02-f625-47d4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Plague Blade",
       "type": "1-Handed",
       "range": "Melee",
@@ -28508,6 +28511,11 @@ export const DATASET: Dataset = {
       "id": "6c2c-bd2c-d794-fb34",
       "entryId": "5d56-00d0-4830-83f0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon",
+        "Elite",
+        "The Great Hunger"
+      ],
       "name": "Beelzebub's Axe",
       "type": "2-Handed",
       "range": "Melee",
@@ -28639,6 +28647,10 @@ export const DATASET: Dataset = {
       "id": "a595-aa3e-986e-edf0",
       "entryId": "6cee-3d21-3554-4c1d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite"
+      ],
       "name": "Pestilent Fang",
       "type": "2-Handed",
       "range": "Melee",
@@ -28735,6 +28747,11 @@ export const DATASET: Dataset = {
       "id": "7428-8c1b-d5a5-bae5",
       "entryId": "9eea-4e25-e838-01e4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite",
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Viscera Cannon",
       "type": "2-Handed",
       "range": "24\"",
@@ -28916,6 +28933,10 @@ export const DATASET: Dataset = {
       "id": "e476-2dae-7eb7-f469",
       "entryId": "b7ef-33c1-721f-a55d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite"
+      ],
       "name": "Black Spot Rifle",
       "type": "2-Handed",
       "range": "24\"",
@@ -29039,6 +29060,9 @@ export const DATASET: Dataset = {
       "id": "d488-9020-4ba3-a3a2",
       "entryId": "481e-f5d8-f8e7-1ba1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Shield",
       "range": "-",
@@ -29092,6 +29116,9 @@ export const DATASET: Dataset = {
       "id": "7cac-e423-0e4d-b763",
       "entryId": "ed7f-e91c-7eca-840a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Broken Crown",
       "type": "Equipment",
       "range": "-",
@@ -29135,6 +29162,9 @@ export const DATASET: Dataset = {
       "id": "cc13-67a7-5431-2fdd",
       "entryId": "f451-eff3-bd36-29ff",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dirge of the Great Hegemon"
+      ],
       "name": "Urn of Bitter Ashes",
       "type": "Equipment",
       "range": "-",
@@ -29219,6 +29249,11 @@ export const DATASET: Dataset = {
       "id": "fe5c-8b4d-7a52-73d0",
       "entryId": "698c-0858-ccf4-a63d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger",
+        "Elite",
+        "Heralds of Beelzebub"
+      ],
       "name": "Compound Eyes Helmet",
       "type": "Battlekit",
       "range": "",
@@ -30059,6 +30094,9 @@ export const DATASET: Dataset = {
       "id": "7fd0-a83c-445b-40ff",
       "entryId": "8858-f2cf-be66-80ce",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -30135,6 +30173,9 @@ export const DATASET: Dataset = {
       "id": "3ba1-5e5a-3d9e-1042",
       "entryId": "1987-02a7-3f2f-bd5f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Matagot Hag"
+      ],
       "name": "Mother's Call",
       "type": "Spell (Cost 1)",
       "range": "8\"",
@@ -30384,6 +30425,9 @@ export const DATASET: Dataset = {
       "id": "1063-b1d1-807f-91ec",
       "entryId": "32a4-70a4-fd79-c4e7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger"
+      ],
       "name": "Butcher Bayonet",
       "type": "2-handed",
       "range": "Melee",
@@ -30437,6 +30481,9 @@ export const DATASET: Dataset = {
       "id": "ad78-80b9-dee7-9bf2",
       "entryId": "0526-f0b0-ecbe-7893",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Led by a Plague Knight"
+      ],
       "name": "Leader",
       "type": "Battlekit",
       "range": "",
@@ -30830,6 +30877,9 @@ export const DATASET: Dataset = {
       "id": "9aa7-5a1a-cbf9-b1b5",
       "entryId": "83de-02a7-ba19-3570",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Matagot Hag"
+      ],
       "name": "Foetid Palanquin",
       "type": "Armour",
       "range": "",
@@ -30896,6 +30946,9 @@ export const DATASET: Dataset = {
       "id": "f9f0-47a6-b77d-16b7",
       "entryId": "a6af-5458-9dbb-7dd4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger"
+      ],
       "name": "Pummel",
       "type": "Special",
       "range": "Melee",
@@ -31166,6 +31219,10 @@ export const DATASET: Dataset = {
       "id": "0443-8d91-dd96-34c6",
       "entryId": "6983-6ce4-7c38-4fcf",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
       "name": "Learned Saint",
       "type": "Battlekit",
       "range": "",
@@ -31248,6 +31305,10 @@ export const DATASET: Dataset = {
       "id": "7dd2-6c14-7cb1-a6d1",
       "entryId": "69f1-5fbe-ef33-ea5b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Trench Pilgrims"
+      ],
       "name": "Warrior Saint",
       "type": "Battlekit",
       "range": "",
@@ -31294,6 +31355,10 @@ export const DATASET: Dataset = {
       "id": "b53b-b824-f8ad-58dc",
       "entryId": "af5d-a290-bd7f-2f4d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent"
+      ],
       "name": "Infernal Noble",
       "type": "Battlekit",
       "range": "",
@@ -31340,6 +31405,9 @@ export const DATASET: Dataset = {
       "id": "71d8-cd96-9818-751c",
       "entryId": "c9e0-f02f-788d-56ad",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Iron Sultanate"
+      ],
       "name": "Sublime Gate",
       "type": "Battlekit",
       "range": "",
@@ -31374,6 +31442,9 @@ export const DATASET: Dataset = {
       "id": "67ad-de30-318c-4c56",
       "entryId": "880e-2c46-f553-5fab",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Black Grail"
+      ],
       "name": "The Order of the Fly",
       "type": "Battlekit",
       "range": "",
@@ -31408,6 +31479,10 @@ export const DATASET: Dataset = {
       "id": "bf2f-f7a7-2c82-fcaa",
       "entryId": "c9f6-a7c1-cd75-06fe",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Greed"
+      ],
       "name": "Mammon",
       "type": "Battlekit",
       "range": "",
@@ -31491,6 +31566,9 @@ export const DATASET: Dataset = {
       "id": "5174-2827-852b-b097",
       "entryId": "3646-8192-6e5c-3253",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Black Grail"
+      ],
       "name": "Anti-Pope of Avignon",
       "type": "Battlekit",
       "range": "",
@@ -31525,6 +31603,9 @@ export const DATASET: Dataset = {
       "id": "0486-321b-dafd-e641",
       "entryId": "d457-01c7-0edd-c7b6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Temporal Lord",
       "type": "Battlekit",
       "range": "",
@@ -32016,6 +32097,9 @@ export const DATASET: Dataset = {
       "id": "8c06-3e5e-14ee-2494",
       "entryId": "2986-1070-2fb0-de35",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims"
+      ],
       "name": "Found a Sniper Scope",
       "type": "Battlekit",
       "range": "",
@@ -32518,6 +32602,9 @@ export const DATASET: Dataset = {
       "id": "7884-d070-ef44-b45b",
       "entryId": "a632-593c-63b3-de75",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Money can buy Anything"
+      ],
       "name": "Legacy Inventory",
       "type": "Battlekit",
       "range": "",
@@ -32609,6 +32696,9 @@ export const DATASET: Dataset = {
       "id": "7030-fa22-471a-d8f2",
       "entryId": "39f8-37bc-f857-ca21",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Anti-Material Rifles",
       "type": "Battlekit",
       "range": "",
@@ -32647,6 +32737,10 @@ export const DATASET: Dataset = {
       "id": "e70b-0a47-c7d2-dbf3",
       "entryId": "f7c8-82d1-a9cc-36d4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "New Antioch"
+      ],
       "name": "Leveraged on Automatic Rifles",
       "type": "Battlekit",
       "range": "",
@@ -32693,6 +32787,10 @@ export const DATASET: Dataset = {
       "id": "f15d-3c2b-138e-8f54",
       "entryId": "cfac-603e-607e-58f1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Coin Hammers",
       "type": "Battlekit",
       "range": "",
@@ -32740,6 +32838,10 @@ export const DATASET: Dataset = {
       "id": "ac72-93ff-8dd8-65ca",
       "entryId": "2407-821b-3a79-20e8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -32787,6 +32889,10 @@ export const DATASET: Dataset = {
       "id": "fba1-6d76-49cf-f264",
       "entryId": "637c-4134-8734-152e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Grenade Launchers",
       "type": "Battlekit",
       "range": "",
@@ -32833,6 +32939,10 @@ export const DATASET: Dataset = {
       "id": "811b-3858-c341-80f3",
       "entryId": "2faa-0945-7b24-2282",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Heavy Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -32880,6 +32990,10 @@ export const DATASET: Dataset = {
       "id": "31bb-45a3-d510-8959",
       "entryId": "8ac1-169a-17b8-8e10",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Knights of Avarice"
+      ],
       "name": "Leveraged on Hellblades",
       "type": "Battlekit",
       "range": "",
@@ -32927,6 +33041,10 @@ export const DATASET: Dataset = {
       "id": "aedc-c2b6-d21d-cf81",
       "entryId": "8de0-69a6-1628-25e3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Machine Guns",
       "type": "Battlekit",
       "range": "",
@@ -32973,6 +33091,9 @@ export const DATASET: Dataset = {
       "id": "fe36-747f-7e9d-662b",
       "entryId": "c7fe-69f0-1ac0-f61a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Sacrificial Blades",
       "type": "Battlekit",
       "range": "",
@@ -33011,6 +33132,10 @@ export const DATASET: Dataset = {
       "id": "914d-c786-75e2-f91c",
       "entryId": "6468-c8ce-b731-fb2d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Leveraged on Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -34574,6 +34699,10 @@ export const DATASET: Dataset = {
       "id": "fe6e-1c07-510c-52ea",
       "entryId": "9837-88e7-12ef-1be6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Cup of Filth",
       "type": "Equipment",
       "range": "-",
@@ -34637,6 +34766,10 @@ export const DATASET: Dataset = {
       "id": "de1c-c937-a89f-d76c",
       "entryId": "cd8e-22a5-02c4-ab9a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Holy Grenade",
       "type": "GRENADE",
       "range": "8\"",
@@ -34706,6 +34839,11 @@ export const DATASET: Dataset = {
       "id": "7704-7ad0-2d9b-71f9",
       "entryId": "ed85-9433-ea76-60c4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Donkey's Jawbone",
       "type": "1-handed",
       "range": "Melee",
@@ -34783,6 +34921,10 @@ export const DATASET: Dataset = {
       "id": "960e-e3f4-9d4f-187c",
       "entryId": "e365-c945-740f-e764",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "RPG",
       "type": "Equipment",
       "range": "36\"",
@@ -34879,6 +35021,11 @@ export const DATASET: Dataset = {
       "id": "36d4-9b55-fd0a-150f",
       "entryId": "10ca-4f2b-2f01-6de4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Tormentor Chain",
       "type": "1-Handed",
       "range": "10\"",
@@ -34952,6 +35099,10 @@ export const DATASET: Dataset = {
       "id": "4c95-f212-101f-f07f",
       "entryId": "b537-34fb-bae6-2cbb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Demonic Grenade",
       "type": "GRENADE",
       "range": "8\"",
@@ -35021,6 +35172,11 @@ export const DATASET: Dataset = {
       "id": "d31f-9638-3044-4892",
       "entryId": "446f-35b5-6d7e-5fb2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "The Mark of Cain",
       "type": "Equipment",
       "range": "-",
@@ -35096,6 +35252,10 @@ export const DATASET: Dataset = {
       "id": "a465-cc89-17eb-185c",
       "entryId": "a9ef-f6d0-107c-2441",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Salvage Golem",
       "type": "Special",
       "range": "-",
@@ -35159,6 +35319,11 @@ export const DATASET: Dataset = {
       "id": "599f-5738-a80b-64ab",
       "entryId": "9857-a324-046f-5d41",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Masterwork Jezzail",
       "type": "2-handed",
       "range": "36\"",
@@ -35266,6 +35431,11 @@ export const DATASET: Dataset = {
       "id": "e900-d699-609f-10c2",
       "entryId": "2958-0f21-a1a5-74fb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Book of Battle Prayers",
       "type": "Equipment",
       "range": "-",
@@ -35341,6 +35511,11 @@ export const DATASET: Dataset = {
       "id": "90f7-bbfc-d41c-2fb8",
       "entryId": "4a11-8e06-0271-3973",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Armour of Cobar",
       "type": "Armour",
       "range": "-",
@@ -35418,6 +35593,11 @@ export const DATASET: Dataset = {
       "id": "b24b-1f30-3ef1-00cb",
       "entryId": "6db3-6176-dc20-c6b8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Smoke Screen",
       "type": "Equipment",
       "range": "-",
@@ -35495,6 +35675,10 @@ export const DATASET: Dataset = {
       "id": "cd74-1e16-33db-01b6",
       "entryId": "85ba-f5ac-54dd-1aa5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Locust Spitter",
       "type": "2-handed",
       "range": "24\"",
@@ -35561,6 +35745,11 @@ export const DATASET: Dataset = {
       "id": "ca1b-2007-8968-9d4b",
       "entryId": "639d-bf8f-60b5-1585",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Knighthood",
       "type": "Equipment",
       "range": "-",
@@ -35636,6 +35825,11 @@ export const DATASET: Dataset = {
       "id": "06c4-5a96-4182-9c79",
       "entryId": "8beb-299d-e303-63c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Battlefield Title",
       "type": "Equipment",
       "range": "-",
@@ -35711,6 +35905,10 @@ export const DATASET: Dataset = {
       "id": "34bd-94d9-7eac-2499",
       "entryId": "b3a8-7dea-49be-d447",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Executioner's Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -35777,6 +35975,11 @@ export const DATASET: Dataset = {
       "id": "a68a-42a0-7fd5-d633",
       "entryId": "f7fa-6048-8a05-53c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Kilij",
       "type": "1-handed",
       "range": "Melee",
@@ -35848,6 +36051,11 @@ export const DATASET: Dataset = {
       "id": "6f72-4947-54b8-efc7",
       "entryId": "66c3-c1a5-004d-3c68",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Armour of the Fly",
       "type": "Armour",
       "range": "-",
@@ -35926,6 +36134,13 @@ export const DATASET: Dataset = {
       "id": "303c-e35a-9668-0fe8",
       "entryId": "03eb-5358-03ae-8046",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled",
+        "Battlefield Title",
+        "Knighthood"
+      ],
       "name": "Ducal Winged Armour",
       "type": "Armour",
       "range": "-",
@@ -36032,6 +36247,10 @@ export const DATASET: Dataset = {
       "id": "6989-ce35-b217-5676",
       "entryId": "d954-b3b8-db5f-0026",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Horn of Joshua",
       "type": "Equipment",
       "range": "-",
@@ -36095,6 +36314,10 @@ export const DATASET: Dataset = {
       "id": "caee-8b72-72be-c864",
       "entryId": "eb62-f33b-0d57-cd92",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Field Hospital",
       "type": "Special",
       "range": "-",
@@ -36158,6 +36381,11 @@ export const DATASET: Dataset = {
       "id": "8b57-bf47-6a34-7732",
       "entryId": "54b8-464a-88c3-3244",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Damascus Armour",
       "type": "Armour",
       "range": "-",
@@ -36236,6 +36464,10 @@ export const DATASET: Dataset = {
       "id": "cc1a-f917-862d-26dc",
       "entryId": "53fc-b3e3-e7f6-6ce5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Great Banner of New Antioch",
       "type": "Equipment",
       "range": "-",
@@ -36301,6 +36533,11 @@ export const DATASET: Dataset = {
       "id": "f10c-88b8-0b18-3833",
       "entryId": "28c1-351c-12d0-1f26",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Resurrection Engine",
       "type": "Special",
       "range": "-",
@@ -36378,6 +36615,12 @@ export const DATASET: Dataset = {
       "id": "55cc-bfda-1fd4-0633",
       "entryId": "d9f1-b37e-ff7c-cffe",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled",
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Brazen Bull Grand Cannon",
       "type": "1-handed",
       "range": "48\"",
@@ -36455,6 +36698,11 @@ export const DATASET: Dataset = {
       "id": "0172-5d62-14d9-7627",
       "entryId": "46b5-59af-5d44-2cb0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Beelzebub's Embrace",
       "type": "Equipment",
       "range": "-",
@@ -36530,6 +36778,11 @@ export const DATASET: Dataset = {
       "id": "9be9-4295-fbb8-116e",
       "entryId": "46b5-59af-5d44-2cb0",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Many-Limbed End",
       "type": "SPECIAL",
       "range": "Melee",
@@ -36708,6 +36961,9 @@ export const DATASET: Dataset = {
       "id": "df62-4e07-25a1-d03b",
       "entryId": "f6fb-8677-c747-229e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fruit from the Tree of Knowledge of Good and Evil"
+      ],
       "name": "Consumed the Fruit from the Tree of Knowledge of Good and Evil",
       "type": "Dietary Supplement",
       "range": "-",
@@ -36799,6 +37055,9 @@ export const DATASET: Dataset = {
       "id": "48e6-5bba-1352-f9bc",
       "entryId": "ac5b-0ae8-e0cd-5fda",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Skull of a Saint"
+      ],
       "name": "Saintly Guidance",
       "type": "Battlekit",
       "range": "",
@@ -36951,6 +37210,9 @@ export const DATASET: Dataset = {
       "id": "279b-559d-2b08-d3ae",
       "entryId": "ac5b-0ae8-e0cd-5fda",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Skull of a Saint"
+      ],
       "name": "Blasphemous Banner",
       "type": "Battlekit",
       "range": "",
@@ -37103,6 +37365,9 @@ export const DATASET: Dataset = {
       "id": "e3d8-620c-8528-159f",
       "entryId": "0e49-dfa5-4190-ee69",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ransacked Alchemist Workshop"
+      ],
       "name": "Curative Fluids",
       "type": "Special",
       "range": "-",
@@ -37155,6 +37420,9 @@ export const DATASET: Dataset = {
       "id": "7e17-aeb6-60d3-a2af",
       "entryId": "9b61-d0a4-dd30-2d32",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Lock of Samson's Hair"
+      ],
       "name": "Lock of Samson's Hair",
       "type": "Battlekit",
       "range": "",
@@ -37212,6 +37480,10 @@ export const DATASET: Dataset = {
       "id": "c35a-d304-0b12-be6c",
       "entryId": "cf19-f306-c26c-1537",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Saints Reliquary",
+        "Elite"
+      ],
       "name": "Saint's Reliquary",
       "type": "-",
       "range": "-",
@@ -37288,6 +37560,11 @@ export const DATASET: Dataset = {
       "id": "7735-5567-9b74-b8f2",
       "entryId": "9ab3-2522-a7dd-e902",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Equipment Only",
+        "Enabled",
+        "Praetor"
+      ],
       "name": "Lordship of this World",
       "type": "Equipment",
       "range": "-",
@@ -37374,6 +37651,11 @@ export const DATASET: Dataset = {
       "id": "6155-24e1-c8ac-e4fc",
       "entryId": "2d7d-d9ed-a9c1-2ab1",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Wretched",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Cruel Helmet",
       "type": "Equipment",
       "range": "-",
@@ -37449,6 +37731,11 @@ export const DATASET: Dataset = {
       "id": "583b-2a75-d7f7-e227",
       "entryId": "9e76-7d20-071d-c8cd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Piece of Silver",
       "type": "Equipment",
       "range": "-",
@@ -37524,6 +37811,11 @@ export const DATASET: Dataset = {
       "id": "c05f-a1a1-50f7-afab",
       "entryId": "d88a-78c6-8e31-75be",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Koraktor, the Great Tome of Hell",
       "type": "Equipment",
       "range": "-",
@@ -37599,6 +37891,11 @@ export const DATASET: Dataset = {
       "id": "d4f7-37c4-ce83-0e37",
       "entryId": "58a3-64fb-8c2d-5105",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Bestial Skin Cloak",
       "type": "Equipment",
       "range": "-",
@@ -37838,6 +38135,9 @@ export const DATASET: Dataset = {
       "id": "c755-7cc0-778c-8a88",
       "entryId": "d8b6-6041-9e3b-7adc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Experience",
       "type": "Battlekit",
       "range": "",
@@ -37880,6 +38180,10 @@ export const DATASET: Dataset = {
       "id": "61e9-7a36-04f0-8582",
       "entryId": "4bea-b5e2-2b9d-fcd3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Heavy Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -37934,6 +38238,9 @@ export const DATASET: Dataset = {
       "id": "5e70-9ebd-b81a-cb5c",
       "entryId": "0330-4e75-a7be-2db6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Pistols",
       "type": "Battlekit",
       "range": "",
@@ -37980,6 +38287,9 @@ export const DATASET: Dataset = {
       "id": "8fa3-b53f-c08c-702f",
       "entryId": "4cf3-bdfa-9260-a828",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Submachine Guns",
       "type": "Battlekit",
       "range": "",
@@ -38026,6 +38336,10 @@ export const DATASET: Dataset = {
       "id": "2e46-7b20-fcf1-73f7",
       "entryId": "b3b1-2e89-19e9-624d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38080,6 +38394,9 @@ export const DATASET: Dataset = {
       "id": "7c07-1a59-04ab-7d66",
       "entryId": "6ef1-51b6-9a26-cc36",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Automatic Shotguns",
       "type": "Battlekit",
       "range": "",
@@ -38126,6 +38443,9 @@ export const DATASET: Dataset = {
       "id": "5611-1109-e379-83a2",
       "entryId": "e6ef-68d4-a0e4-379d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Machine Armour",
       "type": "Battlekit",
       "range": "",
@@ -38172,6 +38492,9 @@ export const DATASET: Dataset = {
       "id": "eb2a-463b-9c4a-e20e",
       "entryId": "a252-0110-1823-e0f9",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Sniper Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38218,6 +38541,10 @@ export const DATASET: Dataset = {
       "id": "323b-8d17-a5b8-869b",
       "entryId": "edfb-8199-6bb5-7556",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Grenade Launchers",
       "type": "Battlekit",
       "range": "",
@@ -38272,6 +38599,9 @@ export const DATASET: Dataset = {
       "id": "7b3c-21f9-dc69-42cb",
       "entryId": "c8f3-1e8b-6a3c-b453",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Incendiary Grenades",
       "type": "Battlekit",
       "range": "",
@@ -38318,6 +38648,10 @@ export const DATASET: Dataset = {
       "id": "7768-e960-5313-055c",
       "entryId": "c15a-6239-aeb2-3229",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Machine Guns",
       "type": "Battlekit",
       "range": "",
@@ -38372,6 +38706,10 @@ export const DATASET: Dataset = {
       "id": "735d-318e-5f35-3aa3",
       "entryId": "7a2b-8955-0ed6-426c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Flamethrowers",
       "type": "Battlekit",
       "range": "",
@@ -38426,6 +38764,9 @@ export const DATASET: Dataset = {
       "id": "8aea-2a61-9ad6-1c32",
       "entryId": "d523-deea-cb75-403e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Heavy Shotguns",
       "type": "Battlekit",
       "range": "",
@@ -38472,6 +38813,9 @@ export const DATASET: Dataset = {
       "id": "3dd8-da69-6ac5-bdca",
       "entryId": "b39d-c158-fd2d-7f3d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "New Antioch"
+      ],
       "name": "Entitled to Satchel Charges",
       "type": "Battlekit",
       "range": "",
@@ -38518,6 +38862,9 @@ export const DATASET: Dataset = {
       "id": "da9e-6d24-6c55-f45c",
       "entryId": "8802-f3e8-dd87-f06e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Hellblades",
       "type": "Battlekit",
       "range": "",
@@ -38564,6 +38911,9 @@ export const DATASET: Dataset = {
       "id": "176a-1759-a80c-ea2d",
       "entryId": "ad7e-8af4-357c-b8ef",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Anti-Material Rifles",
       "type": "Battlekit",
       "range": "",
@@ -38610,6 +38960,10 @@ export const DATASET: Dataset = {
       "id": "405f-d81b-3d6f-2074",
       "entryId": "94fd-1ae4-a167-310c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -38665,6 +39019,9 @@ export const DATASET: Dataset = {
       "id": "b666-f7eb-ac6f-ac41",
       "entryId": "e9ef-e201-bd31-38c6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion"
+      ],
       "name": "Entitled to Sacrificial Blades",
       "type": "Battlekit",
       "range": "",
@@ -38711,6 +39068,10 @@ export const DATASET: Dataset = {
       "id": "f750-d97a-5fcf-b22d",
       "entryId": "20f6-68af-9eae-0e73",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Heretic Legion"
+      ],
       "name": "Entitled to Coin Hammers",
       "type": "Battlekit",
       "range": "",
@@ -38766,6 +39127,14 @@ export const DATASET: Dataset = {
       "id": "25ba-4c30-92ec-cf3a",
       "entryId": "c6c7-bb5b-f638-5506",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Yoke Fiend",
+        "Hell Knight",
+        "Pit Locust",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Apex Form",
       "type": "Equipment",
       "range": "",
@@ -38869,6 +39238,14 @@ export const DATASET: Dataset = {
       "id": "5c42-9d35-f204-8da2",
       "entryId": "fe6c-3b3b-a756-9387",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Desecrated Saint",
+        "Hell Knight",
+        "Yoke Fiend",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Orphaned Failures",
       "type": "Equipment",
       "range": "",
@@ -38973,6 +39350,12 @@ export const DATASET: Dataset = {
       "id": "4dd5-9b7d-69da-b77a",
       "entryId": "98da-209c-28a1-890c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Entropital Dermis",
       "type": "Equipment",
       "range": "",
@@ -39054,6 +39437,12 @@ export const DATASET: Dataset = {
       "id": "1579-00f4-ef39-5244",
       "entryId": "abcb-b151-f83d-636d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Elite",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Herald of the Void",
       "type": "Equipment",
       "range": "",
@@ -39135,6 +39524,11 @@ export const DATASET: Dataset = {
       "id": "538c-76dc-547d-5458",
       "entryId": "ca1e-ab83-ae4e-8c8d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Equipment Only",
+        "Enabled"
+      ],
       "name": "Unnatural Conduit",
       "type": "Equipment",
       "range": "",
@@ -39465,6 +39859,9 @@ export const DATASET: Dataset = {
       "id": "d8fe-561c-9243-f9b8",
       "entryId": "7e7d-82f7-5f9f-d356",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Ophidian Rifle",
       "type": "2-handed",
       "range": "30\"",
@@ -39533,6 +39930,11 @@ export const DATASET: Dataset = {
       "id": "a745-cf5c-0178-84df",
       "entryId": "a299-79e5-204e-1923",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black",
+        "Enabled",
+        "Musical Instrument"
+      ],
       "name": "Living Instrument",
       "type": "2-handed",
       "range": "",
@@ -39598,6 +40000,9 @@ export const DATASET: Dataset = {
       "id": "6dec-b744-5999-b2b0",
       "entryId": "b3f0-bf19-e420-304f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -39648,6 +40053,10 @@ export const DATASET: Dataset = {
       "id": "acb9-b7e1-1db0-86b2",
       "entryId": "23e2-917e-bc76-9ad9",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Too Proud to Fall",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -39702,6 +40111,10 @@ export const DATASET: Dataset = {
       "id": "46ac-67c1-bb50-8196",
       "entryId": "332e-325f-e1cb-d0ac",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Light of Samael",
       "type": "Spell (Cost 2)",
       "range": "",
@@ -40588,6 +41001,10 @@ export const DATASET: Dataset = {
       "id": "8d72-52c6-08af-34b5",
       "entryId": "01b0-1455-dbd3-8e80",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Coveted Position",
       "type": "Spell (Cost 2)",
       "range": "12\"",
@@ -40642,6 +41059,9 @@ export const DATASET: Dataset = {
       "id": "02a0-968e-d2e1-09c6",
       "entryId": "a2ba-2877-7293-0675",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "What is Yours is Mine",
       "type": "Spell (Cost 1)",
       "range": "-",
@@ -40684,6 +41104,9 @@ export const DATASET: Dataset = {
       "id": "7b6f-566f-3690-6a06",
       "entryId": "c598-d0e1-26bb-4d64",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Uncaring Gluttony",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -40733,6 +41156,9 @@ export const DATASET: Dataset = {
       "id": "3a38-b172-9d70-ee94",
       "entryId": "8a96-4a3d-9183-b2bb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Exquisite Pain",
       "type": "Spell (1-2)",
       "range": "",
@@ -40775,6 +41201,10 @@ export const DATASET: Dataset = {
       "id": "f957-a6db-7309-b93f",
       "entryId": "e962-b9a5-17a9-4c29",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer",
+        "Praetor"
+      ],
       "name": "Call of Flesh",
       "type": "Spell (Cost 2)",
       "range": "-",
@@ -40829,6 +41259,9 @@ export const DATASET: Dataset = {
       "id": "b1e9-f895-8cab-5c0b",
       "entryId": "6563-3cee-7f89-8d1e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Morphean Mind",
       "type": "Ability",
       "range": "",
@@ -40878,6 +41311,9 @@ export const DATASET: Dataset = {
       "id": "655a-5c5e-a497-248f",
       "entryId": "34d0-ca9d-a23f-0d9b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Charm of Acedia",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -40920,6 +41356,9 @@ export const DATASET: Dataset = {
       "id": "7cbe-aaa1-8d58-dd69",
       "entryId": "a442-f722-3112-8153",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Daemonium Meridianum",
       "type": "Ability",
       "range": "",
@@ -40969,6 +41408,9 @@ export const DATASET: Dataset = {
       "id": "684d-fb32-d817-7a19",
       "entryId": "38c0-d3a4-a30a-d43b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Black Heart",
       "type": "Spell (Cost 1)",
       "range": "",
@@ -41050,6 +41492,9 @@ export const DATASET: Dataset = {
     {
       "id": "79b8-db30-6294-d5e3",
       "entryId": "fb8a-8c3b-e04b-68ab",
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Coagulation",
       "type": "Spell (Cost 3)",
       "range": "",
@@ -41191,6 +41636,9 @@ export const DATASET: Dataset = {
       "id": "de39-4798-436c-d3a3",
       "entryId": "79d0-a521-12d1-5158",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer"
+      ],
       "name": "Event Horizon",
       "type": "Spell (Cost 1-3)",
       "range": "",
@@ -41261,6 +41709,9 @@ export const DATASET: Dataset = {
       "id": "9b7a-8ca7-9868-cc02",
       "entryId": "42bc-f444-0c78-b0f6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sorcerer"
+      ],
       "name": "Burning Inferno",
       "type": "Spell (Cost 1-3)",
       "range": "36\"",
@@ -41307,6 +41758,9 @@ export const DATASET: Dataset = {
       "id": "662c-894d-16fb-3b8c",
       "entryId": "2e3f-096e-2668-9f4e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Slavemaster",
       "type": "Spell (Cost 1)",
       "range": "18\"",
@@ -41401,6 +41855,9 @@ export const DATASET: Dataset = {
       "id": "f012-3a44-5c5d-5460",
       "entryId": "314f-8656-a0c6-d246",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -41784,6 +42241,9 @@ export const DATASET: Dataset = {
       "id": "2873-9e7a-3ad9-a547",
       "entryId": "49fd-8f83-901e-e948",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Experience",
       "type": "Battlekit",
       "range": "",
@@ -42491,6 +42951,9 @@ export const DATASET: Dataset = {
       "id": "835c-9624-303f-5792",
       "entryId": "61b5-8cd2-9946-22fd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Ghosts"
+      ],
       "name": "Tank Palanquin",
       "type": "Armour",
       "range": "-",
@@ -42536,6 +42999,9 @@ export const DATASET: Dataset = {
       "id": "9395-0d4e-5cdb-6377",
       "entryId": "cdaf-763d-01d8-3c81",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Ghosts"
+      ],
       "name": "Sarcophagus Mine",
       "type": "Battlekit",
       "range": "",
@@ -43351,6 +43817,9 @@ export const DATASET: Dataset = {
       "id": "0999-4c6b-539f-d1b2",
       "entryId": "af47-33c1-b1fc-f2bd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Death Commando"
+      ],
       "name": "Tartarus Claws",
       "type": "2-handed",
       "range": "Melee",
@@ -43391,6 +43860,9 @@ export const DATASET: Dataset = {
       "id": "4e92-442c-e2fc-4583",
       "entryId": "cd7e-904f-67b2-2d24",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice"
+      ],
       "name": "Coin Hammer",
       "type": "2-Handed",
       "range": "Melee",
@@ -43586,6 +44058,10 @@ export const DATASET: Dataset = {
       "id": "77d6-2ff5-90cb-b1a8",
       "entryId": "c9ba-7a03-eaae-1c00",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched"
+      ],
       "name": "Golden Calf Altar",
       "type": "Equipment",
       "range": "",
@@ -43685,6 +44161,11 @@ export const DATASET: Dataset = {
       "id": "68aa-f526-16fe-39a6",
       "entryId": "bb9f-a973-1114-dc21",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial Rebirth",
+        "Heretic",
+        "Artificial"
+      ],
       "name": "Artificial Rebirth",
       "type": "Equipment",
       "range": "-",
@@ -43775,6 +44256,9 @@ export const DATASET: Dataset = {
       "id": "3404-bb75-a82a-b773",
       "entryId": "2ee4-7f35-8086-2f2a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Thermal Shielding",
       "type": "Equipment",
       "range": "-",
@@ -43820,6 +44304,9 @@ export const DATASET: Dataset = {
       "id": "ed64-3975-4671-5ab2",
       "entryId": "6b11-a83d-8aba-872a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Sonomatic Sculpture",
       "type": "Equipment",
       "range": "-",
@@ -43863,6 +44350,9 @@ export const DATASET: Dataset = {
       "id": "a497-c45b-d2de-16d5",
       "entryId": "732a-29eb-ad77-d384",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Enhanced Agility",
       "type": "Equipment",
       "range": "-",
@@ -43906,6 +44396,9 @@ export const DATASET: Dataset = {
       "id": "dd25-ee30-7576-7b32",
       "entryId": "2ea9-6b43-8872-1f15",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -43949,6 +44442,9 @@ export const DATASET: Dataset = {
       "id": "4d39-10aa-ae9d-162e",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Unstoppable",
       "type": "Equipment",
       "range": "-",
@@ -43992,6 +44488,9 @@ export const DATASET: Dataset = {
       "id": "d82e-4c7b-28ac-1413",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Misericordia",
       "type": "1-handed",
       "range": "Melee",
@@ -44038,6 +44537,9 @@ export const DATASET: Dataset = {
       "id": "f469-b712-2233-ac79",
       "entryId": "4194-478c-0584-06db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Scourge/Battle Whip/Flail",
       "type": "1-handed",
       "range": "Melee",
@@ -44083,6 +44585,9 @@ export const DATASET: Dataset = {
       "id": "0da4-88a6-6cc3-bcd8",
       "entryId": "26ad-abf9-50ff-8311",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Artificial"
+      ],
       "name": "Essence Extractor",
       "type": "Equipment",
       "range": "-",
@@ -44133,6 +44638,12 @@ export const DATASET: Dataset = {
       "id": "debb-b1ea-a645-92dd",
       "entryId": "d703-b13e-c546-327c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Standard of Mammon",
       "type": "Equipment",
       "range": "",
@@ -44219,6 +44730,10 @@ export const DATASET: Dataset = {
       "id": "7555-188e-e8fb-6a31",
       "entryId": "c2f1-1e4f-2374-a6a5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book",
+        "Wretched"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -44284,6 +44799,10 @@ export const DATASET: Dataset = {
       "id": "b2e8-94d9-2ff1-7cdd",
       "entryId": "a6fb-9aa2-1030-b5bf",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Knights of Avarice",
+        "Wretched"
+      ],
       "name": "Tarnished Armour",
       "type": "Battlekit",
       "range": "",
@@ -44370,6 +44889,9 @@ export const DATASET: Dataset = {
       "id": "bc3d-26f8-182e-d523",
       "entryId": "30bc-1025-53a4-1ecc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -44526,6 +45048,9 @@ export const DATASET: Dataset = {
       "id": "ec64-7a03-2155-796b",
       "entryId": "fdd0-11e7-0db6-acb2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Hashashin Leaf",
       "type": "Battlekit",
       "range": "-",
@@ -44585,6 +45110,12 @@ export const DATASET: Dataset = {
       "id": "7d3a-4d24-677e-bb71",
       "entryId": "e4a9-be6a-c7fe-9d16",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The House of Wisdom",
+        "Brazen Bull",
+        "Lion of Jabir",
+        "Takwin Homunculus"
+      ],
       "name": "Elixir of Al-Khidr",
       "type": "Equipment",
       "range": "",
@@ -44669,6 +45200,11 @@ export const DATASET: Dataset = {
       "id": "9902-c422-18ce-ab2b",
       "entryId": "b535-89b0-70c0-a86f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Defenders of the Iron Wall",
+        "Sultanate Sapper",
+        "Yüzbaşı Captain"
+      ],
       "name": "Explosive Charges",
       "type": "Equipment",
       "range": "",
@@ -44737,6 +45273,9 @@ export const DATASET: Dataset = {
     {
       "id": "0888-90bb-c320-ca0f",
       "entryId": "3f63-ae26-fd5d-3411",
+      "unlockedBy": [
+        "Elite"
+      ],
       "name": "Takwin Anqā Bird",
       "type": "Equipment",
       "range": "-",
@@ -44781,6 +45320,9 @@ export const DATASET: Dataset = {
       "id": "c76e-7839-f61f-df09",
       "entryId": "d93a-0370-2f55-2f63",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Rocket-Propelled Grenade",
       "type": "Equipment",
       "range": "36\"",
@@ -44836,6 +45378,10 @@ export const DATASET: Dataset = {
       "id": "4e9a-9a98-557d-c2d1",
       "entryId": "176e-55a7-5f50-3286",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Janissary"
+      ],
       "name": "Marid Pelt",
       "type": "Equipment",
       "range": "-",
@@ -44905,6 +45451,18 @@ export const DATASET: Dataset = {
       "id": "71fb-43b5-da89-15f1",
       "entryId": "3be9-5225-347c-c8f5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Elite",
+        "Halberd-Gun",
+        "Jezzail",
+        "Siege Jezzail",
+        "Alaybozan",
+        "Shield-Paired Siege Jezzail",
+        "Shield-Paired Halberd-Gun",
+        "Machine Gun",
+        "Relic Alaybozan"
+      ],
       "name": "Sparkpowder Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45039,6 +45597,13 @@ export const DATASET: Dataset = {
       "id": "2bfa-f76b-086f-249e",
       "entryId": "8ccf-c0b6-efff-4c4f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Siege Jezzail",
+        "Alaybozan",
+        "Shield-Paired Siege Jezzail",
+        "Relic Alaybozan"
+      ],
       "name": "Heavy Bore Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45133,6 +45698,15 @@ export const DATASET: Dataset = {
       "id": "ece5-a8b9-b42e-cdfe",
       "entryId": "7f27-bb98-20d0-0a10",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Siege Jezzail",
+        "Shield-Paired Siege Jezzail",
+        "Jezzail",
+        "Sniper Rifle",
+        "Shield-Paired Halberd-Gun",
+        "Halberd-Gun"
+      ],
       "name": "Shayṭānic Shard Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -45243,6 +45817,14 @@ export const DATASET: Dataset = {
       "id": "1704-e9c5-80e1-74e5",
       "entryId": "cb03-3d32-ca15-fd88",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Siege Jezzail",
+        "Jezzail",
+        "Alaybozan",
+        "Halberd-Gun",
+        "Alchemical Ammunition"
+      ],
       "name": "Scrap Shot",
       "type": "Equipment",
       "range": "-",
@@ -45330,6 +45912,9 @@ export const DATASET: Dataset = {
       "id": "df3a-aed2-fa57-750e",
       "entryId": "3f2a-95a4-6029-8faa",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Limpet Mine",
       "type": "GRENADE",
       "range": "6\"",
@@ -45378,6 +45963,9 @@ export const DATASET: Dataset = {
       "id": "3b60-009c-4bfb-6c75",
       "entryId": "ff14-6bda-4958-a507",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Chain Kura",
       "type": "Grenade",
       "range": "8\"",
@@ -45433,6 +46021,9 @@ export const DATASET: Dataset = {
       "id": "4549-32db-4b08-2bdf",
       "entryId": "2896-2fc6-1ccd-621b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin"
+      ],
       "name": "Assassin's Dagger",
       "type": "1-Handed",
       "range": "Melee",
@@ -45470,6 +46061,10 @@ export const DATASET: Dataset = {
       "id": "c035-9cfd-250c-73bc",
       "entryId": "35e9-a137-73b4-c73e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Titan Zulfiqar",
       "type": "1-Handed",
       "range": "Melee",
@@ -45523,6 +46118,10 @@ export const DATASET: Dataset = {
       "id": "f9a1-ea01-d4b8-e52f",
       "entryId": "e7b5-4ba3-2813-a11f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin",
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Golden Khanjar",
       "type": "1-handed",
       "range": "Melee",
@@ -45580,6 +46179,9 @@ export const DATASET: Dataset = {
       "id": "1003-02a4-ae72-4503",
       "entryId": "0a63-27a9-9db3-5a32",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Khyber Knife",
       "type": "1-handed",
       "range": "Melee",
@@ -45618,6 +46220,10 @@ export const DATASET: Dataset = {
       "id": "1779-f308-8bbc-5885",
       "entryId": "6caf-ec1d-e1ed-66d3",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Elite"
+      ],
       "name": "Kayanin Mace",
       "type": "2-handed",
       "range": "Melee",
@@ -45677,6 +46283,11 @@ export const DATASET: Dataset = {
       "id": "f692-f0ef-3d09-399a",
       "entryId": "f5fe-26c3-c542-2bcb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Shield Training",
+        "Elite"
+      ],
       "name": "Shield-Paired Halberd-Gun",
       "type": "2-handed",
       "range": "24\"",
@@ -45736,6 +46347,10 @@ export const DATASET: Dataset = {
       "id": "8af2-2771-9c86-65f3",
       "entryId": "c650-4b48-ccfb-899a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path",
+        "Elite"
+      ],
       "name": "Anaza Spear",
       "type": "2-handed",
       "range": "Melee",
@@ -45795,6 +46410,10 @@ export const DATASET: Dataset = {
       "id": "556c-7009-6fc2-d658",
       "entryId": "fd50-ed77-b67d-f053",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "MURAD Bombard",
       "type": "1-Handed",
       "range": "36\"",
@@ -45854,6 +46473,10 @@ export const DATASET: Dataset = {
       "id": "ac5c-14a9-8462-8ddd",
       "entryId": "f2de-aa0a-6254-2e20",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Flame Cannon",
       "type": "1-Handed",
       "range": "12\"",
@@ -45915,6 +46538,10 @@ export const DATASET: Dataset = {
       "id": "1bff-0694-c7a5-a7f8",
       "entryId": "b9c5-9ea8-b9e0-00ac",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Assassin",
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Bow of Alamut",
       "type": "2-handed",
       "range": "40\"",
@@ -45974,6 +46601,9 @@ export const DATASET: Dataset = {
       "id": "f3a8-7fad-4a06-c27b",
       "entryId": "ffb6-34ac-c895-4d37",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
       "name": "Relic Alaybozan",
       "type": "2-handed",
       "range": "12\"",
@@ -46013,6 +46643,9 @@ export const DATASET: Dataset = {
       "id": "3d9f-050e-4682-7f81",
       "entryId": "61aa-fb82-8fe6-99db",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Abus Gun",
       "type": "2-handed",
       "range": "30\"",
@@ -46067,6 +46700,11 @@ export const DATASET: Dataset = {
       "id": "6dbb-ba95-c903-3c8c",
       "entryId": "4f0f-a0cf-e8e8-b332",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Sultanate Sapper",
+        "Yüzbaşı Captain",
+        "Defenders of the Iron Wall"
+      ],
       "name": "Alaybozan",
       "type": "2-handed",
       "range": "12\"",
@@ -46130,6 +46768,10 @@ export const DATASET: Dataset = {
       "id": "061e-eaaa-0b9b-b878",
       "entryId": "d039-5982-7011-334e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia",
+        "Shield Training"
+      ],
       "name": "Shield-Paired Siege Jezzail",
       "type": "2-handed",
       "range": "30\"",
@@ -46265,6 +46907,9 @@ export const DATASET: Dataset = {
       "id": "f51d-4a48-6b34-7342",
       "entryId": "4377-b71d-92f5-3c05",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
       "name": "Banner of the Eagle",
       "type": "Equipment",
       "range": "-",
@@ -46338,6 +46983,11 @@ export const DATASET: Dataset = {
       "id": "ce56-ea31-c691-08eb",
       "entryId": "bf62-7e77-d895-711f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Machine Armour",
+        "Jabirean Alchemical Book",
+        "The House of Wisdom"
+      ],
       "name": "Fire Shield",
       "type": "Shield",
       "range": "",
@@ -46417,6 +47067,11 @@ export const DATASET: Dataset = {
       "id": "bfda-ea24-3f37-828d",
       "entryId": "b246-355b-f3ba-f72e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Defenders of the Iron Wall",
+        "Brazen Bull",
+        "Gargantuan Size"
+      ],
       "name": "Iron Wall Kalkan",
       "type": "SHIELD",
       "range": "",
@@ -46705,6 +47360,10 @@ export const DATASET: Dataset = {
       "id": "d8ef-4597-49bd-8c2f",
       "entryId": "5782-5d13-1025-abdb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -46760,6 +47419,9 @@ export const DATASET: Dataset = {
       "id": "21f1-4a29-ae87-7cf2",
       "entryId": "d309-00e2-6fe8-a939",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fida’i of Alamut – The Cabal of Assassins"
+      ],
       "name": "Killing Squad",
       "type": "Battlekit",
       "range": "",
@@ -46803,6 +47465,10 @@ export const DATASET: Dataset = {
       "id": "e412-732c-30a6-9790",
       "entryId": "f035-115c-4a4d-62ad",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Sipahi-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -46858,6 +47524,9 @@ export const DATASET: Dataset = {
       "id": "7e5c-ba89-c669-191a",
       "entryId": "29e8-f9d5-9bb1-7137",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind-Linked",
       "type": "Battlekit",
       "range": "",
@@ -47624,6 +48293,9 @@ export const DATASET: Dataset = {
       "id": "e028-d503-dcf3-b3cf",
       "entryId": "da5c-280f-9d08-42b4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The House of Wisdom"
+      ],
       "name": "Pummelling Blows",
       "type": "Battlekit",
       "range": "",
@@ -47948,6 +48620,9 @@ export const DATASET: Dataset = {
       "id": "0a72-3d4c-48ea-dd92",
       "entryId": "9f3e-f682-ff22-8184",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Pistol"
+      ],
       "name": "Purgation Ammunition",
       "type": "Equipment",
       "range": "-",
@@ -48227,6 +48902,9 @@ export const DATASET: Dataset = {
       "id": "4b3d-28cf-cb23-aeba",
       "entryId": "1f47-9c34-ef9b-914b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Dog's Friend",
       "type": "Battlekit",
       "range": "",
@@ -48297,6 +48975,9 @@ export const DATASET: Dataset = {
       "id": "d455-9d26-0f2d-3b30",
       "entryId": "1f47-9c34-ef9b-914b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Concerted Attack",
       "type": "Ability",
       "range": "-",
@@ -48429,6 +49110,9 @@ export const DATASET: Dataset = {
       "id": "999f-be77-8027-46c0",
       "entryId": "b4d4-3da2-7157-f15b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia"
+      ],
       "name": "Holy Water of Lalibela",
       "type": "Equipment",
       "range": "-",
@@ -48479,6 +49163,10 @@ export const DATASET: Dataset = {
       "id": "57f1-1ef0-9659-e9e6",
       "entryId": "ffda-4bec-1b59-f267",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Holy Warrior",
+        "Expeditionary Forces of Abyssinia"
+      ],
       "name": "Tabot",
       "type": "Equipment",
       "range": "-",
@@ -48535,6 +49223,9 @@ export const DATASET: Dataset = {
       "id": "4f6a-a92d-d7a7-d512",
       "entryId": "114b-97a7-6011-55c2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Blood Cloak",
       "type": "Battlekit",
       "range": "",
@@ -48592,6 +49283,9 @@ export const DATASET: Dataset = {
       "id": "8bd6-c237-de4c-2e9a",
       "entryId": "95a5-9e57-57dc-d63a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Phosphorous Rounds",
       "type": "Battlekit",
       "range": "",
@@ -48635,6 +49329,10 @@ export const DATASET: Dataset = {
       "id": "c562-c611-15d4-54c7",
       "entryId": "a9d2-fb36-792e-d69e",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Cleric",
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Holy Smoke",
       "type": "Equipment",
       "range": "-",
@@ -48692,6 +49390,11 @@ export const DATASET: Dataset = {
       "id": "4f39-6eb0-3ad1-6338",
       "entryId": "0bbf-0f8a-df4f-2f45",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia",
+        "Chewa",
+        "Elite"
+      ],
       "name": "Anfarro",
       "type": "Equipment",
       "range": "-",
@@ -48769,6 +49472,9 @@ export const DATASET: Dataset = {
       "id": "3a61-396b-8340-2ce3",
       "entryId": "b15e-e3c1-f53b-dedc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Greek Fire",
       "type": "GRENADE",
       "range": "6\"",
@@ -48839,6 +49545,11 @@ export const DATASET: Dataset = {
       "id": "d678-de0f-c92b-f9ea",
       "entryId": "ae50-9c6f-a718-8767",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Expeditionary Forces of Abyssinia",
+        "Chewa",
+        "Elite"
+      ],
       "name": "Shotel",
       "type": "1-Handed",
       "range": "Melee",
@@ -48900,6 +49611,9 @@ export const DATASET: Dataset = {
       "id": "e02d-fb45-cb6c-34f0",
       "entryId": "adba-b7f8-83fd-a35c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Kingdom of Alba Assault Detachment"
+      ],
       "name": "Lochaber Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -48940,6 +49654,9 @@ export const DATASET: Dataset = {
       "id": "4bc1-a897-8ad3-e239",
       "entryId": "2c09-3968-682f-af03",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Tank-Splitter Sword",
       "type": "2-handed",
       "range": "Melee",
@@ -48993,6 +49710,9 @@ export const DATASET: Dataset = {
       "id": "b984-ef6c-1b2a-6c68",
       "entryId": "0084-2122-f8c1-537a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium"
+      ],
       "name": "Dane Axe",
       "type": "2-handed",
       "range": "Melee",
@@ -49040,6 +49760,9 @@ export const DATASET: Dataset = {
       "id": "1818-099d-77ef-0ad7",
       "entryId": "7151-74bd-c678-4c41",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Red Banner",
       "type": "Battlekit",
       "range": "",
@@ -49083,6 +49806,11 @@ export const DATASET: Dataset = {
       "id": "b719-9833-e8fd-f089",
       "entryId": "f914-0bc3-a983-1e48",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book",
+        "Ducal Winged Armour",
+        "Machine Armour"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -49168,6 +49896,12 @@ export const DATASET: Dataset = {
       "id": "d777-d95f-f173-9c07",
       "entryId": "831d-0f3f-be36-9b1d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Kingdom of Alba Assault Detachment",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Bagpipes",
       "type": "Battlekit",
       "range": "",
@@ -49258,6 +49992,13 @@ export const DATASET: Dataset = {
       "id": "bf4f-e324-29c3-1527",
       "entryId": "2b13-5e5c-b810-c791",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Remnants of Byzantium",
+        "Shocktrooper",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "War Horn",
       "type": "Battlekit",
       "range": "",
@@ -49356,6 +50097,12 @@ export const DATASET: Dataset = {
       "id": "2ddb-f3e4-5ad4-7d7e",
       "entryId": "54c8-6df8-9942-13b8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Angelic Instrument",
+        "Eire Rangers",
+        "Homunculus",
+        "Seal of Solomon"
+      ],
       "name": "Carnyx",
       "type": "Battlekit",
       "range": "",
@@ -49564,6 +50311,9 @@ export const DATASET: Dataset = {
       "id": "5153-8b77-2941-daa3",
       "entryId": "df86-048e-5b6c-fb1f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -49607,6 +50357,10 @@ export const DATASET: Dataset = {
       "id": "b4d7-4d3d-3993-d73b",
       "entryId": "9569-393f-f2d2-252b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -49662,6 +50416,9 @@ export const DATASET: Dataset = {
       "id": "04ff-1014-c632-3867",
       "entryId": "4da7-e087-f7ab-b89b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -49705,6 +50462,9 @@ export const DATASET: Dataset = {
       "id": "f10d-341e-5e15-05ec",
       "entryId": "c5ee-6047-898f-a5de",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -49748,6 +50508,9 @@ export const DATASET: Dataset = {
       "id": "f592-a9ac-af5c-4a17",
       "entryId": "1846-bfb6-9551-a3e6",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -49791,6 +50554,11 @@ export const DATASET: Dataset = {
       "id": "b51c-b117-6a6c-d98f",
       "entryId": "2f44-24c6-beb8-a457",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -49859,6 +50627,11 @@ export const DATASET: Dataset = {
       "id": "f36e-dddb-8a6f-e34b",
       "entryId": "0c98-5f09-1094-7c57",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -49947,6 +50720,9 @@ export const DATASET: Dataset = {
       "id": "7b83-acba-914a-38c8",
       "entryId": "856b-ba44-04c5-fdf5",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Papal States Intervention Force"
+      ],
       "name": "Blessing of the Pontiff",
       "type": "Equipment",
       "range": "-",
@@ -50124,6 +50900,9 @@ export const DATASET: Dataset = {
       "id": "7cae-a8a7-46f0-a2c6",
       "entryId": "e500-5c2c-04d3-ae8a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -50167,6 +50946,10 @@ export const DATASET: Dataset = {
       "id": "b59f-143c-5c28-7765",
       "entryId": "153d-e4c2-3390-fb44",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Mamluk Faris",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -50222,6 +51005,9 @@ export const DATASET: Dataset = {
       "id": "6096-b9bf-a81f-b08e",
       "entryId": "766c-ab11-eda6-22d2",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
       "name": "Gunslinger",
       "type": "Battlekit",
       "range": "",
@@ -50257,6 +51043,9 @@ export const DATASET: Dataset = {
       "id": "66e9-8f4f-e3bf-5d93",
       "entryId": "7927-0db7-57c0-fa65",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Papal States Intervention Force"
+      ],
       "name": "Papal Courage",
       "type": "Battlekit",
       "range": "",
@@ -51100,6 +51889,9 @@ export const DATASET: Dataset = {
       "id": "1c48-5a77-bd9c-4678",
       "entryId": "e928-ba8b-f70c-6edc",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Stoßtruppen of the Free State of Prussia"
+      ],
       "name": "Fireteam Charlie",
       "type": "Battlekit",
       "range": "",
@@ -51143,6 +51935,10 @@ export const DATASET: Dataset = {
       "id": "4b9e-5284-97ed-af1b",
       "entryId": "22d5-9278-17b3-d250",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Assigned Sword",
+        "Elite"
+      ],
       "name": "Mamluk-Guarded",
       "type": "Battlekit",
       "range": "",
@@ -51198,6 +51994,9 @@ export const DATASET: Dataset = {
       "id": "1b7b-167c-e0d7-94df",
       "entryId": "f17c-a19b-da5d-c86f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "First Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -51241,6 +52040,9 @@ export const DATASET: Dataset = {
       "id": "277a-0208-cd17-f687",
       "entryId": "38bb-90bc-633b-12c8",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Man's Best Friend"
+      ],
       "name": "Second Friend of Dog",
       "type": "Battlekit",
       "range": "",
@@ -51284,6 +52086,9 @@ export const DATASET: Dataset = {
       "id": "1d9f-bbe2-474b-b25f",
       "entryId": "da2b-9808-47a6-f51d",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -51327,6 +52132,11 @@ export const DATASET: Dataset = {
       "id": "1f8d-1b65-1dd2-9853",
       "entryId": "1fac-077c-a663-f4f4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
@@ -51395,6 +52205,11 @@ export const DATASET: Dataset = {
       "id": "bd30-a567-830c-3ef6",
       "entryId": "389b-6e56-7a02-f47f",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Remnants of Byzantium",
+        "Varangian Warlord",
+        "Mechanized Heavy Infantry"
+      ],
       "name": "Catphract Formation Beta",
       "type": "Battlekit",
       "range": "",
@@ -52188,6 +53003,9 @@ export const DATASET: Dataset = {
       "id": "e51e-7de9-7131-6994",
       "entryId": "4c11-ec67-eaa0-fbdd",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Cavalcade of the Tenth Plague"
+      ],
       "name": "Sacrificial Lamb",
       "type": "Equipment",
       "range": "-",
@@ -52233,6 +53051,10 @@ export const DATASET: Dataset = {
       "id": "403b-687b-4044-77de",
       "entryId": "5714-931f-09eb-f186",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil",
+        "Elite"
+      ],
       "name": "Henbrane",
       "type": "Equipment",
       "range": "-",
@@ -52295,6 +53117,9 @@ export const DATASET: Dataset = {
       "id": "986b-d504-38d0-832f",
       "entryId": "3564-4f8d-d1e0-246c",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Geirr",
       "type": "2-handed",
       "range": "Melee",
@@ -52333,6 +53158,9 @@ export const DATASET: Dataset = {
       "id": "55e3-793d-4961-e12f",
       "entryId": "3da5-afdc-ed33-d56a",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Blood Eagle Banner",
       "type": "Equipment",
       "range": "-",
@@ -52385,6 +53213,9 @@ export const DATASET: Dataset = {
       "id": "61e5-6561-5d91-b9c5",
       "entryId": "c691-83d8-dfb4-6dfa",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Jabirean Alchemical Book"
+      ],
       "name": "Fire Shield",
       "type": "Battlekit",
       "range": "",
@@ -52435,6 +53266,9 @@ export const DATASET: Dataset = {
       "id": "fdd6-07ba-42a3-3578",
       "entryId": "934a-994b-9a83-6663",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
       "name": "Trench Shield (Nordic)",
       "type": "Shield",
       "range": "-",
@@ -52470,6 +53304,10 @@ export const DATASET: Dataset = {
       "id": "7ab4-3db7-414c-ba96",
       "entryId": "2b6a-92de-ea42-85c4",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil",
+        "Huscarl"
+      ],
       "name": "Stormbreaker Shield",
       "type": "Battlekit",
       "range": "",
@@ -52547,6 +53385,9 @@ export const DATASET: Dataset = {
       "id": "5cef-9bbb-5aa1-f6f9",
       "entryId": "e943-b0b0-7790-fb15",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Trench Mortar",
       "type": "2-Handed",
       "range": "48\"",
@@ -52597,6 +53438,9 @@ export const DATASET: Dataset = {
       "id": "ca96-4933-b496-593f",
       "entryId": "bf35-3729-df69-7562",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Gas Censer",
       "type": "2-Handed",
       "range": "6''",
@@ -52644,6 +53488,9 @@ export const DATASET: Dataset = {
       "id": "e37a-b7ce-312c-3242",
       "entryId": "844d-8df1-2006-2cf7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Autocannon (Bursts)",
       "type": "2-Handed",
       "range": "48\"",
@@ -52691,6 +53538,9 @@ export const DATASET: Dataset = {
       "id": "584f-141d-ce83-d55d",
       "entryId": "844d-8df1-2006-2cf7",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "War Pilgrimage of Saint Methodius"
+      ],
       "name": "Autocannon (Full Auto)",
       "type": "2-Handed",
       "range": "48\"",
@@ -52972,6 +53822,9 @@ export const DATASET: Dataset = {
       "id": "78c1-4e06-7fff-4d4b",
       "entryId": "0972-9632-56f2-b0cb",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Enslaved Mind"
+      ],
       "name": "Mind Linked",
       "type": "Battlekit",
       "range": "",
@@ -53015,6 +53868,9 @@ export const DATASET: Dataset = {
       "id": "cdfe-5f3e-eefe-e3e1",
       "entryId": "1a8c-d998-b42b-9e8b",
       "hiddenByDefault": true,
+      "unlockedBy": [
+        "Procession of the Sacred Affliction"
+      ],
       "name": "Vengeful Fury",
       "type": "Battlekit",
       "range": "",
