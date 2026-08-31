@@ -16,6 +16,7 @@ import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restric
 import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury } from './variantArmoury';
+import { thirdPartyGate } from './thirdParty';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -36,7 +37,8 @@ export interface Violation {
     | 'wargear-not-stocked'
     | 'force-over-threshold'
     | 'force-over-field-strength'
-    | 'unparsed-restriction';
+    | 'unparsed-restriction'
+    | 'third-party-not-allowed';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
   rule?: string;
@@ -510,6 +512,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     specialRules?: FactionSpecialRule[] }[] }).factions
     ?.find((f) => factionMatches(f.id, roster.factionId) || factionMatches(f.name, roster.factionId));
   violations.push(...checkFactionRules(roster, faction, variant));
+  violations.push(...checkThirdParty(roster, profiles));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
@@ -518,6 +521,35 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * Third-party models on a Warband that has not opted in.
+ *
+ * The recruit list hides them, so this only fires when the option was on and is
+ * then turned off — a table changing its mind between games, which is a real
+ * thing to do. An error rather than a warning: the model is not legal for this
+ * Warband as it now stands, and the fix is to turn the option back on or drop
+ * the model. Nothing is deleted on the player's behalf.
+ */
+function checkThirdParty(
+  roster: Roster,
+  profiles: Map<string, UnitProfile>,
+): Violation[] {
+  if (roster.allowThirdParty) return [];
+  const out: Violation[] = [];
+  for (const u of roster.units) {
+    const profile = profiles.get(u.profileId);
+    if (!profile || !thirdPartyGate(profile).thirdParty) continue;
+    out.push(err({
+      code: 'third-party-not-allowed',
+      message: `${u.name} is third-party content, which this Warband has not ` +
+               'allowed. Turn on "3rd party" or remove the model.',
+      rule: 'Allow Third-Party Mercenaries?',
+      unitId: u.id,
+    }));
+  }
+  return out;
 }
 
 /** Per-model cost, exposed so the UI need not import costs.ts separately. */

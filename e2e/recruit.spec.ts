@@ -140,3 +140,31 @@ test('the recruit sheet meets the mobile floor', async ({ page }, testInfo) => {
   await expectNoZoomingInputs(page);
   if (testInfo.project.name === 'phone') await expectReadableText(page);
 });
+
+
+test('third-party entries are hidden until the Warband allows them', async ({ page }) => {
+  /*
+    The catalogues hide these until a roster takes the "Allow Third-Party
+    Mercenaries?" option, and the app must default the same way: showing
+    unofficial content beside published entries with nothing to tell them apart
+    is the same failure as an invented statline — the player cannot see it.
+  */
+  const dialog = await openRecruit(page);
+  await expect(dialog.locator('[data-recruit-row="Disciple of St. Roch"]'))
+    .toHaveCount(0);
+
+  // Turn it on from the roster, which is where a table agreement is recorded.
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  const toggle = page.getByRole('button', { name: /3rd party (on|off)/i });
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+
+  await page.getByRole('button', { name: /recruit warrior/i }).first().click();
+  const again = page.locator('[role="dialog"]');
+  const row = again.locator('[data-recruit-row="Disciple of St. Roch"]');
+  await expect(row, 'the entry is still hidden with the option on').toHaveCount(1);
+  // And it is labelled, so it is never mistaken for published material.
+  await expect(row).toContainText(/third party/i);
+});

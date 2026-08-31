@@ -576,6 +576,42 @@ the catalogues price in Glory (a Witch Coven Matriarch is 0 Ducats and 5 Glory).
 A campaign Warband starts on 0 Glory, which is published, so the field is
 ignored for one.
 
+## 7c. Third-party content
+
+A small amount of what the community catalogues carry is **not official**:
+condoned by Factory Fortress, but written by other people and, in the source's
+own words, offering *"no assurances ... to balance or consistency with rules"*.
+The app showed it beside the published entries with nothing to tell them apart.
+
+The catalogues mark it themselves, twice, and both marks reach the generated
+dataset — so this is read, never maintained by hand:
+
+1. The entry carries an Ability profile literally named **`Third Party`**, whose
+   description is that disclaimer.
+2. The entry is `hidden="true"`, with a `set hidden false` modifier conditioned
+   on the roster having taken **`Allow Third-Party Mercenaries?`** — a real
+   `selectionEntry` in `Campaign Rules.cat` (`8397-95ab-8729-eb60`).
+
+`rules/thirdParty.ts` reads both; either is enough, because requiring both would
+mean that dropping one upstream silently promotes unofficial content to
+official. `Warband.allowThirdParty` is the app's copy of that roster option and
+defaults **off**, matching the catalogue default. Unlike the Variant it is not a
+founding decision — it is a table agreement — so it stays editable from the
+roster screen at any time, and `validate.ts` raises `third-party-not-allowed`
+if a model is left rostered after it is switched off.
+
+> **`hidden="true"` is not the marker.** Thirty-three model entries are hidden by
+> default and twenty-six of them ship. It is simply how BattleScribe expresses
+> "available under a condition", and most are ordinary official units — the
+> Matagot Hag, the Chieftain and the Technomancer are all hidden-by-default *and*
+> are their faction's Leader. Gating on it would delete a third of the roster.
+
+The same modifier also carries the entry's **hosts**. The Disciple of St. Roch —
+currently the only marked entry — is Iron Sultanate, New Antioch and Trench
+Pilgrims only, and the Trench Dispatch (where every other Mercenary's hosts come
+from, §7b) never mentions it, so before this it fell through to the permissive
+default and all six Warbands were offered it.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

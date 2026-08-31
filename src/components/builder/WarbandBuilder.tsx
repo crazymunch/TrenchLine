@@ -31,6 +31,7 @@ import {
   Edit2,
   Check,
   Flag,
+  FlaskConical,
   Lock,
 } from 'lucide-react';
 
@@ -43,6 +44,7 @@ export const WarbandBuilder: React.FC = () => {
     updateWarbandTreasury,
     updateWarbandGlory,
     updateWarbandVariant,
+    setWarbandAllowThirdParty,
     campaign
   } = useStore();
   
@@ -257,6 +259,25 @@ export const WarbandBuilder: React.FC = () => {
                 <Flag className="w-4 h-4" />
                 <span>{activeVariant?.name ?? 'Standard list'}</span>
                 {!variantEditable && <Lock className="w-3 h-3 text-theme-muted" />}
+              </button>
+
+              {/* The catalogues' own roster option, and unlike the Variant it is
+                  not a founding decision — it is a table agreement, and the
+                  table can change its mind between games. */}
+              <button
+                onClick={() => setWarbandAllowThirdParty(warband.id, !warband.allowThirdParty)}
+                aria-pressed={!!warband.allowThirdParty}
+                className={`flex items-center space-x-1.5 px-3 py-2 border font-mono text-xs font-bold uppercase transition-colors ${
+                  warband.allowThirdParty
+                    ? 'bg-status-warning/15 text-status-warning border-status-warning/50'
+                    : 'bg-theme-base hover:bg-theme-elevated text-theme-text border-theme-border hover:border-theme-primary'
+                }`}
+                title={warband.allowThirdParty
+                  ? 'Third-party entries are being offered to this Warband'
+                  : 'Third-party entries are hidden, which is the catalogue default'}
+              >
+                <FlaskConical className="w-4 h-4" />
+                <span>3rd party {warband.allowThirdParty ? 'on' : 'off'}</span>
               </button>
 
               <button

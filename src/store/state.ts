@@ -112,7 +112,8 @@ export interface AppState {
    */
   createWarband: (name: string, factionId: string, ducatLimit?: number,
                   forceMode?: 'campaign' | 'unrestricted',
-                  founding?: { variantId?: string; gloryPoints?: number }) => Warband;
+                  founding?: { variantId?: string; gloryPoints?: number;
+                               allowThirdParty?: boolean }) => Warband;
   deleteWarband: (id: string) => void;
   cloneWarband: (id: string) => void;
   setActiveWarbandId: (id: string | null) => void;
@@ -125,6 +126,13 @@ export interface AppState {
    * `undefined` means the standard list. Nothing set this before, so every
    * variant rule in the ruleset went unenforced — see docs/RULESET-MODEL.md §7a.
    */
+  /**
+   * Whether this Warband may hire third-party entries — the app's copy of the
+   * catalogues' "Allow Third-Party Mercenaries?" roster option. Unlike the
+   * Variant this is not a founding decision: it is a table agreement, and the
+   * table can change its mind.
+   */
+  setWarbandAllowThirdParty: (warbandId: string, allow: boolean) => void;
   updateWarbandVariant: (warbandId: string, variantId: string | undefined) => void;
   updateWarbandLore: (warbandId: string, lore: string, motto?: string, patron?: string) => void;
   updateWarbandChronicleLog: (warbandId: string, chronicleLog: string[]) => void;

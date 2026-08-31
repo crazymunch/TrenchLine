@@ -98,6 +98,14 @@ export interface Warband {
    * unenforced. See docs/RULESET-MODEL.md §7a.
    */
   variantId?: string;
+  /**
+   * Whether this Warband may hire third-party entries.
+   *
+   * The app's copy of the catalogues' own "Allow Third-Party Mercenaries?"
+   * roster option. Absent or false means no, which is the catalogue's default —
+   * those entries are `hidden="true"` until the option is taken.
+   */
+  allowThirdParty?: boolean;
   campaignId?: string;
   creatorId?: string;
   creatorName?: string;

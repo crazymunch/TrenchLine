@@ -67,6 +67,11 @@ export interface Roster {
   name: string;
   factionId: string;
   variantId?: string;
+  /**
+   * Whether this Warband has taken the catalogues' "Allow Third-Party
+   * Mercenaries?" roster option. Absent is off, which is the catalogue default.
+   */
+  allowThirdParty?: boolean;
   units: RosterUnit[];
   /** Loose wargear bought but not assigned to a model. */
   stash: RosterItem[];

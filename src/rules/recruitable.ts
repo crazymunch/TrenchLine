@@ -33,6 +33,7 @@ import type {
 } from '@/types/rules';
 import { nameKey } from './names';
 import { sameFaction } from './variants';
+import { thirdPartyGate } from './thirdParty';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -111,6 +112,7 @@ export function recruitable(
 
   const units: UnitProfile[] = dataset.units.map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
+    const gate = thirdPartyGate(u);
     return {
       id: u.entryId || u.id,
       name: u.name,
@@ -132,7 +134,16 @@ export function recruitable(
       // The catalogue's own `Leader` role — nine entries carry it, at least
       // one per faction. Not derived from cost, rarity or a max of 1.
       canLead: u.roles.some((r) => r.toLowerCase() === 'leader') || undefined,
-      innateAbilities: u.abilities.map(abilityOf),
+      /*
+        The "Third Party" profile is a marker, not a rule the model has — its
+        text is the catalogue's disclaimer about the entry, which the builder
+        shows in its own right as `thirdPartyNotice`. Leaving it in the ability
+        list rendered it as a special rule the model uses in play, and printed
+        it twice.
+      */
+      innateAbilities: u.abilities
+        .filter((a) => a.name.trim().toLowerCase() !== 'third party')
+        .map(abilityOf),
       /*
         Which Warbands may hire this Mercenary.
 
@@ -153,9 +164,21 @@ export function recruitable(
         guessed-at shorter list, because hiding a hire a Warband is entitled to
         is the worse error.
       */
+      /*
+        The catalogue's own gate is read first, because it is the more precise
+        source: the Disciple of St. Roch's hosts are stated in the same
+        `set hidden false` modifier that marks it third-party, and the Trench
+        Dispatch — which is where every other Mercenary's hosts come from —
+        never mentions it. Without this it fell through to the permissive
+        default and was offered to all six Warbands.
+      */
       allowedFactions: categoryOf(u) === 'Mercenary'
-        ? (u.allowedFactions ? u.allowedFactions.map(appId) : appFactionIds)
+        ? (gate.hosts.length
+            ? gate.hosts.map(appId)
+            : u.allowedFactions ? u.allowedFactions.map(appId) : appFactionIds)
         : undefined,
+      thirdParty: gate.thirdParty || undefined,
+      thirdPartyNotice: gate.notice,
       // Deliberately absent: the catalogues do not give models default gear.
       // `defaultRules.ts` invented starting loadouts, which is where a chunk of
       // its 38% invented wargear came from.
