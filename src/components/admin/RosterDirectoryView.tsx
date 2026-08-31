@@ -469,7 +469,7 @@ export const RosterDirectoryView: React.FC = () => {
 
                       {/* Statline */}
                       <div className="grid grid-cols-4 gap-1 bg-theme-base p-1.5 rounded border border-theme-border text-center text-xs sm:text-[10px]">
-                        <div>MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movement}</strong></div>
+                        <div className="min-w-0 truncate">MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movementInches ? `${u.profileSnapshot.stats.movementInches}"` : u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-theme-text">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-theme-text">{u.profileSnapshot.stats.melee}</strong></div>
                         <div>ARM: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>

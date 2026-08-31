@@ -17,7 +17,7 @@ const profile = (over: Partial<UnitProfile> = {}): UnitProfile => ({
   stats: { movement: '6"/Infantry', movementInches: 6, movementType: 'Infantry',
            ranged: '+0', melee: '+0', armour: '0', base: '25mm' },
   cost: { ducats: 10, glory: 0 }, min: null, max: null,
-  keywords: [], abilities: [], options: [], constraints: [], modifiers: [],
+  keywords: [], abilities: [], options: [], battlekit: [], constraints: [], modifiers: [],
   ...over,
 });
 

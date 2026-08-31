@@ -8,6 +8,7 @@ import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
 import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { forcedBattlekit } from '../../rules/battlekit';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -30,6 +31,7 @@ import {
   Users,
   Star,
   MoreVertical,
+  Package,
   Trophy
 } from 'lucide-react';
 
@@ -384,20 +386,40 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             four floating pairs. Divided by hairlines rather than by gaps, so
             the numbers line up in a column across every card in the grid.
           */}
+          {/*
+            Movement is two facts in one string — `6"/Infantry` — and it was
+            printed whole into a quarter of the row, sized by the widest of the
+            other three (`+3 Dice`). It overflowed its cell on every card, over
+            the top of the Ranged value beside it.
+
+            Split rather than truncated or shrunk: the movement TYPE decides
+            what a model may cross and is not decoration, so it keeps its own
+            line under the distance instead of being cut off or ellipsised.
+            `min-w-0` lets each cell shrink below its content's natural width,
+            which is what a grid track otherwise refuses to do.
+          */}
           <div className="grid grid-cols-4 bg-theme-base border border-theme-border divide-x divide-theme-border">
             {([
-              ['MOV', unit.profileSnapshot.stats.movement],
-              ['RNG', unit.profileSnapshot.stats.ranged],
-              ['MELEE', unit.profileSnapshot.stats.melee],
-              ['ARM', unit.profileSnapshot.stats.armour],
-            ] as const).map(([label, value]) => (
-              <div key={label} className="px-1 py-1.5 text-center">
+              ['MOV', unit.profileSnapshot.stats.movementInches
+                ? `${unit.profileSnapshot.stats.movementInches}"`
+                : unit.profileSnapshot.stats.movement,
+                unit.profileSnapshot.stats.movementType],
+              ['RNG', unit.profileSnapshot.stats.ranged, undefined],
+              ['MELEE', unit.profileSnapshot.stats.melee, undefined],
+              ['ARM', unit.profileSnapshot.stats.armour, undefined],
+            ] as const).map(([label, value, sub]) => (
+              <div key={label} className="min-w-0 px-1 py-1.5 text-center">
                 <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">
                   {label}
                 </span>
-                <span className="block font-mono text-base sm:text-sm tabular-nums text-theme-text mt-0.5">
+                <span className="block font-mono text-base sm:text-sm tabular-nums text-theme-text mt-0.5 truncate">
                   {value}
                 </span>
+                {sub && (
+                  <span className="block font-mono text-xs sm:text-[9px] uppercase tracking-[0.06em] text-theme-muted truncate">
+                    {sub}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -429,6 +451,39 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/*
+            Battlekit: the gear the model always has.
+
+            Listed above the weapons it bought and without a remove button,
+            because it cannot be removed — the catalogue forces it on with a
+            `min="1"` link and the book prints it as "a Combat Medic always
+            has...". It carries no price here because the model's own cost
+            already includes it. See `rules/battlekit.ts`.
+          */}
+          {forcedBattlekit(unit.profileSnapshot).length > 0 && (
+            <div className="space-y-1.5">
+              <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-muted uppercase tracking-wider flex items-center space-x-1">
+                <Package className="w-3 h-3" />
+                <span>Battlekit (always carried)</span>
+              </span>
+              <div className="space-y-1">
+                {forcedBattlekit(unit.profileSnapshot).map((b) => (
+                  <div
+                    key={b.linkId}
+                    className="flex items-center justify-between gap-2 text-xs bg-theme-base px-2 py-1 rounded border border-dashed border-theme-border"
+                  >
+                    <span className="font-semibold text-theme-text truncate">{b.name}</span>
+                    {b.keywords.length > 0 && (
+                      <span className="text-xs sm:text-[10px] font-mono text-theme-muted truncate flex-shrink-0">
+                        {b.keywords.join(' · ')}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

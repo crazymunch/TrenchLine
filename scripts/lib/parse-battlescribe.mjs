@@ -185,6 +185,75 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
   return out;
 }
 
+/* --------------------------------------------------------- forced Battlekit */
+
+/**
+ * The gear a model always has.
+ *
+ * The Warbands book states it as a Battlekit line — "A Combat Medic always has
+ * Standard Armour, a Gas Mask, a Medi-kit, and a Misericordia" — and the
+ * catalogues state it as an `entryLink` carrying a `min="1"` constraint. The
+ * parser read neither, so a Combat Medic in the app carried none of that kit
+ * and none of the keywords it grants: no NEGATE GAS on a model whose profile
+ * says it is wearing a gas mask.
+ *
+ * It also let the player buy the same item twice. The catalogue hides the
+ * Armoury's Gas Mask row from a Combat Medic for exactly that reason; with the
+ * forced link dropped, the app had nothing to hide it against and would sell a
+ * second one for 5 Ducats.
+ *
+ * A link with `min="1"` and `max="1"` is the mandatory case and the only one
+ * read here: a `min` of 1 on a group that lets you pick between options is a
+ * choice, not a fixture, and belongs with `options`.
+ */
+function forcedKitOf(node, resolve) {
+  const out = [];
+  const seen = new Set();
+
+  const forced = (e) => {
+    const cs = arr(e?.constraints?.constraint);
+    const min = cs.find((c) => attr(c, 'type') === 'min');
+    const max = cs.find((c) => attr(c, 'type') === 'max');
+    return min && Number(attr(min, 'value')) >= 1
+        && max && Number(attr(max, 'value')) === Number(attr(min, 'value'));
+  };
+
+  for (const l of arr(node?.entryLinks?.entryLink)) {
+    if (attr(l, 'type') !== 'selectionEntry' || !forced(l)) continue;
+    const target = resolve(attr(l, 'targetId'));
+    if (!target) continue;
+    const id = attr(target, 'id');
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    // The profile the target carries — a Battlekit or Weapon entry — is where
+    // the keywords the gear grants are written.
+    const profiles = arr(target?.profiles?.profile);
+    const kw = profiles
+      .flatMap((pr) => clean(charMap(pr).Keywords).split(','))
+      .map((k) => clean(k).toUpperCase())
+      .filter((k) => k && k !== '-');
+
+    out.push({
+      id,
+      // What the roster selects, so a modifier scoped to the selection resolves.
+      linkId: attr(l, 'id'),
+      name: clean(attr(l, 'name')) || clean(attr(target, 'name')),
+      quantity: Number(attr(arr(l.constraints?.constraint).find((c) => attr(c, 'type') === 'min'), 'value')),
+      keywords: [...new Set(kw)],
+      /*
+        Almost always zero, and that is the catalogue's own accounting rather
+        than a free lunch: it prices the model to include the kit. Where it is
+        not zero the cost belongs to the model, so it is carried through and
+        the cost engine adds it.
+      */
+      cost: costsOf(target),
+      profileId: profiles[0] ? attr(profiles[0], 'id') : undefined,
+    });
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------- modifiers */
 
 /**
@@ -700,6 +769,11 @@ export function parseCatalogues(dir) {
           max,
           abilities,
           options: optionsOf(node, nameOf, fieldNameOf, isConstraint, (id) => byId.get(id)),
+          /*
+            Gear the model always has, which the app must neither omit nor sell
+            it a second copy of. See forcedKitOf.
+          */
+          battlekit: forcedKitOf(node, (id) => byId.get(id)),
           constraints,
           modifiers,
           sourceFile: file,

@@ -140,6 +140,10 @@ export function recruitable(
       gloryCost: u.cost.glory || undefined,
       stats: {
         movement: u.stats.movement,
+        // Already split by the pipeline; carried through so the roster card
+        // can show the distance and the movement type as two lines.
+        movementInches: u.stats.movementInches ?? undefined,
+        movementType: u.stats.movementType ?? undefined,
         ranged: u.stats.ranged,
         melee: u.stats.melee,
         armour: u.stats.armour,
@@ -203,9 +207,17 @@ export function recruitable(
             .map((v) => ({ id: v.id, name: v.name }))
         : undefined,
       thirdPartyNotice: gate.notice,
-      // Deliberately absent: the catalogues do not give models default gear.
-      // `defaultRules.ts` invented starting loadouts, which is where a chunk of
-      // its 38% invented wargear came from.
+      /*
+        Gear the catalogue forces onto the model, carried through so the app
+        stops selling a Combat Medic the Gas Mask it is already wearing.
+
+        Not the same thing as a default loadout, which is still deliberately
+        absent: `defaultRules.ts` invented starting loadouts, and that is where
+        a chunk of its 38% invented wargear came from. This is 18 models whose
+        entry carries a `min="1"` link the parser used to drop — kit the player
+        can neither remove nor buy twice. See `rules/battlekit.ts`.
+      */
+      battlekit: u.battlekit?.length ? u.battlekit : undefined,
       defaultWeapons: undefined,
       defaultArmour: undefined,
     };

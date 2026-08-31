@@ -1191,9 +1191,19 @@ export const PlayModeView: React.FC = () => {
                     
                     {/* Stat Grid */}
                     <div className="grid grid-cols-4 gap-1 text-center bg-theme-base p-1.5 rounded border border-theme-border text-xs">
-                      <div>
+                      {/* Distance and movement type on two lines — see UnitCard. */}
+                      <div className="min-w-0">
                         <span className="text-xs sm:text-[9px] text-theme-muted block">MOV</span>
-                        <strong className="text-theme-text">{unit.profileSnapshot.stats.movement}</strong>
+                        <strong className="text-theme-text block truncate">
+                          {unit.profileSnapshot.stats.movementInches
+                            ? `${unit.profileSnapshot.stats.movementInches}"`
+                            : unit.profileSnapshot.stats.movement}
+                        </strong>
+                        {unit.profileSnapshot.stats.movementType && (
+                          <span className="text-xs sm:text-[9px] text-theme-muted block truncate uppercase">
+                            {unit.profileSnapshot.stats.movementType}
+                          </span>
+                        )}
                       </div>
                       <div>
                         <span className="text-xs sm:text-[9px] text-theme-muted block">RNG</span>
