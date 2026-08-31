@@ -606,7 +606,7 @@ Code splitting came free with the route split:
 An unknown path falls back to the roster rather than throwing. A URL is user
 input, and a blank screen is a worse answer to a stale link than the front door.
 
-| 4.5 | Offline-first PWA — service worker, cached rules data for table use with no signal |
+| 4.5 | ✅ Offline-first PWA — service worker, cached rules data for table use with no signal |
 
 ### 4.2 — the store, in pieces
 
@@ -639,6 +639,48 @@ a seed takes it as an argument instead of closing over a variable defined four
 hundred lines above it.
 
 ---
+
+### 4.5 — no signal
+
+The app is used in a hall, a shop basement, a garage. Opening it there gave a
+browser error page.
+
+`public/sw.js` caches three things three different ways, and the differences
+are the design:
+
+| | | |
+|---|---|---|
+| `/_next/static/`, icons, maps | cache-first | Next fingerprints its output, so a URL names one immutable file. A new build asks for new URLs. |
+| `/api/dataset` | stale-while-revalidate | Serve the cached ruleset at once so a phone with no signal has statlines; refresh in the background. Not cache-first-forever — a deploy can change the dataset without changing the URL, and rules that silently never update are the quietly-wrong data this project exists to stop shipping. |
+| navigations | network-first, cache fallback | The network wins when it is there, so a deploy is picked up on the next load rather than after an eviction. |
+
+**`/api/warbands` and the other user-data routes are never cached.** That data
+already has an authoritative copy in `localStorage` and a merge rule that knows
+how to reconcile it (4.3). A cached HTTP response would be a third copy with no
+merge rule, handed back as if it were current. Offline for a roster is the
+store's job, not the service worker's.
+
+The ruleset is the part that matters most and the part it would have been easy
+to miss: it is ~1.6 MB served from `/api/dataset` rather than bundled, so a
+cached shell without it opens an app with no costs, no keywords and no
+statlines — which is worse than not opening, because it looks like it works.
+`e2e/offline.spec.ts` cuts the network for real and asserts the offline dataset
+still has all 89 units.
+
+**One trap, found by that test rather than by hand.** Next answers a navigation
+with `Vary: RSC, Next-Router-State-Tree, …`, and `cache.match` honours `Vary` —
+so a cached page only matches a request whose values for every one of those
+headers are identical. A cold load and a client navigation differ in exactly
+those headers, so the shell missed and `/play` failed offline with
+`ERR_ABORTED` while having been cached correctly the whole time. Every
+`cache.match` passes `ignoreVary: true`; there is one document per URL here, so
+the Vary axes carry nothing worth matching on. A manual browser check had
+passed, because it happened to reuse identical headers.
+
+The worker does not register in development: `next dev` rebuilds the shell on
+every edit, and a cached one serves yesterday's bundle against today's chunks —
+a blank page with a chunk 404 that looks like a code bug for as long as it
+takes to remember the worker is there.
 
 ## Phase 5 — Carcass Front preview (backburner)
 

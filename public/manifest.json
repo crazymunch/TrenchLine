@@ -2,13 +2,16 @@
   "name": "TrenchLine — Trench Crusade Companion",
   "short_name": "TrenchLine",
   "description": "Warband builder, tabletop combat companion, and campaign manager for Trench Crusade.",
-  "start_url": "/",
+  "start_url": "/roster",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0C0E12",
   "theme_color": "#0C0E12",
   "orientation": "any",
-  "categories": ["games", "utilities"],
+  "categories": [
+    "games",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -33,6 +36,26 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Warband Roster",
+      "short_name": "Roster",
+      "url": "/roster",
+      "description": "Build and equip your warband"
+    },
+    {
+      "name": "Tabletop Combat",
+      "short_name": "Play",
+      "url": "/play",
+      "description": "Run a match: wounds, blood markers, activation"
+    },
+    {
+      "name": "Rules Codex",
+      "short_name": "Codex",
+      "url": "/codex",
+      "description": "Look a rule up mid-game"
     }
   ]
 }

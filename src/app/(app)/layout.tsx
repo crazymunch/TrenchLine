@@ -9,6 +9,7 @@ import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
+import { ServiceWorker } from '@/components/providers/ServiceWorker';
 import { viewForPath, pathForView } from '@/lib/routes';
 
 /**
@@ -122,6 +123,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Bottom Tactical Nav */}
       <MobileNav />
+
+      {/* Renders nothing. Makes the app open at a table with no signal. */}
+      <ServiceWorker />
     </div>
   );
 }

@@ -187,6 +187,27 @@ Ordered by how much time a user spends in them on a phone:
 5. **`WarbandBuilder`** — header/budget bar reflow.
 6. **`CodexView`**, **`CampaignHubView`** — reference reading; lower frequency.
 
+## Offline
+
+The app opens with no signal, and says so honestly when it cannot reach the
+server.
+
+- The shell, the static chunks, the icons and the scenario maps are cached by
+  `public/sw.js`.
+- The ruleset is cached stale-while-revalidate. It is ~1.6 MB served from
+  `/api/dataset` rather than bundled, so without it a cached shell opens an app
+  with no statlines — which looks like it works.
+- A roster's own data is **not** served from the service worker. It lives in
+  `localStorage` with a merge rule (see
+  [`ARCHITECTURE.md`](ARCHITECTURE.md#persistence-and-which-copy-wins)); a
+  cached HTTP response would be a third copy with no rule for reconciling it.
+- `SyncStatus` in the top bar says which of local-only, syncing, backed up,
+  pending or failed is true, and why. "Did my roster save?" is a question
+  asked at a table with no signal, and the app used to answer it only in the
+  console.
+
+`e2e/offline.spec.ts` cuts the network for real rather than mocking a route.
+
 ## Definition of done
 
 Three formats, all first-class: the **phone** (375×667) is where a roster gets
