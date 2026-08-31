@@ -14,6 +14,7 @@ import { soundEffects } from '../../services/soundEffects';
 import { RulesProse } from '../codex/RulesProse';
 import { ViewMasthead } from '../ui/ViewMasthead';
 import { parseDeeds } from './deeds';
+import { parseUnforeseenEvents } from '../../rules/unforeseen';
 import { 
   Heart, 
   Droplet, 
@@ -88,8 +89,8 @@ export const PlayModeView: React.FC = () => {
   const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
   const [isScoringHistoryOpen, setIsScoringHistoryOpen] = useState(false);
 
-  // Environmental Condition
-  const [environmentalHazard, setEnvironmentalHazard] = useState<string>('Standard (Clear)');
+  // The Unforeseen Event currently in effect, if the scenario has a table.
+  const [environmentalHazard, setEnvironmentalHazard] = useState<string>('');
 
   // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
@@ -189,8 +190,31 @@ export const PlayModeView: React.FC = () => {
     });
   };
 
+  /*
+    Who has claimed each Deed, across the whole match.
+
+    "Unless stated otherwise, each Glorious Deed can only be completed once,
+    and whichever player completes a Deed first gets the glory! If both players
+    complete the same Glorious Deed at the same time, roll-off to determine who
+    completed the Glorious Deed first."
+      — Comprehensive Rulebook, Glorious Deeds
+
+    The checklist was keyed per warband and nothing looked across them, so in a
+    two-player match both sides could tick Bloodletting and both scored the VP.
+    In a campaign that is Glory and a Promotion die each as well.
+  */
+  const deedClaimedBy = (deedTitle: string): string | undefined =>
+    matchWarbandIds.find((id) => warbandScores[id]?.completedDeeds[deedTitle] !== undefined);
+
   // Toggle Glorious Deed checkbox
   const handleToggleDeed = (deedTitle: string, defaultPerformer: string = 'Squad') => {
+    // Someone else got there first. The roll-off the book calls for is a
+    // conversation at the table, not something the app can adjudicate — so it
+    // holds the first claim and leaves them to un-tick it if the roll went the
+    // other way.
+    const holder = deedClaimedBy(deedTitle);
+    if (holder && holder !== viewingWarband.id) return;
+
     setWarbandScores((prev) => {
       const cur = prev[viewingWarband.id] || { vp: 0, completedDeeds: {}, turnScores: {} };
       const nextDeeds = { ...cur.completedDeeds };
@@ -263,6 +287,7 @@ export const PlayModeView: React.FC = () => {
   };
 
   const scenarioDeeds = parseDeeds(sectionOf(selectedScenario, 'GLORIOUS DEEDS'));
+  const unforeseenEvents = parseUnforeseenEvents(sectionOf(selectedScenario, 'UNFORESEEN EVENTS'));
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 pb-24 font-mono text-xs">
@@ -280,18 +305,17 @@ export const PlayModeView: React.FC = () => {
               icon={<Swords className="w-4 h-4" />}
               title="Match Designer & Lobby"
               strapline="Set the scenario, the field strength, the participants (two to four players) and the battle conditions before taking to the field."
-              actions={<>
-              {matchMode === 'single-device' && (
-                <button
-                  onClick={handleStartCombat}
-                  className="flex items-center space-x-2 px-6 py-3.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-sm shadow-xl shadow-theme-primary/30 transition-all flex-shrink-0"
-                >
-                  <Play className="w-4 h-4" />
-                  <span>Commence Match</span>
-                </button>
-              )}
-              </>}
             />
+            {/*
+              No Commence button here, deliberately.
+
+              It sat at the top of the lobby, above the warband list, so the
+              quickest path into a match was to start one without ever looking
+              at who was in it or what they were bringing. The only way in is
+              now the button at the foot of the page, which means scrolling
+              past the participants, their deployed strength and the scenario
+              on the way.
+            */}
 
             {/* Mode Selector Tabs */}
             <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-theme-border">
@@ -652,17 +676,35 @@ export const PlayModeView: React.FC = () => {
                 <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Environmental Condition / Battlefield Hazard:
                 </label>
-                <select
-                  value={environmentalHazard}
-                  onChange={(e) => setEnvironmentalHazard(e.target.value)}
-                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
-                >
-                  <option value="Standard (Clear)">Standard (Clear Weather)</option>
-                  <option value="Heavy Trench Fog">Heavy Trench Fog (Max 18" Ranged Sight)</option>
-                  <option value="Chlorine Gas Pockets">Chlorine Gas Pockets (Dangerous Terrain)</option>
-                  <option value="Mud-Choked Trenches">Mud-Choked Trenches (-1" Movement)</option>
-                  <option value="Volcanic Ashfall">Volcanic Brimstone Ashfall (Risky Dash)</option>
-                </select>
+                {/*
+                  The scenario's own Unforeseen Events, or nothing.
+
+                  This was a list of five invented conditions — Heavy Trench Fog
+                  at "Max 18\" Ranged Sight", Chlorine Gas Pockets, Volcanic
+                  Brimstone Ashfall — none of which is in the game. The one
+                  published table belongs to Hunt for Heroes and is rolled
+                  during play rather than chosen at muster, so for every other
+                  scenario there is nothing to pick and the app says so.
+                */}
+                {unforeseenEvents.length > 0 ? (
+                  <select
+                    value={environmentalHazard}
+                    onChange={(e) => setEnvironmentalHazard(e.target.value)}
+                    className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
+                  >
+                    <option value="">No event in effect</option>
+                    {unforeseenEvents.map((ev) => (
+                      <option key={ev.roll} value={ev.name}>
+                        {ev.roll}. {ev.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="p-2.5 bg-theme-base border border-theme-border rounded text-theme-muted text-xs sm:text-[11px] leading-relaxed">
+                    This scenario has no Unforeseen Events table. Only Hunt for Heroes prints one,
+                    and it is rolled at the start of each Turn after the first.
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -804,7 +846,8 @@ export const PlayModeView: React.FC = () => {
                 <div className={isHudExpanded ? 'block' : 'hidden sm:block'}>
                   <h2 className="font-gothic font-bold text-base text-theme-text">{viewingWarband.name}</h2>
                   <span className="text-xs sm:text-[10px] text-theme-muted block">
-                    Scenario: <strong className="text-theme-primary">{selectedScenario?.name}</strong> • {environmentalHazard}
+                    Scenario: <strong className="text-theme-primary">{selectedScenario?.name}</strong>
+                    {environmentalHazard && <> • {environmentalHazard}</>}
                   </span>
                 </div>
               </div>
@@ -1065,7 +1108,12 @@ export const PlayModeView: React.FC = () => {
                       <span>Glorious Deeds Checklist ({viewingWarband.name}):</span>
                     </span>
                     <span className="text-xs sm:text-[10px] text-theme-muted">
-                      {Object.keys(currentScoreObj.completedDeeds).length} Deeds Claimed
+                      {Object.keys(currentScoreObj.completedDeeds).length} of {scenarioDeeds.length} claimed
+                      {matchWarbandIds.length > 1 && (() => {
+                        const taken = scenarioDeeds.filter(
+                          (d) => { const h = deedClaimedBy(d.title); return h && h !== viewingWarband.id; }).length;
+                        return taken > 0 ? ` · ${taken} taken by others` : '';
+                      })()}
                     </span>
                   </div>
 
@@ -1073,6 +1121,12 @@ export const PlayModeView: React.FC = () => {
                     {scenarioDeeds.map((deed, idx) => {
                       const isChecked = !!currentScoreObj.completedDeeds[deed.title];
                       const performer = currentScoreObj.completedDeeds[deed.title] || '';
+                      // Claimed by somebody else: the glory is gone, and this
+                      // side cannot score it. See handleToggleDeed.
+                      const holderId = deedClaimedBy(deed.title);
+                      const takenBy = holderId && holderId !== viewingWarband.id
+                        ? warbands.find((w) => w.id === holderId)
+                        : undefined;
 
                       return (
                         <div
@@ -1080,16 +1134,19 @@ export const PlayModeView: React.FC = () => {
                           className={`p-3 rounded border transition-all space-y-2 ${
                             isChecked
                               ? 'bg-theme-surface border-theme-primary ring-1 ring-theme-primary/30'
-                              : 'bg-theme-surface/60 border-theme-border'
+                              : takenBy
+                                ? 'bg-theme-base/60 border-theme-border/60 opacity-60'
+                                : 'bg-theme-surface/60 border-theme-border'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <label className="flex items-start space-x-2.5 cursor-pointer flex-1">
+                            <label className={`flex items-start space-x-2.5 flex-1 ${takenBy ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                               <input
                                 type="checkbox"
                                 checked={isChecked}
+                                disabled={Boolean(takenBy)}
                                 onChange={() => handleToggleDeed(deed.title, deployedUnits[0]?.customName || 'Squad')}
-                                className="mt-0.5 rounded border-theme-border text-theme-primary focus:ring-0"
+                                className="mt-0.5 rounded border-theme-border text-theme-primary focus:ring-0 disabled:opacity-50"
                               />
                               <div>
                                 <strong className={`block text-xs ${isChecked ? 'text-theme-primary' : 'text-theme-text'}`}>
@@ -1098,6 +1155,11 @@ export const PlayModeView: React.FC = () => {
                                 <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed pt-0.5">
                                   {deed.desc}
                                 </p>
+                                {takenBy && (
+                                  <p className="text-xs sm:text-[10px] text-status-warning uppercase font-bold pt-1">
+                                    Claimed by {takenBy.name}
+                                  </p>
+                                )}
                               </div>
                             </label>
                           </div>

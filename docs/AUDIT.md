@@ -576,6 +576,51 @@ Comprehensive — each carrying the printed page it came from. A heading the
 contents lists and the walk cannot find fails the build rather than leaving the
 Codex silently a chapter short.
 
+### 1.15 The dice console kept one die and threw the rest away
+
+The tabletop dice engine — the thing a player has open on the table — resolved
+an Injury Roll by sorting the pool and keeping the **single highest die**. A
+Bloodbath of 6, 5, 4 against -3 Armour read as `6 - 3 = 3`, a Minor Hit. The
+book gives `15 - 3 = 12` and the model is Out of Action.
+
+The result tables were invented alongside it:
+
+| | the app said | the rulebook says |
+|---|---|---|
+| Injury | `>=9` Out of Action, `>=7` Serious Injury, `>=4` Downed, else Flesh Wound | `1 or less` No Effect, `2-6` Minor Hit, `7-8` Down, `9+` Out of Action |
+| Success | a "FUMBLE / DISASTER" on double 1 | `2-6` is a Failure however it was rolled |
+
+And the attack calculator applied **every modifier as a flat number added to the
+2D6 total**. Trench Crusade has no flat modifiers on a Success Roll: each one is
+`+/- DICE`, which changes how many dice you roll and which end you keep. Its
+modifier list was part invented too — Light and Heavy Cover at -1 and -2 (cover
+is one tier, -1 DICE), a "Charge Momentum +1" (melee gets +1 DICE for a *Diving
+Charge* specifically), a Critical Success worth +2 to the Injury Roll (it is +1
+INJURY DICE), and the attacker's own BLOOD MARKERS deducted automatically —
+markers are spent by the opponent, as dice, either way round. Long Range at -1
+DICE, probably the most common modifier in a real game, was missing.
+
+Replaced by `src/rules/dice.ts`, pure and with its randomness injected, whose
+tests are the rulebook's own worked examples.
+
+### 1.16 The battlefield conditions were invented, all eighteen of them
+
+The Codex's Mission Generator rolled six weather conditions, six
+"complications" and six "Secret Secondary Agendas" with Glory and Ducat
+rewards; Play Mode's lobby offered five more conditions. None of the twenty-three
+appears anywhere in the sources, and they gave themselves away on vocabulary
+alone: they deal "Poison wounds" and "D3 wounds", fire "at the end of each
+battle round", impose "-1 Morale", and reward "the player who wins priority in
+Turn 1". Trench Crusade has no wounds, no battle rounds, no Morale
+characteristic and no priority — it has BLOOD MARKERS, Turns, Morale Checks and
+the Initiative.
+
+The game publishes exactly one such table, and it belongs to one scenario:
+**UNFORESEEN EVENTS** in *Hunt for Heroes*. A D6 at the start of each Turn after
+the first, nothing on 1-4, then a D3 for Rising Fog, Rain Mud and Guts, or Deep
+Craters. That is what the generator rolls now; the other eleven scenarios get
+nothing offered, and are told why.
+
 ## 2. Mobile and tablet
 
 ### 2.1 The hard bug
