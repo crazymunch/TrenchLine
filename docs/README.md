@@ -21,6 +21,7 @@ no design documentation at all.
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
+| [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version
