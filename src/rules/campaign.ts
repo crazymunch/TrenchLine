@@ -26,7 +26,9 @@
  * Both tables are read from the dataset, which derives them from the rulebook.
  * Nothing here hard-codes 700.
  */
-import type { Dataset, ExplorationLocation, ExplorationTableName } from '@/types/catalogue';
+import type {
+  Dataset, ExplorationLocation, ExplorationTableName, RollRange,
+} from '@/types/catalogue';
 
 export interface ThresholdRow {
   game: number;
@@ -248,6 +250,27 @@ export interface ExplorationOutcome {
   nothingBecause?: 'not-on-table' | 'already-discovered';
 }
 
+/**
+ * A range as the book prints it: `4`, `1-3`, `34+`.
+ *
+ * A degenerate range prints as the single number it is, so the rulebook's
+ * sparse tables read exactly as they did before the type widened.
+ */
+export const rollLabel = (r: RollRange): string => {
+  if (r.to === null) return `${r.from}+`;
+  return r.from === r.to ? `${r.from}` : `${r.from}-${r.to}`;
+};
+
+/**
+ * Does this roll fall in this band?
+ *
+ * `to: null` is open-ended — the last row of every Carcass Front table — and
+ * an Exploration Roll can exceed any printed number, because the dice pool
+ * grows all campaign.
+ */
+export const inRange = (r: RollRange, n: number): boolean =>
+  n >= r.from && (r.to === null || n <= r.to);
+
 const explorationOf = (dataset: Dataset) =>
   (dataset as { campaign?: { exploration?: Dataset['campaign']['exploration'] } })
     .campaign?.exploration;
@@ -295,7 +318,7 @@ export function resolveExploration(
   const n = Math.max(0, Math.floor(roll) || 0);
   const loot = n * e.lootPerPoint;
 
-  const found = (e.locations[table] ?? []).find((l) => l.roll === n);
+  const found = (e.locations[table] ?? []).find((l) => inRange(l.roll, n));
   if (!found) return { roll: n, loot, table, location: null, nothingBecause: 'not-on-table' };
 
   const seen = new Set(alreadyDiscovered.map((s) => s.toLowerCase()));
@@ -304,6 +327,131 @@ export function resolveExploration(
   }
 
   return { roll: n, loot, table, location: found };
+}
+
+/* ------------------------------------------- exploration: Carcass Front */
+
+/**
+ * The Carcass Front Exploration Step, which is a different step.
+ *
+ * A Carcass Front campaign does not use the rulebook's Exploration Tables at
+ * all — *"you must use the Carcass Front Exploration Tables at the end of this
+ * book, instead of the ones in the Trench Crusade Rulebook"* — and four things
+ * change with them:
+ *
+ *   1. **The pool is 3D6 and does not grow with games played.** It grows with
+ *      Campaign Tracker rewards and Camp Buildings instead.
+ *   2. **Loot is the roll times FIVE**, not ten.
+ *   3. **You pick the table by Resource**, from those available in the zone
+ *      the game was played in — not by a rarity band.
+ *   4. **Only the Aggressor consults a table at all.** The other player rolls,
+ *      takes the loot, and checks their dice for three of a kind.
+ *
+ * Getting any of those wrong pays a warband roughly twice what the book pays
+ * it, which is the sort of error nobody notices until the campaign is over.
+ */
+export interface CarcassFrontExplorationOutcome {
+  roll: number;
+  /** The roll times five. Collected by both players, whoever was Aggressor. */
+  loot: number;
+  /** The Resource table consulted, or null for a player who was not the Aggressor. */
+  resource: string | null;
+  location: ExplorationLocation | null;
+  /**
+   * Three or more Exploration Dice showing the same value, which is how a
+   * player who was NOT the Aggressor comes across agents for Rudolf's Folly.
+   * Null when the dice were not recorded individually.
+   */
+  rudolfsFolly: boolean | null;
+  /**
+   * True when this warband has found this Location before.
+   *
+   * Reported rather than acted on. The rulebook's Exploration Step says a
+   * Location is discovered only once in a campaign and a repeat is treated as
+   * a Pillaged result; **Carcass Front does not restate that rule** for its own
+   * tables, and it rewrites the rest of the step in detail. Suppressing the
+   * result would apply a rule this book does not print, and applying it
+   * silently would hide the question — so the app says what it found and that
+   * the warband has seen it before.
+   */
+  previouslyDiscovered: boolean;
+}
+
+/** Ducats per point of the Exploration Roll in a Carcass Front campaign. */
+export const CARCASS_FRONT_LOOT_PER_POINT = 5;
+
+/** The Exploration Dice Pool a Carcass Front warband starts on. It does not grow with games. */
+export const CARCASS_FRONT_STARTING_DICE = 3;
+
+const carcassFrontTablesOf = (dataset: Dataset) =>
+  (dataset as { campaign?: { carcassFrontExploration?: NonNullable<
+    Dataset['campaign']['carcassFrontExploration']> } })
+    .campaign?.carcassFrontExploration;
+
+/** The Resources a Carcass Front campaign has Exploration Tables for. */
+export function carcassFrontResources(dataset: Dataset): string[] {
+  return Object.keys(carcassFrontTablesOf(dataset) ?? {});
+}
+
+/**
+ * Three or more Exploration Dice showing the same value.
+ *
+ * "if at least 3 of the Exploration Dice you have rolled have the same value
+ * (i.e. three or more 6s, or three or more 2s, etc.)". Counted over the dice
+ * themselves, so it cannot be derived from the total — which is why the app
+ * keeps the individual dice rather than only their sum.
+ */
+export function hasThreeOfAKind(dice: number[]): boolean {
+  const counts = new Map<number, number>();
+  for (const d of dice) counts.set(d, (counts.get(d) ?? 0) + 1);
+  return [...counts.values()].some((c) => c >= 3);
+}
+
+/**
+ * Resolve a Carcass Front Exploration Roll.
+ *
+ * `resource` is the table the player chose, or `null` for a player who was not
+ * the Aggressor and so does not consult one.
+ */
+export function resolveCarcassFrontExploration(
+  dataset: Dataset,
+  { roll, dice, resource, alreadyDiscovered = [] }: {
+    roll: number;
+    dice?: number[];
+    resource: string | null;
+    alreadyDiscovered?: string[];
+  }
+): CarcassFrontExplorationOutcome | null {
+  const tables = carcassFrontTablesOf(dataset);
+  if (!tables) return null;
+
+  const n = Math.max(0, Math.floor(roll) || 0);
+  const loot = n * CARCASS_FRONT_LOOT_PER_POINT;
+  const rudolfsFolly = dice && dice.length ? hasThreeOfAKind(dice) : null;
+
+  if (!resource) {
+    return { roll: n, loot, resource: null, location: null, rudolfsFolly, previouslyDiscovered: false };
+  }
+
+  const table = tables[resource];
+  if (!table) return null;
+
+  /*
+    The tables are contiguous and the last row is open-ended, so a roll always
+    lands somewhere. A miss here is a parse failure, not a rule — and the
+    parser's contiguity check is what makes that true.
+  */
+  const location = table.locations.find((l) => inRange(l.roll, n)) ?? null;
+
+  const seen = new Set(alreadyDiscovered.map((x) => x.toLowerCase()));
+  return {
+    roll: n,
+    loot,
+    resource,
+    location,
+    rudolfsFolly,
+    previouslyDiscovered: Boolean(location && seen.has(location.name.toLowerCase())),
+  };
 }
 
 /** The ledger entry an Exploration outcome produces. Loot is always collected. */

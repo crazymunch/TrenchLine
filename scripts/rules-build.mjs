@@ -27,6 +27,8 @@ import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
+import { parsePatrons } from './lib/parse-patrons.mjs';
+import { parseCarcassFrontExploration } from './lib/parse-cf-exploration.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
 import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
@@ -186,6 +188,30 @@ for (const ruleset of RULESETS) {
   */
   const weather = parseWeatherEvents();
 
+  /*
+    The eleven Patrons, from the rulebook and from Carcass Front.
+
+    Read together rather than layered, because Carcass Front's three are not a
+    Carcass Front feature: "The following new Patrons can be taken by eligible
+    Warbands in any Campaign (not just a Carcass Front Campaign)". A ruleset
+    without the supplement's layer gets the rulebook's eight.
+
+    The app had no Patron data at all before this. `warband.patron` was a
+    free-text string, so a player who rolled a Patron Skill — both ends of
+    every 2D6 Skill Table — had nothing to look it up in.
+  */
+  const patrons = parsePatrons();
+
+  /*
+    The four Carcass Front Exploration Tables, keyed by Resource.
+
+    A Carcass Front campaign uses these INSTEAD of the rulebook's three, so
+    they sit beside them rather than replacing them in the data: a player is in
+    one kind of campaign or the other, and the app has to be able to show
+    either.
+  */
+  const carcassFrontExploration = parseCarcassFrontExploration();
+
   const coreRules = parseCoreRules();
   if (coreRules.missing.length) {
     throw new Error(
@@ -261,6 +287,14 @@ for (const ruleset of RULESETS) {
      */
     weather,
     /**
+     * The Patrons. A ruleset without the supplement's layer gets the
+     * rulebook's eight; with it, Carcass Front's three as well — the book is
+     * explicit that they are for any campaign, not only its own.
+     */
+    patrons: ruleset.layers.includes(CARCASS_FRONT)
+      ? patrons
+      : patrons.filter((p) => p.source === 'rulebook'),
+    /**
      * The Battlekit chapter, verbatim.
      *
      * The Codex's arsenal read 34 hand-written wargear records until this
@@ -285,6 +319,15 @@ for (const ruleset of RULESETS) {
       // Exploration Roll times 10. The app's hand-written version of this was
       // fabricated end to end (AUDIT §1.13).
       exploration: parseExploration(),
+      /*
+        The Carcass Front tables, on a ruleset that carries the supplement.
+
+        Undefined otherwise, which is the honest answer: that ruleset has no
+        Carcass Front Exploration Tables, as distinct from tables we failed to
+        read.
+      */
+      carcassFrontExploration: ruleset.layers.includes(CARCASS_FRONT)
+        ? carcassFrontExploration : undefined,
       // The other two post-battle tables. `officialRulesData.ts` still holds
       // hand-written versions of both, and the four Skills tables there are
       // fabricated (AUDIT §1.13) — these are what replaces them.
@@ -621,6 +664,23 @@ for (const ruleset of RULESETS) {
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
   console.log(`  weather: ${dataset.weather.events.length} Weather Events (2D6)`);
+  {
+    const cf = dataset.patrons.filter((p) => p.source === 'carcass-front').length;
+    const introduced = dataset.patrons.flatMap((p) => p.introduces);
+    console.log(`  patrons: ${dataset.patrons.length} `
+      + `(${dataset.patrons.length - cf} rulebook, ${cf} Carcass Front), `
+      + `${dataset.patrons.reduce((n, p) => n + p.skills.length, 0)} Patron Skills`
+      + (introduced.length
+        ? `; ${introduced.length} item(s) printed among the Skills and carried apart: `
+          + introduced.map((i) => `${i.name} (${i.kind})`).join(', ')
+        : ''));
+  }
+  if (dataset.campaign.carcassFrontExploration) {
+    const t = Object.values(dataset.campaign.carcassFrontExploration);
+    console.log(`  Carcass Front exploration: ${t.length} Resource tables, `
+      + `${t.reduce((n, x) => n + x.locations.length, 0)} Locations `
+      + `(${t.map((x) => `${x.resource} ${x.glyph} ${x.locations.length}`).join(', ')})`);
+  }
   console.log(`  keywords: ${dataset.keywords.length} glossary entries ` +
               `(${dataset.keywords.filter((k) => k.type === 'Effect').length} Effect, ` +
               `${dataset.keywords.filter((k) => k.type === 'Tag').length} Tag)`);

@@ -213,10 +213,27 @@ export function parseExploration(src = RULEBOOK_TXT) {
 
   const ENDS = ['RARE EXPLORATION LOCATION TABLE', 'LEGENDARY EXPLORATION LOCATION TABLE',
                 'QUARTERMASTER STEP'];
+  /*
+    An Exploration Location's roll is emitted as a RANGE covering the single
+    number it is printed as.
+
+    Carcass Front's four tables print bands (`1-3`, `34+`) where these three
+    print single numbers, and both are Exploration Location tables that one
+    lookup in the app has to serve. A degenerate range says exactly what this
+    row has always said, and leaves the sparseness intact: the gaps between 6
+    and 8, and between 11 and 14, are still gaps.
+
+    Converted HERE and not in `parseRollTable`, which the four Skills tables
+    also use. A Skills row is a single 2D6 result and nothing else, and its
+    density check compares those results as numbers — widening the shared
+    helper turned every one of the eleven into an object and reported all four
+    tables as having lost all eleven rows.
+  */
+  const asRange = (rows) => rows.map((r) => ({ ...r, roll: { from: r.roll, to: r.roll } }));
   const locations = {
-    common: parseRollTable(lines, 'COMMON EXPLORATION LOCATION TABLE', ENDS),
-    rare: parseRollTable(lines, 'RARE EXPLORATION LOCATION TABLE', ENDS),
-    legendary: parseRollTable(lines, 'LEGENDARY EXPLORATION LOCATION TABLE', ENDS),
+    common: asRange(parseRollTable(lines, 'COMMON EXPLORATION LOCATION TABLE', ENDS)),
+    rare: asRange(parseRollTable(lines, 'RARE EXPLORATION LOCATION TABLE', ENDS)),
+    legendary: asRange(parseRollTable(lines, 'LEGENDARY EXPLORATION LOCATION TABLE', ENDS)),
   };
 
   return {

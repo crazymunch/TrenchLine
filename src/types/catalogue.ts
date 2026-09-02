@@ -616,16 +616,90 @@ export interface ScenarioGenerator {
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
 
 /**
+ * A band of Exploration Roll results, inclusive at both ends.
+ *
+ * `to: null` is an open range — `34+`, the last row of every Carcass Front
+ * table. The pool grows all campaign, so a roll can exceed any printed number
+ * and the last row has to catch it.
+ */
+export interface RollRange {
+  from: number;
+  /** `null` for an open-ended range. */
+  to: number | null;
+}
+
+/**
  * One row of an Exploration Location table.
  *
- * `roll` is a single number, not a range: the tables are sparse and a roll that
- * is not listed discovers nothing. The description is verbatim because the
- * reward amounts live in it.
+ * `roll` is a RANGE, and it is a range because the two books print two
+ * different kinds of table:
+ *
+ *   - The **rulebook's** three tables are sparse single numbers — 4, 5, 6, 8,
+ *     9, 11, 14 — and a roll that is not listed discovers nothing. Those rows
+ *     carry `{ from: n, to: n }`.
+ *   - **Carcass Front's** four are contiguous bands: *"The rolls for the
+ *     Locations on the Carcass Front Exploration Tables produce a range rather
+ *     than a single number (e.g. '1-3'). A Location is discovered if the
+ *     Exploration Roll corresponds to any number in the range."*
+ *
+ * One shape rather than two so a single lookup serves both, and the sparse
+ * table stays sparse: the gaps between the rulebook's rows are still gaps.
+ *
+ * The description is verbatim because the reward amounts live in it.
  */
 export interface ExplorationLocation {
-  roll: number;
+  roll: RollRange;
   name: string;
   description: string;
+}
+
+/**
+ * One of the four Carcass Front Exploration Tables, keyed by its Resource.
+ *
+ * A Carcass Front campaign replaces the rulebook's Exploration Step: you roll
+ * on the table matching a Resource available in the zone the game was played
+ * in, rather than on a rarity table your games-played band unlocks.
+ */
+export interface CarcassFrontExplorationTable {
+  /** `favour`, `relic`, `supplies`, `territories`. */
+  resource: string;
+  /** The Campaign Tracker prints the glyph, so a player matches on it. */
+  glyph: string;
+  locations: ExplorationLocation[];
+}
+
+/**
+ * A Patron: the choice a warband makes once, at the start of a campaign.
+ *
+ * It decides exactly one thing, and it decides it often — both ends of every
+ * 2D6 Skill Table are a `Patron Skill` result, so a campaign warband reaches
+ * this list every few Advancement Rolls.
+ *
+ * Eleven of them, from the two books that print them: the rulebook's eight and
+ * Carcass Front's three. The supplement's are not a supplement feature — "The
+ * following new Patrons can be taken by eligible Warbands in any Campaign (not
+ * just a Carcass Front Campaign)" — so they sit in the same list.
+ */
+export interface Patron {
+  id: string;
+  /** As printed, in the book's caps: `TEMPORAL LORD`, `HOUSE OF WISDOM`. */
+  name: string;
+  /** Who may take it: `New Antioch only.`, `Fallen Warbands only.` */
+  restriction: string;
+  lore: string;
+  /** Exactly six, in every entry in both books. */
+  skills: { name: string; description: string }[];
+  /**
+   * Game data a Skill introduces that is not itself a Skill.
+   *
+   * One entry in eleven Patrons: the House of Wisdom's `Whispering Zīj` lets a
+   * Takwin Homunculus buy a **Zīj Seal Alchemical Formulae for 20 👑**, and the
+   * book prints that Formula's rules among the Skills, in a Skill's shape.
+   * Carried here rather than dropped — it is a thing a player can buy — and
+   * kept out of `skills` so the entry has the six it actually has.
+   */
+  introduces: { name: string; description: string; kind: string; unlockedBy: string }[];
+  source: 'rulebook' | 'carcass-front';
 }
 
 export type SkillsTableName = 'melee' | 'ranged' | 'stealth' | 'wildcard';
@@ -728,6 +802,14 @@ export interface Dataset {
    * app offers it rather than applying it.
    */
   weather: { procedure: string; events: WeatherEvent[] };
+  /**
+   * The eleven Patrons, from the rulebook and from Carcass Front.
+   *
+   * The app had none. `warband.patron` was free text a player typed, so
+   * nothing could say what a Patron's six Skills were — and a Patron's Skills
+   * are the only part of it that has rules attached.
+   */
+  patrons: Patron[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
@@ -745,6 +827,15 @@ export interface Dataset {
       /** Ducats per point of the Exploration Roll. */
       lootPerPoint: number;
     };
+    /**
+     * The four Carcass Front Exploration Tables, keyed by Resource.
+     *
+     * Present only on a ruleset carrying the supplement's layer. A Carcass
+     * Front campaign uses these *instead of* the rulebook's three, so the two
+     * sets sit side by side rather than merged — a player is on one or the
+     * other, never both.
+     */
+    carcassFrontExploration?: Record<string, CarcassFrontExplorationTable>;
     /** The four Advancement Skills tables. 2D6, dense, 11 rows each. */
     skills: Record<SkillsTableName, SkillRow[]>;
     /** The Trauma Table. Sparse only in that 41-63 is one range. */

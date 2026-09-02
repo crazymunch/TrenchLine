@@ -11,6 +11,7 @@ import { soundEffects } from '../../services/soundEffects';
 import { MissionGenerator } from './MissionGenerator';
 import { DiceProbabilityModal } from './DiceProbabilityModal';
 import { RulesProse } from './RulesProse';
+import { rollLabel } from '../../rules/campaign';
 import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
   BookOpen, 
@@ -67,7 +68,7 @@ export const CodexView: React.FC = () => {
     }
     const table = which === 'common' ? 'common' : which === 'rare' ? 'rare' : 'legendary';
     return codexDataset.campaign.exploration.locations[table].map((r) => ({
-      roll: String(r.roll), title: r.name, description: r.description,
+      roll: rollLabel(r.roll), title: r.name, description: r.description,
     }));
   };
   const [searchQuery, setSearchQuery] = useState('');

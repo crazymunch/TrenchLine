@@ -56447,6 +56447,280 @@ export const DATASET: Dataset = {
       }
     ]
   },
+  "patrons": [
+    {
+      "id": "temporal-lord",
+      "introduces": [],
+      "name": "TEMPORAL LORD",
+      "restriction": "New Antioch only.",
+      "lore": "Your Patron is a powerful noble, perhaps a merchant prince, a high-ranking military officer, a minister, or even the mighty Duke of New Antioch himself. Such Patrons can help your warband’s specialist training and procurement of expensive weapons.",
+      "skills": [
+        {
+          "name": "Armour & Equipment Procurement",
+          "description": "The cost of any Armour, Shields or Equipment worth 15 👑 or more is reduced by 5 👑 if a model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Melee Weapon Procurement",
+          "description": "The cost of any Melee Weapon worth 10 👑 or more is reduced by 5 👑 if the model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Mendelist Chemicals",
+          "description": "The opposing player cannot spend BLOOD MARKERS next to a model with this skill to add +1 INJURY DICE (they can use the BLOOD MARKERS to convert the roll to a Bloodbath Roll normally)."
+        },
+        {
+          "name": "Ranged Weapon Procurement",
+          "description": "The cost of any Ranged Weapon or Grenade worth 20 👑 or more is reduced by 5 👑 if a model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Sniper School",
+          "description": "Ranged Attacks made by a model with this Skill need 1 less BLOOD MARKER to convert an Injury Roll roll to a Bloodbath Roll."
+        },
+        {
+          "name": "Special Assault Training",
+          "description": "Melee Attacks made by a model with this Skill need 1 less BLOOD MARKER to convert an Injury Roll roll to a Bloodbath Roll."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "warrior-saint",
+      "introduces": [],
+      "name": "WARRIOR SAINT",
+      "restriction": "Trench Pilgrims and New Antioch only.",
+      "lore": "Your Patron is a mighty saint of soldiers and warriors such as Saint George the Dragonslayer, Saint John the Warrior, Saint Jeanne d’Arc, or even Saint Michael the Taxiarch himself. Such Patrons offer great power in personal combat and divine protection on the battlefield.",
+      "skills": [
+        {
+          "name": "Blessings of the Warrior Saint",
+          "description": "A model with this Skill gains the BLESSED D3 Keyword."
+        },
+        {
+          "name": "David and Goliath",
+          "description": "Add +1 DICE for a Melee Attack made by a model with this Skill if the target is mounted on a 40mm or larger base."
+        },
+        {
+          "name": "Dragonslayer",
+          "description": "When you make an Injury Roll for a Melee Attack made by a model with this Skill, you can change the roll of one the D6s used for the Injury Roll to a 6."
+        },
+        {
+          "name": "Endure the Suffering",
+          "description": "A model with this Skill can suffer 1 extra Battle Scar before they are unfit for duty."
+        },
+        {
+          "name": "On your Knees!",
+          "description": "Enemy models that are Down are not allowed to stand up if a model with this Skill is within 1” of them (even if the model with this Skill is also Down)."
+        },
+        {
+          "name": "Warrior’s Prayer ACTION",
+          "description": "A model with this Skill can take a Warrior’s Prayer ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, the model has the FEAR Keyword until the end of the Turn, and you can remove up to 1 BLOOD MARKER from the model."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "learned-saint",
+      "introduces": [],
+      "name": "LEARNED SAINT",
+      "restriction": "Trench Pilgrims and New Antioch only.",
+      "lore": "Your Patron is a great teacher, such as Saint Patrick, Saint Thomas Aquinas or Saint Methodius. Such Patrons illuminate the paths of planning, science, strategy and organisational skills.",
+      "skills": [
+        {
+          "name": "Favoured by God",
+          "description": "At the end of each game, your Warband gains 1 additional ☼ for each model with this Skill on the battlefield."
+        },
+        {
+          "name": "Healing Arts",
+          "description": "You can re-roll the result on the Trauma Chart (▶ see Trauma Step) for a model with this Skill."
+        },
+        {
+          "name": "Knowledge of Sciences",
+          "description": "The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the Warband. Choose the Battlekit the bonus will apply to and write down your choice on your roster. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Logistical Skills",
+          "description": "A Warband that includes a model with this Skill can increase any Limits on the number of models it can include by 1, as long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary. For example, if the Warband Entry for a model in the Warband had a limit of 0-2, the limit would be increased to 0-3. If the model with this Skill is killed or otherwise removed from the Warband, models in excess of the normal limits can be kept, but new models cannot be added to the Warband in excess of the normal limits. A Warband can only have 1 model with this Skill."
+        },
+        {
+          "name": "Pennies from Heaven",
+          "description": "At the end of each game, your Warband gains D6x5 additional 👑 for each model with this Skill that is on the Battlefield."
+        },
+        {
+          "name": "Walk with God",
+          "description": "Pick one Skill from any Skill Table available to the model, including any Exploration Skill, and give it to this model. VP"
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "infernal-noble",
+      "introduces": [],
+      "name": "INFERNAL NOBLE",
+      "restriction": "Heretic Legions & The Court of the Seven-Headed Serpent only.",
+      "lore": "Your Patron is one of the Fallen, a mighty devil noble such as Baal, Balam, Zepar, Astaroth or Gusion. Such Patrons bestow magical powers, reward evil deeds and enhance the power of sins.",
+      "skills": [
+        {
+          "name": "30 Pieces of Silver",
+          "description": "At the end of each game, your Warband gains D6x5 👑 for each model with this Skill that is on the battlefield."
+        },
+        {
+          "name": "Blessed Murder",
+          "description": "If a Melee Attack made by a model with this Skill takes an enemy model Out of Action, place 1 BLESSING MARKER next to the model with this Skill."
+        },
+        {
+          "name": "Blood Sacrifice ACTION",
+          "description": "A model with this Skill can take a Blood Sacrifice ACTION. If it does so, take a Success Roll for the model. On a Success or Critical Success, you can remove 1 BLOOD MARKER from the model and place it next to any other model that is within 6” of the model taking the Blood Sacrifice ACTION, in their line of sight, and which does not have the ARTIFICIAL, BLACK GRAIL or DEMONIC Keywords."
+        },
+        {
+          "name": "Hellfire ACTION",
+          "description": "A model with this Skill can take a Hellfire ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, pick a friendly model that is within 18” of the model carrying out the Hellfire ACTION and in their line of sight. Then draw a straight line 1mm wide between the closest points of the bases of the two models, and make an Injury Roll with the FIRE Keyword for each model (friend or foe) that is crossed or reached by the line, including the friendly model that you picked but not including the model taking the Hellfire ACTION."
+        },
+        {
+          "name": "Lash of Acheron ACTION",
+          "description": "A model with this Skill can take a Lash of Acheron ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, you can make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model that is within 6” of the model taking the Lash of Acheron ACTION and in their line of sight."
+        },
+        {
+          "name": "Sadistic",
+          "description": "Add +1 DICE and +1 INJURY DICE to Melee Attacks made by a model with this Skill if the target model is Down."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "sublime-gate",
+      "introduces": [],
+      "name": "SUBLIME GATE",
+      "restriction": "Iron Sultanate only.",
+      "lore": "Your Patron is one of the high-ranking nobles of the Sultanate such as an emir, pasha, vizier or even the Sultan himself. Such Patrons bestow martial prowess, access to exotic weapons, armour, superior training and of course, the favour of the Sultan.",
+      "skills": [
+        {
+          "name": "Güreş",
+          "description": "Add +1 DICE and +1 INJURY DICE to Melee Attacks made by a model with this Skill if the target model is Down. In addition, you can ignore the -1 DICE modifier to Success Rolls for a model that is Down if the model has this Skill."
+        },
+        {
+          "name": "Imported Wares",
+          "description": "You can purchase 1 Weapon or 1 suit of Armour from the New Antioch Armoury for a model with this Skill in the following Quartermaster Step. Choose the Weapon or suit of Armour and write down your choice on your Warband Roster. If this item is lost for any reason during the campaign, you can repurchase it."
+        },
+        {
+          "name": "Janissary Training",
+          "description": "If the first ACTION a model with this Skill makes during their Activation is a Charge, add +1 DICE to Melee Attacks made by the model for the rest of the Activation. Additionally, a model with this Skill has the IGNORE OFF-HAND WEAPON Keyword."
+        },
+        {
+          "name": "Rightly Guided",
+          "description": "At the start of the game, after deployment, you can pick 1 ACTION apart from Charge, Shoot or Fight that requires that an enemy model is chosen as the target of the ACTION or is picked to be affected by the ACTION. For the rest of the game, the model with this Skill cannot be chosen as the target of that ACTION and cannot be picked to be affected by that ACTION."
+        },
+        {
+          "name": "Sultan’s Favour",
+          "description": "A Warband that includes a model with this Skill can increase any limits on the number of models it can include by 1, as long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary. For example, if the Warband Entry for a model in the Warband had a limit of 0-2, the limit would be increased to 0-3. If the model with this Skill is killed or otherwise removed from the Warband, models in excess of the normal limits can be kept, but new models cannot be added to the Warband in excess of the normal limits. A Warband can only have 1 model with this Skill."
+        },
+        {
+          "name": "Sword of Allah",
+          "description": "You can choose 1 Skill from the Melee & Strength Skills Table for a model that has the Sword of Allah Skill."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "the-order-of-the-fly",
+      "introduces": [],
+      "name": "THE ORDER OF THE FLY",
+      "restriction": "Black Grail only.",
+      "lore": "Your Patron is a powerful infernal noble of the Order of the Fly, such as Enlil, Prince Vassago or even Beelzebub the Lord of the Flies himself. Through you, these putrid and mighty devils unleash a tidal wave of corruption upon the mortal world.",
+      "skills": [
+        {
+          "name": "Cockroach Vitality",
+          "description": "The opposing player cannot spend BLOOD MARKERS next to a model with this Skill to add +1 INJURY DICE for a Melee or Ranged Attack."
+        },
+        {
+          "name": "Deceit of Beelzebub ACTION",
+          "description": "A model with this Skill can take a Deceit of Beelzebub ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, pick an enemy model within 8” of the model taking the Deceit of Beelzebub ACTION, and then swap the position of the two models. You must place each model so that the centre of its base is at the location that was previously occupied by the centre of the base of the model they are swapping positions with. If this is impossible for any reason (e.g. because Impassable terrain or another model gets in the way), the two models remain in their original locations."
+        },
+        {
+          "name": "Eyes of the Fly",
+          "description": "A model with this Skill has the IGNORE COVER and IGNORE LONG RANGE Keywords."
+        },
+        {
+          "name": "Grail Plague",
+          "description": "At the start of each game, after deployment, for each model with this Skill that is on the battlefield, you can place 1 INFECTION MARKER next to an enemy model that does not have the BLACK GRAIL Keyword."
+        },
+        {
+          "name": "Knight of the Flies",
+          "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with this Skill."
+        },
+        {
+          "name": "Wings of the Fly",
+          "description": "A model with this Skill gains the FLYING Keyword if it doesn't already have it."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "mammon",
+      "introduces": [],
+      "name": "MAMMON",
+      "restriction": "Heretic Legions or Court of the Seven-Headed Serpent (Greed Warband) only.",
+      "lore": "Your Patron is Mammon, the Prince of Greed, the Treasurer of Hell, and the King of Fools. He appears as a golden-skinned king on an opulent throne, with black scorch marks tarnishing his splendour. He is the most popular Patron amongst mortals.",
+      "skills": [
+        {
+          "name": "Aureate Skin",
+          "description": "The model with this Skill is granted the splendid (yet tarnished) golden skin of their Patron, and their blood turns into molten gold. Each time you place a BLOOD MARKER next to a model with this Skill, add 5 👑 to your treasury."
+        },
+        {
+          "name": "Crooked Dice",
+          "description": "Once per game, you can re-roll all of the dice used for a Success Roll for a model with this Skill, or you can re-roll all of the dice used for an Injury Roll for an attack made by a model with this Skill."
+        },
+        {
+          "name": "Eternal Debt",
+          "description": "The Wretched of this Warband are never lost as casualties, for their heads (kept as surety by Mammon) are used to regrow the lost bodies. All Wretched models in a Warband that includes a model with this Skill will automatically make a full recovery after the battle if they are taken Out of Action."
+        },
+        {
+          "name": "Money Can Buy Anything",
+          "description": "The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the Warband. Choose the Battlekit the bonus will apply to and write down your choice on your roster. A Warband can have only one model w ith this Skill."
+        },
+        {
+          "name": "Plutocracy",
+          "description": "When you take this Skill for a model, it can immediately form a FIRETEAM with 1 other model from your Warband that does not have the ELITE Keyword. Both of the models gain the FIRETEAM Keyword. In addition, if the two models take a simultaneous Activation, then you can treat all Risky Success Rolls they take during the Activation as normal Success Rolls."
+        },
+        {
+          "name": "Unsecured Loan",
+          "description": "You can add 100 👑 to your Strongbox when you take this Skill for a model in your Warband. The 👑 are only gained once, when the Skill is chosen."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "the-antipope-of-avignon",
+      "introduces": [],
+      "name": "THE ANTIPOPE OF AVIGNON",
+      "restriction": "Black Grail only.",
+      "lore": "Your Patron is the Antipope of Avignon, the high priest of the Cult of the Black Grail. Whereas most strains of the Black Grail infect the body, the variant spread by Missionaries of Beelzebub targets the mind above all. This is why Apostles of the Fly are disturbingly effective at winning new converts to their cause despite the obvious ruin that follows devotion to the Lord of the Flies.",
+      "skills": [
+        {
+          "name": "Beelzebub’s Wisdom",
+          "description": "Infested with the Black Grail, the head of this warrior is distended and liquid matter oozes out of its many trepanned holes; it is such a disgusting sight that enemy warriors often hesitate to draw close to the foul creature. If a model with this Skill is chosen by an enemy model as the target of a charge, the enemy model does not receive a Charge Bonus and must make the charge using only its Movement Characteristic."
+        },
+        {
+          "name": "Eye of Beelzebub ACTION",
+          "description": "The overwhelming mental pressure of this emissary of Beelzebub overwhelms any mind. A model with this Skill can take an Eyes of Beelzebub ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, pick an enemy model that is within 24” of the model taking the Eye of Beelzebub ACTION, in Cover, and which is not within 1” of any models from your Warband. Your opponent must then move that model 1”, so that it is still in the line of sight of the model taking the ACTION but is no longer in Cover, and so that it is more than 1” away from any models from your Warband. If this is impossible for any reason, the enemy model is not moved."
+        },
+        {
+          "name": "Feast on Disease",
+          "description": "If the target of a Melee Attack made by a model with this Skill has 1 or more INFECTION MARKERS, then it costs 1 less BLOOD MARKER or INFECTION MARKER to convert an Injury Roll into a Bloodbath Roll."
+        },
+        {
+          "name": "Infect the Mind",
+          "description": "At the start of each game, after deployment, for each model with this Skill that is on the battlefield, you can pick an enemy model and move it 6” in the same way as if it were carrying out a Move ACTION (it cannot Charge)."
+        },
+        {
+          "name": "Silvered Tongue ACTION",
+          "description": "A model with this Skill can take a Silvered Tongue ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, pick an enemy model that is within 1” of the model taking the Silvered Tongue ACTION. The model you pick must make a Melee Attack against itself. If the enemy model has more than 1 Melee Weapon, you can choose which one it uses. The enemy model will only attack itself once, even if it is capable of attacking several times."
+        },
+        {
+          "name": "Swine Hybrid",
+          "description": "Add 2” to the Movement Characteristic of a model with this Skill."
+        }
+      ],
+      "source": "rulebook"
+    }
+  ],
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",
@@ -57345,176 +57619,278 @@ export const DATASET: Dataset = {
       "locations": {
         "common": [
           {
-            "roll": 4,
+            "roll": {
+              "from": 4,
+              "to": 4
+            },
             "name": "Moonshine Stash",
             "description": "You find a hidden stash of strong distilled alcohol, its origin uncertain and unsafe. Choose one of the following options: * Distribute (New Antioch and Trench Pilgrims only): Add +2 DICE to Morale Checks in your next game. * Destroy ( New Antioch, Trench Pilgrims, and Iron Sultanate only): Up to two models in your Warband with the ELITE Keyword earn +1 Experience Point each. If this entitles the model to an Advancement Roll, make the roll immediately. * Sell (Any Warband): Add 30 👑 to your Strongbox."
           },
           {
-            "roll": 5,
+            "roll": {
+              "from": 5,
+              "to": 5
+            },
             "name": "Heavy Weapons Cache",
             "description": "You find a hidden weapons cache. Choose one of the following options: * Surplus: Choose one piece of Battlekit with the HEAVY Keyword from your Warband’s Armoury Tables and add it to your Arsenal. * Specialise: Choose one Glory Item with a Cost of up to 5 ☼, and add it to your Arsenal."
           },
           {
-            "roll": 6,
+            "roll": {
+              "from": 6,
+              "to": 6
+            },
             "name": "Trench Shrine",
             "description": "You find a crude shrine erected by the soldiers of the Great War. Some are made from artillery shells or melted cannons, while a flag of the Sultanate can be used to indicate a place of prayer. Choose one of the following options: * Standard: Add a Troop Flag to your Warband’s Arsenal. * Shrine: Add a Field Shrine to your Warband’s Arsenal. * Return: Your Warband gains +2 ☼."
           },
           {
-            "roll": 8,
+            "roll": {
+              "from": 8,
+              "to": 8
+            },
             "name": "Ruined House",
             "description": "This house has been obliterated by heavy weaponry, its inhabitants ripped apart. Choose one of the following options: * Rummage: Choose one or more pieces of Equipment from your Warband’s Armoury Tables that are worth a total of up to 30 👑 , and add them to your Arsenal. * Relic: Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal."
           },
           {
-            "roll": 9,
+            "roll": {
+              "from": 9,
+              "to": 9
+            },
             "name": "Survivor",
             "description": "You find a soldier staggering in No Man’s Land; a deserter, perhaps, or a squaddie whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). * New Antioch: A Yeoman without a Ranged Weapon. * Trench Pilgrims: Ecclesiastical Prisoner. * Iron Sultanate: Azeb. * Heretic Legions: Wretched. * Black Grail: Grail Thrall. * The Court: Wretched. Glory Item Tables"
           },
           {
-            "roll": 10,
+            "roll": {
+              "from": 10,
+              "to": 10
+            },
             "name": "Fallen Soldier",
             "description": "You find the body of a fallen soldier. Choose one Ranged Weapon from your Warband’s Armoury Tables worth up to 15 👑 , and add it to your Arsenal along with a Combat Helmet and suit of Standard Armour. Then roll a D6. On a 4+, you can add one of the following to your Arsenal: a Medi-kit or a Mountaineer’s Kit, or a Shovel."
           },
           {
-            "roll": 11,
+            "roll": {
+              "from": 11,
+              "to": 11
+            },
             "name": "Trench Merchant",
             "description": "You establish contact with a Trench Merchant. Choose one of the following options: * Report: Your Warband gains 2 ☼. * Trade: From now on, in the Quartermaster Step, you can purchase Glory Items costing 5 ☼ or less."
           },
           {
-            "roll": 14,
+            "roll": {
+              "from": 14,
+              "to": 14
+            },
             "name": "Map & Document Bag",
             "description": "Marked with carefully concealed signs, you find a hidden satchel containing maps and intelligence. Your Warband gains the Reroll Exploration Skill."
           },
           {
-            "roll": 16,
+            "roll": {
+              "from": 16,
+              "to": 16
+            },
             "name": "Sniper’s Lair",
             "description": "You find the well-camouflaged position of a sniper. Add the Battlekit listed below for your Faction to your Arsenal. If there are any items you are not allowed to add to your Arsenal for any reason, add their Cost in 👑 to your Strongbox instead. * New Antioch or Trench Pilgrims: Sniper Rifle or a Sniper Scope. * Iron Sultanate: Siege Jezzail, Alchemical Ammunition, and a Cloak of Alamut. * Heretic Legions: Automatic Rifle. * Black Grail: Corruption Belcher and Field Shrine. * The Court: Ophidian Rifle."
           },
           {
-            "roll": 18,
+            "roll": {
+              "from": 18,
+              "to": 18
+            },
             "name": "Fallen Knight",
             "description": "You find a fallen hero of past ages. Perhaps a baron from New Antioch, a great Faris of the Sultanate, or a Plague Knight of Beelzebub. Choose one of the following options: * Loot: Add a suit of Reinforced Armour, a Trench Shield, a Combat Helmet, and either a Sword or Polearm to your Warband’s Arsenal. * Memorialise: Your Warband gains 2 ☼."
           },
           {
-            "roll": 20,
+            "roll": {
+              "from": 20,
+              "to": 20
+            },
             "name": "Warband Strongbox",
             "description": "You find the hidden strongbox of a Warband lost in the Great War. Choose one of the following options: * Trove: Choose one or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑 , and add them to your Arsenal. * Panoply: Choose one or more Glory Items worth a total of up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the Cost of any Weapons by 1 ☼ to a minimum of 1 ☼ . Glory Item Tables"
           }
         ],
         "rare": [
           {
-            "roll": 5,
+            "roll": {
+              "from": 5,
+              "to": 5
+            },
             "name": "Angelic Instrument",
             "description": "Exploring the battlefield you discover an otherworldly instrument alongside the shattered remains of a lesser angel — fallen or divine. Add an Angelic Instrument to your Warband’s Arsenal. It counts as a Musical Instrument except its Effect has a range of 8” instead of 4”. If your Warband already has a Musical Instrument, you can replace it with the Angelic Instrument, but you do not get any 👑 for the instrument that was thrown away."
           },
           {
-            "roll": 9,
+            "roll": {
+              "from": 9,
+              "to": 9
+            },
             "name": "Abandoned Prophetic Radio Post",
             "description": "You find a hastily-abandoned Synod of Strategic Prophecy station, with scribbled predictions and prophecies scattered amongst the disarray. Your Warband gains the Extra Dice Exploration Skill."
           },
           {
-            "roll": 11,
+            "roll": {
+              "from": 11,
+              "to": 11
+            },
             "name": "Pot of Manna",
             "description": "You find a cup blessed by God that provides endless nourishment. Add 10 👑 to the amount of loot you receive each Exploration Step (including this one)."
           },
           {
-            "roll": 12,
+            "roll": {
+              "from": 12,
+              "to": 12
+            },
             "name": "Ransacked Alchemist Workshop",
             "description": "Amidst the rubble, you find a few intact life-giving potions. Add Curative Fluids to your Warband’s Arsenal. Once, in any future Quartermaster Step, you can use the Curative Fluids to remove 1 Battle Scar (but not the effects of any Trauma) from a model in your Warband. Remove the Curative Fluids from your Warband Roster after they are used."
           },
           {
-            "roll": 15,
+            "roll": {
+              "from": 15,
+              "to": 15
+            },
             "name": "Black Market",
             "description": "You discover a major underground trading post in No Man’s Land. From now on, in the Quartermaster Step, you can purchase Glory Items costing 8 ☼ or less."
           },
           {
-            "roll": 17,
+            "roll": {
+              "from": 17,
+              "to": 17
+            },
             "name": "Book of Golems",
             "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add a Takwin Homunculus from The House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword, and replaces the SULTANATE Keyword with your Faction's Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas. Glory Item Tables"
           },
           {
-            "roll": 19,
+            "roll": {
+              "from": 19,
+              "to": 19
+            },
             "name": "Ruined Church/Masjid/Synagogue",
             "description": "You find a great shrine, temple or other religious building of faith. Upon its altar rests an object of great power waiting for you. Choose one of the following options: * Report: Your Warband gains +4 ☼. * Keep: Choose one Glory Item worth up to 10 ☼, and add it to your Arsenal."
           },
           {
-            "roll": 21,
+            "roll": {
+              "from": 21,
+              "to": 21
+            },
             "name": "Stash of Drugs & Erotica",
             "description": "You find a motherlode of forbidden objects and chemicals, highly sought after and in demand. Choose one of the following options: * Indulge: Add +1 DICE to Morale Checks for your Warband for the rest of the campaign. * Sell: Your Warband gains 120 👑 . * Confiscate: Your Warband gains +4 ☼. Trench Pilgrims must select the Confiscate option."
           },
           {
-            "roll": 23,
+            "roll": {
+              "from": 23,
+              "to": 23
+            },
             "name": "Saint’s Reliquary",
             "description": "You discover the well-hidden reliquary of a fallen saint. Add a Saintly Relic to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model that has the ELITE Keyword. A model that has a Saintly Relic gains the TOUGH Keyword, but loses the INFILTRATOR Keyword if it has it, and the opposing player can ignore the Cover and Defended Obstacle modifiers for attacks that target the model."
           },
           {
-            "roll": 25,
+            "roll": {
+              "from": 25,
+              "to": 25
+            },
             "name": "High-Ranking Captive",
             "description": "You capture a high-ranking enemy – an officer of New Antioch, a Sultanate sheik, a shard of a fallen Black Grail Hegemon, a Pilgrim Prophet, a Mammonite merchant, or some other important personage. Choose one of the following options: * Ransom: Your Warband gains 100 👑 . * Execute: Your Warband gains +4 ☼. * Imprison: Choose one Glory Item with a Cost of up to 8 ☼, and add it to your Arsenal. * Indenture: You keep the captive as a guide. Your Warband gains the Set Dice Exploration Skill."
           },
           {
-            "roll": 32,
+            "roll": {
+              "from": 32,
+              "to": 32
+            },
             "name": "Abandoned Resurrection Machines",
             "description": "You find remnants of machines that were once used as part of the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and its corresponding Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used. Glory Item Tables"
           }
         ],
         "legendary": [
           {
-            "roll": 6,
+            "roll": {
+              "from": 6,
+              "to": 6
+            },
             "name": "Battlefield of Corpses",
             "description": "You come across a scene of terrible slaughter. The remains of humans from various nations and Hellish creatures, fallen in battles over the past 800 years, lie torn and scattered across the horizon, while the trenches that criss-cross this scene are filled with blood. Choose up to 2 pieces of Battlekit from your Warband’s Armoury Tables worth up to 100 👑 in total, and add them to your Arsenal."
           },
           {
-            "roll": 8,
+            "roll": {
+              "from": 8,
+              "to": 8
+            },
             "name": "Esoteric Library",
             "description": "You find a concealed collection of works on Goetic Magic, blood sacrifice rites, and grimoires on the summoning of demons. Choose one of the following options: * Burn (New Antioch, Trench Pilgrims, the Sultanate only): Your Warband gains 3+D3 ☼. * Release Plague (Black Grail only): A Black Grail Warband may unleash a Plague from the books. At the start of each game, after deployment, you can place 1 INFECTION MARKER next to 1 model of your choice (friend or foe). * Sell (Any Warband): Your Warband gains 6D6 x 10 👑 . * Study (The Court or Heretic Legions only): At the start of each game, after deployment, you can pick 1 model (friend or foe). Place 1 BLOOD MARKER next to the model that you pick."
           },
           {
-            "roll": 10,
+            "roll": {
+              "from": 10,
+              "to": 10
+            },
             "name": "Hidden Passages",
             "description": "You uncover a hidden entrance to a vast underground network, perhaps dug by the Heretics to infiltrate the Great Iron Wall, or by refugees living in No Man’s Land. This allows you to explore the area you are in far more efficiently. Your Warband gains the Duplicate Exploration Skill."
           },
           {
-            "roll": 12,
+            "roll": {
+              "from": 12,
+              "to": 12
+            },
             "name": "Jabirean Alchemical Book",
             "description": "You find one of the fabled books of the Jabirean Corpus, filled with the most wondrous secrets of the nature of the universe. Choose one of the following options: * Keep: From now on, in your Quartermaster Step, you can purchase Fire Shields from the House of Wisdom Armoury Tables & Battlekit section (▶ see the House of Wisdom variant in Warbands of Trench Crusade) * Sell: Your Warband gains 150 👑 or 5 ☼ (you can choose which). * Study (House of Wisdom only): Alchemical Formulae now cost your Warband 5 👑 less than they used to, to a minimum Cost of 5 👑 ."
           },
           {
-            "roll": 14,
+            "roll": {
+              "from": 14,
+              "to": 14
+            },
             "name": "Black Network Contact",
             "description": "You make contact with one of the legendary Merchant Princes of the Black Network. From now on, in the Quartermaster Step, you can purchase Glory Items costing 12 ☼ or less. Glory Item Tables"
           },
           {
-            "roll": 16,
+            "roll": {
+              "from": 16,
+              "to": 16
+            },
             "name": "Treasure of the Holies",
             "description": "You find a legendary feretory, be it the Tabernacle of the Hebrews, an altar to the Morning Star himself, a shrine founded by Saint Peter or a place where the Prophet visited. On its altar lies a treasure chest containing an object of great power waiting for you. You score D3 Campaign Victory Points and can add one Glory Item to your Arsenal for free. If you prefer you can take the treasure chest with you and choose the Glory Item in any future Quartermaster Step."
           },
           {
-            "roll": 18,
+            "roll": {
+              "from": 18,
+              "to": 18
+            },
             "name": "Skull of a Saint",
             "description": "You find the skull of a saint martyred in ages past. The power of communion lingers in its holy remains. Choose one of the following options: * New Antioch, Trench Pilgrims, and Iron Sultanate: A saint guides your troops before battle. Add a Skull Relic to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. A model with the Skull Relic gains the INFILTRATOR Keyword. * Heretic Legions, Black Grail, or The Court: The skull screams as you mount it on a pole to mock God and paint it with blasphemous names. Add a Screaming Skull to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. Add +2 DICE to your Morale Checks while the model is on the battlefield and is not Down or Out of Action. In addition, you gain 1 ☼ at the end of any game in which the model is on the battlefield and is not Down or Out of Action."
           },
           {
-            "roll": 20,
+            "roll": {
+              "from": 20,
+              "to": 20
+            },
             "name": "Lock of Samson’s Hair",
             "description": "You discover a lock of the legendary Samson’s hair, imbued with the essence of the strongest warrior to ever live. Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair."
           },
           {
-            "roll": 23,
+            "roll": {
+              "from": 23,
+              "to": 23
+            },
             "name": "Patron’s Visit",
             "description": "Your Patron or their representative makes a surprise visit to your Warband. If you wish, you can immediately exchange up to 10 ☼ for an equal number of Campaign Victory Points."
           },
           {
-            "roll": 26,
+            "roll": {
+              "from": 26,
+              "to": 26
+            },
             "name": "Sample of Holy DNA",
             "description": "You find a sample of Holy DNA. Pick 1 model in your Warband and note on your Warband Roster that they have been treated with Holy DNA. From then on, when you Activate the model, before you carry out any ACTIONS you can remove 1 BLOOD MARKER or INFECTION MARKER from the model and replace it with a BLESSING MARKER. Glory Item Tables"
           },
           {
-            "roll": 30,
+            "roll": {
+              "from": 30,
+              "to": 30
+            },
             "name": "Golgotha Tektites",
             "description": "Golgotha Tektites are used to forge the armour of the mighty Paladins. Pick up to two suits of your Warband’s Armour and note on your Warband Roster that they have been treated with Golgotha Tektites. Suits of Armour treated with Golgotha Tektites gain the NEGATE FIRE, NEGATE GAS, and NEGATE SHRAPNEL Keywords unless they have them already. If you have a New Antioch Warband, you can hand the Golgotha Tektites over to the Church instead of treating suits of Armour with them. If you do so, you gain +15 ☼."
           },
           {
-            "roll": 36,
+            "roll": {
+              "from": 36,
+              "to": 36
+            },
             "name": "Fruit from the Tree of Good and Evil Knowledge",
             "description": "Amongst the bones of giant humans unearthed by the ravages of war you discover a golden- hued fruit wrapped in spun cloth. Pick 1 model in your Warband. The model you pick eats the fruit you discovered. They gain the DEMONIC Keyword and you can give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Patron Skill (it does not have to be one from your own Patron), or any Exploration Skill. VM Glory Item Tables"
           }

@@ -179,16 +179,16 @@ describe('the Exploration Step', () => {
     expect(loc.legendary.length).toBeGreaterThanOrEqual(11);
     // The published rows. The app's fabricated table had "Empty Trench",
     // "Discarded Ammunition" and "Holy Water Vials" here (AUDIT §1.13).
-    expect(loc.common.find((l) => l.roll === 4)?.name).toBe('Moonshine Stash');
-    expect(loc.common.find((l) => l.roll === 5)?.name).toBe('Heavy Weapons Cache');
-    expect(loc.rare.find((l) => l.roll === 11)?.name).toBe('Pot of Manna');
-    expect(loc.legendary.find((l) => l.roll === 6)?.name).toBe('Battlefield of Corpses');
+    expect(loc.common.find((l) => l.roll.from === 4)?.name).toBe('Moonshine Stash');
+    expect(loc.common.find((l) => l.roll.from === 5)?.name).toBe('Heavy Weapons Cache');
+    expect(loc.rare.find((l) => l.roll.from === 11)?.name).toBe('Pot of Manna');
+    expect(loc.legendary.find((l) => l.roll.from === 6)?.name).toBe('Battlefield of Corpses');
   });
 
   it('keeps the reward amounts, glyphs and all', () => {
     // "Sell (Any Warband): Add 30 👑 to your Strongbox" — the number is in the
     // prose, so losing the glyph or the text loses the reward.
-    const ms = DATASET.campaign.exploration.locations.common.find((l) => l.roll === 4)!;
+    const ms = DATASET.campaign.exploration.locations.common.find((l) => l.roll.from === 4)!;
     expect(ms.description).toContain('30 \u{1F451}');
     expect(ms.description).toContain('Strongbox');
   });
