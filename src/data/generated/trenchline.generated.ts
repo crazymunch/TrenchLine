@@ -2,7 +2,7 @@
 // Produced by `npm run rules:build` from data-sources/.
 // Ruleset: trenchline
 // Base:    Fawkstrot11/TrenchCrusade@1b463a8e2eaafc9d6722ae6eeda93e296fb7012b
-// Layers:  dispatch-01
+// Layers:  dispatch-01, carcass-front
 // See docs/RULESET-MODEL.md.
 
 import type { Dataset } from '../../types/catalogue';
@@ -18971,7 +18971,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19098,7 +19099,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19223,7 +19225,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19471,7 +19474,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -20650,7 +20654,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "Heretic Legion",
-        "Court of the Seven-Headed Serpent"
+        "Court of the Seven-Headed Serpent",
+        "Heretic Naval Raiders"
       ]
     },
     {
@@ -29087,6 +29092,771 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-prophet",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-prophet",
+      "name": "Lazarist Prophet",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE",
+        "LEADER"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 90,
+        "glory": 0
+      },
+      "min": 1,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-loudspeakers-action",
+          "name": "Loudspeakers ACTION",
+          "description": "A Lazarist Prophet can take a Loudspeakers ACTION. If they do so, take a Risky Success Roll for the model and add +2 DICE to the roll. If the roll is a Failure, the Lazarist Prophet’s Activation ends immediately. If the roll is a Success or Critical Success, you can move all friendly models within 8” of the Lazarist Prophet up to 3”. They must end the move as close as possible to the nearest enemy model that was visible to them at the start of the move. This move can be used to bring a model within 1” of an enemy model, in which case the model counts as charging. If no enemy models are visible, they can move normally."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-gift-of-the-sacrament-action",
+          "name": "Gift of the Sacrament ACTION",
+          "description": "When you Activate a Lazarist Prophet they can take a Gift of the Sacrament ACTION as part of the Activation. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success, remove 1 BLOOD MARKER or 1 INFECTION MARKER from a friendly model within 6” of the Lazarist Prophet. If the roll is a Critical Success, remove either 3 BLOOD MARKERS or 3 INFECTION MARKERS from a friendly model within 6” of the Lazarist Prophet instead of only 1. The Lazarist Prophet can use this ACTION to heal themselves."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-memento-mori",
+          "name": "Memento Mori",
+          "description": "The first time the Lazarist Prophet suffers an Out of Action result on the Injury Table, it is treated as a No Effect result instead. A Lazarist Prophet cannot have the TOUGH Keyword."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Sacred Affliction Warband must include 1 Lazarist Prophet. The Lazarist prophets who come to lead Processions of the Sacred Affliction are not motivated by desire or their own sense of destiny. None that are called “Father” by the afflicted ever set themselves on such a path. Whoever the prophet once was, the turn of the Rota Fortunae, the wheel of fortune, and God’s Will have wrought their works on them most thoroughly, afflicting them in body and mind. Only once they have shed all trace of Earthly treasures and all Pride in their old existence do they truly perceive and proselytise on the teachings of Saint Lazarus: of God’s unending love and His power over death, and how the Lord brings new life even when all hope seems lost.",
+      "battlekitNote": "A Lazarist Prophet can have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-communicant",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-communicant",
+      "name": "Lazarist Communicant",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE",
+        "REGENERATE 1",
+        "STRONG",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-3 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "40mm"
+      },
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-communicant-bodyguard",
+          "name": "Bodyguard",
+          "description": "If a friendly PILGRIM model within 1” of a Lazarist Communicant is hit by a Ranged Attack or Melee Attack, you can say that the Lazarist Communicant will take the hit. If you do so, make an Injury Roll for the Lazarist Communicant instead of the original target. This ability cannot be used against attacks that have the BLAST Keyword."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-communicant-the-communicant-cross-or-helm",
+          "name": "The Communicant Cross or Helm",
+          "description": "A Lazarist Communicant counts as having the following pieces of Equipment at no cost in 👑: Iron Capirote; Gas Mask."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Communicant is a rare sight in most Processions of the Sacred Affliction, for their nature typically decrees that they either recover fully from wounds or are slain by them. They are still God’s creatures, however, and even when divinely transformed the sinful flesh of man can receive harm or taint that even Christ’s communion cannot heal. More commonly, Communicants may lose their way in mundane matters, forgetting to eat, drink or care for themselves for long stretches of time, particularly if left alone without the care of others when their compatriots are slain. In time these hapless unfortunates sometimes find their way to the Processions in the hope that they can be healed, or at least find new purpose in their aimless wandering. Those who have lost their Communicant Crosses must accept a modified Helm in its place, with a faceplate that has spikes through the eyeholes.",
+      "battlekitNote": "A Lazarist Communicant has a Communicant Cross or Helm (▶ see below). The Lazarist Communicant can also have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables except for Martyrdom Pills.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-castigator",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+      "name": "Lazarist Castigator",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 50,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-enforced-orthodoxy-action",
+          "name": "Enforced Orthodoxy ACTION",
+          "description": "A Lazarist Castigator can take an Enforced Orthodoxy ACTION. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, the Lazarist Castigator’s Activation ends immediately. If the roll is a Success or Critical Success, all friendly models that are within 8” of Lazarist Castigator that are Down immediately stand back up at no cost to their movement."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-whip-of-god",
+          "name": "Whip of God",
+          "description": "When a Lazarist Castigator makes a Melee Attack they can target a friendly model that is within 1” instead of an enemy model, and can add -1 INJURY DICE to the Injury Roll if they do so. Set aside a D6 each time a Lazarist Castigator attacks a friendly model and takes them Out of Action with a Melee Attack. The next time the Lazarist Castigator’s Warband is forced to take a Morale Check, each D6 that was put aside adds +1 DICE to the roll and is then discarded."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "A Lazarist Castigator can have the STRONG Keyword at a cost of +5 👑."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Lazarist Castigators take on the role of adjudicator in a Procession of the Sacred Affliction. Their ear takes confession, their gaze judges all, and their hand weighs whether pilgrims carry the commensurate load for their personal burden of sin. If it is too great the Castigator will see that it is lightened, but if it is too little the Castigator will assign an appropriate additional weight in stones for the sinner to carry slung about their neck. In battle the Castigator reminds pilgrims often of their duty, both to God and to one another, to overcome their travails and cast aside their burdens around the necks of God’s enemies.",
+      "battlekitNote": "A Lazarist Castigator can have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-leper-pilgrim",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-leper-pilgrims",
+      "name": "Leper-Pilgrim",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-leper-pilgrim-resurrection",
+          "name": "Resurrection",
+          "description": "If a Leper Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 👑. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Battle Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-leper-pilgrim-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "When you add a Leper-Pilgrim or Martyr Penitent to your Warband you can purchase the STRONG Keyword for them for 5 👑. You cannot have a total of more than 3 models with Zealot Strength in your Warband at any one time. Models with Zealot Strength increase their base size to 32mm."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Leper-Pilgrims are drawn from all peoples of the Faith and all walks of life. They are unified by their Faith in God and in their fellow pilgrims to jointly bear the burden of their afflictions and follow the path the Lord has made for them. The time for redemption is now, not tomorrow.",
+      "battlekitNote": "A Leper-Pilgrim can have any Battlekit from Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-martyr-penitent",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-leper-pilgrims",
+      "name": "Martyr Penitent",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-martyr-penitent-resurrection",
+          "name": "Resurrection",
+          "description": "If a Leper Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 👑. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Battle Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-martyr-penitent-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "When you add a Leper-Pilgrim or Martyr Penitent to your Warband you can purchase the STRONG Keyword for them for 5 👑. You cannot have a total of more than 3 models with Zealot Strength in your Warband at any one time. Models with Zealot Strength increase their base size to 32mm."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Leper-Pilgrims are drawn from all peoples of the Faith and all walks of life. They are unified by their Faith in God and in their fellow pilgrims to jointly bear the burden of their afflictions and follow the path the Lord has made for them. The time for redemption is now, not tomorrow.",
+      "battlekitNote": "A Leper-Pilgrim can have any Battlekit from Procession of the Sacred Affliction Warband Armoury Tables.",
+      "secondaryProfile": true,
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-stigmatic-nuns",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns",
+      "name": "Stigmatic Nuns",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "REGENERATE 1"
+      ],
+      "stats": {
+        "movement": "8\"/Infantry",
+        "movementInches": 8,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 60,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 4,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-stigmatic-nuns-agile",
+          "name": "Agile",
+          "description": "Add +1 DICE to Risky Success Roll when a Stigmatic Nun Climbs, Jumps, or makes a Diving Charge, or takes a Dash ACTION."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-stigmatic-nuns-blessed-stigmata",
+          "name": "Blessed Stigmata",
+          "description": "Each time you remove a BLOOD MARKER from a Stigmatic Nun due to the REGENERATE 1 Keyword, place 1 BLESSING MARKER next to the Stigmatic Nun."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Several orders of Stigmatic Nun have ties to the Processions – some sisterhoods are even blessed with the Sacred Affliction themselves. They often join Processions on long pilgrimages and share their burdens along the road. Their keen blades and martial spirit are greatly welcome in battle.",
+      "battlekitNote": "A Stigmatic Nun can have Battlekit from the Procession of the Sacred Affliction Warband Armoury Table. The only Ranged Weapons they can have are Automatic Pistols and Pistols, and the only Grenades they can have are Warcrosses. No restrictions apply to any other types of Battlekit.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-ecclesiastic-prisoners",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-ecclesiastic-prisoners",
+      "name": "Ecclesiastic Prisoners",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-awaited",
+          "name": "Awaited",
+          "description": "If an Ecclesiastic Prisoner is taken Out of Action when their Martyrdom Device is triggered, do not count this towards the number of models from the Warband that have been taken Out of Action for Morale Checks."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-feeble-flailing",
+          "name": "Feeble Flailing",
+          "description": "An Ecclesiastic Prisoner can make a Melee Attack even though it does not have a Melee Weapon. If it does so, add -1 DICE to the Success Roll."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-mad-dash",
+          "name": "Mad Dash",
+          "description": "Add +1 DICE to the Risky Success Roll for an Ecclesiastic Prisoner that is taking a Dash ACTION."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-minenhelm-slam",
+          "name": "Minenhelm Slam",
+          "description": "An Ecclesiastic Prisoner that has a Minenhelm can make a Melee Attack even though they do not have a Melee Weapon."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Some are found to be beyond the gift of God’s love or redemption through toil and burden, so they seek a final sacrifice in the hope it can somehow cleanse their tarnished soul. A sad moment it may be for their Procession to have failed one of their number so, but a joyous hope that the Prisoner’s spiritual unburdening can at least erase the burdens of Heretic souls in the process. Particularly determined Prisoners of the Sacred Affliction are permitted to request a Minenhelm in place of the usual Martyrdom Device, ensuring that their last act of redemption will be truly and absolutely final.",
+      "battlekitNote": "Up to 4 Ecclesiastic Prisoners can have a Martyrdom Device for 25 👑 (▶ see below). They cannot have any other Battlekit. Ecclesiastic Prisoners that have a Martyrdom Device can upgrade it to a Minenhelm for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-anchorite-shrine",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-anchorite-shrine",
+      "name": "Anchorite Shrine",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "FEAR",
+        "NEGATE SHRAPNEL",
+        "STRONG",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-",
+        "melee": "+2 DICE",
+        "armour": "-3",
+        "base": "60mm"
+      },
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-anchorite-shrine-broken-on-the-wheel",
+          "name": "Broken on the Wheel",
+          "description": "At the start of each game, before deployment, you can say that one Leper-Pilgrim or Ecclesiastic Prisoner will be broken on the wheel to show their piety and devotion. The model you choose is permanently removed from your Warband, but in a campaign you can redistribute their Battlekit to other models that would be allowed to have it in the following Quartermaster Step. The Anchorite Shrine then shatters the bones of the volunteer and carries the broken victim to battle upon its great wheel. Injuries that would be inflicted on the Anchorite Shrine are instead inflicted on its unfortunate victim, until the victim finally passes away. This is represented by the following special rules, which apply to the Anchorite Shrine until it suffers an Out of Action result on the Injury Table: It has an Armour Characteristic of 0 and does not have the NEGATE SHRAPNEL and TOUGH Keywords. It treats Down results as Minor Hit results. The first time the Anchorite Shrine suffers an Out of Action result on the Injury Table, it is treated as a No Effect result. When this happens, any BLOOD MARKERS on the Anchorite Shire are removed, and from then on these special rules no longer apply to the model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-anchorite-shrine-symphony-of-slaughter",
+          "name": "Symphony of Slaughter",
+          "description": "An Anchorite Shrine is armed with two 1-Handed Melee Weapons (the Catherine Wheel and a Bonebreaker Mace). When it makes a Melee Attack, it can either attack once using either its Catherine Wheel or the Bonebreaker Mace, or twice, first with the Catherine Wheel and second with its Bonebreaker Mace (the Off- Hand Weapon modifier applies to the attack made with the Bonebreaker Mace). Note that both Weapons have the RISKY Keyword, which means that the Anchorite Shrine’s Activation ends immediately if the Success Roll for an attack made with either weapon is a Failure."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "In recognition of their ultimate devotion, Anchorite Shrines hold special significance for Processions. The pilot-monk interred within has taken on the burden of imprisonment inside an unfeeling machine, not only for their own soul’s sake, but for the sake of all the Faithful everywhere. As such they are celebrated members, often brightly garlanded and covered with prayers, talismans and keepsakes from the pilgrims. Where the path of an Anchorite Shrine may ultimately lead, none but the Almighty can say, but for however long an Anchorite Shrine may stay with a Procession it is beloved by all.",
+      "battlekitNote": "An Anchorite Shrine has a Bonebreaker Mace and a Catherine Wheel (▶ see below). These weapons are built into the Anchorite Shrine and cannot be removed or lost over the course of a campaign for any reason. The Shrine cannot have any other Battlekit.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-captain",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-captain",
+      "name": "Heretic Captain",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "LEADER",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 80,
+        "glory": 0
+      },
+      "min": 1,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-captain-puppet-master-action",
+          "name": "Puppet Master ACTION",
+          "description": "A Heretic Captain can take a Puppet Master ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the Heretic Captain’s Activation ends immediately. If the roll is a Success or Critical Success, pick 1 model (friend or foe) other than the Heretic Captain, that is within 12” of the Heretic Captain, and in their Line of Sight. You can move the model D6”. The move must be in a straight line, but can be in any direction, and can be used to make the model move within 1” of an enemy, make a retreat move, Climb, Jump, or Jump Down. The model cannot make a Diving Charge and does not count as charging if it finishes the move within 1” of an enemy model."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Heretic Naval Raiders Warband must include 1 Heretic Captain. The Heretic Captain is the absolute master of their ship and every soul aboard it. They are high priests and prophets to their crew, delivering sermons and making sacrifices upon the blood-slick deck. A Heretic Captain has pledged themselves wholly to one of the Seven-Headed Serpents, bartering their immortal soul in exchange for absolute power over their small mortal kingdom bordered only by wood or iron. They are strange, driven men, given to greed, madness and obsession, caught in an eternal geas to seek and plunder for their infernal masters to repay debts that can never be fulfilled.",
+      "battlekitNote": "A Heretic Captain can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-abyssal-commando",
+      "entryId": "cf-entry-heretic-naval-raiders-abyssal-commando",
+      "name": "Abyssal Commando",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "INFILTRATOR"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 90,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-mist-shrouded",
+          "name": "Mist-shrouded",
+          "description": "Add -1 DICE to Ranged Attacks that target an Abyssal Commando."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-fade-action",
+          "name": "Fade ACTION",
+          "description": "An Abyssal Commando can take a Fade ACTION if they are in contact with a terrain that is composed of water or a terrain piece at least ½” high. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, the Abyssal Commando’s Activation ends immediately. If the roll is a Success or Critical Success, enemy models cannot choose the Abyssal Commando as the target for a Ranged Attack or Charge until the Abyssal Commando moves, charges, retreats, makes a Ranged Attack, or an enemy model moves within 1.5” of them. The Abyssal Commando can be hit if they are within the blast radius of a Weapon with the BLAST Keyword."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-abyssal-armour",
+          "name": "Abyssal Armour",
+          "description": "An Abyssal Commando in Abyssal Armour counts any terrain that is partially, or fully, made of water (such as pools, streams, and marshes) as Open terrain. In addition, when touching such terrain they may use a Fade ACTION and count as in Cover if the terrain’s area is larger than a 32mm base."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "The Abyssal Commando is a Death Commando who chooses to stalk the depths alone, often invading harbours and estuaries to doom ships hiding from the raiders upon the high seas. Outside the water Abyssal commandos are surrounded by a freezing mist born of the eternal cold that they carry with them from the lightless depths. They arise to work alongside Raider crews in response to a distant call only they can hear.",
+      "battlekitNote": "An Abyssal Commando can have Battlekit from the Heretic Legion Armoury Tables. The only Ranged Weapons they can have are Silenced Pistols and Tormentor Chains, and the only Grenades they can have are Gas Grenades. No restrictions apply to any other Types of Battlekit. An Abyssal Commando with Reinforced Armour can upgrade it to Abyssal Armour for 5 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-drowned-chorister",
+      "entryId": "cf-entry-heretic-naval-raiders-drowned-chorister",
+      "name": "Drowned Chorister",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "FEAR"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 65,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-drowned-chorister-unholy-hymns",
+          "name": "Unholy Hymns",
+          "description": "Add -1 DICE to Success Rolls taken for enemy models that are within 8” of one or more Drowned Choristers."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-drowned-chorister-leviathan-bell",
+          "name": "Leviathan Bell",
+          "description": "You do not have to take a Risky Success Roll for a Drowned Chorister with a Leviathan Bell when they Climb or Jump, nor make an Injury Roll if they Fall."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "It is said that those who experience near-death through drowning speak of hearing something in the deeps, a song or call or roar they cannot explain. Some can never shake the memory – it haunts their dreams and their waking world until they receive revelation and consummation. Doomed to search for it forever after, some take up the Leviathan bell, a sealed casque of abyssal waters. Within the bell they are drowned and reborn, recalling the sonorous calls of the darkest depths, a sound fit to cloud the mind and chill the marrow of any mortal souls who hear it. Drowned Choristers float eternally in unseen waters, their binding-chains stirred by ghostly currents.",
+      "battlekitNote": "A Drowned Chorister can have any Battlekit from the Heretic Naval Raiders Armoury Tables. A Drowned Chorister can have a Leviathan Bell for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-raider",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-raiders",
+      "name": "Heretic Raider",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-raider-heretic-raider-legionnaires",
+          "name": "Heretic Raider Legionnaires",
+          "description": "You can upgrade Heretic Raiders in your Warband to Heretic Raider Legionnaires, at a cost of 10 👑 each. You cannot upgrade a Heretic Raider if that would result in there being more Heretic Raider Legionnaires in your Warband than there are Heretic Raiders. When you upgrade a Heretic Raider to a Heretic Raider Legionnaire, you can change either their Ranged Characteristic or their Melee Characteristic from 0 to +1."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders make up the majority of the warband, sworn to serve beneath the Heretic Captain until Heaven cracks and the seas drain away. They are quick and well-armed, equipped with the pick of the plunder from a hundred raids. Heretic Raider Legionnaires are veterans of the crew, often trusted gunners and topside men, who vie to be the first to step ashore or invade a foreign deck.",
+      "battlekitNote": "A Heretic Raider or Heretic Raider Legionnaire can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-raider-legionnaire",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-raiders",
+      "name": "Heretic Raider Legionnaire",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "See below",
+        "melee": "See below",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-raider-legionnaire-heretic-raider-legionnaires",
+          "name": "Heretic Raider Legionnaires",
+          "description": "You can upgrade Heretic Raiders in your Warband to Heretic Raider Legionnaires, at a cost of 10 👑 each. You cannot upgrade a Heretic Raider if that would result in there being more Heretic Raider Legionnaires in your Warband than there are Heretic Raiders. When you upgrade a Heretic Raider to a Heretic Raider Legionnaire, you can change either their Ranged Characteristic or their Melee Characteristic from 0 to +1."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders make up the majority of the warband, sworn to serve beneath the Heretic Captain until Heaven cracks and the seas drain away. They are quick and well-armed, equipped with the pick of the plunder from a hundred raids. Heretic Raider Legionnaires are veterans of the crew, often trusted gunners and topside men, who vie to be the first to step ashore or invade a foreign deck.",
+      "battlekitNote": "A Heretic Raider or Heretic Raider Legionnaire can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "secondaryProfile": true,
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-wretched",
+      "entryId": "cf-entry-heretic-naval-raiders-wretched",
+      "name": "Wretched",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-1 DICE",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 25,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-chattel",
+          "name": "Chattel",
+          "description": "In a campaign, Wretched can be sold in the Quartermaster Step for 25 👑 plus half the cost in 👑 of any Battlekit they have."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-dark-blessing",
+          "name": "Dark Blessing",
+          "description": "When a Wretched is taken Out of Action, place 1 BLESS- ING MARKER next to the nearest friendly model with the ELITE and HERETIC Keywords. If 2 or more eligible models are equally close to the Wretched, you can choose which receives the BLESSING MARKER."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-law-of-hell",
+          "name": "Law of Hell",
+          "description": "If an attack made by a Wretched takes an enemy model with the ELITE Keyword out of Action, the Wretched model gains its freedom and is immediately removed from the game. It no longer counts as being part of the Warband for the purposes of Morale Checks and is removed from the Warband Roster."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders have depopulated entire coastlines with their incessant attacks across the generations. Huge numbers of souls are taken by them as plunder to be sold to flesh-markets and caravans of Sin, though the strongest may be kept by the raiders themselves for sport and toil. Such Wretched are branded with cursed, flesh-eating tattoos as a safeguard against escape and heavily drugged to degrade and dull their will, while still leaving their aggression intact.",
+      "battlekitNote": "Wretched can have any Battlekit from the Heretic Naval Raiders Armoury Tables that costs up to 10 👑. A Wretched must have at least 1 Weapon – they cannot be sent into battle completely unarmed.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-anointed-heretic-raiders",
+      "entryId": "cf-entry-heretic-naval-raiders-anointed-heretic-raiders",
+      "name": "Anointed Heretic Raiders",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC",
+        "STRONG"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "-2",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 95,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 2,
+      "abilities": [],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Anointed Heretic Raiders are just as heavily armed and armoured as their shore-bound kin. Their brutish strength and damned souls make them perfect first mates and bosuns. On the ship they brutally enforce their captain’s word as law.",
+      "battlekitNote": "An Anointed Heretic Raider always has Reinforced Armour and an Infernal Brand (▶ see Standard Battlekit in the Trench Crusade Rulebook). This Battlekit cannot be removed or lost throughout the campaign for any reason. The Injury Modifier for the Armour is already included in the model’s profile above. They can also have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-sea-hag",
+      "entryId": "cf-entry-heretic-naval-raiders-sea-hag",
+      "name": "Sea Hag",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ARTIFICIAL",
+        "NEGATE FEAR",
+        "NEGATE GAS"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-sea-hag-abiotic-life",
+          "name": "Abiotic Life",
+          "description": "Add -1 INJURY DICE for a Sea Hag that has been hit by an attack with the GAS Keyword."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-sea-hag-levitate",
+          "name": "Levitate",
+          "description": "You do not have to take a Risky Success Roll for a Sea Hag when they Climb or Jump, nor make an Injury Roll if they Fall."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Just as Artillery Witches stalk the battlefields on land, Sea Hags hunt upon the waves. They summon forth an endless tide of infernal sea mines to plague shipping and coastlines, paralysing movement through even the mere rumour of their presence. It is unlikely that the Heretics could have won so many naval victories without the baleful influence of the Sea Hags, for their dreadful weapons have been the doom of many a proud fighting ship.",
+      "battlekitNote": "A Sea Hag always has Infernal Bombs (▶ see the next page), and can have any Battlekit from the Heretic Naval Raiders Armoury Tables except for Ranged Weapons or Grenades. A Sea Hag may upgrade its Infernal Bombs to Infernal Mines for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
     }
   ],
   "weapons": [
@@ -54782,6 +55552,358 @@ export const DATASET: Dataset = {
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-bells-of-warding",
+      "name": "Bells of Warding",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HELD",
+        "LEADER"
+      ],
+      "rules": "Gathering Call: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 4” of one or more models with Bells of Warding or a Musical Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only",
+        "Limit: 1"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "In many places the afflicted are required to announce their presence and status by ringing bells. In a Procession of Sacred Affliction, those who join have their bells gathered together and rung by a chosen member, the clangour declaring their unity and serving as a helpful guide to those of them blessed enough to be without sight.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-blessed-millstone",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-blessed-millstone",
+      "name": "Blessed Millstone",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Weighted with Sin: Subtract 1” from the Movement Characteristic of a model with a Blessed Millstone, but add +2 INJURY DICE because of the Punishing Millstones special rule instead of the usual +1 INJURY DICE. If the model takes an enemy Out of Action with a Melee Attack they can, at the option of the player, be freed of the crushing weight of the Blessed Millstone, regaining their full Movement Characteristic plus 1” additional (the freedom of a lightened soul), and using the Punishing Millstones special rule normally from then on. After the battle you can return the Blessed Millstone to the model or bestow it on a different model in the Warband.",
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Leper-Pilgrims only",
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "Followers of the Procession of Sacred Affliction carry weighty millstones as reminders of their sins. The most sinful in their past lives cry out for the Blessed Millstone, a consecrated object carved from the heaviest available stone, laden with the prayers and confessions of penitent souls.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-great-flail-scourge",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-great-flail-scourge",
+      "name": "Great Flail/Scourge",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "CUMBERSOME",
+        "HEAVY"
+      ],
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 3"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The Procession of the Sacred Affliction favour using the symbolic weight of their sins to educate Heretics, wielding flails made of stones bound with rope of woven hemp with ecstatic gusto.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-holy-icon-armour",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-holy-icon-armour",
+      "name": "Holy Icon Armour",
+      "type": "Armour",
+      "range": "Melee",
+      "keywords": [
+        "-1 INJURY MODIFIER",
+        "IMPERVIOUS"
+      ],
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "This suit of Armour is made of blessed icons and scripture text within decorative scrollwork, written with the blood of saints.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-penitents-phylactery",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-penitents-phylactery",
+      "name": "Penitent’s Phylactery",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Repudiation of Sin: When a model with a Penitent’s Phylactery makes a Melee Attack that targets a model with the HERETIC, THE COURT or BLACK GRAIL Keyword, place 1 extra BLOOD MARKER next to the target model after making the Injury Roll (even if the Injury Roll has No Effect).",
+      "cost": {
+        "ducats": 12,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "A small box of either leather or sandalwood strapped to the Faithful’s arm or head. It contains dried wafers of the blessed sores gleaned from those who bear the Sacred Affliction itself. Through divine auspice the bearer’s blows will afflict the Fallen with the physical import of their sins.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-punt-gun",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-punt-gun",
+      "name": "Punt Gun",
+      "type": "2-Handed",
+      "range": "18\"",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY",
+        "SHOTGUN",
+        "SHRAPNEL"
+      ],
+      "rules": "Overcharge: Before making a Ranged Attack with a model armed with a Punt Gun, you can say that the model will Overcharge the weapon. To do so, the model has to either have the STRONG Keyword or be in base-to-base contact with a friendly model. An Overcharged Ranged Attack gains the BLAST 3” and RELOAD Keywords. After an Overcharged attack has been carried out, place 1 BLOOD MARKER next to the model that made the attack, and its Activation immediately ends.",
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The Punt Gun is an enormous shotgun loaded with as much as 25 ounces of shot. It can be loaded with a risky amount of powder and square shot to cause widespread damage and destruction.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-ragged-vestments",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-ragged-vestments",
+      "name": "Ragged Vestments",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [],
+      "rules": "Leap of Faith: Add +1 DICE to Risky Success Roll whenever a model with Ragged Vestments Climbs, Jumps, or makes a Diving Charge, or takes a Dash ACTION, as long as the model does not have a Shield, or any Weapons with the HEAVY Keyword.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The ragged clothes of penitents mark those who have wandered far across God’s creation. Amid the Procession, such wrappings mark those who will be undaunted by high precipices or leaps of faith.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-warcross",
+      "name": "Warcross",
+      "type": "Grenade",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE LONG RANGE"
+      ],
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "A four-pronged throwing weapon in the shape of a cross, each Warcross is engraved with prayers that guide it on an unerring path.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-blasphemous-staff",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-blasphemous-staff",
+      "name": "Blasphemous Staff",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "FIRE"
+      ],
+      "rules": "Evil Power: Add +1 DICE to Success Rolls or Risky Success Rolls for a model with a Blasphemous Staff, apart from the Success Rolls for a Ranged or Melee Attack, or the Risky Success Roll to take a Dash ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Crafted in mockery of the rod carried by the prophet Aaron, this evil staff unleashes searing hellfire, causing excruciating pain with the slightest touch.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-boarding-axe",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-boarding-axe",
+      "name": "Boarding Axe",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "ARMOUR PIERCING",
+        "CRITICAL",
+        "RISKY"
+      ],
+      "rules": "Boarding: Add +1 DICE to Risky Success Rolls for friendly models with this special rule that are attempting to Climb a sheer surface.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Raider boarding axes feature deeply serrated blades to grip hulls or rails and bite deep. Runes of ruin and despair are etched into their sodden hafts, and at their touch iron and steel flakes to rust.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-hull-drill",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-hull-drill",
+      "name": "Hull Drill",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "HELD",
+        "IGNORE ARMOUR",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Abyssal Commando only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "The Hull Drill is a favoured tool of the Abyssal Commandos. It is able to tear a hole in the bottom of a ship or through the throat of an armoured foe with equal ferocity.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-sacrificial-blade",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-sacrificial-blade",
+      "name": "Sacrificial Blade",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 23,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Terrifying blades blessed by the hand of a greater devil, these knives are used in Heretic rituals to sacrifice captives to the dark powers of Hell. They simply need to touch their opponents to cause indescribable pain, and even the most minor wound often proves fatal from the agony alone. They are risky even to their wielders, as the merest scratch will wound friend and foe alike.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-shark-tooth-talisman",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-shark-tooth-talisman",
+      "name": "Shark Tooth Talisman",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE",
+        "NEGATE FEAR"
+      ],
+      "rules": "Blood Frenzy: Once during a game, a model with a Shark Tooth Talisman can invoke a Blood Frenzy. If they do so and any model (friend or foe) within 1” of the model with the Shark Tooth Talisman has 1 or more BLOOD MARKERS, add +1 DICE to the Success Rolls for Melee Attacks made by the model with the Shark Tooth Talisman for the rest of their Activation.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Consumable"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Sharks are the wolves of the sea; raiders sacrifice bloody flesh, living or dead, to appease them often. Shoals of sharks trail behind every raider vessel, always hungry but assured they will soon be fed again. The fiercest raiders style talismans made from sharks’ teeth, they fear no peril at sea or on land and in battle they become gripped by the frenzied spirit of their totem.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-tartarus-claws",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-tartarus-claws",
+      "name": "Tartarus Claws",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "CLEAVE 2",
+        "CUMBERSOME"
+      ],
+      "rules": "Harrowing Assault: If the target is taken Down or Out of Action by a Melee Attack made with Tartarus Claws, you can immediately move the model up to 3”. You can use this move to move within 1” another enemy model, and if you do so, this model can take another Fight ACTION. However, it cannot make the 3” move again if the second attack takes the target Down or Out of Action.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Death Commando only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Made from severed hands of Malebranche, the Tartarus Claws are granted by archdevils only to those whose hearts are blackened with the sin of Wrath.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-wreckers-torch",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-wreckers-torch",
+      "name": "Wrecker’s Torch",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "ARMOUR PIERCING",
+        "BLOCK",
+        "CUMBERSOME",
+        "FIRE",
+        "MF"
+      ],
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE Only",
+        "Shield Combo"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Fuelled by fires drawn from the River Phlegethon, the Wrecker’s Torch burns endlessly with a hellish glow. It serves as a beacon for Heretic Raiders and as a searing weapon against man or vessel.",
+      "sourceFile": "carcass-front-book.pdf"
     }
   ],
   "factions": [
@@ -54858,6 +55980,56 @@ export const DATASET: Dataset = {
       },
       "specialRules": [],
       "noSpecialRules": false
+    },
+    {
+      "id": "procession-of-the-sacred-affliction",
+      "name": "Procession of the Sacred Affliction",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "Punishing Millstones",
+          "description": "Add +1 INJURY DICE for Melee Attacks made by models from a Procession of the Sacred Affliction if the target is Down. Note that this bonus is in addition to the +1 Injury Dice modifier that normally applies when a target is Down, giving a total of +2 INJURY DICE to the roll."
+        },
+        {
+          "name": "Wrath of God",
+          "description": "Up to 1 Lazarist Castigator, Leper-Pilgrim, or Martyr Penitent can have the Wrath of God special rule at a cost of 15 👑. BLOOD MARKERS are never placed next to a model with the Wrath of God special rule, and it has the NEGATE FEAR Keyword. It cannot be Broken on the Wheel by an Anchorite Shrine. A model with the Wrath of God special rule cannot have Ranged Weapons or Armour (it can have a Shield). In addition, change the base size of the model to 32mm."
+        },
+        {
+          "name": "Mercenaries",
+          "description": "The Procession of the Sacred Afflictions can use any Faithful Mercenaries that can be taken by Trench Pilgrim Warbands."
+        }
+      ],
+      "noSpecialRules": false,
+      "alignment": "Faithful",
+      "source": "carcass-front"
+    },
+    {
+      "id": "heretic-naval-raiders",
+      "name": "Heretic Naval Raiders",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "Fast as Lightning",
+          "description": "Add +1 DICE to the Risky Success Roll for models from a Heretic Naval Raiders Warband that are taking a Dash ACTION."
+        },
+        {
+          "name": "Unseen Advance",
+          "description": "Up to 3 models without the ELITE Keyword in a Heretic Naval Raiders Warband can be given the INFILTRATOR Keyword at a cost of +10 👑 each."
+        },
+        {
+          "name": "Mercenaries",
+          "description": "Heretic Naval Raiders Warbands can use any Fallen Mercenaries that can be taken by Heretic Legion Warbands."
+        }
+      ],
+      "noSpecialRules": false,
+      "alignment": "Fallen",
+      "source": "carcass-front"
     }
   ],
   "keywords": [
@@ -58047,7 +59219,8 @@ export const DATASET: Dataset = {
     "rulesetId": "trenchline",
     "baseCommit": "1b463a8e2eaafc9d6722ae6eeda93e296fb7012b",
     "layers": [
-      "dispatch-01"
+      "dispatch-01",
+      "carcass-front"
     ]
   },
   "armouries": [
@@ -58737,7 +59910,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Warcross",
-          "weaponId": null,
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
           "section": "Grenades",
           "cost": {
             "ducats": 5,
@@ -60458,6 +61631,1039 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Wretched & Yoke Fiends only"
           ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Unholy Relic",
+          "weaponId": "411f-228a-4117-3784",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Unholy Trinket",
+          "weaponId": "ab23-2c25-8507-9ca3",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "procession-of-the-sacred-affliction",
+      "faction": "Procession of the Sacred Affliction",
+      "rows": [
+        {
+          "name": "Automatic Pistol",
+          "weaponId": "8ac5-3721-e679-7c6e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Blunderbuss",
+          "weaponId": "2540-a186-5024-be0a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "9b21-3223-c112-c65f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musket",
+          "weaponId": "86be-7c29-216e-66b8",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "ae18-4990-fc3c-78ce",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Punt Gun",
+          "weaponId": "77ea-665d-7ac6-58ef",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "1d82-fcc9-aeda-b03a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sniper Rifle",
+          "weaponId": "6eb2-c600-98e7-16d3",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f366-4889-0ac5-375d",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Anti-Tank Hammer",
+          "weaponId": "8df3-f372-20a0-4a59",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 35,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Flail/Scourge",
+          "weaponId": "9e8c-dc75-19ab-36b0",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Flail/Scourge",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-great-flail-scourge",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Misericordia",
+          "weaponId": "d82e-4c7b-28ac-1413",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Molotov Cocktail",
+          "weaponId": "b16a-e1fa-433f-efc0",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Warcross",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Holy Icon Shield",
+          "weaponId": null,
+          "section": "Shield",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shield",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Holy Icon Armour",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-holy-icon-armour",
+          "section": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Ragged Vestments",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-ragged-vestments",
+          "section": "Armour",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Bells of Warding",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only",
+            "Limit: 1"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Blessed Icon",
+          "weaponId": "3c35-dded-ffab-2e12",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        },
+        {
+          "name": "Blessed Millstone",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-blessed-millstone",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Leper-Pilgrims only",
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Field Shrine",
+          "weaponId": "5b7d-4bc2-5a44-43ce",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Holy Relic",
+          "weaponId": "0e24-838f-4297-c2b9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Martyrdom Pills",
+          "weaponId": "322c-cb76-719a-0cb9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Medi-kit",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Penitent’s Phylactery",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-penitents-phylactery",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "heretic-naval-raiders",
+      "faction": "Heretic Naval Raiders",
+      "rows": [
+        {
+          "name": "Anti-Materiel Rifle",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Automatic Rifle",
+          "weaponId": "c35c-a506-683d-6c3f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Automatic Shotgun",
+          "weaponId": "a19d-90ab-da9f-95ff",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "9b21-3223-c112-c65f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Grenade Launcher",
+          "weaponId": "3113-d133-1726-05a0",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Heavy Flamethrower",
+          "weaponId": "2fc0-bc43-b366-5b95",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 55,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "517c-652f-100e-71d6",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "ae18-4990-fc3c-78ce",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "1d82-fcc9-aeda-b03a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Silenced Pistol",
+          "weaponId": "ad8a-00d3-726b-b10c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f366-4889-0ac5-375d",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Blasphemous Staff",
+          "weaponId": "6efb-9e82-7136-f983",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Boarding Axe",
+          "weaponId": "cf-weapon-heretic-naval-raiders-boarding-axe",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Hellblade",
+          "weaponId": "7490-f22e-68ff-79d3",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Hull Drill",
+          "weaponId": "cf-weapon-heretic-naval-raiders-hull-drill",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Abyssal Commando Only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sacrificial Blade",
+          "weaponId": "1459-550f-ed53-b276",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 23,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE Only",
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Tartarus Claws",
+          "weaponId": "0999-4c6b-539f-d1b2",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Abyssal Commando Only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Wrecker’s Torch",
+          "weaponId": "cf-weapon-heretic-naval-raiders-wreckers-torch",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE Only",
+            "Shield Combo"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Frag Grenades",
+          "weaponId": "00d3-c557-3993-f094",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Grenades",
+          "weaponId": "5f7a-f61c-c4cc-98ad",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shield",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Anointed Heretic Raiders only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Infernal Brand",
+          "weaponId": "e5d0-2e53-965c-1b78",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Shark Tooth Talisman",
+          "weaponId": "cf-weapon-heretic-naval-raiders-shark-tooth-talisman",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
         },
         {
           "name": "Troop Flag",
@@ -63504,6 +65710,130 @@ export const DATASET: Dataset = {
         "catalogue"
       ],
       "thirdParty": true
+    },
+    {
+      "id": "knights-of-saint-lazarus",
+      "entryId": "cf-variant-procession-of-the-sacred-affliction-knights-of-saint-lazarus",
+      "factionId": "Procession of the Sacred Affliction",
+      "name": "Knights of Saint Lazarus",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Sacred Code",
+          "description": "A Knights of Saint Lazarus Warband must include 1-6 Stigmatic Nuns. In addition, it cannot include Lazarist Communicants or Lazarist Castigators, and models in this Warband cannot voluntarily take a Retreat ACTION."
+        },
+        {
+          "name": "Knightly Order",
+          "description": "A Knights of Saint Lazarus Warband must include 1-3 Leper-Knights. The Leper-Knights use the Lazarist Castigator Warband entry but must wear a suit of Armour, have a Melee Characteristic of +2 DICE, and replace the Whip of God Ability with the Knightly Code Ability."
+        },
+        {
+          "name": "Knightly Code",
+          "description": "When a Leper-Knight makes a Melee Attack that takes an enemy model Out of Action, you can remove 1 BLOOD MARKER from the Leper-Knight or a friendly model within 3” of the Leper-Knight. If the enemy model had the ELITE Keyword, you can place 1 BLESSING MARKER beside the Leper-Knight instead of removing a BLOOD MARKER."
+        },
+        {
+          "name": "Blessed Armoury",
+          "description": "Automatic Pistols cost 15 👑 and Great Swords cost 7 👑 for a Knights of Saint Lazarus Warband. In addition, models in a Knights of Saint Lazarus Warband cannot have Ranged Weapons with a cost of more than 15 👑 or a cost in ☼."
+        },
+        {
+          "name": "Followers of Saint Lazarus",
+          "description": "A Knights of Saint Lazarus Warband may have a Temporal Lord as their Patron in addition to the standard options to choose from. Procession of the Blessed Flock During especially brutal campaigns, and particularly in the aftermath of the bloodiest battles, Lazarist Castigators will move among the dead seeking lost Communicants. They find those who have survived the deaths of their companions, been rendered insensible by artillery, or become trapped under piles of bodies or debris, and gather them together into a Procession. Communicants will often recover their wits and direction with time and care, but until they do the Lazarist Castigators remain on hand to carefully guide the Communicants’ focus. It is also not uncommon for a Blessed Flock to accumulate a large number of Ecclesiastic Prisoners seeking redemption for their sins."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "procession-of-the-blessed-flock",
+      "entryId": "cf-variant-procession-of-the-sacred-affliction-procession-of-the-blessed-flock",
+      "factionId": "Procession of the Sacred Affliction",
+      "name": "Procession of the Blessed Flock",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Shepherds and Lambs",
+          "description": "A Procession of the Blessed Flock Warband may include 1-3 Lazarist Castigators and 1-6 Lazarist Communicants. One Lazarist Castigator must be taken for each 2 Lazarist Communicants or part thereof (e.g. 3 Lazarist Communicants would need 2 Lazarist Castigators to watch over them). Lazarist Communicants in a Procession of the Blessed Flock Warband do not have the ELITE Keyword, but their cost remains the same."
+        },
+        {
+          "name": "Guidance",
+          "description": "If a friendly Lazarist Communicant Activates whilst not standing within 6” of a friendly Lazarist Castigator, all Success Rolls it takes during that Activation become Risky Success Rolls (there is no additional effect if they are Risky Success Rolls already)."
+        },
+        {
+          "name": "Dishevelled Procession",
+          "description": "A Procession of the Blessed Flock Warband can only have 0-2 Stigmatic Nuns, and cannot include Anchorite Shrines or Leper-Pilgrims."
+        },
+        {
+          "name": "Flagellant Flock",
+          "description": "Ecclesiastic Prisoners in a Procession of the Blessed Flock Warband have a Ranged Characteristic of -1 DICE at no additional cost in 👑. In addition, Ecclesiastic Prisoners in a Procession of the Blessed Flock Warband can purchase Muskets, Blunderbusses, Warcrosses, Flails/Scourges, Ragged Vestments, and Trench Shields from the Procession of the Sacred Affliction Armoury Table."
+        },
+        {
+          "name": "Scavenged Armoury",
+          "description": "A Procession of the Blessed Flock Warband cannot have Automatic Pistols, Semi-Automatic Rifles, Sniper Rifles, Submachine Guns, Incendiary Grenades, or Reinforced Armour."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "drowned-choir",
+      "entryId": "cf-variant-heretic-naval-raiders-drowned-choir",
+      "factionId": "Heretic Naval Raiders",
+      "name": "Drowned Choir",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "A Song Within the Deep",
+          "description": "Drowned Choir Warbands must include 1-3 Drowned Choristers. In addition, 1 Drowned Chorister must take the Leviathal Chorus upgrade at a cost of 20 👑. The Drowned Chorister with the Leviathal Chorus upgrade increases its base size to 40mm, has the LEADER and TOUGH Keywords, and replaces their Unholy Hymns ability with the Dread Harmony ability."
+        },
+        {
+          "name": "Dread Harmony",
+          "description": "All Success Rolls made by enemy models within 8” of a Leviathal Chorus become Risky Success Rolls (there is no additional effect if they are Risky Success Rolls already)."
+        },
+        {
+          "name": "A Wretched Chorus",
+          "description": "Wretched models in a Drowned Choir cost 30 👑 and have a Melee Characteristic of +0 DICE. Wretched models within 8” of any number of Drowned Chorister or Leviathal Chorus models have a Melee Characteristic of +1 DICE instead of +0 DICE."
+        },
+        {
+          "name": "Mounting Madness",
+          "description": "Increase the range of a Drowned Chorister’s Unholy Hymns Ability by +4” if it is within 8” of another friendly Drowned Chorister or Leviathal Chorus."
+        },
+        {
+          "name": "To No Purpose Save Their Own",
+          "description": "Drowned Choir Warbands cannot include any of the following models: Heretic Captain, Abyssal Commando, Sea Hag, Anointed Heretic Raiders. The Leviathan Shoal The most bloodthirsty Raider Captains can fall into the worship of mighty Leviathan itself, the great beast of oceans and once the Hell Prince of Envy, now cast down and cruelly bound. The Leviathan Shoal mercilessly slaughters the weakest of their numbers so that only the strongest survive. They sacrifice flesh and blood in Leviathan’s name, and they adopt the shark as their totem, holding that they are heralds and offspring of the great beast and that they share its immortal strength and bottomless hunger. Indeed, great shoals of sharks follow the ships of the Leviathan Shoal everywhere in hungry anticipation, for the warbands of the Leviathan Shoal are infamous for their brutality and terror, slaughtering all they capture. Ever eager to come to blows in physical combat, guns exhibit little allure for them. They cannibalise the flesh of the dead, friend and foe alike, growing fat on their vile feasting and tossing the remnants to the ever-present sharks that roil in their crimson wake. In lean times they will turn on another without thought, victor feasting on the vanquished, for they believe only the strongest deserve to thrive and a mortal life can only be kept intact by one strong and savage enough to protect it."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "leviathan-shoal",
+      "entryId": "cf-variant-heretic-naval-raiders-leviathan-shoal",
+      "factionId": "Heretic Naval Raiders",
+      "name": "Leviathan Shoal",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Only the Strong Survive",
+          "description": "Leviathan Shoal Warbands can include 0-4 Anointed Heretic Raiders, and up to 1 can be recruited with the ELITE Keyword at no extra cost. In addition, Heretic Captains in this Warband have the STRONG Keyword, but it cannot include any Drowned Choristers, Wretched, or Sea Hags."
+        },
+        {
+          "name": "Charge and Rend",
+          "description": "The models in a Leviathan Shoal Warband cannot have more Ranged Weapons than Melee Weapons. If they ever do, you must remove Ranged Weapons from the Warband Roster until there are no more Ranged Weapons than Melee Weapons. In addition, models in this Warband cannot have Ranged Weapons with the HEAVY Keyword, Sacrificial Blades in this Warband are Limit: 4, and may be purchased for Anointed Heretic Raider models."
+        },
+        {
+          "name": "Feeding Frenzy",
+          "description": "Add +1 DICE to Success Rolls for Melee Attacks made by models from a Leviathan Shoal Warband for each model (friend or foe) with 1 or more BLOOD MARKERS within 1” of the model making the Melee Attack, to a maximum of +3 DICE."
+        },
+        {
+          "name": "Chosen Sons",
+          "description": "The first time in a game that an Anointed Heretic Raider in a Leviathan Shoal Warband takes an enemy model Out of Action with a Melee Attack, that Anointed Heretic Raider gains the TOUGH Keyword for the rest of the game."
+        }
+      ],
+      "ops": []
     }
   ]
 } as unknown as Dataset;

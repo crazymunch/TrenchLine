@@ -324,7 +324,8 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
               const atLimit = unit.maxCount !== undefined && count >= unit.maxCount;
               const isOpen = !!expanded[unit.id];
               const hasDetail = (unit.innateAbilities?.length ?? 0) > 0
-                || (unit.stats.keywords?.length ?? 0) > 0;
+                || (unit.stats.keywords?.length ?? 0) > 0
+                || !!unit.battlekitNote;
 
               return (
                 <div
@@ -469,6 +470,23 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       {unit.thirdParty && unit.thirdPartyNotice && (
                         <p className="text-xs text-status-warning/90 leading-relaxed border-l-2 border-status-warning/40 pl-2">
                           {unit.thirdPartyNotice}
+                        </p>
+                      )}
+
+                      {/*
+                        What this entry may take, in the book's own words.
+
+                        The Armoury Table says what the FACTION stocks; several
+                        entries then narrow it — "The only Ranged Weapons they
+                        can have are Automatic Pistols and Pistols" — and
+                        nothing in the model can carry that. Shown here, beside
+                        the recruit button, because that is the moment it
+                        decides something.
+                      */}
+                      {unit.battlekitNote && (
+                        <p className="text-xs text-theme-muted leading-relaxed border-l-2 border-theme-accent/40 pl-2">
+                          <strong className="text-theme-primary">Battlekit:</strong>{' '}
+                          {unit.battlekitNote}
                         </p>
                       )}
 

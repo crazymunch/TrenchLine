@@ -271,6 +271,35 @@ export interface UnitProfile {
    */
   allowedFactions?: string[];
 
+  /**
+   * The entry's Battlekit sentence, verbatim, where the source states one as
+   * prose rather than as links.
+   *
+   * "The only Ranged Weapons they can have are Automatic Pistols and Pistols"
+   * is a legality rule, and nothing in this model can express it: `battlekit`
+   * holds gear the model always has, and the Armoury Table says what the
+   * FACTION stocks, not what this entry may take of it. Paraphrasing it into
+   * a constraint would be a rewrite, so it is carried as text and shown to
+   * the player, who can then apply the rule the pipeline cannot.
+   */
+  battlekitNote?: string;
+
+  /**
+   * A printed statline that is NOT a recruitable model.
+   *
+   * Some entries print two: a Leper-Pilgrim and the Martyr Penitent it can be
+   * resurrected as, a Heretic Raider and the Legionnaire it can be upgraded
+   * to. The second is reached by paying a stated cost for a model you already
+   * have, under a condition the model cannot express ("you cannot have more
+   * Legionnaires than Raiders"). Recruiting one directly would let a player
+   * field a warband of Martyr Penitents at the Pilgrim's price.
+   *
+   * So it stays in the dataset — the Codex shows its statline and the entry's
+   * own ability explains what it costs — and `rules/recruitable.ts` keeps it
+   * out of the recruit list.
+   */
+  secondaryProfile?: boolean;
+
   lore?: string;
   /**
    * The catalogue entry is `hidden="true"`: off the list until a modifier
@@ -313,6 +342,17 @@ export interface Faction {
   id: string;
   name: string;
   specialRules: FactionSpecialRule[];
+  /**
+   * 'Faithful' or 'Fallen', where the source states it in Warband Creation.
+   *
+   * Load-bearing: Mercenaries are hired by alignment ("any Faithful
+   * Mercenaries that can be taken by Trench Pilgrim Warbands"), and several
+   * rules key off it. Only the Carcass Front lists print it today; absent
+   * means the source did not state it, never a default.
+   */
+  alignment?: string;
+  /** Which source introduced the faction, where it is not the catalogues. */
+  source?: string;
   /**
    * True when the book states this faction has no special rules — distinct from
    * an empty `specialRules`, which would also mean "we failed to find any".
@@ -393,6 +433,11 @@ export interface ArmouryRow {
   section: string;
   cost: Cost;
   restrictions: string[];
+  /**
+   * The row is printed with a bullet: the item is unique to this faction and
+   * its rules are in the faction's own Battlekit section, not the core one.
+   */
+  unique?: boolean;
 }
 
 /**

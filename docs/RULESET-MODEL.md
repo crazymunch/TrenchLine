@@ -214,35 +214,80 @@ catalogues typically lag a new release by months, so for new content the
 BattleScribe base has *nothing* to correct — the PDF is the only source.
 
 A layer can therefore be **PDF-primary**: an `add` op carrying whole entities
-rather than a patch to existing ones.
+rather than a patch to existing ones. Nothing about the engine changes — `add`
+already exists because the Dispatch needs it (Strains, Glory Items, the
+Scripture Guardian).
 
-```ts
-{
-  id: 'carcass-front',
-  name: 'The Carcass Front',
-  sourceRef: 'data-sources/rulebook/extracted/carcass-front.txt',
-  status: 'official',
-  ops: [
-    { op: 'add', collection: 'factions', entity: { id: 'carcass-front', … } },
-    { op: 'add', collection: 'units',    entity: { … } },  // one per warband entry
-  ],
-}
+#### Transcribed or generated?
+
+The Dispatch layer is a hand-written `.layer.json`, and that is right for it: a
+Dispatch **is** a list of errata sentences — *"Change the Cost of Incendiary
+Grenades to 10"* — and turning one into an op is transcription, one op per
+sentence, each quoting the line it came from.
+
+A faction list is not. Carcass Front is two Warbands: 15 entries, 88 armoury
+rows, 15 unique Battlekit items, 4 Variants, 6 faction special rules. Typing
+those out is precisely the act Rule 1 forbids, at precisely the scale that
+produced the app's 97%-wrong statlines. So the Carcass Front layer is
+**generated on every build**:
+
+```
+data-sources/carcass-front/carcass-front-book.pdf     the source, sha256-pinned
+  -> scripts/extract-pdf.mjs                          text
+  -> scripts/lib/parse-carcass-front.mjs              structure
+  -> scripts/lib/carcass-front-layer.mjs              add ops + armouries
+  -> scripts/rules-build.mjs                          layered, verified, emitted
 ```
 
-Nothing about the engine changes — `add` already exists because the Dispatch
-needs it (Strains, Glory Items, the Scripture Guardian). The only new work per
-release is transcription.
+Nothing in that chain is authored. `rules-build.mjs` calls
+`buildCarcassFrontLayer()` where it would otherwise read a `.layer.json`, and if
+the extraction breaks the build breaks with it, rather than shipping a stale
+hand-copy that nothing re-checks.
 
-When the catalogues eventually catch up, the base gains the same entries. The
-layer's `add` ops become redundant rather than conflicting: the pipeline reports
-"layer op is now a no-op" so they can be retired deliberately, and the
-provenance record shows the entity moved from PDF-sourced to catalogue-sourced.
+**The rule of thumb.** A source that states *changes* is transcribed. A source
+that states *content* is parsed.
 
-**Turnaround target: same day.** Extraction is already automated
-(`npm run rules:extract`); transcription of one faction is a few hours of
-careful work against the extracted text, and the verification pass catches
-transcription slips. This is the app's main advantage over NewRecruit for this
-game.
+#### What the pipeline had to learn
+
+Three things this case added, each because the first pass got it wrong:
+
+- **`add` stamps every leaf.** The Dispatch's `add` ops write flat scalars, so
+  a single stamp per top-level key was enough. An entity carrying a `stats`
+  block needs `stats.ranged` stamped, or `findMissingProvenance` correctly
+  refuses to emit it.
+- **`add` refuses a duplicate.** Carcass Front *reprints* the Combat Biologist,
+  which the Warbands book and the catalogues already carry. A faithful read of
+  the book therefore adds a Mercenary the dataset already has, and two copies in
+  the recruit list is worse than none: a player picks one and cannot tell which.
+  Matched on name **plus faction**, so the Naval Raiders' Wretched and the
+  Heretic Legion's Wretched — different models sharing a name — stay two
+  entries.
+- **A reprint is cross-checked, not dropped.** The skipped copy is a second
+  independent printing of an entry the dataset already had. Where the two agree
+  the value has two sources; where they disagree the build fails until
+  `resolutions.json` rules on it. It found one on the first run: Carcass Front
+  prints the Ducat glyph on the Combat Biologist's `Cost: 3` where Warbands of
+  Trench Crusade prints the Glory glyph on the same number.
+
+#### Two collections are merged, not layered
+
+`dataset.variants` and `dataset.armouries` are **assigned wholesale** by
+`rules-build.mjs` after the layers run — both are derived from the catalogues
+and the Armoury Tables rather than patched onto them — so an `add` op against
+either is applied and then thrown away. The generated layer hands those back
+separately and the build merges them where those collections exist.
+
+#### When the catalogues catch up
+
+The base gains the same entries. The layer's `add` ops become redundant rather
+than conflicting: the duplicate guard reports each as *"already in the dataset,
+so the layer is reprinting it"*, and the reprint cross-check then compares the
+book against the catalogue field by field. Retiring the layer becomes a
+deliberate decision made against a report, not a guess.
+
+**Turnaround target: same day**, and Carcass Front met it: release to shipped in
+one pass with no hand-typed rules in between. This is the app's main advantage
+over NewRecruit for this game.
 
 ### Historical rulesets
 

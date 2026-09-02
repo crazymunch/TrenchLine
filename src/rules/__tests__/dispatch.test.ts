@@ -170,15 +170,28 @@ describe('Mercenary recruitment restrictions', () => {
 
   it('keeps the Faithful Mercenaries out of a Fallen Warband', () => {
     for (const name of ['Mendelist Ammo Monk', 'Observer', 'Witchburner', 'Communicant Anti-Tank Hunter']) {
-      expect(merc(name).allowedFactions, name).toEqual(['New Antioch', 'Trench Pilgrims']);
+      /*
+        The two the Dispatch names, plus the Procession of the Sacred
+        Affliction — which does not name them, it inherits them: "can use any
+        Faithful Mercenaries that can be taken by Trench Pilgrim Warbands".
+        The delegation is read off that sentence, so the Procession's pool
+        follows the Pilgrims' automatically. See `applyMercenaryDelegation`.
+      */
+      expect(merc(name).allowedFactions, name)
+        .toEqual(['New Antioch', 'Trench Pilgrims', 'Procession of the Sacred Affliction']);
       expect(merc(name).allowedFactions, `${name} must not be hireable by the Court`)
         .not.toContain('Court of the Seven-Headed Serpent');
+      expect(merc(name).allowedFactions, `${name} must not reach the Fallen Naval Raiders`)
+        .not.toContain('Heretic Naval Raiders');
     }
   });
 
   it('keeps the Fallen Mercenary out of a Faithful Warband', () => {
+    // Likewise: the Naval Raiders take what the Heretic Legions take.
     expect(merc('Goetic Warlock').allowedFactions)
-      .toEqual(['Heretic Legion', 'Court of the Seven-Headed Serpent']);
+      .toEqual(['Heretic Legion', 'Court of the Seven-Headed Serpent', 'Heretic Naval Raiders']);
+    expect(merc('Goetic Warlock').allowedFactions)
+      .not.toContain('Procession of the Sacred Affliction');
   });
 
   it('lets the Sultanate hire the two the book gives it', () => {

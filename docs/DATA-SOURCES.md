@@ -19,8 +19,15 @@ data-sources/
 ├── dispatch/
 │   ├── trench-dispatch-01-april-2026.txt      extracted text  ✅ present
 │   └── trench-dispatch-01.layer.json          transcribed patch ops
+├── carcass-front/
+│   ├── SOURCES.json                   release asset ids + sha256, per file
+│   ├── *.pdf                          fetched from the release, gitignored if large
+│   └── extracted/*.txt                pdf → text
 └── resolutions.json                   human decisions on source conflicts
 ```
+
+`carcass-front/` has **no `.layer.json`**, and that is the point: its layer is
+generated from the book on every build. See §4.
 
 ## 1. BattleScribe catalogues — the base layer
 
@@ -108,8 +115,9 @@ sets** from it. Two consequences:
    Concentrated Attack), and some of them constrain roster construction rather
    than being flavour.
 
-It also proves the **Carcass Front path**: a new faction's PDF can be parsed the
-same way on the day it drops, months before the catalogues catch up.
+It also proved the **Carcass Front path**: a new faction's PDF can be parsed the
+same way on the day it drops, months before the catalogues catch up. §4 is that
+path, used in anger.
 
 ### Getting large PDFs in
 
@@ -170,6 +178,40 @@ e.g. the Combat Engineer profile and the Yüzbaşı and Brazen Bull entries.
 **Transcription:** the Dispatch is already written as errata operations, so
 `trench-dispatch-01.layer.json` is a transcription of the text, not an
 interpretation of it. Each op records the page it came from.
+
+## 4. Carcass Front — a generated layer
+
+**Present:** `data-sources/carcass-front/`, fetched from a GitHub release by
+`npm run rules:pdfs`, every asset pinned by `sha256` in `SOURCES.json`. The two
+largest (the 104-page book, the vision cards) are marked `committed: false` and
+gitignored; the manifest still records their digests, so a re-fetch is verified
+against the same bytes.
+
+**What it is:** the Carcass Front digital rules — two new Warband lists, five
+scenarios, terrain rules, a random scenario generator, new Patrons and
+exploration tables, and a campaign with its own Vision Cards.
+
+**Status:** official, published by Factory Fortress.
+
+**Why it is not transcribed.** The Dispatch is a list of errata sentences, so
+`trench-dispatch-01.layer.json` is a transcription and each op quotes its page.
+A faction list is content, not changes: 15 entries, 88 armoury rows, 15 unique
+Battlekit items. Typing those is Rule 1's forbidden act at the scale that
+produced the app's 97%-wrong statlines. So `scripts/lib/parse-carcass-front.mjs`
+reads the book and `scripts/lib/carcass-front-layer.mjs` turns what it read into
+`add` ops, on every build. Nothing in between is authored.
+
+The rule of thumb, and what the pipeline had to learn to support it, are in
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
+
+**What reading it by shape costs.** The extraction places page furniture —
+section banners, chapter openers, and some entry headers — at the **foot of the
+page it heads**, not the top. That one fact caused four separate parser bugs
+(the Lazarist Prophet dropped, variants swallowing the next chapter, the whole
+Mercenary section empty, roles assigned from the wrong banner). Every one of
+them produced a *plausible* warband rather than an obviously broken one, which
+is why `scripts/lib/__tests__/carcass-front.test.mjs` asserts a printed value
+for each and says in a comment which failure it guards.
 
 ## Extracting PDFs
 

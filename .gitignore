@@ -39,6 +39,8 @@ reports/
 # Their extracted text under data-sources/rulebook/extracted/ IS committed.
 data-sources/rulebook/warbands-of-trench-crusade.pdf
 data-sources/rulebook/trench-crusade-digital-rulebook.pdf
+data-sources/carcass-front/carcass-front-book.pdf
+data-sources/carcass-front/vision-cards.pdf
 
 # Pipeline scratch
 *.tmp.mjs

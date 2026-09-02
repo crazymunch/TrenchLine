@@ -128,7 +128,15 @@ export function recruitable(
   const variantsById = new Map(
     (dataset.variants ?? []).filter((v) => v.entryId).map((v) => [v.entryId as string, v]));
 
-  const units: UnitProfile[] = dataset.units.map((u) => {
+  /*
+    Secondary profiles are not recruits. A Martyr Penitent is a Leper-Pilgrim
+    resurrected for a stated cost, a Heretic Raider Legionnaire is an upgraded
+    Raider — both are reached by paying for a model you already have, under a
+    condition this model cannot express. Offering them here would let a player
+    field a warband of Martyr Penitents at the Pilgrim's price. They stay in
+    the dataset for the Codex; see `UnitProfile.secondaryProfile`.
+  */
+  const units: UnitProfile[] = dataset.units.filter((u) => !u.secondaryProfile).map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
     return {
@@ -153,9 +161,21 @@ export function recruitable(
       // The catalogue's recruitment limit. `defaultRules.ts` had none at all —
       // 69 of the 89 units carry one, and none of them was enforced before.
       maxCount: u.max ?? undefined,
-      // The catalogue's own `Leader` role — nine entries carry it, at least
-      // one per faction. Not derived from cost, rarity or a max of 1.
-      canLead: u.roles.some((r) => r.toLowerCase() === 'leader') || undefined,
+      /*
+        Who may lead. Two sources say it and both are the model's own entry.
+
+        The catalogues state it as a `Leader` role — nine entries carry one, at
+        least one per faction. The books state it as a LEADER Keyword, which is
+        how the Carcass Front lists mark the Lazarist Prophet and the Heretic
+        Captain; those entries have no role at all, so reading only the role
+        left both new factions with nobody eligible to lead. Only the Yüzbaşı
+        Captain carries both, which is what makes the two independent.
+
+        Never derived from cost, rarity or a max of 1.
+      */
+      canLead: u.roles.some((r) => r.toLowerCase() === 'leader')
+        || u.keywords.some((k) => k.trim().toUpperCase() === 'LEADER')
+        || undefined,
       /*
         The "Third Party" profile is a marker, not a rule the model has — its
         text is the catalogue's disclaimer about the entry, which the builder
@@ -163,6 +183,7 @@ export function recruitable(
         list rendered it as a special rule the model uses in play, and printed
         it twice.
       */
+      battlekitNote: u.battlekitNote,
       innateAbilities: u.abilities
         .filter((a) => a.name.trim().toLowerCase() !== 'third party')
         .map(abilityOf),

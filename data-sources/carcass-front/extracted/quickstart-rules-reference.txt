@@ -1,0 +1,329 @@
+Trench Crusade is a skirmish-scale tabletop miniatures game that plunges players deep into a horrifying alternate timeline.
+During the Crusades, a heretical order of Templars dared defy the Almighty, breaking their sacred oaths and unleashing the
+forces of Hell upon the Earth. Now, over eight hundred years later, in the Year of Our Lord 1914, this brutal and merciless war
+between the forces of Heaven and Hell rages on. This is not merely a fight for survival. This is a cataclysmic struggle that will
+decide the very fate of humanity’s soul. As both sides of the Great War prepare for massive new offensives, a different struggle
+takes place in the shattered wasteland of No Man’s Land. Here, small warbands of combatants stalk the cratered earth, scarred
+by artillery and ravaged by centuries of war. These warbands gather information and ancient artefacts, seek out enemy scouts and
+high-value targets. Some are saboteurs and assassins, working deep behind enemy lines. Many are on holy (or unholy!) missions
+to obtain relics or perform blood-soaked rituals in long-lost temples, churches, and basilicas. Others scour the front for vessels
+worthy of possession or sacrifice.
+What You Need To Play
+** A Warband of Trench Crusade miniatures to lead into battle.
+** A flat surface to use as the battlefield on which your Warbands
+will fight. A dining table is ideal to begin with.
+** Terrain (and lots of it).
+** Three sets of six-sided dice (D6) in different colours.
+** A tape measure with imperial inches.
+** The Trench Crusade Rulebook.
+** Friends – no one fights the Great War alone.
+Quickstart Rules
+The following rules explain how to play Trench
+Crusade in a quick and easy to use format. For more
+detailed explanations of the rules and additional
+information on how they work, download the current
+version of the Trench Crusade Digital Rulebook from
+our website at www.trenchcrusade.com. A game of
+Trench Crusade is divided into Turns, which are split
+into an Initiative Phase, an Activation Phase, and
+a Morale Phase.
+1
+
+-- 1 of 4 --
+
+The Initiative Phase
+The player with the lowest number of models in their
+Warband has the Initiative, and can choose to Activate a
+model first or second. If both players have the same number of
+models, each player rolls a dice and whoever rolls the highest
+has the Initiative.
+The Activation Phase
+If you have the Initiative, you must choose a model in
+your Warband and Activate it. Your opponent must then
+Activate a model, and so on, back and forth until all models
+have been Activated. A model cannot be Activated more
+than once per Turn.
+ACTIONS
+The Activated model can take the following ACTIONS once
+each, in any order you wish:
+Move or Charge or Retreat: You can use an ACTION
+to Move or Charge or Retreat with your model, but
+not more than one.
+** Move: You can move your model a number of inches
+equal to its Movement Characteristic in any direction
+(no roll is required). Obstacles up to 1” high can be
+crossed without penalty, and your model can climb sheer
+surfaces if you first pass a Risky Success Roll. Difficult
+terrain is crossed at half speed. A Move ACTION
+cannot be used to move a model within 1” of an enemy
+model (you must use a Charge Action instead).
+** Charge: Pick an enemy model that is visible to your
+model and within 12” of it as the target of the charge.
+Then roll a dice, add the result to your model’s
+Movement Characteristic and move it towards the
+target. If your model finishes its move within 1” of the
+target, it can Fight.
+** Retreat: You can only move a model that is within
+1” of an enemy by taking a Retreat ACTION. A
+retreating model moves a number of inches equal to its
+Movement Characteristic in any direction but it must
+end its retreat move more than 1” away from all enemy
+models. Your opponent can take a Fight ACTION
+with 1 Melee Weapon before the retreating model is
+moved away. If this takes your model Down or Out of
+Action it is not moved.
+Dash: A Dash ACTION can be carried out in addition
+to a Move, Charge or Retreat ACTION. You can move
+your model a number of inches equal to its Movement
+Characteristic in any direction, but you must take a Risky
+Success Roll for the model first. If you succeed, your model
+can move (it cannot charge or retreat). If you fail, the model’s
+Activation ends.
+Shoot: You can make a Ranged Attack with your model if it is
+more than 1” from an enemy and has a Ranged Weapon. Your
+model cannot Shoot and take a Charge or Fight ACTION
+in the same Activation, unless it uses a weapon that has the
+ASSAULT Keyword.
+Fight: You can make a Melee Attack with your model if it is
+within 1” of an enemy and has a Melee Weapon.
+Other: Some models have other ACTIONS they can take
+during their Activations.
+Success Rolls
+To take a Success Roll, roll two dice, add any +DICE or
+-DICE to the roll as described below, pick the two highest
+(or lowest if any -DICE were used), add them together, and
+consult the table below to see if you have succeeded. The
+instructions for the task you are carrying out will tell you
+what happens if you succeed or fail. If you are taking a Risky
+Success Roll and you fail, the model’s Activation is over and
+your opponent can now Activate one of their models!
+Success Table
+Roll 	Result
+2-6 	Failure.
+7-11 	Success.
+12+ 	Critical Success. Add +1 INJURY DICE
+to Ranged or Melee Attacks if you roll a
+Critical Success.
++Dice and -Dice
+Rules often have modifiers to Success Rolls marked as
++DICE and -DICE. These are shown in the format “+1
+DICE” or “-1 DICE”.
+For each +DICE, add 1 dice to the Success Roll. Then
+roll all the dice and pick the 2 highest rolls. For example,
++1 DICE means you roll 3 dice and pick the 2 highest.
+If +2 DICE are added, roll 4 dice and pick the 2
+highest, and so on.
+The -DICE works in reverse. For each -DICE, add 1
+dice to the Success Roll and pick the 2 lowest numbers.
+For example, -1 DICE means you roll 3 dice and
+pick the 2 lowest.
+If both +DICE and -DICE are added to the same Success
+Roll, remove pairs of +DICE and -DICE until only one
+type is remaining. For example, if a roll had +2 DICE and
+-1 DICE, one of the +1 DICE and the -1 DICE would
+be removed, leaving +1 DICE to be added to the roll.
+COMBAT
+Combat is divided into Ranged Attacks and Melee Attacks.
+Ranged Attacks are carried out when you take a Shoot
+ACTION with a model, and Melee Attacks when you take a
+Fight ACTION with a model.
+2
+
+-- 2 of 4 --
+
+RANGED ATTACKS
+1. Choose a Ranged Weapon, then pick a target that is visible
+to your model and in range of the weapon.
+2. Take a Success Roll for the attacking model.
+3. If the roll is a Failure, the attack misses and has no effect.
+If the roll is a Success it hits, so make an Injury Roll roll
+for the target. Add +1 INJURY DICE if the attack was a
+Critical Success.
+SHOOTING INTO MELEE
+If a target is within 1” of any friendly models, roll a dice
+to determine who is attacked: on a 1 – 3 you must target
+a friendly model; on a 4 – 6 you can target an enemy
+model. Take a Success Roll as normal once the target has
+been determined.
+RANGED ATTACK MODIFIERS
+Shooting from an elevated position: Add +1 DICE if the
+attacking model is at least 3” higher than the target.
+Cover: Add -1 DICE if the target is in cover. A model is in
+cover if it is in contact with a terrain piece that is at least ½”
+high and as wide as its base, and the terrain piece lies between
+it and the attacking model.
+Long Range: Add -1 DICE if the range to the target is more
+than half of the weapon’s maximum range.
+MELEE ATTACKS
+1. Choose a Melee Weapon and pick a target within
+1” of your model.
+2. Take a Success Roll for the attacking model.
+3. If the roll is a Failure, the attack misses and has no effect.
+If the roll is a Success it hits, so make an Injury Roll roll
+for the target. Add +1 INJURY DICE if the attack was a
+Critical Success.
+MELEE ATTACK MODIFIERS
+Multiple Melee Weapons: If your model is armed with two
+Melee Weapons, it may attack with both, one after the other in
+the order of your choice. Add -1 DICE for the second attack.
+Fear: Add -1 DICE if your opponent has the FEAR Keyword.
+If both models cause FEAR the effect is cancelled out.
+Defended Obstacle: Add -1 DICE if the target is in cover. A
+model is in cover if it is in contact with a terrain piece that is at
+least ½” high and as wide as its base, and the terrain piece lies
+between it and the attacking model.
+Diving Charge: A model may attempt a Diving Charge
+against enemy models that are at least 3” below it. Take a Risky
+Success Roll for the model. If the roll is a Failure the model is
+taken Down, and a Falling Injury Roll must then be taken for
+the model. If the roll is a Success, you do not have to take a
+Falling Injury Roll for the model, and you can add +1 DICE
+to the next Melee Attack that the model makes.
+FALLING
+When a model Jumps, Dives, or Falls 3” or more, there is a
+chance it will be injured. To see if this happens, make an Injury
+Roll for the model, and add +1 INJURY DICE for every 3”
+that the model fell.
+Injury Rolls
+To make an Injury Roll, roll two dice and add any +INJURY
+DICE or -INJURY DICE to the roll. +/-INJURY DICE
+work in the same way as +/- DICE but modify Injury
+Rolls instead of Success Rolls. Pick the two highest dice (or
+lowest if any -INJURY DICE were used). Any INJURY
+MODIFIERS that apply are then added to the roll, and the
+modified roll is looked up on the table below:
+Injury Table
+Roll 	Result
+1 or less 	No Effect. The model is unharmed, and the
+injury has no effect.
+2-6 	Minor Hit. Place 1 BLOOD MARKER
+next to the model.
+7-8 	Down. Place 1 BLOOD MARKER next to
+the model and mark them as being Down. If
+the model is already Down, place 2 BLOOD
+MARKERS next to the model instead of 1.
+9+ 	Out of Action. The model has been seriously
+injured or killed and is removed from play.
+Injury Roll and Result Modifiers
+The following modifiers are cumulative. The maximum
+-INJURY MODIFIER cannot be more than -3 in total.
+** Blessing Markers: Add -1 INJURY DICE for each
+BLESSING MARKER that is spent.
+** Blood Markers: Add +1 INJURY DICE for each
+BLOOD MARKER that is spent.
+** Critical Success: Add +1 INJURY DICE.
+** Down: Add +1 INJURY DICE for a Melee Attack if
+the target is Down.
+** Abilities or Keywords: Add any +/-INJURY DICE
+and/or any +/-INJURY MODIFIERS for abilities or
+Keywords that apply to the Injury Roll.
+** Armour Characteristic: Add the -INJURY
+MODIFIER of the model’s Armour
+Characteristic (if any).
+** Battlekit: Add the -INJURY MODIFIER for the
+model’s Battlekit (e.g. Armour, Shield, etc.).
+BLOOD MARKERS
+During a battle your warriors can be wounded. Wounds are
+tracked with BLOOD MARKERS. A model cannot have more
+than 6 BLOOD MARKERS at any one time. We recommend
+using a red dice to keep track of the number of BLOOD
+MARKERS on a model. Each time one of your models suffers a
+wound, place a BLOOD MARKER next to it.
+3
+
+-- 3 of 4 --
+
+When you make a Success Roll for the model, your opponent
+may choose to spend one or more BLOOD MARKERS to
+add -1 DICE. In addition, each time your opponent makes
+an Injury Roll for the model, they may choose to spend one
+or more BLOOD MARKERS to add -1 INJURY DICE,
+making a serious injury far more likely.
+BLOODBATH ROLLS
+When you make an Injury Roll for an enemy model, you can
+spend 6 BLOOD MARKERS (or 3 BLOOD MARKERS if
+the target is Down) to convert the Injury Roll to a Bloodbath
+Roll. To make a Bloodbath Roll, roll 3 dice and add all three
+of them together, then look up the roll on the Injury Table.
+BLESSING MARKERS
+BLESSING MARKERS are similar to BLOOD MARKERS,
+but specifically aid Success Rolls for the model. Each time
+one of your models receives a blessing, place a BLESSING
+MARKER next to it. When you take a Success Roll for the
+model, you may choose to spend one or more BLESSING
+MARKERS to add +1 DICE, and each time you make
+an Injury Roll for the model you may spend one or more
+BLESSING MARKERS to add -1 INJURY DICE.
+DOWN RESULTS
+You can show that a model is Down by placing the model on
+its side. The following rules apply to a model that is Down:
+** If a model is taken Down during its Activation, its Activation
+ends immediately.
+** Add -1 DICE to any rolls you take for a model that is Down.
+** Add +1 INJURY DICE for a Melee Attack if the
+target is Down.
+** Until a model that is Down stands back up, it cannot be moved
+for any reason unless it falls.
+** A model that is Down stands back up when it is next Activated.
+However, its Movement Characteristic is halved for the rest of
+the Activation (including the bonus for charging).
+ENDING THE ACTIVATION PHASE
+Once you have taken any and all ACTIONS you wish, or have
+failed a Risky Success Roll, your model’s Activation ends. Your
+opponent can now Activate one of their models. The players
+then alternate Activating models in this fashion until one
+player runs out of models to Activate. Their opponent can then
+Activate their remaining models one after the other until they
+have all been Activated, then proceed to the Morale Phase.
+The Morale Phase
+In the Morale Phase, if half the models in your Warband are
+Down or Out of Action (rounded up), you must make a Success
+Roll. If the roll is a Success, your Warband carries on normally. If
+the roll is a Failure, your Warband becomes Shaken.
+SHAKEN WARBANDS
+All Success Rolls made for a Shaken Warband are treated as
+Risky Success Rolls. In the Morale Phase at the end of the next
+turn you must make another Success Roll for your Warband,
+even if less than half its models are Down or Out of Action.
+If you succeed, your Warband is no longer Shaken (though
+it may become so again if you fail a Morale check in a future
+turn). However, if you fail your Warband flees, and you
+immediately lose the game!
+ENDING THE TURN
+After the Morale Phase the Turn ends and a new one begins.
+Important Rules Principles
+LINE OF SIGHT
+You will often need to check to see if a model has a “Line of
+Sight” to another model or terrain piece. If you are unsure
+whether a model has a Line of Sight to a target, stoop down
+and take a look from behind the attacking model and check
+if it can see any part of the target model (do not count the
+target’s base, its hands or feet, or anything that is carried by or
+attached to the target such as a weapon or banner), or any part
+of a target terrain piece. Models can see all around (i.e. 360°)
+and they may be pivoted to face any direction before the Line
+of Sight is checked.
+MODEL PLACEMENT
+When you set up or move a model, it cannot be set up with
+its base overlapping Impassable terrain or the base of another
+model. You can set up a model so that part of its base is on the
+battlefield or in terrain and the rest of its base is “in the air”, as
+long as more than half of the model’s base is on the battlefield
+or in terrain. With your opponent’s permission you can place
+it in a safe location nearby so that there is no risk of it falling
+over and being damaged (it will still count as being at the
+location for all other purposes).
+PRE-MEASURING
+Unless the rules specifically tell you otherwise, you are
+allowed to measure distances at any time. For example,
+you can measure to see if you are in range for shooting,
+charging, and so on.
+ROLLING OFF
+Sometimes a rule may require the players to “roll-off ”. To roll-
+off, each player rolls a D6, and whoever rolls highest wins. You
+cannot re-roll or modify the dice in a roll-off unless the roll is
+a tie, in which case the players must take the roll-off again.
+4
+
+-- 4 of 4 --
+

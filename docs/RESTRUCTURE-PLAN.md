@@ -795,9 +795,63 @@ their value from the active Event. Deliberately narrow — one named Event, one
 modifier — rather than a general effect parser that would quietly mis-apply the
 ten it could not really read.
 
-## Phase 5 — Carcass Front preview (backburner)
+### Carcass Front: the two faction lists
 
-*Blocked on Phases 1–2. Do not start before the pipeline and rules engine work.*
+The book itself. Phase 5 below is **closed without ever being built** — the
+speculative preview it describes was overtaken by the release, which is the
+outcome it was designed to want. §5.7 said what to do: *"delete the speculative
+layer, replace with a PDF-primary layer"*. There was no speculative layer to
+delete, so only the second half happened.
+
+Shipped: both Warbands (Procession of the Sacred Affliction, Heretic Naval
+Raiders), 15 entries, 2 × 44 armoury rows, 15 unique Battlekit items, 4 Warband
+Variants, 6 faction special rules, and the Combat Biologist Mercenary the book
+reprints.
+
+**The layer is generated, not transcribed.** This is the decision worth
+recording, and it is a departure from the Dispatch: see
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Transcribed or generated?" for the
+rule of thumb — *a source that states changes is transcribed, a source that
+states content is parsed* — and for what the pipeline had to learn to take a
+whole faction through the `add` op (leaf-level provenance, a duplicate guard, a
+reprint cross-check).
+
+Three things the app had to learn beyond the pipeline:
+
+- **A leader can be named by Keyword.** The catalogues state it as a `Leader`
+  role; both Carcass Front lists state it as the LEADER Keyword and carry no
+  role at all. Reading only the role left both new Warbands with nobody
+  eligible, so the auto-nominate did nothing. Only the Yüzbaşı Captain carries
+  both, which is what makes the two signals independent.
+- **A printed statline is not always a recruit.** A Martyr Penitent is a
+  resurrected Leper-Pilgrim (45 👑) and a Heretic Raider Legionnaire is an
+  upgraded Raider (10 👑) — both reached by paying for a model you already have,
+  under conditions the entity model cannot express. They stay in the dataset for
+  the Codex and are marked `secondaryProfile`, which keeps them out of the
+  recruit list; offering them would let a player field a warband of Martyr
+  Penitents at the Pilgrim's price.
+- **A Mercenary pool can be stated by delegation.** *"The Procession of the
+  Sacred Afflictions can use any Faithful Mercenaries that can be taken by
+  Trench Pilgrim Warbands."* Resolved from the faction's own special rule, so
+  the Procession inherits the Pilgrims' four hires and the Naval Raiders inherit
+  the Legions' one, without either list being typed anywhere.
+
+One fabrication went with it: `defaultRules.ts` carried a hand-written `rules`
+array per faction — *"Voice of Command"*, *"Ecstatic Zeal"* — that appears in no
+source. It was the last of the invented game data, sitting in the one file the
+audit's deletions had spared because its stated job is presentation. Deleted;
+`hydrateCatalogs` now copies the derived `dataset.factions[].specialRules` onto
+those records instead.
+
+Still to come from the book: the five scenarios and the terrain pieces, the
+Random Scenario Generator, the new Patrons and exploration tables, and the
+Carcass Front campaign with its Vision Cards.
+
+## Phase 5 — Carcass Front preview (SUPERSEDED — never built)
+
+*Kept for the record. The box shipped before this was started, so the predicted
+ruleset below was never written and §5.7's replacement is what exists. Read it
+as the plan that correctly anticipated its own obsolescence.*
 
 Build a **predicted** Carcass Front ruleset from published community reporting,
 so a warband can be drafted before the box ships. Sources so far:
@@ -854,9 +908,10 @@ The community catalogues lag official releases by months. Getting new content
 into the app within a day of the PDF dropping is a **primary product goal**, not
 a nice-to-have — it is the main advantage over NewRecruit for this game.
 
-The Carcass Front release is the first test. The mechanism is a PDF-primary
-layer; see [`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
-Phase 1 must land with that path working end-to-end, not just the correction path.
+The Carcass Front release was the first test, and it passed: both faction lists
+went from a release asset to a playable Warband in one pass, with no rules typed
+by hand at any point. The mechanism is a **generated** PDF-primary layer; see
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
 
 ## Feature parity
 

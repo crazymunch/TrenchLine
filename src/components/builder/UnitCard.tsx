@@ -426,6 +426,21 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
 
           {!collapsed && (<>
 
+          {/*
+            The entry's own Battlekit sentence, where the book prints one.
+
+            It restricts what this model may buy — "The only Ranged Weapons
+            they can have are Automatic Pistols and Pistols" — and neither the
+            Armoury Table nor the engine can express it, so it sits above the
+            gear the player is about to add to rather than in a rules list.
+          */}
+          {unit.profileSnapshot.battlekitNote && (
+            <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed border-l-2 border-theme-accent/40 pl-2">
+              <span className="font-semibold text-theme-primary font-mono">BATTLEKIT </span>
+              {unit.profileSnapshot.battlekitNote}
+            </p>
+          )}
+
           {/* Innate Abilities & Rules: Collapsed by Default with Expand Arrow */}
           {unit.profileSnapshot.innateAbilities && unit.profileSnapshot.innateAbilities.length > 0 && (
             <div className="space-y-1">

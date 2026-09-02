@@ -4553,8 +4553,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+      "layer": "derived",
+      "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
     }
   },
   "unit:8e7d-f104-423a-2b4a": {
@@ -4653,8 +4653,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+      "layer": "derived",
+      "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
     }
   },
   "unit:b5ac-1a57-c1d4-3f4c": {
@@ -4751,8 +4751,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+      "layer": "derived",
+      "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
     }
   },
   "unit:2d21-7af1-0770-da4c": {
@@ -4947,8 +4947,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+      "layer": "derived",
+      "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
     }
   },
   "unit:ce78-bd08-5b44-8e38": {
@@ -5885,8 +5885,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
-      "layer": "dispatch-01",
-      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+      "layer": "derived",
+      "source": "Heretic Naval Raiders faction special rule 'Mercenaries' — delegates to Heretic Legion"
     }
   },
   "unit:bc90-d206-2b0d-b743": {
@@ -43129,6 +43129,2448 @@
     "description": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "faction:procession-of-the-sacred-affliction": {
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "budget.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "budget.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "specialRules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "noSpecialRules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "alignment": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "source": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-lazarist-prophet": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-lazarist-communicant": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-lazarist-castigator": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-leper-pilgrim": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-martyr-penitent": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-stigmatic-nuns": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-ecclesiastic-prisoners": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-procession-of-the-sacred-affliction-anchorite-shrine": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-bells-of-warding": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-blessed-millstone": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-great-flail-scourge": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-holy-icon-armour": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-penitents-phylactery": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-punt-gun": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-ragged-vestments": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-procession-of-the-sacred-affliction-warcross": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "faction:heretic-naval-raiders": {
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "budget.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "budget.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "specialRules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "noSpecialRules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "alignment": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "source": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-heretic-captain": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-abyssal-commando": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-drowned-chorister": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-heretic-raider": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-heretic-raider-legionnaire": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-wretched": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-anointed-heretic-raiders": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "unit:cf-unit-heretic-naval-raiders-sea-hag": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "roles": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movement": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementInches": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.movementType": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.ranged": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.melee": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.armour": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "stats.base": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "min": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "max": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "abilities": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "options": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekit": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "battlekitNote": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "secondaryProfile": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-blasphemous-staff": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-boarding-axe": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-hull-drill": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-sacrificial-blade": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-shark-tooth-talisman": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-tartarus-claws": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    }
+  },
+  "weapon:cf-weapon-heretic-naval-raiders-wreckers-torch": {
+    "entryId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "name": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "type": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "range": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "keywords": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "rules": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.ducats": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "cost.glory": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "constraints": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "modifiers": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "restrictions": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "factionId": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
+    },
+    "lore": {
+      "layer": "carcass-front",
+      "source": "carcass-front:data-sources/carcass-front/carcass-front-book.pdf"
     }
   }
 }

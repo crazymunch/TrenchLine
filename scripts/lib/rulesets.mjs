@@ -24,9 +24,9 @@ export const RULESETS = [
     name: 'TrenchLine Rules',
     description:
       'The GitHub catalogues, cross-checked against the official rulebooks and ' +
-      'brought up to date with the Trench Dispatch. The most accurate ruleset ' +
-      'available in the app.',
-    layers: ['dispatch-01'],
+      'brought up to date with the Trench Dispatch and the Carcass Front ' +
+      'supplement. The most accurate ruleset available in the app.',
+    layers: ['dispatch-01', 'carcass-front'],
     includeBeta: true,
     isDefault: true,
   },

@@ -27,6 +27,8 @@ import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
+import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
+         LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -45,8 +47,25 @@ if (!fs.existsSync(path.join(CAT_DIR, 'MANIFEST.json'))) {
 }
 const manifest = JSON.parse(fs.readFileSync(path.join(CAT_DIR, 'MANIFEST.json'), 'utf8'));
 
+/*
+  The Carcass Front supplement is a GENERATED layer.
+
+  Every other layer is a `.layer.json` a maintainer wrote, and that is right for
+  the Dispatch: it is a list of errata sentences, and transcribing "change the
+  Cost of Incendiary Grenades to 10" is transcription. Carcass Front is two
+  faction lists — fifteen entries, ninety-odd armoury rows, fifteen unique
+  Battlekit items — and typing those by hand is exactly the failure rule 1 names.
+  So it is read from the book on every build, and if the extraction breaks the
+  build breaks with it rather than shipping a stale hand-copy.
+
+  Built once, outside the per-ruleset loop, because parsing a 104-page PDF twice
+  produces the same answer twice.
+*/
+const carcassFront = buildCarcassFrontLayer();
+
 /** Load every layer file a ruleset names. */
 function loadLayer(id) {
+  if (id === CARCASS_FRONT) return carcassFront.layer;
   const candidates = [
     `data-sources/dispatch/${id}.layer.json`,
     `data-sources/layers/${id}.layer.json`,
@@ -279,6 +298,31 @@ for (const ruleset of RULESETS) {
   }
   dataset.armouries = [...armouryByFaction.values()];
 
+  /*
+    Carcass Front prints its own Armoury Table per faction, in the same shape
+    and with the same authority. It is merged here rather than layered because
+    the assignment above replaces the whole collection — see loadLayer.
+
+    Only for a ruleset that actually carries the layer: `github-latest` is the
+    community catalogues as published, and the supplement is not in them.
+  */
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    for (const a of carcassFront.armouries) {
+      dataset.armouries.push({
+        ...a,
+        // Resolved against the layered weapon list, so a supplement row naming
+        // a core weapon (Sniper Rifle, Bolt-Action Rifle) points at the same
+        // profile every other faction's armoury does, and its own Battlekit
+        // points at the entry the layer just added.
+        rows: a.rows.map((r) => {
+          const w = weaponByName.get(r.name.toLowerCase());
+          if (!w) unmatchedRows++;
+          return { ...r, weaponId: w?.id ?? null };
+        }),
+      });
+    }
+  }
+
   // The weapon keeps the union of every armoury's restrictions as a quick
   // "this is restricted somewhere" signal, stamped so it can say where from.
   // The per-faction row above is what actually governs a roster.
@@ -382,6 +426,27 @@ for (const ruleset of RULESETS) {
     });
   }
 
+  // The supplement's four Warband Variants, for the same reason as its
+  // armouries: `dataset.variants` is assigned wholesale just above.
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    dataset.variants.push(...carcassFront.variants);
+  }
+
+  /*
+    Mercenary pools stated by delegation — "can use any Faithful Mercenaries
+    that can be taken by Trench Pilgrim Warbands". Run for every ruleset, not
+    just the one carrying the supplement: it reads whatever faction rules the
+    dataset holds, so a future list stating its pool the same way is picked up
+    without another special case.
+  */
+  const delegated = applyMercenaryDelegation(dataset);
+  for (const d of delegated) {
+    provenance.stamp('unit', d.unit.id, 'allowedFactions', {
+      layer: 'derived',
+      source: `${d.to} faction special rule '${d.rule}' — delegates to ${d.from}`,
+    });
+  }
+
   const withOps = dataset.variants.filter((v) => v.ops.length).length;
   const bookOnlyCount = bookOnly.length;
 
@@ -436,6 +501,20 @@ for (const ruleset of RULESETS) {
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
   const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
 
+  /*
+    Entries a layer reprinted rather than introduced. The engine skipped the
+    duplicate; this reads the skipped copy as a SECOND SOURCE for the entry the
+    dataset already had, and reports where the two printings disagree.
+
+    A disagreement fails the build unless resolutions.json rules on it, for the
+    same reason a rulebook conflict does: two official books stating different
+    numbers for one model is a fact about the sources, and the app has to say
+    which one it followed and why.
+  */
+  const reprints = crossCheckReprints(layerNotes.filter((n) => n.reprintOf));
+  const reprintConflicts = reprints.disagreed.filter((d) => !resolutions[d.key]);
+  const reprintResolved = reprints.disagreed.filter((d) => resolutions[d.key]);
+
   summaries.push({ ruleset, v, missingProv, unresolvedOps, layerNotes, layerReport, dataset });
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
@@ -477,6 +556,12 @@ for (const ruleset of RULESETS) {
 
   const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
   console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
+  if (delegated.length) {
+    const byFaction = new Map();
+    for (const d of delegated) byFaction.set(d.to, (byFaction.get(d.to) ?? 0) + 1);
+    console.log(`  Mercenary pools delegated by a faction rule: ` +
+      [...byFaction].map(([f, n]) => `${f} +${n}`).join(', '));
+  }
   console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +
               (bookOnlyCount ? `, ${bookOnlyCount} in the rulebook only` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
@@ -491,6 +576,22 @@ for (const ruleset of RULESETS) {
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
+  if (reprints.agreed.length || reprints.disagreed.length) {
+    console.log(`  reprinted entries cross-checked: ${reprints.agreed.length} field(s) agree` +
+                (reprints.disagreed.length ? `, ${reprints.disagreed.length} disagree` : ''));
+    for (const d of reprintResolved) {
+      console.log(`    ${d.key.padEnd(34)} ours=${d.ours}  reprint=${d.book}` +
+                  `  -> ${resolutions[d.key].chose} (${resolutions[d.key].value})`);
+    }
+  }
+  if (reprintConflicts.length) {
+    failed = true;
+    console.log('\n  Two official printings of the same entry disagree — rule on each in');
+    console.log('  data-sources/resolutions.json:');
+    for (const d of reprintConflicts) {
+      console.log(`    ${d.key.padEnd(34)} shipped=${d.ours}  reprint=${d.book}`);
+    }
+  }
   if (unresolvedCurrency.length) {
     console.log(`\n  ⚠ ${unresolvedCurrency.length} cost(s) with an UNCONFIRMED CURRENCY:`);
     for (const u of unresolvedCurrency) console.log(`      ${u}`);
@@ -525,7 +626,7 @@ for (const ruleset of RULESETS) {
   }
 
   // 4. emit
-  if (!checkOnly && !v.conflicts.length && !missingProv.length) {
+  if (!checkOnly && !v.conflicts.length && !missingProv.length && !reprintConflicts.length) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     const banner =
       `// GENERATED FILE — DO NOT EDIT.\n` +
@@ -572,6 +673,17 @@ for (const ruleset of RULESETS) {
       'These applied, but the base data already carried the change. Each is a',
       'candidate for retirement from the layer once the base is confirmed current.', '');
     for (const n of layerNotes) lines.push(`- ${n.why}`);
+    lines.push('');
+  }
+  if (reprints.disagreed.length) {
+    lines.push('## Entries reprinted by a layer, where the two printings differ', '',
+      'The layer reprints a model the dataset already carries. Every other field',
+      `agreed (${reprints.agreed.length} of them).`, '',
+      '| field | shipped | reprint | ruling |', '|---|---|---|---|');
+    for (const d of reprints.disagreed) {
+      const r = resolutions[d.key];
+      lines.push(`| ${d.key} | ${d.ours} | ${d.book} | ${r ? `${r.chose} — ${r.because ?? ''}` : '**unresolved**'} |`);
+    }
     lines.push('');
   }
   if (v.conflicts.length) {
