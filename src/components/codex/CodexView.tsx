@@ -18,6 +18,7 @@ import {
   Swords, 
   Tag, 
   Skull, 
+  Dices,
   Compass, 
   Shield, 
   Sparkles, 
@@ -245,11 +246,18 @@ export const CodexView: React.FC = () => {
             ))}
           </div>
 
-          {/* Row 2 */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {/*
+            Row 2. `generator` sits here because it had NO BUTTON AT ALL: the
+            tab has been rendered by `activeTab === 'generator'` since the
+            Codex was built and nothing in the app ever set that state, so the
+            Mission Designer and every generator in it were unreachable. Six
+            buttons on two rows of three at phone width, four across from `sm`.
+          */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
+              { id: 'generator', label: 'Scenario Generator', icon: <Dices className="w-4 h-4" /> },
               { id: 'weapons', label: `Weapons Codex (${arsenal.filter((i) => groupOf(i) === 'weapons').length})`, icon: <Swords className="w-4 h-4" /> },
               { id: 'armour', label: `Armour & Gear (${arsenal.filter((i) => groupOf(i) !== 'weapons').length})`, icon: <Shield className="w-4 h-4" /> },
             ].map((t) => (

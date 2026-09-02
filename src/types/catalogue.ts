@@ -547,6 +547,72 @@ export interface TerrainPiece {
   source: string;
 }
 
+/** One row of a generator chart, with the rolls it answers already expanded. */
+export interface ChartRow {
+  /** As printed: `1-3`, `6`. */
+  printed: string;
+  /** Every roll the row answers: `1-3` -> [1, 2, 3]. */
+  rolls: number[];
+  /** The row's cells after the roll column, in printed order. */
+  values: string[];
+}
+
+/** A named rule a generator chart points at — one deployment, one condition. */
+export interface GeneratorRule {
+  name: string;
+  slug: string;
+  /** The rule as printed, as Markdown. */
+  body: string;
+}
+
+/** A chart, its introduction, and the rules it names. */
+export interface GeneratorChart {
+  /** The prose between the section heading and the chart. */
+  intro: string;
+  /** The chart's own column heads: `['D6', 'Deployment', 'Game Length']`. */
+  header: string[];
+  rows: ChartRow[];
+  /** Empty where the chart's results need no rules of their own. */
+  rules: GeneratorRule[];
+}
+
+/** One row of a Glorious Deeds chart: a named deed and how to complete it. */
+export interface GeneratorDeed {
+  printed: string;
+  rolls: number[];
+  name: string;
+  description: string;
+}
+
+/**
+ * The Random Scenario Generator, from the Carcass Front book.
+ *
+ * A procedure — "carry out the following steps in order" — so it is carried as
+ * one and the app runs it, rather than printing four charts and leaving the
+ * player to. It replaces a generator that rolled three invented tables (six
+ * weather conditions, six "complications", six "Secret Secondary Agendas"),
+ * none of which appears in any source.
+ */
+export interface ScenarioGenerator {
+  intro: string;
+  /** The four numbered steps, in order. The order is itself the rule. */
+  steps: string[];
+  battlefield: GeneratorChart;
+  deployment: GeneratorChart;
+  victory: GeneratorChart;
+  gloriousDeeds: {
+    intro: string;
+    /** Two charts of six: one for the older player, one for the younger. */
+    charts: { name: string; rows: GeneratorDeed[] }[];
+    /**
+     * The deed the book says is ALWAYS used in a campaign game, with its own
+     * condition. Not a seventh row on either chart — a rule about when the
+     * generator's output is complete.
+     */
+    always: { name: string; description: string; when: string };
+  };
+}
+
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
 
 /**
@@ -644,6 +710,14 @@ export interface Dataset {
    * one would say the same thing and neither would be a fact about the game.
    */
   terrain?: TerrainPiece[];
+  /**
+   * The Random Scenario Generator.
+   *
+   * Optional because only the Carcass Front book publishes one, and a ruleset
+   * that does not carry the supplement genuinely has none — which is a
+   * different thing from a generator we failed to read.
+   */
+  scenarioGenerator?: ScenarioGenerator;
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
   /**

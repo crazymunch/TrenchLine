@@ -57078,6 +57078,368 @@ export const DATASET: Dataset = {
       "source": "carcass-front"
     }
   ],
+  "scenarioGenerator": {
+    "intro": "These rules can be used to generate scenarios for both one-off games and in a campaign. They can be used for one-off games if both players agree to use them. They can be used in a campaign if the instructions for the campaign require the players to generate a random scenario for a game, or if a “6” is rolled on the Campaign Scenario table and both players agree to use them.",
+    "steps": [
+      "Roll on the Battlefield Archetype chart.",
+      "Roll on the Deployment & Game Length chart.",
+      "Roll on the Victory Conditions chart.",
+      "Roll on the Glorious Deeds charts."
+    ],
+    "battlefield": {
+      "intro": "Roll a D6 and look up the result on the following chart. The rules for Battlefield Archetypes can be found in the Trench Crusade Rulebook.",
+      "header": [
+        "D6",
+        "Battlefield Archetype"
+      ],
+      "rows": [
+        {
+          "printed": "1-3",
+          "rolls": [
+            1,
+            2,
+            3
+          ],
+          "values": [
+            "No Man’s Land"
+          ]
+        },
+        {
+          "printed": "4-5",
+          "rolls": [
+            4,
+            5
+          ],
+          "values": [
+            "Decimated Ruins"
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Trench Lines"
+          ]
+        }
+      ],
+      "rules": []
+    },
+    "deployment": {
+      "intro": "Roll a D6 and look up the result on the following chart. Note that a single roll determines both the deployment and the game length.",
+      "header": [
+        "D6",
+        "Deployment",
+        "Game Length"
+      ],
+      "rows": [
+        {
+          "printed": "1",
+          "rolls": [
+            1
+          ],
+          "values": [
+            "Standard Deployment",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "2",
+          "rolls": [
+            2
+          ],
+          "values": [
+            "Flank Attack",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "3",
+          "rolls": [
+            3
+          ],
+          "values": [
+            "Tunnels",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "4",
+          "rolls": [
+            4
+          ],
+          "values": [
+            "Fog of War",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "5",
+          "rolls": [
+            5
+          ],
+          "values": [
+            "Chance Encounter",
+            "The game ends at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Long-Distance Battle",
+            "The game ends at the end of the sixth Turn."
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "name": "Standard Deployment",
+          "slug": "standard-deployment",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s.\n\n**The players then alternate**\n\ndeploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "name": "Flank Attack",
+          "slug": "flank-attack",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s.\n\n**The players then alternate**\n\ndeploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "name": "Tunnels",
+          "slug": "tunnels",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The winner must then set up a Tunnel Marker in the loser’s half of the battlefield and more than 6” from the loser’s Deployment Zone. The loser must then set up a Tunnel Marker in the winner’s half of the battlefield and more than 6” from the winner’s Deployment Zone. The players must then split their Warbands into two groups with an equal number of models. If a player has an odd number of models in their Warband, the extra model must go in the first group. The first group is the starting group, and the second group is their reinforcements. The players then alternate deploying their models in their starting group one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules, but must be set up more than 8” from the opposing player’s Tunnel Marker. Starting from the first Turn, the players can Activate the models from their reinforcements group, as well as the models that were deployed at the start of the battle (the reinforcements and previously deployed models can be Activated in any order). When they Activate a reinforcement, they must deploy it within 6” of their Tunnel Marker and more than 1” from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally except that the model cannot Dash. Both players can choose to hold back reinforcements if they wish to, but any that are not deployed by the end of the third Turn are treated as having been taken Out of Action (the tunnels have collapsed!)."
+        },
+        {
+          "name": "Fog of War",
+          "slug": "fog-of-war",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses whether the West or East Deployment Zone will be theirs. The players must then split their Warbands into two groups of models. The first group is the starting group, and the second group is their reinforcements. There must be more models in the starting group, and any models mounted on bases of 40mm or larger must be part of the starting group. The players then alternate deploying their models in their starting group one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators that are part of the starting group can deploy normally or by using their special deployment rules. In the first Turn, the players must Activate the models from their reinforcements group, as well as the models that were deployed at the start of the battle (the reinforcements and previously deployed models can be Activated in any order). When they Activate a reinforcement, they must roll a D6 and refer to the Deployment Zone chart below to see where the model is deployed. The model must be deployed wholly within the Deployment Zone and in contact with the edge of the battlefield, and more than 1” away from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally. Note that both players must Activate all of the models in their reinforcement group and they cannot choose to hold any back.\n\nImportant: If you are playing a game with the Breakthrough Victory Condition, then reinforcements cannot be set up within 12” of their extraction point.\n\n| D6 | Deployment Zone |\n| --- | --- |\n| 1 | The opposing player chooses the Deployment Zone. |\n| 2 | The model is deployed in the Northern Deployment Zone. |\n| 3 | The model is deployed in the Eastern Deployment Zone. |\n| 4 | The model is deployed in the Southern Deployment Zone. |\n| 5 | The model is deployed in the Western Deployment Zone. |\n| 6 | The player chooses which Deployment Zone is used. |"
+        },
+        {
+          "name": "Chance Encounter",
+          "slug": "chance-encounter",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players must then split their Warbands into two groups with an equal number of models.\n\n**If a player has an odd number**\n\nof models in their Warband, the extra model must go in the second group. The first group is the player’s Turn 1 reinforcements, and the second group is their Turn 2 reinforcements. Infiltrators must deploy normally (they cannot use their special deployment rules). In the first Turn, the players can only Activate the models from their Turn 1 reinforcements group. When they Activate a model, they must deploy it wholly within their Deployment Zone, in contact with the edge of the battlefield, and more than 1” from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally. Note that both players must Activate all of the models in their reinforcement group and they cannot choose to hold any back. In the second Turn the players must Activate models from their Turn 2 reinforcements group in the same way, and they can also Activate the models they deployed during Turn 1 (the reinforcements and previously deployed models can be Activated in any order)."
+        },
+        {
+          "name": "Long-Distance Battle",
+          "slug": "long-distance-battle",
+          "body": "**The players roll-off. The**\n\nwinner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        }
+      ]
+    },
+    "victory": {
+      "intro": "Roll a D6 and look up the result on the following chart:",
+      "header": [
+        "D6",
+        "Victory Condition"
+      ],
+      "rows": [
+        {
+          "printed": "1",
+          "rolls": [
+            1
+          ],
+          "values": [
+            "Attritional Battle"
+          ]
+        },
+        {
+          "printed": "2",
+          "rolls": [
+            2
+          ],
+          "values": [
+            "Breakthrough"
+          ]
+        },
+        {
+          "printed": "3",
+          "rolls": [
+            3
+          ],
+          "values": [
+            "Over the Top"
+          ]
+        },
+        {
+          "printed": "4",
+          "rolls": [
+            4
+          ],
+          "values": [
+            "Retrieve"
+          ]
+        },
+        {
+          "printed": "5",
+          "rolls": [
+            5
+          ],
+          "values": [
+            "Sabotage"
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Take and Hold"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "name": "Attritional Battle",
+          "slug": "attritional-battle",
+          "body": "A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. Each player scores VPs for enemy models that were taken Out of Action equal to the model’s cost, divided by 10 if it has a cost in 👑, or by 3 if it has a cost in ☼ (rounding fractions up). Include the model’s Battlekit, Glory Items, and any other upgrades in its cost. If a model has items worth both 👑 and ☼, work out each separately. For example, a model that had a total cost of 100 👑 and 6 ☼ would be worth 100÷10 = 10 VPs, plus 6÷3 = 2 VPs, for a total of 12 VPs. At the end of the game each player scores 10 VPs for each Glorious Deed they completed."
+        },
+        {
+          "name": "Breakthrough",
+          "slug": "breakthrough",
+          "body": "Each side has an extraction point. They are directly opposite each other, on the edge of the battlefield at the centre of the opponent’s Deployment Zone. If a model finishes a move in contact with its extraction point, it is immediately removed from the battlefield. Models are also immediately extracted if they move into contact with an enemy model that is within 1” of their extraction point. Note that you cannot choose for a model to not be extracted. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with more Victory Points at the end of the game is the winner. Each player scores VPs for friendly models that were extracted equal to the model’s cost, divided by 10 if it has a cost in 👑, or by 3 if it has a cost in ☼ (rounding fractions up). Include the model’s Battlekit, Glory Items, and any other upgrades in its cost. If a model has items worth both 👑 and ☼, work out each separately. For example, a model that had a total cost of 100 👑 and 6 ☼ would be worth 100÷10 = 10 VPs, plus 6÷3 = 2 VPs, for a total of 12 VPs. At the end of the game each player scores 10 VPs for each Glorious Deed they completed."
+        },
+        {
+          "name": "Over the Top",
+          "slug": "over-the-top",
+          "body": "Before deploying any models, each player must set up 4 Trench sections that are at least 8” long in their Deployment Zone. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game each player scores:\n\n1 VP for each Trench section in their own Deployment Zone that has at least 1 friendly model in it and no enemy models in it.\n\n2 VPs for each Trench section in the enemy Deployment Zone that has at least 1 friendly model in it and no enemy models in it.\n\n1 VP for each Glorious Deed they completed.\n\nImportant: If Chance Encounter is rolled as the deployment for this scenario, roll on the deployment chart again until a different deployment is selected."
+        },
+        {
+          "name": "Retrieve",
+          "slug": "retrieve",
+          "body": "Place a Relic Marker at the midpoint of the battlefield. In addition, everywhere within 6” of the centre of the battlefield is covered by a dense unearthly fog. Models wholly within the fog are treated as being in cover, and movement within the fog is treated as if it were being made across Difficult terrain. Infiltrators cannot use their special rules to set up within 12” of the Relic Marker. A model within 1” of the Relic Markers takes a Pick Up Relic ACTION (you do not have to make a Success Roll). Put the Relic Marker in contact with the model’s base to show it is carrying it. The only thing a model carrying the relic can do is take Move or Retreat ACTIONS; it cannot do anything else or be moved in any other way (e.g. with teleportation, Puppet Master, Tormentor Chain, etc.). At the end of its Activation, you can say that a model that is carrying the relic can either keep it or hand it to a friendly model that is within 1”. When a model hands the relic on, place the Marker in contact with the other model’s base. A model that is handed the relic is treated as having been Activated, even if it has not yet been Activated this Turn. If a model carrying the relic is taken Down or Out of Action, or is chosen as the target of a Melee Attack, it immediately drops the relic. When a model drops the relic, place it within 1” of the model and not in contact with any other models. If the model carrying the relic moves into contact with a battlefield edge, it escapes with the Relic Marker and the controlling player immediately wins the game. A player wins this scenario immediately if the opposing Warband flees or if a friendly model carrying the relic finishes a move in contact with the edge of the battlefield. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game each player scores: 10 VPs if a friendly model has the Relic Marker.\n\n1 VP for each Glorious Deed they completed."
+        },
+        {
+          "name": "Sabotage",
+          "slug": "sabotage",
+          "body": "After the terrain has been set up, the players must set up 6 Objective Markers. The players roll-off, and then alternate setting up the Markers, one at a time, starting with the winner of the roll-off. Objective Markers must be set up more than 6” from the edge of the battlefield or a Deployment Zone, and more than 6” away from any other Markers. If this makes it impossible to set up all of the Markers, discard any that cannot be set up. The players then roll-off again. The winner is the attacker and the loser is the defender. All of the attacking models apart from Infiltrators that deploy using their special rules have Demo Charges and can take the following ACTIONS (no Success Rolls are necessary):\n\nPlace Demo Charge ACTION: A model that has Demo Charges and is in contact with an Objective Marker can take an ACTION to place the Demo Charge on the Marker. Once it does so, it no longer has the Demo Charge but can now use the Detonate Demo Charge ACTION.\n\nDetonate Demo Charge ACTION: A model that has set Demo Charges can take an ACTION to detonate the Demo Charge. It can take the ACTION at any time during the game, and can wait one or more Turns before it does so if desired (this gives the model a chance to move away so it does not get caught in the explosion). When it finally takes the ACTION, make an Injury Roll with the IGNORE ARMOUR Keyword for every model within 3” of the Marker. The Marker is then removed. Note that if a model that has placed a Demo Charge is taken Out of Action, it will not be possible to detonate the Demo Charge. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game the attacker scores:\n\n5 VPs for each Objective Marker that has been removed.\n\n1 VP for each Glorious Deed they completed. At the end of the game the defender scores:\n\n5 VPs for each Objective Marker that has not been removed.\n\n1 VP for each Glorious Deed they completed."
+        },
+        {
+          "name": "Take and Hold",
+          "slug": "take-and-hold",
+          "body": "After the terrain has been set up, the players must set up 6 Objective Markers. The players roll-off, and then alternate setting up the Markers, one at a time, starting with the winner of the roll-off. Objective Markers must be set up more than 6” from the edge of the battlefield or a Deployment Zone, and more than 6” away from any other Markers. If this makes it impossible to use all of the Markers, discard any that cannot be set up. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the third Turn each player scores:\n\n3 VPs for each Objective Marker they control. A player controls an Objective Marker if there are more friendly models than enemy models within 1” of it. At the end of the game each player scores:\n\n5 VPs for each Objective Marker they control. A player controls an Objective Marker if there are more friendly models than enemy models within 1” of it.\n\n1 VP for each Glorious Deed they completed."
+        }
+      ]
+    },
+    "gloriousDeeds": {
+      "intro": "To determine the Glorious Deeds for the scenario, each player rolls two D6, one after the other. If a player rolls the same result on both dice, roll the second dice again until it shows a different result to the first dice. Then look up the rolls on the following charts to generate four different Glorious Deeds for the game. The older of the two players uses Chart 1 and the younger uses Chart 2. Note that each of the Glorious Deeds can be completed by either player, not just the player who rolled the result.",
+      "charts": [
+        {
+          "name": "Glorious Deeds Chart 1 (Older Player)",
+          "rows": [
+            {
+              "printed": "1",
+              "rolls": [
+                1
+              ],
+              "name": "Reaper",
+              "description": "A friendly model takes 3 enemy models Out of Action during the game."
+            },
+            {
+              "printed": "2",
+              "rolls": [
+                2
+              ],
+              "name": "Sharpshooter",
+              "description": "A friendly model takes an enemy model Out of Action with a Ranged Weapon Attack that has the Long Range and Cover modifiers. Attacks with the BLAST Keyword or that automatically hit without requiring a Success Roll cannot complete this Glorious Deed."
+            },
+            {
+              "printed": "3",
+              "rolls": [
+                3
+              ],
+              "name": "Bloodletting",
+              "description": "An attack made by a friendly model results in the sixth BLOOD MARKER being placed beside an enemy model."
+            },
+            {
+              "printed": "4",
+              "rolls": [
+                4
+              ],
+              "name": "Feigned Retreat",
+              "description": "A friendly model takes a Retreat ACTION and then hits an enemy model it was within 1” of at the start of the Activation with a Ranged Attack later in the same Activation."
+            },
+            {
+              "printed": "5",
+              "rolls": [
+                5
+              ],
+              "name": "Fickle Luck",
+              "description": "A player spends 2 or more BLOOD MARKERS to penalise a Success Roll for an enemy model."
+            },
+            {
+              "printed": "6",
+              "rolls": [
+                6
+              ],
+              "name": "Headhunter",
+              "description": "A friendly model takes 2 enemy models Out of Action with Ranged Attacks during the game."
+            }
+          ]
+        },
+        {
+          "name": "Glorious Deeds Chart 2 (Younger Player)",
+          "rows": [
+            {
+              "printed": "1",
+              "rolls": [
+                1
+              ],
+              "name": "Risk it All",
+              "description": "A friendly model takes 2 Risky Success Rolls in the same Activation, and both are a Success or Critical Success."
+            },
+            {
+              "printed": "2",
+              "rolls": [
+                2
+              ],
+              "name": "Live Dangerously",
+              "description": "A friendly model takes 2 Retreat ACTIONS during the game."
+            },
+            {
+              "printed": "3",
+              "rolls": [
+                3
+              ],
+              "name": "Killer Instinct",
+              "description": "A friendly model takes 2 enemy models Out of Action with Melee Attacks during the game."
+            },
+            {
+              "printed": "4",
+              "rolls": [
+                4
+              ],
+              "name": "No Escape",
+              "description": "A friendly model successfully charges an enemy model that it did not have a Line of Sight to at the start of its Activation."
+            },
+            {
+              "printed": "5",
+              "rolls": [
+                5
+              ],
+              "name": "Cast Them Down",
+              "description": "A friendly model causes an enemy model to Fall from a height of at least 3” (e.g. by taking the enemy model Down near a ledge, or by forcing it off a ledge in some way)."
+            },
+            {
+              "printed": "6",
+              "rolls": [
+                6
+              ],
+              "name": "Show of Mercy",
+              "description": "A friendly model takes a Retreat ACTION when it is within 1” of an enemy model that is Down."
+            }
+          ]
+        }
+      ],
+      "always": {
+        "name": "Victory or Death",
+        "description": "A Warband wins the game. This Glorious Deed is only used in campaign games and is determined after the result of the game has been decided. You do not receive any Victory Points for achieving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would do normally.",
+        "when": "In addition to the Glorious Deeds generated on the charts, the following Glorious Deed is always used for a Random Scenario that has been generated for a Campaign:"
+      }
+    }
+  },
   "coreRules": [
     {
       "id": "the-initiative-phase",

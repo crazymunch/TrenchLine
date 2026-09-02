@@ -28,6 +28,7 @@ import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
+import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
@@ -135,6 +136,13 @@ for (const ruleset of RULESETS) {
   */
   const cf = parseCarcassFrontScenarios();
 
+  /*
+    The Random Scenario Generator, printed in the same chapter. Parsed
+    separately because it is a different kind of thing: a procedure with four
+    charts, not a scenario.
+  */
+  const generator = parseScenarioGenerator();
+
   const scenarios = parseScenarios().map((s) => {
     // The map is not derived, it is *resolved*: the hand-written scenarios
     // pointed every one of them at /maps/scenario_N.webp, and not one of those
@@ -222,6 +230,15 @@ for (const ruleset of RULESETS) {
     terrain: ruleset.layers.includes(CARCASS_FRONT)
       ? cf.terrain.map((t) => ({ ...t, source: 'carcass-front' }))
       : [],
+    /**
+     * The Random Scenario Generator, as a procedure the app can run.
+     *
+     * Undefined for a ruleset without the supplement — that ruleset genuinely
+     * has no generator, which is a different thing from one we failed to read,
+     * and the Codex says so rather than falling back to the invented tables it
+     * used to roll.
+     */
+    scenarioGenerator: ruleset.layers.includes(CARCASS_FRONT) ? generator : undefined,
     /**
      * The Core Rules and Comprehensive Rules chapters, in the book's order.
      *
@@ -592,6 +609,13 @@ for (const ruleset of RULESETS) {
   console.log(`  scenarios: ${dataset.scenarios.length} (${mapped} with maps), ${deeds} Glorious Deeds`);
   if (dataset.terrain.length) {
     console.log(`  terrain pieces with rules: ${dataset.terrain.map((t) => t.title).join(', ')}`);
+  }
+  if (dataset.scenarioGenerator) {
+    const g = dataset.scenarioGenerator;
+    const deeds = g.gloriousDeeds.charts.reduce((n, c) => n + c.rows.length, 0);
+    console.log(`  scenario generator: ${g.steps.length} steps, ` +
+      `${g.battlefield.rows.length} archetypes, ${g.deployment.rules.length} deployments, ` +
+      `${g.victory.rules.length} victory conditions, ${deeds} Glorious Deeds`);
   }
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
