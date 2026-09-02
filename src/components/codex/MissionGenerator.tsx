@@ -5,6 +5,8 @@ import { useStore } from '../../store/useStore';
 import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
 import { parseUnforeseenEvents, rollUnforeseen } from '../../rules/unforeseen';
+import { rollWeather } from '../../rules/weather';
+import { useDataset } from '../../rules/useDataset';
 import { 
   Dice6, 
   CloudRain, 
@@ -51,6 +53,14 @@ export const MissionGenerator: React.FC = () => {
   const [eventScenarioId, setEventScenarioId] = useState<string>('');
   const [lastEvent, setLastEvent] = useState<ReturnType<typeof rollUnforeseen> | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  /*
+    Hell on Earth's Weather Events — the game's other published conditions
+    table, and the one that applies to any game rather than to one scenario.
+  */
+  const { dataset: genDataset } = useDataset();
+  const weather = genDataset?.weather ?? null;
+  const [lastWeather, setLastWeather] = useState<ReturnType<typeof rollWeather> | null>(null);
 
   // Custom Mission Designer State
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
@@ -327,9 +337,75 @@ export const MissionGenerator: React.FC = () => {
         </div>
       )}
 
-      {/* MODE 2: UNFORESEEN EVENTS — the game's one published conditions table */}
+      {/* MODE 2: the two published conditions tables */}
       {activeMode === 'procedural' && (
-        <div className="space-y-5 animate-fade-in font-mono text-xs">
+        <div className="space-y-6 animate-fade-in font-mono text-xs">
+
+          {/*
+            Hell on Earth. Applies to any game the players choose to use it in,
+            unlike Unforeseen Events, which belongs to one scenario — so it goes
+            first. The whole table is printed under the roll, because the point
+            of the Codex is to be readable when the book is not to hand.
+          */}
+          {weather && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-border pb-2">
+                <span className="uppercase font-bold text-theme-text flex items-center gap-1.5">
+                  <CloudRain className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>Hell on Earth — Weather Events</span>
+                </span>
+                <button
+                  onClick={() => {
+                    soundEffects.playDiceRoll();
+                    setLastWeather(rollWeather(weather.events, 0));
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow min-h-[44px] sm:min-h-0"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Roll 2D6</span>
+                </button>
+              </div>
+
+              <p className="text-theme-muted leading-relaxed">{weather.procedure}</p>
+
+              {lastWeather && (
+                <div className="p-4 bg-theme-elevated rounded border border-theme-primary space-y-1.5">
+                  <span className="uppercase text-theme-muted font-mono">
+                    {lastWeather.dice[0]} + {lastWeather.dice[1]} = {lastWeather.total}
+                  </span>
+                  <h4 className="font-gothic font-bold text-base text-theme-text">
+                    {lastWeather.event.name}
+                  </h4>
+                  <p className="text-theme-muted italic leading-relaxed">{lastWeather.event.flavour}</p>
+                  <p className="text-theme-text bg-theme-base p-2.5 rounded border border-theme-border/60 leading-relaxed">
+                    {lastWeather.event.effect}
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                {weather.events.map((e) => (
+                  <div
+                    key={e.roll}
+                    className={`p-3 rounded border flex gap-3 ${
+                      lastWeather?.event.roll === e.roll
+                        ? 'bg-theme-elevated border-theme-primary'
+                        : 'bg-theme-base border-theme-border'
+                    }`}
+                  >
+                    <span className="font-bold text-theme-primary flex-shrink-0 w-5 text-right tabular-nums">
+                      {e.roll}
+                    </span>
+                    <div className="min-w-0">
+                      <strong className="block text-theme-text">{e.name}</strong>
+                      <p className="text-theme-muted italic leading-relaxed pt-0.5">{e.flavour}</p>
+                      <p className="text-theme-muted leading-relaxed pt-1">{e.effect}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {withEvents.length === 0 ? (
             <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">

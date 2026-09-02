@@ -777,6 +777,24 @@ code is that it survives being spoken and typed. 32^5 is 33.5 million codes;
 `collidingCodes()` reports a duplicate rather than letting the UI show the
 wrong roster.
 
+### Hell on Earth: Weather Events
+
+The first piece of Carcass Front to arrive as a **published** document rather
+than a preview article, and it lands as ordinary source data rather than
+anything speculative: a PDF in `data-sources/rulebook/`, an extract, a parser,
+a dataset field, tests against the printed table.
+
+Worth recording as the rehearsal Phase 5 §5.7 describes — release to shipped in
+one pass, with no hand-typed rules in between. `parse-weather.mjs` throws rather
+than returning a short table, because an 11-row 2D6 table read with a gap would
+hand a player a result the book does not have.
+
+One rule reaches into the engine: Smog Storm makes the Cover and Defended
+Obstacle modifiers -2 DICE instead of -1, so the attack calculator's chips take
+their value from the active Event. Deliberately narrow — one named Event, one
+modifier — rather than a general effect parser that would quietly mis-apply the
+ten it could not really read.
+
 ## Phase 5 — Carcass Front preview (backburner)
 
 *Blocked on Phases 1–2. Do not start before the pipeline and rules engine work.*

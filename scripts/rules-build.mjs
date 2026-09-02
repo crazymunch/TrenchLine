@@ -26,6 +26,7 @@ import { parseBattlekit } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
+import { parseWeatherEvents } from './lib/parse-weather.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -125,6 +126,14 @@ for (const ruleset of RULESETS) {
     is a hole in the Codex, so it fails the build rather than shipping a
     chapter list with a gap in it.
   */
+  /*
+    Hell on Earth's Weather Events. The parser throws rather than returning a
+    short table: an eleven-row 2D6 table read with a gap in it would hand a
+    player a result the book does not have, which is the exact failure the
+    invented weather was.
+  */
+  const weather = parseWeatherEvents();
+
   const coreRules = parseCoreRules();
   if (coreRules.missing.length) {
     throw new Error(
@@ -171,6 +180,15 @@ for (const ruleset of RULESETS) {
      * when they cannot check the book.
      */
     coreRules: coreRules.chapters,
+    /**
+     * The Weather Events table, from the Hell on Earth module.
+     *
+     * The app used to roll six invented weather conditions in the Codex and
+     * offer five more in the Play Mode lobby, none of which appears in any
+     * source. They were deleted with nothing put in their place, because
+     * nothing beats a made-up rule at a table. This is the published one.
+     */
+    weather,
     /**
      * The Battlekit chapter, verbatim.
      *
@@ -449,6 +467,7 @@ for (const ruleset of RULESETS) {
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
+  console.log(`  weather: ${dataset.weather.events.length} Weather Events (2D6)`);
   console.log(`  keywords: ${dataset.keywords.length} glossary entries ` +
               `(${dataset.keywords.filter((k) => k.type === 'Effect').length} Effect, ` +
               `${dataset.keywords.filter((k) => k.type === 'Tag').length} Tag)`);

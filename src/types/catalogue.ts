@@ -522,6 +522,24 @@ export interface CoreRuleSection {
   source: { file: string; page: number; lines: [number, number] };
 }
 
+/**
+ * One row of the Hell on Earth Weather Events table.
+ *
+ * An optional module the game publishes. It is the real thing the app's
+ * invented weather was standing in for — twenty-three fabricated "conditions"
+ * across the Codex and Play Mode, deleted in favour of nothing at all until
+ * this existed.
+ */
+export interface WeatherEvent {
+  /** 2 to 12. Every result has a row. */
+  roll: number;
+  name: string;
+  /** The italic line under the name. Not a rule. */
+  flavour: string;
+  /** The rule, verbatim. `Grim and Indifferent` is "No effect." */
+  effect: string;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -537,6 +555,14 @@ export interface Dataset {
   scenarios: ScenarioEntry[];
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
+  /**
+   * Hell on Earth: the Weather Events table, and the procedure for using it.
+   *
+   * Optional by the module's own words — "you and your opponent(s) **may**
+   * choose to influence your battles by generating a Weather Event" — so the
+   * app offers it rather than applying it.
+   */
+  weather: { procedure: string; events: WeatherEvent[] };
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */

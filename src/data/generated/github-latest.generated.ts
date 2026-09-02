@@ -56375,6 +56375,77 @@ export const DATASET: Dataset = {
       }
     }
   ],
+  "weather": {
+    "procedure": "All of Creation reels and rends in response to the Great War, and even the weather is endowed with divine or devilish power. To represent this in your games of Trench Crusade, you and your opponent(s) may choose to influence your battles by generating a Weather Event. After the battlefield has been set up but before players have Deployed any models, each player rolls 2D6 on the Weather Event Table below. In a campaign, the player with the fewest Campaign Victory Points decides which of the rolled Weather Events to apply for the remainder of the battle. If all players have the same number of Campaign Victory Points, or you are playing a one-off game, simply roll-off, with the winner deciding which rolled Weather Event to apply for the battle.",
+    "events": [
+      {
+        "roll": 2,
+        "name": "Traumatised Earth",
+        "flavour": "Something truly awful happened here.",
+        "effect": "Warbands add –1 DICE to Morale Checks. If a Warband is Shaken, add –2 DICE to Morale Checks instead."
+      },
+      {
+        "roll": 3,
+        "name": "Hemorrhage Eclipse",
+        "flavour": "As the light of the sun is shrouded by a wicked moon, the blood thins in all cast beneath its punitive glow.",
+        "effect": "After making the Injury Roll for a Weapon with the SHRAPNEL Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 4,
+        "name": "Hungry Barbed Wire",
+        "flavour": "A nest of rusted serpents awoken by the heat coil and writhe in search of their next meal.",
+        "effect": "All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to 8” by 8” and gives them the DANGEROUS TERRAIN Keyword (if they don’t have it already). In addition, when a model ends a move within 3” of the picked terrain pieces, make an Injury Roll for that model with –1 DICE."
+      },
+      {
+        "roll": 5,
+        "name": "Churning Mud",
+        "flavour": "Boots and treads alike sink deep into the morass of the blood-saturated soil.",
+        "effect": "Add –1 DICE to the Risky Success Rolls of all Dash ACTIONS."
+      },
+      {
+        "roll": 6,
+        "name": "Oppressive Heat",
+        "flavour": "The heat from above leaves all in a state of near-combustion.",
+        "effect": "After making the Injury Roll for a Weapon with the FIRE Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 7,
+        "name": "Grim and Indifferent",
+        "flavour": "Creation doesn’t even deign to notice you.",
+        "effect": "No effect."
+      },
+      {
+        "roll": 8,
+        "name": "Graveyard Miasma",
+        "flavour": "The trenches are choked with the dead, and at times their hungry, grasping hands reach through the mire.",
+        "effect": "All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to 8” by 8” and gives them the DIFFICULT TERRAIN Keyword (if they don’t have it already). In addition, models making a Melee Attack whilst in or on the picked terrain pieces treat their target as if they had the FEAR Keyword."
+      },
+      {
+        "roll": 9,
+        "name": "Thin Air",
+        "flavour": "The squelching of muddy boots provides counterpoint to the heaving of weary lungs.",
+        "effect": "After making the Injury Roll for a Weapon with the GAS Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 10,
+        "name": "Smog Storm",
+        "flavour": "Emerald lightning crackles and barks within the heavy clouds of diesel smoke and ash.",
+        "effect": "The Cover/Defended Obstacle Modifiers is –2 DICE instead of –1 DICE."
+      },
+      {
+        "roll": 11,
+        "name": "Raining Blood",
+        "flavour": "Thick rivulets of viscera drop from the heavens, incensing all to shocking violence.",
+        "effect": "Add +1” to the Charge Bonus rolled for all Charge ACTIONS."
+      },
+      {
+        "roll": 12,
+        "name": "(Un)Holy Choir",
+        "flavour": "The skies are filled with the trumpets and hymns of beings barely comprehensible to those below.",
+        "effect": "Warbands automatically pass Morale Checks."
+      }
+    ]
+  },
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",

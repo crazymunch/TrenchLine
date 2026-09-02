@@ -7,6 +7,7 @@ import { createProvenance, applyLayer, applyLayers, stampBase } from '../layers.
 import { normaliseStat, normaliseBase, nameKey, verify, applyResolutions } from '../verify.mjs';
 import { RULESETS, DEFAULT_RULESET } from '../rulesets.mjs';
 import { parseCoreRules } from '../parse-core-rules.mjs';
+import { parseWeatherEvents } from '../parse-weather.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
 const hasCatalogues = fs.existsSync(`${CAT_DIR}/MANIFEST.json`);
@@ -620,5 +621,60 @@ describe('forced Battlekit', () => {
     for (const u of ds.units) {
       for (const b of u.battlekit) expect(b.quantity, `${u.name}: ${b.name}`).toBe(1);
     }
+  });
+});
+
+/*
+  Hell on Earth's Weather Events. Every assertion is a row of the printed 2D6
+  table, so the parser cannot quietly ship a short one — an eleven-row table
+  read with a gap in it would hand a player a result the book does not have,
+  which is exactly what the invented weather did.
+*/
+describe('weather events', () => {
+  const { procedure, events } = parseWeatherEvents();
+  const at = (roll) => events.find((e) => e.roll === roll);
+
+  it('reads a row for every result on 2D6', () => {
+    expect(events.map((e) => e.roll)).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+  });
+
+  it('reads the names as printed', () => {
+    expect(events.map((e) => e.name)).toEqual([
+      'Traumatised Earth', 'Hemorrhage Eclipse', 'Hungry Barbed Wire', 'Churning Mud',
+      'Oppressive Heat', 'Grim and Indifferent', 'Graveyard Miasma', 'Thin Air',
+      'Smog Storm', 'Raining Blood', '(Un)Holy Choir',
+    ]);
+  });
+
+  it('keeps the rule apart from the flavour line', () => {
+    expect(at(2).flavour).toBe('Something truly awful happened here.');
+    expect(at(2).effect).toBe(
+      'Warbands add –1 DICE to Morale Checks. If a Warband is Shaken, add –2 DICE to Morale Checks instead.');
+  });
+
+  /*
+    The extractor hyphenates across the column break: "BLOOD MARK-\nERS". Three
+    rows hit it, and a rule that reads "place 2 extra BLOOD MARK- ERS" is a rule
+    a player has to decode.
+  */
+  it('rejoins words hyphenated across the column break', () => {
+    expect(at(3).effect).toContain('place 2 extra BLOOD MARKERS');
+    for (const e of events) expect(e.effect, e.name).not.toMatch(/\b\w+-\s/);
+  });
+
+  it('keeps the whole effect, including the second sentence', () => {
+    // Hungry Barbed Wire runs to three sentences; a naive row parser keeps one.
+    expect(at(4).effect).toContain('DANGEROUS TERRAIN');
+    expect(at(4).effect).toContain('make an Injury Roll for that model with –1 DICE');
+  });
+
+  it('records "No effect." rather than an empty rule', () => {
+    expect(at(7).effect).toBe('No effect.');
+  });
+
+  it('carries the procedure, including who decides which Event applies', () => {
+    expect(procedure).toContain('each player rolls 2D6');
+    expect(procedure).toContain('fewest Campaign Victory Points');
+    expect(procedure).toContain('before players have Deployed any models');
   });
 });
