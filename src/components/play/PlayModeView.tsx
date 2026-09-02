@@ -14,6 +14,19 @@ import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { RulesProse } from '../codex/RulesProse';
 import { ViewMasthead } from '../ui/ViewMasthead';
+
+/**
+ * The books a scenario can come from, in the order the picker groups them.
+ *
+ * `source` is empty for the core rulebook — its entries carry no source field
+ * because they are the baseline. The order is publication order, so a player
+ * scrolling the list meets the twelve they are most likely to want first.
+ */
+const SCENARIO_BOOKS: { source: string; label: string }[] = [
+  { source: '', label: 'Trench Crusade Rulebook' },
+  { source: 'carcass-front', label: 'Carcass Front' },
+  { source: 'all-out-war', label: 'All Out War' },
+];
 import { parseDeeds } from './deeds';
 import { parseUnforeseenEvents } from '../../rules/unforeseen';
 import { rollWeatherForAll, type WeatherRoll } from '../../rules/weather';
@@ -495,16 +508,29 @@ export const PlayModeView: React.FC = () => {
                 <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Select Mission / Scenario:
                 </label>
+                {/*
+                  Grouped by book. Three sources number their scenarios from I
+                  — the rulebook's twelve, Carcass Front's five, All Out War's
+                  three — so a flat list shows "I. Claim No Man's Land" and
+                  "I. The Ruins of Nineveh Novus" as peers, and two players
+                  agreeing on "scenario one" would set up different games.
+                */}
                 <select
                   value={selectedScenarioId}
                   onChange={(e) => setSelectedScenarioId(e.target.value)}
                   className="w-full bg-theme-base border-2 border-theme-primary rounded p-2.5 text-xs text-theme-text focus:outline-none"
                 >
-                  {scenarios.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
+                  {SCENARIO_BOOKS.map(({ source, label }) => {
+                    const inBook = scenarios.filter((s) => (s.source ?? '') === source);
+                    if (!inBook.length) return null;
+                    return (
+                      <optgroup key={label} label={label}>
+                        {inBook.map((s) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
                 </select>
 
                 {/* Map Preview with Lightbox Trigger */}
@@ -538,6 +564,9 @@ export const PlayModeView: React.FC = () => {
               <div className="lg:col-span-2 space-y-4 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-theme-primary">{selectedScenario?.name}</h3>
+                  <span className="eyebrow text-theme-muted">
+                    {SCENARIO_BOOKS.find((b) => b.source === (selectedScenario?.source ?? ''))?.label}
+                  </span>
                   <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline}</p>
 
                   {/* Published, or absent. The defaults these replaced —

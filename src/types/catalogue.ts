@@ -495,7 +495,7 @@ export interface ScenarioSection {
 }
 
 export interface ScenarioEntry {
-  /** 1-12. */
+  /** Its number within its own book: 1-12 in the rulebook, 1-5 in Carcass Front. */
   number: number;
   /** The numeral the book prints: 'I' … 'XII'. */
   roman: string;
@@ -504,8 +504,47 @@ export interface ScenarioEntry {
   slug: string;
   tagline: string;
   sections: ScenarioSection[];
-  /** The deployment map, verified to exist when the dataset was built. */
-  mapImage: string;
+  /**
+   * The deployment map, verified to exist when the dataset was built.
+   *
+   * Null where the source ships no map file. The rulebook's twelve all have
+   * one and the build fails if a file is missing — twelve broken images is
+   * what the hand-written scenarios shipped — but the Carcass Front book's
+   * maps have not been extracted from the PDF, and `null` says that plainly
+   * rather than pointing at a file that is not there.
+   */
+  mapImage: string | null;
+  /**
+   * Which book it is from: absent for the rulebook's twelve, `carcass-front`
+   * for the supplement's five. Both number their scenarios from I, so the
+   * numeral alone does not identify one.
+   */
+  source?: string;
+  /** The quotation the scenario opens on, above its summary. */
+  quotation?: string;
+  /** The quotation it closes on, printed under the Glorious Deeds. */
+  epigraph?: string;
+}
+
+/**
+ * A terrain piece with rules of its own.
+ *
+ * Kept apart from the scenarios because the book is explicit that it is:
+ * "rules for two different terrain pieces that you can use in ANY of your
+ * Trench Crusade games". Attaching them to the five Carcass Front scenarios
+ * would hide a naval mine from every other game.
+ */
+export interface TerrainPiece {
+  /** The slug the app addresses it by. */
+  slug: string;
+  /** As printed, in caps: `NAVAL MINE`. */
+  name: string;
+  /** Title Case, for display: `Naval Mine`. */
+  title: string;
+  /** The rules, as Markdown — including the 2D6 detonation table. */
+  body: string;
+  /** Which book it is from. */
+  source: string;
 }
 
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
@@ -598,6 +637,13 @@ export interface Dataset {
   battlekit: BattlekitEntry[];
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
+  /**
+   * Terrain pieces with rules of their own, usable in any game.
+   *
+   * Optional: the base rulebook publishes none, so an empty list and a missing
+   * one would say the same thing and neither would be a fact about the game.
+   */
+  terrain?: TerrainPiece[];
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
   /**

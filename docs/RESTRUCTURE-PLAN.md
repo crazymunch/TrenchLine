@@ -843,9 +843,46 @@ audit's deletions had spared because its stated job is presentation. Deleted;
 `hydrateCatalogs` now copies the derived `dataset.factions[].specialRules` onto
 those records instead.
 
-Still to come from the book: the five scenarios and the terrain pieces, the
-Random Scenario Generator, the new Patrons and exploration tables, and the
-Carcass Front campaign with its Vision Cards.
+### Carcass Front: the scenarios and the terrain
+
+Five scenarios (I–V, from The Ruins of Nineveh Novus to The Altar of Leviathan)
+and the two terrain pieces that carry rules of their own — the Levant Hedgehog
+and the Naval Mine, with its 2D6 detonation table and blast profile.
+
+Three decisions worth recording:
+
+- **The terrain pieces are their own collection**, not a section of the five
+  scenarios. The book says plainly they are "rules for two different terrain
+  pieces that you can use in **any** of your Trench Crusade games"; filed under
+  a scenario they would be invisible in every other one, and a naval mine's
+  detonation table is what a player reaches for mid-turn after someone has shot
+  at one. `dataset.terrain`, shown above the scenario list in the Codex.
+- **A scenario now says which book it is from.** The rulebook numbers its
+  twelve from I and Carcass Front numbers its five from I, so a flat picker
+  showed "I. Claim No Man's Land" and "I. The Ruins of Nineveh Novus" as peers
+  and two players agreeing on "scenario one" would set up different games. The
+  Play Mode picker groups by book; the Codex badges each entry.
+- **`mapImage` is nullable.** The rulebook's twelve are each checked against a
+  file in `public/maps/` and the build fails if one is missing — twelve broken
+  images is what the hand-written scenarios shipped. The Carcass Front maps
+  have not been extracted from the PDF, so those five carry `null`, which says
+  that rather than pointing at a file that is not there. Their DEPLOYMENT
+  sections describe the zones in words regardless.
+
+Two pieces of shared machinery came out of it:
+
+- **`RulesProse` renders tables.** The chapter turns on roll tables and the
+  renderer had no notion of one. They scroll inside their own container, never
+  the page — a 2D6 table with a sentence in every Result cell is wider than
+  375px whatever is done to it, and `overflow-x: hidden` on the body to hide
+  that is the thing [`MOBILE.md`](MOBILE.md) forbids.
+- **`dehyphenate.mjs`**, the shared rule for a hyphen at a line break. See
+  [`DATA-SOURCES.md`](DATA-SOURCES.md) § "Hyphens at a line break" — it is a
+  decision, not a formatting detail, and getting it wrong turns SHOTGUN into a
+  Keyword that matches nothing.
+
+Still to come from the book: the Random Scenario Generator, the new Patrons and
+exploration tables, and the Carcass Front campaign with its Vision Cards.
 
 ## Phase 5 — Carcass Front preview (SUPERSEDED — never built)
 

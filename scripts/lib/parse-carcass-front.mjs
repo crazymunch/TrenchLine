@@ -31,6 +31,7 @@
  * of what they say and a paraphrase is a rewrite.
  */
 import fs from 'node:fs';
+import { keepsHyphen } from './dehyphenate.mjs';
 
 export const BOOK_TXT = 'data-sources/carcass-front/extracted/carcass-front-book.txt';
 
@@ -91,11 +92,17 @@ const KIT_HEADER = /^Type\s*\t\s*Range\s*\t\s*Keywords/;
  *
  * The faction-list pages are one wide column and barely hit this; the special
  * rules and the Naval Raiders pages are two narrow ones and hit it constantly
- * ("Her-\netic Naval Raiders", "this bo-\nnus"). Only a lower-case letter
- * before the break is joined, so a real hyphenated name — "Leper-Pilgrims",
- * "Flail/Scourge" — survives.
+ * ("Her-\netic Naval Raiders", "this bo-\nnus").
+ *
+ * Whether the hyphen survives the join is decided by `dehyphenate.mjs`, which
+ * separates a typesetter's soft hyphen from one that belongs to the word. It
+ * used to drop every hyphen before a lower-case letter, which is right for
+ * "bo-nus" and wrong for "co-opted" and "roll-off" — and "roll-off" is a rules
+ * term a player searches the Codex for.
  */
-const dehyphenate = (s) => s.replace(/([a-z])-\s+([a-z])/g, '$1$2');
+const dehyphenate = (s) => String(s ?? '').replace(
+  /([A-Za-z]+-)\s+([A-Za-z])/g,
+  (whole, left, right) => (keepsHyphen(left, right) ? left + right : left.slice(0, -1) + right));
 
 const squash = (s) => dehyphenate(String(s ?? '')).replace(/\s+/g, ' ').trim();
 

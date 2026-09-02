@@ -191,6 +191,9 @@ against the same bytes.
 scenarios, terrain rules, a random scenario generator, new Patrons and
 exploration tables, and a campaign with its own Vision Cards.
 
+Two parsers read it today: `parse-carcass-front.mjs` for the faction lists and
+`parse-cf-scenarios.mjs` for the Scenarios & Terrain chapter.
+
 **Status:** official, published by Factory Fortress.
 
 **Why it is not transcribed.** The Dispatch is a list of errata sentences, so
@@ -212,6 +215,42 @@ Mercenary section empty, roles assigned from the wrong banner). Every one of
 them produced a *plausible* warband rather than an obviously broken one, which
 is why `scripts/lib/__tests__/carcass-front.test.mjs` asserts a printed value
 for each and says in a comment which failure it guards.
+
+The Scenarios & Terrain chapter (`parse-cf-scenarios.mjs`) hits the same class
+of problem three more times, and the tests are written the same way:
+
+- **The deployment maps extract into the prose.** Labels and dimensions —
+  `DEPLOYMENT ZONE`, `24’’`, `SWORD OF GOD` — arrive as bare lines mid-sentence.
+  In scenario V they land between "within 1” of the Altar of Leviathan and" and
+  "not within 1” of any enemy models", cutting the sentence that says who may
+  attempt a Summon Roll. Found by shape — a run of label-or-dimension lines
+  containing at least one measurement — rather than by a list of labels per
+  scenario.
+- **Each scenario closes on a quotation** printed straight under the last
+  Glorious Deed, in a face the extraction drops. It truncated the last deed of
+  all five before the split existed. Three facts locate the boundary and all
+  three must hold: every deed opens `Name: `, the quotation begins a sentence
+  on a capital, and it contains no rules vocabulary.
+- **Tables are tab-separated rows.** A Search Table, a 2D6 naval-mine
+  detonation table, a Lunatic Monk's statline. Flattened into prose the mine's
+  table reads `2-6 The naval mine does not explode now, but you must roll again
+  7-11 The naval mine is jostled…` — a roll table nobody can use at the moment
+  they are rolling on it — so they stay tables through to the Codex.
+
+### Hyphens at a line break
+
+`scripts/lib/dehyphenate.mjs`, because it is a decision and not a formatting
+detail. A justified column ends a line on a hyphen for two reasons and the
+extraction records both identically: a soft hyphen the typesetter inserted
+(`bo-\nnus`, `SHOT-\nGUN`) and a real one that belongs to the word
+(`roll-\noff`, `co-\nopted`).
+
+Always dropping gives `rolloff` and `coopted`; always keeping gives `bo-nus`
+and `SHOT-GUN` — and SHOTGUN is a Keyword, so that turns a searchable rules
+term into one that matches nothing. Two signals separate them: a
+compound-forming left fragment (`co-`, `half-`, `corpse-`), or a capital on
+**both** sides (`Off-Hand`, `Meta-Christ`). Between them they get all 44
+hyphenated breaks in the book right, and the test lists every one.
 
 ## Extracting PDFs
 

@@ -125,9 +125,11 @@ describe('parseRulesProse', () => {
         .replace(/[*#]/g, ' ')
         .split(/\s+/)
         .filter(Boolean);
-    const got = parseRulesProse(source).flatMap((b) =>
-      b.kind === 'list' ? b.items.flatMap(words) : words(b.text),
-    );
+    const got = parseRulesProse(source).flatMap((b) => {
+      if (b.kind === 'list') return b.items.flatMap(words);
+      if (b.kind === 'table') return [...b.header, ...b.rows.flat()].flatMap(words);
+      return words(b.text);
+    });
 
     expect(got).toEqual(words(source));
   });
@@ -135,5 +137,53 @@ describe('parseRulesProse', () => {
   it('returns nothing for empty input', () => {
     expect(parseRulesProse('')).toEqual([]);
     expect(parseRulesProse('   \n\n  ')).toEqual([]);
+  });
+});
+
+describe('tables', () => {
+  /*
+    The Carcass Front scenarios turn on roll tables — a Search Table, a 2D6
+    naval-mine detonation table, four scenario-generator charts. Flattened into
+    a paragraph they read `2-6 The naval mine does not explode now, but you
+    must roll again 7-11 The naval mine is jostled…`, which is a roll table a
+    player cannot use at the moment they are rolling on it.
+  */
+  it('reads a pipe table, header and rows', () => {
+    const blocks = parseRulesProse([
+      'When a mine is attacked, roll 2D6:',
+      '',
+      '| Roll | Result |',
+      '| --- | --- |',
+      '| 2-6 | The naval mine does not explode now. |',
+      '| 12 | The mine explodes immediately. |',
+      '',
+      'Naval mine explosions have the following effect:',
+    ].join('\n'));
+
+    expect(blocks.map((b) => b.kind)).toEqual(['p', 'table', 'p']);
+    const table = blocks[1];
+    if (table.kind !== 'table') throw new Error('expected a table');
+    expect(table.header).toEqual(['Roll', 'Result']);
+    expect(table.rows).toEqual([
+      ['2-6', 'The naval mine does not explode now.'],
+      ['12', 'The mine explodes immediately.'],
+    ]);
+  });
+
+  it('keeps a five-column profile intact', () => {
+    const blocks = parseRulesProse([
+      '| Movement | Ranged | Melee | Armour | Base |',
+      '| --- | --- | --- | --- | --- |',
+      '| 8”/Infantry | - | +1 DICE | 0 | 25mm |',
+    ].join('\n'));
+    const table = blocks[0];
+    if (table.kind !== 'table') throw new Error('expected a table');
+    expect(table.header).toHaveLength(5);
+    expect(table.rows).toEqual([['8”/Infantry', '-', '+1 DICE', '0', '25mm']]);
+  });
+
+  it('does not mistake a sentence containing a pipe for a table', () => {
+    const blocks = parseRulesProse('Roll a D6 | is not how the book writes it.');
+    expect(blocks.map((b) => b.kind)).toEqual(['p']);
   });
 });

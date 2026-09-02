@@ -55488,6 +55488,7 @@ export const DATASET: Dataset = {
       "mapImage": "/maps/great-war.png"
     }
   ],
+  "terrain": [],
   "coreRules": [
     {
       "id": "the-initiative-phase",

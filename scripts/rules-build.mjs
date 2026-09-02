@@ -27,6 +27,7 @@ import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
+import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
@@ -123,6 +124,17 @@ for (const ruleset of RULESETS) {
   // The twelve scenarios. The hand-written set had the wrong game length for
   // all twelve, inverted Claim No Man's Land's Infiltrator rule, and invented
   // 32 of its 46 Glorious Deeds.
+  /*
+    The Carcass Front book's five scenarios and its two terrain pieces.
+
+    Parsed once outside this loop would be cleaner, but the map check below is
+    per-ruleset and this keeps the two scenario sources side by side. They are
+    only added to a ruleset that carries the supplement's layer — playing a
+    Carcass Front scenario means using its terrain pieces and its neutral
+    models, which the `github-latest` catalogues know nothing about.
+  */
+  const cf = parseCarcassFrontScenarios();
+
   const scenarios = parseScenarios().map((s) => {
     // The map is not derived, it is *resolved*: the hand-written scenarios
     // pointed every one of them at /maps/scenario_N.webp, and not one of those
@@ -137,6 +149,19 @@ for (const ruleset of RULESETS) {
     }
     return { ...s, mapImage: `/${file}` };
   });
+
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    /*
+      No map file, and `null` rather than a path to one that does not exist.
+
+      The rulebook's twelve are checked against `public/maps/` and the build
+      fails if a file is missing, because the hand-written scenarios pointed
+      all twelve at files that were never there. The Carcass Front maps have
+      not been extracted from the PDF; saying so is the honest answer, and the
+      scenario's DEPLOYMENT section describes the zones in words regardless.
+    */
+    scenarios.push(...cf.scenarios.map((s) => ({ ...s, mapImage: null })));
+  }
 
   /*
     The Core Rules and Comprehensive Rules chapters.
@@ -185,8 +210,18 @@ for (const ruleset of RULESETS) {
      * rather than flattened into one list.
      */
     keywords,
-    /** The twelve scenarios, as printed, with their maps resolved. */
+    /** The scenarios, as printed, with their maps resolved. */
     scenarios,
+    /**
+     * Terrain pieces that carry rules of their own — the Levant Hedgehog and
+     * the Naval Mine, with its 2D6 detonation table and blast profile.
+     *
+     * The book states they are for use in ANY game, not only its own five
+     * scenarios, so they are a collection rather than a section of one.
+     */
+    terrain: ruleset.layers.includes(CARCASS_FRONT)
+      ? cf.terrain.map((t) => ({ ...t, source: 'carcass-front' }))
+      : [],
     /**
      * The Core Rules and Comprehensive Rules chapters, in the book's order.
      *
@@ -540,9 +575,24 @@ for (const ruleset of RULESETS) {
   const bkKeys = new Set(dataset.battlekit.map((b) => nameKey(b.name)));
   const armouryNames = new Set(dataset.armouries.flatMap((a) => a.rows.map((r) => nameKey(r.name))));
   const described = [...armouryNames].filter((n) => bkKeys.has(n)).length;
-  const deeds = dataset.scenarios.reduce((n, s) =>
-    n + (s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body.match(/^- /gm)?.length ?? 0), 0);
-  console.log(`  scenarios: ${dataset.scenarios.length} with maps, ${deeds} Glorious Deeds`);
+  /*
+    Glorious Deeds, counted across both books' notations. The rulebook bullets
+    them (`- Bloodletting: …`); the Carcass Front book sets each as its own
+    paragraph (`Doomed: A friendly model…`). Counting only bullets reported
+    the same 64 whether the supplement was in the ruleset or not, which made
+    the number useless as a check on the parse.
+  */
+  const deeds = dataset.scenarios.reduce((n, s) => {
+    const body = s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body ?? '';
+    const bullets = body.match(/^- /gm)?.length ?? 0;
+    const named = body.match(/^[A-Z][A-Za-z0-9’'/ -]{1,44}:\s/gm)?.length ?? 0;
+    return n + (bullets || named);
+  }, 0);
+  const mapped = dataset.scenarios.filter((s) => s.mapImage).length;
+  console.log(`  scenarios: ${dataset.scenarios.length} (${mapped} with maps), ${deeds} Glorious Deeds`);
+  if (dataset.terrain.length) {
+    console.log(`  terrain pieces with rules: ${dataset.terrain.map((t) => t.title).join(', ')}`);
+  }
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
