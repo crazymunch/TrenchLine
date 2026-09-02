@@ -881,8 +881,50 @@ Two pieces of shared machinery came out of it:
   decision, not a formatting detail, and getting it wrong turns SHOTGUN into a
   Keyword that matches nothing.
 
-Still to come from the book: the Random Scenario Generator, the new Patrons and
-exploration tables, and the Carcass Front campaign with its Vision Cards.
+### Carcass Front: the Random Scenario Generator
+
+Four charts and the stated order to roll them in, plus the six deployments and
+six victory conditions the charts name. The book states it as a procedure, so
+it is carried as one and the app runs it — `src/rules/scenarioGenerator.ts`,
+under a new **Scenario Generator** tab in the Codex.
+
+This retires the last of the invented tables. The Mission Generator rolled six
+weather conditions, six "complications" and six "Secret Secondary Agendas" with
+their own Glory and Ducat rewards; none of the eighteen appears in any source,
+and they gave themselves away on vocabulary — "Poison wounds", "battle rounds",
+"-1 Morale", "priority in Turn 1", none of which Trench Crusade has.
+
+Three rules in it are easy to get wrong and each is pinned by a test:
+
+- **The deed dice are rolled one after the other and a double re-rolls the
+  SECOND die.** Rolling 2D6 and taking a total, or allowing the double, gives
+  a player three deeds where the book gives four.
+- **Which chart a player uses is decided by age** — older uses Chart 1. The app
+  says whose chart is whose rather than deciding, the same treatment the
+  Weather Event's "fewest Campaign Victory Points" gets.
+- **Every deed is live for both players**, so the four are one list rather than
+  two each.
+
+And `Victory or Death` is added only for a campaign game, because the book adds
+it only there.
+
+**The one inference in the pipeline, and why it is not a guess.** The
+Deployment & Game Length chart has a vertically merged Game Length column and
+the extraction flattens merged cells: rows 1-4 print one value between them and
+rows 5-6 print another, so the text arrives with a third cell on rows 1 and 5
+and none on 2, 3, 4 and 6. Every row of a chart a player rolls on must have a
+game length, only two are printed, and each applies from the row it appears on
+until the next one does. `spreadMergedCell` repeats a printed value down the
+rows it covers and never invents one.
+
+**A live bug found on the way.** The Codex's `generator` tab has been rendered
+by `activeTab === 'generator'` since the Codex was built, and **nothing in the
+app ever set that state** — there was no button for it. The Mission Designer,
+the weather roller and the Unforeseen Events roller were all unreachable. Row 2
+of the tab nav now carries five buttons instead of four.
+
+Still to come from the book: the new Patrons and exploration tables, and the
+Carcass Front campaign with its Vision Cards.
 
 ## Phase 5 — Carcass Front preview (SUPERSEDED — never built)
 

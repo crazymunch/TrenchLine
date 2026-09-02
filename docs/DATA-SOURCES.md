@@ -191,8 +191,12 @@ against the same bytes.
 scenarios, terrain rules, a random scenario generator, new Patrons and
 exploration tables, and a campaign with its own Vision Cards.
 
-Two parsers read it today: `parse-carcass-front.mjs` for the faction lists and
-`parse-cf-scenarios.mjs` for the Scenarios & Terrain chapter.
+Three parsers read it today: `parse-carcass-front.mjs` for the faction lists,
+`parse-cf-scenarios.mjs` for the five scenarios and the terrain pieces, and
+`parse-cf-generator.mjs` for the Random Scenario Generator. The last two share
+`cf-prose.mjs`, which turns a chapter's pages into ordered lines and a run of
+lines into Markdown — page furniture, wrapped lines and tab-separated tables
+are the same three problems whatever the chapter is about.
 
 **Status:** official, published by Factory Fortress.
 
@@ -236,6 +240,20 @@ of problem three more times, and the tests are written the same way:
   table reads `2-6 The naval mine does not explode now, but you must roll again
   7-11 The naval mine is jostled…` — a roll table nobody can use at the moment
   they are rolling on it — so they stay tables through to the Codex.
+- **A merged cell is flattened.** The generator's Deployment & Game Length
+  chart merges its last column vertically: rows 1-4 share one Game Length and
+  rows 5-6 share another, so the extraction gives a third cell only on rows 1
+  and 5. A printed value applies from the row it appears on until the next one
+  does; nothing is invented, a value is repeated.
+- **A cell is only continued if it was long enough to have wrapped.** Without
+  that, the Victory Conditions chart's last row — `Take and Hold`, ending on
+  no full stop — swallowed the six pages of rules printed under the chart as
+  part of its own name.
+- **Maps are dropped per page, never across a page break.** Dropping them
+  chapter-wide swallowed the `VICTORY CONDITIONS CHART` heading: the page
+  before it ends on a deployment map, and a short all-caps heading at the top
+  of the next page looked like one more label on it. The generator lost a
+  quarter of itself, silently.
 
 ### Hyphens at a line break
 
