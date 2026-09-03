@@ -57648,6 +57648,55 @@ export const DATASET: Dataset = {
       ]
     }
   ],
+  "battlekitLimits": {
+    "limits": [
+      {
+        "section": "Ranged Weapons",
+        "raw": "One 2-Handed Ranged Weapon or two 1-Handed Ranged Weapons.",
+        "byHands": {
+          "1": 2,
+          "2": 1
+        }
+      },
+      {
+        "section": "Melee Weapons",
+        "raw": "One 2-Handed Melee Weapon or two 1-Handed Melee Weapons.",
+        "byHands": {
+          "1": 2,
+          "2": 1
+        }
+      },
+      {
+        "section": "Grenades",
+        "raw": "One type of Grenade.",
+        "max": 1,
+        "per": "name"
+      },
+      {
+        "section": "Armour",
+        "raw": "One suit of Armour.",
+        "max": 1
+      },
+      {
+        "section": "Shields",
+        "raw": "One Shield (▶ see additional restrictions below).",
+        "max": 1
+      },
+      {
+        "section": "Equipment",
+        "raw": "Any number of pieces of Equipment or Special Battlekit. A Model cannot have two or more pieces of Equipment or Special Battlekit with the same Name.",
+        "max": null,
+        "distinctByName": true
+      }
+    ],
+    "withShield": {
+      "raw": "A Shield requires one hand to carry and cannot be unequipped. As a result, if a model has a Shield, the following restrictions apply to the other Battlekit it can carry: ** It may carry a maximum of one 1-Handed Melee and Ranged Weapon each. ** It cannot carry a 2-Handed Weapon unless the Weapon and the Shield both have the Shield Combo stipulation (▶ see Warbands of Trench Crusade).",
+      "oneHandedEach": 1,
+      "hands": 1,
+      "blocksHands": 2,
+      "unlessBoth": "Shield Combo"
+    }
+  },
   "campaign": {
     "thresholds": [
       {

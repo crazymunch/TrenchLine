@@ -67,6 +67,15 @@ export interface RosterUnit {
    * only ever read to answer "does this model unlock that entry?".
    */
   traits?: string[];
+  /**
+   * The model has a third weapon hand — see `hasExtraLimb`.
+   *
+   * Carried on the roster rather than recomputed, because the Battlekit
+   * carrying limits open with "Unless otherwise stated" and this is the app's
+   * existing answer to it: a model the builder offers a third weapon must not
+   * then be told by the validator that it is illegal.
+   */
+  extraLimb?: boolean;
 }
 
 export interface Roster {

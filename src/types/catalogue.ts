@@ -376,6 +376,49 @@ export interface Faction {
   description?: string;
 }
 
+/* ------------------------------------------------------ battlekit limits */
+
+/**
+ * How much Battlekit one model may carry, as the rulebook's own bullets state
+ * it. Derived by `scripts/lib/parse-battlekit.mjs`; see `rules/battlekitLimits`
+ * for what enforces it.
+ */
+export interface BattlekitLimit {
+  /** Named as the Armoury Tables name it: `Armour`, `Shields`, `Grenades`… */
+  section: string;
+  /** The sentence it was read from, so the app can cite rather than paraphrase. */
+  raw: string;
+  /** A flat ceiling, where the rule states one. `null` means "any number". */
+  max?: number | null;
+  /**
+   * "One 2-Handed … or two 1-Handed …" — one allowance expressed twice, keyed
+   * by hands. Kept as both bounds rather than reduced to a single number,
+   * because which bound applies depends on what the model is carrying.
+   */
+  byHands?: Record<string, number>;
+  /** `name` where the rule caps distinct KINDS: "One type of Grenade". */
+  per?: string;
+  /** "cannot have two or more … with the same Name". */
+  distinctByName?: boolean;
+}
+
+/** What carrying a Shield costs a model elsewhere. */
+export interface ShieldRestrictions {
+  raw: string;
+  /** "a maximum of one 1-Handed Melee and Ranged Weapon each". */
+  oneHandedEach?: number;
+  hands?: number;
+  /** The handedness a Shield blocks outright — 2. */
+  blocksHands?: number;
+  /** Unless both carry this stipulation: `Shield Combo`. */
+  unlessBoth?: string;
+}
+
+export interface BattlekitLimits {
+  limits: BattlekitLimit[];
+  withShield?: ShieldRestrictions;
+}
+
 /* ------------------------------------------------------------- layer ops */
 
 export type Ref = { kind: 'unit' | 'weapon' | 'faction' | 'option' | 'keyword'; id: string };
@@ -889,6 +932,13 @@ export interface Dataset {
   variants: WarbandVariant[];
   /** The rulebook's Battlekit chapter: descriptions and per-item special rules. */
   battlekit: BattlekitEntry[];
+  /**
+   * How much of it one model may carry — "One suit of Armour", the handedness
+   * rules, the Shield restrictions. Optional because a ruleset built before
+   * these were parsed has none, and an absent set means "unknown", which the
+   * validator treats as "do not enforce" rather than as "no limits".
+   */
+  battlekitLimits?: BattlekitLimits;
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
   /**

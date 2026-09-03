@@ -286,3 +286,187 @@ function splitTail(tail) {
     rules: rules.map((r) => r.replace(/\s+/g, ' ').trim()),
   };
 }
+
+/* ------------------------------------------------------- battlekit limits */
+
+/**
+ * How much Battlekit one model may carry, from the chapter's own statement.
+ *
+ * The rulebook prints this as six bullets under a heading, and the app enforced
+ * none of them — a model could wear three suits of Armour, carry four 2-Handed
+ * weapons and two Shields, and validate clean. It is the last legality
+ * dimension in the Battlekit chapter that nothing read.
+ *
+ *     BATTLEKIT LIMITS
+ *     Unless otherwise stated a model is limited to the following Battlekit:
+ *     ** One 2-Handed Ranged Weapon or two 1-Handed Ranged Weapons.
+ *     ** One 2-Handed Melee Weapon or two 1-Handed Melee Weapons.
+ *     ** One type of Grenade.
+ *     ** One suit of Armour.
+ *     ** One Shield (▶ see additional restrictions below).
+ *     ** Any number of pieces of Equipment or Special Battlekit. A Model
+ *        cannot have two or more pieces of Equipment or Special Battlekit
+ *        with the same Name.
+ *
+ * Derived rather than transcribed into a constant, for the ordinary reason:
+ * a number typed into a TypeScript file is a number nobody re-checks against
+ * the page it came from. Every rule keeps its `raw` sentence so the app can
+ * show the player the wording rather than a paraphrase of it.
+ *
+ * "Unless otherwise stated" is the whole reason `raw` is kept and the whole
+ * reason the caller — not this parser — decides what to do about a model whose
+ * own entry states otherwise.
+ */
+
+/** Counting words, as the chapter writes them. English, not game data. */
+const COUNT = { one: 1, two: 2, three: 3, four: 4 };
+const countOf = (w) => COUNT[String(w).trim().toLowerCase()] ?? Number(w);
+
+const LIMITS_HEADING = /^BATTLEKIT LIMITS$/;
+const SHIELDS_HEADING = /^Shields$/;
+
+/** `One 2-Handed Ranged Weapon or two 1-Handed Ranged Weapons.` */
+const BY_HAND = /^(\w+)\s+(\d)-Handed\s+(Ranged|Melee)\s+Weapons?\s+or\s+(\w+)\s+(\d)-Handed\s+\3\s+Weapons?\.?$/i;
+/** `One type of Grenade.` — a limit on KINDS, not on how many you carry. */
+const BY_TYPE = /^(\w+)\s+types?\s+of\s+(\w+)\.?$/i;
+/** `One suit of Armour.` */
+const SUITS = /^(\w+)\s+suits?\s+of\s+(\w+)\.?$/i;
+/** `One Shield (▶ see additional restrictions below).` */
+const PLAIN = /^(\w+)\s+([A-Z]\w+)\b/;
+/** `Any number of pieces of Equipment or Special Battlekit…` */
+const ANY_NUMBER = /^Any number of pieces of ([^.]+)\./i;
+const SAME_NAME = /cannot have two or more[^.]*with the same Name/i;
+
+/** `It may carry a maximum of one 1-Handed Melee and Ranged Weapon each.` */
+const SHIELD_ONE_HANDED =
+  /maximum of (\w+)\s+(\d)-Handed\s+(Melee)\s+and\s+(Ranged)\s+Weapons?\s+each/i;
+/** `It cannot carry a 2-Handed Weapon unless the Weapon and the Shield both
+ *  have the Shield Combo stipulation` */
+const SHIELD_TWO_HANDED =
+  /cannot carry a (\d)-Handed Weapon unless[^.]*both\s+have\s+the\s+([\w\s]+?)\s+stipulation/i;
+
+/**
+ * The section a rule governs, named as the Armoury Tables name it.
+ *
+ * The chapter says "Grenade" and "Armour" in the singular and the tables head
+ * their columns `Grenades` and `Armour`; matching the tables is what lets the
+ * validator count a roster item against the right rule without a second lookup.
+ */
+const SECTION_OF = {
+  ranged: 'Ranged Weapons', melee: 'Melee Weapons', grenade: 'Grenades',
+  armour: 'Armour', shield: 'Shields', equipment: 'Equipment',
+};
+const sectionFor = (word) => SECTION_OF[String(word).trim().toLowerCase()];
+
+/**
+ * Read the limits.
+ *
+ * Returns `{ limits, withShield, unreadable }`. A bullet this cannot read goes
+ * into `unreadable` and is reported by the build rather than dropped: a limit
+ * silently missing is a limit silently unenforced.
+ */
+export function parseBattlekitLimits(src = RULEBOOK_TXT) {
+  const lines = chapterLines(src);
+
+  const at = lines.findIndex((l) => LIMITS_HEADING.test(l.trim()));
+  if (at < 0) {
+    throw new Error(
+      `parse-battlekit: no BATTLEKIT LIMITS heading in ${src}. These are the ` +
+      'per-model carrying limits — one suit of Armour, one Shield, the ' +
+      'handedness rules — and nothing else in either source states them.');
+  }
+
+  /* The bulleted rules run from the heading to the `Shields` sub-heading that
+     carries the extra restrictions the Shield bullet points at. */
+  const shieldsAt = lines.findIndex((l, i) => i > at && SHIELDS_HEADING.test(l.trim()));
+  const body = lines.slice(at + 1, shieldsAt < 0 ? lines.length : shieldsAt);
+
+  /* Bullets wrap, so a line that does not start one continues the last. */
+  const bullets = [];
+  for (const line of body) {
+    if (BULLET.test(line)) bullets.push(line.replace(BULLET, '').trim());
+    else if (bullets.length) bullets[bullets.length - 1] += ` ${line.trim()}`;
+  }
+
+  const limits = [];
+  const unreadable = [];
+
+  for (const raw of bullets) {
+    const hand = raw.match(BY_HAND);
+    if (hand) {
+      const [, aN, aH, kind, bN, bH] = hand;
+      limits.push({
+        section: sectionFor(kind), raw,
+        // "One 2-Handed … or two 1-Handed …" is one allowance expressed twice,
+        // so both bounds are kept rather than reduced to a single number.
+        byHands: { [aH]: countOf(aN), [bH]: countOf(bN) },
+      });
+      continue;
+    }
+
+    const type = raw.match(BY_TYPE);
+    if (type && sectionFor(type[2])) {
+      // "One TYPE of Grenade" caps distinct kinds, not how many you carry.
+      limits.push({ section: sectionFor(type[2]), raw, max: countOf(type[1]), per: 'name' });
+      continue;
+    }
+
+    const suit = raw.match(SUITS);
+    if (suit && sectionFor(suit[2])) {
+      limits.push({ section: sectionFor(suit[2]), raw, max: countOf(suit[1]) });
+      continue;
+    }
+
+    const any = raw.match(ANY_NUMBER);
+    if (any) {
+      limits.push({
+        section: 'Equipment', raw, max: null,
+        // The second sentence of the same bullet is the real rule.
+        distinctByName: SAME_NAME.test(raw) || undefined,
+      });
+      continue;
+    }
+
+    const plain = raw.match(PLAIN);
+    if (plain && sectionFor(plain[2])) {
+      limits.push({ section: sectionFor(plain[2]), raw, max: countOf(plain[1]) });
+      continue;
+    }
+
+    unreadable.push(raw);
+  }
+
+  /* The Shield sub-section: what carrying one costs you elsewhere.
+
+     Bounded at the next heading rather than by a line count. `Dual-Purpose
+     Battlekit` follows immediately, and swallowing it would attribute the
+     Pistol's counts-as-one rule to the Shield restrictions. */
+  /* The sub-section is a lead-in paragraph, then its bullets, then the next
+     heading. `Battlekit it can carry:` ends the lead-in and is short and
+     unfinished — indistinguishable from a heading on its own — so the end is
+     the first heading-shaped line AFTER a bullet has been seen. */
+  let seenBullet = false;
+  const shieldEnd = shieldsAt < 0 ? -1 : lines.findIndex((l, i) => {
+    if (i <= shieldsAt) return false;
+    if (BULLET.test(l)) { seenBullet = true; return false; }
+    return seenBullet && looksLikeName(l);
+  });
+  const shieldProse = shieldsAt < 0 ? ''
+    : lines.slice(shieldsAt + 1, shieldEnd < 0 ? lines.length : shieldEnd).join(' ');
+  const oneHanded = shieldProse.match(SHIELD_ONE_HANDED);
+  const twoHanded = shieldProse.match(SHIELD_TWO_HANDED);
+
+  const withShield = (oneHanded || twoHanded) ? {
+    raw: shieldProse.replace(/\s+/g, ' ').trim(),
+    ...(oneHanded ? {
+      oneHandedEach: countOf(oneHanded[1]),
+      hands: Number(oneHanded[2]),
+    } : {}),
+    ...(twoHanded ? {
+      blocksHands: Number(twoHanded[1]),
+      unlessBoth: twoHanded[2].trim(),
+    } : {}),
+  } : undefined;
+
+  return { limits, withShield, unreadable };
+}
