@@ -191,12 +191,20 @@ against the same bytes.
 scenarios, terrain rules, a random scenario generator, new Patrons and
 exploration tables, and a campaign with its own Vision Cards.
 
-Three parsers read it today: `parse-carcass-front.mjs` for the faction lists,
-`parse-cf-scenarios.mjs` for the five scenarios and the terrain pieces, and
-`parse-cf-generator.mjs` for the Random Scenario Generator. The last two share
+Five parsers read it today: `parse-carcass-front.mjs` for the faction lists,
+`parse-cf-scenarios.mjs` for the five scenarios and the terrain pieces,
+`parse-cf-generator.mjs` for the Random Scenario Generator,
+`parse-cf-exploration.mjs` for the four Exploration Tables, and
+`parse-patrons.mjs` for the three new Patrons. All but the first share
 `cf-prose.mjs`, which turns a chapter's pages into ordered lines and a run of
 lines into Markdown — page furniture, wrapped lines and tab-separated tables
 are the same three problems whatever the chapter is about.
+
+`parse-patrons.mjs` is the one that reads **two books**, because Carcass
+Front's three Patrons are explicit that they are not a Carcass Front feature —
+*"The following new Patrons can be taken by eligible Warbands in any Campaign
+(not just a Carcass Front Campaign)"* — so they belong beside the rulebook's
+eight rather than behind the supplement's layer.
 
 **Status:** official, published by Factory Fortress.
 
@@ -254,6 +262,62 @@ of problem three more times, and the tests are written the same way:
   before it ends on a deployment map, and a short all-caps heading at the top
   of the next page looked like one more label on it. The generator lost a
   quarter of itself, silently.
+
+### Patrons: an invariant instead of a boundary
+
+Every Patron in both books has **exactly six Skills**, and that fact is the
+whole of `parse-patrons.mjs`'s error checking. It is worth writing down because
+it is a better check than any boundary rule would have been.
+
+The rulebook's Patrons are the last thing in their chapter, and the six
+bulleted Campaign Phase steps printed on the page after it — `** Trauma Step:`,
+`** Exploration Step:`, `** Quartermaster Step:` — are set exactly like a
+Patron Skill. Read to the end of the file, the Antipope of Avignon came out
+with twelve Skills. Nothing else about the output looked wrong: eleven Patrons,
+each with a name, a restriction, lore and a Skill list.
+
+Two more things the chapter teaches:
+
+- **The sentence separating lore from Skills wraps, in both books** — after
+  `allows you to take` for the Antipope, after `allows you to take the` for the
+  House of Wisdom — and the wording varies (five entries say *the following
+  Skills*, four say *following Skills*). Anchoring on the half that ends in
+  `Skills:` left the other half on the end of two lore paragraphs.
+- **A block in a Skill's shape is not always a Skill.** `Zīj Seal` is printed
+  among the House of Wisdom's Skills and is the Alchemical Formula that the
+  `Whispering Zīj` Skill above it lets a Takwin Homunculus buy for 20 👑. The
+  evidence is outside the prose, which is what makes it usable: the four
+  Formulae the entry's other Skills name — Hypnotic Eyes, Terrifying
+  Appearance, Regenerative Tissue, Startling Speed — are all in the BattleScribe
+  catalogues, and `Zīj Seal` is in none of them, so it is new here and this book
+  has to print its rules. It is carried as `introduces` rather than dropped: a
+  Formula a player can buy for 20 👑 is game data.
+
+### The Exploration Tables: contiguity is the check
+
+A Carcass Front campaign uses its four Resource tables — Favour 👁, Relic 🏺,
+Supplies 📦, Territories 🌍 — *instead of* the rulebook's three, and the rows are
+ranges rather than sparse single numbers: *"A Location is discovered if the
+Exploration Roll corresponds to any number in the range."*
+
+So every table must run from 1 upwards with no gap, no overlap, and an
+open-ended last row (`34+`, because the dice pool grows all campaign and a roll
+can exceed any printed number). `parse-cf-exploration.mjs` asserts exactly
+that, and a row count would not have done: Favour has twelve rows and the other
+three have thirteen, because Favour prints `6-9` where the others print `6-8`
+and `9-11`.
+
+It caught a real bug on the first run. `cf-prose.mjs`'s shared `CHART_ROW` was
+written for the Random Scenario Generator's charts and matches a single number
+or a closed band only, so all four `34+` rows failed it and were read as wrapped
+continuations of the row above them. Each table stopped at 33, and `Patron's
+Visit` carried `Chosen Blessing`'s rules on the end of its own.
+
+`ExplorationLocation.roll` widened from `number` to `{ from, to }` for this, so
+one lookup serves both books. The conversion happens in `parseExploration` and
+**not** in the shared `parseRollTable`, which the four Skills tables also use: a
+Skills row is a single 2D6 result, and widening the shared helper reported all
+four Skills tables as having lost all eleven rows.
 
 ### Hyphens at a line break
 

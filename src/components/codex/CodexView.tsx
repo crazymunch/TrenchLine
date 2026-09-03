@@ -29,6 +29,7 @@ import {
   ChevronDown, 
   ChevronUp,
   Zap,
+  Crown,
   ExternalLink,
   Layers,
   CheckCircle2
@@ -36,7 +37,7 @@ import {
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
-  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets'>('rules');
+  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons'>('rules');
 
   /**
    * The reference tables, from the generated dataset.
@@ -66,15 +67,33 @@ export const CodexView: React.FC = () => {
         roll: r.roll, title: r.name, description: r.description,
       }));
     }
+    /*
+      The four Carcass Front tables, which are a different set and not a fourth
+      rarity: a Carcass Front campaign uses them INSTEAD of the rulebook's
+      three. Undefined on a ruleset without the supplement, which is why this
+      is a lookup rather than a branch on the name.
+    */
+    const cf = codexDataset.campaign.carcassFrontExploration?.[which];
+    if (cf) {
+      return cf.locations.map((r) => ({
+        roll: rollLabel(r.roll), title: r.name, description: r.description,
+      }));
+    }
     const table = which === 'common' ? 'common' : which === 'rare' ? 'rare' : 'legendary';
     return codexDataset.campaign.exploration.locations[table].map((r) => ({
       roll: rollLabel(r.roll), title: r.name, description: r.description,
     }));
   };
+  /** The Carcass Front Resource tables, or an empty list on a ruleset without them. */
+  const cfExploration = codexDataset?.campaign.carcassFrontExploration ?? undefined;
+  const patrons = codexDataset?.patrons ?? [];
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
-  const [selectedChartTable, setSelectedChartTable] = useState<'trauma' | 'common' | 'rare' | 'legendary'>('trauma');
+  const [expandedPatronId, setExpandedPatronId] = useState<string | null>(null);
+  // A Resource id ('favour', 'relic', …) is as valid here as a rarity name:
+  // `chartFor` looks the Carcass Front tables up by Resource.
+  const [selectedChartTable, setSelectedChartTable] = useState<string>('trauma');
   const [selectedSkillsCategory, setSelectedSkillsCategory] = useState<'melee' | 'ranged' | 'stealth' | 'wildcard'>('melee');
   const [skillsViewMode, setSkillsViewMode] = useState<'cards' | 'tables'>('cards');
   const [selectedSkillModal, setSelectedSkillModal] = useState<{
@@ -254,13 +273,14 @@ export const CodexView: React.FC = () => {
             Mission Designer and every generator in it were unreachable. Six
             buttons on two rows of three at phone width, four across from `sm`.
           */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
               { id: 'generator', label: 'Scenario Generator', icon: <Dices className="w-4 h-4" /> },
               { id: 'weapons', label: `Weapons Codex (${arsenal.filter((i) => groupOf(i) === 'weapons').length})`, icon: <Swords className="w-4 h-4" /> },
               { id: 'armour', label: `Armour & Gear (${arsenal.filter((i) => groupOf(i) !== 'weapons').length})`, icon: <Shield className="w-4 h-4" /> },
+              { id: 'patrons', label: `Patrons (${patrons.length})`, icon: <Crown className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -870,33 +890,74 @@ export const CodexView: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-theme-surface border-2 border-theme-primary rounded-md shadow-xl bevel-container">
             <div>
               <span className="font-gothic font-bold text-base text-theme-text block">
-                OFFICIAL CAMPAIGN TABLES (D66)
+                OFFICIAL CAMPAIGN TABLES
               </span>
+              {/*
+                Not "(D66)". The Trauma Table is D66; an Exploration Roll is a
+                pool of D6 summed, and the Carcass Front tables are rolled on
+                3D6 and up. Labelling all of them D66 told a player to roll the
+                wrong dice on six of the eight tables here.
+              */}
               <p className="text-xs text-theme-muted">
-                Exact rulebook tables for trauma casualties and exploration scavenge.
+                Trauma is D66. Exploration is your Exploration Dice, summed.
               </p>
             </div>
+          </div>
 
-            <div className="flex space-x-1.5 overflow-x-auto">
+          {/*
+            Two groups, because they are two sets of tables and not one list.
+
+            A Carcass Front campaign uses its four Resource tables INSTEAD of
+            the rulebook's three — "you must use the Carcass Front Exploration
+            Tables at the end of this book, instead of the ones in the Trench
+            Crusade Rulebook" — so a player is on one set or the other. Shown
+            as one flat row of eight they would read as eight tables to choose
+            between, which is the one thing they are not.
+          */}
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
-                { id: 'trauma', label: '1. Trauma Table (D66)' },
-                { id: 'common', label: '2. Common Exploration (D66)' },
-                { id: 'rare', label: '3. Rare Exploration (D66)' },
-                { id: 'legendary', label: '4. Legendary Exploration' }
+                { id: 'trauma', label: 'Trauma (D66)' },
+                { id: 'common', label: 'Common Exploration' },
+                { id: 'rare', label: 'Rare Exploration' },
+                { id: 'legendary', label: 'Legendary Exploration' },
               ].map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedChartTable(cat.id as any)}
-                  className={`px-3.5 py-2 rounded font-bold uppercase transition-all whitespace-nowrap ${
+                  onClick={() => setSelectedChartTable(cat.id)}
+                  className={`px-3 py-2 rounded font-bold uppercase transition-all text-xs ${
                     selectedChartTable === cat.id
                       ? 'bg-theme-primary text-theme-base shadow'
                       : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
                   }`}
                 >
-                  {cat.label}
+                  <span className="truncate block">{cat.label}</span>
                 </button>
               ))}
             </div>
+
+            {cfExploration && (
+              <>
+                <p className="text-[11px] font-mono uppercase tracking-wide text-theme-muted pt-1">
+                  Carcass Front — used instead of the three above
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {Object.values(cfExploration).map((t) => (
+                    <button
+                      key={t.resource}
+                      onClick={() => setSelectedChartTable(t.resource)}
+                      className={`px-3 py-2 rounded font-bold uppercase transition-all text-xs ${
+                        selectedChartTable === t.resource
+                          ? 'bg-theme-primary text-theme-base shadow'
+                          : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
+                      }`}
+                    >
+                      <span className="truncate block">{t.glyph} {t.resource}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Comprehensive Explanation Banner per Table */}
@@ -923,6 +984,45 @@ export const CodexView: React.FC = () => {
                   <p className="text-theme-muted pt-0.5">Warrior recovers fully with no negative effects, gaining toughness from experience.</p>
                 </div>
               </div>
+            </div>
+          ) : cfExploration?.[selectedChartTable] ? (
+            /*
+              The Carcass Front Exploration Step, which is a different step.
+
+              Every line here is a rule the book states and this app or its
+              player would otherwise get wrong by carrying a habit over from a
+              standard campaign — and each is worth Ducats every single game.
+            */
+            <div className="p-4 bg-theme-base rounded border border-theme-primary/50 space-y-2">
+              <div className="flex items-center space-x-2 text-theme-primary">
+                <Sparkles className="w-4 h-4" />
+                <strong className="font-gothic uppercase text-sm">
+                  THE CARCASS FRONT EXPLORATION STEP:
+                </strong>
+              </div>
+              <p className="text-theme-text leading-relaxed">
+                In a Carcass Front campaign you use these four tables{' '}
+                <strong>instead of</strong> the rulebook&apos;s three. You roll on the one
+                matching a Resource available in the zone the game was played in.
+              </p>
+              <ul className="list-disc list-inside text-theme-muted space-y-0.5 text-xs sm:text-[11px]">
+                <li>
+                  <strong>The pool is 3D6</strong>, and it does not grow with games played —
+                  it grows with Campaign Tracker rewards and Camp Buildings.
+                </li>
+                <li>
+                  <strong>Loot is your Exploration Roll × 5 👑</strong>, not × 10.
+                </li>
+                <li>
+                  <strong>Rows are ranges.</strong> A Location is discovered if your roll
+                  falls anywhere in its band, so every roll finds something.
+                </li>
+                <li>
+                  <strong>Only the Aggressor consults a table.</strong> If you were not, you
+                  still roll and still take the loot — and if three or more of your dice
+                  match, you come across agents for Rudolf&apos;s Folly.
+                </li>
+              </ul>
             </div>
           ) : (
             <div className="p-4 bg-theme-base rounded border border-theme-primary/50 space-y-2">
@@ -1081,6 +1181,116 @@ export const CodexView: React.FC = () => {
       )}
 
       {/* TAB 8: MISSION GENERATOR */}
+      {/*
+        TAB: PATRONS.
+
+        A Patron decides exactly one thing and decides it often — both ends of
+        every 2D6 Skill Table are a `Patron Skill` result — and until now the
+        app had no Patron data at all: `warband.patron` was free text, so a
+        player who rolled one had nothing to look up.
+      */}
+      {activeTab === 'patrons' && (
+        <div className="space-y-3">
+          <p className="text-xs font-mono text-theme-muted leading-relaxed">
+            Pick a Patron for your Warband at the start of a campaign. When a Skill Table
+            rolls a <strong className="text-theme-text">Patron Skill</strong>, you take one of
+            its six.
+          </p>
+
+          {patrons.length === 0 && (
+            <p className="text-xs font-mono text-status-error leading-relaxed">
+              {codexDatasetError
+                ? `The Patron list could not be loaded: ${codexDatasetError}.`
+                : 'Loading the Patron list…'}
+            </p>
+          )}
+
+          {patrons.map((p) => {
+            const open = expandedPatronId === p.id;
+            return (
+              <div
+                key={p.id}
+                className="bg-theme-surface border border-theme-border rounded-md overflow-hidden"
+              >
+                <button
+                  onClick={() => setExpandedPatronId(open ? null : p.id)}
+                  className="w-full flex items-center justify-between gap-3 p-3.5 text-left hover:bg-theme-elevated transition-colors"
+                >
+                  <div className="min-w-0">
+                    <span className="font-gothic font-bold text-sm text-theme-primary block truncate">
+                      {p.name}
+                    </span>
+                    <span className="text-[11px] font-mono text-theme-muted block truncate">
+                      {p.restriction}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {/* Which book prints it. Both books number their Patrons
+                        from nothing, and a player at a table needs to know
+                        which one to open. */}
+                    {p.source === 'carcass-front' && (
+                      <span className="px-2 py-0.5 rounded bg-theme-base text-theme-primary font-mono text-[10px] font-bold border border-theme-border">
+                        CF
+                      </span>
+                    )}
+                    {open
+                      ? <ChevronUp className="w-4 h-4 text-theme-muted" />
+                      : <ChevronDown className="w-4 h-4 text-theme-muted" />}
+                  </div>
+                </button>
+
+                {open && (
+                  <div className="px-3.5 pb-3.5 space-y-3 border-t border-theme-border pt-3">
+                    <p className="text-xs text-theme-text leading-relaxed">{p.lore}</p>
+
+                    <div className="space-y-2">
+                      {p.skills.map((sk) => (
+                        <div
+                          key={sk.name}
+                          className="p-3 bg-theme-base rounded border border-theme-border space-y-1"
+                        >
+                          <span className="font-gothic font-bold text-xs text-theme-primary block">
+                            {sk.name}
+                          </span>
+                          <p className="text-[11px] font-mono text-theme-text leading-relaxed">
+                            {sk.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/*
+                      Game data a Skill introduces that is not itself a Skill.
+                      One entry in eleven Patrons: the House of Wisdom's
+                      `Whispering Zīj` unlocks a Zīj Seal Alchemical Formulae,
+                      whose rules the book prints among the Skills. Shown apart
+                      so the entry has the six Skills it actually has, and
+                      shown at all because it is a thing a player can buy.
+                    */}
+                    {p.introduces.map((item) => (
+                      <div
+                        key={item.name}
+                        className="p-3 bg-theme-base rounded border border-theme-accent/50 space-y-1"
+                      >
+                        <span className="font-gothic font-bold text-xs text-theme-accent block">
+                          {item.name}
+                        </span>
+                        <span className="text-[10px] font-mono uppercase tracking-wide text-theme-muted block">
+                          {item.kind} — unlocked by {item.unlockedBy}
+                        </span>
+                        <p className="text-[11px] font-mono text-theme-text leading-relaxed pt-0.5">
+                          {item.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {activeTab === 'generator' && <MissionGenerator />}
 
       {/* WARGEAR INSPECTOR */}
