@@ -60536,6 +60536,44 @@ export const DATASET: Dataset = {
       ]
     }
   ],
+  "keywordGrants": [
+    {
+      "name": "Hellfly Host",
+      "grants": [
+        "FLYING"
+      ],
+      "raw": "A model with the Hellfly Host Strain replaces their Movement Characteristic with 6”/Flying and gains the FLYING Keyword. In addition, a model with the Hellfly Host Strain loses the Undead Fortitude ability."
+    },
+    {
+      "name": "Body of Gold",
+      "grants": [
+        "TOUGH"
+      ],
+      "raw": "A model with this Goetic Ability has the GOLEM Keyword. In addition, this model loses the TOUGH Keyword if it has it, and it cannot gain the TOUGH Keyword through any other means"
+    },
+    {
+      "name": "Elemental Resistance",
+      "grants": [
+        "NEGATE FIRE",
+        "NEGATE GAS"
+      ],
+      "raw": "Give this Takwin Homunculus the NEGATE FIRE and NEGATE GAS Keywords. In addition, add -1 INJURY DICE to Injury Rolls for attacks with the FIRE or GAS Keywords that target this Takwin Homunculus."
+    },
+    {
+      "name": "Enslaved Mind",
+      "grants": [
+        "FIRETEAM"
+      ],
+      "raw": "Give this Takwin Homunculus and one other model in your Warband the FIRETEAM Keyword. The other model can only form a Fireteam with this Homunculus."
+    },
+    {
+      "name": "Inhuman Strength",
+      "grants": [
+        "STRONG"
+      ],
+      "raw": "The musculature of the Homunculus is reinforced, replaced and strengthened. Give this Takwin Homunculus the STRONG Keyword, change its Melee Characteristic to +1 DICE, and increase its base size to 32mm"
+    }
+  ],
   "battlekitLimits": {
     "limits": [
       {

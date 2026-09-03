@@ -22,7 +22,7 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
-import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules } from './lib/parse-battlekit.mjs';
+import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -346,6 +346,26 @@ for (const ruleset of RULESETS) {
      * so the app can cite the wording and because "unless otherwise stated"
      * means the caller has to be able to see what was stated.
      */
+    /**
+     * Keywords an option gives the model that takes it, by the option's name.
+     *
+     * A granted Keyword appears nowhere on the catalogue entry — Al-Masyukh
+     * has STRONG only because it bought Inhuman Strength — and several rules
+     * are keyed on a model's Keywords. Read from the option's own rules text;
+     * see `keywordGrantsFrom`.
+     */
+    keywordGrants: (() => {
+      const byName = new Map();
+      for (const u of base.units) {
+        for (const o of u.options ?? []) {
+          const grants = keywordGrantsFrom(o.description);
+          if (grants.length && !byName.has(o.name)) {
+            byName.set(o.name, { name: o.name, grants, raw: o.description });
+          }
+        }
+      }
+      return [...byName.values()];
+    })(),
     battlekitLimits: {
       limits: battlekitLimits.limits,
       withShield: battlekitLimits.withShield,

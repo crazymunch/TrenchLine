@@ -17,6 +17,7 @@
  */
 import type { Dataset, UnitProfile } from '@/types/catalogue';
 import { isAlchemicalFormula, traitsOf, hasExtraLimb } from './formulae';
+import { effectiveKeywords } from './keywordGrants';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { Roster, RosterUnit, RosterItem } from './costs';
 import { armouryFor, priceOf, offersOf } from './armoury';
@@ -173,6 +174,14 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
         Titan Zulfiqar the catalogue reveals to exactly that name.
       */
       traits: traitsOf(u),
+      /*
+        The entry's Keywords plus the ones its Formulae grant. Al-Masyukh has
+        STRONG because it bought Inhuman Strength — "Give this Takwin
+        Homunculus the STRONG Keyword" — and the base Takwin Homunculus entry
+        carries only ARTIFICIAL, so reading the entry alone told a legal model
+        that its greatsword and sword needed three hands.
+      */
+      keywords: effectiveKeywords(profile, traitsOf(u), dataset),
       extraLimb: hasExtraLimb(u) || undefined,
       fireteam: u.fireteam,
     });
