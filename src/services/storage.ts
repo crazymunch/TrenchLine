@@ -150,17 +150,29 @@ export const storage = {
     }
   },
 
-  async syncCampaignToCloud(campaign: Campaign): Promise<void> {
-    if (!isBrowser) return;
-    try {
-      await fetch('/api/campaigns', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create', ...campaign }),
-      });
-    } catch (e) {
-      console.warn('Cloud sync campaign failed:', e);
-    }
+  /**
+   * Campaigns are LOCAL-ONLY. This does nothing, deliberately.
+   *
+   * What it used to do was not sync. It POSTed `{ action: 'create', ...campaign }`
+   * on **every** campaign mutation — six call sites, each firing on an ordinary
+   * edit — so each change minted a brand new campaign row rather than updating
+   * one. There is no update action on the API and nothing reconciles the local
+   * campaign's id with the server's, so nothing ever read those rows back.
+   * Signed out, they were all filed under the shared
+   * `commander@trenchline.org` account.
+   *
+   * It also swallowed every failure and returned `void`, so none of that was
+   * visible: the UI could not tell saved from unauthenticated from offline —
+   * the exact distinction `CloudResult` exists to make for warbands, three
+   * functions above this one.
+   *
+   * Restoring it needs an API that can update a campaign, a rule about which
+   * copy wins, and the outbox treatment warbands already have. Until then this
+   * says so rather than generating rows nobody reads, and returns a
+   * `CloudResult` so a caller that starts checking gets a truthful answer.
+   */
+  async syncCampaignToCloud(_campaign: Campaign): Promise<CloudResult<void>> {
+    return { ok: false, reason: 'server', detail: 'Campaign cloud sync is not implemented.' };
   },
 
   getCustomUnits(): UnitProfile[] {
