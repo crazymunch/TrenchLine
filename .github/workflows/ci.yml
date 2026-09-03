@@ -162,15 +162,15 @@ jobs:
           fi
           echo "No high or critical advisories in production dependencies."
 
-  # GitHub's own review of what a pull request ADDS, which needs no external
-  # endpoint and so cannot fail the way the job above can.
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: high
-          # A licence change is a decision somebody should make on purpose.
-          comment-summary-in-pr: always
+  # NOTE: `actions/dependency-review-action` is deliberately NOT here.
+  #
+  # It needs the Dependency graph and GitHub Advanced Security enabled on the
+  # repository, which this one does not have — the job fails with "Dependency
+  # review is not supported on this repository" on every run. A check that is
+  # red for a reason no pull request can fix teaches people to ignore red
+  # checks, which costs more than the job was worth.
+  #
+  # To turn it on: enable Dependency graph under Settings -> Code security,
+  # then add back a job running `actions/dependency-review-action@v4` with
+  # `fail-on-severity: high`. It reviews what a PR ADDS and needs no external
+  # endpoint, so it cannot fail the way the audit job above can.
