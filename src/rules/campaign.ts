@@ -213,13 +213,56 @@ export function hasPlayedAGame(warband: {
  * An unrestricted Warband is exempt: it exists to try lists out, has no
  * campaign to be consistent with, and its budget is already the player's to
  * set at any time.
+ *
+ * So is a Warband with NO Variant, and that exemption is the important one.
+ *
+ * The rule above is about CHANGING a declaration. Where none has been made
+ * there is nothing to change, and the harm it guards against is already
+ * happening: a Warband with no Variant is validated against its faction's
+ * standard list, which is what makes models on the roster wrongly legal or
+ * illegal. Declaring the Variant is what ENDS that, so refusing the
+ * declaration keeps the roster wrong on purpose.
+ *
+ * This is not hypothetical. `POST /api/warbands` never persisted `variantId`,
+ * so every Warband that synced lost its Variant, and a campaign Warband that
+ * had already fought could then never restore it: the app deleted the
+ * declaration and then locked the door on it. A House of Wisdom list came back
+ * told it must include a Yüzbaşı its Variant forbids, with no way to say
+ * otherwise.
+ *
+ * A player could in principle leave the Variant unset, play, then declare one
+ * to legalise something. That is a worse trade than it looks: before the sync
+ * was fixed, "no Variant" was overwhelmingly the bug rather than a choice, and
+ * a roster nobody can correct is a roster nobody trusts. The declaration is
+ * still one-way — once made, this locks again.
+ *
+ * ## The admin override
+ *
+ * An admin may change a declared Variant. This lock is a RULES guard, not a
+ * permission boundary: it stops a player rewriting their own history by
+ * accident, and every reason it exists is about keeping a campaign honest
+ * between people who trust each other. The person running the campaign is the
+ * one who adjudicates exactly this kind of correction at the table, so the app
+ * should not be the only thing in the room that cannot be overruled.
+ *
+ * It is deliberately NOT a security decision and must never be confused with
+ * one. Nothing here reads or writes another player's data; `isAdmin` arrives
+ * from the issued session (`sessionIsAdmin`), the same value the server
+ * decided, and the worst it can do is let its holder edit a roster they can
+ * already edit. The API's own authorization is unaffected and unaware of it.
  */
-export function canChangeVariant(warband: {
-  forceMode?: 'campaign' | 'unrestricted';
-  snapshots?: { type?: string }[];
-  ledger?: LedgerEntry[];
-}): boolean {
+export function canChangeVariant(
+  warband: {
+    forceMode?: 'campaign' | 'unrestricted';
+    variantId?: string;
+    snapshots?: { type?: string }[];
+    ledger?: LedgerEntry[];
+  },
+  options: { isAdmin?: boolean } = {},
+): boolean {
+  if (options.isAdmin) return true;
   if (warband.forceMode === 'unrestricted') return true;
+  if (!warband.variantId) return true;
   return !hasPlayedAGame(warband);
 }
 
