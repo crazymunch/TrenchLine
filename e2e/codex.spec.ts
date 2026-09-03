@@ -58,3 +58,50 @@ test('the Carcass Front Exploration tables read as their own set', async ({ page
     document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow, 'the charts tab scrolls the page sideways').toBeLessThanOrEqual(0);
 });
+
+/**
+ * The Campaigns tab: two campaigns, the Camp buildings, the Tracker rewards
+ * and the sixteen Vision cards.
+ *
+ * The map campaign's chapter is 44 sections, so it is an accordion rather than
+ * a page — a player opens this at a table, on a phone, having just finished a
+ * game and wanting the one step they are on.
+ */
+test('the Campaigns tab reads on a phone', async ({ page }) => {
+  await openApp(page);
+  await goTo(page, 'Codex');
+
+  const tab = page.getByRole('button', { name: 'Campaigns', exact: true });
+  await expect(tab, 'the Campaigns tab has no button').toBeVisible();
+  await tab.click();
+
+  // Both campaigns, and the notice that one of them needs the box's map.
+  await expect(page.getByRole('button', { name: /The Carcass Front Campaign/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /The Path to Leviathan/ })).toBeVisible();
+  await expect(page.getByText(/fold-out map from the box/)).toBeVisible();
+
+  // The twelve building tiers, which stack.
+  await page.getByRole('button', { name: /Camp Buildings/ }).click();
+  await expect(page.getByText('💰 Depot')).toBeVisible();
+  await expect(page.getByText(/increase your Warband’s Threshold Value by 20/)).toBeVisible();
+
+  // The Vision cards.
+  await page.getByRole('button', { name: /Vision Cards/ }).click();
+  await expect(page.getByText('Diplomat')).toBeVisible();
+  await expect(page.getByText('Have 1 Mercenary in your Warband')).toBeVisible();
+
+  const overflow = await page.evaluate(() =>
+    document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow, 'the Campaigns tab scrolls the page sideways').toBeLessThanOrEqual(0);
+
+  // The Path to Leviathan's three conclusions.
+  await page.getByRole('button', { name: /The Path to Leviathan/ }).click();
+  await page.getByRole('button', { name: /Campaign Conclusions/ }).click();
+  await expect(page.getByText('Total Victory', { exact: true })).toBeVisible();
+  await expect(page.getByText('Minor Victory', { exact: true })).toBeVisible();
+  await expect(page.getByText('The summoning fails', { exact: true })).toBeVisible();
+
+  const overflow2 = await page.evaluate(() =>
+    document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow2, 'the Path to Leviathan scrolls the page sideways').toBeLessThanOrEqual(0);
+});

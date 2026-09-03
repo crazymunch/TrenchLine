@@ -12,6 +12,7 @@ import { MissionGenerator } from './MissionGenerator';
 import { DiceProbabilityModal } from './DiceProbabilityModal';
 import { RulesProse } from './RulesProse';
 import { rollLabel } from '../../rules/campaign';
+import { CampaignsView } from './CampaignsView';
 import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
   BookOpen, 
@@ -30,6 +31,7 @@ import {
   ChevronUp,
   Zap,
   Crown,
+  Flag,
   ExternalLink,
   Layers,
   CheckCircle2
@@ -37,7 +39,7 @@ import {
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
-  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons'>('rules');
+  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons' | 'campaigns'>('rules');
 
   /**
    * The reference tables, from the generated dataset.
@@ -87,6 +89,8 @@ export const CodexView: React.FC = () => {
   /** The Carcass Front Resource tables, or an empty list on a ruleset without them. */
   const cfExploration = codexDataset?.campaign.carcassFrontExploration ?? undefined;
   const patrons = codexDataset?.patrons ?? [];
+  const campaigns = codexDataset?.campaigns ?? [];
+  const visionCards = codexDataset?.visionCards ?? [];
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -273,7 +277,7 @@ export const CodexView: React.FC = () => {
             Mission Designer and every generator in it were unreachable. Six
             buttons on two rows of three at phone width, four across from `sm`.
           */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
@@ -281,6 +285,10 @@ export const CodexView: React.FC = () => {
               { id: 'weapons', label: `Weapons Codex (${arsenal.filter((i) => groupOf(i) === 'weapons').length})`, icon: <Swords className="w-4 h-4" /> },
               { id: 'armour', label: `Armour & Gear (${arsenal.filter((i) => groupOf(i) !== 'weapons').length})`, icon: <Shield className="w-4 h-4" /> },
               { id: 'patrons', label: `Patrons (${patrons.length})`, icon: <Crown className="w-4 h-4" /> },
+              // No count in the label: two campaigns is not a useful number, and
+              // `Campaigns (2)` truncates to `CAMPAIGNS (…` at 375px, which
+              // shows the parenthesis and hides the count.
+              { id: 'campaigns', label: 'Campaigns', icon: <Flag className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -1289,6 +1297,19 @@ export const CodexView: React.FC = () => {
             );
           })}
         </div>
+      )}
+
+      {/*
+        TAB: CAMPAIGNS. The Carcass Front map campaign and the Path to
+        Leviathan, with the Camp buildings, the Tracker rewards and the sixteen
+        Vision cards that go with them.
+      */}
+      {activeTab === 'campaigns' && (
+        <CampaignsView
+          campaigns={campaigns}
+          visionCards={visionCards}
+          error={codexDatasetError}
+        />
       )}
 
       {activeTab === 'generator' && <MissionGenerator />}

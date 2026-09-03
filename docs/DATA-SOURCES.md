@@ -191,11 +191,13 @@ against the same bytes.
 scenarios, terrain rules, a random scenario generator, new Patrons and
 exploration tables, and a campaign with its own Vision Cards.
 
-Five parsers read it today: `parse-carcass-front.mjs` for the faction lists,
+Seven parsers read it today: `parse-carcass-front.mjs` for the faction lists,
 `parse-cf-scenarios.mjs` for the five scenarios and the terrain pieces,
 `parse-cf-generator.mjs` for the Random Scenario Generator,
-`parse-cf-exploration.mjs` for the four Exploration Tables, and
-`parse-patrons.mjs` for the three new Patrons. All but the first share
+`parse-cf-exploration.mjs` for the four Exploration Tables,
+`parse-patrons.mjs` for the three new Patrons, `parse-cf-campaign.mjs` for the
+two campaigns, and `parse-vision-cards.mjs` for the sixteen Vision cards —
+which reads a separate PDF, not the book. All but the first and the last share
 `cf-prose.mjs`, which turns a chapter's pages into ordered lines and a run of
 lines into Markdown — page furniture, wrapped lines and tab-separated tables
 are the same three problems whatever the chapter is about.
@@ -318,6 +320,94 @@ one lookup serves both books. The conversion happens in `parseExploration` and
 **not** in the shared `parseRollTable`, which the four Skills tables also use: a
 Skills row is a single 2D6 result, and widening the shared helper reported all
 four Skills tables as having lost all eleven rows.
+
+### The campaigns: prose, with the actionable parts lifted out
+
+Most of both campaign chapters is rules a player *reads* rather than numbers an
+app can hold — how the Aggressor is chosen, what each Campaign Tracker box
+does, how a Strafing Run is shot down. That is carried as sourced Markdown,
+section by section, and rendered by `RulesProse`, which is the same treatment
+the rulebook's Core Rules chapters get and for the same reason: a player opens
+the Codex exactly when they cannot open the book.
+
+Four things are lifted into structure on top, because the app can do something
+with them that prose cannot: the twelve **Camp building tiers**, the fourteen
+**Campaign Tracker rewards**, the two **Shared Objectives**, and the three
+**Campaign Conclusions** of the Path to Leviathan.
+
+**Four rules separate a heading from prose that starts like one**, and each is
+there because a line in these chapters breaks it. The Aerial Bombardment rules
+are set in a narrow column beside an illustration, so nearly every line of them
+is short enough to be a heading:
+
+| the line | why it is not a heading |
+|---|---|
+| `In order to use an Aerial Bom-` | ends on a hyphen |
+| `We have provided an example of` | ends on a function word |
+| `The ceremony of innocence` | the next line continues it (`is drowned”`) |
+| `Roll \t Result` | it is a table's header row |
+
+Consecutive headings are one heading that wrapped: `Carcass Front` /
+`Campaign Games` is the section the book cross-references as *"Carcass Front
+Campaign Games"*.
+
+**The Tracker reward table is structured because it does not survive
+otherwise.** The extraction keeps the tab between its two columns on five of
+the fourteen rows and drops it on the other nine, so `toMarkdown` renders five
+table rows with two walls of run-on text either side — *"+1 🎲 Roll an extra
+Exploration Dice in each Exploration Step. Reroll 🎲 You can reroll 1…"*. That
+is a lookup table nobody can look anything up in, the same failure the naval
+mine's detonation table had. The four building rewards are cross-checked
+against the four buildings read from the section above it, which is a real
+check between two independently read parts of the same chapter.
+
+**The Path to Leviathan's chapter closes on fiction.** An eyewitness account of
+the battle, in quotation marks, under no heading, and therefore inside the
+Campaign Conclusions section. Read as rules it gives `Serpent.`, `Dragon.`,
+`Monster.` and `Evil Absolute.` as four more conclusions — four short
+sentences, each opening a line, each following one that finished. The rules end
+where the fiction is introduced: a line closing on a colon whose next line
+opens a quotation.
+
+**The campaign map is not in the PDF.** The zone board, the Carcass Front Zones
+table (which zone offers which Resources, and which scenario is played there),
+the Special Zones table and the Scenario Generator charts the map campaign
+refers to are all printed on the fold-out map in the box. None of it can be
+derived from anything in this repo, so none of it is — `requiresMap` records
+the fact and the Codex says so, rather than leaving a player to work out why a
+rule points at a table the app does not have.
+
+### The Vision cards: a card is not a chapter
+
+`vision-cards.pdf` is sixteen print-ready cards on four sheets, so the
+extraction hands back each card's pieces in whatever order the page laid them
+out. Two invariants hold the parse together — sixteen cards of three tiers
+each, and every card scoring 10, 15 and 20 (cumulative, so a card fully
+achieved is worth 45) — and four things had to be learned:
+
+- **The title sits before its objectives on the first two cards and after them
+  on the other fourteen.** Nearest-title alone gives Idol, Butcher and Survivor
+  two cards each and leaves Specialist, Lion and Diplomat with none, and every
+  one of those mis-assignments reads perfectly well, because all sixteen words
+  describe a warband. What makes the match a rule rather than a guess is that
+  **no other card's objectives may lie between a title and its own**.
+- **A card's quotation is printed under its tiers.** A card region bounded by
+  the *previous* card's last line cuts across it, and Ascetic inherited
+  Warlord's quotation while Legend inherited Ascetic's.
+- **An attribution wraps too.** The Architect's runs `– Recipe for infernal
+  concrete,` / `also sold as “Little Horn's Moonshine”`, so ending the
+  quotation at the attribution line put the second half into that card's rules
+  notes, where it read as a rule.
+- **A tier ends at its score, not at a line break.** `** One ELITE` / `model
+  has 2 or more` / `Glory Items: 10` is one objective over three lines.
+
+**The printed card numbers are deliberately not emitted.** All sixteen are in
+the extraction and none of them can be attached to a card safely: they land
+wherever the sheet's layout put them, `10101` is printed twice, and `10104`
+sits beside a different card's title. A Vision card labelled with another
+card's number is exactly the plausible-looking wrong value this pipeline exists
+to prevent, so the title — unique, and what a player reads off the card in
+their hand — is the identity instead.
 
 ### Hyphens at a line break
 
