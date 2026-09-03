@@ -26,6 +26,60 @@ make that failure impossible to repeat.
 
 ---
 
+## A Variant's rules, as ops rather than as prose
+
+A Warband Variant changes what a Warband may recruit. The BattleScribe
+catalogues state that as machine-readable modifiers and `parse-battlescribe.mjs`
+lifts them out. A supplement states the same things in English, and
+[`parse-variant-ops.mjs`](../scripts/lib/parse-variant-ops.mjs) reads four
+constructs out of that prose:
+
+| the book says | the op |
+|---|---|
+| `The X use the Y Warband entry` | rename Y to X |
+| `must include N-M X` | max **and** min on X |
+| `may / can include N-M X` | max on X only |
+| `cannot include X` | hide X |
+
+**`may` never sets a minimum.** "May include 1-3" states a ceiling; reading it
+as a requirement makes the app demand a model the book merely permits — the
+failure that told every Trench Pilgrims warband it must include a Chieftain.
+
+**A name that does not resolve to an entry in the faction's own list is left
+alone**, and reported by the build. The same sentences talk about wargear
+("cannot have Automatic Pistols") in the same words they talk about models
+("cannot include Anchorite Shrines"), and the verb does not separate them —
+"can only have 0-2 Stigmatic Nuns" uses `have` about a model. Resolving the
+name against the roster is the only reliable discriminator.
+
+### Replacement beats exclusion, and the order is the whole subtlety
+
+The Knights of Saint Lazarus says both of these:
+
+> **Sacred Code:** …it cannot include Lazarist Communicants or Lazarist Castigators…
+>
+> **Knightly Order:** …must include 1-3 Leper-Knights. The Leper-Knights **use the
+> Lazarist Castigator Warband entry**…
+
+Those contradict only if the exclusion is applied to an entry the rename has
+already claimed. The Castigator has not been banned; it has **become** something
+else, and the ban is about the model it used to be. Apply them the other way
+round and the Warband cannot take the model the book says it must have 1-3 of.
+
+So renames resolve first, limits resolve *through* them — `must include 1-3
+Leper-Knights` lands on the Castigator entry — and an exclusion naming a
+renamed entry is skipped.
+
+### What is deliberately not derived
+
+The Leper-Knight also "must wear a suit of Armour, have a Melee Characteristic
+of +2 DICE, and replace the Whip of God Ability with the Knightly Code
+Ability". None of that is emitted. The entity model cannot express a
+conditional stat change, and inventing a representation for one is how this
+codebase acquired 97%-wrong statlines. Those stay as the Variant's printed
+rules text, shown to the player.
+
+
 ## 2. The three sources
 
 | Source | Role | Format | Reachable from CI |
