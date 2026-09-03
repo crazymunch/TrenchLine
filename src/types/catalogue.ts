@@ -183,6 +183,15 @@ export interface WeaponProfile {
   range: string;
   keywords: string[];
   rules?: string;
+  /**
+   * The entry's flavour text as the CATALOGUE carries it.
+   *
+   * The rulebook's Battlekit chapter carries the same thing for core wargear,
+   * and an item published in a supplement has no entry there at all — so this
+   * is the only description a Carcass Front item has. Emitted by the pipeline
+   * since the supplement was added; the type simply never declared it.
+   */
+  lore?: string;
   cost: Cost;
   constraints: Constraint[];
   /**

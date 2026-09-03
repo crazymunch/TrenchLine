@@ -113,6 +113,40 @@ export function formulaeOf(unit: UnitLike | undefined | null): string[] {
 }
 
 /**
+ * Every name on a model that a catalogue entry can be gated on.
+ *
+ * The catalogue reveals a Titan Zulfiqar to a Brazen Bull *or* to anything
+ * with `Gargantuan Size`, and the rulebook says the same in words: "The
+ * Homunculus can use 1 Weapon that can usually only be taken by a Brazen
+ * Bull." Answering that question needs every name the model holds — and a
+ * Formula can be recorded in THREE places, not the two the roster builder
+ * read:
+ *
+ *   equippedEquipment   imported from a BattleScribe roster
+ *   specialUpgrades     bought in the app
+ *   innateAbilities     on the profile snapshot — a model BORN with the trait,
+ *                       or advanced into it, which is how Al-Masyukh carries
+ *                       Gargantuan Size and was still told "Brazen Bull only"
+ *
+ * `hasExtraLimb` below already consults all three, for exactly this reason.
+ * This is the same list, asked as a general question.
+ *
+ * Deliberately unfiltered: every name is returned, not a guessed subset of
+ * "formula-ish" ones. Only names a catalogue entry itself lists in its
+ * `unlockedBy` can match, so a broad list costs nothing — while narrowing it
+ * by name pattern is precisely the failure this file exists to document.
+ */
+export function traitsOf(unit: UnitLike | undefined | null): string[] {
+  if (!unit) return [];
+  return [
+    ...(unit.equippedEquipment ?? []).filter(isAlchemicalFormula).map((e) => e.name),
+    ...(unit.specialUpgrades ?? []).map((u) => u.name),
+    ...(unit.profileSnapshot?.innateAbilities ?? []).map((a) => a.name),
+    ...(unit.skills ?? []).map((s) => s.name),
+  ].filter(Boolean);
+}
+
+/**
  * Whether the model may hold a third weapon.
  *
  * This was `/third arm|extra arm|limb/i` tested against the same lists — and

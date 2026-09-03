@@ -60,6 +60,13 @@ export interface RosterUnit {
   options: RosterItem[];
   /** Name of the Fireteam this model belongs to, if any. */
   fireteam?: string;
+  /**
+   * Names the model carries that a catalogue entry can be gated on —
+   * Alchemical Formulae, advancements, innate abilities, skills. Not part of
+   * the roster's cost, which comes from `cost`, `items` and `options`; this is
+   * only ever read to answer "does this model unlock that entry?".
+   */
+  traits?: string[];
 }
 
 export interface Roster {
