@@ -43,9 +43,15 @@
     it now resolves to the same Archivo as `--font-sans`, because a second
     display face was doing nothing the weight scale could not.
   */
-  --font-sans: 'Archivo', system-ui, -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
-  --font-serif: 'Newsreader', Georgia, serif;
+  /*
+    The three families are self-hosted by `next/font/google`, which sets
+    `--font-archivo`, `--font-plex-mono` and `--font-newsreader` on <body>. The
+    literal names stay in the stack as a fallback for the moment before
+    hydration and for anything that renders outside the body class.
+  */
+  --font-sans: var(--font-archivo), 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+  --font-serif: var(--font-newsreader), 'Newsreader', Georgia, serif;
   --font-gothic: var(--font-sans);
   --font-heading: var(--font-sans);
 

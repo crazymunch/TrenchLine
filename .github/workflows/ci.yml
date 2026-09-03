@@ -123,3 +123,54 @@ jobs:
           name: playwright-traces
           path: test-results/
           retention-days: 7
+
+  # Dependency advisories.
+  #
+  # A separate job, because it is the one gate whose failure mode is "the
+  # scanner could not reach its data". The audit's own `npm audit --omit=dev`
+  # got an HTTP 403 from the advisory endpoint and could report nothing — and
+  # an outage that reads as a pass is worse than no scanner, because it looks
+  # like a clean bill of health.
+  #
+  # So it distinguishes the two: a scanner that ran and found something fails
+  # the build; a scanner that could not run says so, loudly, and does not
+  # pretend.
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Production dependencies only. A dev-only advisory is worth knowing
+      # about and is not a reason to block a release, because it never ships.
+      - name: Audit production dependencies
+        run: |
+          set -o pipefail
+          if ! npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err; then
+            if grep -qiE '4[0-9]{2}|ENOTFOUND|ETIMEDOUT|network' audit.err; then
+              echo "::error::The advisory endpoint could not be reached. This is NOT a pass."
+              cat audit.err
+              exit 1
+            fi
+            echo "::error::npm audit found high or critical advisories in production dependencies."
+            node -e "const a=require('./audit.json');for(const[k,v]of Object.entries(a.vulnerabilities??{}))if(['high','critical'].includes(v.severity))console.log(\`\${v.severity}: \${k} — \${(v.via??[]).map(x=>x.title??x).join(', ')}\`)"
+            exit 1
+          fi
+          echo "No high or critical advisories in production dependencies."
+
+  # GitHub's own review of what a pull request ADDS, which needs no external
+  # endpoint and so cannot fail the way the job above can.
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          # A licence change is a decision somebody should make on purpose.
+          comment-summary-in-pr: always

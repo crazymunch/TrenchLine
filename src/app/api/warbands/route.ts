@@ -70,8 +70,33 @@ function toPublic(wb: {
   };
 }
 
+/**
+ * The row shape the owner query returns, for `toOwn`.
+ *
+ * Named rather than `Record<string, any>`: the `any` meant nothing checked
+ * that the fields read below existed, in the one function whose job is to
+ * hand a player their whole roster back.
+ */
+interface OwnRow {
+  id: string;
+  name: string;
+  factionId: string;
+  ducatLimit: number;
+  treasuryDucats: number;
+  gloryPoints: number;
+  units: unknown;
+  armoryStash: unknown;
+  visibility: string;
+  notes: string | null;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user: { id: string; name: string | null } | null;
+  campaignMembers: unknown[];
+}
+
 /** The full roster, for its owner. Unchanged in shape — this is a restore. */
-function toOwn(wb: Record<string, any>) {
+function toOwn(wb: OwnRow) {
   const metadata = metadataOf(wb.notes);
   return {
     id: wb.id,
@@ -179,7 +204,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id;
+    const userId = (session?.user as { id?: string } | undefined)?.id;
     const userEmail = session?.user?.email?.toLowerCase().trim();
     const isAdmin = isUserAdmin(userEmail);
     const body = await req.json();
@@ -329,7 +354,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ warband });
-  } catch (err: any) {
+  } catch (err: unknown) {
     /*
       Logged, never returned. `err.message` from Prisma names tables, columns
       and constraints, so a caller who can provoke a query error was getting a
@@ -343,7 +368,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    let userId = (session?.user as any)?.id;
+    let userId = (session?.user as { id?: string } | undefined)?.id;
     const userEmail = session?.user?.email?.toLowerCase().trim();
     const isAdmin = isUserAdmin(userEmail);
 
@@ -384,7 +409,7 @@ export async function DELETE(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, deletedId: id });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error deleting warband:', err);
     return NextResponse.json({ error: 'Failed to delete warband' }, { status: 500 });
   }
