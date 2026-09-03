@@ -78,6 +78,7 @@ function checkRecruitmentLimits(
 ): Violation[] {
   const out: Violation[] = [];
   const counts = new Map<string, number>();
+  const revealed = variantReveals(variant);
 
   for (const u of roster.units) {
     counts.set(u.profileId, (counts.get(u.profileId) ?? 0) + 1);
@@ -132,6 +133,18 @@ function checkRecruitmentLimits(
     // A variant can raise a required minimum (House of Wisdom: 1-2 Alchemists)
     // or forbid the entry entirely, in which case there is nothing to require.
     if (variantForbids(variant).has(p.entryId ?? p.id)) continue;
+    /*
+      Nor require a model the Warband cannot recruit.
+
+      `Chieftain` is the Children of Yggdrasil leader: hidden in the catalogue,
+      revealed by that Variant, and carrying `min=1`. Enforced regardless, every
+      Trench Pilgrims Warband was told it "must include 1 Chieftain" — a model
+      absent from its recruit list, under a Variant it had not taken, while the
+      leader it actually needs is the War Prophet.
+
+      Hidden-and-unrevealed is the same state as forbidden: not on this list.
+    */
+    if (p.hiddenByDefault && !revealed.has(p.entryId ?? p.id)) continue;
     const { min } = variantLimits(p, variant);
     if (!min || min < 1) continue;
     const n = counts.get(p.id) ?? 0;
@@ -348,6 +361,23 @@ interface VariantOp {
  * machine-readable form of "a House of Wisdom Warband cannot include a
  * Yüzbaşı, Janissaries, or Sultanate Assassins".
  */
+/**
+ * Entries a variant brings back onto the list — the mirror of `variantForbids`.
+ *
+ * The catalogues state it as `set hidden = false` on the entry, conditioned on
+ * the variant, which is how the Children of Yggdrasil reveals its Chieftain
+ * and Huscarl and how The House of Wisdom reveals the Homunculus.
+ */
+export function variantReveals(variant: WarbandVariant | undefined): Set<string> {
+  const out = new Set<string>();
+  for (const op of (variant?.ops ?? []) as VariantOp[]) {
+    if (op.field === 'hidden' && String(op.value) === 'false' && op.target?.id) {
+      out.add(op.target.id);
+    }
+  }
+  return out;
+}
+
 export function variantForbids(variant: WarbandVariant | undefined): Set<string> {
   const out = new Set<string>();
   for (const op of (variant?.ops ?? []) as VariantOp[]) {

@@ -2437,6 +2437,7 @@ export const DATASET: Dataset = {
     {
       "id": "2900-bb42-dc77-e352",
       "entryId": "dda8-eeec-a07e-ed88",
+      "hiddenByDefault": true,
       "name": "Homunculus",
       "factionId": "Court of the Seven-Headed Serpent",
       "roles": [
@@ -3081,6 +3082,21 @@ export const DATASET: Dataset = {
             "includeChildSelections": true
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -12064,6 +12080,7 @@ export const DATASET: Dataset = {
     {
       "id": "2f34-d5f0-2acc-17eb",
       "entryId": "e6f9-0f05-aa5b-06cd",
+      "hiddenByDefault": true,
       "name": "Homunculus",
       "factionId": "Heretic Legion",
       "roles": [
@@ -12704,6 +12721,21 @@ export const DATASET: Dataset = {
             "includeChildSelections": true
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -12711,6 +12743,7 @@ export const DATASET: Dataset = {
     {
       "id": "02c4-88da-ec78-8a33",
       "entryId": "2f82-e47f-c162-9152",
+      "hiddenByDefault": true,
       "name": "Homunculus",
       "factionId": "Iron Sultanate",
       "roles": [],
@@ -13521,6 +13554,48 @@ export const DATASET: Dataset = {
             ]
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Homunculus",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c2b1-d49e-937b-2f87",
+            "childName": "The House of Wisdom",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9210-fe94-fee8-81b1",
+          "value": "1",
+          "origin": "entry"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -20376,6 +20451,45 @@ export const DATASET: Dataset = {
             "childName": "Lost Arm [26]",
             "includeChildSelections": true
           }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6032-5543-8548-b9ac",
+            "childName": "Defenders of the Iron Wall",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:1475-2b45-f97c-a258",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Sipahi Captain",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "cost.glory",
+          "value": "0",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "110",
+          "origin": "entry"
         }
       ],
       "sourceFile": "Mercenaries.cat",
@@ -20661,6 +20775,7 @@ export const DATASET: Dataset = {
     {
       "id": "bc90-d206-2b0d-b743",
       "entryId": "2d0c-00e9-7897-83d7",
+      "hiddenByDefault": true,
       "name": "Homunculus",
       "factionId": "New Antioch",
       "roles": [
@@ -21270,6 +21385,21 @@ export const DATASET: Dataset = {
             ]
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -24629,6 +24759,21 @@ export const DATASET: Dataset = {
             "includeChildSelections": true
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "Trench Crusade.gst"
@@ -24636,6 +24781,7 @@ export const DATASET: Dataset = {
     {
       "id": "8e45-5a5a-379e-22ce",
       "entryId": "3eda-5baa-29d3-d617",
+      "hiddenByDefault": true,
       "name": "Homunculus",
       "factionId": "Trench Pilgrims",
       "roles": [
@@ -25232,6 +25378,21 @@ export const DATASET: Dataset = {
             "includeChildSelections": true
           },
           "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "f73c-0f08-e6c3-e9fd",
+            "childName": "Book of Golems",
+            "includeChildSelections": true
+          }
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -66220,6 +66381,16 @@ export const DATASET: Dataset = {
       ],
       "ops": [
         {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "2f82-e47f-c162-9152",
+            "name": "Homunculus"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
           "op": "increment",
           "target": {
             "kind": "unit",
@@ -66494,6 +66665,16 @@ export const DATASET: Dataset = {
           },
           "field": "hidden",
           "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "22b8-dc59-428d-87cd",
+            "name": "Mamluk Faris"
+          },
+          "field": "hidden",
+          "value": "false"
         }
       ],
       "sources": [

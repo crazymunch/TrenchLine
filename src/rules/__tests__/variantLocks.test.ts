@@ -35,6 +35,14 @@ describe('models locked to a Warband Variant', () => {
       'Faceless <- Fang of the Seething Black',
       'Goetic Warlock <- Fang of the Seething Black, Trench Ghosts',
       'Gregori Gula <- The Great Hunger',
+      /*
+        The Iron Sultanate Homunculus. Its catalogue entry is revealed by TWO
+        conditions — `Book of Golems`, the Exploration result, and The House of
+        Wisdom — and only the second is a route a Warband can take at muster.
+        Reading the first as "reachable another way" left it unlocked and
+        offered to every Sultanate list on day one.
+      */
+      'Homunculus <- The House of Wisdom',
       'Huscarl <- Children of Yggdrasil',
       'Matagot Hag <- The Great Hunger',
       'Mendelist Ammo Monk <- War Pilgrimage of Saint Methodius',

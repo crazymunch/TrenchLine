@@ -34,7 +34,7 @@ import type {
 import { nameKey } from './names';
 import { sameFaction } from './variants';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
-import { variantLocks } from './variantLocks';
+import { unobtainable, variantLocks } from './variantLocks';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -125,6 +125,13 @@ export function recruitable(
     offered to every Warband of the faction.
   */
   const locks = variantLocks(dataset);
+  /*
+    Entries the catalogue gates and that no choice a Warband can make reveals.
+    Off the muster list entirely — see `unobtainable`. The rulebook says how
+    each is really obtained: the `Book of Golems` Exploration result adds a
+    Homunculus, a Trench Dog is a Glory Item bought for 1-3 ☼.
+  */
+  const offList = unobtainable(dataset);
   const variantsById = new Map(
     (dataset.variants ?? []).filter((v) => v.entryId).map((v) => [v.entryId as string, v]));
 
@@ -136,7 +143,10 @@ export function recruitable(
     field a warband of Martyr Penitents at the Pilgrim's price. They stay in
     the dataset for the Codex; see `UnitProfile.secondaryProfile`.
   */
-  const units: UnitProfile[] = dataset.units.filter((u) => !u.secondaryProfile).map((u) => {
+  const units: UnitProfile[] = dataset.units
+    .filter((u) => !u.secondaryProfile)
+    .filter((u) => !offList.has(u.entryId || u.id))
+    .map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
     return {

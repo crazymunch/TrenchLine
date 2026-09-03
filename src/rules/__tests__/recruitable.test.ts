@@ -7,6 +7,8 @@
  * three things that made the old path wrong, not just that the adapter runs.
  */
 import { describe, it, expect } from 'vitest';
+import { unobtainable } from '../variantLocks';
+import type { Dataset } from '@/types/catalogue';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
 import { FACTIONS } from '@/data/defaultRules';
@@ -27,7 +29,22 @@ describe('what a player can recruit', () => {
     */
     const secondary = DATASET.units.filter((u) => u.secondaryProfile);
     expect(secondary.map((u) => u.name)).toEqual(['Martyr Penitent', 'Heretic Raider Legionnaire']);
-    expect(sultanate.units.length).toBe(DATASET.units.length - secondary.length);
+
+    /*
+      And minus the entries the catalogue gates behind a PREREQUISITE rather
+      than a Variant — a thing the Warband has to earn, which a Warband being
+      mustered cannot have. Named here rather than counted, so one going
+      missing for any other reason still fails.
+
+      `Book of Golems` is the Exploration result that grants a Homunculus;
+      `Dog Food` is the Glory Item that grants a Trench Dog. See `unobtainable`.
+    */
+    const gated = unobtainable(DATASET as unknown as Dataset);
+    expect([...gated.values()].flat().sort()).toEqual([
+      'Book of Golems', 'Book of Golems', 'Book of Golems', 'Book of Golems',
+      'Book of Golems', 'Dog Food',
+    ]);
+    expect(sultanate.units.length).toBe(DATASET.units.length - secondary.length - gated.size);
     expect(sultanate.units.some((u) => u.name === 'Martyr Penitent')).toBe(false);
     const lt = sultanate.units.find((u) => u.name === 'Lieutenant');
     expect(lt).toBeDefined();
