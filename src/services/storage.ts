@@ -1,4 +1,5 @@
 import { Warband } from '../types/warband';
+import { repairInventedFormulae } from './repairSavedRosters';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { UnitProfile, WeaponProfile } from '../types/rules';
@@ -51,7 +52,28 @@ export const storage = {
     if (!isBrowser) return [];
     try {
       const data = localStorage.getItem(WARBANDS_KEY);
-      return data ? JSON.parse(data) : [];
+      if (!data) return [];
+
+      /*
+        The one place a saved roster enters the app, and therefore the place to
+        repair one. Rosters written while the invented Alchemical Formulae were
+        on offer still carry them; see `repairInventedFormulae`.
+
+        Written back immediately so the repair happens once rather than on every
+        read, and reported rather than done quietly — a roster's Ducat total
+        changing without explanation is worse than the bug.
+      */
+      const { warbands, repairs } = repairInventedFormulae(JSON.parse(data));
+      if (repairs.length) {
+        localStorage.setItem(WARBANDS_KEY, JSON.stringify(warbands));
+        for (const r of repairs) {
+          console.warn(
+            `TrenchLine: removed ${r.removed.join(', ')} from ${r.unit} (${r.warband}) ` +
+            `and refunded ${r.ducatsRefunded} Ducats — not an entry in any published list.`,
+          );
+        }
+      }
+      return warbands;
     } catch {
       return [];
     }

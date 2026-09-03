@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { hasExtraLimb } from '../../rules/formulae';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
@@ -66,11 +67,19 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     unit?.skills?.some(s => /strong/i.test(s.name))
   );
 
-  const hasExtraArm = Boolean(
-    unit?.profileSnapshot.innateAbilities?.some(a => /third arm|extra arm|extra limb|four arm/i.test(a.name) || /third arm/i.test(a.description)) ||
-    unit?.specialUpgrades?.some(u => /third arm|extra arm|limb/i.test(u.name)) ||
-    unit?.skills?.some(s => /extra arm/i.test(s.name))
-  );
+  /*
+    Derived from the Formula, not from a name that reads like one.
+
+    This was `/third arm|extra arm|limb/i` over the same lists — and the real
+    Formula, `Additional Arm`, matches none of those three alternatives. So a
+    model that had bought the entry the catalogue prints was refused its third
+    weapon, while a model carrying `Third Arm (Extra Limb)` — from a
+    hand-written list that appears in no book — was allowed it.
+
+    It also never looked at `equippedEquipment`, which is where an imported
+    roster's Formulae actually land.
+  */
+  const hasExtraArm = hasExtraLimb(unit);
 
   const maxMeleeHands = hasExtraArm ? 3 : 2;
   const maxRangedHands = hasExtraArm ? 3 : 2;

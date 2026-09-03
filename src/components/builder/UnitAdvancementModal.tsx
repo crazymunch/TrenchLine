@@ -99,11 +99,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const catalogueUnit = dataset?.units.find(
     (u) => u.name === unit.profileSnapshot?.name || u.name === unit.customName);
   const optionGroups = (catalogueUnit?.options ?? []).reduce<
-    Record<string, { id: string; name: string; cost: number; description: string }[]>
+    Record<string, { id: string; name: string; group: string; cost: number; description: string }[]>
   >((acc, o) => {
     (acc[o.group] ??= []).push({
       id: o.id,
       name: o.name,
+      // Carried onto the item as well as used as the key. It is the label the
+      // unit card shows for the section, and hard-coding it meant a Saga or a
+      // Strain was filed on the card as an "Alchemical Formula".
+      group: o.group,
       // The legacy upgrade shape carries one currency; Glory is surfaced in
       // the label rather than silently dropped to zero.
       cost: o.cost.ducats,
@@ -310,7 +314,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         id: formula.id,
                         name: formula.name,
                         cost: formula.cost,
-                        category: 'Alchemical Formula'
+                        category: formula.group
                       })}
                       className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
                         isSelected

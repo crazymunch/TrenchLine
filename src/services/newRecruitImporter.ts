@@ -255,6 +255,10 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
           equippedEquipment.push({
             id: `e-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
             name: bKitProf?.name || subName,
+            // The group is tested three lines above to decide whether to keep
+            // this selection, and used to be dropped here. Everything
+            // downstream then had to guess from the name.
+            group: subGroup || undefined,
             cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
             effect: bChars['Rules'] || '',
             keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
