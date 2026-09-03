@@ -146,7 +146,12 @@ describe('the Keyword Glossary', () => {
 });
 
 describe('the twelve scenarios', () => {
-  const scenarios = DATASET.scenarios;
+  /*
+    The rulebook's twelve. `DATASET.scenarios` also carries the Carcass Front
+    book's five, which number I to V of their own book — so a scenario is
+    identified by its source here, never by its numeral alone.
+  */
+  const scenarios = DATASET.scenarios.filter((s) => !s.source);
   const byRoman = (r: string) => scenarios.find((s) => s.roman === r);
   const section = (r: string, h: string) =>
     byRoman(r)?.sections.find((x) => x.heading === h)?.body ?? '';

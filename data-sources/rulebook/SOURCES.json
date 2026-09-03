@@ -56,6 +56,15 @@
       "extract": "extracted/rules-commentaries-1.0.2.txt",
       "committed": true,
       "role": "Official FAQ. Feeds the Codex and rules-engine edge cases."
+    },
+    {
+      "file": "hell-on-earth-weather-events.pdf",
+      "bytes": 1633286,
+      "sha256": "3c87dca6d142a232e286b9940a6ea0bcf2a11fb95d3c1b67037114b09e730684",
+      "extract": "extracted/hell-on-earth-weather-events.txt",
+      "committed": true,
+      "role": "Optional Weather Events module: one 2D6 table of 11 Events, and the procedure for generating one. Supplied by the maintainer on release; small enough to commit alongside its extract.",
+      "note": "No assetId — this one was added to the repo directly rather than fetched from the release, so `npm run rules:pdfs` does not manage it."
     }
   ]
 }

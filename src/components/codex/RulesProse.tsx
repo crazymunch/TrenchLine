@@ -18,11 +18,12 @@ import { parseRulesProse} from './rulesProse';
  * being visible is not cosmetic — it is the reference view being harder to
  * read than the book it was transcribed from.
  *
- * This is deliberately NOT a Markdown library. The extractor emits four
- * constructs and nothing else (no links, images, tables, code or raw HTML),
- * so a parser for exactly those four is smaller than the dependency, and —
- * because it renders React elements rather than a string of HTML — carries no
- * `dangerouslySetInnerHTML` and no sanitiser to get wrong.
+ * This is deliberately NOT a Markdown library. The extractor emits five
+ * constructs and nothing else — sub-headings, both kinds of list, bold, and
+ * pipe tables (no links, images, code or raw HTML) — so a parser for exactly
+ * those is smaller than the dependency, and — because it renders React
+ * elements rather than a string of HTML — carries no `dangerouslySetInnerHTML`
+ * and no sanitiser to get wrong.
  *
  * Anything it does not recognise is rendered as its own text, never dropped.
  */
@@ -87,6 +88,57 @@ export const RulesProse: React.FC<{ source: string | null | undefined; className
                 </li>
               ))}
             </Tag>
+          );
+        }
+
+        if (b.kind === 'table') {
+          /*
+            Roll tables, and the phone is where they are read.
+
+            The scroller is the table's own — never the page's — because a
+            2D6 table with a sentence in every Result cell is wider than
+            375px whatever is done to it, and `overflow-x: hidden` on the
+            body to hide that is the thing docs/MOBILE.md forbids. The roll
+            column is `whitespace-nowrap` so `2-6` never wraps to two lines
+            beside a five-line result.
+          */
+          return (
+            <div key={i} className="-mx-1 overflow-x-auto">
+              <table className="w-full min-w-[18rem] text-sm border-collapse">
+                <thead>
+                  <tr>
+                    {b.header.map((h, j) => (
+                      <th
+                        key={j}
+                        className={`text-left align-top py-1.5 px-2 eyebrow accent border-b border-theme-border ${
+                          j === 0 ? 'whitespace-nowrap w-px' : ''
+                        }`}
+                      >
+                        {inline(h, `${i}-h${j}`)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row, r) => (
+                    <tr key={r} className="border-b border-theme-border/40 last:border-0">
+                      {row.map((c, j) => (
+                        <td
+                          key={j}
+                          className={`align-top py-1.5 px-2 leading-relaxed ${
+                            j === 0
+                              ? 'whitespace-nowrap w-px font-mono tabular-nums text-theme-primary'
+                              : ''
+                          }`}
+                        >
+                          {inline(c, `${i}-${r}-${j}`)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           );
         }
 

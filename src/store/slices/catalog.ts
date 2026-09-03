@@ -12,6 +12,7 @@ import type { AppState } from '../state';
 import { storage } from '../../services/storage';
 import { FACTIONS } from '../../data/defaultRules';
 import { recruitable } from '../../rules/recruitable';
+import { factionOf } from '../../rules/variants';
 import type { InitialState } from '../init';
 
 export type CatalogSlice = Pick<AppState, 'factions' | 'units' | 'weapons' | 'armour' | 'equipment' | 'catalogsLoaded' | 'catalogsError' | 'gloryPriced' | 'hydrateCatalogs' | 'customUnits' | 'customWeapons' | 'customArmour' | 'customEquipment' | 'favouriteUnits' | 'saveCustomUnit' | 'deleteCustomUnit' | 'saveCustomWeapon' | 'deleteCustomWeapon' | 'saveCustomArmour' | 'deleteCustomArmour' | 'saveCustomEquipment' | 'deleteCustomEquipment'>;
@@ -31,6 +32,25 @@ export const createCatalogSlice = (init: InitialState): StateCreator<AppState, [
       // uses rather than the catalogue's.
       const r = recruitable(dataset, factionId, get().factions.map((f) => f.id));
       set((s) => ({
+        /*
+          The faction's special rules, from the books.
+
+          `FACTIONS` used to carry a hand-written `rules` array — "Voice of
+          Command", "Ecstatic Zeal" — and none of those rules is printed
+          anywhere. The books' actual faction rules are parsed into
+          `dataset.factions[].specialRules`, and the validator has read them
+          from there since Phase 2; only the UI was still showing the invented
+          ones. Matched with `sameFaction` because the app, the catalogues and
+          the rulebook parser each spell a faction id differently.
+
+          A faction the dataset does not carry keeps an empty list rather than
+          a stand-in, so "this faction has no special rules in the ruleset you
+          selected" reads as exactly that.
+        */
+        factions: s.factions.map((f) => ({
+          ...f,
+          specialRules: factionOf(dataset, f.id)?.specialRules ?? [],
+        })),
         // Custom entries stay: they are the player's own, and the pipeline
         // has nothing to say about them.
         units: [...r.units, ...s.customUnits],

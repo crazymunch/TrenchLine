@@ -7,9 +7,15 @@
  *
  * The generated rules text carries the source document's light Markdown:
  * `###` headings, `- ` and `1. ` lists, `**bold**` for the terms the book
- * itself sets in bold, and lines that are nothing but bold as run-in headings.
- * Nothing else — no links, images, tables, code or raw HTML — which is why
- * this is 90 lines rather than a Markdown dependency.
+ * itself sets in bold, lines that are nothing but bold as run-in headings, and
+ * pipe tables. Nothing else — no links, images, code or raw HTML — which is
+ * why this is short rather than a Markdown dependency.
+ *
+ * Tables arrived with the Carcass Front scenarios, which turn on them: a
+ * Search Table, a 2D6 naval-mine detonation table, four scenario-generator
+ * charts. Flattened into prose they read `2-6 The naval mine does not explode
+ * now, but you must roll again 7-11 The naval mine is jostled…`, which is a
+ * roll table a player cannot use at the moment they are rolling on it.
  *
  * Anything it does not recognise is rendered as its own text. It never drops
  * input.
@@ -18,12 +24,22 @@
 export type Block =
   | { kind: 'h'; level: 2 | 3; text: string }
   | { kind: 'list'; ordered: boolean; items: string[] }
+  | { kind: 'table'; header: string[]; rows: string[][] }
   | { kind: 'p'; text: string };
+
+/** `| 2-6 | The naval mine does not explode now… |` */
+const TABLE_ROW = /^\|(.*)\|\s*$/;
+/** The separator under a table's header: `|---|---|`. */
+const TABLE_RULE = /^\|[\s:|-]+\|\s*$/;
+
+const cells = (line: string) =>
+  TABLE_ROW.exec(line)![1].split('|').map((c) => c.trim());
 
 export function parseRulesProse(source: string): Block[] {
   const blocks: Block[] = [];
   let para: string[] = [];
   let list: { ordered: boolean; items: string[] } | null = null;
+  let table: { header: string[]; rows: string[][] } | null = null;
 
   const flushPara = () => {
     if (para.length) {
@@ -37,9 +53,16 @@ export function parseRulesProse(source: string): Block[] {
       list = null;
     }
   };
+  const flushTable = () => {
+    if (table) {
+      blocks.push({ kind: 'table', header: table.header, rows: table.rows });
+      table = null;
+    }
+  };
   const flush = () => {
     flushPara();
     flushList();
+    flushTable();
   };
 
   /**
@@ -62,6 +85,21 @@ export function parseRulesProse(source: string): Block[] {
 
   for (const raw of source.split('\n')) {
     const line = raw.trim();
+
+    if (TABLE_ROW.test(line)) {
+      // The rule under the header is a separator, not a row.
+      if (TABLE_RULE.test(line)) continue;
+      if (!table) {
+        flushPara();
+        flushList();
+        table = { header: cells(line), rows: [] };
+      } else {
+        table.rows.push(cells(line));
+      }
+      continue;
+    }
+    // Any other line ends the table. A blank one does not — see below.
+    if (table && line) flushTable();
 
     if (!line) {
       /*

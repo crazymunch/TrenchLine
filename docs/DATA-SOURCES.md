@@ -19,8 +19,15 @@ data-sources/
 ├── dispatch/
 │   ├── trench-dispatch-01-april-2026.txt      extracted text  ✅ present
 │   └── trench-dispatch-01.layer.json          transcribed patch ops
+├── carcass-front/
+│   ├── SOURCES.json                   release asset ids + sha256, per file
+│   ├── *.pdf                          fetched from the release, gitignored if large
+│   └── extracted/*.txt                pdf → text
 └── resolutions.json                   human decisions on source conflicts
 ```
+
+`carcass-front/` has **no `.layer.json`**, and that is the point: its layer is
+generated from the book on every build. See §4.
 
 ## 1. BattleScribe catalogues — the base layer
 
@@ -108,8 +115,9 @@ sets** from it. Two consequences:
    Concentrated Attack), and some of them constrain roster construction rather
    than being flavour.
 
-It also proves the **Carcass Front path**: a new faction's PDF can be parsed the
-same way on the day it drops, months before the catalogues catch up.
+It also proved the **Carcass Front path**: a new faction's PDF can be parsed the
+same way on the day it drops, months before the catalogues catch up. §4 is that
+path, used in anger.
 
 ### Getting large PDFs in
 
@@ -170,6 +178,251 @@ e.g. the Combat Engineer profile and the Yüzbaşı and Brazen Bull entries.
 **Transcription:** the Dispatch is already written as errata operations, so
 `trench-dispatch-01.layer.json` is a transcription of the text, not an
 interpretation of it. Each op records the page it came from.
+
+## 4. Carcass Front — a generated layer
+
+**Present:** `data-sources/carcass-front/`, fetched from a GitHub release by
+`npm run rules:pdfs`, every asset pinned by `sha256` in `SOURCES.json`. The two
+largest (the 104-page book, the vision cards) are marked `committed: false` and
+gitignored; the manifest still records their digests, so a re-fetch is verified
+against the same bytes.
+
+**What it is:** the Carcass Front digital rules — two new Warband lists, five
+scenarios, terrain rules, a random scenario generator, new Patrons and
+exploration tables, and a campaign with its own Vision Cards.
+
+Seven parsers read it today: `parse-carcass-front.mjs` for the faction lists,
+`parse-cf-scenarios.mjs` for the five scenarios and the terrain pieces,
+`parse-cf-generator.mjs` for the Random Scenario Generator,
+`parse-cf-exploration.mjs` for the four Exploration Tables,
+`parse-patrons.mjs` for the three new Patrons, `parse-cf-campaign.mjs` for the
+two campaigns, and `parse-vision-cards.mjs` for the sixteen Vision cards —
+which reads a separate PDF, not the book. All but the first and the last share
+`cf-prose.mjs`, which turns a chapter's pages into ordered lines and a run of
+lines into Markdown — page furniture, wrapped lines and tab-separated tables
+are the same three problems whatever the chapter is about.
+
+`parse-patrons.mjs` is the one that reads **two books**, because Carcass
+Front's three Patrons are explicit that they are not a Carcass Front feature —
+*"The following new Patrons can be taken by eligible Warbands in any Campaign
+(not just a Carcass Front Campaign)"* — so they belong beside the rulebook's
+eight rather than behind the supplement's layer.
+
+**Status:** official, published by Factory Fortress.
+
+**Why it is not transcribed.** The Dispatch is a list of errata sentences, so
+`trench-dispatch-01.layer.json` is a transcription and each op quotes its page.
+A faction list is content, not changes: 15 entries, 88 armoury rows, 15 unique
+Battlekit items. Typing those is Rule 1's forbidden act at the scale that
+produced the app's 97%-wrong statlines. So `scripts/lib/parse-carcass-front.mjs`
+reads the book and `scripts/lib/carcass-front-layer.mjs` turns what it read into
+`add` ops, on every build. Nothing in between is authored.
+
+The rule of thumb, and what the pipeline had to learn to support it, are in
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
+
+**What reading it by shape costs.** The extraction places page furniture —
+section banners, chapter openers, and some entry headers — at the **foot of the
+page it heads**, not the top. That one fact caused four separate parser bugs
+(the Lazarist Prophet dropped, variants swallowing the next chapter, the whole
+Mercenary section empty, roles assigned from the wrong banner). Every one of
+them produced a *plausible* warband rather than an obviously broken one, which
+is why `scripts/lib/__tests__/carcass-front.test.mjs` asserts a printed value
+for each and says in a comment which failure it guards.
+
+The Scenarios & Terrain chapter (`parse-cf-scenarios.mjs`) hits the same class
+of problem three more times, and the tests are written the same way:
+
+- **The deployment maps extract into the prose.** Labels and dimensions —
+  `DEPLOYMENT ZONE`, `24’’`, `SWORD OF GOD` — arrive as bare lines mid-sentence.
+  In scenario V they land between "within 1” of the Altar of Leviathan and" and
+  "not within 1” of any enemy models", cutting the sentence that says who may
+  attempt a Summon Roll. Found by shape — a run of label-or-dimension lines
+  containing at least one measurement — rather than by a list of labels per
+  scenario.
+- **Each scenario closes on a quotation** printed straight under the last
+  Glorious Deed, in a face the extraction drops. It truncated the last deed of
+  all five before the split existed. Three facts locate the boundary and all
+  three must hold: every deed opens `Name: `, the quotation begins a sentence
+  on a capital, and it contains no rules vocabulary.
+- **Tables are tab-separated rows.** A Search Table, a 2D6 naval-mine
+  detonation table, a Lunatic Monk's statline. Flattened into prose the mine's
+  table reads `2-6 The naval mine does not explode now, but you must roll again
+  7-11 The naval mine is jostled…` — a roll table nobody can use at the moment
+  they are rolling on it — so they stay tables through to the Codex.
+- **A merged cell is flattened.** The generator's Deployment & Game Length
+  chart merges its last column vertically: rows 1-4 share one Game Length and
+  rows 5-6 share another, so the extraction gives a third cell only on rows 1
+  and 5. A printed value applies from the row it appears on until the next one
+  does; nothing is invented, a value is repeated.
+- **A cell is only continued if it was long enough to have wrapped.** Without
+  that, the Victory Conditions chart's last row — `Take and Hold`, ending on
+  no full stop — swallowed the six pages of rules printed under the chart as
+  part of its own name.
+- **Maps are dropped per page, never across a page break.** Dropping them
+  chapter-wide swallowed the `VICTORY CONDITIONS CHART` heading: the page
+  before it ends on a deployment map, and a short all-caps heading at the top
+  of the next page looked like one more label on it. The generator lost a
+  quarter of itself, silently.
+
+### Patrons: an invariant instead of a boundary
+
+Every Patron in both books has **exactly six Skills**, and that fact is the
+whole of `parse-patrons.mjs`'s error checking. It is worth writing down because
+it is a better check than any boundary rule would have been.
+
+The rulebook's Patrons are the last thing in their chapter, and the six
+bulleted Campaign Phase steps printed on the page after it — `** Trauma Step:`,
+`** Exploration Step:`, `** Quartermaster Step:` — are set exactly like a
+Patron Skill. Read to the end of the file, the Antipope of Avignon came out
+with twelve Skills. Nothing else about the output looked wrong: eleven Patrons,
+each with a name, a restriction, lore and a Skill list.
+
+Two more things the chapter teaches:
+
+- **The sentence separating lore from Skills wraps, in both books** — after
+  `allows you to take` for the Antipope, after `allows you to take the` for the
+  House of Wisdom — and the wording varies (five entries say *the following
+  Skills*, four say *following Skills*). Anchoring on the half that ends in
+  `Skills:` left the other half on the end of two lore paragraphs.
+- **A block in a Skill's shape is not always a Skill.** `Zīj Seal` is printed
+  among the House of Wisdom's Skills and is the Alchemical Formula that the
+  `Whispering Zīj` Skill above it lets a Takwin Homunculus buy for 20 👑. The
+  evidence is outside the prose, which is what makes it usable: the four
+  Formulae the entry's other Skills name — Hypnotic Eyes, Terrifying
+  Appearance, Regenerative Tissue, Startling Speed — are all in the BattleScribe
+  catalogues, and `Zīj Seal` is in none of them, so it is new here and this book
+  has to print its rules. It is carried as `introduces` rather than dropped: a
+  Formula a player can buy for 20 👑 is game data.
+
+### The Exploration Tables: contiguity is the check
+
+A Carcass Front campaign uses its four Resource tables — Favour 👁, Relic 🏺,
+Supplies 📦, Territories 🌍 — *instead of* the rulebook's three, and the rows are
+ranges rather than sparse single numbers: *"A Location is discovered if the
+Exploration Roll corresponds to any number in the range."*
+
+So every table must run from 1 upwards with no gap, no overlap, and an
+open-ended last row (`34+`, because the dice pool grows all campaign and a roll
+can exceed any printed number). `parse-cf-exploration.mjs` asserts exactly
+that, and a row count would not have done: Favour has twelve rows and the other
+three have thirteen, because Favour prints `6-9` where the others print `6-8`
+and `9-11`.
+
+It caught a real bug on the first run. `cf-prose.mjs`'s shared `CHART_ROW` was
+written for the Random Scenario Generator's charts and matches a single number
+or a closed band only, so all four `34+` rows failed it and were read as wrapped
+continuations of the row above them. Each table stopped at 33, and `Patron's
+Visit` carried `Chosen Blessing`'s rules on the end of its own.
+
+`ExplorationLocation.roll` widened from `number` to `{ from, to }` for this, so
+one lookup serves both books. The conversion happens in `parseExploration` and
+**not** in the shared `parseRollTable`, which the four Skills tables also use: a
+Skills row is a single 2D6 result, and widening the shared helper reported all
+four Skills tables as having lost all eleven rows.
+
+### The campaigns: prose, with the actionable parts lifted out
+
+Most of both campaign chapters is rules a player *reads* rather than numbers an
+app can hold — how the Aggressor is chosen, what each Campaign Tracker box
+does, how a Strafing Run is shot down. That is carried as sourced Markdown,
+section by section, and rendered by `RulesProse`, which is the same treatment
+the rulebook's Core Rules chapters get and for the same reason: a player opens
+the Codex exactly when they cannot open the book.
+
+Four things are lifted into structure on top, because the app can do something
+with them that prose cannot: the twelve **Camp building tiers**, the fourteen
+**Campaign Tracker rewards**, the two **Shared Objectives**, and the three
+**Campaign Conclusions** of the Path to Leviathan.
+
+**Four rules separate a heading from prose that starts like one**, and each is
+there because a line in these chapters breaks it. The Aerial Bombardment rules
+are set in a narrow column beside an illustration, so nearly every line of them
+is short enough to be a heading:
+
+| the line | why it is not a heading |
+|---|---|
+| `In order to use an Aerial Bom-` | ends on a hyphen |
+| `We have provided an example of` | ends on a function word |
+| `The ceremony of innocence` | the next line continues it (`is drowned”`) |
+| `Roll \t Result` | it is a table's header row |
+
+Consecutive headings are one heading that wrapped: `Carcass Front` /
+`Campaign Games` is the section the book cross-references as *"Carcass Front
+Campaign Games"*.
+
+**The Tracker reward table is structured because it does not survive
+otherwise.** The extraction keeps the tab between its two columns on five of
+the fourteen rows and drops it on the other nine, so `toMarkdown` renders five
+table rows with two walls of run-on text either side — *"+1 🎲 Roll an extra
+Exploration Dice in each Exploration Step. Reroll 🎲 You can reroll 1…"*. That
+is a lookup table nobody can look anything up in, the same failure the naval
+mine's detonation table had. The four building rewards are cross-checked
+against the four buildings read from the section above it, which is a real
+check between two independently read parts of the same chapter.
+
+**The Path to Leviathan's chapter closes on fiction.** An eyewitness account of
+the battle, in quotation marks, under no heading, and therefore inside the
+Campaign Conclusions section. Read as rules it gives `Serpent.`, `Dragon.`,
+`Monster.` and `Evil Absolute.` as four more conclusions — four short
+sentences, each opening a line, each following one that finished. The rules end
+where the fiction is introduced: a line closing on a colon whose next line
+opens a quotation.
+
+**The campaign map is not in the PDF.** The zone board, the Carcass Front Zones
+table (which zone offers which Resources, and which scenario is played there),
+the Special Zones table and the Scenario Generator charts the map campaign
+refers to are all printed on the fold-out map in the box. None of it can be
+derived from anything in this repo, so none of it is — `requiresMap` records
+the fact and the Codex says so, rather than leaving a player to work out why a
+rule points at a table the app does not have.
+
+### The Vision cards: a card is not a chapter
+
+`vision-cards.pdf` is sixteen print-ready cards on four sheets, so the
+extraction hands back each card's pieces in whatever order the page laid them
+out. Two invariants hold the parse together — sixteen cards of three tiers
+each, and every card scoring 10, 15 and 20 (cumulative, so a card fully
+achieved is worth 45) — and four things had to be learned:
+
+- **The title sits before its objectives on the first two cards and after them
+  on the other fourteen.** Nearest-title alone gives Idol, Butcher and Survivor
+  two cards each and leaves Specialist, Lion and Diplomat with none, and every
+  one of those mis-assignments reads perfectly well, because all sixteen words
+  describe a warband. What makes the match a rule rather than a guess is that
+  **no other card's objectives may lie between a title and its own**.
+- **A card's quotation is printed under its tiers.** A card region bounded by
+  the *previous* card's last line cuts across it, and Ascetic inherited
+  Warlord's quotation while Legend inherited Ascetic's.
+- **An attribution wraps too.** The Architect's runs `– Recipe for infernal
+  concrete,` / `also sold as “Little Horn's Moonshine”`, so ending the
+  quotation at the attribution line put the second half into that card's rules
+  notes, where it read as a rule.
+- **A tier ends at its score, not at a line break.** `** One ELITE` / `model
+  has 2 or more` / `Glory Items: 10` is one objective over three lines.
+
+**The printed card numbers are deliberately not emitted.** All sixteen are in
+the extraction and none of them can be attached to a card safely: they land
+wherever the sheet's layout put them, `10101` is printed twice, and `10104`
+sits beside a different card's title. A Vision card labelled with another
+card's number is exactly the plausible-looking wrong value this pipeline exists
+to prevent, so the title — unique, and what a player reads off the card in
+their hand — is the identity instead.
+
+### Hyphens at a line break
+
+`scripts/lib/dehyphenate.mjs`, because it is a decision and not a formatting
+detail. A justified column ends a line on a hyphen for two reasons and the
+extraction records both identically: a soft hyphen the typesetter inserted
+(`bo-\nnus`, `SHOT-\nGUN`) and a real one that belongs to the word
+(`roll-\noff`, `co-\nopted`).
+
+Always dropping gives `rolloff` and `coopted`; always keeping gives `bo-nus`
+and `SHOT-GUN` — and SHOTGUN is a Keyword, so that turns a searchable rules
+term into one that matches nothing. Two signals separate them: a
+compound-forming left fragment (`co-`, `half-`, `corpse-`), or a capital on
+**both** sides (`Off-Hand`, `Meta-Christ`). Between them they get all 44
+hyphenated breaks in the book right, and the test lists every one.
 
 ## Extracting PDFs
 

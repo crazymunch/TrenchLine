@@ -7,17 +7,7 @@ export const FACTIONS: Faction[] = [
     theme: 'Dieselpunk Holy Crusaders',
     description: 'The bastion of Christendom in the Levant. Armoured in heavy iron and utilizing heavy machine guns, sniper priests, and mechanized assault infantry.',
     color: '#D4AF37',
-    icon: 'Shield',
-    rules: [
-      {
-        name: 'Voice of Command',
-        description: 'New Antioch officers and leaders can give orders to nearby units within 6", granting +1 DICE on their next activation.'
-      },
-      {
-        name: 'Hold Your Fire!',
-        description: 'ACTION: Order friendly models within 6" to hold fire until enemies enter optimal range for concentrated volleys.'
-      }
-    ]
+    icon: 'Shield'
   },
   {
     id: 'trench-pilgrims',
@@ -25,17 +15,7 @@ export const FACTIONS: Faction[] = [
     theme: 'Religious Fanatics & Flagellants',
     description: 'Zealots and martyrs who believe the end of days is nigh. Driven by holy fury, carrying sacred relics and mobile Anchorite shrines into the trenches.',
     color: '#8B0000',
-    icon: 'Flame',
-    rules: [
-      {
-        name: 'Ecstatic Zeal',
-        description: 'Pilgrim units add +1 DICE on charge rolls and ignore the first Blood Marker suffered in each engagement.'
-      },
-      {
-        name: 'Prophetic Vision',
-        description: 'The War Prophet allows rerolls of one failed Action or Morale roll per game round.'
-      }
-    ]
+    icon: 'Flame'
   },
   {
     id: 'iron-sultanate',
@@ -43,17 +23,7 @@ export const FACTIONS: Faction[] = [
     theme: 'Ottoman Alchemists & Janissaries',
     description: 'Guardians of the Great Iron Wall. Masters of Greek fire, alchemical hazard engineering, Takwin homunculi, and elite Janissary firing lines.',
     color: '#008080',
-    icon: 'Building2',
-    rules: [
-      {
-        name: 'Mastery of the Elements',
-        description: 'Jabirean Alchemists can grant Fire, Gas, or Shrapnel keywords to all weapons at the start of a match and change elements mid-battle.'
-      },
-      {
-        name: 'Takwin Alchemy',
-        description: 'Can breed and customize bio-engineered Takwin Homunculi and Brazen Bulls with specialized alchemical formulae.'
-      }
-    ]
+    icon: 'Building2'
   },
   {
     id: 'heretic-legions',
@@ -61,17 +31,7 @@ export const FACTIONS: Faction[] = [
     theme: 'Damned Traitors & Chaos Cultists',
     description: 'Legionnaires who renounced their faith and embraced the infernal powers of Hell, wielding blasphemous sorcery and machine armour.',
     color: '#4B0082',
-    icon: 'Skull',
-    rules: [
-      {
-        name: 'Blasphemous Litany',
-        description: 'Heretic Priests chant unholy verses that force enemies within 8" to make Risky tests for every action.'
-      },
-      {
-        name: 'Infernal Blood Tithe',
-        description: 'Heretics can sacrifice friendly Blood Markers to bolster melee attacks with +1 Injury Dice.'
-      }
-    ]
+    icon: 'Skull'
   },
   {
     id: 'black-grail',
@@ -79,13 +39,7 @@ export const FACTIONS: Faction[] = [
     theme: 'Plague & Putrefaction',
     description: 'Worshippers of the Lord of Flies and disease. Their corrupted bodies heal from putrid ichor and spread virulent contagion.',
     color: '#2E8B57',
-    icon: 'Biohazard',
-    rules: [
-      {
-        name: 'Lord of Flies',
-        description: 'Plague Knights and Grail Thralls inflict infection markers on hit and cause Fear to all unblessed models.'
-      }
-    ]
+    icon: 'Biohazard'
   },
   {
     id: 'court-seven-serpents',
@@ -93,13 +47,29 @@ export const FACTIONS: Faction[] = [
     theme: 'Aristocratic Devils & Hell Knights',
     description: 'The ancient demonic aristocracy of the Pit, armed with sulfur weaponry, serpent rifles, and pit beasts.',
     color: '#800020',
-    icon: 'Crown',
-    rules: [
-      {
-        name: 'Hellish Splendor',
-        description: 'Aristocrats of the Court impose -1 DICE to all enemy ranged attacks targeting them due to sulfur smoke and sinister majesty.'
-      }
-    ]
+    icon: 'Crown'
+  },
+  /*
+    The two Carcass Front Warbands. Their entries, armouries, Battlekit,
+    special rules and Variants are all derived from the book by
+    `scripts/lib/carcass-front-layer.mjs`; what is written here is the same
+    thing written for the six above — a name, a colour, a one-line blurb.
+  */
+  {
+    id: 'procession-of-the-sacred-affliction',
+    name: 'The Procession of the Sacred Affliction',
+    theme: 'Lazarist Pilgrims & the Sacred Diseased',
+    description: 'A wandering column of lepers, penitents and the sacred sick, shepherded by the Knights of Saint Lazarus. They march on the Carcass Front behind punishing millstones and an anchorite shrine, and their afflictions are their armour.',
+    color: '#C8B27A',
+    icon: 'Cross'
+  },
+  {
+    id: 'heretic-naval-raiders',
+    name: 'The Heretic Naval Raiders',
+    theme: 'Fallen Mariners & Drowned Choristers',
+    description: 'Damned crews out of the black water, come ashore for plunder and souls. Fast and unseen until they are aboard, they fight with boarding axes, hull drills and the songs of the Drowned Choir.',
+    color: '#3F7C82',
+    icon: 'Anchor'
   }
 ];
 
@@ -132,8 +102,20 @@ export const FACTIONS: Faction[] = [
   deliberately no fallback here, because a fallback to this data is exactly the
   failure `githubSync` was deleted for (docs/AUDIT.md §1.8).
 
-  FACTIONS stays: faction identity, colours and icons are app presentation, not
-  game data, and the pipeline has nothing to say about them.
+  FACTIONS stays: faction identity, colours, icons and the one-line blurb are
+  app presentation, not game data, and the pipeline has nothing to say about
+  them.
+
+  What it DOES have something to say about was also in here: each faction
+  carried a hand-written `rules` array — "Voice of Command: New Antioch officers
+  ... granting +1 DICE on their next activation", "Ecstatic Zeal: Pilgrim units
+  add +1 DICE on charge rolls" — and not one of those appears in any source.
+  They were the same fabrication as the invented statlines, sitting in the one
+  file the audit's deletions had left alone because its stated job is
+  presentation. The faction special rules the books actually print reach the
+  app as `dataset.factions[].specialRules`, and `hydrateCatalogs` now copies
+  them onto these records, so the comparator and anything else reading a
+  faction's rules reads the derived ones.
 */
 
 

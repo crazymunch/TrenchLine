@@ -615,11 +615,19 @@ Turn 1". Trench Crusade has no wounds, no battle rounds, no Morale
 characteristic and no priority — it has BLOOD MARKERS, Turns, Morale Checks and
 the Initiative.
 
-The game publishes exactly one such table, and it belongs to one scenario:
-**UNFORESEEN EVENTS** in *Hunt for Heroes*. A D6 at the start of each Turn after
-the first, nothing on 1-4, then a D3 for Rising Fog, Rain Mud and Guts, or Deep
-Craters. That is what the generator rolls now; the other eleven scenarios get
-nothing offered, and are told why.
+The game published exactly one such table at the time, and it belonged to one
+scenario: **UNFORESEEN EVENTS** in *Hunt for Heroes*. A D6 at the start of each
+Turn after the first, nothing on 1-4, then a D3 for Rising Fog, Rain Mud and
+Guts, or Deep Craters. That is what the generator rolls; the other eleven
+scenarios get nothing offered, and are told why.
+
+**Since resolved from the other end.** The *Hell on Earth* module publishes a
+real Weather Events table — 11 rows on 2D6, each player rolling once after the
+battlefield is set up and before deployment, with the player on the fewest
+Campaign Victory Points choosing which of the rolled Events applies. It is in
+`data-sources/rulebook/hell-on-earth-weather-events.pdf` and parsed by
+`scripts/lib/parse-weather.mjs`. So the app has weather again, and this time it
+is the game's.
 
 ## 2. Mobile and tablet
 

@@ -271,6 +271,35 @@ export interface UnitProfile {
    */
   allowedFactions?: string[];
 
+  /**
+   * The entry's Battlekit sentence, verbatim, where the source states one as
+   * prose rather than as links.
+   *
+   * "The only Ranged Weapons they can have are Automatic Pistols and Pistols"
+   * is a legality rule, and nothing in this model can express it: `battlekit`
+   * holds gear the model always has, and the Armoury Table says what the
+   * FACTION stocks, not what this entry may take of it. Paraphrasing it into
+   * a constraint would be a rewrite, so it is carried as text and shown to
+   * the player, who can then apply the rule the pipeline cannot.
+   */
+  battlekitNote?: string;
+
+  /**
+   * A printed statline that is NOT a recruitable model.
+   *
+   * Some entries print two: a Leper-Pilgrim and the Martyr Penitent it can be
+   * resurrected as, a Heretic Raider and the Legionnaire it can be upgraded
+   * to. The second is reached by paying a stated cost for a model you already
+   * have, under a condition the model cannot express ("you cannot have more
+   * Legionnaires than Raiders"). Recruiting one directly would let a player
+   * field a warband of Martyr Penitents at the Pilgrim's price.
+   *
+   * So it stays in the dataset — the Codex shows its statline and the entry's
+   * own ability explains what it costs — and `rules/recruitable.ts` keeps it
+   * out of the recruit list.
+   */
+  secondaryProfile?: boolean;
+
   lore?: string;
   /**
    * The catalogue entry is `hidden="true"`: off the list until a modifier
@@ -313,6 +342,17 @@ export interface Faction {
   id: string;
   name: string;
   specialRules: FactionSpecialRule[];
+  /**
+   * 'Faithful' or 'Fallen', where the source states it in Warband Creation.
+   *
+   * Load-bearing: Mercenaries are hired by alignment ("any Faithful
+   * Mercenaries that can be taken by Trench Pilgrim Warbands"), and several
+   * rules key off it. Only the Carcass Front lists print it today; absent
+   * means the source did not state it, never a default.
+   */
+  alignment?: string;
+  /** Which source introduced the faction, where it is not the catalogues. */
+  source?: string;
   /**
    * True when the book states this faction has no special rules — distinct from
    * an empty `specialRules`, which would also mean "we failed to find any".
@@ -393,6 +433,11 @@ export interface ArmouryRow {
   section: string;
   cost: Cost;
   restrictions: string[];
+  /**
+   * The row is printed with a bullet: the item is unique to this faction and
+   * its rules are in the faction's own Battlekit section, not the core one.
+   */
+  unique?: boolean;
 }
 
 /**
@@ -450,7 +495,7 @@ export interface ScenarioSection {
 }
 
 export interface ScenarioEntry {
-  /** 1-12. */
+  /** Its number within its own book: 1-12 in the rulebook, 1-5 in Carcass Front. */
   number: number;
   /** The numeral the book prints: 'I' … 'XII'. */
   roman: string;
@@ -459,23 +504,296 @@ export interface ScenarioEntry {
   slug: string;
   tagline: string;
   sections: ScenarioSection[];
-  /** The deployment map, verified to exist when the dataset was built. */
-  mapImage: string;
+  /**
+   * The deployment map, verified to exist when the dataset was built.
+   *
+   * Null where the source ships no map file. The rulebook's twelve all have
+   * one and the build fails if a file is missing — twelve broken images is
+   * what the hand-written scenarios shipped — but the Carcass Front book's
+   * maps have not been extracted from the PDF, and `null` says that plainly
+   * rather than pointing at a file that is not there.
+   */
+  mapImage: string | null;
+  /**
+   * Which book it is from: absent for the rulebook's twelve, `carcass-front`
+   * for the supplement's five. Both number their scenarios from I, so the
+   * numeral alone does not identify one.
+   */
+  source?: string;
+  /** The quotation the scenario opens on, above its summary. */
+  quotation?: string;
+  /** The quotation it closes on, printed under the Glorious Deeds. */
+  epigraph?: string;
+}
+
+/**
+ * A terrain piece with rules of its own.
+ *
+ * Kept apart from the scenarios because the book is explicit that it is:
+ * "rules for two different terrain pieces that you can use in ANY of your
+ * Trench Crusade games". Attaching them to the five Carcass Front scenarios
+ * would hide a naval mine from every other game.
+ */
+export interface TerrainPiece {
+  /** The slug the app addresses it by. */
+  slug: string;
+  /** As printed, in caps: `NAVAL MINE`. */
+  name: string;
+  /** Title Case, for display: `Naval Mine`. */
+  title: string;
+  /** The rules, as Markdown — including the 2D6 detonation table. */
+  body: string;
+  /** Which book it is from. */
+  source: string;
+}
+
+/** One row of a generator chart, with the rolls it answers already expanded. */
+export interface ChartRow {
+  /** As printed: `1-3`, `6`. */
+  printed: string;
+  /** Every roll the row answers: `1-3` -> [1, 2, 3]. */
+  rolls: number[];
+  /** The row's cells after the roll column, in printed order. */
+  values: string[];
+}
+
+/** A named rule a generator chart points at — one deployment, one condition. */
+export interface GeneratorRule {
+  name: string;
+  slug: string;
+  /** The rule as printed, as Markdown. */
+  body: string;
+}
+
+/** A chart, its introduction, and the rules it names. */
+export interface GeneratorChart {
+  /** The prose between the section heading and the chart. */
+  intro: string;
+  /** The chart's own column heads: `['D6', 'Deployment', 'Game Length']`. */
+  header: string[];
+  rows: ChartRow[];
+  /** Empty where the chart's results need no rules of their own. */
+  rules: GeneratorRule[];
+}
+
+/** One row of a Glorious Deeds chart: a named deed and how to complete it. */
+export interface GeneratorDeed {
+  printed: string;
+  rolls: number[];
+  name: string;
+  description: string;
+}
+
+/**
+ * The Random Scenario Generator, from the Carcass Front book.
+ *
+ * A procedure — "carry out the following steps in order" — so it is carried as
+ * one and the app runs it, rather than printing four charts and leaving the
+ * player to. It replaces a generator that rolled three invented tables (six
+ * weather conditions, six "complications", six "Secret Secondary Agendas"),
+ * none of which appears in any source.
+ */
+export interface ScenarioGenerator {
+  intro: string;
+  /** The four numbered steps, in order. The order is itself the rule. */
+  steps: string[];
+  battlefield: GeneratorChart;
+  deployment: GeneratorChart;
+  victory: GeneratorChart;
+  gloriousDeeds: {
+    intro: string;
+    /** Two charts of six: one for the older player, one for the younger. */
+    charts: { name: string; rows: GeneratorDeed[] }[];
+    /**
+     * The deed the book says is ALWAYS used in a campaign game, with its own
+     * condition. Not a seventh row on either chart — a rule about when the
+     * generator's output is complete.
+     */
+    always: { name: string; description: string; when: string };
+  };
 }
 
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
 
 /**
+ * A band of Exploration Roll results, inclusive at both ends.
+ *
+ * `to: null` is an open range — `34+`, the last row of every Carcass Front
+ * table. The pool grows all campaign, so a roll can exceed any printed number
+ * and the last row has to catch it.
+ */
+export interface RollRange {
+  from: number;
+  /** `null` for an open-ended range. */
+  to: number | null;
+}
+
+/**
  * One row of an Exploration Location table.
  *
- * `roll` is a single number, not a range: the tables are sparse and a roll that
- * is not listed discovers nothing. The description is verbatim because the
- * reward amounts live in it.
+ * `roll` is a RANGE, and it is a range because the two books print two
+ * different kinds of table:
+ *
+ *   - The **rulebook's** three tables are sparse single numbers — 4, 5, 6, 8,
+ *     9, 11, 14 — and a roll that is not listed discovers nothing. Those rows
+ *     carry `{ from: n, to: n }`.
+ *   - **Carcass Front's** four are contiguous bands: *"The rolls for the
+ *     Locations on the Carcass Front Exploration Tables produce a range rather
+ *     than a single number (e.g. '1-3'). A Location is discovered if the
+ *     Exploration Roll corresponds to any number in the range."*
+ *
+ * One shape rather than two so a single lookup serves both, and the sparse
+ * table stays sparse: the gaps between the rulebook's rows are still gaps.
+ *
+ * The description is verbatim because the reward amounts live in it.
  */
 export interface ExplorationLocation {
-  roll: number;
+  roll: RollRange;
   name: string;
   description: string;
+}
+
+/**
+ * One of the four Carcass Front Exploration Tables, keyed by its Resource.
+ *
+ * A Carcass Front campaign replaces the rulebook's Exploration Step: you roll
+ * on the table matching a Resource available in the zone the game was played
+ * in, rather than on a rarity table your games-played band unlocks.
+ */
+export interface CarcassFrontExplorationTable {
+  /** `favour`, `relic`, `supplies`, `territories`. */
+  resource: string;
+  /** The Campaign Tracker prints the glyph, so a player matches on it. */
+  glyph: string;
+  locations: ExplorationLocation[];
+}
+
+/**
+ * One section of a Carcass Front campaign chapter.
+ *
+ * `level` is the book's own two levels: an ALL-CAPS banner is a part of the
+ * chapter, a Title-Case heading is a rule within it. `markdown` carries the
+ * prose and any tables the section prints, and `RulesProse` renders both.
+ */
+export interface CampaignSection {
+  id: string;
+  level: 1 | 2;
+  heading: string;
+  markdown: string;
+}
+
+/** One of a Camp's four buildings, with its three tiers. */
+export interface CampBuilding {
+  id: string;
+  name: string;
+  /** The glyph the Campaign Tracker's rewards use to name it. */
+  glyph: string;
+  flavour: string;
+  /**
+   * Three tiers, and they stack: "Each new tier adds a new benefit, which is
+   * received in addition to the benefits from the lower tiers."
+   */
+  tiers: { tier: number; effect: string }[];
+}
+
+/**
+ * A campaign Carcass Front prints: the map campaign, or the Path to Leviathan.
+ *
+ * Mostly prose, because most of a campaign chapter is rules a player reads
+ * rather than numbers an app can hold. What is lifted into structure is what
+ * the app can act on: the twelve building tiers, the fourteen Tracker rewards,
+ * the two Shared Objectives, and the three ways the Path to Leviathan ends.
+ */
+export interface CampaignDefinition {
+  id: string;
+  name: string;
+  /** As the book states it: `2 or more`, or `2`. */
+  players: string;
+  intro: string;
+  sections: CampaignSection[];
+  buildings: CampBuilding[];
+  /** The Campaign Tracker's reward symbols and what each one does. */
+  trackerRewards: { symbol: string; effect: string }[];
+  /** Scored at the end, and split between players who tie on one. */
+  sharedObjectives: { id: string; name: string; points: number; description: string }[];
+  /**
+   * How the Path to Leviathan ends. Decided by two facts and nothing else:
+   * whether Leviathan was summoned in Scenario V, and whether the summoner
+   * also holds the railway cannon from Scenario IV.
+   */
+  conclusions: { id: string; name: string; result: string; description: string }[];
+  /**
+   * True when the campaign needs the fold-out map from the box.
+   *
+   * The Carcass Front Campaign does. Its zone board, the Carcass Front Zones
+   * table (which zone offers which Resources, and which scenario is played
+   * there), the Special Zones table and the Scenario Generator charts it uses
+   * are all printed on that map and appear in no PDF. Recorded as a fact about
+   * the campaign so the app can say so, rather than showing rules that refer
+   * to a table it does not have and leaving the player to work out why.
+   */
+  requiresMap: boolean;
+}
+
+/**
+ * One of the sixteen Vision cards.
+ *
+ * Dealt two to a player at the start of a Carcass Front campaign, of which
+ * they keep one, in secret, until the campaign ends. Three tiers of the same
+ * objective worth 10, 15 and 20 🏅, and the scores are cumulative — so a card
+ * fully achieved is worth 45.
+ */
+export interface VisionCard {
+  /**
+   * The card's title, lower-cased.
+   *
+   * The cards carry a printed number and it is deliberately not used: the
+   * numbers land wherever the print sheet's layout put them rather than beside
+   * the card they belong to, and one is printed twice.
+   */
+  id: string;
+  title: string;
+  tiers: { text: string; points: number }[];
+  /** 45 on every card. The three tiers are cumulative. */
+  maxPoints: number;
+  /** The quotation printed under the tiers. Empty on the seven cards with art instead. */
+  flavour: string;
+  /** A clarification or footnote the card prints about its own objective. */
+  note: string;
+}
+
+/**
+ * A Patron: the choice a warband makes once, at the start of a campaign.
+ *
+ * It decides exactly one thing, and it decides it often — both ends of every
+ * 2D6 Skill Table are a `Patron Skill` result, so a campaign warband reaches
+ * this list every few Advancement Rolls.
+ *
+ * Eleven of them, from the two books that print them: the rulebook's eight and
+ * Carcass Front's three. The supplement's are not a supplement feature — "The
+ * following new Patrons can be taken by eligible Warbands in any Campaign (not
+ * just a Carcass Front Campaign)" — so they sit in the same list.
+ */
+export interface Patron {
+  id: string;
+  /** As printed, in the book's caps: `TEMPORAL LORD`, `HOUSE OF WISDOM`. */
+  name: string;
+  /** Who may take it: `New Antioch only.`, `Fallen Warbands only.` */
+  restriction: string;
+  lore: string;
+  /** Exactly six, in every entry in both books. */
+  skills: { name: string; description: string }[];
+  /**
+   * Game data a Skill introduces that is not itself a Skill.
+   *
+   * One entry in eleven Patrons: the House of Wisdom's `Whispering Zīj` lets a
+   * Takwin Homunculus buy a **Zīj Seal Alchemical Formulae for 20 👑**, and the
+   * book prints that Formula's rules among the Skills, in a Skill's shape.
+   * Carried here rather than dropped — it is a thing a player can buy — and
+   * kept out of `skills` so the entry has the six it actually has.
+   */
+  introduces: { name: string; description: string; kind: string; unlockedBy: string }[];
+  source: 'rulebook' | 'carcass-front';
 }
 
 export type SkillsTableName = 'melee' | 'ranged' | 'stealth' | 'wildcard';
@@ -522,6 +840,24 @@ export interface CoreRuleSection {
   source: { file: string; page: number; lines: [number, number] };
 }
 
+/**
+ * One row of the Hell on Earth Weather Events table.
+ *
+ * An optional module the game publishes. It is the real thing the app's
+ * invented weather was standing in for — twenty-three fabricated "conditions"
+ * across the Codex and Play Mode, deleted in favour of nothing at all until
+ * this existed.
+ */
+export interface WeatherEvent {
+  /** 2 to 12. Every result has a row. */
+  roll: number;
+  name: string;
+  /** The italic line under the name. Not a rule. */
+  flavour: string;
+  /** The rule, verbatim. `Grim and Indifferent` is "No effect." */
+  effect: string;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -535,8 +871,52 @@ export interface Dataset {
   battlekit: BattlekitEntry[];
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
+  /**
+   * Terrain pieces with rules of their own, usable in any game.
+   *
+   * Optional: the base rulebook publishes none, so an empty list and a missing
+   * one would say the same thing and neither would be a fact about the game.
+   */
+  terrain?: TerrainPiece[];
+  /**
+   * The Random Scenario Generator.
+   *
+   * Optional because only the Carcass Front book publishes one, and a ruleset
+   * that does not carry the supplement genuinely has none — which is a
+   * different thing from a generator we failed to read.
+   */
+  scenarioGenerator?: ScenarioGenerator;
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
+  /**
+   * Hell on Earth: the Weather Events table, and the procedure for using it.
+   *
+   * Optional by the module's own words — "you and your opponent(s) **may**
+   * choose to influence your battles by generating a Weather Event" — so the
+   * app offers it rather than applying it.
+   */
+  weather: { procedure: string; events: WeatherEvent[] };
+  /**
+   * The eleven Patrons, from the rulebook and from Carcass Front.
+   *
+   * The app had none. `warband.patron` was free text a player typed, so
+   * nothing could say what a Patron's six Skills were — and a Patron's Skills
+   * are the only part of it that has rules attached.
+   */
+  patrons: Patron[];
+  /**
+   * The campaigns Carcass Front prints: the map campaign and the Path to
+   * Leviathan. Empty on a ruleset without the supplement's layer.
+   */
+  campaigns: CampaignDefinition[];
+  /**
+   * The sixteen Vision cards. Empty on a ruleset without the supplement.
+   *
+   * A player keeps theirs secret until the end of the campaign but has to
+   * work towards it from the first game, and has to keep evidence as they go —
+   * which needs the card's wording available all the way through.
+   */
+  visionCards: VisionCard[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
@@ -551,9 +931,20 @@ export interface Dataset {
       tables: { from: number; to: number | null;
                 value: { tables: ExplorationTableName[]; choose: boolean } }[];
       locations: Record<ExplorationTableName, ExplorationLocation[]>;
-      /** Ducats per point of the Exploration Roll. */
+      /** The book's own five numbered steps of the Exploration Sequence. */
+      sequence: string[];
+      /** Ducats per point of the Exploration Roll. Read from the sequence's fifth step. */
       lootPerPoint: number;
     };
+    /**
+     * The four Carcass Front Exploration Tables, keyed by Resource.
+     *
+     * Present only on a ruleset carrying the supplement's layer. A Carcass
+     * Front campaign uses these *instead of* the rulebook's three, so the two
+     * sets sit side by side rather than merged — a player is on one or the
+     * other, never both.
+     */
+    carcassFrontExploration?: Record<string, CarcassFrontExplorationTable>;
     /** The four Advancement Skills tables. 2D6, dense, 11 rows each. */
     skills: Record<SkillsTableName, SkillRow[]>;
     /** The Trauma Table. Sparse only in that 41-63 is one range. */

@@ -42,6 +42,14 @@ export interface ScenarioChoice {
   gameLength: string | null;
   /** True where the entry came from the pipeline rather than a hand-written file. */
   derived: boolean;
+  /**
+   * Which book it is from, for the ones that are not the core rulebook.
+   *
+   * The Carcass Front book numbers its scenarios I to V, as the rulebook
+   * numbers its twelve, so a picker showing "I. …" twice needs to say which
+   * book each is from. Absent means the core rulebook.
+   */
+  source?: string;
   /** Present only on derived scenarios. */
   entry?: ScenarioEntry;
 }
@@ -54,6 +62,7 @@ const fromEntry = (s: ScenarioEntry): ScenarioChoice => ({
   mapImage: s.mapImage,
   gameLength: s.sections.find((x) => x.heading === 'GAME LENGTH')?.body ?? null,
   derived: true,
+  source: s.source,
   entry: s,
 });
 
@@ -65,6 +74,7 @@ const fromLegacy = (s: Scenario): ScenarioChoice => ({
   mapImage: s.mapImage ?? null,
   gameLength: s.gameLength ?? null,
   derived: false,
+  source: 'all-out-war',
 });
 
 /**

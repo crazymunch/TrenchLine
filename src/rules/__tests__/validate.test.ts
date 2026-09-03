@@ -327,7 +327,12 @@ describe('faction armouries', () => {
   const ds = load();
 
   it('carries one armoury per faction', () => {
-    expect(ds.armouries.length).toBe(6);
+    // Six from the Warbands book, plus the two Carcass Front lists.
+    expect(ds.armouries.map((a: { factionId: string }) => a.factionId)).toEqual([
+      'new-antioch', 'trench-pilgrims', 'iron-sultanate', 'heretic-legions',
+      'cult-of-the-black-grail', 'court-of-the-seven-headed-serpent',
+      'procession-of-the-sacred-affliction', 'heretic-naval-raiders',
+    ]);
     for (const a of ds.armouries) expect(a.rows.length).toBeGreaterThan(20);
   });
 
