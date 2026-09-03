@@ -237,6 +237,37 @@ describe('the jwt callback', () => {
   });
 });
 
+/*
+  `secret` is a getter, and that is the difference between a server that fails
+  closed and one that will not build.
+
+  Evaluated eagerly, `requireEnv` ran when this module was first imported — and
+  `next build` imports every route module to collect page data, so a build
+  machine without the secret could not produce a bundle at all. Vercel's
+  preview deployments legitimately have no runtime secrets, and every one of
+  them failed. The build signs nothing; only serving a request does.
+*/
+describe('the session secret', () => {
+  it('is a getter, so importing this module does not read it', () => {
+    // The mechanism, asserted directly: a plain value would have been
+    // evaluated when this file imported `../auth` at the top, with no secret
+    // set at that moment for a build machine.
+    const descriptor = Object.getOwnPropertyDescriptor(authOptions, 'secret');
+    expect(descriptor?.get, 'secret must be lazily evaluated').toBeTypeOf('function');
+    expect(descriptor?.value).toBeUndefined();
+  });
+
+  it('is read, and required, when it is actually needed', async () => {
+    const before = process.env.NEXTAUTH_SECRET;
+    delete process.env.NEXTAUTH_SECRET;
+    expect(() => authOptions.secret).toThrow(/NEXTAUTH_SECRET is not set/);
+
+    process.env.NEXTAUTH_SECRET = 'a-real-secret';
+    expect(authOptions.secret).toBe('a-real-secret');
+    process.env.NEXTAUTH_SECRET = before;
+  });
+});
+
 describe('the password policy', () => {
   it('is long enough to be worth hashing', () => {
     expect(MIN_PASSWORD_LENGTH).toBeGreaterThanOrEqual(8);

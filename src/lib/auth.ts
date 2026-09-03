@@ -167,6 +167,22 @@ export const authOptions: NextAuthOptions = {
     No fallback. See `src/lib/env.ts`: the constant that used to sit here is in
     this repository's history, so any deployment that reached it was signing
     sessions with a published key.
+
+    A GETTER, not a value, and the distinction is the difference between a
+    server that fails closed and one that will not build.
+
+    Evaluated eagerly, `requireEnv` runs when this module is first imported —
+    and `next build` imports every route module to collect page data. So a
+    build machine without the secret could not produce a bundle at all, which
+    broke preview deployments that legitimately have no runtime secrets. The
+    build does not sign anything; only serving a request does.
+
+    Deferring it to the property read moves the failure to where the need is.
+    NextAuth reads `secret` while handling a request, so a server missing it
+    still refuses to serve — which is the whole point — and CI keeps proving
+    that by setting one.
   */
-  secret: requireEnv('NEXTAUTH_SECRET'),
+  get secret() {
+    return requireEnv('NEXTAUTH_SECRET');
+  },
 };
