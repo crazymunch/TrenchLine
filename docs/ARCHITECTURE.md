@@ -186,6 +186,55 @@ seeded in lore or written by hand has no catalogue behind it; the honest answer
 for one is "unknown", which `isAlchemicalFormula` renders as `false` for
 display purposes only.
 
+## What the cloud stores of a warband
+
+`Warband` has more fields than the `Warband` table has columns. The rest are
+**client-owned**: things the device says about its own copy that nothing
+server-side queries, sorts or joins on. They ride as JSON inside the `notes`
+column, and the list of them lives in **one place** — `CLIENT_OWNED` in
+[`src/lib/api/warbandMetadata.ts`](../src/lib/api/warbandMetadata.ts).
+
+One place, because two is how six of them were lost.
+
+The write path and the read path used to be separate object literals. Six
+fields of `Warband` appeared in neither, so a sync — which is a **round trip** —
+destroyed them the next time the device pulled its own warband back down:
+
+| field | what its loss cost |
+|---|---|
+| `variantId` | the roster was validated against its faction's **standard** list |
+| `allowThirdParty` | which content the roster may use |
+| `campaignId` | the campaign the warband belongs to |
+| `forceMode` | Campaign Force vs Unrestricted budget |
+| `ledger` | the Iron Ledger — campaign economy |
+| `explorationDiscoveries` | Locations already discovered |
+
+`variantId` is the one a player reported. A House of Wisdom warband came back
+told that its two Jabirean Alchemists exceeded a limit of 1 — the Variant
+raises it to 2 — and that it must include a Yüzbaşı Captain, which the Variant
+forbids outright. Both errors cited rules the warband was not playing under,
+and the engine was never wrong: `variantLimits` and `variantForbids` both had
+the right answer and were never given the Variant.
+
+The same symptom is recorded in `newRecruitImporter`, which had been fixed for
+it. The **importer** learned to read the Variant; the **sync** never learned to
+keep it. So a roster was correct until it was saved, which is the worst
+possible shape for a bug — the fix looked done and the data still died.
+
+### The rules
+
+- **Add a client-owned field to `CLIENT_OWNED` and nowhere else.** Both
+  directions derive from it, so it round-trips with no second edit. A test
+  asserts the mechanism rather than a list of names.
+- **A column is for what the server uses.** Anything the server queries, sorts
+  or joins on earns a column and a migration; nothing else does. See the
+  `editedAt` note in the route for the argument in full.
+- **`??`, never `||`.** `false` is a value `allowThirdParty` holds and `''` is
+  a note the player deliberately cleared. `||` turns both into defaults — the
+  same defect as `Number(x) || fallback` swallowing a deliberate `0`.
+- **The directory allowlist does not grow with this.** `toPublic` returns nine
+  fields and stays that way; client-owned data is the owner's.
+
 ## Theming
 
 Themes are defined as CSS custom properties on `[data-theme]` in `globals.css`

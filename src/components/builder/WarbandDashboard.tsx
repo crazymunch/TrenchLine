@@ -62,6 +62,17 @@ export const WarbandDashboard: React.FC = () => {
   const [newDucatLimit, setNewDucatLimit] = useState(700);
   const [newGlory, setNewGlory] = useState(0);
   const [newVariantId, setNewVariantId] = useState<string | undefined>(undefined);
+  /*
+    The Variant's rules are collapsed until asked for.
+
+    Rendered open and unbounded, they pushed the muster form's own button off
+    the bottom of the screen: the Procession of the Sacred Affliction prints
+    seven rules of full prose, which is taller than a phone, and the only way
+    past it was to scroll a dialog that gave no sign it could scroll. The rules
+    are worth reading before choosing — so they stay one tap away rather than
+    being cut.
+  */
+  const [variantRulesOpen, setVariantRulesOpen] = useState(false);
   // Off by default, which is the catalogues' default: third-party entries are
   // hidden until the roster takes the "Allow Third-Party Mercenaries?" option.
   const [newAllowThirdParty, setNewAllowThirdParty] = useState(false);
@@ -347,7 +358,13 @@ export const WarbandDashboard: React.FC = () => {
                     <select
                       id="muster-variant"
                       value={newVariantId ?? ''}
-                      onChange={(e) => setNewVariantId(e.target.value || undefined)}
+                      onChange={(e) => {
+                        setNewVariantId(e.target.value || undefined);
+                        // A different Variant is a different set of rules; leave
+                        // the reader where they were rather than dumping the new
+                        // list open under them.
+                        setVariantRulesOpen(false);
+                      }}
                       className="w-full min-h-[44px] bg-theme-base border border-theme-border rounded p-2 text-base sm:text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                     >
                       <option value="" className="bg-theme-surface">Standard list (no Variant)</option>
@@ -361,17 +378,49 @@ export const WarbandDashboard: React.FC = () => {
                     {(() => {
                       const picked = variantsHere.find((v) => v.id === newVariantId);
                       if (!picked) return null;
+                      const rules = picked.specialRules ?? [];
                       return (
-                        <div className="mt-2 p-2 rounded-sm bg-theme-base border border-theme-border space-y-1.5">
+                        <div className="mt-2 rounded-sm bg-theme-base border border-theme-border">
                           {picked.lore && (
-                            <p className="text-xs text-theme-muted leading-relaxed">{picked.lore}</p>
+                            <p className="text-xs text-theme-muted leading-relaxed p-2">{picked.lore}</p>
                           )}
-                          {(picked.specialRules ?? []).map((r, i) => (
-                            <div key={i}>
-                              <span className="text-xs font-mono font-bold text-theme-primary">{r.name}</span>
-                              <p className="text-xs text-theme-muted leading-relaxed">{r.description}</p>
-                            </div>
-                          ))}
+                          {rules.length > 0 && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setVariantRulesOpen((v) => !v)}
+                                aria-expanded={variantRulesOpen}
+                                aria-controls="muster-variant-rules"
+                                className="w-full min-h-[44px] flex items-center justify-between gap-2 px-2 text-left text-xs font-mono font-bold text-theme-primary"
+                              >
+                                <span>
+                                  {rules.length} special rule{rules.length === 1 ? '' : 's'}
+                                </span>
+                                <span aria-hidden="true" className="text-theme-muted">
+                                  {variantRulesOpen ? 'Hide' : 'Show'}
+                                </span>
+                              </button>
+                              {/*
+                                Bounded and scrolled IN PLACE. `dvh` because a
+                                phone's toolbars change the viewport height and
+                                `vh` would size this to a window that is not
+                                there. The page itself never scrolls sideways and
+                                nothing is hidden with `overflow-x`.
+                              */}
+                              <div
+                                id="muster-variant-rules"
+                                hidden={!variantRulesOpen}
+                                className="max-h-[40dvh] overflow-y-auto px-2 pb-2 space-y-1.5"
+                              >
+                                {rules.map((r, i) => (
+                                  <div key={i}>
+                                    <span className="text-xs font-mono font-bold text-theme-primary">{r.name}</span>
+                                    <p className="text-xs text-theme-muted leading-relaxed">{r.description}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          )}
                         </div>
                       );
                     })()}

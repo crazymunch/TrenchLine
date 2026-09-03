@@ -51,3 +51,52 @@ test('an unrestricted Warband sets both currencies, a campaign one neither', asy
   */
   await expect(page.getByLabel(/starting glory/i)).toBeVisible();
 });
+
+/**
+ * A Variant's rules must not bury the button that accepts them.
+ *
+ * Reported from the app: choosing a Variant rendered every one of its special
+ * rules inline and unbounded, and the Procession of the Sacred Affliction
+ * prints seven of full prose. On a phone that is taller than the screen, so
+ * "Muster Roster" was pushed below the fold of a dialog that gave no sign it
+ * could scroll — the form could be filled in and not submitted.
+ */
+test('a Variant with many rules still leaves the muster button reachable', async ({ page }) => {
+  await openMuster(page);
+
+  await page.getByLabel(/faction allegiance/i).selectOption({ label: 'Trench Pilgrims' });
+  const variant = page.getByLabel(/warband variant/i);
+
+  // Chosen by reading the ruleset's own list rather than by typing a label:
+  // the option text carries a "(third party)" suffix for some variants, and a
+  // hard-coded string would break the moment that changed.
+  const labels = await variant.locator('option').allInnerTexts();
+  const procession = labels.find((l) => /Procession of the Sacred Affliction/.test(l));
+  expect(procession, 'the Procession is not in the ruleset').toBeTruthy();
+  await variant.selectOption({ label: procession! });
+
+  // Collapsed by default: the rules are one tap away, not in the way.
+  const rules = page.locator('#muster-variant-rules');
+  await expect(rules).toBeHidden();
+
+  const toggle = page.getByRole('button', { name: /special rules?/i });
+  await expect(toggle).toBeVisible();
+  const box = await toggle.boundingBox();
+  expect(box!.height, 'the disclosure is under the 44px touch floor').toBeGreaterThanOrEqual(44);
+
+  // The button that accepts the choice is reachable with the Variant chosen.
+  const submit = page.getByRole('button', { name: /muster roster/i });
+  await expect(submit).toBeVisible();
+
+  // Expanded, the rules scroll INSIDE their own container rather than growing
+  // the dialog. `clientHeight` is what the reader sees; `scrollHeight` is the
+  // prose. Bounded means the first is smaller, and the page still does not
+  // scroll sideways.
+  await toggle.click();
+  await expect(rules).toBeVisible();
+  const [clientH, scrollH] = await rules.evaluate((el) => [el.clientHeight, el.scrollHeight]);
+  expect(scrollH, 'the Procession should print more rules than fit').toBeGreaterThan(clientH);
+  expect(clientH, 'the rules block is not bounded').toBeLessThan(page.viewportSize()!.height);
+
+  await expect(submit).toBeVisible();
+});

@@ -16,6 +16,7 @@
  * Ducat costs, so re-pricing is the point of doing this at all.
  */
 import type { Dataset, UnitProfile } from '@/types/catalogue';
+import { isAlchemicalFormula } from './formulae';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { Roster, RosterUnit, RosterItem } from './costs';
 import { armouryFor, priceOf, offersOf } from './armoury';
@@ -139,12 +140,31 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
         Size was told it could not take a Titan Zulfiqar: the catalogue reveals
         that weapon to a Brazen Bull *or* to anything with Gargantuan Size, and
         the roster carried no record of the Formula.
+
+        Read from BOTH places an upgrade can be recorded, because that fix was
+        only half of one. An upgrade chosen in the app lands in
+        `specialUpgrades`; a roster IMPORTED from BattleScribe puts its
+        Alchemical Formulae in `equippedEquipment`, and reading only the first
+        left every imported Homunculus in exactly the state this comment says
+        was repaired — Al-Masyukh carries Gargantuan Size and was still told
+        "Brazen Bull only".
+
+        Identified by the catalogue's own group rather than by name; see
+        `src/rules/formulae.ts` for why guessing from the name is how this
+        family of bug keeps recurring.
       */
-      options: (u.specialUpgrades ?? []).map((o) => ({
-        optionId: o.id,
-        name: o.name,
-        cost: { ducats: o.cost ?? 0, glory: 0 },
-      })),
+      options: [
+        ...(u.specialUpgrades ?? []).map((o) => ({
+          optionId: o.id,
+          name: o.name,
+          cost: { ducats: o.cost ?? 0, glory: 0 },
+        })),
+        ...(u.equippedEquipment ?? []).filter(isAlchemicalFormula).map((e) => ({
+          optionId: e.id,
+          name: e.name,
+          cost: { ducats: e.cost ?? 0, glory: 0 },
+        })),
+      ],
       fireteam: u.fireteam,
     });
   }
