@@ -31,8 +31,9 @@ make that failure impossible to repeat.
 A Warband Variant changes what a Warband may recruit. The BattleScribe
 catalogues state that as machine-readable modifiers and `parse-battlescribe.mjs`
 lifts them out. A supplement states the same things in English, and
-[`parse-variant-ops.mjs`](../scripts/lib/parse-variant-ops.mjs) reads four
-constructs out of that prose:
+[`parse-variant-ops.mjs`](../scripts/lib/parse-variant-ops.mjs) reads these
+constructs out of that prose — the ones the five Carcass Front Variants use,
+and no more:
 
 | the book says | the op |
 |---|---|
@@ -40,6 +41,27 @@ constructs out of that prose:
 | `must include N-M X` | max **and** min on X |
 | `may / can include N-M X` | max on X only |
 | `cannot include X` | hide X |
+| `have a <Characteristic> Characteristic of V` | `set stats.<characteristic>` |
+| `replace the A Ability with the B Ability` | `replaceAbility` |
+| `must wear a suit of <noun>` | `requireGear` on that Armoury section |
+
+The last three are read **per sentence**, because which model they describe is a
+property of the sentence and not of the paragraph:
+
+> "The Leper-Knights use the Lazarist Castigator Warband entry but …have a Melee
+> Characteristic of **+2 DICE**…" — the entry just renamed
+>
+> "**Wretched** models in a Drowned Choir cost 30 👑 and have a Melee
+> Characteristic of **+0 DICE**." — the Wretched, named in place
+
+Scanning a paragraph would give the Leper-Knight the Wretched's statline
+wherever a Variant mentions both, which the Drowned Choir does.
+
+A `replaceAbility` needs the replacement's **rules text**, and the book supplies
+it: `Knightly Code` is a named special rule on the same Variant, printed
+directly beneath the rule that says to swap it in. Where that text is missing
+the op is not emitted — a model carrying an ability with no rules is worse than
+one still carrying the ability it was meant to lose.
 
 **`may` never sets a minimum.** "May include 1-3" states a ceiling; reading it
 as a requirement makes the app demand a model the book merely permits — the
@@ -51,6 +73,31 @@ alone**, and reported by the build. The same sentences talk about wargear
 ("cannot include Anchorite Shrines"), and the verb does not separate them —
 "can only have 0-2 Stigmatic Nuns" uses `have` about a model. Resolving the
 name against the roster is the only reliable discriminator.
+
+### One applier, not a reader per field
+
+A Variant's ops are the same vocabulary as an errata Layer's, and
+`scripts/lib/layers.mjs` has applied that vocabulary since Phase 1 — at **build**
+time, to the whole dataset. That is right for errata and wrong for a Variant:
+two Warbands of the same faction take different Variants, so the same entry has
+to read differently for each.
+
+Nothing applied a Variant's ops at roster-build time at all. Instead four
+readers each reached into `variant.ops` for one field apiece — `variantLimits`
+for constraints, `variantForbids` and `variantReveals` for `hidden`,
+`variantRenames` for `name` — and anything beyond those four was simply not
+read. So the Knights of Saint Lazarus could rename an entry and raise its limit
+and could not give it the +2 Melee the same sentence grants.
+
+[`applyVariant`](../src/rules/applyVariant.ts) is that missing step: the whole
+op vocabulary, applied to one profile, at the point a roster is built. It is
+**pure** — a Variant is a lens on the catalogue, not an edit to it, and mutating
+the dataset's profile would leak one Warband's Variant into every other Warband
+on the device. A test asserts the base Lazarist Castigator still has `-1 DICE`
+and its Whip of God while the Leper-Knight has neither.
+
+`hidden` stays outside it, deliberately: whether an entry is on the list is a
+question about the **list**, not about the profile.
 
 ### Replacement beats exclusion, and the order is the whole subtlety
 
@@ -70,14 +117,36 @@ So renames resolve first, limits resolve *through* them — `must include 1-3
 Leper-Knights` lands on the Castigator entry — and an exclusion naming a
 renamed entry is skipped.
 
+### A requirement is not a profile change
+
+The Leper-Knight "must wear a suit of Armour". The model is identical whether
+or not it is wearing any — there is nothing for `applyVariant` to do. What
+changes is whether the **roster** is legal, so this is emitted as `requireGear`
+and read by `checkVariantGear` in the validator, alongside "must include 1-3".
+
+What satisfies it is the **Armoury Table section**, not the item's name:
+
+| | |
+|---|---|
+| Procession `Armour` section | Holy Icon Armour, Ragged Vestments, Reinforced Armour, Standard Armour |
+| Procession `Shield` section | Holy Icon Shield, Trench Shield |
+
+Matching on the word "Armour" would accept **Armour-Piercing Bullets** and
+reject **Ragged Vestments** — the only one of the four suits a 50 👑 model can
+comfortably afford. The section is the catalogue's own answer to what an item
+*is*, and the name is not.
+
+A noun with no section behind it is reported as unresolved prose rather than
+guessed at. A legality error the player cannot act on is the same failure as no
+error at all, which is why the violation names the suits they can actually buy.
+
 ### What is deliberately not derived
 
-The Leper-Knight also "must wear a suit of Armour, have a Melee Characteristic
-of +2 DICE, and replace the Whip of God Ability with the Knightly Code
-Ability". None of that is emitted. The entity model cannot express a
-conditional stat change, and inventing a representation for one is how this
-codebase acquired 97%-wrong statlines. Those stay as the Variant's printed
-rules text, shown to the player.
+**Cost.** A Leper-Knight *uses the Lazarist Castigator Warband entry*, and the
+book does not restate a price — so it is bought at the Castigator's 50 👑. The
+silence is the rule, and inheriting the entry's own cost is what obeying it
+looks like. Nothing emits a `setCost` here; deriving a new number from the
+better Melee and the swapped ability would be arithmetic nobody published.
 
 
 ## 2. The three sources

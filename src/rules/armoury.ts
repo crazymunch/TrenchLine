@@ -74,6 +74,22 @@ export function restrictionsFor(
   return [...new Set(offersOf(armoury, weapon).flatMap((r) => r.restrictions))];
 }
 
+/**
+ * The Armoury Table sections an item is offered under.
+ *
+ * The section is the catalogue's own account of what an item IS — Standard
+ * Armour and Ragged Vestments sit under `Armour`, Armour-Piercing Bullets
+ * under `Ranged Weapons` — which is what a rule like "must wear a suit of
+ * Armour" needs and what the item's name cannot give. Empty for an item this
+ * faction does not stock; the caller decides whether that is a failure.
+ */
+export function sectionsOf(
+  armoury: Armoury | undefined,
+  weapon: { id?: string; name: string }
+): string[] {
+  return [...new Set(offersOf(armoury, weapon).map((r) => r.section).filter(Boolean))];
+}
+
 /** Does this faction's armoury stock the item at all? */
 export function stocks(armoury: Armoury | undefined, weapon: { id?: string; name: string }): boolean {
   return offersOf(armoury, weapon).length > 0;

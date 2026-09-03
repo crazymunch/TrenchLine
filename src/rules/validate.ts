@@ -9,11 +9,11 @@
  * Everything here is a pure function over a Roster and a Dataset, so the rules
  * can be tested without rendering anything.
  */
-import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule } from '@/types/catalogue';
+import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp } from '@/types/catalogue';
 import type { Roster } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
-import { armouryFor, restrictionsFor, stocks, type Armoury } from './armoury';
+import { armouryFor, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury } from './variantArmoury';
 import { thirdPartyGate } from './thirdParty';
@@ -33,6 +33,7 @@ export interface Violation {
     | 'wargear-restricted'
     | 'variant-forbids'
     | 'variant-requires'
+    | 'variant-requires-gear'
     | 'unknown-profile'
     | 'faction-rule'
     | 'wargear-not-stocked'
@@ -545,6 +546,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   const armoury = armouryFor(dataset, roster.factionId);
   violations.push(...checkWargear(roster, profiles, weapons, armoury, dataset, variant));
   violations.push(...checkVariant(roster, variant, profiles));
+  violations.push(...checkVariantGear(roster, variant, profiles, dataset, armoury, weapons));
 
   const faction = (dataset as unknown as { factions?: { id: string; name: string;
     specialRules?: FactionSpecialRule[] }[] }).factions
@@ -560,6 +562,79 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * Gear a Variant requires a model to be wearing.
+ *
+ * "The Leper-Knights use the Lazarist Castigator Warband entry but must wear a
+ * suit of Armour…" — a condition on the roster entry rather than a change to
+ * the profile, so it lands here and not in `applyVariant`.
+ *
+ * What satisfies it is the Armoury Table SECTION, not the item's name. The
+ * Procession of the Sacred Affliction stocks Holy Icon Armour, Ragged
+ * Vestments, Reinforced Armour and Standard Armour under `Armour`; matching on
+ * the word would let Armour-Piercing Bullets clear the requirement and would
+ * refuse Ragged Vestments, which is the only one of the four a 50-Ducat model
+ * can comfortably afford.
+ *
+ * An error rather than a warning: an unarmoured Leper-Knight is not a model
+ * the book lets you field. Nothing is bought for the player — the fix is a
+ * purchase, and which suit is theirs to choose.
+ */
+function checkVariantGear(
+  roster: Roster,
+  variant: WarbandVariant | undefined,
+  profiles: Map<string, UnitProfile>,
+  dataset: Dataset,
+  armoury: Armoury | undefined,
+  weapons: Map<string, { id: string; name: string }>,
+): Violation[] {
+  const required = (variant?.ops ?? []).filter(
+    (op): op is Extract<LayerOp, { op: 'requireGear' }> => op.op === 'requireGear');
+  if (!required.length) return [];
+
+  const out: Violation[] = [];
+
+  for (const op of required) {
+    for (const u of roster.units) {
+      const profile = profiles.get(u.profileId);
+      if (!profile) continue;
+      if ((profile.entryId || profile.id) !== op.target.id) continue;
+
+      /*
+        Both shapes of roster item. One priced from a catalogue weapon carries
+        a `weaponId`; one priced straight off an Armoury Table row that has no
+        profile behind it carries only a `name`, and `offersOf` matches either.
+      */
+      const worn = u.items.some((item) => {
+        const name = item.name ?? (item.weaponId ? weapons.get(item.weaponId)?.name : undefined);
+        if (!name && !item.weaponId) return false;
+        return sectionsOf(armoury, { id: item.weaponId, name: name ?? '' })
+          .some((section) => nameKey(section) === nameKey(op.section));
+      });
+      if (worn) continue;
+
+      /*
+        Name what they can actually buy. A legality error the player cannot act
+        on is the same failure as no error at all, and the four suits differ by
+        40 Ducats — which one is a real decision, so all of them are offered.
+      */
+      const offers = (armoury?.rows ?? [])
+        .filter((r) => nameKey(r.section) === nameKey(op.section))
+        .map((r) => r.name);
+
+      out.push(err({
+        code: 'variant-requires-gear',
+        message: `${profile.name} must wear a suit of ${op.noun}` +
+                 (offers.length ? ` — ${offers.join(', ')}.` : '.'),
+        rule: `${variant!.name}: ${profile.name}s must wear a suit of ${op.noun}.`,
+        unitId: u.id,
+      }));
+    }
+  }
+
+  return out;
 }
 
 /**

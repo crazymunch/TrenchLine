@@ -12,7 +12,8 @@
  * and a rename, and the difference is whether the app can offer the player the
  * model the book says the Warband must have 1-3 of.
  *
- * Four constructs, because four is what the five Carcass Front Variants use.
+ * The constructs below are the ones the five Carcass Front Variants use, and
+ * no more — see docs/RULESET-MODEL.md for the table.
  * Nothing here guesses: a name that does not resolve to an entry in the
  * faction's own list is left alone and reported, because the same sentences
  * talk about wargear ("cannot have Automatic Pistols") in the same words they
@@ -40,6 +41,46 @@ const EXCLUDES = /cannot (?:include|have|be accompanied by) (?:any )?([^.]+?)(?=
 
 /** `The Leper-Knights use the Lazarist Castigator Warband entry`. */
 const REPLACES = new RegExp(`The (${NAME})use the (${NAME})Warband entry`, 'g');
+
+/**
+ * `have a Melee Characteristic of +2 DICE`.
+ *
+ * The Characteristic names are the book's own and map onto `Statline`. Only
+ * the four a Variant is ever seen to change are listed: inventing a mapping
+ * for one the book has not used would be a guess sitting in a lookup table,
+ * waiting to be believed.
+ */
+const CHARACTERISTIC = {
+  melee: 'stats.melee',
+  ranged: 'stats.ranged',
+  armour: 'stats.armour',
+  movement: 'stats.movement',
+};
+const STAT = new RegExp(
+  `have an? (${Object.keys(CHARACTERISTIC).join('|')}) Characteristic of ([+-]?[\\w” ]+?)(?=[,.]|\\s+and\\b|$)`,
+  'gi');
+
+/** `replace the Whip of God Ability with the Knightly Code Ability`. */
+const SWAP_ABILITY = new RegExp(
+  `replace(?:s|d)? the (${NAME})Ability with the (${NAME})Ability`, 'gi');
+
+/**
+ * `must wear a suit of Armour`.
+ *
+ * Not a change to the profile — the model is identical either way — but a
+ * condition its roster entry has to meet, so it is emitted as `requireGear`
+ * and read by the validator rather than by `applyVariant`.
+ *
+ * The noun maps onto an Armoury Table SECTION, which is the catalogue's own
+ * answer to "what counts as a suit of Armour": the Procession of the Sacred
+ * Affliction stocks Holy Icon Armour, Ragged Vestments, Reinforced Armour and
+ * Standard Armour under `Armour`, and its Shields under `Shield`. Matching on
+ * the word instead would count Armour-Piercing Bullets and miss Ragged
+ * Vestments — the section knows what the name cannot.
+ */
+const GEAR_SECTION = { armour: 'Armour' };
+const REQUIRE_GEAR = new RegExp(
+  `must wear an? (?:suit|set) of (${NAME})`, 'gi');
 
 /**
  * Which of `must` / `may` / `can` governs a limit.
@@ -117,6 +158,83 @@ export function variantOpsFromProse(specialRules, entries) {
         op: 'set', target: target(e),
         field: `constraint:${id}-min`, constraintBound: 'min', value: String(lo),
       });
+    }
+  }
+
+  /*
+    Stat and ability changes, scoped to the SENTENCE that states them.
+
+    Both of these are about one model, and which model is decided by the
+    sentence rather than by the paragraph:
+
+      "The Leper-Knights use the Lazarist Castigator Warband entry but …have a
+       Melee Characteristic of +2 DICE, and replace the Whip of God Ability
+       with the Knightly Code Ability."   -> the entry just renamed
+
+      "Wretched models in a Drowned Choir cost 30 👑 and have a Melee
+       Characteristic of +0 DICE."        -> the Wretched, named in place
+
+    Scanning the whole paragraph instead would give the Leper-Knight the
+    Wretched's statline whenever a Variant happened to mention both.
+  */
+  const abilityText = new Map(
+    specialRules.map((r) => [key(r.name), r.description]));
+
+  for (const sentence of text.split(/(?<=\.)\s+/)) {
+    /*
+      Whom the sentence is about. A replacement clause aims at the entry it
+      renames — the changes come after "but", describing what the model becomes
+      — and otherwise the subject is the first entry the sentence names.
+    */
+    const replaced = [...sentence.matchAll(REPLACES)][0];
+    let subject = replaced ? entryFor(replaced[2]) : undefined;
+    if (!subject) {
+      for (const m of sentence.matchAll(new RegExp(NAME, 'g'))) {
+        const found = entryFor(m[0]);
+        if (found) { subject = found; break; }
+      }
+    }
+    if (!subject) continue;
+
+    for (const [, characteristic, rawValue] of sentence.matchAll(STAT)) {
+      const field = CHARACTERISTIC[characteristic.toLowerCase()];
+      const value = rawValue.trim();
+      if (!field || !value) continue;
+      ops.push({ op: 'set', target: target(subject), field, value });
+    }
+
+    for (const [, from, to] of sentence.matchAll(SWAP_ABILITY)) {
+      const name = to.trim();
+      const description = abilityText.get(key(name));
+      /*
+        The replacement's own rules text, which the book prints as a named
+        special rule on the same Variant — "Knightly Code" sits directly beneath
+        the rule that says to swap it in. Without it there is nothing to grant
+        but a name, and a model carrying an ability with no rules is worse than
+        one still carrying the ability it was supposed to lose.
+      */
+      if (!description) { unresolved.push(`ability text missing: ${name}`); continue; }
+      ops.push({
+        op: 'replaceAbility',
+        target: target(subject),
+        name: from.trim(),
+        ability: { id: `variant-${key(name).replace(/\s+/g, '-')}`, name, description },
+      });
+    }
+
+    for (const [, rawNoun] of sentence.matchAll(REQUIRE_GEAR)) {
+      const noun = rawNoun.trim();
+      const section = GEAR_SECTION[key(noun)];
+      /*
+        A noun with no section behind it is reported, never guessed. "Must wear
+        a suit of Armour" is enforceable because `Armour` is a section every
+        Armoury Table has; anything else the books go on to require would need
+        its own answer to what satisfies it, and inventing one here would put a
+        legality error in front of a player with nothing they could buy to
+        clear it.
+      */
+      if (!section) { unresolved.push(`gear requirement: ${noun}`); continue; }
+      ops.push({ op: 'requireGear', target: target(subject), section, noun });
     }
   }
 
