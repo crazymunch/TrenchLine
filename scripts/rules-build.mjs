@@ -22,7 +22,7 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
-import { parseBattlekit, parseBattlekitLimits } from './lib/parse-battlekit.mjs';
+import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -130,6 +130,11 @@ for (const ruleset of RULESETS) {
   // book's parameterised forms into instances — NEGATE FIRE, NEGATE GAS and
   // NEGATE SHRAPNEL for the one NEGATE [KEYWORD] rule.
   const keywords = parseKeywords();
+
+  // Three of the carrying limits are stated as KEYWORDS rather than on the
+  // BATTLEKIT LIMITS page — STRONG, CUMBERSOME, HEAVY — and a fourth, HELD,
+  // which reporting an unreadable rule is what found.
+  const keywordCarry = parseKeywordCarryRules(keywords);
 
   // The twelve scenarios. The hand-written set had the wrong game length for
   // all twelve, inverted Claim No Man's Land's Infiltrator rule, and invented
@@ -344,6 +349,13 @@ for (const ruleset of RULESETS) {
     battlekitLimits: {
       limits: battlekitLimits.limits,
       withShield: battlekitLimits.withShield,
+      /**
+       * The same question answered by the Keyword Glossary rather than by the
+       * chapter's bullets. Kept beside them because a model's carrying
+       * capacity is decided by both at once, and a caller that read one and
+       * not the other would be confidently wrong.
+       */
+      byKeyword: keywordCarry.rules,
     },
     /**
      * The campaign economy's published numbers.
@@ -745,6 +757,12 @@ for (const ruleset of RULESETS) {
 
   console.log(`  battlekit limits: ${dataset.battlekitLimits.limits.length} carrying rules` +
               (dataset.battlekitLimits.withShield ? ', plus the Shield restrictions' : '') +
+              `, ${keywordCarry.rules.length} by keyword ` +
+              `(${keywordCarry.rules.map((r) => r.keyword).join(', ')})` +
+              (keywordCarry.unreadable.length
+                ? `  (${keywordCarry.unreadable.length} keyword rule(s) UNREADABLE: ` +
+                  `${keywordCarry.unreadable.join(' | ')})`
+                : '') +
               (battlekitLimits.unreadable.length
                 ? `  (${battlekitLimits.unreadable.length} UNREADABLE: ` +
                   `${battlekitLimits.unreadable.join(' | ')})`

@@ -470,3 +470,137 @@ export function parseBattlekitLimits(src = RULEBOOK_TXT) {
 
   return { limits, withShield, unreadable };
 }
+
+/* --------------------------------------------- carrying rules by keyword */
+
+/**
+ * The carrying limits stated as KEYWORDS rather than as bullets.
+ *
+ * Three of the six things that decide what one model may carry are not on the
+ * BATTLEKIT LIMITS page at all — they are in the Keyword Glossary, which the
+ * pipeline has parsed since Phase 2 and which nothing read for this purpose:
+ *
+ *   STRONG      "…it can equip and use one 2-Handed Melee Weapon as if it
+ *                were a 1-Handed Melee Weapon."
+ *   CUMBERSOME  "Weapons with this Keyword require two hands to use, even if
+ *                the model has the STRONG Keyword…"
+ *   HEAVY       "A model cannot be equipped with more than one piece of
+ *                Battlekit with this Keyword…"
+ *
+ * `AddEquipmentModal` had its own version of the first, detected with
+ * `/strong|bulky|large|ogre/i` over ability NAMES and applied to *every*
+ * 2-Handed melee weapon rather than to the one the rule allows — so a STRONG
+ * model could carry two greatswords in two hands. CUMBERSOME, which exists
+ * precisely to stop that conversion, was not read at all.
+ *
+ * Derived here for the same reason as the page's bullets: the numbers stay
+ * attached to the sentences they came from.
+ */
+
+/** `can equip and use one 2-Handed Melee Weapon as if it were a 1-Handed` */
+const CONVERTS =
+  /can equip and use (\w+)\s+(\d)-Handed\s+(Melee|Ranged)\s+Weapons?\s+as if it were an?\s+(\d)-Handed/i;
+/** `require two hands to use, even if the model has the STRONG Keyword` */
+const FIXED_HANDS =
+  /requires?\s+(\w+)\s+hands? to use,?\s+even if the model has the ([A-Z]+)\s+Keyword/i;
+/** `cannot be equipped with more than one piece of Battlekit with this Keyword` */
+const AT_MOST =
+  /cannot be equipped with more than (\w+)\s+piece of Battlekit with this Keyword/i;
+
+/*
+  HELD, the compound one. Three constraints and an exemption in one entry:
+
+    "A piece of Battlekit with this Keyword requires one hand to carry and
+     cannot be put down. Because of this, a model that has this Keyword can
+     only be equipped with or use either a 1-Handed Weapon or a Shield. It
+     cannot be equipped with or use any 2-Handed Weapons, or both a Weapon and
+     a Shield (even if the Shield has the Shield Combo rule). It may still
+     carry Grenades."
+
+  Each clause is read separately and all four must land, because a partial
+  read of this one would enforce something the book does not say — "no
+  2-Handed weapons" without "and not both a Weapon and a Shield" is a
+  different, more permissive rule.
+*/
+const OCCUPIES = /requires? (\w+) hands? to carry and cannot be put down/i;
+const ONLY_EITHER =
+  /can only be equipped with or use either an? (\d)-Handed Weapon or an? (\w+)/i;
+const NO_HANDED = /cannot be equipped with or use any (\d)-Handed Weapons/i;
+const NOT_BOTH = /or both an? (Weapon) and an? (Shield)/i;
+const STILL_CARRY = /may still carry (\w+)/i;
+
+/**
+ * Read them out of the parsed glossary.
+ *
+ * Takes the glossary rather than the rulebook path, so it reads exactly the
+ * entries the dataset ships — a keyword the glossary parser missed cannot
+ * silently grow a rule here.
+ */
+export function parseKeywordCarryRules(keywords) {
+  const rules = [];
+  const unreadable = [];
+
+  for (const k of keywords) {
+    const text = k.description ?? '';
+    if (!text) continue;
+
+    const converts = text.match(CONVERTS);
+    if (converts) {
+      rules.push({
+        keyword: k.name, raw: text.trim(),
+        converts: {
+          count: countOf(converts[1]),
+          section: sectionFor(converts[3]) ?? converts[3],
+          from: Number(converts[2]),
+          to: Number(converts[4]),
+        },
+      });
+    }
+
+    const fixed = text.match(FIXED_HANDS);
+    if (fixed) {
+      rules.push({
+        keyword: k.name, raw: text.trim(),
+        // The exception to the conversion above, named by the book itself.
+        fixedHands: countOf(fixed[1]),
+        overrides: fixed[2],
+      });
+    }
+
+    const most = text.match(AT_MOST);
+    if (most) {
+      rules.push({ keyword: k.name, raw: text.trim(), maxPerModel: countOf(most[1]) });
+    }
+
+    const occupies = text.match(OCCUPIES);
+    const either = text.match(ONLY_EITHER);
+    const noHanded = text.match(NO_HANDED);
+    const notBoth = text.match(NOT_BOTH);
+    // All four clauses or none: see the note above.
+    const held = occupies && either && noHanded && notBoth ? {
+      keyword: k.name, raw: text.trim(),
+      occupiesHands: countOf(occupies[1]),
+      // "either a 1-Handed Weapon or a Shield" — one of the two, not both.
+      alsoOneOf: [`${either[1]}-Handed Weapon`, sectionFor(either[2]) ?? either[2]],
+      blocksHands: Number(noHanded[1]),
+      blocksBoth: [notBoth[1], notBoth[2]],
+      ...(text.match(STILL_CARRY)
+        ? { exempt: sectionFor(text.match(STILL_CARRY)[1]) ?? text.match(STILL_CARRY)[1] }
+        : {}),
+    } : undefined;
+    if (held) rules.push(held);
+
+    /*
+      A keyword whose text plainly talks about carrying but which none of the
+      patterns read is reported rather than ignored. The glossary is prose and
+      a new release can rephrase a rule; silence here would look identical to
+      there being no rule.
+    */
+    if (!converts && !fixed && !most && !held
+        && /\b(cannot be equipped|can equip and use|hands to use)\b/i.test(text)) {
+      unreadable.push(`${k.name}: ${text.trim()}`);
+    }
+  }
+
+  return { rules, unreadable };
+}

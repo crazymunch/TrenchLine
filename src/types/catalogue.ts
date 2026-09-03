@@ -414,9 +414,40 @@ export interface ShieldRestrictions {
   unlessBoth?: string;
 }
 
+/**
+ * A carrying limit stated as a KEYWORD rather than on the limits page.
+ *
+ * Four of them, and only the first three were obvious: reporting a keyword
+ * whose text discusses carrying but which no pattern read is what turned up
+ * HELD, the compound one.
+ */
+export interface KeywordCarryRule {
+  keyword: string;
+  raw: string;
+  /** STRONG: one 2-Handed Melee weapon counts as 1-Handed. */
+  converts?: { count: number; section: string; from: number; to: number };
+  /** CUMBERSOME: always this many hands, whatever `overrides` says. */
+  fixedHands?: number;
+  overrides?: string;
+  /** HEAVY: at most this many pieces carrying the keyword. */
+  maxPerModel?: number;
+  /** HELD: occupies hands and cannot be put down. */
+  occupiesHands?: number;
+  /** HELD: and beside it, exactly one of these. */
+  alsoOneOf?: string[];
+  /** HELD: the handedness it forbids outright. */
+  blocksHands?: number;
+  /** HELD: the pair it forbids carrying together. */
+  blocksBoth?: string[];
+  /** HELD: the section it does not restrict — Grenades. */
+  exempt?: string;
+}
+
 export interface BattlekitLimits {
   limits: BattlekitLimit[];
   withShield?: ShieldRestrictions;
+  /** The same question, answered by the Keyword Glossary. */
+  byKeyword?: KeywordCarryRule[];
 }
 
 /* ------------------------------------------------------------- layer ops */

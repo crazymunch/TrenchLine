@@ -607,6 +607,8 @@ function checkBattlekitLimits(
 
     for (const b of battlekitBreaches(carried, {
       armoury, dataset, extraLimb: u.extraLimb,
+      // STRONG is a Keyword the model has, not a word in an ability's name.
+      keywords: profiles.get(u.profileId)?.keywords,
     })) {
       out.push(err({
         code: 'battlekit-limit',

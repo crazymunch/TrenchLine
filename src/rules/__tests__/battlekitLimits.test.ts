@@ -199,3 +199,105 @@ describe('a real warband', () => {
     expect(v.map((x) => x.message)).toEqual([]);
   });
 });
+
+/**
+ * The limits the Keyword Glossary states, rather than the limits page.
+ *
+ *   STRONG      "…it can equip and use one 2-Handed Melee Weapon as if it were
+ *                a 1-Handed Melee Weapon."
+ *   CUMBERSOME  "Weapons with this Keyword require two hands to use, even if
+ *                the model has the STRONG Keyword."
+ *   HELD        "…requires one hand to carry and cannot be put down… can only
+ *                be equipped with or use either a 1-Handed Weapon or a Shield.
+ *                It cannot be equipped with or use any 2-Handed Weapons, or
+ *                both a Weapon and a Shield… It may still carry Grenades."
+ *   HEAVY       parsed, deliberately not enforced — see below.
+ */
+describe('the limits stated as keywords', () => {
+  const rules = () => d.battlekitLimits!.byKeyword ?? [];
+  const kw = (name: string) => rules().find((r) => r.keyword === name);
+
+  it('all four are derived from the glossary', () => {
+    expect(rules().map((r) => r.keyword).sort())
+      .toEqual(['CUMBERSOME', 'HEAVY', 'HELD', 'STRONG']);
+  });
+
+  it('STRONG converts ONE 2-Handed Melee weapon, not every one', () => {
+    // The equip modal's version converted all of them, so a STRONG model
+    // could carry two greatswords in two hands.
+    expect(kw('STRONG')?.converts).toMatchObject({ count: 1, from: 2, to: 1 });
+    expect(kw('STRONG')?.converts?.section).toBe('Melee Weapons');
+  });
+
+  it('CUMBERSOME names the keyword it overrides', () => {
+    expect(kw('CUMBERSOME')).toMatchObject({ fixedHands: 2, overrides: 'STRONG' });
+  });
+
+  it('HELD keeps all four of its clauses, or none', () => {
+    expect(kw('HELD')).toMatchObject({
+      occupiesHands: 1, blocksHands: 2, exempt: 'Grenades',
+    });
+    expect(kw('HELD')?.blocksBoth).toEqual(['Weapon', 'Shield']);
+  });
+});
+
+describe('a STRONG model', () => {
+  const chapter = new Map((d.battlekit ?? []).map((b) => [b.name, b.type]));
+  const melee = (hands: number) => rowsIn('Melee Weapons')
+    .filter((r) => chapter.get(r.name) === `${hands}-Handed`).map((r) => r.name);
+
+  const load = (names: string[]) =>
+    names.map((n) => ({ name: n, weaponId: armoury.rows.find((r) => r.name === n)?.weaponId ?? undefined }));
+
+  it('may carry a 2-Handed and a 1-Handed Melee weapon', () => {
+    const items = load([melee(2)[0], melee(1)[0]]);
+    // Three hands for an ordinary model…
+    expect(battlekitBreaches(items, { armoury, dataset: d })).toHaveLength(1);
+    // …two for a STRONG one, because one 2-Handed counts as 1-Handed.
+    expect(battlekitBreaches(items, { armoury, dataset: d, keywords: ['STRONG'] })).toEqual([]);
+  });
+
+  it('but only one of them converts', () => {
+    const items = load([melee(2)[0], melee(2)[1]]);
+    expect(battlekitBreaches(items, { armoury, dataset: d, keywords: ['STRONG'] }))
+      .toHaveLength(1);
+  });
+});
+
+/*
+  HEAVY is parsed and not enforced, and that is a decision rather than an
+  oversight — see the note in battlekitLimits.ts. NEGATE HEAVY, which STRONG
+  grants, lifts the limit outright, and the roster cannot tell us whether a
+  model has STRONG: a saved profileSnapshot carries no keywords, and the
+  Inhuman Strength Formula grants STRONG to models whose catalogue entry has
+  no such keyword. Enforcing it raised two false violations on a real warband.
+*/
+describe('HEAVY', () => {
+  it('is derived', () => {
+    expect(d.battlekitLimits!.byKeyword!.find((r) => r.keyword === 'HEAVY')?.maxPerModel)
+      .toBe(1);
+  });
+
+  it('and is deliberately not enforced, so a legal warband stays legal', () => {
+    const heavy = d.weapons
+      .filter((w) => (w.keywords ?? []).some((k) => k.trim().toUpperCase() === 'HEAVY'))
+      .slice(0, 2)
+      .map((w) => ({ name: w.name, weaponId: w.id }));
+    expect(heavy.length).toBe(2);
+    expect(battlekitBreaches(heavy, { armoury, dataset: d })
+      .filter((b) => b.section === 'HEAVY')).toEqual([]);
+  });
+
+  it('and a model that NEGATEs a keyword is exempt from its limit', () => {
+    // The mechanism is right even where this one rule is not switched on:
+    // "A model with the NEGATE Keyword is not affected by the specified
+    // Keyword's Effect."
+    const held = d.weapons.find((w) => (w.keywords ?? []).some((k) => k.trim().toUpperCase() === 'HELD'))!;
+    const two = rowsIn('Melee Weapons').map((r) => r.name);
+    const items = [{ name: held.name, weaponId: held.id }, ...two.slice(0, 2).map((n) => ({ name: n }))];
+    const withNegate = battlekitBreaches(items, {
+      armoury, dataset: d, keywords: ['NEGATE HELD'],
+    }).filter((b) => b.section === 'HELD');
+    expect(withNegate).toEqual([]);
+  });
+});

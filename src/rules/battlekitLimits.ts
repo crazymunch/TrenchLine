@@ -26,7 +26,7 @@
  * Pistol occupies one row, in one section, so it is counted once.
  */
 import type {
-  Dataset, BattlekitLimit, BattlekitLimits, ShieldRestrictions,
+  Dataset, BattlekitLimit, BattlekitLimits, ShieldRestrictions, KeywordCarryRule,
 } from '@/types/catalogue';
 import { offersOf, sectionsOf, restrictionsFor, type Armoury } from './armoury';
 import { parseRestrictions } from './restrictions';
@@ -60,6 +60,14 @@ export interface CarrierContext {
    * answer on its own.
    */
   extraLimb?: boolean;
+  /**
+   * The model's own Keywords.
+   *
+   * STRONG is one of the four carrying rules the Keyword Glossary states, and
+   * the equip modal used to detect it with `/strong|bulky|large|ogre/i` over
+   * ability NAMES. It is a keyword; the dataset carries it as one.
+   */
+  keywords?: string[];
 }
 
 const q = (i: Carried) => Math.max(1, i.quantity ?? 1);
@@ -94,6 +102,20 @@ function handsOf(item: Carried, ctx: CarrierContext): number | undefined {
   return m ? Number(m[1]) : undefined;
 }
 
+/** The keywords on an item, from the chapter and the catalogue alike. */
+function keywordsOf(item: Carried, ctx: CarrierContext): string[] {
+  const key = nameKey(item.name);
+  const chapter = (ctx.dataset.battlekit ?? []).find((b) => nameKey(b.name) === key);
+  const profile = ctx.dataset.weapons.find(
+    (w) => (item.weaponId && w.id === item.weaponId) || nameKey(w.name) === key);
+  return [...(chapter?.keywords ?? []), ...(profile?.keywords ?? [])]
+    .map((k) => k.trim().toUpperCase());
+}
+
+const carries = (item: Carried, keyword: string, ctx: CarrierContext) =>
+  keywordsOf(item, ctx).some((k) => k === keyword.toUpperCase()
+                                 || k.startsWith(`${keyword.toUpperCase()} `));
+
 /** Does the item carry a named stipulation — `Shield Combo`? */
 function hasStipulation(item: Carried, name: string, ctx: CarrierContext): boolean {
   const ref = { id: item.weaponId, name: item.name };
@@ -116,6 +138,21 @@ function hasStipulation(item: Carried, name: string, ctx: CarrierContext): boole
  * apply. The same singular/plural split is waiting in `Grenade`/`Grenades`.
  */
 const sectionKey = (s: string) => nameKey(s).replace(/s$/, '');
+
+/**
+ * Is the model exempt from a keyword's Effect?
+ *
+ * "NEGATE [KEYWORD] (Effect): A model with the NEGATE Keyword is not affected
+ * by the specified Keyword's Effect." A carrying limit stated by a keyword is
+ * part of that keyword's Effect, so NEGATE lifts it.
+ */
+const negates = (ctx: CarrierContext, keyword: string) =>
+  (ctx.keywords ?? []).some(
+    (k) => k.trim().toUpperCase() === `NEGATE ${keyword.toUpperCase()}`);
+
+/** The carrying rules the Keyword Glossary states, if this ruleset has them. */
+const keywordRules = (limits: BattlekitLimits): KeywordCarryRule[] =>
+  limits.byKeyword ?? [];
 
 /** The rule governing a section, if the book states one for it. */
 const ruleFor = (limits: BattlekitLimits, section: string): BattlekitLimit | undefined =>
@@ -210,11 +247,37 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
       const capacity = perHand(1);
       if (capacity) {
         const slots = ctx.extraLimb ? capacity + 1 : capacity;
+
+        /*
+          STRONG: "it can equip and use ONE 2-Handed Melee Weapon as if it were
+          a 1-Handed Melee Weapon." One, in the Melee section, and CUMBERSOME
+          exists to opt a weapon out of exactly this: "require two hands to
+          use, EVEN IF the model has the STRONG Keyword."
+
+          The equip modal's version applied the conversion to every 2-Handed
+          melee weapon and read CUMBERSOME not at all, so a STRONG model could
+          carry two greatswords in two hands.
+        */
+        const convert = keywordRules(limits).find(
+          (k) => k.converts
+              && (ctx.keywords ?? []).some((w) => w.trim().toUpperCase() === k.keyword)
+              && sectionKey(k.converts.section) === sectionKey(section));
+        const exempts = keywordRules(limits).filter(
+          (k) => k.fixedHands && k.overrides === convert?.keyword);
+        let conversionsLeft = convert?.converts?.count ?? 0;
+
         let used = 0;
         const counted: string[] = [];
         for (const c of carried) {
-          const hands = handsOf(c, ctx);
+          let hands = handsOf(c, ctx);
           if (hands === undefined) continue;
+          if (convert?.converts
+              && hands === convert.converts.from
+              && conversionsLeft > 0
+              && !exempts.some((e) => carries(c, e.keyword, ctx))) {
+            hands = convert.converts.to;
+            conversionsLeft--;
+          }
           const allowed = perHand(hands);
           used += allowed ? capacity / allowed : hands;
           counted.push(c.name);
@@ -266,6 +329,76 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
           });
         }
       }
+    }
+  }
+
+  const all = [...bySection.values()].flatMap((g) => g.items);
+
+  /*
+    HEAVY — "A model cannot be equipped with more than one piece of Battlekit
+    with this Keyword" — is parsed and DELIBERATELY NOT ENFORCED.
+
+    STRONG grants NEGATE HEAVY, and NEGATE is unambiguous: "A model with the
+    NEGATE Keyword is not affected by the specified Keyword's Effect." The
+    carrying limit is part of HEAVY's Effect, so a STRONG model may carry two.
+
+    Deciding that needs the model's effective Keywords, and the roster does not
+    have them: a saved `profileSnapshot` carries no keyword list at all, and
+    STRONG is commonly GRANTED — the Inhuman Strength Alchemical Formula reads
+    "Gains STRONG" — so it is absent from the base catalogue entry of exactly
+    the models most likely to carry two HEAVY items.
+
+    Enforcing it anyway raised two violations on a real, legal warband on the
+    first run: a Brazen Bull (STRONG on its own entry) and Al-Masyukh (STRONG
+    from a Formula). Both were false. A permissive gap is the better failure —
+    the whole point of this work is that the app stops telling players their
+    legal rosters are illegal.
+  */
+
+  /*
+    HELD: occupies a hand and cannot be put down, so the model may add only
+    ONE of a 1-Handed Weapon or a Shield — never a 2-Handed weapon, and never
+    both a Weapon and a Shield. Grenades are exempt by the rule's own last
+    sentence.
+  */
+  for (const rule of keywordRules(limits)) {
+    if (typeof rule.occupiesHands !== 'number') continue;
+    if (negates(ctx, rule.keyword)) continue;
+    const heldItems = all.filter((c) => carries(c, rule.keyword, ctx));
+    if (!heldItems.length) continue;
+
+    /*
+      "…either a 1-Handed Weapon or a Shield… or both a Weapon and a Shield."
+      The rule is about WEAPONS and SHIELDS. Armour is worn rather than
+      carried and Equipment is explicitly unrestricted elsewhere, so counting
+      either as a companion would forbid a Held model from wearing a coat.
+    */
+    const exempt = rule.exempt ? sectionKey(rule.exempt) : undefined;
+    const companionSections = ['Melee Weapons', 'Ranged Weapons', 'Shields']
+      .map(sectionKey).filter((k) => k !== exempt);
+    const others = all.filter((c) => {
+      if (heldItems.includes(c)) return false;
+      const s = sectionOf(c, ctx);
+      return !!s && companionSections.includes(sectionKey(s));
+    });
+
+    const twoHanded = others.filter((c) => handsOf(c, ctx) === rule.blocksHands);
+    for (const c of twoHanded) {
+      out.push({
+        section: rule.keyword, raw: rule.raw,
+        message: `${c.name} is ${rule.blocksHands}-Handed and cannot be carried with `
+               + `${heldItems[0].name}, which is ${rule.keyword} and cannot be put down.`,
+      });
+    }
+
+    // "…or both a Weapon and a Shield": one companion, not two.
+    const companions = others.filter((c) => !twoHanded.includes(c));
+    if (companions.length > 1) {
+      out.push({
+        section: rule.keyword, raw: rule.raw,
+        message: `${heldItems[0].name} is ${rule.keyword}, so only one of `
+               + `${companions.map((c) => c.name).join(', ')} can be carried beside it.`,
+      });
     }
   }
 
