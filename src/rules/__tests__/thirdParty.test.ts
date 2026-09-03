@@ -139,14 +139,19 @@ describe('what the gate does to the recruit list', () => {
 
   it('leaves the official Mercenaries unmarked', () => {
     /*
-      Fourteen entries carry the Mercenary role; five of them are third-party
-      (the Disciple, and four gated behind a Variant), leaving nine published
+      Thirteen entries carry the Mercenary role; five of them are third-party
+      (the Disciple, and four gated behind a Variant), leaving eight published
       ones that must be offered as normal.
+
+      Thirteen rather than fourteen since the Trench Dog left: the catalogue
+      reveals it only for `Dog Food`, and the rulebook lists it among Glory
+      Items at 1-3 ☼ rather than among Mercenaries. It was never a hire.
     */
     const mercs = sultanate.units.filter((u) => u.category === 'Mercenary');
     const official = mercs.filter((u) => !u.thirdParty);
-    expect(mercs.length).toBe(14);
-    expect(official.length).toBe(9);
+    expect(mercs.map((u) => u.name)).not.toContain('Trench Dog');
+    expect(mercs.length).toBe(13);
+    expect(official.length).toBe(8);
     for (const u of official) expect(u.thirdPartyNotice, u.name).toBeUndefined();
   });
 });

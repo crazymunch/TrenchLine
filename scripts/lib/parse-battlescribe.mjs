@@ -528,6 +528,69 @@ export function parseCatalogues(dir) {
     });
   }
 
+  /*
+    Where a shared entry is actually PLACED, and whether that placement is
+    hidden.
+
+    A `sharedSelectionEntry` is a definition, not an offer. It appears on a
+    list only where an `entryLink` points at it, and **the link carries its own
+    `hidden`** — which is the attribute that decides whether a player can pick
+    the thing. Reading `hidden` off the definition instead misses the gate
+    entirely.
+
+    The Trench Pilgrims Homunculus is the case that found this. Its definition
+    is `hidden="false"`, its single `entryLink` is `hidden="true"`, and the
+    rulebook says why: a Homunculus is not a Pilgrims recruit, it is what the
+    `Book of Golems` Exploration result adds to a Warband mid-campaign. Read
+    from the definition it was offered at muster to anyone.
+
+    Only shared entries get this treatment. An entry declared inline is placed
+    where it sits, so its own attribute is the whole story.
+  */
+  const sharedIds = new Set();
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const e of arr(n?.sharedSelectionEntries?.selectionEntry)) {
+        const id = attr(e, 'id');
+        if (id) sharedIds.add(id);
+      }
+    });
+  }
+
+  /** targetId -> every entryLink that places it, across all catalogues. */
+  const placements = new Map();
+  for (const { doc } of docs) {
+    walk(doc, (n) => {
+      for (const l of arr(n?.entryLinks?.entryLink)) {
+        const target = attr(l, 'targetId');
+        if (!target) continue;
+        if (!placements.has(target)) placements.set(target, []);
+        placements.get(target).push(l);
+      }
+    });
+  }
+
+  /**
+   * Whether an entry is off the list until something reveals it.
+   *
+   * Its own attribute first, then — for a shared definition — the placements.
+   * Hidden when every link that places it is hidden.
+   *
+   * NO placements means "not reached by an entryLink", which is NOT the same
+   * as "not available": armoury rows and category links reach entries by other
+   * routes, and `[].every()` is `true`, so an early version of this marked Gas
+   * Masks, Combat Helmets and Standard Armour hidden — basic kit every warband
+   * can buy. An entry this cannot speak about is left alone.
+   */
+  const hiddenByDefaultOf = (node) => {
+    if (attr(node, 'hidden') === 'true') return true;
+    const id = attr(node, 'id');
+    if (!sharedIds.has(id)) return false;
+    const where = placements.get(id) ?? [];
+    if (where.length === 0) return false;
+    return where.every((l) => attr(l, 'hidden') === 'true');
+  };
+
   const fieldNameOf = (id) => fieldNames.get(id) ?? null;
   const nameOf = (id) => {
     const n = byId.get(id);
@@ -725,7 +788,38 @@ export function parseCatalogues(dir) {
 
       const constraints = constraintsOf(node);
       const cost = costsOf(node);
+      /*
+        The entry's own modifiers PLUS those of every link that places it.
+
+        A shared entry is gated on its placement, and the modifier that opens
+        the gate is written on the link rather than on the definition. The
+        Takwin Homunculus is the case: both of its entryLinks are
+        `hidden="true"` and both carry `set hidden false` conditioned on
+        `The House of Wisdom`, which is exactly what the rulebook says — the
+        Book of Golems adds "a Takwin Homunculus from The House of Wisdom
+        Variant Warband in the Iron Sultanate Faction List".
+
+        Read from the definition alone the model is hidden with nothing to
+        reveal it, which would make a legitimate House of Wisdom recruit
+        unreachable. `variantLocks` reads these to decide which Variant
+        unlocks a model, so the reveal has to arrive with them.
+      */
       const modifiers = modifiersOf(node, nameOf, fieldNameOf, isConstraint);
+
+      /*
+        The unit's modifiers plus its placements'. UNIT ONLY — the gear emit
+        below shares this scope and must keep the entry's own list.
+
+        Merged into both, the link conditions leaked into every weapon on the
+        entry: the Automatic Pistol picked up a reveal naming the third-party
+        toggle, `thirdPartyGate` read that as a gate, and the pistol vanished
+        from New Antioch's armoury as unofficial content.
+      */
+      const unitModifiers = [
+        ...modifiers,
+        ...(placements.get(attr(node, 'id')) ?? [])
+          .flatMap((l) => modifiersOf(l, nameOf, fieldNameOf, isConstraint)),
+      ];
 
       if (unitProfile) {
         const c = charMap(unitProfile);
@@ -750,7 +844,7 @@ export function parseCatalogues(dir) {
             Janissary is a core Sultanate troop that two variants forbid).
             Reading the reveal without this cannot tell them apart.
           */
-          hiddenByDefault: attr(node, 'hidden') === 'true' || undefined,
+          hiddenByDefault: hiddenByDefaultOf(node) || undefined,
           name: clean(attr(unitProfile, 'name')),
           factionId: faction,
           roles: cats.filter((x) => ROLE_NAMES.has(x)),
@@ -775,7 +869,7 @@ export function parseCatalogues(dir) {
           */
           battlekit: forcedKitOf(node, (id) => byId.get(id)),
           constraints,
-          modifiers,
+          modifiers: unitModifiers,
           sourceFile: file,
         });
         return;
@@ -788,8 +882,18 @@ export function parseCatalogues(dir) {
           // As with units: the containing selectionEntry, which is what a
           // roster selects and what a model-scoped modifier is attached to.
           entryId: attr(node, 'id'),
-          // And as with units, whether the entry is off the list until
-          // something reveals it — see the note on the unit field.
+          /*
+            And as with units, whether the entry is off the list until
+            something reveals it — see the note on the unit field.
+
+            Read from the ENTRY here, deliberately, and not from the links that
+            place it. A weapon is routinely placed by a hidden link revealed
+            per-model ("only a model with X may take this"), so the rule that
+            gates a unit would mark ordinary wargear gated: applied here it
+            made the Automatic Pistol read as third-party and pulled it from
+            every faction's armoury. Availability of gear is decided by the
+            armoury tables and `unlockedBy` below, not by this flag.
+          */
           hiddenByDefault: attr(node, 'hidden') === 'true' || undefined,
           /*
             What qualifies a model to take it, read off the entry's own reveal

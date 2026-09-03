@@ -34,7 +34,7 @@ import type {
 import { nameKey } from './names';
 import { sameFaction } from './variants';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
-import { variantLocks } from './variantLocks';
+import { unobtainable, variantLocks } from './variantLocks';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -125,6 +125,13 @@ export function recruitable(
     offered to every Warband of the faction.
   */
   const locks = variantLocks(dataset);
+  /*
+    Entries the catalogue gates and that no choice a Warband can make reveals.
+    Off the muster list entirely — see `unobtainable`. The rulebook says how
+    each is really obtained: the `Book of Golems` Exploration result adds a
+    Homunculus, a Trench Dog is a Glory Item bought for 1-3 ☼.
+  */
+  const offList = unobtainable(dataset);
   const variantsById = new Map(
     (dataset.variants ?? []).filter((v) => v.entryId).map((v) => [v.entryId as string, v]));
 
@@ -136,7 +143,10 @@ export function recruitable(
     field a warband of Martyr Penitents at the Pilgrim's price. They stay in
     the dataset for the Codex; see `UnitProfile.secondaryProfile`.
   */
-  const units: UnitProfile[] = dataset.units.filter((u) => !u.secondaryProfile).map((u) => {
+  const units: UnitProfile[] = dataset.units
+    .filter((u) => !u.secondaryProfile)
+    .filter((u) => !offList.has(u.entryId || u.id))
+    .map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
     return {
@@ -292,10 +302,23 @@ export function recruitable(
       equipment.push({
         id, name: row.name, cost: row.cost.ducats,
         gloryCost: row.cost.glory || undefined,
-        // `effect` is required by the legacy shape. The rules text where there
-        // is one, the keyword line otherwise, and an empty string rather than
-        // an invented sentence when the sources carry neither.
-        effect: b?.rules.join(' ') || b?.note || (b?.keywords ?? []).join(', ') || '',
+        /*
+          `effect` is required by the legacy shape. The rules text where there
+          is one, the keyword line otherwise, and an empty string rather than
+          an invented sentence when the sources carry neither.
+
+          Both sources are consulted, and that second one is the fix. `b` is
+          the rulebook's Battlekit chapter; an item published in a supplement
+          has no entry there and carries its rules on the catalogue profile `p`
+          instead. Reading only `b`, every piece of Carcass Front wargear
+          rendered with its name, cost and keywords and a blank where the rule
+          should be — the Bells of Warding lost "Gathering Call: Add +1 DICE to
+          Risky Success Rolls for friendly models that are taking a Dash ACTION
+          and are within 4” of one or more models with Bells of Warding or a
+          Musical Instrument", which is the whole of what the item does.
+        */
+        effect: b?.rules.join(' ') || p?.rules || b?.note
+          || (b?.keywords ?? p?.keywords ?? []).join(', ') || '',
         keywords: b?.keywords ?? p?.keywords ?? [],
         description: b?.description,
         category: section,

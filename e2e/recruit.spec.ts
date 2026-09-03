@@ -168,3 +168,33 @@ test('third-party entries are hidden until the Warband allows them', async ({ pa
   // And it is labelled, so it is never mistaken for published material.
   await expect(row).toContainText(/third party/i);
 });
+
+/**
+ * The three roles are labelled, not merely ordered.
+ *
+ * The list was sorted Elite -> Trooper -> Mercenary but ran as one unbroken
+ * column, so a Mercenary priced in Glory sat indistinguishably beside a Trooper
+ * priced in Ducats and nothing on screen said which was which.
+ */
+test('the recruit list is broken into Elite, Trooper and Mercenary sections', async ({ page }) => {
+  const dialog = await openRecruit(page);
+
+  const headings = await dialog.locator('[data-recruit-heading]')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('data-recruit-heading') ?? ''));
+  expect(headings, 'no role headings rendered').toEqual(['Elite', 'Trooper', 'Mercenary']);
+
+  /*
+    One heading per role, and each immediately before its own rows: read the
+    rendered sequence and every row must follow the heading that names it.
+  */
+  const sequence = await dialog.locator('[data-recruit-heading], [data-recruit-row]')
+    .evaluateAll((els) => els.map((el) => el.hasAttribute('data-recruit-heading')
+      ? `H:${el.getAttribute('data-recruit-heading')}`
+      : `R:${el.getAttribute('data-category')}`));
+
+  let current = '';
+  for (const item of sequence) {
+    if (item.startsWith('H:')) current = item.slice(2);
+    else expect(item.slice(2), `a ${item.slice(2)} row sits under the ${current} heading`).toBe(current);
+  }
+});
