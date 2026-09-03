@@ -57648,6 +57648,93 @@ export const DATASET: Dataset = {
       ]
     }
   ],
+  "battlekitLimits": {
+    "limits": [
+      {
+        "section": "Ranged Weapons",
+        "raw": "One 2-Handed Ranged Weapon or two 1-Handed Ranged Weapons.",
+        "byHands": {
+          "1": 2,
+          "2": 1
+        }
+      },
+      {
+        "section": "Melee Weapons",
+        "raw": "One 2-Handed Melee Weapon or two 1-Handed Melee Weapons.",
+        "byHands": {
+          "1": 2,
+          "2": 1
+        }
+      },
+      {
+        "section": "Grenades",
+        "raw": "One type of Grenade.",
+        "max": 1,
+        "per": "name"
+      },
+      {
+        "section": "Armour",
+        "raw": "One suit of Armour.",
+        "max": 1
+      },
+      {
+        "section": "Shields",
+        "raw": "One Shield (▶ see additional restrictions below).",
+        "max": 1
+      },
+      {
+        "section": "Equipment",
+        "raw": "Any number of pieces of Equipment or Special Battlekit. A Model cannot have two or more pieces of Equipment or Special Battlekit with the same Name.",
+        "max": null,
+        "distinctByName": true
+      }
+    ],
+    "withShield": {
+      "raw": "A Shield requires one hand to carry and cannot be unequipped. As a result, if a model has a Shield, the following restrictions apply to the other Battlekit it can carry: ** It may carry a maximum of one 1-Handed Melee and Ranged Weapon each. ** It cannot carry a 2-Handed Weapon unless the Weapon and the Shield both have the Shield Combo stipulation (▶ see Warbands of Trench Crusade).",
+      "oneHandedEach": 1,
+      "hands": 1,
+      "blocksHands": 2,
+      "unlessBoth": "Shield Combo"
+    },
+    "byKeyword": [
+      {
+        "keyword": "CUMBERSOME",
+        "raw": "Weapons with this Keyword require two hands to use, even if the model has the STRONG Keyword. However, they can still be used alongside a Shield with the Shield Combo stipulation.",
+        "fixedHands": 2,
+        "overrides": "STRONG"
+      },
+      {
+        "keyword": "HEAVY",
+        "raw": "A model cannot be equipped with more than one piece of Battlekit with this Keyword and it does not receive a Charge Bonus when it makes a charge move. In addition, if a Ranged Weapon or Grenade has this Keyword, you cannot use the Weapon or Grenade to make a Ranged Attack and take a Move, Charge or Retreat, or Dash ACTION with the attacking model as part of the same Activation.",
+        "maxPerModel": 1
+      },
+      {
+        "keyword": "HELD",
+        "raw": "A piece of Battlekit with this Keyword requires one hand to carry and cannot be put down. Because of this, a model that has this Keyword can only be equipped with or use either a 1-Handed Weapon or a Shield. It cannot be equipped with or use any 2-Handed Weapons, or both a Weapon and a Shield (even if the Shield has the Shield Combo rule). It may still carry Grenades.",
+        "occupiesHands": 1,
+        "alsoOneOf": [
+          "1-Handed Weapon",
+          "Shields"
+        ],
+        "blocksHands": 2,
+        "blocksBoth": [
+          "Weapon",
+          "Shield"
+        ],
+        "exempt": "Grenades"
+      },
+      {
+        "keyword": "STRONG",
+        "raw": "A model with this Keyword has the NEGATE HEAVY Keyword. In addition, it can equip and use one 2-Handed Melee Weapon as if it were a 1-Handed Melee Weapon.",
+        "converts": {
+          "count": 1,
+          "section": "Melee Weapons",
+          "from": 2,
+          "to": 1
+        }
+      }
+    ]
+  },
   "campaign": {
     "thresholds": [
       {

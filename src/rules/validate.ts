@@ -18,6 +18,7 @@ import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury } from './variantArmoury';
 import { thirdPartyGate } from './thirdParty';
 import { variantLocks, unlockedBy } from './variantLocks';
+import { battlekitBreaches } from './battlekitLimits';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -34,6 +35,7 @@ export interface Violation {
     | 'variant-forbids'
     | 'variant-requires'
     | 'variant-requires-gear'
+    | 'battlekit-limit'
     | 'unknown-profile'
     | 'faction-rule'
     | 'wargear-not-stocked'
@@ -553,6 +555,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkWargear(roster, profiles, weapons, armoury, dataset, variant));
   violations.push(...checkVariant(roster, variant, profiles));
   violations.push(...checkVariantGear(roster, variant, profiles, dataset, armoury, weapons));
+  violations.push(...checkBattlekitLimits(roster, profiles, dataset, armoury, weapons));
 
   const faction = (dataset as unknown as { factions?: { id: string; name: string;
     specialRules?: FactionSpecialRule[] }[] }).factions
@@ -568,6 +571,54 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * The rulebook's per-model carrying limits.
+ *
+ * "Unless otherwise stated a model is limited to the following Battlekit:
+ * …One suit of Armour. One Shield…" — six bullets the app enforced nowhere, so
+ * a model could wear three suits of Armour and validate clean.
+ *
+ * The numbers are `dataset.battlekitLimits`, parsed off that page; the counting
+ * is `battlekitBreaches`. An older ruleset that carries no limits is not
+ * policed rather than declared legal — absent means unknown.
+ *
+ * Errors, not warnings: these are the rules that decide what a model may take
+ * to a table. The violation quotes the published sentence rather than a
+ * paraphrase, because the player's next move is to check it.
+ */
+function checkBattlekitLimits(
+  roster: Roster,
+  profiles: Map<string, UnitProfile>,
+  dataset: Dataset,
+  armoury: Armoury | undefined,
+  weapons: Map<string, { id: string; name: string }>,
+): Violation[] {
+  if (!dataset.battlekitLimits?.limits?.length) return [];
+
+  const out: Violation[] = [];
+  for (const u of roster.units) {
+    const carried = u.items.map((item) => ({
+      name: item.name ?? (item.weaponId ? weapons.get(item.weaponId)?.name ?? '' : ''),
+      weaponId: item.weaponId,
+      quantity: item.quantity,
+    })).filter((c) => c.name || c.weaponId);
+
+    for (const b of battlekitBreaches(carried, {
+      armoury, dataset, extraLimb: u.extraLimb,
+      // STRONG is a Keyword the model has, not a word in an ability's name.
+      keywords: profiles.get(u.profileId)?.keywords,
+    })) {
+      out.push(err({
+        code: 'battlekit-limit',
+        message: `${profiles.get(u.profileId)?.name ?? u.name}: ${b.message}`,
+        rule: b.raw,
+        unitId: u.id,
+      }));
+    }
+  }
+  return out;
 }
 
 /**

@@ -16,7 +16,7 @@
  * Ducat costs, so re-pricing is the point of doing this at all.
  */
 import type { Dataset, UnitProfile } from '@/types/catalogue';
-import { isAlchemicalFormula, traitsOf } from './formulae';
+import { isAlchemicalFormula, traitsOf, hasExtraLimb } from './formulae';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { Roster, RosterUnit, RosterItem } from './costs';
 import { armouryFor, priceOf, offersOf } from './armoury';
@@ -173,6 +173,7 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
         Titan Zulfiqar the catalogue reveals to exactly that name.
       */
       traits: traitsOf(u),
+      extraLimb: hasExtraLimb(u) || undefined,
       fireteam: u.fireteam,
     });
   }

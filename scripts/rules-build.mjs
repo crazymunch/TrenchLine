@@ -22,7 +22,7 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
-import { parseBattlekit } from './lib/parse-battlekit.mjs';
+import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -120,11 +120,21 @@ for (const ruleset of RULESETS) {
   // — the Codex would render that as "this ruleset has no wargear".
   const battlekit = parseBattlekit();
 
+  // How much of it one model may carry. Six bullets under a heading in the
+  // same chapter, and the app enforced none of them — a model could wear
+  // three suits of Armour and validate clean. Throws if the heading is gone.
+  const battlekitLimits = parseBattlekitLimits();
+
   // The Keyword Glossary. The app's hand-written copy had 46 entries against
   // the book's 59, invented HEAVY COVER and LIGHT COVER outright, and split the
   // book's parameterised forms into instances — NEGATE FIRE, NEGATE GAS and
   // NEGATE SHRAPNEL for the one NEGATE [KEYWORD] rule.
   const keywords = parseKeywords();
+
+  // Three of the carrying limits are stated as KEYWORDS rather than on the
+  // BATTLEKIT LIMITS page — STRONG, CUMBERSOME, HEAVY — and a fourth, HELD,
+  // which reporting an unreadable rule is what found.
+  const keywordCarry = parseKeywordCarryRules(keywords);
 
   // The twelve scenarios. The hand-written set had the wrong game length for
   // all twelve, inverted Claim No Man's Land's Infiltrator rule, and invented
@@ -327,6 +337,26 @@ for (const ruleset of RULESETS) {
      * the prose they do not print.
      */
     battlekit: battlekit.entries,
+    /**
+     * The per-model carrying limits, from the chapter's own bullets.
+     *
+     * Derived rather than typed into a constant for the ordinary reason: a
+     * number in a TypeScript file is a number nobody re-checks against the
+     * page it came from. Each rule keeps the sentence it was read from, both
+     * so the app can cite the wording and because "unless otherwise stated"
+     * means the caller has to be able to see what was stated.
+     */
+    battlekitLimits: {
+      limits: battlekitLimits.limits,
+      withShield: battlekitLimits.withShield,
+      /**
+       * The same question answered by the Keyword Glossary rather than by the
+       * chapter's bullets. Kept beside them because a model's carrying
+       * capacity is decided by both at once, and a caller that read one and
+       * not the other would be confidently wrong.
+       */
+      byKeyword: keywordCarry.rules,
+    },
     /**
      * The campaign economy's published numbers.
      *
@@ -724,6 +754,19 @@ for (const ruleset of RULESETS) {
   console.log(`  battlekit: ${dataset.battlekit.length} entries described` +
               ` (${described}/${armouryNames.size} distinct armoury items carry a description)` +
               (battlekit.unreadable.length ? `  (${battlekit.unreadable.length} unreadable)` : ''));
+
+  console.log(`  battlekit limits: ${dataset.battlekitLimits.limits.length} carrying rules` +
+              (dataset.battlekitLimits.withShield ? ', plus the Shield restrictions' : '') +
+              `, ${keywordCarry.rules.length} by keyword ` +
+              `(${keywordCarry.rules.map((r) => r.keyword).join(', ')})` +
+              (keywordCarry.unreadable.length
+                ? `  (${keywordCarry.unreadable.length} keyword rule(s) UNREADABLE: ` +
+                  `${keywordCarry.unreadable.join(' | ')})`
+                : '') +
+              (battlekitLimits.unreadable.length
+                ? `  (${battlekitLimits.unreadable.length} UNREADABLE: ` +
+                  `${battlekitLimits.unreadable.join(' | ')})`
+                : ''));
 
   const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
   console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
