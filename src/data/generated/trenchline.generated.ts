@@ -60786,6 +60786,13 @@ export const DATASET: Dataset = {
           }
         ]
       },
+      "sequence": [
+        "Determine the number of Exploration Dice you receive.",
+        "Roll the Exploration Dice.",
+        "Use Allies, Equipment, and Exploration Skills to modify the Exploration Roll.",
+        "Consult the Exploration Table to see what you have discovered.",
+        "Collect loot equal to 10 times your Exploration Roll in 👑 ."
+      ],
       "lootPerPoint": 10
     },
     "carcassFrontExploration": {

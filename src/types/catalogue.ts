@@ -931,7 +931,9 @@ export interface Dataset {
       tables: { from: number; to: number | null;
                 value: { tables: ExplorationTableName[]; choose: boolean } }[];
       locations: Record<ExplorationTableName, ExplorationLocation[]>;
-      /** Ducats per point of the Exploration Roll. */
+      /** The book's own five numbered steps of the Exploration Sequence. */
+      sequence: string[];
+      /** Ducats per point of the Exploration Roll. Read from the sequence's fifth step. */
       lootPerPoint: number;
     };
     /**

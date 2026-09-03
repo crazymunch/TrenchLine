@@ -185,6 +185,30 @@ describe('the Exploration Step', () => {
     expect(loc.legendary.find((l) => l.roll.from === 6)?.name).toBe('Battlefield of Corpses');
   });
 
+  /*
+    The Codex described this step from hand-written prose that said "the winner
+    of the match rolls on the … Exploration Table" — every player who played
+    explores, so it told the loser of every campaign game to skip their income
+    — beside three invented bullets naming a "Trench Merchant" offer, a
+    "Warband Treasury" and an "Armory Stash". None of those appears in any
+    source. This is the sequence the book actually numbers.
+  */
+  it('derives the five-step Exploration Sequence the book numbers', () => {
+    const seq = DATASET.campaign.exploration.sequence;
+    expect(seq).toHaveLength(5);
+    expect(seq[0]).toBe('Determine the number of Exploration Dice you receive.');
+    expect(seq[1]).toBe('Roll the Exploration Dice.');
+    expect(seq[3]).toBe('Consult the Exploration Table to see what you have discovered.');
+    expect(seq[4]).toMatch(/Collect loot equal to 10 times your Exploration Roll/);
+  });
+
+  it('reads the loot multiplier out of that step rather than carrying a 10', () => {
+    // The Strongbox's only income, so it is derived like every other number.
+    expect(DATASET.campaign.exploration.lootPerPoint).toBe(10);
+    expect(DATASET.campaign.exploration.sequence[4])
+      .toContain(`${DATASET.campaign.exploration.lootPerPoint} times your Exploration Roll`);
+  });
+
   it('keeps the reward amounts, glyphs and all', () => {
     // "Sell (Any Warband): Add 30 👑 to your Strongbox" — the number is in the
     // prose, so losing the glyph or the text loses the reward.

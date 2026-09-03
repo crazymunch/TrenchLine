@@ -1038,15 +1038,33 @@ export const CodexView: React.FC = () => {
                 <Sparkles className="w-4 h-4" />
                 <strong className="font-gothic uppercase text-sm">HOW THE EXPLORATION STEP WORKS:</strong>
               </div>
+              {/*
+                The book's own five numbered steps, derived.
+
+                What stood here was written by hand and said "the winner of the
+                match rolls on the … Exploration Table". Every player who
+                played explores, unless they Called for Reinforcements — so it
+                told the loser of every campaign game to skip their income. The
+                three bullets under it named a "Trench Merchant" offer, a
+                "Warband Treasury" and an "Armory Stash", none of which appears
+                in any source.
+              */}
               <p className="text-theme-text leading-relaxed">
-                During Step 3 of the Post-Battle Campaign Phase, participating warbands search the battlefield for lost treasures, ammo caches, and holy relics.
-                The winner of the match rolls on the <strong>{selectedChartTable === 'common' ? 'Common' : selectedChartTable === 'rare' ? 'Rare' : 'Legendary'} Exploration Table</strong>.
+                In the Exploration Step, <strong>each player</strong> explores the territory the
+                campaign is fought over. You are looking at the{' '}
+                <strong>{selectedChartTable === 'common' ? 'Common' : selectedChartTable === 'rare' ? 'Rare' : 'Legendary'} Exploration Table</strong>;
+                which one you use depends on how many games you have played.
               </p>
-              <ul className="list-disc list-inside text-theme-muted space-y-0.5 text-xs sm:text-[11px]">
-                <li><strong>Trench Merchant:</strong> Allows purchasing items costing up to 5 Glory from the Armory.</li>
-                <li><strong>Ducat / Glory Discoveries:</strong> Added immediately to your Warband Treasury and Glory counter.</li>
-                <li><strong>Unique Relics & Battlekit:</strong> Placed in your Armory Stash or assigned to warriors in the Quartermaster Step.</li>
-              </ul>
+              <ol className="list-decimal list-inside text-theme-muted space-y-0.5 text-xs sm:text-[11px]">
+                {(codexDataset?.campaign.exploration.sequence ?? []).map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              <p className="text-theme-muted text-xs sm:text-[11px] leading-relaxed">
+                The tables are <strong>sparse</strong>: a roll that is not listed discovers
+                nothing, and you still collect the loot. A Location can be discovered only
+                once per campaign.
+              </p>
             </div>
           )}
 

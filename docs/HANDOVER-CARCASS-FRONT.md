@@ -205,11 +205,14 @@ below, plus two things this pass deliberately did not do.
   the box. `CampaignDefinition.requiresMap` records this and the Codex says so.
   Deriving them would need the map supplied as an image and read by hand — the
   same shape of problem as the five scenarios' missing deployment maps.
-- **The rulebook's Exploration Step banner in the Codex is still hand-written
-  prose.** *"The winner of the match rolls on the … Exploration Table"* and the
-  three bullets under it appear in no source; the rulebook has every player
-  explore. Left alone as out of scope, but it is invented rules text sitting
-  next to derived tables.
+- ~~The rulebook's Exploration Step banner in the Codex is hand-written
+  prose.~~ **Fixed.** It said *"the winner of the match rolls on the …
+  Exploration Table"* — every player who played explores unless they Called for
+  Reinforcements, so it told the loser of every campaign game to skip their
+  income — beside three invented bullets naming a "Trench Merchant", a "Warband
+  Treasury" and an "Armory Stash". Replaced by the five numbered steps the book
+  prints as its Exploration Sequence, and `lootPerPoint` is now read out of
+  step 5 rather than carried as a literal `10`.
 
 ---
 

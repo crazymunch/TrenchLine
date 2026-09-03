@@ -182,6 +182,54 @@ function parseRollTable(lines, heading, endHeadings) {
 }
 
 /**
+ * The Exploration Sequence, as the book numbers it.
+ *
+ * *"In order to Explore, you must work through the following Exploration
+ * Sequence"*, and then five numbered steps. Read rather than summarised
+ * because the Codex was showing a hand-written explanation of this step that
+ * said **the winner of the match rolls** — every player who played the game
+ * explores, unless they Called for Reinforcements — alongside three invented
+ * bullets about a "Trench Merchant" and a "Warband Treasury".
+ *
+ * Step 5 also states the loot multiplier, so `lootPerPoint` is derived from it
+ * rather than typed: *"Collect loot equal to 10 times your Exploration Roll in
+ * 👑"*.
+ */
+function parseExplorationSequence(lines) {
+  const at = lines.findIndex((l) => /^\s*EXPLORATION SEQUENCE\s*$/.test(l));
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: no "EXPLORATION SEQUENCE" heading in the rulebook text. '
+      + 'The Codex describes this step from it, and what it described before '
+      + 'this existed was written by hand and had the wrong player rolling.');
+  }
+
+  const steps = [];
+  for (let i = at + 1; i < lines.length; i++) {
+    const m = /^\s*(\d)\.\s+(.*\S)\s*$/.exec(lines[i]);
+    if (m && Number(m[1]) === steps.length + 1) { steps.push(m[2]); continue; }
+    if (steps.length) break;
+  }
+
+  if (steps.length < 5) {
+    throw new Error(
+      `parse-campaign: the Exploration Sequence read ${steps.length} steps. The `
+      + 'book numbers five, and a sequence with a step missing is a step a '
+      + 'player skips.');
+  }
+
+  const loot = /(\d+) times your Exploration Roll/.exec(steps.join(' '));
+  if (!loot) {
+    throw new Error(
+      'parse-campaign: the Exploration Sequence no longer says what loot an '
+      + 'Exploration Roll is worth. That multiplier is the Strongbox\'s only '
+      + 'income and it is not going to be typed in here.');
+  }
+
+  return { steps, lootPerPoint: Number(loot[1]) };
+}
+
+/**
  * The whole Exploration Step: dice, table selection, and the three tables.
  *
  * The app's hand-written version of this was fabricated end to end — wrong
@@ -236,12 +284,20 @@ export function parseExploration(src = RULEBOOK_TXT) {
     legendary: asRange(parseRollTable(lines, 'LEGENDARY EXPLORATION LOCATION TABLE', ENDS)),
   };
 
+  const sequence = parseExplorationSequence(lines);
+
   return {
     dice,
     tables,
     locations,
-    /** Loot is the Exploration Roll times 10, whatever the table says. */
-    lootPerPoint: 10,
+    /** The book's own five numbered steps, in order. */
+    sequence: sequence.steps,
+    /**
+     * Loot is the Exploration Roll times ten, whatever the table says — and
+     * the ten is read out of the sequence's fifth step rather than written
+     * here, like every other number in this project.
+     */
+    lootPerPoint: sequence.lootPerPoint,
   };
 }
 
