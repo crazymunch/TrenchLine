@@ -16,7 +16,7 @@
  * Ducat costs, so re-pricing is the point of doing this at all.
  */
 import type { Dataset, UnitProfile } from '@/types/catalogue';
-import { isAlchemicalFormula } from './formulae';
+import { isAlchemicalFormula, traitsOf } from './formulae';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { Roster, RosterUnit, RosterItem } from './costs';
 import { armouryFor, priceOf, offersOf } from './armoury';
@@ -165,6 +165,14 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
           cost: { ducats: e.cost ?? 0, glory: 0 },
         })),
       ],
+      /*
+        Read from all THREE places, because the two above were still not all of
+        them. Al-Masyukh carries Gargantuan Size as an innate ability on its
+        profile snapshot — a model advanced into the Formula rather than
+        holding a line item for it — and was still told it could not take the
+        Titan Zulfiqar the catalogue reveals to exactly that name.
+      */
+      traits: traitsOf(u),
       fireteam: u.fireteam,
     });
   }

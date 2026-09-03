@@ -338,7 +338,7 @@ export function recruitable(
         // neither source states one — never defaulted to a plausible -1.
         modifier: (b?.keywords ?? p?.keywords ?? []).find((kw) => /INJURY MODIFIER/i.test(kw)),
         keywords: b?.keywords ?? p?.keywords ?? [],
-        description: b?.description,
+        description: b?.description ?? p?.lore,
         category: section,
         factionId: appId(armoury.factionId),
       });
@@ -367,7 +367,7 @@ export function recruitable(
         effect: b?.rules.join(' ') || p?.rules || b?.note
           || (b?.keywords ?? p?.keywords ?? []).join(', ') || '',
         keywords: b?.keywords ?? p?.keywords ?? [],
-        description: b?.description,
+        description: b?.description ?? p?.lore,
         category: section,
         factionId: appId(armoury.factionId),
       });
@@ -386,7 +386,7 @@ export function recruitable(
       modifiers: (b?.keywords ?? p?.keywords ?? [])
         .filter((kw) => /DICE|INJURY|ARMOUR PIERCING/i.test(kw)).join(', ') || '-',
       keywords: b?.keywords ?? p?.keywords ?? [],
-      description: b?.description,
+      description: b?.description ?? p?.lore,
       hands: b?.type === '2-Handed' ? 2 : b?.type === '1-Handed' ? 1 : undefined,
       category: section,
       factionId: appId(armoury.factionId),

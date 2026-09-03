@@ -237,7 +237,13 @@ function checkWargear(
       for (const r of restrictionsOf(w, armoury)) {
         const catalogueWeapon = item.weaponId ? weapons.get(item.weaponId) : undefined;
         const onlyForContext = {
-          selections: u.options?.map((o) => o.name ?? '').filter(Boolean) ?? [],
+          // Purchased options AND what the model simply has. A Formula the
+          // model was advanced into is not a line item on the roster, but the
+          // catalogue gates the entry on its name all the same.
+          selections: [
+            ...(u.options?.map((o) => o.name ?? '') ?? []),
+            ...(u.traits ?? []),
+          ].filter(Boolean),
           unlockedBy: (catalogueWeapon as { unlockedBy?: string[] } | undefined)?.unlockedBy,
         };
         if (r.kind === 'onlyFor' && profile
