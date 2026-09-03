@@ -130,6 +130,15 @@ export function applyVariant(
         break;
       }
 
+      /*
+        A condition on the roster entry, not a change to the profile: "the
+        Leper-Knights …must wear a suit of Armour". The model reads the same
+        either way, so there is nothing to apply here; `checkVariantGear` in
+        the validator is what enforces it.
+      */
+      case 'requireGear':
+        break;
+
       default:
         break;
     }

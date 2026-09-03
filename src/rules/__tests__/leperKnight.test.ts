@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import DATASET from '@/data/generated/trenchline.generated';
 import { recruitable } from '../recruitable';
+import { validateRoster } from '../validate';
+import type { Roster, RosterItem } from '../costs';
 import type { Dataset } from '@/types/catalogue';
 
 /**
@@ -189,5 +191,120 @@ describe('a stat change that names its own model', () => {
   it('leaves the standard Naval Raiders list alone', () => {
     const base = raiders().find((u) => u.name === 'Wretched');
     expect(base?.stats.melee).not.toBe('+0 DICE');
+  });
+});
+
+/**
+ * The Leper-Knight's price.
+ *
+ * The Knightly Order rule restates the statline, the Ability and the limit,
+ * and says nothing about cost. That silence is the rule: the Leper-Knight
+ * *uses the Lazarist Castigator Warband entry*, so it is bought at the
+ * Castigator's price. Nothing here sets a cost — the point of the test is
+ * that nothing anywhere does, and the inherited 50 Ducats is what the player
+ * pays. Pinned rather than left incidental, because a `setCost` op derived
+ * later from some other Variant's prose must not quietly reprice this one.
+ */
+describe('the Leper-Knight’s cost', () => {
+  const knight = () => list('Knights of Saint Lazarus').find((u) => u.name === 'Leper-Knight');
+  const castigator = () => list().find((u) => u.name === 'Lazarist Castigator');
+
+  it('is the Lazarist Castigator’s, because the book does not restate one', () => {
+    expect(knight()?.baseCost).toBe(castigator()?.baseCost);
+    expect(knight()?.gloryCost).toBe(castigator()?.gloryCost);
+  });
+
+  /*
+    Both halves of the comparison above have to be real. Asserting the two are
+    equal is satisfied by both being `undefined`, which is how the first draft
+    of this test passed while reading a field the recruit row does not have.
+  */
+  it('and is a real price, not a zero standing in for an unread one', () => {
+    expect(knight()?.baseCost).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * "…but must wear a suit of Armour…"
+ *
+ * A condition on the roster entry rather than a change to the profile, so it
+ * is enforced by the validator. What satisfies it is the Armoury Table
+ * SECTION: the Procession stocks four suits under `Armour`, and matching on
+ * the word instead would accept Armour-Piercing Bullets and reject Ragged
+ * Vestments.
+ */
+describe('the Leper-Knight’s Armour requirement', () => {
+  const V = 'Knights of Saint Lazarus';
+  const castigator = d.units.find(
+    (u) => u.name === 'Lazarist Castigator'
+        && String(u.factionId).toLowerCase().includes('procession'))!;
+
+  const armouryRow = (section: string) =>
+    (d.armouries ?? [])
+      .find((a) => String(a.faction).toLowerCase().includes('procession'))!
+      .rows.find((r) => r.section === section)!;
+
+  const rosterWearing = (items: RosterItem[]): Roster => ({
+    id: 'r1', name: 'Lazarist', factionId: 'Procession of the Sacred Affliction',
+    variantId: V,
+    units: [{ id: 'u1', profileId: castigator.id, name: 'Leper-Knight',
+              cost: castigator.cost, items, options: [] }],
+    stash: [], budget: { ducats: 700, glory: 10 },
+  });
+
+  const gearViolations = (r: Roster) =>
+    validateRoster(r, d).violations.filter((v) => v.code === 'variant-requires-gear');
+
+  it('fails a Leper-Knight wearing nothing', () => {
+    const v = gearViolations(rosterWearing([]));
+    expect(v, 'no violation raised').toHaveLength(1);
+    expect(v[0].severity).toBe('error');
+    expect(v[0].unitId).toBe('u1');
+  });
+
+  it('names what the player can buy to clear it', () => {
+    // An error the player cannot act on is the same failure as no error.
+    const [v] = gearViolations(rosterWearing([]));
+    expect(v.message).toContain('Standard Armour');
+  });
+
+  it('passes once a suit from the Armour section is worn', () => {
+    const armour = armouryRow('Armour');
+    expect(gearViolations(rosterWearing([
+      { weaponId: armour.weaponId, name: armour.name, cost: armour.cost },
+    ]))).toEqual([]);
+  });
+
+  it('accepts any suit the section holds, not just the one it names first', () => {
+    const suits = (d.armouries ?? [])
+      .find((a) => String(a.faction).toLowerCase().includes('procession'))!
+      .rows.filter((r) => r.section === 'Armour');
+    expect(suits.length, 'the Procession stocks more than one suit').toBeGreaterThan(1);
+    for (const s of suits) {
+      expect(gearViolations(rosterWearing([
+        { weaponId: s.weaponId, name: s.name, cost: s.cost },
+      ])), `${s.name} was rejected`).toEqual([]);
+    }
+  });
+
+  it('is not cleared by a Shield, which is a different section', () => {
+    const shield = armouryRow('Shield');
+    expect(gearViolations(rosterWearing([
+      { weaponId: shield.weaponId, name: shield.name, cost: shield.cost },
+    ]))).toHaveLength(1);
+  });
+
+  /*
+    The control. The requirement belongs to the Variant, not to the entry: a
+    Castigator in a standard Procession warband wears what its player likes.
+  */
+  it('does not apply to a Castigator outside the Variant', () => {
+    expect(gearViolations({ ...rosterWearing([]), variantId: undefined })).toEqual([]);
+  });
+
+  it('and does not apply under a different Variant of the same faction', () => {
+    expect(gearViolations({
+      ...rosterWearing([]), variantId: 'Procession of the Blessed Flock',
+    })).toEqual([]);
   });
 });

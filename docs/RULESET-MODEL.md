@@ -31,8 +31,9 @@ make that failure impossible to repeat.
 A Warband Variant changes what a Warband may recruit. The BattleScribe
 catalogues state that as machine-readable modifiers and `parse-battlescribe.mjs`
 lifts them out. A supplement states the same things in English, and
-[`parse-variant-ops.mjs`](../scripts/lib/parse-variant-ops.mjs) reads four
-constructs out of that prose:
+[`parse-variant-ops.mjs`](../scripts/lib/parse-variant-ops.mjs) reads these
+constructs out of that prose — the ones the five Carcass Front Variants use,
+and no more:
 
 | the book says | the op |
 |---|---|
@@ -42,8 +43,9 @@ constructs out of that prose:
 | `cannot include X` | hide X |
 | `have a <Characteristic> Characteristic of V` | `set stats.<characteristic>` |
 | `replace the A Ability with the B Ability` | `replaceAbility` |
+| `must wear a suit of <noun>` | `requireGear` on that Armoury section |
 
-The last two are read **per sentence**, because which model they describe is a
+The last three are read **per sentence**, because which model they describe is a
 property of the sentence and not of the paragraph:
 
 > "The Leper-Knights use the Lazarist Castigator Warband entry but …have a Melee
@@ -115,16 +117,36 @@ So renames resolve first, limits resolve *through* them — `must include 1-3
 Leper-Knights` lands on the Castigator entry — and an exclusion naming a
 renamed entry is skipped.
 
+### A requirement is not a profile change
+
+The Leper-Knight "must wear a suit of Armour". The model is identical whether
+or not it is wearing any — there is nothing for `applyVariant` to do. What
+changes is whether the **roster** is legal, so this is emitted as `requireGear`
+and read by `checkVariantGear` in the validator, alongside "must include 1-3".
+
+What satisfies it is the **Armoury Table section**, not the item's name:
+
+| | |
+|---|---|
+| Procession `Armour` section | Holy Icon Armour, Ragged Vestments, Reinforced Armour, Standard Armour |
+| Procession `Shield` section | Holy Icon Shield, Trench Shield |
+
+Matching on the word "Armour" would accept **Armour-Piercing Bullets** and
+reject **Ragged Vestments** — the only one of the four suits a 50 👑 model can
+comfortably afford. The section is the catalogue's own answer to what an item
+*is*, and the name is not.
+
+A noun with no section behind it is reported as unresolved prose rather than
+guessed at. A legality error the player cannot act on is the same failure as no
+error at all, which is why the violation names the suits they can actually buy.
+
 ### What is deliberately not derived
 
-The Leper-Knight "must wear a suit of Armour". That is a **legality
-requirement**, like "must include 1-3" — not a change to the profile — so it
-belongs with the validator rather than the applier, and it is not emitted yet.
-It stays in the Variant's printed rules text, which is shown to the player.
-
-Neither is **cost**. A Leper-Knight is a 50 👑 Castigator with better Melee and
-a different ability, and the book does not restate a price. Deriving one would
-be arithmetic nobody published.
+**Cost.** A Leper-Knight *uses the Lazarist Castigator Warband entry*, and the
+book does not restate a price — so it is bought at the Castigator's 50 👑. The
+silence is the rule, and inheriting the entry's own cost is what obeying it
+looks like. Nothing emits a `setCost` here; deriving a new number from the
+better Melee and the swapped ability would be arithmetic nobody published.
 
 
 ## 2. The three sources

@@ -12,7 +12,8 @@
  * and a rename, and the difference is whether the app can offer the player the
  * model the book says the Warband must have 1-3 of.
  *
- * Four constructs, because four is what the five Carcass Front Variants use.
+ * The constructs below are the ones the five Carcass Front Variants use, and
+ * no more — see docs/RULESET-MODEL.md for the table.
  * Nothing here guesses: a name that does not resolve to an entry in the
  * faction's own list is left alone and reported, because the same sentences
  * talk about wargear ("cannot have Automatic Pistols") in the same words they
@@ -62,6 +63,24 @@ const STAT = new RegExp(
 /** `replace the Whip of God Ability with the Knightly Code Ability`. */
 const SWAP_ABILITY = new RegExp(
   `replace(?:s|d)? the (${NAME})Ability with the (${NAME})Ability`, 'gi');
+
+/**
+ * `must wear a suit of Armour`.
+ *
+ * Not a change to the profile — the model is identical either way — but a
+ * condition its roster entry has to meet, so it is emitted as `requireGear`
+ * and read by the validator rather than by `applyVariant`.
+ *
+ * The noun maps onto an Armoury Table SECTION, which is the catalogue's own
+ * answer to "what counts as a suit of Armour": the Procession of the Sacred
+ * Affliction stocks Holy Icon Armour, Ragged Vestments, Reinforced Armour and
+ * Standard Armour under `Armour`, and its Shields under `Shield`. Matching on
+ * the word instead would count Armour-Piercing Bullets and miss Ragged
+ * Vestments — the section knows what the name cannot.
+ */
+const GEAR_SECTION = { armour: 'Armour' };
+const REQUIRE_GEAR = new RegExp(
+  `must wear an? (?:suit|set) of (${NAME})`, 'gi');
 
 /**
  * Which of `must` / `may` / `can` governs a limit.
@@ -201,6 +220,21 @@ export function variantOpsFromProse(specialRules, entries) {
         name: from.trim(),
         ability: { id: `variant-${key(name).replace(/\s+/g, '-')}`, name, description },
       });
+    }
+
+    for (const [, rawNoun] of sentence.matchAll(REQUIRE_GEAR)) {
+      const noun = rawNoun.trim();
+      const section = GEAR_SECTION[key(noun)];
+      /*
+        A noun with no section behind it is reported, never guessed. "Must wear
+        a suit of Armour" is enforceable because `Armour` is a section every
+        Armoury Table has; anything else the books go on to require would need
+        its own answer to what satisfies it, and inventing one here would put a
+        legality error in front of a player with nothing they could buy to
+        clear it.
+      */
+      if (!section) { unresolved.push(`gear requirement: ${noun}`); continue; }
+      ops.push({ op: 'requireGear', target: target(subject), section, noun });
     }
   }
 

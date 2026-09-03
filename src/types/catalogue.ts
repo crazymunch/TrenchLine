@@ -380,7 +380,18 @@ export type LayerOp =
   | { op: 'setKeywords'; target: Ref; keywords: string[] }
   | { op: 'addAbility'; target: Ref; ability: Ability }
   | { op: 'replaceAbility'; target: Ref; name: string; ability: Ability }
-  | { op: 'setCost'; target: Ref; currency: keyof Cost; value: number; scope?: Ref[] };
+  | { op: 'setCost'; target: Ref; currency: keyof Cost; value: number; scope?: Ref[] }
+  /**
+   * A condition on the roster entry rather than a change to the profile.
+   *
+   * "The Leper-Knights …must wear a suit of Armour." The model is identical
+   * whether or not it is wearing any, so there is nothing for `applyVariant`
+   * to do; what changes is whether the roster is legal. `section` names an
+   * Armoury Table section, which is the catalogue's own account of what
+   * satisfies the requirement, and `noun` is the book's word for it so the
+   * violation can be phrased the way the player read it.
+   */
+  | { op: 'requireGear'; target: Ref; section: string; noun: string };
 
 export interface Layer {
   id: string;

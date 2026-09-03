@@ -68381,6 +68381,16 @@ export const DATASET: Dataset = {
           }
         },
         {
+          "op": "requireGear",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "section": "Armour",
+          "noun": "Armour"
+        },
+        {
           "op": "set",
           "target": {
             "kind": "unit",
