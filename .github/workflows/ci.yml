@@ -14,6 +14,29 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+
+    # A real Postgres, because the migrations and the ownership checks are the
+    # two things this repository had no way to verify. `prisma db push` was
+    # never safe to review or roll back, and no test imported an API route, so
+    # the whole account and campaign boundary was unchecked while every other
+    # gate stayed green.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: trenchline_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
+      NEXTAUTH_SECRET: ci-placeholder
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +46,29 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # The schema must be reachable from an EMPTY database using only what is
+      # committed. Before this, `prisma/` held a schema and a seed and no
+      # migration history at all, so recreating the database, reviewing a
+      # change, or rolling one back were all things nobody could do.
+      - name: Migrations apply from empty
+        run: npx prisma migrate deploy
+
+      # And the committed migrations must actually produce the committed
+      # schema. A migration edited by hand, or a schema change someone pushed
+      # with `db push` and never captured, shows up here rather than as a
+      # column that only exists in production.
+      - name: Schema matches its migrations
+        run: |
+          npx prisma migrate diff \
+            --from-migrations prisma/migrations \
+            --to-schema-datamodel prisma/schema.prisma \
+            --shadow-database-url "$DATABASE_URL" \
+            --exit-code || {
+              echo "::error::prisma/schema.prisma has drifted from prisma/migrations."
+              echo "Run 'npx prisma migrate dev' and commit the generated migration."
+              exit 1
+            }
 
       - name: Typecheck
         run: npm run typecheck
@@ -56,9 +102,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Prisma needs a URL to generate against; nothing connects at build time.
-          DATABASE_URL: postgresql://user:pass@localhost:5432/db
-          NEXTAUTH_SECRET: ci-placeholder
           NODE_ENV: production
 
       # Chromium only: the E2E projects pin it, so this is one download rather
@@ -72,9 +115,6 @@ jobs:
       # none of them reproduce under `next dev`.
       - name: End-to-end tests
         run: npm run test:e2e
-        env:
-          DATABASE_URL: postgresql://user:pass@localhost:5432/db
-          NEXTAUTH_SECRET: ci-placeholder
 
       - name: Upload E2E traces
         if: failure()
