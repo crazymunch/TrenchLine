@@ -40,6 +40,26 @@ constructs out of that prose:
 | `must include N-M X` | max **and** min on X |
 | `may / can include N-M X` | max on X only |
 | `cannot include X` | hide X |
+| `have a <Characteristic> Characteristic of V` | `set stats.<characteristic>` |
+| `replace the A Ability with the B Ability` | `replaceAbility` |
+
+The last two are read **per sentence**, because which model they describe is a
+property of the sentence and not of the paragraph:
+
+> "The Leper-Knights use the Lazarist Castigator Warband entry but …have a Melee
+> Characteristic of **+2 DICE**…" — the entry just renamed
+>
+> "**Wretched** models in a Drowned Choir cost 30 👑 and have a Melee
+> Characteristic of **+0 DICE**." — the Wretched, named in place
+
+Scanning a paragraph would give the Leper-Knight the Wretched's statline
+wherever a Variant mentions both, which the Drowned Choir does.
+
+A `replaceAbility` needs the replacement's **rules text**, and the book supplies
+it: `Knightly Code` is a named special rule on the same Variant, printed
+directly beneath the rule that says to swap it in. Where that text is missing
+the op is not emitted — a model carrying an ability with no rules is worse than
+one still carrying the ability it was meant to lose.
 
 **`may` never sets a minimum.** "May include 1-3" states a ceiling; reading it
 as a requirement makes the app demand a model the book merely permits — the
@@ -51,6 +71,31 @@ alone**, and reported by the build. The same sentences talk about wargear
 ("cannot include Anchorite Shrines"), and the verb does not separate them —
 "can only have 0-2 Stigmatic Nuns" uses `have` about a model. Resolving the
 name against the roster is the only reliable discriminator.
+
+### One applier, not a reader per field
+
+A Variant's ops are the same vocabulary as an errata Layer's, and
+`scripts/lib/layers.mjs` has applied that vocabulary since Phase 1 — at **build**
+time, to the whole dataset. That is right for errata and wrong for a Variant:
+two Warbands of the same faction take different Variants, so the same entry has
+to read differently for each.
+
+Nothing applied a Variant's ops at roster-build time at all. Instead four
+readers each reached into `variant.ops` for one field apiece — `variantLimits`
+for constraints, `variantForbids` and `variantReveals` for `hidden`,
+`variantRenames` for `name` — and anything beyond those four was simply not
+read. So the Knights of Saint Lazarus could rename an entry and raise its limit
+and could not give it the +2 Melee the same sentence grants.
+
+[`applyVariant`](../src/rules/applyVariant.ts) is that missing step: the whole
+op vocabulary, applied to one profile, at the point a roster is built. It is
+**pure** — a Variant is a lens on the catalogue, not an edit to it, and mutating
+the dataset's profile would leak one Warband's Variant into every other Warband
+on the device. A test asserts the base Lazarist Castigator still has `-1 DICE`
+and its Whip of God while the Leper-Knight has neither.
+
+`hidden` stays outside it, deliberately: whether an entry is on the list is a
+question about the **list**, not about the profile.
 
 ### Replacement beats exclusion, and the order is the whole subtlety
 
@@ -72,12 +117,14 @@ renamed entry is skipped.
 
 ### What is deliberately not derived
 
-The Leper-Knight also "must wear a suit of Armour, have a Melee Characteristic
-of +2 DICE, and replace the Whip of God Ability with the Knightly Code
-Ability". None of that is emitted. The entity model cannot express a
-conditional stat change, and inventing a representation for one is how this
-codebase acquired 97%-wrong statlines. Those stay as the Variant's printed
-rules text, shown to the player.
+The Leper-Knight "must wear a suit of Armour". That is a **legality
+requirement**, like "must include 1-3" — not a change to the profile — so it
+belongs with the validator rather than the applier, and it is not emitted yet.
+It stays in the Variant's printed rules text, which is shown to the player.
+
+Neither is **cost**. A Leper-Knight is a 50 👑 Castigator with better Melee and
+a different ability, and the book does not restate a price. Deriving one would
+be arithmetic nobody published.
 
 
 ## 2. The three sources

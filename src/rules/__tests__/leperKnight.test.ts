@@ -109,3 +109,85 @@ describe('a rename that came from the catalogues rather than the books', () => {
     expect(sultanate()).toContain('Janissary');
   });
 });
+
+/**
+ * A Variant changes the model, not just its name and its limit.
+ *
+ * The rest of the Knightly Order sentence:
+ *
+ *   "…but must wear a suit of Armour, have a Melee Characteristic of +2 DICE,
+ *    and replace the Whip of God Ability with the Knightly Code Ability."
+ *
+ * All three used to be printed and none applied. The first two are here; the
+ * Armour requirement is a LEGALITY rule rather than a change to the profile,
+ * and belongs with the validator.
+ */
+describe('the Leper-Knight’s profile', () => {
+  const knight = () => list('Knights of Saint Lazarus').find((u) => u.name === 'Leper-Knight');
+  const castigator = () => list().find((u) => u.name === 'Lazarist Castigator');
+
+  it('has the +2 DICE Melee the Variant grants it', () => {
+    expect(knight()?.stats.melee).toBe('+2 DICE');
+  });
+
+  it('and the Castigator it is built on does not', () => {
+    // The control that matters: a Variant is a lens on the catalogue, not an
+    // edit to it. If the base profile changed, one Warband's Variant would
+    // leak into every other Warband on the device.
+    expect(castigator()?.stats.melee).not.toBe('+2 DICE');
+  });
+
+  it('carries Knightly Code, with its real rules text', () => {
+    const abilities = knight()?.innateAbilities ?? [];
+    const code = abilities.find((a) => a.name === 'Knightly Code');
+    expect(code, 'Knightly Code was not granted').toBeTruthy();
+    // Not a stub: the book prints this ability as a named rule on the same
+    // Variant, directly under the rule that says to swap it in.
+    expect(code!.description).toMatch(/takes an enemy model Out of Action/);
+  });
+
+  it('has lost the Whip of God it traded away', () => {
+    const names = (knight()?.innateAbilities ?? []).map((a) => a.name);
+    expect(names, 'the swap granted the new ability without removing the old')
+      .not.toContain('Whip of God');
+  });
+
+  it('and the standard Castigator still has Whip of God', () => {
+    const names = (castigator()?.innateAbilities ?? []).map((a) => a.name);
+    expect(names).toContain('Whip of God');
+  });
+});
+
+/*
+  The other stat change in the book, and the reason these are read per
+  SENTENCE rather than per paragraph. The Drowned Choir says both:
+
+    "Drowned Choir Warbands must include 1-3 Drowned Choristers…"
+    "Wretched models in a Drowned Choir cost 30 👑 and have a Melee
+     Characteristic of +0 DICE."
+
+  Read across the paragraph the +0 DICE would land on whichever entry the
+  parser saw first.
+*/
+describe('a stat change that names its own model', () => {
+  /*
+    Narrowed to the faction, because `recruitable` returns every faction's
+    units and the UI filters afterwards. Three factions field a `Wretched`; an
+    unfiltered `find` returns the Court of the Seven-Headed Serpent's.
+  */
+  const raiders = (variantId?: string) =>
+    recruitable(d, 'heretic-naval-raiders', ['heretic-naval-raiders'], variantId).units
+      .filter((u) => String(u.factionId).toLowerCase().includes('naval'));
+
+  it('lands on the Wretched, not on the Drowned Chorister', () => {
+    const under = raiders('Drowned Choir');
+    expect(under.find((u) => u.name === 'Wretched')?.stats.melee).toBe('+0 DICE');
+    const chorister = under.find((u) => u.name === 'Drowned Chorister');
+    expect(chorister?.stats.melee).not.toBe('+0 DICE');
+  });
+
+  it('leaves the standard Naval Raiders list alone', () => {
+    const base = raiders().find((u) => u.name === 'Wretched');
+    expect(base?.stats.melee).not.toBe('+0 DICE');
+  });
+});

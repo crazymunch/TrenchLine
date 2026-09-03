@@ -36,6 +36,7 @@ import { sameFaction, variantById } from './variants';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
 import { unobtainable, variantLocks } from './variantLocks';
 import { variantLimits, variantForbids, variantReveals } from './validate';
+import { applyVariant } from './applyVariant';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -138,19 +139,10 @@ export function recruitable(
   */
   const variant = variantById(dataset, variantId);
   /*
-    What the Variant does to the list, from its ops.
-
-    `variantRenames` maps a printed name back to its entry, which is what
-    matching a SAVED roster needs. The recruit row needs the other direction —
-    entry to printed name — so it is read off the ops here.
+    `hidden` decides whether an entry is on the list at all, which is a question
+    about the LIST; everything a Variant says about the entry ITSELF — its name,
+    its statline, its abilities — is applied by `applyVariant` further down.
   */
-  const printedName = new Map<string, string>();
-  for (const op of (variant?.ops ?? []) as { op?: string; field?: string; value?: unknown;
-    target?: { id?: string } }[]) {
-    if (op.op === 'set' && op.field === 'name' && op.target?.id && typeof op.value === 'string') {
-      printedName.set(op.target.id, op.value);
-    }
-  }
   const forbidden = variantForbids(variant);
   const revealed = variantReveals(variant);
 
@@ -183,21 +175,28 @@ export function recruitable(
       entry another one closes.
     */
     .filter((u) => !forbidden.has(u.entryId || u.id) || revealed.has(u.entryId || u.id))
+    /*
+      The entry as this Variant fields it: renamed, restatted, its abilities
+      swapped. One applier for the whole op vocabulary, rather than a reader per
+      field — see `applyVariant`. Everything below reads the Variant's profile.
+    */
+    .map((base) => applyVariant(base, variant))
     .map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
     return {
       id: u.entryId || u.id,
       /*
-        The name this Variant prints for the entry, where it renames one.
+        Already the Variant's name, from `applyVariant` above.
 
         This is what "in its place" means: the Leper-Knight is not a new row
         beside the Lazarist Castigator, it IS that row, because the book says
         the Leper-Knights "use the Lazarist Castigator Warband entry". A player
         who cannot take a Castigator and must take 1-3 Leper-Knights sees one
-        entry, named the thing they are allowed to have.
+        entry, named the thing they are allowed to have — with the +2 Melee and
+        the Knightly Code that come with the name.
       */
-      name: printedName.get(u.entryId || u.id) ?? u.name,
+      name: u.name,
       factionId: appId(u.factionId),
       category: categoryOf(u),
       baseCost: u.cost.ducats,

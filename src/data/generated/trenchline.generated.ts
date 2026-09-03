@@ -68360,6 +68360,30 @@ export const DATASET: Dataset = {
           "op": "set",
           "target": {
             "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "field": "stats.melee",
+          "value": "+2 DICE"
+        },
+        {
+          "op": "replaceAbility",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "name": "Whip of God",
+          "ability": {
+            "id": "variant-knightly-code",
+            "name": "Knightly Code",
+            "description": "When a Leper-Knight makes a Melee Attack that takes an enemy model Out of Action, you can remove 1 BLOOD MARKER from the Leper-Knight or a friendly model within 3” of the Leper-Knight. If the enemy model had the ELITE Keyword, you can place 1 BLESSING MARKER beside the Leper-Knight instead of removing a BLOOD MARKER."
+          }
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
             "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-communicant",
             "name": "Lazarist Communicant"
           },
@@ -68506,6 +68530,16 @@ export const DATASET: Dataset = {
           "field": "constraint:cf-entry-heretic-naval-raiders-drowned-chorister-min",
           "constraintBound": "min",
           "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-wretched",
+            "name": "Wretched"
+          },
+          "field": "stats.melee",
+          "value": "+0 DICE"
         },
         {
           "op": "set",
