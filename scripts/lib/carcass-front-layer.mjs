@@ -20,6 +20,7 @@
  * content, and the app already offers every published faction.
  */
 import { parseCarcassFront } from './parse-carcass-front.mjs';
+import { variantOpsFromProse } from './parse-variant-ops.mjs';
 
 export const LAYER_ID = 'carcass-front';
 
@@ -141,6 +142,14 @@ export function buildCarcassFrontLayer(parsed = parseCarcassFront()) {
   const ops = [];
   const armouries = [];
   const variants = [];
+  /*
+    Sentences that look like a recruitment rule but name something the faction's
+    roster does not have. Reported rather than silently dropped: most are
+    wargear ("cannot have Automatic Pistols") sharing a sentence shape with
+    models, but a genuine miss hides here too, and a parser that says nothing
+    cannot be checked.
+  */
+  const unresolvedProse = [];
 
   for (const f of parsed.factions) {
     const factionId = f.name;
@@ -177,7 +186,30 @@ export function buildCarcassFrontLayer(parsed = parseCarcassFront()) {
       collection is applied and then thrown away by the next assignment. The
       build merges these in at the point those collections exist.
     */
+    /*
+      The faction's own entries, which is what a Variant's prose names.
+
+      Built here rather than from `parsed` directly because `unitsOf` is what
+      decides an entry's id and its printed name, and an op has to target the
+      same entry the app will look up.
+    */
+    const entries = f.units.flatMap((entry) => unitsOf(entry, factionId))
+      .map((u) => ({ entryId: u.entryId, id: u.id, name: u.name }));
+
     for (const v of f.variants) {
+      /*
+        The Variant's rules, as ops rather than only as prose.
+
+        `ops: []` used to be hard-coded here, and it meant every Carcass Front
+        Variant was documentation: the app printed "must include 1-3
+        Leper-Knights" and then offered no way to field one, because nothing
+        renamed the Lazarist Castigator entry the Leper-Knight uses or raised
+        its limit from 1. See `parse-variant-ops.mjs` for what is read and, more
+        importantly, what is deliberately not.
+      */
+      const { ops: variantOps, unresolved } = variantOpsFromProse(v.specialRules, entries);
+      if (unresolved.length) unresolvedProse.push({ variant: v.name, unresolved });
+
       variants.push({
         id: slug(v.name),
         entryId: id('variant', factionId, v.name),
@@ -185,7 +217,7 @@ export function buildCarcassFrontLayer(parsed = parseCarcassFront()) {
         name: v.name,
         sources: ['carcass-front'],
         specialRules: v.specialRules,
-        ops: [],
+        ops: variantOps,
       });
     }
 
@@ -236,6 +268,7 @@ export function buildCarcassFrontLayer(parsed = parseCarcassFront()) {
     },
     armouries,
     variants,
+    unresolvedVariantProse: unresolvedProse,
   };
 }
 

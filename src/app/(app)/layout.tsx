@@ -69,10 +69,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     : DEFAULT_RULESET_ID;
   const { dataset } = useDataset(rulesetId);
   const factionId = getActiveWarband()?.factionId;
+  // The Variant too: it renames entries, bans some and raises the limits on
+  // others, so the recruit list is a different list under a different one.
+  const variantId = getActiveWarband()?.variantId;
 
   useEffect(() => {
-    if (dataset) hydrateCatalogs(dataset, factionId);
-  }, [dataset, factionId, hydrateCatalogs]);
+    if (dataset) hydrateCatalogs(dataset, factionId, variantId);
+  }, [dataset, factionId, variantId, hydrateCatalogs]);
 
   useEffect(() => {
     syncUserWarbandsWithCloud(session?.user?.email || undefined, session?.user?.name || undefined);

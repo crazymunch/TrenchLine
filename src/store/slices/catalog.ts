@@ -27,10 +27,11 @@ export const createCatalogSlice = (init: InitialState): StateCreator<AppState, [
     catalogsLoaded: false,
     catalogsError: null,
     gloryPriced: [],
-    hydrateCatalogs: (dataset, factionId) => {
+    hydrateCatalogs: (dataset, factionId, variantId) => {
       // The app's faction ids, so the recruit list filters on the spelling it
-      // uses rather than the catalogue's.
-      const r = recruitable(dataset, factionId, get().factions.map((f) => f.id));
+      // uses rather than the catalogue's. The Variant decides what that list
+      // actually contains and what each entry is called — see `recruitable`.
+      const r = recruitable(dataset, factionId, get().factions.map((f) => f.id), variantId);
       set((s) => ({
         /*
           The faction's special rules, from the books.

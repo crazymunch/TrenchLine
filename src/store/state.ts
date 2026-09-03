@@ -73,7 +73,7 @@ export interface AppState {
    * Fill the catalogs from a loaded dataset, scoped to a faction for gear.
    * Wargear is priced per faction, so the armoury cannot be a shared list.
    */
-  hydrateCatalogs: (dataset: Dataset, factionId?: string) => void;
+  hydrateCatalogs: (dataset: Dataset, factionId?: string, variantId?: string) => void;
   /**
    * Entries whose published cost includes Glory. The saved roster format has a
    * single Ducat cost, so their Glory component is not in `units`/`weapons` —

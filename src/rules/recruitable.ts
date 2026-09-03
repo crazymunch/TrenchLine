@@ -32,9 +32,10 @@ import type {
   UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, UnitCategory, Ability,
 } from '@/types/rules';
 import { nameKey } from './names';
-import { sameFaction } from './variants';
+import { sameFaction, variantById } from './variants';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
 import { unobtainable, variantLocks } from './variantLocks';
+import { variantLimits, variantForbids, variantReveals } from './validate';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -100,7 +101,18 @@ export function recruitable(
    * leave `AddUnitModal` matching nothing and showing an empty roster, which is
    * exactly what it did the first time this was wired up.
    */
-  appFactionIds: string[] = []
+  appFactionIds: string[] = [],
+  /**
+   * The Warband Variant this list is being built as, if one is declared.
+   *
+   * Without it the recruit sheet showed the faction's STANDARD list to every
+   * Warband. A Variant that renames an entry — the House of Wisdom's Janissary
+   * is a Fāris, a Knights of Saint Lazarus' Lazarist Castigator is a
+   * Leper-Knight — offered the name the player is not playing with, and one
+   * that raises a limit still offered the base one. The engine has known all
+   * of this since Phase 2; only the recruit list was never told.
+   */
+  variantId?: string
 ): Recruitable {
   const empty: Recruitable = { units: [], weapons: [], armour: [], equipment: [], gloryPriced: [] };
   if (!dataset) return empty;
@@ -124,6 +136,24 @@ export function recruitable(
     Cadaver Corps, the Matagot Hag in The Great Hunger. Every one of them was
     offered to every Warband of the faction.
   */
+  const variant = variantById(dataset, variantId);
+  /*
+    What the Variant does to the list, from its ops.
+
+    `variantRenames` maps a printed name back to its entry, which is what
+    matching a SAVED roster needs. The recruit row needs the other direction —
+    entry to printed name — so it is read off the ops here.
+  */
+  const printedName = new Map<string, string>();
+  for (const op of (variant?.ops ?? []) as { op?: string; field?: string; value?: unknown;
+    target?: { id?: string } }[]) {
+    if (op.op === 'set' && op.field === 'name' && op.target?.id && typeof op.value === 'string') {
+      printedName.set(op.target.id, op.value);
+    }
+  }
+  const forbidden = variantForbids(variant);
+  const revealed = variantReveals(variant);
+
   const locks = variantLocks(dataset);
   /*
     Entries the catalogue gates and that no choice a Warband can make reveals.
@@ -146,12 +176,28 @@ export function recruitable(
   const units: UnitProfile[] = dataset.units
     .filter((u) => !u.secondaryProfile)
     .filter((u) => !offList.has(u.entryId || u.id))
+    /*
+      An entry the Variant bans is not on this list. `Sacred Code` forbids the
+      Lazarist Communicant; the Drowned Choir forbids its own faction's Heretic
+      Captain. Revealed wins over forbidden, which is how a Variant re-opens an
+      entry another one closes.
+    */
+    .filter((u) => !forbidden.has(u.entryId || u.id) || revealed.has(u.entryId || u.id))
     .map((u) => {
     if (u.cost.glory) gloryPriced.push({ name: u.name, glory: u.cost.glory });
     const gate = thirdPartyGate(u, tpVariants);
     return {
       id: u.entryId || u.id,
-      name: u.name,
+      /*
+        The name this Variant prints for the entry, where it renames one.
+
+        This is what "in its place" means: the Leper-Knight is not a new row
+        beside the Lazarist Castigator, it IS that row, because the book says
+        the Leper-Knights "use the Lazarist Castigator Warband entry". A player
+        who cannot take a Castigator and must take 1-3 Leper-Knights sees one
+        entry, named the thing they are allowed to have.
+      */
+      name: printedName.get(u.entryId || u.id) ?? u.name,
       factionId: appId(u.factionId),
       category: categoryOf(u),
       baseCost: u.cost.ducats,
@@ -170,7 +216,9 @@ export function recruitable(
       },
       // The catalogue's recruitment limit. `defaultRules.ts` had none at all —
       // 69 of the 89 units carry one, and none of them was enforced before.
-      maxCount: u.max ?? undefined,
+      // The Variant's ceiling where it sets one — 1 Lazarist Castigator becomes
+      // 3 Leper-Knights — and the entry's own otherwise.
+      maxCount: variantLimits(u, variant).max ?? undefined,
       /*
         Who may lead. Two sources say it and both are the model's own entry.
 

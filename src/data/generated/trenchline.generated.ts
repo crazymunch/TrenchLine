@@ -68301,7 +68301,72 @@ export const DATASET: Dataset = {
           "description": "A Knights of Saint Lazarus Warband may have a Temporal Lord as their Patron in addition to the standard options to choose from. Procession of the Blessed Flock During especially brutal campaigns, and particularly in the aftermath of the bloodiest battles, Lazarist Castigators will move among the dead seeking lost Communicants. They find those who have survived the deaths of their companions, been rendered insensible by artillery, or become trapped under piles of bodies or debris, and gather them together into a Procession. Communicants will often recover their wits and direction with time and care, but until they do the Lazarist Castigators remain on hand to carefully guide the Communicants’ focus. It is also not uncommon for a Blessed Flock to accumulate a large number of Ecclesiastic Prisoners seeking redemption for their sins."
         }
       ],
-      "ops": []
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "field": "name",
+          "value": "Leper-Knight"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns",
+            "name": "Stigmatic Nuns"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns-max",
+          "constraintBound": "max",
+          "value": "6"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns",
+            "name": "Stigmatic Nuns"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns-min",
+          "constraintBound": "min",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-lazarist-castigator-max",
+          "constraintBound": "max",
+          "value": "3"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-lazarist-castigator-min",
+          "constraintBound": "min",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-communicant",
+            "name": "Lazarist Communicant"
+          },
+          "field": "hidden",
+          "value": "true"
+        }
+      ]
     },
     {
       "id": "procession-of-the-blessed-flock",
@@ -68333,7 +68398,61 @@ export const DATASET: Dataset = {
           "description": "A Procession of the Blessed Flock Warband cannot have Automatic Pistols, Semi-Automatic Rifles, Sniper Rifles, Submachine Guns, Incendiary Grenades, or Reinforced Armour."
         }
       ],
-      "ops": []
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+            "name": "Lazarist Castigator"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-lazarist-castigator-max",
+          "constraintBound": "max",
+          "value": "3"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-lazarist-communicant",
+            "name": "Lazarist Communicant"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-lazarist-communicant-max",
+          "constraintBound": "max",
+          "value": "6"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns",
+            "name": "Stigmatic Nuns"
+          },
+          "field": "constraint:cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns-max",
+          "constraintBound": "max",
+          "value": "2"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-anchorite-shrine",
+            "name": "Anchorite Shrine"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-procession-of-the-sacred-affliction-leper-pilgrims",
+            "name": "Leper-Pilgrim"
+          },
+          "field": "hidden",
+          "value": "true"
+        }
+      ]
     },
     {
       "id": "drowned-choir",
@@ -68365,7 +68484,70 @@ export const DATASET: Dataset = {
           "description": "Drowned Choir Warbands cannot include any of the following models: Heretic Captain, Abyssal Commando, Sea Hag, Anointed Heretic Raiders. The Leviathan Shoal The most bloodthirsty Raider Captains can fall into the worship of mighty Leviathan itself, the great beast of oceans and once the Hell Prince of Envy, now cast down and cruelly bound. The Leviathan Shoal mercilessly slaughters the weakest of their numbers so that only the strongest survive. They sacrifice flesh and blood in Leviathan’s name, and they adopt the shark as their totem, holding that they are heralds and offspring of the great beast and that they share its immortal strength and bottomless hunger. Indeed, great shoals of sharks follow the ships of the Leviathan Shoal everywhere in hungry anticipation, for the warbands of the Leviathan Shoal are infamous for their brutality and terror, slaughtering all they capture. Ever eager to come to blows in physical combat, guns exhibit little allure for them. They cannibalise the flesh of the dead, friend and foe alike, growing fat on their vile feasting and tossing the remnants to the ever-present sharks that roil in their crimson wake. In lean times they will turn on another without thought, victor feasting on the vanquished, for they believe only the strongest deserve to thrive and a mortal life can only be kept intact by one strong and savage enough to protect it."
         }
       ],
-      "ops": []
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-drowned-chorister",
+            "name": "Drowned Chorister"
+          },
+          "field": "constraint:cf-entry-heretic-naval-raiders-drowned-chorister-max",
+          "constraintBound": "max",
+          "value": "3"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-drowned-chorister",
+            "name": "Drowned Chorister"
+          },
+          "field": "constraint:cf-entry-heretic-naval-raiders-drowned-chorister-min",
+          "constraintBound": "min",
+          "value": "1"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-heretic-captain",
+            "name": "Heretic Captain"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-abyssal-commando",
+            "name": "Abyssal Commando"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-sea-hag",
+            "name": "Sea Hag"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-anointed-heretic-raiders",
+            "name": "Anointed Heretic Raiders"
+          },
+          "field": "hidden",
+          "value": "true"
+        }
+      ]
     },
     {
       "id": "leviathan-shoal",
@@ -68393,7 +68575,49 @@ export const DATASET: Dataset = {
           "description": "The first time in a game that an Anointed Heretic Raider in a Leviathan Shoal Warband takes an enemy model Out of Action with a Melee Attack, that Anointed Heretic Raider gains the TOUGH Keyword for the rest of the game."
         }
       ],
-      "ops": []
+      "ops": [
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-anointed-heretic-raiders",
+            "name": "Anointed Heretic Raiders"
+          },
+          "field": "constraint:cf-entry-heretic-naval-raiders-anointed-heretic-raiders-max",
+          "constraintBound": "max",
+          "value": "4"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-drowned-chorister",
+            "name": "Drowned Chorister"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-wretched",
+            "name": "Wretched"
+          },
+          "field": "hidden",
+          "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "cf-entry-heretic-naval-raiders-sea-hag",
+            "name": "Sea Hag"
+          },
+          "field": "hidden",
+          "value": "true"
+        }
+      ]
     }
   ]
 } as unknown as Dataset;
