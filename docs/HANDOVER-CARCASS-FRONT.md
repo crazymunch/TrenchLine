@@ -4,9 +4,10 @@ Written for whoever picks this up next. It covers what has landed, what is
 left, and the things about this book and this pipeline that took a while to
 learn and would cost the same time again.
 
-Everything is on branch **`claude/trench-crusade-app-review-7bansz`**, open as
-draft PR **[#12](https://github.com/crazymunch/TrenchLine/pull/12)** against
-`main`. Read [`docs/README.md`](README.md) and the four rules in
+CF-1 to CF-3 are on branch **`claude/trench-crusade-app-review-7bansz`**, open
+as draft PR **[#12](https://github.com/crazymunch/TrenchLine/pull/12)** against
+`main`. CF-4 and CF-5 are on **`claude/project-handover-e0sj82`**, open as draft
+PR **[#13](https://github.com/crazymunch/TrenchLine/pull/13)** stacked on it. Read [`docs/README.md`](README.md) and the four rules in
 [`CLAUDE.md`](../CLAUDE.md) before anything else — the whole approach below is
 downstream of them.
 
@@ -19,15 +20,16 @@ downstream of them.
 | CF-1 | Sources + the two faction lists | **done** (`0e49f93`) |
 | CF-2 | Five scenarios + two terrain pieces | **done** (`7421753`) |
 | CF-3 | Random Scenario Generator | **done** (`127a12f`, docs `d858b24`) |
-| CF-4 | New Patrons + Carcass Front exploration tables | **not started** |
-| CF-5 | The Carcass Front campaign, Path to Leviathan, Vision Cards | **not started** |
+| CF-4 | New Patrons + Carcass Front exploration tables | **done** (`af8accb`, `9cee89a`) |
+| CF-5 | The Carcass Front campaign, Path to Leviathan, Vision Cards | **done** (`620ef49`, this commit) |
 
 Plus the Hell on Earth Weather Events, which landed first and is the earlier
 half of PR #12.
 
-**Green as of `d858b24`:** 482 unit tests, `npm run rules:build` with 0
+**Green as of the CF-5 commit:** 557 unit tests, `npm run rules:build` with 0
 conflicts and 0 fields lacking provenance, `tsc --noEmit` clean, `eslint` 0
-errors, `next build` clean. Verified by hand on a 375px viewport.
+errors, `next build` clean, `e2e/codex.spec.ts` green on the 375px phone
+project.
 
 ---
 
@@ -54,6 +56,10 @@ is verified against the same bytes even for the two that are not committed.
 | `scripts/lib/parse-carcass-front.mjs` | the two faction lists |
 | `scripts/lib/parse-cf-scenarios.mjs` | the five scenarios + two terrain pieces |
 | `scripts/lib/parse-cf-generator.mjs` | the Random Scenario Generator |
+| `scripts/lib/parse-cf-exploration.mjs` | the four Resource Exploration Tables |
+| `scripts/lib/parse-cf-campaign.mjs` | both campaigns |
+| `scripts/lib/parse-patrons.mjs` | the Patrons — **and the rulebook's eight** |
+| `scripts/lib/parse-vision-cards.mjs` | the sixteen Vision cards (a separate PDF) |
 | `scripts/lib/cf-prose.mjs` | shared: pages → lines, lines → Markdown |
 | `scripts/lib/dehyphenate.mjs` | shared: a hyphen at a line break |
 | `scripts/lib/carcass-front-layer.mjs` | parsed lists → layer `add` ops |
@@ -66,6 +72,10 @@ is verified against the same bytes even for the two that are not committed.
   carrying `source: 'carcass-front'`.
 - `dataset.terrain` — Levant Hedgehog, Naval Mine.
 - `dataset.scenarioGenerator` — the whole procedure.
+- `dataset.patrons` — eleven: the rulebook's eight and Carcass Front's three.
+- `dataset.campaign.carcassFrontExploration` — four Resource tables, 51 Locations.
+- `dataset.campaigns` — the map campaign and the Path to Leviathan.
+- `dataset.visionCards` — sixteen.
 
 ---
 
@@ -156,38 +166,20 @@ The generator lost a quarter of itself, silently.
 
 ## What is left
 
-### CF-4 — New Patrons and the Carcass Front exploration tables
+**Nothing from the original CF-1..CF-5 list.** What remains is the loose ends
+below, plus two things this pass deliberately did not do.
 
-Book pages 78-79 (Patrons) and 91-95 (Exploration).
+### Deliberately not done
 
-- **New Patrons.** House of Wisdom, and it is **Iron Sultanate only** — six
-  skills. The book is explicit that the new Patrons can be used in **any**
-  campaign, not just a Carcass Front one, so they belong alongside the existing
-  Patron data rather than behind the supplement's own campaign.
-- **Carcass Front Exploration Tables.** Note two differences from the core
-  exploration tables the pipeline already reads: the rows are **ranges, not
-  single numbers**, and the starting pool is **3D6**. `ExplorationLocation.roll`
-  is currently a single `number` with a comment saying the tables are sparse —
-  that type will need to widen, and the existing parser's assumption re-checked.
-
-Start from `chapterLines('Carcass Front Exploration Tables')` — the running
-head is already distinct, so `cf-prose.mjs` will hand you the chapter.
-
-### CF-5 — The Carcass Front campaign, Path to Leviathan, Vision Cards
-
-Book pages 78-90, plus `vision-cards.pdf` and `campaign-tracker.pdf` (both
-extracted, both in `data-sources/carcass-front/extracted/`).
-
-- **The Carcass Front Campaign** (pp. 80-87) — its own campaign structure, with
-  a Campaign Scenario table that can send players to the Random Scenario
-  Generator (a "6"), which is already built.
-- **The Path to Leviathan** (pp. 88-90) — the narrative campaign the five
-  scenarios are the spine of. Each scenario already carries its
-  `PATH TO LEVIATHAN CONSEQUENCES` section in `dataset.scenarios`, so the
-  campaign parser can join on those rather than re-reading them.
-- **Vision Cards** — a separate PDF, extracted but unparsed.
-- **Rudolf's Folly** (Aerial Bombardment / Strafing Run) and the **Outpost
-  Step** are in the campaign chapter.
+- **`A Vision of Leviathan`** (the chapter, 6 pages) is two in-fiction
+  proclamations in verse — Blessed Bartolomeo's and War Priest Charon's. It is
+  flavour with no rules in it, and `paragraphs()` would run the verse together
+  into prose, so it is not parsed. Adding it means teaching `cf-prose.mjs` to
+  keep a line break, which nothing else in the book needs.
+- **The Campaign Tracker sheet's own layout.** `campaign-tracker.pdf` extracts
+  to 335 bytes — it is a form, and its boxes and arrows are graphics. The
+  tracker's *rules* are all in the book chapter and are parsed; the sheet
+  itself is not reproducible from the PDF.
 
 ### Loose ends anyone could pick up
 
@@ -207,6 +199,20 @@ extracted, both in `data-sources/carcass-front/extracted/`).
 - **`officialRulesData.ts` still holds hand-written skills and trauma tables.**
   The derived versions are in `dataset.campaign`; the old file has not been
   deleted.
+- **The campaign map is not in any PDF.** The zone board, the Carcass Front
+  Zones table (Resources and scenario per zone), the Special Zones table and
+  the generator charts the map campaign uses are printed on the fold-out map in
+  the box. `CampaignDefinition.requiresMap` records this and the Codex says so.
+  Deriving them would need the map supplied as an image and read by hand — the
+  same shape of problem as the five scenarios' missing deployment maps.
+- ~~The rulebook's Exploration Step banner in the Codex is hand-written
+  prose.~~ **Fixed.** It said *"the winner of the match rolls on the …
+  Exploration Table"* — every player who played explores unless they Called for
+  Reinforcements, so it told the loser of every campaign game to skip their
+  income — beside three invented bullets naming a "Trench Merchant", a "Warband
+  Treasury" and an "Armory Stash". Replaced by the five numbered steps the book
+  prints as its Exploration Sequence, and `lootPerPoint` is now read out of
+  step 5 rather than carried as a literal `10`.
 
 ---
 

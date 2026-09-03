@@ -58398,6 +58398,1219 @@ export const DATASET: Dataset = {
       }
     ]
   },
+  "patrons": [
+    {
+      "id": "temporal-lord",
+      "introduces": [],
+      "name": "TEMPORAL LORD",
+      "restriction": "New Antioch only.",
+      "lore": "Your Patron is a powerful noble, perhaps a merchant prince, a high-ranking military officer, a minister, or even the mighty Duke of New Antioch himself. Such Patrons can help your warband’s specialist training and procurement of expensive weapons.",
+      "skills": [
+        {
+          "name": "Armour & Equipment Procurement",
+          "description": "The cost of any Armour, Shields or Equipment worth 15 👑 or more is reduced by 5 👑 if a model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Melee Weapon Procurement",
+          "description": "The cost of any Melee Weapon worth 10 👑 or more is reduced by 5 👑 if the model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Mendelist Chemicals",
+          "description": "The opposing player cannot spend BLOOD MARKERS next to a model with this skill to add +1 INJURY DICE (they can use the BLOOD MARKERS to convert the roll to a Bloodbath Roll normally)."
+        },
+        {
+          "name": "Ranged Weapon Procurement",
+          "description": "The cost of any Ranged Weapon or Grenade worth 20 👑 or more is reduced by 5 👑 if a model with this Skill is part of the Warband when it is purchased. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Sniper School",
+          "description": "Ranged Attacks made by a model with this Skill need 1 less BLOOD MARKER to convert an Injury Roll roll to a Bloodbath Roll."
+        },
+        {
+          "name": "Special Assault Training",
+          "description": "Melee Attacks made by a model with this Skill need 1 less BLOOD MARKER to convert an Injury Roll roll to a Bloodbath Roll."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "warrior-saint",
+      "introduces": [],
+      "name": "WARRIOR SAINT",
+      "restriction": "Trench Pilgrims and New Antioch only.",
+      "lore": "Your Patron is a mighty saint of soldiers and warriors such as Saint George the Dragonslayer, Saint John the Warrior, Saint Jeanne d’Arc, or even Saint Michael the Taxiarch himself. Such Patrons offer great power in personal combat and divine protection on the battlefield.",
+      "skills": [
+        {
+          "name": "Blessings of the Warrior Saint",
+          "description": "A model with this Skill gains the BLESSED D3 Keyword."
+        },
+        {
+          "name": "David and Goliath",
+          "description": "Add +1 DICE for a Melee Attack made by a model with this Skill if the target is mounted on a 40mm or larger base."
+        },
+        {
+          "name": "Dragonslayer",
+          "description": "When you make an Injury Roll for a Melee Attack made by a model with this Skill, you can change the roll of one the D6s used for the Injury Roll to a 6."
+        },
+        {
+          "name": "Endure the Suffering",
+          "description": "A model with this Skill can suffer 1 extra Battle Scar before they are unfit for duty."
+        },
+        {
+          "name": "On your Knees!",
+          "description": "Enemy models that are Down are not allowed to stand up if a model with this Skill is within 1” of them (even if the model with this Skill is also Down)."
+        },
+        {
+          "name": "Warrior’s Prayer ACTION",
+          "description": "A model with this Skill can take a Warrior’s Prayer ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, the model has the FEAR Keyword until the end of the Turn, and you can remove up to 1 BLOOD MARKER from the model."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "learned-saint",
+      "introduces": [],
+      "name": "LEARNED SAINT",
+      "restriction": "Trench Pilgrims and New Antioch only.",
+      "lore": "Your Patron is a great teacher, such as Saint Patrick, Saint Thomas Aquinas or Saint Methodius. Such Patrons illuminate the paths of planning, science, strategy and organisational skills.",
+      "skills": [
+        {
+          "name": "Favoured by God",
+          "description": "At the end of each game, your Warband gains 1 additional ☼ for each model with this Skill on the battlefield."
+        },
+        {
+          "name": "Healing Arts",
+          "description": "You can re-roll the result on the Trauma Chart (▶ see Trauma Step) for a model with this Skill."
+        },
+        {
+          "name": "Knowledge of Sciences",
+          "description": "The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the Warband. Choose the Battlekit the bonus will apply to and write down your choice on your roster. A Warband can have only one model with this Skill."
+        },
+        {
+          "name": "Logistical Skills",
+          "description": "A Warband that includes a model with this Skill can increase any Limits on the number of models it can include by 1, as long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary. For example, if the Warband Entry for a model in the Warband had a limit of 0-2, the limit would be increased to 0-3. If the model with this Skill is killed or otherwise removed from the Warband, models in excess of the normal limits can be kept, but new models cannot be added to the Warband in excess of the normal limits. A Warband can only have 1 model with this Skill."
+        },
+        {
+          "name": "Pennies from Heaven",
+          "description": "At the end of each game, your Warband gains D6x5 additional 👑 for each model with this Skill that is on the Battlefield."
+        },
+        {
+          "name": "Walk with God",
+          "description": "Pick one Skill from any Skill Table available to the model, including any Exploration Skill, and give it to this model. VP"
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "infernal-noble",
+      "introduces": [],
+      "name": "INFERNAL NOBLE",
+      "restriction": "Heretic Legions & The Court of the Seven-Headed Serpent only.",
+      "lore": "Your Patron is one of the Fallen, a mighty devil noble such as Baal, Balam, Zepar, Astaroth or Gusion. Such Patrons bestow magical powers, reward evil deeds and enhance the power of sins.",
+      "skills": [
+        {
+          "name": "30 Pieces of Silver",
+          "description": "At the end of each game, your Warband gains D6x5 👑 for each model with this Skill that is on the battlefield."
+        },
+        {
+          "name": "Blessed Murder",
+          "description": "If a Melee Attack made by a model with this Skill takes an enemy model Out of Action, place 1 BLESSING MARKER next to the model with this Skill."
+        },
+        {
+          "name": "Blood Sacrifice ACTION",
+          "description": "A model with this Skill can take a Blood Sacrifice ACTION. If it does so, take a Success Roll for the model. On a Success or Critical Success, you can remove 1 BLOOD MARKER from the model and place it next to any other model that is within 6” of the model taking the Blood Sacrifice ACTION, in their line of sight, and which does not have the ARTIFICIAL, BLACK GRAIL or DEMONIC Keywords."
+        },
+        {
+          "name": "Hellfire ACTION",
+          "description": "A model with this Skill can take a Hellfire ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, pick a friendly model that is within 18” of the model carrying out the Hellfire ACTION and in their line of sight. Then draw a straight line 1mm wide between the closest points of the bases of the two models, and make an Injury Roll with the FIRE Keyword for each model (friend or foe) that is crossed or reached by the line, including the friendly model that you picked but not including the model taking the Hellfire ACTION."
+        },
+        {
+          "name": "Lash of Acheron ACTION",
+          "description": "A model with this Skill can take a Lash of Acheron ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, you can make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model that is within 6” of the model taking the Lash of Acheron ACTION and in their line of sight."
+        },
+        {
+          "name": "Sadistic",
+          "description": "Add +1 DICE and +1 INJURY DICE to Melee Attacks made by a model with this Skill if the target model is Down."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "sublime-gate",
+      "introduces": [],
+      "name": "SUBLIME GATE",
+      "restriction": "Iron Sultanate only.",
+      "lore": "Your Patron is one of the high-ranking nobles of the Sultanate such as an emir, pasha, vizier or even the Sultan himself. Such Patrons bestow martial prowess, access to exotic weapons, armour, superior training and of course, the favour of the Sultan.",
+      "skills": [
+        {
+          "name": "Güreş",
+          "description": "Add +1 DICE and +1 INJURY DICE to Melee Attacks made by a model with this Skill if the target model is Down. In addition, you can ignore the -1 DICE modifier to Success Rolls for a model that is Down if the model has this Skill."
+        },
+        {
+          "name": "Imported Wares",
+          "description": "You can purchase 1 Weapon or 1 suit of Armour from the New Antioch Armoury for a model with this Skill in the following Quartermaster Step. Choose the Weapon or suit of Armour and write down your choice on your Warband Roster. If this item is lost for any reason during the campaign, you can repurchase it."
+        },
+        {
+          "name": "Janissary Training",
+          "description": "If the first ACTION a model with this Skill makes during their Activation is a Charge, add +1 DICE to Melee Attacks made by the model for the rest of the Activation. Additionally, a model with this Skill has the IGNORE OFF-HAND WEAPON Keyword."
+        },
+        {
+          "name": "Rightly Guided",
+          "description": "At the start of the game, after deployment, you can pick 1 ACTION apart from Charge, Shoot or Fight that requires that an enemy model is chosen as the target of the ACTION or is picked to be affected by the ACTION. For the rest of the game, the model with this Skill cannot be chosen as the target of that ACTION and cannot be picked to be affected by that ACTION."
+        },
+        {
+          "name": "Sultan’s Favour",
+          "description": "A Warband that includes a model with this Skill can increase any limits on the number of models it can include by 1, as long as the model does not have the ELITE Keyword, is not mounted on a 50mm or larger base, and is not a Mercenary. For example, if the Warband Entry for a model in the Warband had a limit of 0-2, the limit would be increased to 0-3. If the model with this Skill is killed or otherwise removed from the Warband, models in excess of the normal limits can be kept, but new models cannot be added to the Warband in excess of the normal limits. A Warband can only have 1 model with this Skill."
+        },
+        {
+          "name": "Sword of Allah",
+          "description": "You can choose 1 Skill from the Melee & Strength Skills Table for a model that has the Sword of Allah Skill."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "the-order-of-the-fly",
+      "introduces": [],
+      "name": "THE ORDER OF THE FLY",
+      "restriction": "Black Grail only.",
+      "lore": "Your Patron is a powerful infernal noble of the Order of the Fly, such as Enlil, Prince Vassago or even Beelzebub the Lord of the Flies himself. Through you, these putrid and mighty devils unleash a tidal wave of corruption upon the mortal world.",
+      "skills": [
+        {
+          "name": "Cockroach Vitality",
+          "description": "The opposing player cannot spend BLOOD MARKERS next to a model with this Skill to add +1 INJURY DICE for a Melee or Ranged Attack."
+        },
+        {
+          "name": "Deceit of Beelzebub ACTION",
+          "description": "A model with this Skill can take a Deceit of Beelzebub ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, pick an enemy model within 8” of the model taking the Deceit of Beelzebub ACTION, and then swap the position of the two models. You must place each model so that the centre of its base is at the location that was previously occupied by the centre of the base of the model they are swapping positions with. If this is impossible for any reason (e.g. because Impassable terrain or another model gets in the way), the two models remain in their original locations."
+        },
+        {
+          "name": "Eyes of the Fly",
+          "description": "A model with this Skill has the IGNORE COVER and IGNORE LONG RANGE Keywords."
+        },
+        {
+          "name": "Grail Plague",
+          "description": "At the start of each game, after deployment, for each model with this Skill that is on the battlefield, you can place 1 INFECTION MARKER next to an enemy model that does not have the BLACK GRAIL Keyword."
+        },
+        {
+          "name": "Knight of the Flies",
+          "description": "Add -1 DICE to rolls for Ranged Attacks that target a model with this Skill."
+        },
+        {
+          "name": "Wings of the Fly",
+          "description": "A model with this Skill gains the FLYING Keyword if it doesn't already have it."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "mammon",
+      "introduces": [],
+      "name": "MAMMON",
+      "restriction": "Heretic Legions or Court of the Seven-Headed Serpent (Greed Warband) only.",
+      "lore": "Your Patron is Mammon, the Prince of Greed, the Treasurer of Hell, and the King of Fools. He appears as a golden-skinned king on an opulent throne, with black scorch marks tarnishing his splendour. He is the most popular Patron amongst mortals.",
+      "skills": [
+        {
+          "name": "Aureate Skin",
+          "description": "The model with this Skill is granted the splendid (yet tarnished) golden skin of their Patron, and their blood turns into molten gold. Each time you place a BLOOD MARKER next to a model with this Skill, add 5 👑 to your treasury."
+        },
+        {
+          "name": "Crooked Dice",
+          "description": "Once per game, you can re-roll all of the dice used for a Success Roll for a model with this Skill, or you can re-roll all of the dice used for an Injury Roll for an attack made by a model with this Skill."
+        },
+        {
+          "name": "Eternal Debt",
+          "description": "The Wretched of this Warband are never lost as casualties, for their heads (kept as surety by Mammon) are used to regrow the lost bodies. All Wretched models in a Warband that includes a model with this Skill will automatically make a full recovery after the battle if they are taken Out of Action."
+        },
+        {
+          "name": "Money Can Buy Anything",
+          "description": "The limit of one item of Battlekit (excluding Glory Items) is increased by 1 if a model with this Skill is part of the Warband. Choose the Battlekit the bonus will apply to and write down your choice on your roster. A Warband can have only one model w ith this Skill."
+        },
+        {
+          "name": "Plutocracy",
+          "description": "When you take this Skill for a model, it can immediately form a FIRETEAM with 1 other model from your Warband that does not have the ELITE Keyword. Both of the models gain the FIRETEAM Keyword. In addition, if the two models take a simultaneous Activation, then you can treat all Risky Success Rolls they take during the Activation as normal Success Rolls."
+        },
+        {
+          "name": "Unsecured Loan",
+          "description": "You can add 100 👑 to your Strongbox when you take this Skill for a model in your Warband. The 👑 are only gained once, when the Skill is chosen."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "the-antipope-of-avignon",
+      "introduces": [],
+      "name": "THE ANTIPOPE OF AVIGNON",
+      "restriction": "Black Grail only.",
+      "lore": "Your Patron is the Antipope of Avignon, the high priest of the Cult of the Black Grail. Whereas most strains of the Black Grail infect the body, the variant spread by Missionaries of Beelzebub targets the mind above all. This is why Apostles of the Fly are disturbingly effective at winning new converts to their cause despite the obvious ruin that follows devotion to the Lord of the Flies.",
+      "skills": [
+        {
+          "name": "Beelzebub’s Wisdom",
+          "description": "Infested with the Black Grail, the head of this warrior is distended and liquid matter oozes out of its many trepanned holes; it is such a disgusting sight that enemy warriors often hesitate to draw close to the foul creature. If a model with this Skill is chosen by an enemy model as the target of a charge, the enemy model does not receive a Charge Bonus and must make the charge using only its Movement Characteristic."
+        },
+        {
+          "name": "Eye of Beelzebub ACTION",
+          "description": "The overwhelming mental pressure of this emissary of Beelzebub overwhelms any mind. A model with this Skill can take an Eyes of Beelzebub ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, pick an enemy model that is within 24” of the model taking the Eye of Beelzebub ACTION, in Cover, and which is not within 1” of any models from your Warband. Your opponent must then move that model 1”, so that it is still in the line of sight of the model taking the ACTION but is no longer in Cover, and so that it is more than 1” away from any models from your Warband. If this is impossible for any reason, the enemy model is not moved."
+        },
+        {
+          "name": "Feast on Disease",
+          "description": "If the target of a Melee Attack made by a model with this Skill has 1 or more INFECTION MARKERS, then it costs 1 less BLOOD MARKER or INFECTION MARKER to convert an Injury Roll into a Bloodbath Roll."
+        },
+        {
+          "name": "Infect the Mind",
+          "description": "At the start of each game, after deployment, for each model with this Skill that is on the battlefield, you can pick an enemy model and move it 6” in the same way as if it were carrying out a Move ACTION (it cannot Charge)."
+        },
+        {
+          "name": "Silvered Tongue ACTION",
+          "description": "A model with this Skill can take a Silvered Tongue ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or Critical Success, pick an enemy model that is within 1” of the model taking the Silvered Tongue ACTION. The model you pick must make a Melee Attack against itself. If the enemy model has more than 1 Melee Weapon, you can choose which one it uses. The enemy model will only attack itself once, even if it is capable of attacking several times."
+        },
+        {
+          "name": "Swine Hybrid",
+          "description": "Add 2” to the Movement Characteristic of a model with this Skill."
+        }
+      ],
+      "source": "rulebook"
+    },
+    {
+      "id": "house-of-wisdom",
+      "introduces": [
+        {
+          "name": "Zīj Seal",
+          "description": "Enemy models cannot use the INFILTRATOR Keyword to deploy within 12” of a model with this Skill. In addition, if the enemy is within 4” of a model with this Skill, you do not have to make a Risky Success Roll for the model with this Skill when it charges an enemy model it cannot see.",
+          "kind": "Alchemical Formulae",
+          "unlockedBy": "Whispering Zīj"
+        }
+      ],
+      "name": "HOUSE OF WISDOM",
+      "restriction": "Iron Sultanate only.",
+      "lore": "Your Patron is of the bloodline of a fabled alchemist such as ibn Sina, ibn Umayl, or even an entire school within the House of Wisdom. Such Patrons offer rare and esoteric knowledge and treatments from the Sultan’s most secretive laboratories, both for the glory of Allah and for practical field testing.",
+      "skills": [
+        {
+          "name": "Elemental Savant",
+          "description": "When a model gains this Skill, choose either the NEGATE FIRE, or NEGATE GAS, or NEGATE SHRAPNEL Keyword for the model."
+        },
+        {
+          "name": "Experimental Ammunition",
+          "description": "Models in a Warband that includes a model with this Skill can have Armour-Piercing Bullets at a cost of 5 👑 each and Dum-Dum Ammunition at a cost of 5 👑 each. The Armour-Piercing Bullets and Dum-Dum Ammunition each have the Limit: 2 stipulation."
+        },
+        {
+          "name": "Eyes of Hanayn",
+          "description": "When a model gains this Skill you can immediately purchase the Hypnotic Eyes and/or Terrifying Appearance Alchemical Formulae for it at their normal cost, replacing instances of “Takwin Homunculus” in those rules with this model’s name."
+        },
+        {
+          "name": "Jinn Talisman ACTION",
+          "description": "A model with this Skill can take a Jinn Taslisman ACTION. If it does so, change the Movement Characteristic of this model to 4” and give it the FLYING Keyword until the end of their Activation."
+        },
+        {
+          "name": "Heart of al-Jazari",
+          "description": "When a model gains this Skill you can immediately purchase the Regenerative Tissue and/or Startling Speed Alchemical Formulae for it at their normal cost, replacing all instances of “Takwin Homunculus” in those rules with this model’s name."
+        },
+        {
+          "name": "Whispering Zīj",
+          "description": "Takwin Homunculus models in a Warband with a model with this Skill can purchase the Zīj Seal Alchemical Formulae for 20 👑."
+        }
+      ],
+      "source": "carcass-front"
+    },
+    {
+      "id": "blessed-bartolomeo",
+      "introduces": [],
+      "name": "BLESSED BARTOLOMEO",
+      "restriction": "Faithful Warbands only.",
+      "lore": "Your Patron is Blessed Bartolomeo, the Martyr of Leviathan. The War Prophet raves with such conviction and holy promise that his words stir fear and awe in the hearts of the Faithful. This piety cascades through the warbands that Blessed Bartolomeo patronises, offering a degree of righteous belief that inspires supernatural fortitude and luck as uncanny as his own.",
+      "skills": [
+        {
+          "name": "All That Was Borne Is Ours to Bear",
+          "description": "Add +1 INJURY MODIFIER to Ranged and Melee Attacks made by a model with this Skill for every 2 BLOOD MARKERS the model has."
+        },
+        {
+          "name": "Chosen",
+          "description": "A model with this Skill has the Lucky Exploration Skill (▶ see Exploration Skills in the Trench Crusade Rulebook). A Warband can only have one model with this Skill."
+        },
+        {
+          "name": "Martyr of Leviathan",
+          "description": "When a model with this Skill is deployed for the first time, place D3 BLESSING MARKERS next to the model."
+        },
+        {
+          "name": "The Truth of Suffering",
+          "description": "Add -1 INJURY DICE to Injury rolls for a model with this Skill. This Skill can only be taken by a model on a 40mm Base or smaller."
+        },
+        {
+          "name": "Trample Our Enemy into the Mud",
+          "description": "When a model with this Skill takes a Down enemy model Out of Action with a Melee Attack, place 1 BLESSING MARKER alongside it."
+        },
+        {
+          "name": "We Are but a Single Breath",
+          "description": "For each model in your Warband with this Skill you can re-roll one Survival Roll in the Trauma Step (▶ see the Trench Crusade Rulebook)."
+        }
+      ],
+      "source": "carcass-front"
+    },
+    {
+      "id": "war-priest-charon",
+      "introduces": [],
+      "name": "WAR PRIEST CHARON",
+      "restriction": "Fallen Warbands only.",
+      "lore": "Your Patron is War Priest Charon, the Apostate of Éire. The former Trench Cleric has built a reputation for himself as a cunning warlord, and his promise of ancient knowledge has drawn the attention of all those who would dethrone the tyrant YHWH. War Priest Charon offers a share of his knowledge to those that would answer his call, from cosmological secrets to his finely honed tactics as a Heretic Naval Raider.",
+      "skills": [
+        {
+          "name": "A Master of Death",
+          "description": "A model with this Skill adds the AUTOMATIC 2 Keyword to attacks made with a Ranged Weapon that are within Short Range of the target. If the Ranged Weapon already has the AUTOMATIC Keyword, add +1 to the number of attacks it can make. A Warband can have only 1 model with this Skill."
+        },
+        {
+          "name": "Fire and Fear",
+          "description": "Pick one Skill from the Ranged Skills Table and give it to this model."
+        },
+        {
+          "name": "Fonts of Joyous Wickedness",
+          "description": "A model with this Skill has the Lucky Exploration Skill (▶ see Exploration Skills in the Trench Crusade Rulebook). A Warband can have only 1 model with this Skill."
+        },
+        {
+          "name": "No Longer Cowed Supplicants",
+          "description": "When a model with this Skill suffers a Down result on the Injury table, it is treated as a Minor Wound result instead."
+        },
+        {
+          "name": "On Wings of Blooded Iron ACTION",
+          "description": "A model with this Skill can take an On Wings of Blooded Iron ACTION. If it does so, take a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or a Critical Success, pick a friendly model within 8” of the model taking the On Wings of Blooded Iron ACTION (including the model itself ). You can carry out a move or a retreat move with the model as if it had a Movement Characteristic of 8”/Flying. It cannot make a charge move. After carrying out the move, place 1 BLOOD MARKER next to the model."
+        },
+        {
+          "name": "We Are the Storm",
+          "description": "After deployment, you can move this model D6”. It cannot move within 1” of any enemy models. EG EG"
+        }
+      ],
+      "source": "carcass-front"
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "carcass-front",
+      "name": "The Carcass Front Campaign",
+      "players": "2 or more",
+      "intro": "The Carcass Front Campaign offers a new way for groups of two or more players to play linked games of Trench Crusade, telling a memorable story as you do so. There is no single path to victory in the Carcass Front Campaign. Not every Warband ventures out into No Man’s Land solely with murder and conquest in their eyes (though many do). Some forces are sent to establish a forward base for a much larger force to later occupy; others simply seek to plunder the earth, churned by centuries of war, for relics and rare resources. More may seek fame or martyrdom, and others still simply wish to wring what measly existence they can from the craters and viscera of the frontlines.",
+      "sections": [
+        {
+          "id": "new-players-read-this",
+          "level": 2,
+          "heading": "New Players Read This",
+          "markdown": "While not mandatory, we highly advise players to run through at least a short campaign using the standard system provided in the Trench Crusade Rulebook before they play a Carcass Front Campaign. This will help get players familiar with the flow and feel of the standard campaign rules, most of which are not changed in a Carcass Front Campaign."
+        },
+        {
+          "id": "campaign-overview",
+          "level": 2,
+          "heading": "Campaign Overview",
+          "markdown": "A Carcass Front Campaign uses most of the campaign rules from the Trench Crusade Rulebook. However, whilst it’s similar to the standard campaign system, the Carcass Front Campaign system has three key differences: First, the map. During the campaign, Warbands will be able to travel around the map, scouting areas, fighting for territory and establishing outposts. The map is divided into different zones that offer narratively fitting resources and exploration tables, meaning that where your Warband chooses to travel is important for both story and rewards. Around the map are several important tables used in campaign games. Second, each player is given their own Campaign Tracker sheet. The Campaign Trackers are used to record the number of Campaign Victory Points (🏅) that the player has scored, and will ultimately determine who is the winner of the campaign. There are many ways to do this, with game wins being just one of the ways to achieve victory. Players are also rewarded for performing Glorious Deeds and gathering resources across the map to build and upgrade their Camps. Third, at the start of the campaign, you will be given a card from the deck of Vision cards included with Carcass Front. The Vision card will provide you with an objective that your Patron wishes you to fulfil. If you do so successfully, then you will earn valuable Campaign Victory Points."
+        },
+        {
+          "id": "the-campaign-map",
+          "level": 2,
+          "heading": "The Campaign Map",
+          "markdown": "The main focus of the Carcass Front Campaign is the campaign map included in the box. We recommend you unfold the map and keep it close to hand so that you can refer to it as you read the following rules. The myriad trenches, ruins and other shattered hellscapes that constitute the Carcass Front are loosely divided into “zones”, linked to each other by the white lines with black borders shown on the map. Each zone will be either a Basic Zone, an Entry Zone or a Special Zone. Warbands start the campaign at an Entry Zone, and Special Zones confer a bonus to any Warband that manages to establish an Outpost in the zone. In addition, each zone may provide Resources that can be used by a Warband that controls them. The effects that the different zones and resources have are described in the rules on the following pages."
+        },
+        {
+          "id": "resources",
+          "level": 1,
+          "heading": "RESOURCES",
+          "markdown": "Resources represent the various assets Warbands will be fighting over in the Carcass Front, from notoriety to medical supplies, from lost artefacts to trade networks. The resources available in each zone are shown on the Carcass Front Zones table on the campaign map. The four Resources are:"
+        },
+        {
+          "id": "favour",
+          "level": 2,
+          "heading": "Favour 👁",
+          "markdown": "Effigies, grizzly trophies, reputation. Favour Resources bring glory to your Warband’s Patron and empower your Warband’s champions. Rolls on the Favour Exploration Table can yield chances to prove your devotion to your Patron, exchanging ☼ for 🏅. In addition, Favour Resources build and upgrade your Camp’s Shrine."
+        },
+        {
+          "id": "relics",
+          "level": 2,
+          "heading": "Relics 🏺",
+          "markdown": "Forgotten secrets, rare metals, sacred artefacts. Relic Resources give your Warband a vast treasury of rare and powerful artefacts. Rolls on the Relics Exploration Table allow you to find lost apocrypha, gaining 🏅 for each piece you find. In addition, Relics Resources build and upgrade your Camp’s Vault."
+        },
+        {
+          "id": "supplies",
+          "level": 2,
+          "heading": "Supplies 📦",
+          "markdown": "Ammo dumps, medical supplies, scavenged armaments. Supply Resources make your Warband well equipped and sustained and keep them in the fight. Rolls on the Supplies Exploration Table provide a vast array of options, from Battlekit to 👑, and occasionally even 🏅. In addition, Supplies Resources build and upgrade your Camp’s Vault."
+        },
+        {
+          "id": "territories",
+          "level": 2,
+          "heading": "Territories 🌍",
+          "markdown": "Advantageous positions, intel and recon, trade networks. Territory Resources help your Warband become more established in the zone and gain environmental supremacy. Rolls on the Territories Exploration Table can attract trench merchants, allowing all players to purchase Campaign Glory Items, but giving you 🏅 for doing so. In addition, Territories Resources build and upgrade your Camp’s Garrison."
+        },
+        {
+          "id": "the-vision-cards",
+          "level": 2,
+          "heading": "The Vision Cards",
+          "markdown": "Carcass Front includes a pack of 16 Vision cards. At the start of the campaign, the deck of cards is shuffled and each player is dealt 2 Vision cards face down. Each player examines both in secret, picks one of the cards to keep, and returns the other card to the game box unseen. Players can keep the card that they choose secret from the other players, revealing it only at the end of the campaign. Note that this requires players taking part in the campaign to gather together in order to distribute Vision cards. Alternatively, two cards can be sent to each player and they can return the one they do not wish to use. Each card lists 3 Visions that the Patron wants fulfilled. The Visions represent the fickle and often inscrutable demands of the powerful beings who patronise the Warbands of the Carcass Front. At the end of the campaign, each player reveals their Vision card and scores 🏅 for each of the 3 objectives they have achieved. Note that the 🏅 scored for the 3 objectives are cumulative, and are roughly balanced to be achievable (but a challenge) at the three recommended campaign lengths – across 4, 8, and 12 games."
+        },
+        {
+          "id": "more-than-eight-players",
+          "level": 2,
+          "heading": "More Than Eight Players",
+          "markdown": "A pack of Vision cards has enough cards for up to 8 players. If you have more players than that, you will need multiple packs of Vision cards."
+        },
+        {
+          "id": "the-campaign-tracker",
+          "level": 2,
+          "heading": "The Campaign Tracker",
+          "markdown": "Each player taking part in the campaign will need their own Campaign Tracker sheet. This sheet has a space for recording the zones on the map your Warband has Scouted (▶ see Scouted Zones on the next page) and tracks for recording important game information. 1. The Glory Track: After each game you play, write the number of Glorious Deeds you completed into the next available box. 2. The Resource Tracks (Favour, Relics, Supplies and Territories): After a game, fill in boxes on tracks corresponding to resources available in the zone where the game was played (▶ see Game Result Summary on page 83). 3. The Conquest Track: Fill in a box for every game that you win. 4. The Aggression Track: Fill in a box each time you were the Aggressor (▶ see Carcass Front Campaign Games on page 82). 5. The Other Track: These boxes are used to keep track of the number of 🏅 you score from Exploration Tables, Shared Campaign Objectives, and your Patron Visions. 6. Scouted Zones: Record the zones that you have Scouted here. 7. Outposts: Record the zones you have Outposts in here. 8. Buildings: Record any buildings you have in your camp and their tiers in this box. Boxes are filled in order, starting with the first box on the track (which is picked out with two lines) and then following the arrows shown on the track. Filling in boxes will unlock the Campaign Victory Points and campaign bonuses that fall under the boxes you have filled. For example, filling in the second box on the Territory Track will earn you the Explore campaign bonus, and filling in the third box on the track will earn you the Garrison campaign bonus and also score 5 🏅. 1. 2. 3.\n\n| 4. | 5. |\n| --- | --- |\n\n6. 7. 8."
+        },
+        {
+          "id": "beginning-the-campaign",
+          "level": 2,
+          "heading": "Beginning the Campaign",
+          "markdown": "Once you have recruited a group of players to take part in the campaign, you need to decide how many games will be played. The maximum number of games in a campaign is 12, but you can play any lower number depending on the experience you’re looking for. We recommend a length of 4 games for short campaigns (for one-day events or trying out the system), 8 games for medium campaigns (an average player experience or a long weekend event), and 12 games for long campaigns (for a regular gaming group or a slow-grow). Once the length of the campaign has been determined, each player can recruit their starting Warband and pick a Patron (▶ see the Trench Crusade Rulebook). They each choose a Vision card as described on the previous page, and finally, each player is given a Campaign Tracker and records the Entry Zone for their Warband on it."
+        },
+        {
+          "id": "entry-zones",
+          "level": 1,
+          "heading": "ENTRY ZONES",
+          "markdown": "At the start of the campaign each player must choose one of the Entry Zones on the map and write it on their Campaign Tracker. Multiple players can choose the same Entry Zone. There are four Entry Zones on the Carcass Front Map from which players can begin their campaign: the Ancient Railway, the Blighted Ruins, the Derelict Port, and the Secluded Tunnels. The Entry Zone a player chooses will determine their initial position on the campaign map, and as such the earliest Resources to which they have access – which may prove important for choosing an approach to the campaign."
+        },
+        {
+          "id": "carcass-front-campaign-games",
+          "level": 2,
+          "heading": "Carcass Front Campaign Games",
+          "markdown": "You are now ready to start the campaign. The games are played in a similar way to those for the standard campaign in the Trench Crusade Rulebook. You can play a campaign game against any of the other players that are taking part and all you need to do is arrange a time and place for the game, get together, and then select the scenario you are going to play. However, the method used for choosing the scenario that is to be played is slightly different to that used in a standard campaign. It uses the following three steps: 1. You must first determine who is the Aggressor. 2. The Aggressor must choose the zone where the game takes place. 3. The zone where the game takes place will determine which scenario is used for the game. 4. Each of these steps is described in more detail below."
+        },
+        {
+          "id": "determining-the-aggressor",
+          "level": 1,
+          "heading": "DETERMINING THE AGGRESSOR",
+          "markdown": "Before you can play a campaign game, one of the players must be chosen as the Aggressor. This player chooses the zone where the game will take place on the campaign map, and is also eligible to receive more varied rewards in the Exploration Step after the game (▶ see Exploration Step on page 85). To determine who is the Aggressor, the players must compare in how many previous games they were the Aggressor (keep track of this on the Aggressor Track on your Campaign Tracker). The player who has been the Aggressor fewer times in previous games is the Aggressor for this game. In the case of a tie or for your first campaign game, the players roll-off and the winner is the Aggressor."
+        },
+        {
+          "id": "pick-the-battle-zone",
+          "level": 1,
+          "heading": "PICK THE BATTLE ZONE",
+          "markdown": "Next the Aggressor must pick the zone where the game will take place. The zone that they pick must either be: Linked to their Entry Zone. Be a zone they have already Scouted (▶ see Scouted Zones below). Be linked to a zone they have already Scouted (▶ see Scouted Zones below)."
+        },
+        {
+          "id": "scouted-zones",
+          "level": 2,
+          "heading": "Scouted Zones",
+          "markdown": "Players are considered to have Scouted any zone that they have chosen as the Aggressor, or any zone in which they have won a game. Write down which zones you have Scouted on your Campaign Tracker."
+        },
+        {
+          "id": "the-altar-of-leviathan",
+          "level": 2,
+          "heading": "The Altar of Leviathan",
+          "markdown": "This zone can only be chosen as the zone for a game if both players have at least 1 Omen of Leviathan in their Arsenal and it is the last game of the campaign for the two players (i.e. in an 8-game campaign this will be the eighth game for each player). Certain Special Zone Bonuses will give you the Omens of Leviathan you need to play a game in this zone (▶ see Outposts Step on page 87)."
+        },
+        {
+          "id": "choosing-the-scenario",
+          "level": 1,
+          "heading": "CHOOSING THE SCENARIO",
+          "markdown": "The zone that the Aggressor has chosen will determine which scenario is used for the game. The scenarios to be used for each zone are listed in the Carcass Front Zones table on the campaign map, and will either be one from the Trench Crusade Rulebook, one of the 5 scenarios included in Carcass Front, or a random scenario that is generated using the Scenario Generator rules."
+        },
+        {
+          "id": "random-campaign-scenarios",
+          "level": 2,
+          "heading": "Random Campaign Scenarios",
+          "markdown": "The following special rules apply to a random scenario in a campaign game: The Battlefield Archetype is determined by the zone in which the game is taking place and is listed in the Carcass Front Zones table on the campaign map. The Deployment and Victory Conditions are generated using the Carcass Front Scenario Generator charts on the campaign map. Glorious Deeds for the scenario are generated normally (▶ see Glorious Deeds on page 77). The game length is always 6 Turns."
+        },
+        {
+          "id": "playing-the-game",
+          "level": 1,
+          "heading": "PLAYING THE GAME",
+          "markdown": "Once you have chosen the scenario, you should play the game in the same way as a campaign game in the standard rules. You must still follow the rules for Threshold Values and Field Strength when picking your Force. Once the game is finished, play proceeds to the Campaign Phase (▶ see the Trench Crusade Rulebook)."
+        },
+        {
+          "id": "game-result-summary",
+          "level": 1,
+          "heading": "GAME RESULT SUMMARY",
+          "markdown": "The result of the games will have one of a number of outcomes, summarised below. The rules for each of the outcomes is explained in more detail on the following pages.\n\nAggressor Wins Game: The Aggressor gains up to 2 different Resources available from the zone, fills in the next available Conquest box, adds the zone to their Scouted zones and adds an Outpost to it, rolls on one of the Exploration Tables corresponding to an available Resource in the zone, and collects loot equal to their Exploration Roll × 5 in 👑.\n\nAggressor Loses Game: The Aggressor gains 1 Resource available from the zone, adds the zone to their Scouted zones, rolls on one of the Exploration Tables corresponding to the available Resource in the zone, and collects loot equal to their Exploration Roll × 5 in 👑.\n\nOpponent Wins Game: The opponent of the Aggressor gains 1 Resource available from the zone, fills in the next available Conquest box, adds the zone to their Scouted zones, rolls to see if they are approached by agents of Rudolf ’s Folly (▶ see Rudolf ’s Folly on page 86), and collects loot equal to their Exploration Roll × 5 in 👑.\n\nOpponent Loses Game: The opponent of the Aggressor gains 1 Resource available from the zone, adds the zone to their Scouted zones, rolls to see if they are approached by agents of Rudolf ’s Folly (▶ see Rudolf ’s Folly on page 86), and collects loot equal to their Exploration Roll × 5 in 👑."
+        },
+        {
+          "id": "campaign-phase",
+          "level": 2,
+          "heading": "Campaign Phase",
+          "markdown": "When you finish a Carcass Front Campaign game, you and your opponent must carry out a Campaign Phase in the same way as you would in a standard campaign (▶ see the Trench Crusade Rulebook). However, in a Carcass Front Campaign there are two new steps, and several special rules apply to the Exploration Step."
+        },
+        {
+          "id": "campaign-phase-steps",
+          "level": 1,
+          "heading": "CAMPAIGN PHASE STEPS",
+          "markdown": "A Carcass Front Campaign Phase has the following Campaign Steps. The Trench Crusade Rulebook has details of all steps that have not changed. 1. Trauma and Promotions & Experience Steps: These steps are unchanged. 2. Campaign Tracker Step: This is a new step (▶ see on page 84). 3. Reinforcement Step (Optional): This step is unchanged. 4. Exploration Step: New special rules apply to this step (▶ see on page 85). 5. Outposts Step: This is a new step (▶ see on page 87). 6. Quartermaster & Roster Steps: These steps are unchanged."
+        },
+        {
+          "id": "campaign-tracker-step",
+          "level": 1,
+          "heading": "CAMPAIGN TRACKER STEP",
+          "markdown": "The new Campaign Tracker Step is carried out just before the Reinforcements Step. In the Campaign Tracker Step, both players must fill in their Campaign Tracker as described below. Boxes are filled in order, starting with the first box on the track (which is picked out with two lines) and then following the arrows shown on the track.\n\nThe Glory Track: Write the number of Glorious Deeds you completed in the game on the Glory Track. For example, if you completed 3 Glorious Deeds in your first game, you would write a “3” in the first box on the track. The Resource Tracks (Favour, Relics, Supplies and Territories): Put an X in a box from a Resource track that corresponds to a Resource listed for the zone where the game took place. For example, if a game took place in a zone that provided Favour and Territory, you could put an X either in a box from your Favour track or in a box from the Territory track. Important: if the Aggressor won the game, they can put an X in 2 boxes instead of 1, but each box must be on a different Resource track. Carrying on the previous example, they could put 1 X in a box on the Favour track and the Territory track, but could not put 2 Xs on the same track.\n\nThe Conquest Track: Put an X in a box on the Conquest Track if you won the game that has just been played.\n\nThe Aggression Track: Put a W in a box on the Aggression Track if you were the Aggressor in the game that has just been played and won the game, or put an L in a box if you were the Aggressor and lost the game.\n\nThe Other Track: This track is used to record any 🏅 you scored during the campaign other than those scored on the other tracks. For example, if an Exploration Roll meant that you scored 5 🏅 you would record them here by writing “5” in the first empty box on the track."
+        },
+        {
+          "id": "campaign-tracker-rewards",
+          "level": 2,
+          "heading": "Campaign Tracker Rewards",
+          "markdown": "Filling in a box on the Campaign Tracker will sometimes give you rewards. The rewards you receive are listed underneath the box. Rewards are received immediately after the box is filled in, and may in turn trigger further rewards. Rewards do the following things:\n\n| Reward | Effect |\n| --- | --- |\n| 🏅 | Score the indicated number of Campaign Victory Points. |\n| +1 🎲 | Roll an extra Exploration Dice in each Exploration Step. |\n| Reroll 🎲 | You can reroll 1 Exploration Dice in each Exploration Step. |\n| Set 🎲 | You can pick the value of 1 Exploration Dice in each Exploration Step. |\n| 🗺 (Resource) | Roll on the Exploration Table for the indicated Resource type. |\n| +👁 | Fill in 1 box on your Favour Track. |\n| +🏺 | Fill in 1 box on your Relics Track. |\n| +📦 | Fill in 1 box on your Supplies Track. |\n| +🌍 | Fill in 1 box on your Territories Track. |\n| +🌈 | Fill in 1 box on any Resources Track of your choice. |\n| 💰 1/2/3 | Gain the effects of the indicated Tier of your Depot Building. |\n| ⛫ 1/2/3 | Gain the effects of the indicated Tier of your Garrison Building. |\n| 🛐 1/2/3 | Gain the effects of the indicated Tier of your Shrine Building. |\n| 🏦 1/2/3 | Gain the effects of the indicated Tier of your Vault Building. |"
+        },
+        {
+          "id": "campaign-buildings-camps",
+          "level": 1,
+          "heading": "CAMPAIGN BUILDINGS & CAMPS",
+          "markdown": "At the start of the campaign, each Warband is assumed to have a Camp located in their Entry Zone. As the campaign progresses, you will get the chance to earn rewards that allow you to add buildings to your Camp that can provide benefits that will help you win the campaign. Record any buildings you add to your camp, and their tier, on the back of your Campaign Tracker."
+        },
+        {
+          "id": "building-benefits",
+          "level": 2,
+          "heading": "Building Benefits",
+          "markdown": "When a building is added to your Camp, it starts as a tier 1 building. Each further reward that you receive for the building adds a new tier, up to a maximum of 3 tiers. Each new tier adds a new benefit, which is received in addition to the benefits from the lower tiers. Depot 💰: A supply station, a mound of ripe corpses, a field surgeon.\n\nTier 1: You can add or subtract 1 from your Exploration Roll when rolling on the Supplies Exploration Table.\n\nTier 2: Roll 1 extra Exploration Dice when rolling on the Supplies Exploration Table and increase your Warband’s Threshold Value by 20 👑.\n\nTier 3: Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and the effects of 1 Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used. Garrison ⛫: A watchtower, a scout post, an indentured guardian beast.\n\nTier 1: You can add or subtract 1 from your Exploration Roll when rolling on the Territories Exploration Table.\n\nTier 2: Roll 1 extra Exploration Dice when rolling on the Territories Exploration Table. In addition, reduce the cost of any Glory Item purchased by your Warband from a Trench Merchant by 1 ☼ (to a minimum of 1).\n\nTier 3: You may immediately recruit one Mercenary available to your Warband for no cost. If none are available or you cannot recruit Mercenaries, you may immediately recruit one ELITE model without the LEADER Keyword to your Warband for no cost in 👑 (normal restrictions and limits apply). You may buy Battlekit for this model during the Quartermaster Step. Shrine 🛐: A trench masjid, a Synod communication tower, a sacrificial altar.\n\nTier 1: You can add or subtract 1 from your Exploration Roll when rolling on the Favour Exploration Table.\n\nTier 2: Roll 1 extra Exploration Dice when rolling on the Favour Exploration Table. In addition, 1 model in your Warband with the LEADER Keyword can immediately make an Advancement Roll.\n\nTier 3: Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair. Vault 🏦: A House of Wisdom field lab, a makeshift reliquary, a hoard of gold at a Golden Calf altar.\n\nTier 1: You can add or subtract 1 from your Exploration Roll when rolling on the Relics Exploration Table.\n\nTier 2: Roll 1 extra Exploration Dice when rolling on the Relic Exploration Zone Table. In addition, if an Exploration Result allows you to choose an option from a list, you may choose 2 different options from the list instead of 1.\n\nTier 3: Add 1 Glory Item to your Arsenal for free. If you prefer you can choose the Glory Item in any future Quartermaster Step."
+        },
+        {
+          "id": "the-exploration-step",
+          "level": 1,
+          "heading": "THE EXPLORATION STEP",
+          "markdown": "The following special rules apply to the Exploration Step in a Carcass Front Campaign."
+        },
+        {
+          "id": "record-scouted-zones",
+          "level": 2,
+          "heading": "Record Scouted Zones",
+          "markdown": "At the start of the Exploration Step the players must record if they have Scouted the zone where the game took place on their Campaign Tracker. The Aggressor always Scouts the zone where the game took place, but the opposing player only Scouts the zone if they win the game."
+        },
+        {
+          "id": "determine-exploration-dice",
+          "level": 2,
+          "heading": "Determine Exploration Dice",
+          "markdown": "The number of Exploration Dice you roll is not determined by the number of games you have played. Instead, you start with an Exploration Dice Pool of 3D6, and you gain additional Exploration Dice as rewards from the Campaign Tracker and for adding Buildings to your Camp (▶ see the Campaign Tracker on page 80)."
+        },
+        {
+          "id": "consult-exploration-tables-collect-loot",
+          "level": 2,
+          "heading": "Consult Exploration Tables & Collect Loot",
+          "markdown": "In a Carcass Front Campaign, you must use the Carcass Front Exploration Tables at the end of this book, instead of the ones in the Trench Crusade Rulebook (▶ see Carcass Front Exploration Tables on page 91). Whether or not you can use the Exploration Tables depends on if you were the Aggressor or not: If you were the Aggressor, make your Exploration Roll and look it up on an Exploration Table corresponding to one of the Resources that are available in the zone where the game was played. You then receive Loot equal to your Exploration Roll times 5 in 👑. If you were not the Aggressor, make your Exploration Roll but do not look it up on an Exploration Table. Instead, if at least 3 of the Exploration Dice you have rolled have the same value (i.e. three or more 6s, or three or more 2s, etc.), then you come across agents for Rudolf ’s Folly (▶ see on page 86). You then receive Loot equal to your Exploration Roll times 5 in 👑. If three or more dice do not match, nothing untoward occurs."
+        },
+        {
+          "id": "carcass-front-exploration-rolls",
+          "level": 2,
+          "heading": "Carcass Front Exploration Rolls",
+          "markdown": "The rolls for the Locations on the Carcass Front Exploration Tables produce a range rather than a single number (e.g. “1-3”). A Location is discovered if the Exploration Roll corresponds to any number in the range – in this example, on the roll of a 1, a 2, or a 3. Exploration Resources & Campaign Victory Points Some Exploration Rolls will allow you to gain one or more Resources or score 🏅. Fill in the boxes for any Resources you gain on your Campaign Tracker, taking any Rewards that they earn immediately after filling in the box. Write down any 🏅 in the Other Track on your Campaign Tracker. “The blood-dimmed tide is loosed, and everywhere The ceremony of innocence is drowned” – W. B. Yeats"
+        },
+        {
+          "id": "rudolfs-folly",
+          "level": 2,
+          "heading": "Rudolf’s Folly",
+          "markdown": "If you were not the Aggressor in a game, then there is a chance that you are approached by agents for Rudolf ’s Folly (▶ see the Exploration Step above). If this happens the agents offer you the support of some of Rudolf ’s Folly’s aircraft. Accepting the offer will cost you 1 ☼ and will allow you to use either the following Aerial Bombardment special rule or the Strafing Run special rule in your next game. If you pay for the Aerial Bombardment but do not use it, the ☼ is wasted (you cannot use the Aerial Bombardment in a later game). Note that it is possible to use Aerial Bombardments several times over the course of a campaign, but you must pay 1 ☼ each time."
+        },
+        {
+          "id": "aerial-bombardment",
+          "level": 1,
+          "heading": "AERIAL BOMBARDMENT",
+          "markdown": "**In order to use an Aerial Bom-**\n\nbardment, you will need to cut out three 25mm square pieces of light paper (not card) to represent the bombs that are dropped.\n\n**We have provided an example of**\n\na Bomb Marker here that you can copy and use if you wish. You can download a set of Bomb Markers from the Trench Crusade website that you can print and cut out. Once, during one of your model’s Activations, you may unleash the Bombardment. To do so, place one of the Bomb Markers flat in your palm, then turn your hand over to let the marker flutter down naturally onto the battlefield. Wherever the Marker lands, it detonates as if it were a model carrying a Sarcophagus Mine (▶ see the Trench Crusade Rulebook). You must then repeat the process for the second and third Bomb Markers, until all three have been dropped. You cannot save any of the Markers to use later in the game."
+        },
+        {
+          "id": "strafing-run",
+          "level": 1,
+          "heading": "STRAFING RUN",
+          "markdown": "**In order to make a Strafing Run**\n\nyou will need an Aircraft Marker and a Strafing Marker. The Markers can be downloaded from trenchcrusade.com, then printed and cut out. If you prefer, you could instead use a suitable model of an airplane, zeppelin or flying beast on an 80mm base to represent the Aircraft Marker."
+        },
+        {
+          "id": "set-up-the-strafing-run",
+          "level": 2,
+          "heading": "Set Up the Strafing Run",
+          "markdown": "As your first Activation during a Turn, you can call upon the air support of Rudolf ’s Folly to carry out a Strafing Run. If you do so, do not pick a model to Activate, but instead place the Aircraft Marker touching any edge of the battlefield. Once you have placed the Aircraft Marker, place the Strafing Marker anywhere on the battlefield. It should be within 24” of the Aircraft Marker, and placed so that the nose of the aircraft is pointing straight at the Marker. This Marker can be placed on top of terrain or other models, but it cannot be placed under any terrain (for example, the Strafing Marker can be placed on the roof of a building, but not on that building’s ground floor). Your Activation then ends. You will be able to make an attack with the Aircraft Marker in your next Activation, as long as the Aircraft Marker is not shot down first!"
+        },
+        {
+          "id": "shoot-it-down",
+          "level": 2,
+          "heading": "Shoot it Down",
+          "markdown": "Your opponent must now Activate a model. The model carries out the Activation normally, but can use a Shoot ACTION to attack the Aircraft Marker. No Line of Sight is required to make the Ranged Attack as the aircraft is assumed to be flying above any intervening terrain, but 12” must be added to the Range to account for it being high in the air. Grenades cannot be used to attack an Aircraft Marker. Weapons with the BLAST Keyword that fail to hit the target will not hit any other models with their BLAST, and those with the SCATTER Keyword do not SCATTER if they fail to hit the target. If the Ranged Attack is a Success or a Critical Success, do not make an Injury Roll. Instead, roll on the following table to determine the outcome:\n\n| Roll | Result |\n| --- | --- |\n| 2-7 | No Effect. |\n| 8-9 | Under Fire: Add -1 DICE to Success Rolls for the Strafing Fire Ranged Attack (see below). |\n| 10-11 | Abort: The Aircraft Marker cannot take the Strafing Run ACTION. Remove both the Aircraft Marker and the Strafing Marker from the battlefield. |\n| 12 | Shot Down: The Aircraft Marker is destroyed and removed from the battlefield, along with the Strafing Marker. The model that made the Ranged Attack completes the following Glorious Deed, in addition to those available as standard for the scenario. |\n\nDown in Flames!: You complete this Glorious Deed if a friendly model shoots down an enemy Aircraft Marker."
+        },
+        {
+          "id": "strafing-fire",
+          "level": 2,
+          "heading": "Strafing Fire",
+          "markdown": "At the start of your next Activation, if the Aircraft Marker is still on the battlefield you must take a Strafing Fire ACTION with the Aircraft Marker instead of picking a model to Activate. When you take a Strafing Fire ACTION, make a Ranged Attack with the Aircraft Marker using the following Profile. After making the attack, or if you cannot make one as there are no eligible targets, remove both the Aircraft and Strafing Markers from the battlefield, then your Activation ends.\n\n| Type | Range | Keywords |\n| --- | --- | --- |\n| Special | Special | +1 DICE |\n\nPunish: When Strafing Fire is used to make a Ranged Attack, measure a straight line a fraction of an inch (1mm) wide from the Aircraft Marker to the Strafing Marker. Make a Success Roll for each model, friend or foe, that is touched by the line to see if the attack hits it. No Line of Sight is required."
+        },
+        {
+          "id": "outposts-step",
+          "level": 2,
+          "heading": "Outposts Step",
+          "markdown": "In the Outposts Step, the player who won the game establishes an Outpost in the zone where the game was played. Show that you have an Outpost at a zone by underlining the name of the zone in the Scouted zones section of your Campaign Tracker. A Warband can only have 1 Outpost in each zone, but a zone can have Outposts from any number of different Warbands, and once an Outpost is placed it cannot be removed. Establishing an Outpost in a zone grants you 3 bonuses:\n\nDefence Bonus: If you play a game in a zone where you have an Outpost, and the opposing player is the Aggressor, you can begin the scenario with up to 3 models counting as starting in Cover as if they had Shovels (▶ see the Trench Crusade Rulebook).\n\nEnclave Bonus: At the end of the campaign, the player who has the most supplied Outposts scores additional 🏅. An Outpost is being supplied if it is possible to trace a supply line of linked zones from the Outpost’s zone back to the Warband’s Entry Zone. Each zone in the supply line must include a friendly Outpost.\n\nSpecial Zone Bonus: Some zones are called Special Zones and confer an Outpost Bonus to a Warband when they establish an Outpost in the zone. The bonus is shown on the Special Zones table on the campaign map."
+        },
+        {
+          "id": "winning-the-campaign",
+          "level": 2,
+          "heading": "Winning the Campaign",
+          "markdown": "Your success in the campaign is measured in Campaign Victory Points, which are scored for the actions and decisions you’ll make in a campaign. The primary way of scoring 🏅 is by filling in boxes on your Campaign Tracker (▶ see the Campaign Tracker on page 80). In addition to this, at the end of the campaign you can score 🏅 fulfilling your Patron’s Vision and for achieving Shared Campaign Objectives."
+        },
+        {
+          "id": "patron-visions",
+          "level": 1,
+          "heading": "PATRON VISIONS",
+          "markdown": "The Vision card that you drew at the start of the campaign will explain what you need to do to achieve your Patron’s vision, and thus score additional 🏅 at the end of the campaign. Note that each card has 3 different levels of Vision that can be achieved, and the scores are cumulative for each level that you achieve. Where Patron Visions require Warbands or models to achieve certain goals within a game, or across multiple games, record any information relevant to these goals as you proceed throughout the campaign, in order to evidence which model(s) achieved them, as well as where and when."
+        },
+        {
+          "id": "shared-campaign-objectives",
+          "level": 1,
+          "heading": "SHARED CAMPAIGN OBJECTIVES",
+          "markdown": "The Carcass Front Map Campaign has 2 Shared Objectives that any player can achieve at the end of the campaign. If two or more players have achieved a Shared Objective, then the 🏅 are divided between them, rounding fractions down to a minimum of 1. The Shared Objectives are:\n\nHerald of Leviathan: The player(s) with the most Omens of Leviathan scores 6 🏅.\n\nLargest Enclave: The player who has the most supplied Outposts scores 8 🏅. An Outpost is being supplied if it is possible to trace a supply line of linked zones from the Outpost’s zone back to the Warband’s Entry Zone. Each zone in the supply line must include a friendly Outpost."
+        },
+        {
+          "id": "end-of-campaign-scoring",
+          "level": 1,
+          "heading": "END OF CAMPAIGN SCORING",
+          "markdown": "After all players have played the agreed number of games in the campaign, they will need to gather together to find out who is the victor. Follow these steps to determine who wins the campaign: 1. Each player adds up the 🏅 they have scored on their Campaign Trackers. 2. Determine which player achieved which Shared Campaign Objective and allocate Titles and the corresponding 🏅 appropriately. 3. The players reveal their Patron Vision and add any 🏅 gained for fulfilling it. 4. Add the 🏅 from the three previous steps together to get each player’s final Campaign Score. The player with the most 🏅 is the winner! In the case of a tie, all tied players are joint winners."
+        }
+      ],
+      "buildings": [
+        {
+          "id": "depot",
+          "name": "Depot",
+          "glyph": "💰",
+          "flavour": "A supply station, a mound of ripe corpses, a field surgeon.",
+          "tiers": [
+            {
+              "tier": 1,
+              "effect": "You can add or subtract 1 from your Exploration Roll when rolling on the Supplies Exploration Table."
+            },
+            {
+              "tier": 2,
+              "effect": "Roll 1 extra Exploration Dice when rolling on the Supplies Exploration Table and increase your Warband’s Threshold Value by 20 👑."
+            },
+            {
+              "tier": 3,
+              "effect": "Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and the effects of 1 Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used."
+            }
+          ]
+        },
+        {
+          "id": "garrison",
+          "name": "Garrison",
+          "glyph": "⛫",
+          "flavour": "A watchtower, a scout post, an indentured guardian beast.",
+          "tiers": [
+            {
+              "tier": 1,
+              "effect": "You can add or subtract 1 from your Exploration Roll when rolling on the Territories Exploration Table."
+            },
+            {
+              "tier": 2,
+              "effect": "Roll 1 extra Exploration Dice when rolling on the Territories Exploration Table. In addition, reduce the cost of any Glory Item purchased by your Warband from a Trench Merchant by 1 ☼ (to a minimum of 1)."
+            },
+            {
+              "tier": 3,
+              "effect": "You may immediately recruit one Mercenary available to your Warband for no cost. If none are available or you cannot recruit Mercenaries, you may immediately recruit one ELITE model without the LEADER Keyword to your Warband for no cost in 👑 (normal restrictions and limits apply). You may buy Battlekit for this model during the Quartermaster Step."
+            }
+          ]
+        },
+        {
+          "id": "shrine",
+          "name": "Shrine",
+          "glyph": "🛐",
+          "flavour": "A trench masjid, a Synod communication tower, a sacrificial altar.",
+          "tiers": [
+            {
+              "tier": 1,
+              "effect": "You can add or subtract 1 from your Exploration Roll when rolling on the Favour Exploration Table."
+            },
+            {
+              "tier": 2,
+              "effect": "Roll 1 extra Exploration Dice when rolling on the Favour Exploration Table. In addition, 1 model in your Warband with the LEADER Keyword can immediately make an Advancement Roll."
+            },
+            {
+              "tier": 3,
+              "effect": "Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair."
+            }
+          ]
+        },
+        {
+          "id": "vault",
+          "name": "Vault",
+          "glyph": "🏦",
+          "flavour": "A House of Wisdom field lab, a makeshift reliquary, a hoard of gold at a Golden Calf altar.",
+          "tiers": [
+            {
+              "tier": 1,
+              "effect": "You can add or subtract 1 from your Exploration Roll when rolling on the Relics Exploration Table."
+            },
+            {
+              "tier": 2,
+              "effect": "Roll 1 extra Exploration Dice when rolling on the Relic Exploration Zone Table. In addition, if an Exploration Result allows you to choose an option from a list, you may choose 2 different options from the list instead of 1."
+            },
+            {
+              "tier": 3,
+              "effect": "Add 1 Glory Item to your Arsenal for free. If you prefer you can choose the Glory Item in any future Quartermaster Step."
+            }
+          ]
+        }
+      ],
+      "trackerRewards": [
+        {
+          "symbol": "🏅",
+          "effect": "Score the indicated number of Campaign Victory Points."
+        },
+        {
+          "symbol": "+1 🎲",
+          "effect": "Roll an extra Exploration Dice in each Exploration Step."
+        },
+        {
+          "symbol": "Reroll 🎲",
+          "effect": "You can reroll 1 Exploration Dice in each Exploration Step."
+        },
+        {
+          "symbol": "Set 🎲",
+          "effect": "You can pick the value of 1 Exploration Dice in each Exploration Step."
+        },
+        {
+          "symbol": "🗺 (Resource)",
+          "effect": "Roll on the Exploration Table for the indicated Resource type."
+        },
+        {
+          "symbol": "+👁",
+          "effect": "Fill in 1 box on your Favour Track."
+        },
+        {
+          "symbol": "+🏺",
+          "effect": "Fill in 1 box on your Relics Track."
+        },
+        {
+          "symbol": "+📦",
+          "effect": "Fill in 1 box on your Supplies Track."
+        },
+        {
+          "symbol": "+🌍",
+          "effect": "Fill in 1 box on your Territories Track."
+        },
+        {
+          "symbol": "+🌈",
+          "effect": "Fill in 1 box on any Resources Track of your choice."
+        },
+        {
+          "symbol": "💰 1/2/3",
+          "effect": "Gain the effects of the indicated Tier of your Depot Building."
+        },
+        {
+          "symbol": "⛫ 1/2/3",
+          "effect": "Gain the effects of the indicated Tier of your Garrison Building."
+        },
+        {
+          "symbol": "🛐 1/2/3",
+          "effect": "Gain the effects of the indicated Tier of your Shrine Building."
+        },
+        {
+          "symbol": "🏦 1/2/3",
+          "effect": "Gain the effects of the indicated Tier of your Vault Building."
+        }
+      ],
+      "sharedObjectives": [
+        {
+          "id": "herald-of-leviathan",
+          "name": "Herald of Leviathan",
+          "points": 6,
+          "description": "The player(s) with the most Omens of Leviathan scores 6 🏅."
+        },
+        {
+          "id": "largest-enclave",
+          "name": "Largest Enclave",
+          "points": 8,
+          "description": "The player who has the most supplied Outposts scores 8 🏅. An Outpost is being supplied if it is possible to trace a supply line of linked zones from the Outpost’s zone back to the Warband’s Entry Zone. Each zone in the supply line must include a friendly Outpost."
+        }
+      ],
+      "requiresMap": true,
+      "conclusions": []
+    },
+    {
+      "id": "path-to-leviathan",
+      "name": "The Path to Leviathan",
+      "players": "2",
+      "intro": "“Welcome to my humble abode, fellow pilgrim. I see many woes in your bearing but, pray, cast them off at the threshold, for those that beset you now shall be as a bountiful spring rain next to those that the coming strife will visit upon us all. That one of your kind comes to an outcast such as myself tells me that 1914 will indeed be the Year All Shall Rue. Ah yes, I see in your eyes that you know this already. You know, as this old man’s bones know, that a great and terrible storm is rising. Come, look and see, I have my map already prepared. “Here, yes, these lands at the farthest reaches of the eastern Mediterranean were once home to myriad kingdoms: Jordan, Lebanon, Syria, and many others that have since fallen to desolation before Hell’s wrothful hosts. We call this region the Levant, a land once possessed of a beauty to match lost Eden, now reduced to a charnel house of fly-blown corpses. I have seen the endless trenches, the hell of rats gnawing on the bones of martyrs as maggots writhe in their bellies, and I again curse those Templars who long ago unleashed this War Eternal. “But now a cursed name worms its way into the hearts of men, carried on pestilential winds and given fresh wings by muttering shadows. Perhaps you have heard it? Indeed, you must have, for it passes from tremulous mouth to unwilling ear, shrouded in rumour and obscured by vexing prophecy. The afflicted madmen in their mountain citadel scream of the Great Serpent’s awakening, and a poor haruspex such as I reads the truth in bloodied entrails then weeps into my offal bowl. “You have felt it beneath your feet, yes? It poisons the shore, seeping into soil with despair, and the Earth itself recoils at the prospect of such an evil, once thought slain by the Almighty, rising once again. It speaks to me in dreams, you know? Recurring nightmares of the ocean boiling at the slaughters to come, blood sinking in crimson veils to a lightless abyss long since forsaken by God. Every night, I feel its bilious envy reach out to curdle the souls of the weak, sowing bitter seeds that revel in all that is chaotic and evil. “Depraved apostates of Hell and prophets of Heaven rally their followers and converge on the Carcass Front, for such abomination draws zealous souls to it as a lodestone attracts iron. Ha, you think that I don’t see the knife in your hand, pilgrim? Is it to plunge into my heart or to cut your own throat in anguish? I suspect I know, for the serpent’s ancient name is carried before the legions of Hell, a curse of grave-dirt upon the tongue, the death rattle of infants, and the hammer of iron nails through divine flesh. “Shall we speak it aloud together as we draw blades? Aye, we shall, and our blood will be the first spilled in its name… Leviathan.” In addition to the map-based campaign, Carcass Front also includes the Path to Leviathan narrative campaign. The narrative campaign focuses on the efforts of two opposing commanders who have learned the legend of Leviathan and the prophecies surrounding it: Blessed Bartolomeo and War Priest Charon. They have both sought out warbands to bring to the haunted No Man’s Land of the Carcass Front in order to pursue the prophecy of Leviathan, but towards very different ends. War Priest Charon is determined to awaken Leviathan and bind it back into the service of Hell, supplanting one of the current dukes in the process. Blessed Bartolomeo seeks to fulfil his self-proclaimed destiny by summoning and then slaying Leviathan in order to feast righteously on its flesh, turn its skin into capes and give glory to God. The Path to Leviathan narrative campaign is designed for two players, one Faithful and one Fallen, but is open to Warbands from any faction or their variants. Many competing factions will be loath to allow either Bartolomeo or Charon to pursue their respective plans to fruition.",
+      "sections": [
+        {
+          "id": "scenarios",
+          "level": 2,
+          "heading": "Scenarios",
+          "markdown": "Summoning and subduing Leviathan is achieved through a five-scenario interlinked campaign. The scenarios build towards the end objective of summoning Leviathan. Faithful Warbands pursuing Blessed Bartolomeo’s plan are looking to slay and consume Leviathan (or at least bits of it) as the Revelations prophecy commands. The Fallen Warbands of War Priest Charon seek to unshackle Leviathan and return it to its ancient station as the Serpent Head of Envy, supplanting the current Duke of Hell. A third outcome is possible, where the summoning fails for any of a number of reasons, holding the campaign to an overall draw. The five scenarios in order are: I – The Ruins of Nineveh Novus: The Warbands search the lost city of Nineveh Novus for ancient tracts and clues to the location of Leviathan’s altar and how to summon the great beast. Nineveh Novus harbours great dangers for those who would pry into its secrets, most of all a mighty curse that will expunge all life within its precincts once evoked. II – Domus Demetrius: The crumbling texts of long-dead scholars reveal that flesh and bone will be needed as bait to tempt the beast to the surface in the summoning. Only the freshest and tenderest corpses of men will do, leading the Warbands to raid the corpse depot called Domus Demetrius. There, vile carrion eaters infest the corpse piles, making already noisome work all the more treacherous. III – The Steel Necropolis: A hook must be made, and a mighty lance to drive between Leviathan’s impenetrable scales. The Warbands must brave the Steel Necropolis and the roving attention of its gigantic revenant-deity to steal the materials they will need. IV – The Sword of God: The mightiest arm and thewed limbs will be necessary to hook Leviathan and drag it to shore. No man nor devil could achieve such a feat, but a mighty beast of steel and steam rebuilt for such a purpose might. The Warbands fight for possession of a mighty railway cannon long thought swallowed by the sands, known as the Sword of God. V – The Altar of Leviathan: At last the summoning can be made, but who shall truly prevail amid such dread events? Who has the strength to ensure the beast be leashed or slain? Amid the crashing waves of Leviathan’s arrival and the angry intercessions of its devotees, can the summoning even be completed? The Warbands confront each other for the last time, to secure their triumph or, perhaps, to watch victory turn to defeat."
+        },
+        {
+          "id": "playing-the-campaign",
+          "level": 1,
+          "heading": "PLAYING THE CAMPAIGN",
+          "markdown": "The five scenarios in the Path to Leviathan campaign can be played as a series of one-off games, or as a series of games that use the campaign rules in between each battle. If you decide to use the campaign rules between your games, you can either use the Campaign Rules in the Trench Crusade Rulebook or the Carcass Front Campaign rules in this book. Whichever method you use, the scenarios must be played in order one after the other, and the winner of the campaign is determined ▶ by the Campaign Conclusions on page 90."
+        },
+        {
+          "id": "patrons",
+          "level": 2,
+          "heading": "Patrons",
+          "markdown": "Blessed Bartolomeo and War Priest Charon are presented as potential Patrons for campaigns on the Carcass Front, and naturally they make a good choice of Patron for Warbands in the Path to Leviathan campaign. Given the stakes, however, many powers both in the Hells and among the Faithful have Warbands pursuing the prophecy, so any Patron may be chosen if the players agree."
+        },
+        {
+          "id": "extending-the-campaign",
+          "level": 2,
+          "heading": "Extending the Campaign",
+          "markdown": "The Path to Leviathan can be extended if desired, whether you are using the Campaign Rules or the Carcass Front Campaign. To do so, you can add additional scenarios in between the “main event” scenarios in this book by including those presented in the Trench Crusade Rulebook, ones created using the Random Scenario Generator, or the new scenarios published periodically on the Trench Crusade website. If you are using the Carcass Front Campaign rules, simply ensure that these five scenarios are played in order throughout the campaign with the Altar of Leviathan being the final game."
+        },
+        {
+          "id": "campaign-conclusions",
+          "level": 2,
+          "heading": "Campaign Conclusions",
+          "markdown": "There are three potential conclusions to the narrative campaign: The summoning fails. Due to a mixture of mischance, bad luck, poor preparation, and the vigorous efforts of the opposing Warbands, the summoning of Leviathan in Scenario V: The Altar of Leviathan does not succeed at all. Many would say the merciful hand of the Almighty can be seen in this outcome. If the summoning fails, the overall campaign is declared a Draw. Leviathan is summoned but not subdued. One Warband is successful in calling the great beast to the surface and great cataclysms are unleashed as a result. Without cannon-fired steel from the Sword of God, however, Leviathan cannot be subdued and eventually returns to the depths. This outcome occurs if a Warband succeeds in summoning Leviathan in Scenario V: The Altar of Leviathan but does not control the railway cannon from Scenario IV: The Sword of God. If Leviathan is summoned but not subdued, the Warband that summoned it claims a Minor Victory in the campaign. Leviathan is summoned and subdued. One Warband is successful in calling Leviathan forth and then skewering its flesh with a mighty hook fired from the Sword of God. This outcome occurs if a Warband succeeds in summoning Leviathan in Scenario V: The Altar of Leviathan and also has control of the railway cannon from Scenario IV: The Sword of God. If Leviathan is summoned and subdued in this way, the Warband that summoned it claims Total Victory in the campaign. At the end of the campaign, you can read out this eyewitness account of what happened on the field of battle this day: “I was there to see it, clinging to the highest tower of Alexandretta. I was there, Witchburner, so don’t think to gainsay my words; I saw the oceans bleed crimson as far as the horizon. I smelled the reek of Leviathan’s unholy breath and saw the waters burn with its infernal blood as the Sword of God pierced its iron hide. I saw the sky break and the light of Heaven turn night into endless day. Its divine radiance burned the eyes from my skull as I dared turn my gaze upon God’s Kingdom, but I would do it again. For in that glance, I saw as deeply as the Almighty sees, and you can break my body upon your wheel, pluck the nails from my fingers, or hammer my limbs to the cross for such blasphemy. I care not. “I witnessed the seas rise in base obeisance before Leviathan, for is that not its dominion? I saw its infinite forms, though I have not skill enough with words to give them name upon my tongue. Serpent. Dragon. Monster. Evil Absolute. Its impossible anatomy broke the surface, and the ocean emptied as though fleeing its terrible aspect. Titanic waves scoured the lands and swept the works of man away. All but the mightiest of Alexandretta’s towers were toppled, thanks be to God, and the waves raced north to crash upon the walls of Amoudet and Svaranda. The Tower of Jonah fell and its holy guardian was unseated from his watchful perch to begin his lonely wanderings through the desolation left in Leviathan’s wake. “A flood like that which Noah endured mocked the lofty heights of the Amanus Mountains, crashing over summits and slopes that once lay beneath the waters in the days before humans walked upright. The boiling waters of the Middle Sea spilled between the crowned peaks to the cities of the Levant and the roar of Hell’s wrath went before it, deafening all in its path. The defences of Baghras were as nothing to its power, drowning those within and turning the lands before Melessin into a lake of bloated corpses and ruin. The Lord’s mercy spared New Antioch, and the ocean withdrew, but not before the waters lapped its walls, blinded its salted saints, and set rust upon the Anchorites interred within its holy bastions. “So, aye, Witchburner, do your worst, for I have seen the light of Heaven and felt the vengeance of Hell, so your torments are nothing to me. Leviathan is no more, but may God forgive us for what we have unleashed here…” If the Faithful side won, add this section: “In the name of God, Leviathan is slain and the flesh shorn from its bones. It is a merciful thing that we have done here, for its last breath was one of release as much as it was of death. In devotion we proclaimed the beast’s doom and with our lives we smote it righteously. And this great deluge? It is to be welcomed, for it washes this land of evil’s touch, of attachments to corporeal pleasures. Of all the Faithful, who but we know the lie of comfort best? Who but the Afflicted understand that the Road of Suffering is the only sure and certain route to Salvation? “The Great Serpent’s scales mantle my shoulders and its hide is my cloak. As decreed by the Almighty, its flesh will be as a banquet held in anticipation of the feast given to the righteous on the advent of the Last Messiah. The serpent’s remains sink back into the abyss, where the creatures of the ocean will consume what few scraps still cling to its bones. Yet the evil of Leviathan remains in all who beheld it, a plague of apostasy we shall cleanse from God’s sight. Truly, our work is not yet done, for that which the Lord put upon this Earth can never truly die…” If the Fallen side won, add this section instead: “To the last, you grappled with me, but for hate’s sake I tore out your throat to be baptised in the bloody gush of your death. Your names are legion, Tiamat, Father of Serpents, Tunnanu… you who were wrought by God to proclaim his omnipotence and dominion over chaos. I spit disdain upon a divine tyrant who crafts his own enemy, only to cast them down by his own hand! How fragile an ego, how pathetic a deity to crave the adoration of mortals. By a warrior’s enemies ought he be judged, and as did False Pádraig, I have cast out the serpent that soiled Paradise and sired the tempter of Eve. The Sons of Abraham were prophesied to feast upon your flesh at the End of Days, but what morsels are left for them to dine on now? Spoiled meat and hollow bones, a rotting carcass that even now sinks into the benighted abyss. “Leviathan’s numinous power, that primal fire forged on God’s anvil, is unshackled from its prison of flesh. This victorious day! This profane day! I claim that power. Its doom earns me that right. I feel it within me, creation’s muse, promethean and boundless. From a life lived on scabbed knees, to one where I will claw the Dukes of Hell from their unearned thrones and trample their worthless bones beneath my booted heel. I am Leviathan and it is me, a dark union that mocks Heaven and stands at the gates of Hell demanding its due!”"
+        }
+      ],
+      "buildings": [],
+      "trackerRewards": [],
+      "sharedObjectives": [],
+      "requiresMap": false,
+      "conclusions": [
+        {
+          "id": "the-summoning-fails",
+          "name": "The summoning fails",
+          "result": "Draw",
+          "description": "Due to a mixture of mischance, bad luck, poor preparation, and the vigorous efforts of the opposing Warbands, the summoning of Leviathan in Scenario V: The Altar of Leviathan does not succeed at all. Many would say the merciful hand of the Almighty can be seen in this outcome. If the summoning fails, the overall campaign is declared a Draw."
+        },
+        {
+          "id": "leviathan-is-summoned-but-not-subdued",
+          "name": "Leviathan is summoned but not subdued",
+          "result": "Minor Victory",
+          "description": "One Warband is successful in calling the great beast to the surface and great cataclysms are unleashed as a result. Without cannon-fired steel from the Sword of God, however, Leviathan cannot be subdued and eventually returns to the depths. This outcome occurs if a Warband succeeds in summoning Leviathan in Scenario V: The Altar of Leviathan but does not control the railway cannon from Scenario IV: The Sword of God. If Leviathan is summoned but not subdued, the Warband that summoned it claims a Minor Victory in the campaign."
+        },
+        {
+          "id": "leviathan-is-summoned-and-subdued",
+          "name": "Leviathan is summoned and subdued",
+          "result": "Total Victory",
+          "description": "One Warband is successful in calling Leviathan forth and then skewering its flesh with a mighty hook fired from the Sword of God. This outcome occurs if a Warband succeeds in summoning Leviathan in Scenario V: The Altar of Leviathan and also has control of the railway cannon from Scenario IV: The Sword of God. If Leviathan is summoned and subdued in this way, the Warband that summoned it claims Total Victory in the campaign. At the end of the campaign, you can read out this eyewitness"
+        }
+      ]
+    }
+  ],
+  "visionCards": [
+    {
+      "id": "warlord",
+      "title": "Warlord",
+      "tiers": [
+        {
+          "text": "Win 2 games as the Aggressor",
+          "points": 10
+        },
+        {
+          "text": "Win 4 games as the Aggressor",
+          "points": 15
+        },
+        {
+          "text": "Win 8 games as the Aggressor",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“All is kindling before Elohim’s holy flame! The smoke of the sacrifices will rise to heaven and be pleasing to the Lord!” - Lazarist Prophet Namaan Purity-in-Fire",
+      "note": ""
+    },
+    {
+      "id": "ascetic",
+      "title": "Ascetic",
+      "tiers": [
+        {
+          "text": "Have at least 5 unspent ☼",
+          "points": 10
+        },
+        {
+          "text": "Have at least 10 unspent ☼",
+          "points": 15
+        },
+        {
+          "text": "Have at least 25 unspent ☼",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“Cast aside the trappings of thy flesh. Become hollow, become the vessel for endless revelations.” - Missive of the Sisters of the Transcendent Chrysalid",
+      "note": ""
+    },
+    {
+      "id": "legend",
+      "title": "Legend",
+      "tiers": [
+        {
+          "text": "Complete 9 Glorious Deeds",
+          "points": 10
+        },
+        {
+          "text": "Complete 18 Glorious Deeds",
+          "points": 15
+        },
+        {
+          "text": "Complete 27 Glorious Deeds",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“Her blade was a righteous chorus; every arcing swing sang a golden tune that took the head of a heretic and steeled the heart of her soldiers.” - Psalm of the Zweihander Saint.",
+      "note": ""
+    },
+    {
+      "id": "conqueror",
+      "title": "Conqueror",
+      "tiers": [
+        {
+          "text": "Have 3 Outposts that are in supply",
+          "points": 10
+        },
+        {
+          "text": "Have 5 Outposts that are in supply",
+          "points": 15
+        },
+        {
+          "text": "Have 8 Outposts that are in supply",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": "An Outpost is in supply if you can trace a line of linked zones back to your Entry Zone. Each zone must have a friendly Outpost."
+    },
+    {
+      "id": "architect",
+      "title": "Architect",
+      "tiers": [
+        {
+          "text": "Have at least 1 Tier I Building",
+          "points": 10
+        },
+        {
+          "text": "Have at least 2 Tier I Buildings",
+          "points": 15
+        },
+        {
+          "text": "Have 4 Tier I Buildings",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“1 part cement, 2 parts bone ash, 2 parts gravel, 1 part Water of Styx. Add vitreous humour to taste.” – Recipe for infernal concrete, also sold as “Little Horn’s Moonshine”",
+      "note": ""
+    },
+    {
+      "id": "explorer",
+      "title": "Explorer",
+      "tiers": [
+        {
+          "text": "Have 2 zones that your only your Warband has Scouted",
+          "points": 10
+        },
+        {
+          "text": "Have 4 zones that your only your Warband has Scouted",
+          "points": 15
+        },
+        {
+          "text": "Have 6 zones that your only your Warband has Scouted",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    },
+    {
+      "id": "idol",
+      "title": "Idol",
+      "tiers": [
+        {
+          "text": "One ELITE model has 2 or more Glory Items",
+          "points": 10
+        },
+        {
+          "text": "Three ELITE models have 2 or more Glory Items",
+          "points": 15
+        },
+        {
+          "text": "Six ELITE models have 2 or more Glory Items",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    },
+    {
+      "id": "specialist",
+      "title": "Specialist",
+      "tiers": [
+        {
+          "text": "Have a Tier I Building",
+          "points": 10
+        },
+        {
+          "text": "Have a Tier II Building",
+          "points": 15
+        },
+        {
+          "text": "Have a Tier III Building",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“No sleep since the Temple. Only filth for food. The buzzing. In my head. It’s sublime.” - Lt. Ingrid Hirsch, final journal entry",
+      "note": ""
+    },
+    {
+      "id": "butcher",
+      "title": "Butcher",
+      "tiers": [
+        {
+          "text": "Have 14 models in your Warband die",
+          "points": 10
+        },
+        {
+          "text": "Have 30 models in your Warband die",
+          "points": 15
+        },
+        {
+          "text": "Have 48 models in your Warband die",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“The mountain of corpses must pierce the heavens, if we are to pull the Tyrant God from his throne.” - Heretic Captain Hanun the Bloodtide",
+      "note": ""
+    },
+    {
+      "id": "lion",
+      "title": "Lion",
+      "tiers": [
+        {
+          "text": "Play 2 different scenarios *",
+          "points": 10
+        },
+        {
+          "text": "Play 4 different scenarios *",
+          "points": 15
+        },
+        {
+          "text": "Play 8 different scenarios *",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“The Lord is our lion. Our hearts beat with His courage!” - Battle Cry of the Chewa",
+      "note": "* Up to one random scenario can be included."
+    },
+    {
+      "id": "raider",
+      "title": "Raider",
+      "tiers": [
+        {
+          "text": "Have an Outpost in 1 zone that has another player’s Outpost",
+          "points": 10
+        },
+        {
+          "text": "Have an Outpost in 3 zones that have another player’s Outpost",
+          "points": 15
+        },
+        {
+          "text": "Have an Outpost in 5 zones that have another player’s Outpost",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    },
+    {
+      "id": "champion",
+      "title": "Champion",
+      "tiers": [
+        {
+          "text": "Complete 3 Glorious Deeds in a single game",
+          "points": 10
+        },
+        {
+          "text": "Complete 4 Glorious Deeds in a single game",
+          "points": 15
+        },
+        {
+          "text": "Complete 6 Glorious Deeds in a single game",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    },
+    {
+      "id": "leader",
+      "title": "Leader",
+      "tiers": [
+        {
+          "text": "Have 10 models in your Warband",
+          "points": 10
+        },
+        {
+          "text": "Have 18 models in your Warband",
+          "points": 15
+        },
+        {
+          "text": "Have more models in your Warband than any other Warband",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“Fret not, for victory awaits us, Mashallah. How many of the mulhid could there be?” - Last words of Alchemist al-Kinani",
+      "note": ""
+    },
+    {
+      "id": "survivor",
+      "title": "Survivor",
+      "tiers": [
+        {
+          "text": "Have 6 Skills and 2 Battle Scars amongst your ELITE models",
+          "points": 10
+        },
+        {
+          "text": "Have 10 Skills and 4 Battle Scars amongst your ELITE models",
+          "points": 15
+        },
+        {
+          "text": "Have 15 Skills and 7 Battle Scars amongst your ELITE models",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    },
+    {
+      "id": "diplomat",
+      "title": "Diplomat",
+      "tiers": [
+        {
+          "text": "Have 1 Mercenary in your Warband",
+          "points": 10
+        },
+        {
+          "text": "Have 2 Mercenaries in your Warband",
+          "points": 15
+        },
+        {
+          "text": "Have 2 ELITE Mercenaries in your Warband",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "“The enemy of your enemy is a sword by your side or a knife in your back. Choose wisely.” - The Ministry of the Propagation of Virtue",
+      "note": ""
+    },
+    {
+      "id": "veteran",
+      "title": "Veteran",
+      "tiers": [
+        {
+          "text": "Promote 1 model to ELITE by the end of the campaign",
+          "points": 10
+        },
+        {
+          "text": "Promote 3 models to ELITE by the end of the campaign",
+          "points": 15
+        },
+        {
+          "text": "Promote 6 models to ELITE by the end of the campaign",
+          "points": 20
+        }
+      ],
+      "maxPoints": 45,
+      "flavour": "",
+      "note": ""
+    }
+  ],
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",
@@ -59296,182 +60509,725 @@ export const DATASET: Dataset = {
       "locations": {
         "common": [
           {
-            "roll": 4,
+            "roll": {
+              "from": 4,
+              "to": 4
+            },
             "name": "Moonshine Stash",
             "description": "You find a hidden stash of strong distilled alcohol, its origin uncertain and unsafe. Choose one of the following options: * Distribute (New Antioch and Trench Pilgrims only): Add +2 DICE to Morale Checks in your next game. * Destroy ( New Antioch, Trench Pilgrims, and Iron Sultanate only): Up to two models in your Warband with the ELITE Keyword earn +1 Experience Point each. If this entitles the model to an Advancement Roll, make the roll immediately. * Sell (Any Warband): Add 30 👑 to your Strongbox."
           },
           {
-            "roll": 5,
+            "roll": {
+              "from": 5,
+              "to": 5
+            },
             "name": "Heavy Weapons Cache",
             "description": "You find a hidden weapons cache. Choose one of the following options: * Surplus: Choose one piece of Battlekit with the HEAVY Keyword from your Warband’s Armoury Tables and add it to your Arsenal. * Specialise: Choose one Glory Item with a Cost of up to 5 ☼, and add it to your Arsenal."
           },
           {
-            "roll": 6,
+            "roll": {
+              "from": 6,
+              "to": 6
+            },
             "name": "Trench Shrine",
             "description": "You find a crude shrine erected by the soldiers of the Great War. Some are made from artillery shells or melted cannons, while a flag of the Sultanate can be used to indicate a place of prayer. Choose one of the following options: * Standard: Add a Troop Flag to your Warband’s Arsenal. * Shrine: Add a Field Shrine to your Warband’s Arsenal. * Return: Your Warband gains +2 ☼."
           },
           {
-            "roll": 8,
+            "roll": {
+              "from": 8,
+              "to": 8
+            },
             "name": "Ruined House",
             "description": "This house has been obliterated by heavy weaponry, its inhabitants ripped apart. Choose one of the following options: * Rummage: Choose one or more pieces of Equipment from your Warband’s Armoury Tables that are worth a total of up to 30 👑 , and add them to your Arsenal. * Relic: Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal."
           },
           {
-            "roll": 9,
+            "roll": {
+              "from": 9,
+              "to": 9
+            },
             "name": "Survivor",
             "description": "You find a soldier staggering in No Man’s Land; a deserter, perhaps, or a squaddie whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). * New Antioch: A Yeoman without a Ranged Weapon. * Trench Pilgrims: Ecclesiastical Prisoner. * Iron Sultanate: Azeb. * Heretic Legions: Wretched. * Black Grail: Grail Thrall. * The Court: Wretched. Glory Item Tables"
           },
           {
-            "roll": 10,
+            "roll": {
+              "from": 10,
+              "to": 10
+            },
             "name": "Fallen Soldier",
             "description": "You find the body of a fallen soldier. Choose one Ranged Weapon from your Warband’s Armoury Tables worth up to 15 👑 , and add it to your Arsenal along with a Combat Helmet and suit of Standard Armour. Then roll a D6. On a 4+, you can add one of the following to your Arsenal: a Medi-kit or a Mountaineer’s Kit, or a Shovel."
           },
           {
-            "roll": 11,
+            "roll": {
+              "from": 11,
+              "to": 11
+            },
             "name": "Trench Merchant",
             "description": "You establish contact with a Trench Merchant. Choose one of the following options: * Report: Your Warband gains 2 ☼. * Trade: From now on, in the Quartermaster Step, you can purchase Glory Items costing 5 ☼ or less."
           },
           {
-            "roll": 14,
+            "roll": {
+              "from": 14,
+              "to": 14
+            },
             "name": "Map & Document Bag",
             "description": "Marked with carefully concealed signs, you find a hidden satchel containing maps and intelligence. Your Warband gains the Reroll Exploration Skill."
           },
           {
-            "roll": 16,
+            "roll": {
+              "from": 16,
+              "to": 16
+            },
             "name": "Sniper’s Lair",
             "description": "You find the well-camouflaged position of a sniper. Add the Battlekit listed below for your Faction to your Arsenal. If there are any items you are not allowed to add to your Arsenal for any reason, add their Cost in 👑 to your Strongbox instead. * New Antioch or Trench Pilgrims: Sniper Rifle or a Sniper Scope. * Iron Sultanate: Siege Jezzail, Alchemical Ammunition, and a Cloak of Alamut. * Heretic Legions: Automatic Rifle. * Black Grail: Corruption Belcher and Field Shrine. * The Court: Ophidian Rifle."
           },
           {
-            "roll": 18,
+            "roll": {
+              "from": 18,
+              "to": 18
+            },
             "name": "Fallen Knight",
             "description": "You find a fallen hero of past ages. Perhaps a baron from New Antioch, a great Faris of the Sultanate, or a Plague Knight of Beelzebub. Choose one of the following options: * Loot: Add a suit of Reinforced Armour, a Trench Shield, a Combat Helmet, and either a Sword or Polearm to your Warband’s Arsenal. * Memorialise: Your Warband gains 2 ☼."
           },
           {
-            "roll": 20,
+            "roll": {
+              "from": 20,
+              "to": 20
+            },
             "name": "Warband Strongbox",
             "description": "You find the hidden strongbox of a Warband lost in the Great War. Choose one of the following options: * Trove: Choose one or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑 , and add them to your Arsenal. * Panoply: Choose one or more Glory Items worth a total of up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the Cost of any Weapons by 1 ☼ to a minimum of 1 ☼ . Glory Item Tables"
           }
         ],
         "rare": [
           {
-            "roll": 5,
+            "roll": {
+              "from": 5,
+              "to": 5
+            },
             "name": "Angelic Instrument",
             "description": "Exploring the battlefield you discover an otherworldly instrument alongside the shattered remains of a lesser angel — fallen or divine. Add an Angelic Instrument to your Warband’s Arsenal. It counts as a Musical Instrument except its Effect has a range of 8” instead of 4”. If your Warband already has a Musical Instrument, you can replace it with the Angelic Instrument, but you do not get any 👑 for the instrument that was thrown away."
           },
           {
-            "roll": 9,
+            "roll": {
+              "from": 9,
+              "to": 9
+            },
             "name": "Abandoned Prophetic Radio Post",
             "description": "You find a hastily-abandoned Synod of Strategic Prophecy station, with scribbled predictions and prophecies scattered amongst the disarray. Your Warband gains the Extra Dice Exploration Skill."
           },
           {
-            "roll": 11,
+            "roll": {
+              "from": 11,
+              "to": 11
+            },
             "name": "Pot of Manna",
             "description": "You find a cup blessed by God that provides endless nourishment. Add 10 👑 to the amount of loot you receive each Exploration Step (including this one)."
           },
           {
-            "roll": 12,
+            "roll": {
+              "from": 12,
+              "to": 12
+            },
             "name": "Ransacked Alchemist Workshop",
             "description": "Amidst the rubble, you find a few intact life-giving potions. Add Curative Fluids to your Warband’s Arsenal. Once, in any future Quartermaster Step, you can use the Curative Fluids to remove 1 Battle Scar (but not the effects of any Trauma) from a model in your Warband. Remove the Curative Fluids from your Warband Roster after they are used."
           },
           {
-            "roll": 15,
+            "roll": {
+              "from": 15,
+              "to": 15
+            },
             "name": "Black Market",
             "description": "You discover a major underground trading post in No Man’s Land. From now on, in the Quartermaster Step, you can purchase Glory Items costing 8 ☼ or less."
           },
           {
-            "roll": 17,
+            "roll": {
+              "from": 17,
+              "to": 17
+            },
             "name": "Book of Golems",
             "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add a Takwin Homunculus from The House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword, and replaces the SULTANATE Keyword with your Faction's Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas. Glory Item Tables"
           },
           {
-            "roll": 19,
+            "roll": {
+              "from": 19,
+              "to": 19
+            },
             "name": "Ruined Church/Masjid/Synagogue",
             "description": "You find a great shrine, temple or other religious building of faith. Upon its altar rests an object of great power waiting for you. Choose one of the following options: * Report: Your Warband gains +4 ☼. * Keep: Choose one Glory Item worth up to 10 ☼, and add it to your Arsenal."
           },
           {
-            "roll": 21,
+            "roll": {
+              "from": 21,
+              "to": 21
+            },
             "name": "Stash of Drugs & Erotica",
             "description": "You find a motherlode of forbidden objects and chemicals, highly sought after and in demand. Choose one of the following options: * Indulge: Add +1 DICE to Morale Checks for your Warband for the rest of the campaign. * Sell: Your Warband gains 120 👑 . * Confiscate: Your Warband gains +4 ☼. Trench Pilgrims must select the Confiscate option."
           },
           {
-            "roll": 23,
+            "roll": {
+              "from": 23,
+              "to": 23
+            },
             "name": "Saint’s Reliquary",
             "description": "You discover the well-hidden reliquary of a fallen saint. Add a Saintly Relic to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model that has the ELITE Keyword. A model that has a Saintly Relic gains the TOUGH Keyword, but loses the INFILTRATOR Keyword if it has it, and the opposing player can ignore the Cover and Defended Obstacle modifiers for attacks that target the model."
           },
           {
-            "roll": 25,
+            "roll": {
+              "from": 25,
+              "to": 25
+            },
             "name": "High-Ranking Captive",
             "description": "You capture a high-ranking enemy – an officer of New Antioch, a Sultanate sheik, a shard of a fallen Black Grail Hegemon, a Pilgrim Prophet, a Mammonite merchant, or some other important personage. Choose one of the following options: * Ransom: Your Warband gains 100 👑 . * Execute: Your Warband gains +4 ☼. * Imprison: Choose one Glory Item with a Cost of up to 8 ☼, and add it to your Arsenal. * Indenture: You keep the captive as a guide. Your Warband gains the Set Dice Exploration Skill."
           },
           {
-            "roll": 32,
+            "roll": {
+              "from": 32,
+              "to": 32
+            },
             "name": "Abandoned Resurrection Machines",
             "description": "You find remnants of machines that were once used as part of the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and its corresponding Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used. Glory Item Tables"
           }
         ],
         "legendary": [
           {
-            "roll": 6,
+            "roll": {
+              "from": 6,
+              "to": 6
+            },
             "name": "Battlefield of Corpses",
             "description": "You come across a scene of terrible slaughter. The remains of humans from various nations and Hellish creatures, fallen in battles over the past 800 years, lie torn and scattered across the horizon, while the trenches that criss-cross this scene are filled with blood. Choose up to 2 pieces of Battlekit from your Warband’s Armoury Tables worth up to 100 👑 in total, and add them to your Arsenal."
           },
           {
-            "roll": 8,
+            "roll": {
+              "from": 8,
+              "to": 8
+            },
             "name": "Esoteric Library",
             "description": "You find a concealed collection of works on Goetic Magic, blood sacrifice rites, and grimoires on the summoning of demons. Choose one of the following options: * Burn (New Antioch, Trench Pilgrims, the Sultanate only): Your Warband gains 3+D3 ☼. * Release Plague (Black Grail only): A Black Grail Warband may unleash a Plague from the books. At the start of each game, after deployment, you can place 1 INFECTION MARKER next to 1 model of your choice (friend or foe). * Sell (Any Warband): Your Warband gains 6D6 x 10 👑 . * Study (The Court or Heretic Legions only): At the start of each game, after deployment, you can pick 1 model (friend or foe). Place 1 BLOOD MARKER next to the model that you pick."
           },
           {
-            "roll": 10,
+            "roll": {
+              "from": 10,
+              "to": 10
+            },
             "name": "Hidden Passages",
             "description": "You uncover a hidden entrance to a vast underground network, perhaps dug by the Heretics to infiltrate the Great Iron Wall, or by refugees living in No Man’s Land. This allows you to explore the area you are in far more efficiently. Your Warband gains the Duplicate Exploration Skill."
           },
           {
-            "roll": 12,
+            "roll": {
+              "from": 12,
+              "to": 12
+            },
             "name": "Jabirean Alchemical Book",
             "description": "You find one of the fabled books of the Jabirean Corpus, filled with the most wondrous secrets of the nature of the universe. Choose one of the following options: * Keep: From now on, in your Quartermaster Step, you can purchase Fire Shields from the House of Wisdom Armoury Tables & Battlekit section (▶ see the House of Wisdom variant in Warbands of Trench Crusade) * Sell: Your Warband gains 150 👑 or 5 ☼ (you can choose which). * Study (House of Wisdom only): Alchemical Formulae now cost your Warband 5 👑 less than they used to, to a minimum Cost of 5 👑 ."
           },
           {
-            "roll": 14,
+            "roll": {
+              "from": 14,
+              "to": 14
+            },
             "name": "Black Network Contact",
             "description": "You make contact with one of the legendary Merchant Princes of the Black Network. From now on, in the Quartermaster Step, you can purchase Glory Items costing 12 ☼ or less. Glory Item Tables"
           },
           {
-            "roll": 16,
+            "roll": {
+              "from": 16,
+              "to": 16
+            },
             "name": "Treasure of the Holies",
             "description": "You find a legendary feretory, be it the Tabernacle of the Hebrews, an altar to the Morning Star himself, a shrine founded by Saint Peter or a place where the Prophet visited. On its altar lies a treasure chest containing an object of great power waiting for you. You score D3 Campaign Victory Points and can add one Glory Item to your Arsenal for free. If you prefer you can take the treasure chest with you and choose the Glory Item in any future Quartermaster Step."
           },
           {
-            "roll": 18,
+            "roll": {
+              "from": 18,
+              "to": 18
+            },
             "name": "Skull of a Saint",
             "description": "You find the skull of a saint martyred in ages past. The power of communion lingers in its holy remains. Choose one of the following options: * New Antioch, Trench Pilgrims, and Iron Sultanate: A saint guides your troops before battle. Add a Skull Relic to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. A model with the Skull Relic gains the INFILTRATOR Keyword. * Heretic Legions, Black Grail, or The Court: The skull screams as you mount it on a pole to mock God and paint it with blasphemous names. Add a Screaming Skull to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. Add +2 DICE to your Morale Checks while the model is on the battlefield and is not Down or Out of Action. In addition, you gain 1 ☼ at the end of any game in which the model is on the battlefield and is not Down or Out of Action."
           },
           {
-            "roll": 20,
+            "roll": {
+              "from": 20,
+              "to": 20
+            },
             "name": "Lock of Samson’s Hair",
             "description": "You discover a lock of the legendary Samson’s hair, imbued with the essence of the strongest warrior to ever live. Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair."
           },
           {
-            "roll": 23,
+            "roll": {
+              "from": 23,
+              "to": 23
+            },
             "name": "Patron’s Visit",
             "description": "Your Patron or their representative makes a surprise visit to your Warband. If you wish, you can immediately exchange up to 10 ☼ for an equal number of Campaign Victory Points."
           },
           {
-            "roll": 26,
+            "roll": {
+              "from": 26,
+              "to": 26
+            },
             "name": "Sample of Holy DNA",
             "description": "You find a sample of Holy DNA. Pick 1 model in your Warband and note on your Warband Roster that they have been treated with Holy DNA. From then on, when you Activate the model, before you carry out any ACTIONS you can remove 1 BLOOD MARKER or INFECTION MARKER from the model and replace it with a BLESSING MARKER. Glory Item Tables"
           },
           {
-            "roll": 30,
+            "roll": {
+              "from": 30,
+              "to": 30
+            },
             "name": "Golgotha Tektites",
             "description": "Golgotha Tektites are used to forge the armour of the mighty Paladins. Pick up to two suits of your Warband’s Armour and note on your Warband Roster that they have been treated with Golgotha Tektites. Suits of Armour treated with Golgotha Tektites gain the NEGATE FIRE, NEGATE GAS, and NEGATE SHRAPNEL Keywords unless they have them already. If you have a New Antioch Warband, you can hand the Golgotha Tektites over to the Church instead of treating suits of Armour with them. If you do so, you gain +15 ☼."
           },
           {
-            "roll": 36,
+            "roll": {
+              "from": 36,
+              "to": 36
+            },
             "name": "Fruit from the Tree of Good and Evil Knowledge",
             "description": "Amongst the bones of giant humans unearthed by the ravages of war you discover a golden- hued fruit wrapped in spun cloth. Pick 1 model in your Warband. The model you pick eats the fruit you discovered. They gain the DEMONIC Keyword and you can give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Patron Skill (it does not have to be one from your own Patron), or any Exploration Skill. VM Glory Item Tables"
           }
         ]
       },
+      "sequence": [
+        "Determine the number of Exploration Dice you receive.",
+        "Roll the Exploration Dice.",
+        "Use Allies, Equipment, and Exploration Skills to modify the Exploration Roll.",
+        "Consult the Exploration Table to see what you have discovered.",
+        "Collect loot equal to 10 times your Exploration Roll in 👑 ."
+      ],
       "lootPerPoint": 10
+    },
+    "carcassFrontExploration": {
+      "favour": {
+        "resource": "favour",
+        "glyph": "👁",
+        "locations": [
+          {
+            "roll": {
+              "from": 1,
+              "to": 3
+            },
+            "name": "Shaken",
+            "description": "After the horror of the fight, a soldier’s world view frays at the edges. Your leader must reassert their divinely ordained authority. Gain your choice of either +🏺, or +📦, or +🌍. Then pick one model that does not have the ELITE Keyword and roll to see if they die, as if it was the Trauma Step."
+          },
+          {
+            "roll": {
+              "from": 4,
+              "to": 5
+            },
+            "name": "Trench Shrine",
+            "description": "You find a crude shrine erected by the soldiers of the Great War. Some are made from artillery shells or melted cannons, while a flag of the Sultanate can be used to indicate a place of prayer. Choose one of the following options: Standard: Add a Troop Flag to your Warband’s Arsenal. Shrine: Add a Field Shrine to your Warband’s Arsenal. Return: Your Warband gains +2 ☼."
+          },
+          {
+            "roll": {
+              "from": 6,
+              "to": 9
+            },
+            "name": "Rival Icon",
+            "description": "You come across an effigy of your Patron’s rival and defile it appropriately. You may immediately exchange up to 2 ☼ for an equal number of 🏅."
+          },
+          {
+            "roll": {
+              "from": 10,
+              "to": 12
+            },
+            "name": "Fallen Knight",
+            "description": "You find a fallen hero of past ages. Perhaps a Knight of Saint Solomon, a Sufi Dervish of the House of Pillars, or a Plague Knight from the Corpse Wars. Choose one of the following options: Loot: Add a suit of Reinforced Armour, a Combat Helmet, and a Great Sword to your Warband’s Arsenal. Memorialise: Your Warband gains 2 ☼."
+          },
+          {
+            "roll": {
+              "from": 13,
+              "to": 15
+            },
+            "name": "Duelling Grounds",
+            "description": "You find a makeshift gladiatorial pit drenched with the blood of both heathen and holy. Your Warband deigns to add another shade to the soil. Gain +👁 and pick 2 models in your Warband without the ELITE Keyword and that can be Promoted. Then flip a coin or roll odds/evens on a D6. If Heads/ Odds, the first model you picked is the victor; if Tails/ Evens, the second model is the victor. Roll to Promote the victor with 3D6 as if it was the Promotions and Experience Step. If you fail this roll, or are already at the maximum number of models with the ELITE Keyword, your Warband gains 3 ☼ instead. Then roll a D6. On a roll of 1-4, the loser was killed or very badly wounded in the duel, and you must remove them from your Warband Roster."
+          },
+          {
+            "roll": {
+              "from": 16,
+              "to": 17
+            },
+            "name": "Ruined Church/Masjid/Synagogue",
+            "description": "You find a great shrine, temple, or other religious building of faith. Upon its altar rests an object of great power waiting for you. Choose one of the following options: Report: Your Warband gains 4 ☼. Keep: Choose one Glory Item worth up to 10 ☼, and add it to your Arsenal."
+          },
+          {
+            "roll": {
+              "from": 18,
+              "to": 20
+            },
+            "name": "Ritual Sacrifice",
+            "description": "You end a life in the name of your Patron, whether it be the unholy sacrifice of an innocent, or the execution of a Heretic captive. You may immediately exchange up to 5 ☼ for an equal number of 🏅."
+          },
+          {
+            "roll": {
+              "from": 21,
+              "to": 22
+            },
+            "name": "Patron’s Reliquary",
+            "description": "You establish a proud reliquary of your Patron. Gain 2 +👁, and add a Patron’s Relic to your Warband’s Arsenal. The Patron’s Relic is a piece of Equipment that can be given to any model provided it has the ELITE Keyword. A model that has a Patron’s Relic gains the TOUGH Keyword, but loses the INFILTRATOR Keyword if it has it, and the opposing player can ignore the Cover and Defended Obstacle modifiers for attacks that target the model."
+          },
+          {
+            "roll": {
+              "from": 23,
+              "to": 25
+            },
+            "name": "Failed Communicant Vat",
+            "description": "You find a small tube of glass and gold. Wiping away the dust reveals a coiled foetus floating amidst amniotic fluid, bulging with muscles and wearing the face of an old man. Choose one of the following options: Faithful Warbands: The wisdom of the Meta-Christ shines out of the infant’s wise eyes. Add a Communicant Vat to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. Add +2 DICE to your Morale Checks while the model is on the Battlefield and is not Down or Out of Action. In addition, you gain 1 ☼ at the end of any game in which the model is on the Battlefield and is not Down or Out of Action. Fallen Warbands: Space bends around the imitation child of God, as if to remove itself from your grasp. Add a Failed Savior to your Warband’s Arsenal. It is a piece of Equipment with the HELD Keyword and can be given to any model. A model with the Failed Savior gains the SKIRMISHER Keyword."
+          },
+          {
+            "roll": {
+              "from": 26,
+              "to": 29
+            },
+            "name": "Lock of Samson’s Hair",
+            "description": "You discover a lock of the champion Samson’s hair, imbued with the essence of the strongest warrior to ever live. Add a Lock of Samson’s Hair to your Warband’s Arsenal. It is a piece of Equipment that can be given to any model. A model with a Lock of Samson’s Hair gains the STRONG Keyword. In addition add +1 INJURY DICE to rolls for Melee Attacks made by a model with a Lock of Samson’s Hair."
+          },
+          {
+            "roll": {
+              "from": 30,
+              "to": 33
+            },
+            "name": "Patron’s Visit",
+            "description": "Your Patron or their representative makes a surprise visit to your Warband. If you wish, you can immediately exchange up to 10 ☼ for an equal number of 🏅."
+          },
+          {
+            "roll": {
+              "from": 34,
+              "to": null
+            },
+            "name": "Chosen Blessing",
+            "description": "The mightiest of your Warband is visited by your Patron in a vision. When they come to, they are forever changed. Pick the model with the most Experience in your Warband. Give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Exploration Skills. Alternatively, give them 2 Skills of your choice from their Patron Skill Table."
+          }
+        ]
+      },
+      "relic": {
+        "resource": "relic",
+        "glyph": "🏺",
+        "locations": [
+          {
+            "roll": {
+              "from": 1,
+              "to": 3
+            },
+            "name": "Mugged",
+            "description": "Someone made away with the goods. Gain your choice of +👁, or +📦, or +🌍. Then lose 20 👑 from your Strongbox, to a minimum of 0 👑."
+          },
+          {
+            "roll": {
+              "from": 4,
+              "to": 5
+            },
+            "name": "Airship Wreckage",
+            "description": "You come across the skeleton of an airship of the Aeronautica Pontifica. Although its combustive fuel burned away all but the duralumin frame, part of its cargo remains unscathed. Choose one of the following options: Ammo Crate: Choose one piece of Battlekit with the HEAVY Keyword from your Warband’s Armoury Tables and add it to your Arsenal. Papal Seal Lockbox: Choose one Glory Item with a cost of up to 5 ☼, and add it to your Arsenal."
+          },
+          {
+            "roll": {
+              "from": 6,
+              "to": 8
+            },
+            "name": "Ruined Apocrypha",
+            "description": "Burned, torn apart or otherwise defiled, the promise of secrets lies in these fragmented words. Add Ruined Apocrypha to your Warband’s Arsenal. Gain 2 🏅 if either the Tarnished Apocrypha or the Preserved Apocrypha is already in your Warband Arsenal when you add the Ruined Apocrypha to it."
+          },
+          {
+            "roll": {
+              "from": 9,
+              "to": 11
+            },
+            "name": "Angelic Instrument",
+            "description": "Exploring the battlefield you discover an otherworldly instrument alongside the shattered remains of a lesser angel – fallen or divine. Add an Angelic Instrument to your Warband’s Arsenal. It counts as a Musical Instrument except its Effect has a range of 8” instead of 4”. If your Warband already has a Musical Instrument, you can replace it with the Angelic Instrument, but you do not get any 👑 for the instrument that was replaced."
+          },
+          {
+            "roll": {
+              "from": 12,
+              "to": 13
+            },
+            "name": "Ransacked Alchemist Workshop",
+            "description": "Amidst the rubble, you find a few intact life-giving potions. Gain +🏺 and add Curative Fluids to your Warband’s Arsenal. Once, in any future Quartermaster Step, you can use the Curative Fluids to remove 1 Battle Scar from a model in your Warband (but not the other effects of a Trauma). Remove the Curative Fluids from your Warband Roster after they are used."
+          },
+          {
+            "roll": {
+              "from": 14,
+              "to": 15
+            },
+            "name": "Stylite Tower",
+            "description": "You find one of the Stylite towers of Saint Simeon, though the sniper-monk atop it has long since perished. Add the Battlekit listed below for your Faction to your Arsenal. If there are any items you are not allowed to add to your Arsenal for any reason, add their cost in 👑 to your Strongbox instead. New Antioch or Trench Pilgrims: Sniper Rifle or Sniper Scope. Iron Sultanate: Siege Jezzail, Alchemical Ammunition, and a Cloak of Alamut. Heretic Legions: Automatic Rifle. Black Grail: Corruption Belcher and Field Shrine. The Court: Ophidian Rifle."
+          },
+          {
+            "roll": {
+              "from": 16,
+              "to": 17
+            },
+            "name": "Book of Golems",
+            "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add Takwin Homunculus from the House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword and replaces the SULTANATE Keyword with your Faction’s Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas."
+          },
+          {
+            "roll": {
+              "from": 18,
+              "to": 20
+            },
+            "name": "Tarnished Apocrypha",
+            "description": "Arcane illustrations and intricate sigils, blemished by sun and earth. Add Tarnished Apocrypha to your Warband’s Arsenal. Gain 5 🏅 if either the Ruined Apocrypha or the Preserved Apocrypha is already in your Warband Arsenal when you add the Tarnished Apocrypha to it."
+          },
+          {
+            "roll": {
+              "from": 21,
+              "to": 22
+            },
+            "name": "Esoteric Library",
+            "description": "You find a concealed collection of works on Goetic magic, blood sacrifice rites, and grimoires on the summoning of demons. Gain 2 +🏺, then choose one of the following options: Burn (New Antioch, Trench Pilgrims, or Iron Sultanate only): Your Warband gains 3+D3 ☼. Release Plague (Black Grail only): A Black Grail Warband may unleash a Plague from the books. At the start of each game, after deployment, you can place 1 INFECTION MARKER next to 1 model of your choice (friend or foe). Sell (Any Warband): Your Warband gains 6D6 x 10 👑. Study (The Court or Heretic Legions only): At the start of each game, after deployment, you can pick 1 model (friend or foe). Place 1 BLOOD MARKER next to the model that you pick."
+          },
+          {
+            "roll": {
+              "from": 23,
+              "to": 25
+            },
+            "name": "Tank God Cultists",
+            "description": "You find a trail of giant tank treads, disconnected and distanced like footprints. Within one, a group of pilgrims in oil-saturated clothes prostrate themselves before a vast steel bolt the size of a wagon. Choose one of the following options: Bargain: From now on, in your Quartermaster Step, models in your Warband can purchase Dum Dum Bullets at a cost of 5 👑 each, Limit: 4. Kill and Loot: Your Warband gains either 150 👑 or 5 ☼ (your choice). Kill and Recruit (Trench Ghosts only): You may recruit 1 Tank God Cultist to your Warband for no cost. Tank God Cultists use the Mendelist Ammo Monk Mercenary Warband Entry, but they do not count as Mercenaries. They gain the HERETIC Keyword, and count as a Trench Ghost for the purposes of their Variant Special Rules."
+          },
+          {
+            "roll": {
+              "from": 26,
+              "to": 29
+            },
+            "name": "Treasure of the Holies",
+            "description": "You find a special shine, be it the Tabernacle of the Hebrews, an altar to the Morning Star himself, a feretory founded by Saint Peter, or a place where the Prophet visited. On its altar lies a treasure chest containing an object of great power. Add 1 Glory Item of your choice to your Arsenal. If you prefer, you can take the treasure chest with you and choose the Glory Item in any future Quartermaster Step."
+          },
+          {
+            "roll": {
+              "from": 30,
+              "to": 33
+            },
+            "name": "Preserved Apocrypha",
+            "description": "A Gospel from the mother of Christ, a map to the Philosopher’s Stone, or the name of the Betrayer engraved in still-wet blood. Add Preserved Apocrypha to your Warband’s Arsenal. Gain 10 🏅 if either the Ruined Apocrypha or the Tarnished Apocrypha is already in your Warband Arsenal when you add the Preserved Apocrypha to it."
+          },
+          {
+            "roll": {
+              "from": 34,
+              "to": null
+            },
+            "name": "Divine Shards",
+            "description": "You find the shards of a divine suit of armour. Choose up to two suits of Armour from your Warband’s Armoury, and note on your Warband Roster that they have been reinforced with Divine Shards. Suits of Armour treated with Divine Shards gain the NEGATE FIRE, NEGATE GAS, and NEGATE SHRAPNEL Keywords, unless they have them already. If you have a New Antioch or Black Grail Warband, you can hand the Divine Shards over to the Church or Order of the Fly respectively instead of reinforcing suits of Armour with them. If you do so, you gain +15 ☼."
+          }
+        ]
+      },
+      "supplies": {
+        "resource": "supplies",
+        "glyph": "📦",
+        "locations": [
+          {
+            "roll": {
+              "from": 1,
+              "to": 3
+            },
+            "name": "Pillaged",
+            "description": "Nothing worth taking. Some soldiers are going to have to go without. Gain your choice of +👁, or +🏺, or +🌍. Then pick 1 model in your Warband to start the next game with 2 BLOOD MARKERS."
+          },
+          {
+            "roll": {
+              "from": 4,
+              "to": 5
+            },
+            "name": "Stalled Corpse Carriage",
+            "description": "You find a carriage from the Corpse Rail stalled on the way to the Domus Demetrius, surrounded by hungry jackals who snarl as you approach. Choose one of the following options: Distract (New Antioch & Trench Pilgrims only): Add +2 DICE to the Success Rolls for Morale Checks in your next game. Protect: (Faithful only): Up to 2 models in your Warband with the ELITE Keyword earn +1 Experience Point each. If this entitles the model to an Advancement Roll, make the roll immediately. Scavenge (Any Warband): Add 30 👑 to your Strongbox."
+          },
+          {
+            "roll": {
+              "from": 6,
+              "to": 8
+            },
+            "name": "Ruined House",
+            "description": "This house has been obliterated by heavy weaponry, its inhabitants ripped apart. Choose one of the following options: Rummage: Choose 1 or more pieces of Equipment from your Warband’s Armoury Tables that are worth a total of up to 30 👑, and add them to your Arsenal. Relic: Choose 1 Glory Item worth up to 7 ☼ and add it to your Arsenal. Store: Gain 2 🏅."
+          },
+          {
+            "roll": {
+              "from": 9,
+              "to": 11
+            },
+            "name": "Fallen Pilgrim",
+            "description": "You find the body of a pilgrim wearing the colours of Blessed Bartolomeo. Choose 1 Melee Weapon from your Warband’s Armoury worth up to 15 👑, and add it to your Arsenal along with a suit of Standard Armour. Then roll a D6. On a 4+, you can add one of the following to your Arsenal: a Medi-kit, a Mountaineer’s Kit, or a Shovel."
+          },
+          {
+            "roll": {
+              "from": 12,
+              "to": 13
+            },
+            "name": "Killzone",
+            "description": "In this small corner of No Man’s Land, you find the corpses of civilians who were herded into an area from which there was no escape. Choose one of the following options: Bury (Faithful only): Your Warband gains +2 ☼. Pillage: You find a Trench Dog hiding beneath the bodies. You can immediately give a Trench Dog to a model in your Warband (you do not have to pay for its Special Training). Feast (Fallen only): Up to 2 models in your Warband with the ELITE Keyword earn +1 Experience Point each. If this entitles the model to an Advancement Roll, make the roll immediately."
+          },
+          {
+            "roll": {
+              "from": 14,
+              "to": 15
+            },
+            "name": "Breaker King Tithe",
+            "description": "You negotiate with (or threaten) an envoy of the notorious scavenger known as the Breaker King, gaining a commission on “recovered” goods. Gain +📦. In addition, gain 10 👑 after each Exploration Step (including this one)."
+          },
+          {
+            "roll": {
+              "from": 16,
+              "to": 17
+            },
+            "name": "Battlefield of Corpses",
+            "description": "You come across a scene of terrible slaughter. The remains of humans from various nations and Hellish creatures, fallen in various battles over the past 800 years, lie torn and scattered across the horizon, while the trenches that criss-cross this scene are filled with blood. Choose up to 2 pieces of Battlekit from your Warband’s Armoury Tables worth up to 100 👑, and add them to your Arsenal."
+          },
+          {
+            "roll": {
+              "from": 18,
+              "to": 20
+            },
+            "name": "Deserted Camp",
+            "description": "You discover the vacated camp building of a Warband seeking the same glory as you. Choose one of the following options: Outpost: Choose 1 or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑, and add them to your Arsenal. Vault: Choose 1 or more Glory Items worth up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the cost of any Weapons by 1 ☼ to a minimum of 1 ☼. Shelter: Gain 5 🏅."
+          },
+          {
+            "roll": {
+              "from": 21,
+              "to": 22
+            },
+            "name": "Suspicious Convoy",
+            "description": "You come across a convoy of strange civilians who bear the heady scent of diesel and raw salmon, chanting an uneasy, gurgling hymn. Gain 2 +📦, and also choose one of the following options: Silence: Add +1 DICE to Success Rolls for Morale Checks for your Warband for the rest of the campaign. Trade: Your Warband gains 120 👑. Chant (Fallen only): Your Warband gains +4 ☼. Heretic Naval Raiders must select this option."
+          },
+          {
+            "roll": {
+              "from": 23,
+              "to": 25
+            },
+            "name": "Orichalcum Crucible",
+            "description": "You come across an abandoned subterranean furnace, its sigil-scarred crucible cradling a single orichalcum ingot. Choose one of the following options: Coat: Choose up to 3 Melee Weapons from your Warband’s Arsenal or that have been given to a model in your Warband. The Weapons gain the ARMOUR PIERCING Keyword. Alloy: Choose up to 2 Shields from your Warband’s Arsenal or that have been given to a model in your Warband. The Shields gain the IMPERVIOUS Keyword. Sell: Your Warband gains 100 👑 and 2 ☼."
+          },
+          {
+            "roll": {
+              "from": 26,
+              "to": 29
+            },
+            "name": "Abandoned Resurrection Machines",
+            "description": "You find remnants of machines that were once used by the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and the effects of 1 Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used."
+          },
+          {
+            "roll": {
+              "from": 30,
+              "to": 33
+            },
+            "name": "Goldflesh Merchant",
+            "description": "Two shackled lines of slaves strain under the weight of a porcelain palanquin, atop which is an even heavier-looking living statue. The bloated figure with flesh of liquid gold beckons you to kneel before her, then she will share with you her most valuable wares. Choose one of the following options: Kneel: Add 1 Aurum Shroud to your Arsenal. An Aurum Shroud counts as Reinforced Armour with the IMPERVIOUS Keyword, and may never be unequipped when it is worn. In addition, if you are a Fallen Faction, add 1 Wretched from the Heretic Legions Warband List with no Battlekit to your Warband at no cost. Slaughter the Merchant and Steal/Employ/Free the Slaves: Gain 10 🏅."
+          },
+          {
+            "roll": {
+              "from": 34,
+              "to": null
+            },
+            "name": "Vivarium Vial",
+            "description": "Whilst scavenging for rations, you find a secret lockbox in a hidden compartment. Within lies a vial containing a portion of the pure blood of one of the Meta-Christs. Choose one of the following options: Imbibe: Choose 1 model on a 32mm or smaller base that does not have the DEMONIC or BLACK GRAIL Keywords. This model can no longer wear Armour (they can have Shields). They gain the NEGATE FEAR Keyword and BLOOD MARKERS are never placed on them under any circumstances. Distil: Pick 2 models in your Warband. They gain the STRONG Keyword. Spoil (Fallen Warbands only): Gain 10 ☼."
+          }
+        ]
+      },
+      "territories": {
+        "resource": "territories",
+        "glyph": "🌍",
+        "locations": [
+          {
+            "roll": {
+              "from": 1,
+              "to": 3
+            },
+            "name": "Lost",
+            "description": "The trenches are unforgiving, and your legs grow heavy with exhaustion. Gain your choice of +👁, +🏺, or +📦. Add -1 DICE to the first DASH Action made by each model in your Warband next game."
+          },
+          {
+            "roll": {
+              "from": 4,
+              "to": 5
+            },
+            "name": "Scout Report",
+            "description": "The labyrinthine web of trenches that forms No Man’s Land is easy to get lost in, but your scouting party report back with a helpful sketch of the surroundings. You can add or subtract 1 from your Exploration Rolls for the rest of the campaign."
+          },
+          {
+            "roll": {
+              "from": 6,
+              "to": 8
+            },
+            "name": "Survivor",
+            "description": "You find a soldier staggering in No Man’s Land: a deserter, perhaps, or a poor benighted infantryman whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). New Antioch: A Yeoman without a Ranged Weapon. Trench Pilgrims: Ecclesiastical Prisoner. Iron Sultanate: Azeb. Heretic Legions or The Court: Wretched. Black Grail: Grail or Fly Thrall."
+          },
+          {
+            "roll": {
+              "from": 9,
+              "to": 11
+            },
+            "name": "Unsettling Merchant",
+            "description": "You are approached by a gibbering Merchant, glassy eyed and drenched in a thin layer of mucus. For the rest of the campaign all Warbands (on both sides) can purchase Glory Items costing 5 ☼ or less in the Quartermaster Step. You must inform all of the other players in the campaign of this. In addition, you gain 2 🏅."
+          },
+          {
+            "roll": {
+              "from": 12,
+              "to": 13
+            },
+            "name": "Scarred Wanderer",
+            "description": "Through the sunset haze, a figure stumbles into view. Unafraid of your appearance or the weapons trained on him, he weeps words in a language you don’t understand, before collapsing in front of you. On his blistered back, an intricately scarred labyrinth. Your Warband gains +🌍 and the Re-roll Exploration Skill."
+          },
+          {
+            "roll": {
+              "from": 14,
+              "to": 15
+            },
+            "name": "Whispers in the Mud",
+            "description": "You hear voices around you, but your eyes find no ambush. Lifting your feet, brown water pools into boot-prints, in which the reflections of paranoid faces whisper of secrets beneath the waves. Choose one of the following options: Heed: Your Warband gains the Extra Dice Exploration Skill. Denounce: Your Warband gains + 2 ☼."
+          },
+          {
+            "roll": {
+              "from": 16,
+              "to": 18
+            },
+            "name": "Silk Road Traders",
+            "description": "Following a series of unknown runes, you find a market run by an ancient order of tradesfolk, faithful only to coin. For the rest of the campaign all Warbands (on both sides) can purchase Glory Items costing 8 ☼ or less in the Quartermaster Step. You must inform all of the other players in the campaign of this. In addition, you gain 5 🏅."
+          },
+          {
+            "roll": {
+              "from": 19,
+              "to": 20
+            },
+            "name": "Second Shadow",
+            "description": "You notice that a pack of vultures has followed your Warband’s every move since you entered the Carcass Front. Choose one of the following options: Train: Your Warband gains the Duplicate Exploration Skill. Target Practice: One ELITE model in your Warband gains the Sharp Eyes Skill."
+          },
+          {
+            "roll": {
+              "from": 21,
+              "to": 22
+            },
+            "name": "Salvaged Personnel Carrier",
+            "description": "You find a hollowed-out shell of steel and concrete, awkwardly hunched atop four rubber wheels and a grumbling engine. Once you clear out the corpses, you find it even has a full tank of fuel. Gain 2 +🌍, and from now on, when you are the Aggressor, you can choose zones for the game that are up to 2 zones away from your Entry Zone or a zone you have Scouted."
+          },
+          {
+            "roll": {
+              "from": 23,
+              "to": 25
+            },
+            "name": "High-Ranking Captive",
+            "description": "You capture a high-ranking enemy: perhaps a prophet of the Lazarine Ascension atop a donkey laden with holy icons and boils, a Naval Raider steersman in hulking, multi-eyed armour, or some other important personage. Choose one of the following options: Ransom: Your Warband gains 100 👑. Execute: Your Warband gains +4 ☼. Imprison: Choose 1 Glory Item with a cost of up to 8 ☼, and add it to your Arsenal. Indenture: You keep the captive as a guide. Your Warband gains the Set Dice Exploration Skill."
+          },
+          {
+            "roll": {
+              "from": 26,
+              "to": 29
+            },
+            "name": "Sworn Sword",
+            "description": "The Carcass Front attracts many sellswords and treasure hunters, and one wishes to pledge their blade to you. You can immediately recruit 1 Mercenary available to your Warband for no cost. If none are available or you cannot recruit Mercenaries, you may immediately recruit 1 ELITE model without the LEADER Keyword to your Warband for no cost in 👑 (normal restrictions and limits apply). You may buy Battlekit for this model during the Quartermaster Step."
+          },
+          {
+            "roll": {
+              "from": 30,
+              "to": 33
+            },
+            "name": "Envoy of the Merchant Princes",
+            "description": "A power unto itself, the Black Network notices your dominance in the field of battle and rewards it with a growing presence. For the rest of the campaign all Warbands (on both sides) can purchase Glory Items costing 12 ☼ or less in the Quartermaster Step. You must inform all of the other players in the campaign of this. In addition, you gain 10 🏅."
+          },
+          {
+            "roll": {
+              "from": 34,
+              "to": null
+            },
+            "name": "The Knife of God",
+            "description": "You find a great ballistic emplacement in nearly working order – seemingly a smaller re-creation of the Sword of God on the Carrion Coast. With some tinkering, soon enough you have a functioning mobile artillery piece. Add one Sacred Cannonade to your Warband’s Arsenal (use the Sultanate Grand Cannon Battlekit profile from the Defenders of the Iron Wall Warband Variant, in the Trench Crusade Rulebook)."
+          }
+        ]
+      }
     },
     "skills": {
       "melee": [

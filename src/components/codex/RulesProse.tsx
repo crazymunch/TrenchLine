@@ -18,11 +18,12 @@ import { parseRulesProse} from './rulesProse';
  * being visible is not cosmetic — it is the reference view being harder to
  * read than the book it was transcribed from.
  *
- * This is deliberately NOT a Markdown library. The extractor emits four
- * constructs and nothing else (no links, images, tables, code or raw HTML),
- * so a parser for exactly those four is smaller than the dependency, and —
- * because it renders React elements rather than a string of HTML — carries no
- * `dangerouslySetInnerHTML` and no sanitiser to get wrong.
+ * This is deliberately NOT a Markdown library. The extractor emits five
+ * constructs and nothing else — sub-headings, both kinds of list, bold, and
+ * pipe tables (no links, images, code or raw HTML) — so a parser for exactly
+ * those is smaller than the dependency, and — because it renders React
+ * elements rather than a string of HTML — carries no `dangerouslySetInnerHTML`
+ * and no sanitiser to get wrong.
  *
  * Anything it does not recognise is rendered as its own text, never dropped.
  */
