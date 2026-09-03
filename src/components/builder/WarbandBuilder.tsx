@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { sessionIsAdmin } from '../../lib/session';
 import { useStore } from '../../store/useStore';
 import { UnitCard } from './UnitCard';
 import { AddUnitModal } from './AddUnitModal';
@@ -35,6 +37,7 @@ import {
   Flag,
   FlaskConical,
   Lock,
+  ShieldCheck,
 } from 'lucide-react';
 
 export const WarbandBuilder: React.FC = () => {
@@ -49,7 +52,11 @@ export const WarbandBuilder: React.FC = () => {
     setWarbandAllowThirdParty,
     campaign
   } = useStore();
-  
+
+  // With the other hooks: there is an early return below when no Warband is
+  // active, and a hook after it runs in a different order between renders.
+  const { data: session } = useSession();
+
   const warband = getActiveWarband();
   // The generated ruleset, served rather than bundled. Legality is the first
   // thing in the app to read it; nothing else has migrated yet.
@@ -103,9 +110,19 @@ export const WarbandBuilder: React.FC = () => {
     The Variant is a founding decision. Once a game has been played, changing it
     would retroactively make models already on the roster legal or illegal, so
     it is fixed from that point — except for an unrestricted Warband, which
-    exists to try lists out and has no campaign to stay consistent with.
+    exists to try lists out and has no campaign to stay consistent with, and
+    except where no Variant has been declared at all. See `canChangeVariant`.
   */
-  const variantEditable = canChangeVariant(warband);
+  const isAdmin = sessionIsAdmin(session);
+  const variantEditable = canChangeVariant(warband, { isAdmin });
+  // Declaring one for the first time, rather than changing a declaration.
+  const variantUndeclared = variantEditable && !warband.variantId && !!warband.units.length;
+  /*
+    Open only because of the admin override — the lock would otherwise hold.
+    Said out loud in the UI: an unlock nobody can see is one nobody can
+    question, and this one exists to be used deliberately.
+  */
+  const variantByOverride = isAdmin && !canChangeVariant(warband);
 
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
   const isOverBudget = totalCost > warband.ducatLimit;
@@ -275,12 +292,26 @@ export const WarbandBuilder: React.FC = () => {
                 onClick={() => setIsVariantOpen(true)}
                 disabled={!dataset || !variantEditable}
                 className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                title={variantEditable
-                  ? 'Which Warband Variant this warband is built as'
-                  : 'Locked: the Variant is a founding decision and this Warband has fought'}
+                title={variantByOverride
+                  ? 'Locked for a player — the Variant is a founding decision and this Warband '
+                    + 'has fought. Open to you as an admin.'
+                  : variantUndeclared
+                    ? 'No Variant is declared. Declaring one is what stops this roster being '
+                      + 'checked against the standard list — and it locks once set.'
+                    : variantEditable
+                      ? 'Which Warband Variant this warband is built as'
+                      : 'Locked: the Variant is a founding decision and this Warband has fought'}
               >
                 <Flag className="w-4 h-4" />
                 <span>{activeVariant?.name ?? 'Standard list'}</span>
+                {/* Says which of the two states an unset Variant is in: a
+                    deliberate standard list, or a declaration never made. */}
+                {variantUndeclared && (
+                  <span className="text-status-warning" title="No Variant declared">•</span>
+                )}
+                {variantByOverride && (
+                  <ShieldCheck className="w-3 h-3 text-status-warning" aria-label="Unlocked as admin" />
+                )}
                 {!variantEditable && <Lock className="w-3 h-3 text-theme-muted" />}
               </button>
 

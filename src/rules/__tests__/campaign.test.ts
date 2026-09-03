@@ -308,11 +308,45 @@ describe('when the Variant stops being a choice', () => {
   it('closes once a battle has been resolved', () => {
     const wb = {
       forceMode: 'campaign' as const,
+      // A Variant that HAS been declared. That is what the lock protects: see
+      // the case below for one that never was.
+      variantId: 'houseofwisdom',
       ledger: founding,
       snapshots: [{ type: 'founding' }, { type: 'post_battle' }],
     };
     expect(hasPlayedAGame(wb)).toBe(true);
     expect(canChangeVariant(wb)).toBe(false);
+  });
+
+  /*
+    A Warband with NO Variant may still declare one, however many games it has
+    fought. The lock is about changing a declaration, and there is nothing here
+    to change.
+
+    This is the state `POST /api/warbands` used to leave every synced Warband
+    in: it never persisted `variantId`, so a campaign Warband that had already
+    fought lost its Variant and could then never restore it — the app deleted
+    the declaration and locked the door on it. A House of Wisdom list came back
+    demanding a Yüzbaşı its Variant forbids, with no way to say otherwise.
+  */
+  it('is open on a Warband that has fought but has no Variant declared', () => {
+    const wb = {
+      forceMode: 'campaign' as const,
+      ledger: founding,
+      snapshots: [{ type: 'founding' }, { type: 'post_battle' }],
+    };
+    expect(hasPlayedAGame(wb), 'the fixture must have fought, or this proves nothing').toBe(true);
+    expect(canChangeVariant(wb)).toBe(true);
+  });
+
+  it('locks again the moment one is declared', () => {
+    const fought = {
+      forceMode: 'campaign' as const,
+      ledger: founding,
+      snapshots: [{ type: 'founding' }, { type: 'post_battle' }],
+    };
+    expect(canChangeVariant(fought)).toBe(true);
+    expect(canChangeVariant({ ...fought, variantId: 'houseofwisdom' })).toBe(false);
   });
 
   it('closes on Exploration loot, which only happens after a battle', () => {
