@@ -26,6 +26,7 @@ import {
   Check, 
   Lock 
 } from 'lucide-react';
+import { sessionIsAdmin } from '../../lib/session';
 
 export const RosterDirectoryView: React.FC = () => {
   const { 
@@ -46,7 +47,7 @@ export const RosterDirectoryView: React.FC = () => {
 
   const { data: session } = useSession();
   const userEmail = session?.user?.email?.toLowerCase().trim();
-  const isAdmin = userEmail === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
+  const isAdmin = sessionIsAdmin(session);
   const userId = (session?.user as any)?.id;
 
   const canManageWarband = (wb: Warband) => {

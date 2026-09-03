@@ -24,6 +24,7 @@ import {
   SlidersHorizontal,
   Bug
 } from 'lucide-react';
+import { sessionIsAdmin } from '../../lib/session';
 
 export const Navbar: React.FC = () => {
   const { 
@@ -214,7 +215,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
                     className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-elevated hover:bg-theme-border rounded border border-theme-border text-xs font-mono transition-colors"
                   >
-                    {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
+                    {sessionIsAdmin(session) ? (
                       <Crown className="w-3.5 h-3.5 text-theme-primary" />
                     ) : (
                       <User className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
@@ -222,7 +223,7 @@ export const Navbar: React.FC = () => {
                     <span className="max-w-[70px] sm:max-w-[110px] truncate text-theme-text font-bold">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
-                    {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
+                    {sessionIsAdmin(session) && (
                       <span className="text-[8px] px-1 py-0.2 rounded bg-theme-primary text-theme-base font-bold font-mono">
                         ADMIN
                       </span>

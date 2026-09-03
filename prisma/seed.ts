@@ -6,8 +6,29 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding TrenchLine PostgreSQL database...');
 
-  // 1. Create Default Admin / Demo User
-  const hashedPassword = await bcrypt.hash('trenchline2026', 10);
+  /*
+    1. The demo user that owns the sample warband.
+
+    It used to be created with the password `trenchline2026`, written in this
+    file — a working credential for an account that was also on the hard-coded
+    admin list, published in a public repository. Anyone who read the seed
+    script could sign in as an admin on any deployment that had ever run it.
+
+    It is seeded with **no password** now, so the account cannot be signed into
+    at all: `verifyCredentials` refuses an account with no hash, which is the
+    same rule that keeps a Google-only account out of the password form. A
+    developer who wants to sign in as it registers their own account instead,
+    or sets `SEED_DEMO_PASSWORD` to a value they chose.
+
+    `commander@trenchline.org` is no longer an admin address under any
+    configuration — see `adminEmails()` in src/lib/env.ts.
+  */
+  const seedPassword = process.env.SEED_DEMO_PASSWORD;
+  if (!seedPassword) {
+    console.log(
+      'No SEED_DEMO_PASSWORD set: the demo user is seeded without a password '
+      + 'and cannot be signed into. That is the intended default.');
+  }
 
   const demoUser = await prisma.user.upsert({
     where: { email: 'commander@trenchline.org' },
@@ -15,7 +36,7 @@ async function main() {
     create: {
       email: 'commander@trenchline.org',
       name: 'Crusade Commander Valerius',
-      password: hashedPassword,
+      password: seedPassword ? await bcrypt.hash(seedPassword, 10) : null,
     },
   });
 
