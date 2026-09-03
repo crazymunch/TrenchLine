@@ -271,7 +271,7 @@ describe('the Leper-Knight’s Armour requirement', () => {
   it('passes once a suit from the Armour section is worn', () => {
     const armour = armouryRow('Armour');
     expect(gearViolations(rosterWearing([
-      { weaponId: armour.weaponId, name: armour.name, cost: armour.cost },
+      { weaponId: armour.weaponId ?? undefined, name: armour.name, cost: armour.cost },
     ]))).toEqual([]);
   });
 
@@ -282,7 +282,7 @@ describe('the Leper-Knight’s Armour requirement', () => {
     expect(suits.length, 'the Procession stocks more than one suit').toBeGreaterThan(1);
     for (const s of suits) {
       expect(gearViolations(rosterWearing([
-        { weaponId: s.weaponId, name: s.name, cost: s.cost },
+        { weaponId: s.weaponId ?? undefined, name: s.name, cost: s.cost },
       ])), `${s.name} was rejected`).toEqual([]);
     }
   });
@@ -290,7 +290,7 @@ describe('the Leper-Knight’s Armour requirement', () => {
   it('is not cleared by a Shield, which is a different section', () => {
     const shield = armouryRow('Shield');
     expect(gearViolations(rosterWearing([
-      { weaponId: shield.weaponId, name: shield.name, cost: shield.cost },
+      { weaponId: shield.weaponId ?? undefined, name: shield.name, cost: shield.cost },
     ]))).toHaveLength(1);
   });
 
