@@ -604,3 +604,45 @@ export function parseKeywordCarryRules(keywords) {
 
   return { rules, unreadable };
 }
+
+/* ------------------------------------------------- keywords an option grants */
+
+/**
+ * Keywords a purchasable option gives the model that takes it.
+ *
+ * The catalogue states these in the option's own rules text, in a consistent
+ * published form:
+ *
+ *   Inhuman Strength     "…Give this Takwin Homunculus the STRONG Keyword,
+ *                         change its Melee Characteristic to +1 DICE…"
+ *   Elemental Resistance "Give this Takwin Homunculus the NEGATE FIRE and
+ *                         NEGATE GAS Keywords…"
+ *
+ * They matter because several rules are keyed on a model's Keywords and a
+ * granted one appears nowhere on the catalogue entry: STRONG lets a model
+ * carry one 2-Handed Melee Weapon as if it were 1-Handed, and Al-Masyukh has
+ * STRONG only because it bought Inhuman Strength. Reading the base entry alone
+ * told a legal Homunculus that its greatsword and sword needed three hands.
+ *
+ * Names only — what each keyword DOES is the glossary's business.
+ */
+const GRANTS = [
+  /(?:Gives?|Give) th(?:is|e)[\w\s’'-]*? the ([A-Z][A-Z \-]*(?:\s+and\s+[A-Z][A-Z \-]*)*) Keywords?/u,
+  /\bgains? the ([A-Z][A-Z \-]*(?:\s+and\s+[A-Z][A-Z \-]*)*) Keywords?/u,
+];
+
+export function keywordGrantsFrom(description) {
+  const text = String(description ?? '');
+  if (!text) return [];
+  const out = new Set();
+  for (const pattern of GRANTS) {
+    const m = text.match(pattern);
+    if (!m) continue;
+    // "NEGATE FIRE and NEGATE GAS" is two grants written as one phrase.
+    for (const part of m[1].split(/\s+and\s+/)) {
+      const name = part.trim().replace(/\s+/g, ' ');
+      if (name) out.add(name);
+    }
+  }
+  return [...out];
+}

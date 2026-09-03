@@ -608,7 +608,10 @@ function checkBattlekitLimits(
     for (const b of battlekitBreaches(carried, {
       armoury, dataset, extraLimb: u.extraLimb,
       // STRONG is a Keyword the model has, not a word in an ability's name.
-      keywords: profiles.get(u.profileId)?.keywords,
+      // The model's EFFECTIVE Keywords, computed with the ones its Formulae
+      // grant. The base entry alone is why a legal Homunculus was told its
+      // greatsword and sword needed three hands.
+      keywords: u.keywords ?? profiles.get(u.profileId)?.keywords,
     })) {
       out.push(err({
         code: 'battlekit-limit',

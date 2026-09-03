@@ -76,6 +76,12 @@ export interface RosterUnit {
    * then be told by the validator that it is illegal.
    */
   extraLimb?: boolean;
+  /**
+   * The model's effective Keywords: its entry's own, plus any an option it
+   * bought grants it. A granted one appears nowhere on the catalogue entry —
+   * Inhuman Strength gives a Homunculus STRONG — and several rules key on them.
+   */
+  keywords?: string[];
 }
 
 export interface Roster {

@@ -139,7 +139,21 @@ export function formulaeOf(unit: UnitLike | undefined | null): string[] {
 export function traitsOf(unit: UnitLike | undefined | null): string[] {
   if (!unit) return [];
   return [
-    ...(unit.equippedEquipment ?? []).filter(isAlchemicalFormula).map((e) => e.name),
+    /*
+      EVERY equipped entry, not only the ones that still say which group they
+      came from.
+
+      Filtering this list by `isAlchemicalFormula` was inconsistent with the
+      paragraph above and it cost exactly the models it was meant to serve:
+      the importer that dropped a selection's group is the reason this
+      function exists, so requiring the group here loses the Formula on every
+      roster imported before that was fixed — which is how a Homunculus
+      carrying Gargantuan Size was still told "Brazen Bull only".
+
+      A name only matters if a catalogue entry names it in `unlockedBy`, so
+      widening the list cannot grant anything the catalogue did not.
+    */
+    ...(unit.equippedEquipment ?? []).map((e) => e.name),
     ...(unit.specialUpgrades ?? []).map((u) => u.name),
     ...(unit.profileSnapshot?.innateAbilities ?? []).map((a) => a.name),
     ...(unit.skills ?? []).map((s) => s.name),

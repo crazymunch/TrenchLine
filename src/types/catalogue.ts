@@ -443,6 +443,21 @@ export interface KeywordCarryRule {
   exempt?: string;
 }
 
+/**
+ * Keywords an option gives the model that takes it, by the option's name.
+ *
+ * A granted Keyword appears nowhere on the catalogue entry: Al-Masyukh has
+ * STRONG only because it bought Inhuman Strength, whose rules text reads "Give
+ * this Takwin Homunculus the STRONG Keyword". Several rules are keyed on a
+ * model's Keywords, so reading the base entry alone gets those models wrong.
+ */
+export interface KeywordGrant {
+  name: string;
+  grants: string[];
+  /** The option's rules text, so the grant can be shown where it came from. */
+  raw?: string;
+}
+
 export interface BattlekitLimits {
   limits: BattlekitLimit[];
   withShield?: ShieldRestrictions;
@@ -970,6 +985,8 @@ export interface Dataset {
    * validator treats as "do not enforce" rather than as "no limits".
    */
   battlekitLimits?: BattlekitLimits;
+  /** Keywords each option grants the model that buys it. */
+  keywordGrants?: KeywordGrant[];
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
   /**
