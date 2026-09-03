@@ -22,6 +22,7 @@ import {
   LogIn,
   Bug
 } from 'lucide-react';
+import { sessionIsAdmin } from '../../lib/session';
 
 export const Sidebar: React.FC = () => {
   const { 
@@ -41,7 +42,7 @@ export const Sidebar: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isBugReportOpen, setIsBugReportOpen] = useState(false);
 
-  const isAdmin = session?.user?.email === 'crazymunch@gmail.com' || Boolean((session?.user as any)?.isAdmin);
+  const isAdmin = sessionIsAdmin(session);
 
   useEffect(() => {
     if (!isAdmin && currentView === 'customizer') {
@@ -273,7 +274,7 @@ export const Sidebar: React.FC = () => {
               isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 justify-between'
             }`}>
               <div className="flex items-center space-x-2 truncate">
-                {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
+                {sessionIsAdmin(session) ? (
                   <Crown className="w-4 h-4 text-theme-primary flex-shrink-0" />
                 ) : (
                   <User className="w-4 h-4 text-theme-muted flex-shrink-0" />
@@ -283,7 +284,7 @@ export const Sidebar: React.FC = () => {
                     <span className="font-bold text-theme-text truncate text-xs sm:text-[11px]">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
-                    {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
+                    {sessionIsAdmin(session) && (
                       <span className="text-[8px] text-theme-primary font-bold uppercase leading-none">
                         CRUSADE ADMIN
                       </span>

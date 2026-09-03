@@ -24,6 +24,7 @@ import {
   SlidersHorizontal,
   Bug
 } from 'lucide-react';
+import { sessionIsAdmin } from '../../lib/session';
 
 export const Navbar: React.FC = () => {
   const { 
@@ -173,7 +174,20 @@ export const Navbar: React.FC = () => {
                   onChange={(e) => setRulesetVersion(e.target.value as any)}
                   title="Active Ruleset Version"
                   aria-label="Active Ruleset Version"
-                  className="max-w-[104px] sm:max-w-none px-2 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-theme-primary text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-theme-primary"
+                  /*
+                    A width BUDGET, not a preference. This group is
+                    `flex-shrink-0` on purpose — see the note above it — so the
+                    select is the only part of it that can give, and the number
+                    is what makes the whole cluster fit 375px.
+
+                    It was 104px, measured against the system font the browser
+                    was falling back to while the three faces were fetched from
+                    Google at runtime. Self-hosting them meant the real Archivo
+                    actually rendered, which is wider, and the cluster went 6px
+                    past the right edge. The E2E overflow check is what catches
+                    the next drift; it is why this is 96 and not a guess.
+                  */
+                  className="max-w-[96px] sm:max-w-none px-2 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-theme-primary text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-theme-primary"
                 >
                   <option value="1.0">v1.0 Core</option>
                   <option value="1.0.2">v1.0.2 Errata</option>
@@ -214,7 +228,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
                     className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-elevated hover:bg-theme-border rounded border border-theme-border text-xs font-mono transition-colors"
                   >
-                    {(session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com' ? (
+                    {sessionIsAdmin(session) ? (
                       <Crown className="w-3.5 h-3.5 text-theme-primary" />
                     ) : (
                       <User className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
@@ -222,7 +236,7 @@ export const Navbar: React.FC = () => {
                     <span className="max-w-[70px] sm:max-w-[110px] truncate text-theme-text font-bold">
                       {session.user.name || session.user.email?.split('@')[0]}
                     </span>
-                    {((session.user as any).isAdmin || session.user.email === 'crazymunch@gmail.com') && (
+                    {sessionIsAdmin(session) && (
                       <span className="text-[8px] px-1 py-0.2 rounded bg-theme-primary text-theme-base font-bold font-mono">
                         ADMIN
                       </span>

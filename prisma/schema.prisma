@@ -48,6 +48,7 @@ model User {
   campaignMembers  CampaignMember[]
   createdCampaigns Campaign[]           @relation("CreatedCampaigns")
   customRules      CustomRuleOverride[]
+  bugReports       BugReport[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
 }
@@ -58,6 +59,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// Whether a roster appears in the public Warband Directory.
+///
+/// PRIVATE is the default and the migration backfills every existing row to
+/// it. The directory used to show every roster that had ever synced to the
+/// cloud — nobody opted in, and the response carried the owner's email
+/// address, private notes, campaign snapshots and sync metadata with it.
+/// Backfilling to PUBLIC would preserve exactly that non-consensual
+/// publication, so the directory starts empty and fills as people choose.
+enum WarbandVisibility {
+  PRIVATE
+  UNLISTED
+  PUBLIC
 }
 
 // Trench Crusade Application Models
@@ -71,6 +86,7 @@ model Warband {
   units           Json             @default("[]")
   armoryStash     Json             @default("[]")
   notes           String?          @db.Text
+  visibility      WarbandVisibility @default(PRIVATE)
   userId          String
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaignMembers CampaignMember[]
@@ -150,6 +166,29 @@ model TerritoryNode {
   controlledByPlayerName String?
   perk                   String
   description            String   @db.Text
+}
+
+/// A bug report.
+///
+/// These lived in a module-level array: they vanished on restart, differed
+/// between server instances, silently capped at 100, and were readable in
+/// full — reporter addresses included — by any unauthenticated GET. The
+/// reporter's identity came from `body.userEmail`, so it was whatever the
+/// submitter typed.
+model BugReport {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  severity    String
+  area        String?
+  status      String   @default("open")
+  /// Null for an anonymous report. Set from the SESSION, never from the body.
+  reporterId  String?
+  reporter    User?    @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 model CustomRuleOverride {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { matchesWarband, warbandCode, type Searchable } from '../../rules/warbandCode';
 
@@ -42,10 +42,29 @@ export function WarbandCombobox<T extends Searchable>({
   const [active, setActive] = useState(0);
   const root = useRef<HTMLDivElement>(null);
 
+  /*
+    A screen reader needs three things this was missing: which list the input
+    controls, which option is currently active, and a stable id for that
+    option. Without them the input announced itself as a combobox and then said
+    nothing at all as the arrow keys moved through the results — the highlight
+    was purely visual.
+  */
+  const listId = useId();
+  const optionId = (i: number) => `${listId}-option-${i}`;
+
   const matches = useMemo(
     () => warbands.filter((w) => matchesWarband(w, query)).slice(0, 40),
     [warbands, query],
   );
+
+  /*
+    There is no active option when the list is empty or closed, and pointing
+    `aria-activedescendant` at an element that is not rendered is worse than
+    omitting it: the reader announces nothing and the attribute lies.
+  */
+  const activeId = open && matches.length > 0 && active < matches.length
+    ? optionId(active)
+    : undefined;
 
   // Keep the highlighted row inside the list as it shrinks under typing.
   useEffect(() => { setActive(0); }, [query]);
@@ -72,6 +91,12 @@ export function WarbandCombobox<T extends Searchable>({
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)); }
     else if (e.key === 'Enter' && open && matches[active]) { e.preventDefault(); choose(matches[active]); }
     else if (e.key === 'Escape') { setOpen(false); }
+    // Home and End are part of the pattern and cost two lines.
+    else if (e.key === 'Home' && open) { e.preventDefault(); setActive(0); }
+    else if (e.key === 'End' && open) { e.preventDefault(); setActive(Math.max(0, matches.length - 1)); }
+    // Tabbing away commits nothing and closes the list, which is what the
+    // combobox pattern expects and what a user means by moving on.
+    else if (e.key === 'Tab') { setOpen(false); }
   };
 
   return (
@@ -84,6 +109,9 @@ export function WarbandCombobox<T extends Searchable>({
           type="text"
           role="combobox"
           aria-expanded={open}
+          aria-controls={listId}
+          aria-activedescendant={activeId}
+          aria-autocomplete="list"
           aria-label={label}
           disabled={disabled}
           value={query}
@@ -96,8 +124,14 @@ export function WarbandCombobox<T extends Searchable>({
         />
         {query && (
           <button
+            type="button"
             onClick={() => { setQuery(''); setOpen(true); }}
-            className="p-1 text-theme-muted hover:text-theme-text flex-shrink-0"
+            /*
+              44px of hit area without a 44px icon: the padding does the work
+              and a negative margin keeps the row the height it was. `p-1` gave
+              a ~22px target, under the floor docs/MOBILE.md sets for a phone.
+            */
+            className="p-3 -m-1.5 text-theme-muted hover:text-theme-text flex-shrink-0"
             aria-label="Clear search"
           >
             <X className="w-3.5 h-3.5" />
@@ -107,6 +141,7 @@ export function WarbandCombobox<T extends Searchable>({
 
       {open && (
         <div
+          id={listId}
           role="listbox"
           aria-label={label}
           /*
@@ -124,6 +159,7 @@ export function WarbandCombobox<T extends Searchable>({
             matches.map((w, i) => (
               <button
                 key={w.id}
+                id={optionId(i)}
                 role="option"
                 aria-selected={i === active}
                 onPointerDown={(e) => { e.preventDefault(); choose(w); }}

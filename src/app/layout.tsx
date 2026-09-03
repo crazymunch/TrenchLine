@@ -1,6 +1,44 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
+import { Archivo, IBM_Plex_Mono, Newsreader } from 'next/font/google';
+
+/*
+  Self-hosted, not fetched from Google at runtime.
+
+  The three faces used to arrive through a `<link>` to fonts.googleapis.com,
+  which meant the typography depended on a third party being up, the CSP had to
+  allow that third party, and every visitor's IP address reached it before a
+  single word rendered. `next/font/google` downloads the files at BUILD time
+  and serves them from this origin, so `font-src 'self'` in next.config.mjs is
+  the whole policy.
+
+  The weights and styles are exactly the ones the old URL requested, so nothing
+  renders differently. Each exposes a CSS variable that `globals.css` already
+  names.
+*/
+const archivo = Archivo({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-archivo',
+  display: 'swap',
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-plex-mono',
+  display: 'swap',
+});
+
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'TrenchLine | Trench Crusade Tactical Warband & Campaign Hub',
@@ -36,15 +74,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="bg-theme-base text-theme-text min-h-[100dvh] antialiased">
+      <body
+        className={`${archivo.variable} ${plexMono.variable} ${newsreader.variable} `
+          + 'bg-theme-base text-theme-text min-h-[100dvh] antialiased'}
+      >
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

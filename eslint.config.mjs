@@ -82,4 +82,29 @@ export default [
       'react/no-unescaped-entities': 'off',
     },
   },
+  /*
+    The boundary code is held to a higher standard than the rest.
+
+    A repository-wide `any` sweep is the wrong shape of work: it is large,
+    mostly cosmetic, and it competes for review attention with the parts that
+    matter. So the ratchet starts where untrusted data arrives — the session,
+    the request bodies, the database mapping — and those paths are ERRORS
+    rather than warnings.
+
+    They are warning-free as of the security milestone. This keeps them that
+    way: a new `any` in a route handler or in the auth module fails the build,
+    while the ~85 warnings elsewhere stay warnings and come down over time.
+  */
+  {
+    files: [
+      'src/lib/auth.ts',
+      'src/lib/env.ts',
+      'src/lib/session.ts',
+      'src/lib/api/**/*.ts',
+      'src/app/api/**/*.ts',
+    ],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
+  },
 ];

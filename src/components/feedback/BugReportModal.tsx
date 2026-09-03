@@ -30,7 +30,8 @@ export const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose 
 
 
   const [category, setCategory] = useState<string>('Visual / Layout Issue');
-  const [severity, setSeverity] = useState<string>('Minor / Visual');
+  // The value is what the API stores; the label is what the reporter reads.
+  const [severity, setSeverity] = useState<string>('low');
   const [description, setDescription] = useState<string>('');
   const [stepsToReproduce, setStepsToReproduce] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
@@ -215,9 +216,9 @@ ${stepsToReproduce ? `#### Steps to Reproduce:\n${stepsToReproduce}` : ''}
                   onChange={(e) => setSeverity(e.target.value)}
                   className="w-full bg-theme-base border border-theme-border rounded p-2 text-theme-text focus:outline-none focus:border-theme-primary"
                 >
-                  <option value="Minor / Visual">Minor (Text wrapping, styling)</option>
-                  <option value="Feature Inconvenience">Moderate (Workflow inconvenience)</option>
-                  <option value="Critical / Blocking">Critical (Blocks gameplay / game-breaking)</option>
+                  <option value="low">Minor (Text wrapping, styling)</option>
+                  <option value="medium">Moderate (Workflow inconvenience)</option>
+                  <option value="critical">Critical (Blocks gameplay / game-breaking)</option>
                 </select>
               </div>
             </div>

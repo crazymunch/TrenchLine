@@ -7,6 +7,7 @@ import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { BugReportModal } from '../feedback/BugReportModal';
 import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette, Users, Bug } from 'lucide-react';
+import { sessionIsAdmin } from '../../lib/session';
 
 export const MobileNav: React.FC = () => {
   const { currentView, setCurrentView, currentTheme } = useStore();
@@ -15,7 +16,7 @@ export const MobileNav: React.FC = () => {
   const [isBugReportOpen, setIsBugReportOpen] = useState(false);
   const activeThemeObj = THEMES.find(t => t.id === currentTheme) || THEMES[0];
 
-  const isAdmin = (session?.user as any)?.isAdmin || session?.user?.email === 'crazymunch@gmail.com';
+  const isAdmin = sessionIsAdmin(session);
 
   const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
     { id: 'builder', label: 'Roster', icon: <Shield className="w-4 h-4" /> },
