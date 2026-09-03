@@ -5,6 +5,9 @@
  *   npm run rules:pdfs            # fetch anything missing, verify digests
  *   npm run rules:pdfs -- --force # re-fetch everything
  *
+ * Reads every manifest under data-sources/, so a new source set is added by
+ * dropping a SOURCES.json beside its extracts rather than by editing this.
+ *
  * The large books live as GitHub release assets rather than in git history:
  * 38 MB of binary that never changes has no business in every clone, and the
  * extracted text — which is what the pipeline actually reads — is committed.
@@ -28,23 +31,36 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
-const DIR = 'data-sources/rulebook';
-const MANIFEST = path.join(DIR, 'SOURCES.json');
+/*
+  Every source set with a manifest. `rulebook/` holds the core books; each
+  supplement gets its own directory, because a supplement is fetched, extracted
+  and verified as a unit and is released on its own schedule.
+*/
+const ROOT = 'data-sources';
+const DIRS = fs.readdirSync(ROOT, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && fs.existsSync(path.join(ROOT, d.name, 'SOURCES.json')))
+  .map((d) => path.join(ROOT, d.name));
+
 const force = process.argv.includes('--force');
 
-if (!fs.existsSync(MANIFEST)) {
-  console.error(`error: ${MANIFEST} not found`);
+if (!DIRS.length) {
+  console.error(`error: no SOURCES.json found under ${ROOT}/`);
   process.exit(1);
 }
 
-const manifest = JSON.parse(fs.readFileSync(MANIFEST, 'utf8'));
-const { repo } = manifest.release;
 const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 
 let failed = 0;
 let fetched = 0;
+let total = 0;
+
+for (const DIR of DIRS) {
+const manifest = JSON.parse(fs.readFileSync(path.join(DIR, 'SOURCES.json'), 'utf8'));
+const { repo } = manifest.release;
+console.log(`\n${DIR}`);
 
 for (const asset of manifest.assets) {
+  total++;
   const dest = path.join(DIR, asset.file);
   process.stdout.write(`  ${asset.file.padEnd(40)}`);
 
@@ -89,6 +105,7 @@ for (const asset of manifest.assets) {
     failed++;
   }
 }
+}
 
 console.log();
 if (failed) {
@@ -98,5 +115,5 @@ if (failed) {
   );
   process.exit(1);
 }
-console.log(`${fetched} fetched, ${manifest.assets.length - fetched} already present.`);
+console.log(`${fetched} fetched, ${total - fetched} already present.`);
 console.log('Next: npm run rules:extract -- <pdf> <out.txt> for anything newly fetched.');

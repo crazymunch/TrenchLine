@@ -18,6 +18,7 @@ import {
   Swords, 
   Tag, 
   Skull, 
+  Dices,
   Compass, 
   Shield, 
   Sparkles, 
@@ -144,7 +145,7 @@ export const CodexView: React.FC = () => {
   const filteredArmour = arsenal.filter((i) => groupOf(i) !== 'weapons' && matchesArsenal(i));
 
   /**
-   * The twelve scenarios, derived.
+   * The scenarios, derived: the rulebook's twelve and Carcass Front's five.
    *
    * The hand-written set had the wrong game length for **all twelve**, inverted
    * Claim No Man's Land's Infiltrator rule (the book says they must deploy
@@ -153,6 +154,15 @@ export const CodexView: React.FC = () => {
    * opponent is playing out of the book.
    */
   const scenarios = codexDataset?.scenarios ?? [];
+
+  /**
+   * Terrain pieces with rules of their own — the Levant Hedgehog and the
+   * Naval Mine, whose 2D6 detonation table and blast profile a player cannot
+   * resolve from memory. Shown with the scenarios because that is the chapter
+   * they are printed in, but the book is explicit that they are for use in any
+   * game rather than only its own five.
+   */
+  const terrain = codexDataset?.terrain ?? [];
 
   const filteredScenarios = scenarios.filter(
     (s) => s.name.toLowerCase().includes(filterText)
@@ -187,7 +197,7 @@ export const CodexView: React.FC = () => {
           eyebrow="Reference"
           icon={<BookOpen className="w-4 h-4" />}
           title="Official Rules Codex"
-          strapline="The published Trench Crusade ruleset: twelve scenarios with their extracted deployment maps, the keyword glossary, and the arsenal."
+          strapline="The published Trench Crusade ruleset: every scenario with its deployment map, the keyword glossary, and the arsenal."
           actions={<>
           <button
             onClick={() => setIsProbabilityOpen(true)}
@@ -204,7 +214,7 @@ export const CodexView: React.FC = () => {
           <Search className="w-4 h-4 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search core rules, keywords, weapons, 12 scenarios, skills, injury tables..."
+            placeholder="Search core rules, keywords, weapons, scenarios, terrain, skills, injury tables..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-theme-base border border-theme-border rounded pl-9 pr-4 py-2 text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
@@ -236,11 +246,18 @@ export const CodexView: React.FC = () => {
             ))}
           </div>
 
-          {/* Row 2 */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {/*
+            Row 2. `generator` sits here because it had NO BUTTON AT ALL: the
+            tab has been rendered by `activeTab === 'generator'` since the
+            Codex was built and nothing in the app ever set that state, so the
+            Mission Designer and every generator in it were unreachable. Six
+            buttons on two rows of three at phone width, four across from `sm`.
+          */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
+              { id: 'generator', label: 'Scenario Generator', icon: <Dices className="w-4 h-4" /> },
               { id: 'weapons', label: `Weapons Codex (${arsenal.filter((i) => groupOf(i) === 'weapons').length})`, icon: <Swords className="w-4 h-4" /> },
               { id: 'armour', label: `Armour & Gear (${arsenal.filter((i) => groupOf(i) !== 'weapons').length})`, icon: <Shield className="w-4 h-4" /> },
             ].map((t) => (
@@ -462,9 +479,57 @@ export const CodexView: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 3: 12 SCENARIOS & CRISP VECTOR MAPS */}
+      {/* TAB 3: SCENARIOS, TERRAIN & CRISP VECTOR MAPS */}
       {activeTab === 'scenarios' && (
         <div className="space-y-6">
+          {/*
+            Terrain first, and above the scenarios rather than inside one.
+
+            The Carcass Front book prints these in its Scenarios & Terrain
+            chapter but says plainly they are "rules for two different terrain
+            pieces that you can use in any of your Trench Crusade games". Filed
+            under a scenario they would be invisible in every other game — and
+            a naval mine's 2D6 detonation table is the thing a player reaches
+            for mid-turn, after someone has shot at one.
+          */}
+          {terrain.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="eyebrow accent">Terrain with rules of its own</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {terrain.map((piece) => {
+                  const isOpen = expandedScenarioId === piece.slug;
+                  return (
+                    <div
+                      key={piece.slug}
+                      className="bg-theme-surface border border-theme-border rounded-md overflow-hidden"
+                    >
+                      <button
+                        onClick={() => setExpandedScenarioId(isOpen ? '' : piece.slug)}
+                        className="w-full min-h-[44px] px-4 py-3 flex items-center justify-between text-left hover:bg-theme-elevated transition-colors"
+                        aria-expanded={isOpen}
+                      >
+                        <span className="min-w-0">
+                          <span className="block font-gothic font-bold text-sm text-theme-text truncate">
+                            {piece.title}
+                          </span>
+                          <span className="eyebrow text-theme-muted">Usable in any game</span>
+                        </span>
+                        {isOpen
+                          ? <ChevronUp className="w-5 h-5 text-theme-primary flex-shrink-0" />
+                          : <ChevronDown className="w-5 h-5 text-theme-muted flex-shrink-0" />}
+                      </button>
+                      {isOpen && (
+                        <div className="px-4 pb-4 border-t border-theme-border pt-3">
+                          <RulesProse source={piece.body} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             {filteredScenarios.map((scen) => {
               const isExpanded = expandedScenarioId === scen.slug;
@@ -488,6 +553,15 @@ export const CodexView: React.FC = () => {
                         <p className="text-xs font-mono text-theme-muted italic">
                           {scen.tagline}
                         </p>
+                        {/*
+                          Which book. Both number their scenarios from I, so
+                          "I. The Ruins of Nineveh Novus" sits in the same list
+                          as "I. Claim No Man's Land" and the numeral alone
+                          says nothing about which one a player is agreeing to.
+                        */}
+                        {scen.source === 'carcass-front' && (
+                          <span className="eyebrow accent mt-1 inline-block">Carcass Front</span>
+                        )}
                       </div>
                     </div>
                     {isExpanded ? <ChevronUp className="w-5 h-5 text-theme-primary" /> : <ChevronDown className="w-5 h-5 text-theme-muted" />}
@@ -499,7 +573,7 @@ export const CodexView: React.FC = () => {
                       {/* Scenario Tactical Map Graphic with Lightbox Trigger */}
                       {scen.mapImage && (
                         <div 
-                          onClick={() => setLightboxMap({ src: scen.mapImage, name: scen.name })}
+                          onClick={() => setLightboxMap({ src: scen.mapImage!, name: scen.name })}
                           className="bg-theme-surface border-2 border-theme-primary/60 hover:border-theme-primary rounded-md p-4 space-y-2 max-w-2xl mx-auto shadow-2xl cursor-pointer group transition-all"
                         >
                           <div className="flex items-center justify-between text-xs font-mono text-theme-primary border-b border-theme-border pb-2 font-bold uppercase">

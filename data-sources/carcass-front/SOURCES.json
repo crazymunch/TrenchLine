@@ -1,0 +1,95 @@
+{
+  "_comment": [
+    "Carcass Front — the starter set and supplement, published as a GitHub",
+    "release on this repository. Fetch with: npm run rules:carcass",
+    "",
+    "Same convention as data-sources/rulebook/SOURCES.json: the extracted text",
+    "under extracted/ IS committed and is what the pipeline reads, and a PDF",
+    "over ~5 MB is gitignored and fetched from the release instead.",
+    "",
+    "Every asset records the sha256 of the file this repository was built",
+    "against. A download that does not match is refused: a source that is not",
+    "the source we verified against is worse than no source."
+  ],
+  "release": {
+    "repo": "crazymunch/TrenchLine",
+    "releaseId": 381606718,
+    "name": "Carcass Front",
+    "note": "A DRAFT release, so it has no tag and no public download URL. Assets are fetched through the authenticated api.github.com asset endpoint by id."
+  },
+  "assets": [
+    {
+      "file": "carcass-front-book.pdf",
+      "assetId": 541836654,
+      "bytes": 34083788,
+      "sha256": "b72bd6b607afe868b10e0324e6393cf110d47b36d23d0aba16c09b0fe88c05b1",
+      "extract": "extracted/carcass-front-book.txt",
+      "committed": false,
+      "role": "The supplement. Two Faction Lists with four Warband Variants, a Mercenary, five scenarios, the terrain piece rules, a random scenario generator, new Patrons, two campaigns and the Carcass Front Exploration Tables.",
+      "note": "The single-page edition, not the spread-page one: spreads interleave two pages of columns into one extraction pass and the text comes out shuffled."
+    },
+    {
+      "file": "quickstart-rules-reference.pdf",
+      "assetId": 541836586,
+      "bytes": 2101103,
+      "sha256": "71aaef7db100a9e815239f8efc0fc66fc6688ac1288b0df65fa4dafc364e702a",
+      "extract": "extracted/quickstart-rules-reference.txt",
+      "committed": true,
+      "role": "Introductory rules for the starter set. A cut-down restatement of the core rules rather than new content — held for cross-checking, not parsed."
+    },
+    {
+      "file": "the-world-is-burning-scenario.pdf",
+      "assetId": 541838009,
+      "bytes": 1296256,
+      "sha256": "a2e77604d93683bda0c830c5cf3f4aef0ef37425656403711c3ae69088621dc6",
+      "extract": "extracted/the-world-is-burning-scenario.txt",
+      "committed": true,
+      "role": "The quickstart scenario that ships with the starter set."
+    },
+    {
+      "file": "heretic-naval-raider-warband.pdf",
+      "assetId": 541836506,
+      "bytes": 1517832,
+      "sha256": "eb40f2943d49b590d9608f271d1a707deb687e15e2e03ed5e448d1fe1b3e5650",
+      "extract": "extracted/heretic-naval-raider-warband.txt",
+      "committed": true,
+      "role": "The introductory Heretic Naval Raiders roster: a fixed starter list, not a faction list. The full entries are in the book."
+    },
+    {
+      "file": "procession-of-the-sacred-affliction-warband.pdf",
+      "assetId": 541837981,
+      "bytes": 1604440,
+      "sha256": "1a0328d471f0b1be9d6f73857b7d64b57a8bfb85ed318984e66e789a0fbcfd12",
+      "extract": "extracted/procession-of-the-sacred-affliction-warband.txt",
+      "committed": true,
+      "role": "The introductory Procession of the Sacred Affliction roster. As above."
+    },
+    {
+      "file": "vision-cards.pdf",
+      "assetId": 541836037,
+      "bytes": 9501863,
+      "sha256": "3b67f97d4451c82cb12c4b4f03e1dea8d09234ea40f28e23d669ad8c190eef77",
+      "extract": "extracted/vision-cards.txt",
+      "committed": false,
+      "role": "The Vision Cards used in the Carcass Front Campaign, as printable cards."
+    },
+    {
+      "file": "campaign-tracker.pdf",
+      "assetId": 541831321,
+      "bytes": 1546433,
+      "sha256": "fdce5afc64710532297df11edbc73c7b92cbf79058dec0559fa62ba6215280d0",
+      "extract": "extracted/campaign-tracker.txt",
+      "committed": true,
+      "role": "The printable Campaign Tracker sheet. Image-only — it extracts to nothing, and is held for completeness rather than parsed."
+    }
+  ],
+  "_notAdded": [
+    "Three release assets are print material with no rules content and are not",
+    "fetched: the spread-page edition of the book (a duplicate of the",
+    "single-page one), Carcass.Front.Map.pdf, and CF.token.sheet_V1.pdf.",
+    "",
+    "Hell.on.Earth.Weather.Events.pdf is in this release too, but it was",
+    "supplied separately first and already lives in data-sources/rulebook/",
+    "with the same sha256. It is not duplicated here."
+  ]
+}

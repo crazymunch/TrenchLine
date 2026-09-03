@@ -9,6 +9,8 @@ import {
   SUCCESS_LABEL, INJURY_LABEL, INJURY_EFFECT,
   type SuccessRoll, type InjuryRoll,
 } from '../../rules/dice';
+import { coverDice, SMOG_STORM } from '../../rules/weather';
+import type { WeatherEvent } from '../../types/catalogue';
 import { Dices, Droplet, Sparkles } from 'lucide-react';
 
 /**
@@ -43,6 +45,14 @@ import { Dices, Droplet, Sparkles } from 'lucide-react';
 interface AttackCalculatorModalProps {
   attacker: ActiveUnit;
   onClose: () => void;
+  /**
+   * The Weather Event in effect, if the players generated one.
+   *
+   * Only Smog Storm reaches this far — "The Cover/Defended Obstacle Modifiers
+   * is -2 DICE instead of -1 DICE" — so the cover chips change value rather
+   * than the player having to remember and hand-apply it.
+   */
+  weather?: WeatherEvent | null;
   onApplyDamage?: (wounds: number, bloodMarkers: number, isDowned: boolean, isOOA: boolean) => void;
 }
 
@@ -56,18 +66,22 @@ type Modifier = {
   note: string;
 };
 
-const MODIFIERS: Modifier[] = [
+/*
+  `cover` takes the value Hell on Earth's Smog Storm sets, which is why the two
+  cover rows are built from a function rather than written as constants.
+*/
+const modifiers = (cover: -1 | -2): Modifier[] => [
   // Ranged Attack Modifiers, verbatim from the Comprehensive Rules.
   { id: 'elevated', on: 'ranged', dice: +1, label: 'Elevated position',
     note: 'The attacker is at least 3" higher than the target.' },
-  { id: 'cover-r', on: 'ranged', dice: -1, label: 'Target in cover',
+  { id: 'cover-r', on: 'ranged', dice: cover, label: 'Target in cover',
     note: 'One tier. There is no light and heavy cover.' },
   { id: 'long-range', on: 'ranged', dice: -1, label: 'Long Range',
     note: 'The target is further than half the weapon’s range.' },
   // Melee Attack Modifiers.
   { id: 'diving-charge', on: 'melee', dice: +1, label: 'Diving Charge',
     note: 'A Diving Charge specifically — an ordinary charge adds nothing.' },
-  { id: 'defended', on: 'melee', dice: -1, label: 'Defended obstacle',
+  { id: 'defended', on: 'melee', dice: cover, label: 'Defended obstacle',
     note: 'The target is in cover and the terrain lies between you.' },
   { id: 'off-hand', on: 'melee', dice: -1, label: 'Off-Hand Weapon',
     note: 'The second of two Melee Attacks from one Fight ACTION.' },
@@ -76,6 +90,7 @@ const MODIFIERS: Modifier[] = [
 export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   attacker,
   onClose,
+  weather,
 }) => {
   const [weapon, setWeapon] = useState<EquippedWeapon | null>(attacker.equippedWeapons[0] ?? null);
 
@@ -106,7 +121,9 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   const isMelee = weapon?.type === 'Melee' || weapon?.range === 'Melee'
     || Boolean(weapon?.range?.startsWith('Melee'));
   const kind: 'ranged' | 'melee' = isMelee ? 'melee' : 'ranged';
-  const available = MODIFIERS.filter((m) => m.on === kind);
+  const cover = coverDice(weather);
+  const available = useMemo(
+    () => modifiers(cover).filter((m) => m.on === kind), [cover, kind]);
 
   /*
     The weapon's own modifier is +/- DICE too, and the roster stores it as text
@@ -227,6 +244,11 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
           </label>
           <p className="text-theme-muted leading-relaxed">
             Every modifier is +/- DICE. Opposite ones cancel before anything is rolled.
+            {weather?.name === SMOG_STORM && (
+              <span className="text-theme-primary">
+                {' '}Smog Storm is in effect: Cover and Defended Obstacle are -2 DICE.
+              </span>
+            )}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {available.map((m) => (

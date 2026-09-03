@@ -2,7 +2,7 @@
 // Produced by `npm run rules:build` from data-sources/.
 // Ruleset: trenchline
 // Base:    Fawkstrot11/TrenchCrusade@1b463a8e2eaafc9d6722ae6eeda93e296fb7012b
-// Layers:  dispatch-01
+// Layers:  dispatch-01, carcass-front
 // See docs/RULESET-MODEL.md.
 
 import type { Dataset } from '../../types/catalogue';
@@ -18971,7 +18971,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19098,7 +19099,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19223,7 +19225,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -19471,7 +19474,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "New Antioch",
-        "Trench Pilgrims"
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
       ]
     },
     {
@@ -20650,7 +20654,8 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": [
         "Heretic Legion",
-        "Court of the Seven-Headed Serpent"
+        "Court of the Seven-Headed Serpent",
+        "Heretic Naval Raiders"
       ]
     },
     {
@@ -29087,6 +29092,771 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-prophet",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-prophet",
+      "name": "Lazarist Prophet",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE",
+        "LEADER"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 90,
+        "glory": 0
+      },
+      "min": 1,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-loudspeakers-action",
+          "name": "Loudspeakers ACTION",
+          "description": "A Lazarist Prophet can take a Loudspeakers ACTION. If they do so, take a Risky Success Roll for the model and add +2 DICE to the roll. If the roll is a Failure, the Lazarist Prophet’s Activation ends immediately. If the roll is a Success or Critical Success, you can move all friendly models within 8” of the Lazarist Prophet up to 3”. They must end the move as close as possible to the nearest enemy model that was visible to them at the start of the move. This move can be used to bring a model within 1” of an enemy model, in which case the model counts as charging. If no enemy models are visible, they can move normally."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-gift-of-the-sacrament-action",
+          "name": "Gift of the Sacrament ACTION",
+          "description": "When you Activate a Lazarist Prophet they can take a Gift of the Sacrament ACTION as part of the Activation. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success, remove 1 BLOOD MARKER or 1 INFECTION MARKER from a friendly model within 6” of the Lazarist Prophet. If the roll is a Critical Success, remove either 3 BLOOD MARKERS or 3 INFECTION MARKERS from a friendly model within 6” of the Lazarist Prophet instead of only 1. The Lazarist Prophet can use this ACTION to heal themselves."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-prophet-memento-mori",
+          "name": "Memento Mori",
+          "description": "The first time the Lazarist Prophet suffers an Out of Action result on the Injury Table, it is treated as a No Effect result instead. A Lazarist Prophet cannot have the TOUGH Keyword."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Sacred Affliction Warband must include 1 Lazarist Prophet. The Lazarist prophets who come to lead Processions of the Sacred Affliction are not motivated by desire or their own sense of destiny. None that are called “Father” by the afflicted ever set themselves on such a path. Whoever the prophet once was, the turn of the Rota Fortunae, the wheel of fortune, and God’s Will have wrought their works on them most thoroughly, afflicting them in body and mind. Only once they have shed all trace of Earthly treasures and all Pride in their old existence do they truly perceive and proselytise on the teachings of Saint Lazarus: of God’s unending love and His power over death, and how the Lord brings new life even when all hope seems lost.",
+      "battlekitNote": "A Lazarist Prophet can have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-communicant",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-communicant",
+      "name": "Lazarist Communicant",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE",
+        "REGENERATE 1",
+        "STRONG",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-3 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "40mm"
+      },
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-communicant-bodyguard",
+          "name": "Bodyguard",
+          "description": "If a friendly PILGRIM model within 1” of a Lazarist Communicant is hit by a Ranged Attack or Melee Attack, you can say that the Lazarist Communicant will take the hit. If you do so, make an Injury Roll for the Lazarist Communicant instead of the original target. This ability cannot be used against attacks that have the BLAST Keyword."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-communicant-the-communicant-cross-or-helm",
+          "name": "The Communicant Cross or Helm",
+          "description": "A Lazarist Communicant counts as having the following pieces of Equipment at no cost in 👑: Iron Capirote; Gas Mask."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Communicant is a rare sight in most Processions of the Sacred Affliction, for their nature typically decrees that they either recover fully from wounds or are slain by them. They are still God’s creatures, however, and even when divinely transformed the sinful flesh of man can receive harm or taint that even Christ’s communion cannot heal. More commonly, Communicants may lose their way in mundane matters, forgetting to eat, drink or care for themselves for long stretches of time, particularly if left alone without the care of others when their compatriots are slain. In time these hapless unfortunates sometimes find their way to the Processions in the hope that they can be healed, or at least find new purpose in their aimless wandering. Those who have lost their Communicant Crosses must accept a modified Helm in its place, with a faceplate that has spikes through the eyeholes.",
+      "battlekitNote": "A Lazarist Communicant has a Communicant Cross or Helm (▶ see below). The Lazarist Communicant can also have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables except for Martyrdom Pills.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-lazarist-castigator",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-lazarist-castigator",
+      "name": "Lazarist Castigator",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "ELITE"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 50,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-enforced-orthodoxy-action",
+          "name": "Enforced Orthodoxy ACTION",
+          "description": "A Lazarist Castigator can take an Enforced Orthodoxy ACTION. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, the Lazarist Castigator’s Activation ends immediately. If the roll is a Success or Critical Success, all friendly models that are within 8” of Lazarist Castigator that are Down immediately stand back up at no cost to their movement."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-whip-of-god",
+          "name": "Whip of God",
+          "description": "When a Lazarist Castigator makes a Melee Attack they can target a friendly model that is within 1” instead of an enemy model, and can add -1 INJURY DICE to the Injury Roll if they do so. Set aside a D6 each time a Lazarist Castigator attacks a friendly model and takes them Out of Action with a Melee Attack. The next time the Lazarist Castigator’s Warband is forced to take a Morale Check, each D6 that was put aside adds +1 DICE to the roll and is then discarded."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-lazarist-castigator-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "A Lazarist Castigator can have the STRONG Keyword at a cost of +5 👑."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Lazarist Castigators take on the role of adjudicator in a Procession of the Sacred Affliction. Their ear takes confession, their gaze judges all, and their hand weighs whether pilgrims carry the commensurate load for their personal burden of sin. If it is too great the Castigator will see that it is lightened, but if it is too little the Castigator will assign an appropriate additional weight in stones for the sinner to carry slung about their neck. In battle the Castigator reminds pilgrims often of their duty, both to God and to one another, to overcome their travails and cast aside their burdens around the necks of God’s enemies.",
+      "battlekitNote": "A Lazarist Castigator can have any Battlekit from the Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-leper-pilgrim",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-leper-pilgrims",
+      "name": "Leper-Pilgrim",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-leper-pilgrim-resurrection",
+          "name": "Resurrection",
+          "description": "If a Leper Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 👑. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Battle Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-leper-pilgrim-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "When you add a Leper-Pilgrim or Martyr Penitent to your Warband you can purchase the STRONG Keyword for them for 5 👑. You cannot have a total of more than 3 models with Zealot Strength in your Warband at any one time. Models with Zealot Strength increase their base size to 32mm."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Leper-Pilgrims are drawn from all peoples of the Faith and all walks of life. They are unified by their Faith in God and in their fellow pilgrims to jointly bear the burden of their afflictions and follow the path the Lord has made for them. The time for redemption is now, not tomorrow.",
+      "battlekitNote": "A Leper-Pilgrim can have any Battlekit from Procession of the Sacred Affliction Warband Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-martyr-penitent",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-leper-pilgrims",
+      "name": "Martyr Penitent",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-martyr-penitent-resurrection",
+          "name": "Resurrection",
+          "description": "If a Leper Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 👑. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Battle Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-martyr-penitent-zealot-strength",
+          "name": "Zealot Strength",
+          "description": "When you add a Leper-Pilgrim or Martyr Penitent to your Warband you can purchase the STRONG Keyword for them for 5 👑. You cannot have a total of more than 3 models with Zealot Strength in your Warband at any one time. Models with Zealot Strength increase their base size to 32mm."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Leper-Pilgrims are drawn from all peoples of the Faith and all walks of life. They are unified by their Faith in God and in their fellow pilgrims to jointly bear the burden of their afflictions and follow the path the Lord has made for them. The time for redemption is now, not tomorrow.",
+      "battlekitNote": "A Leper-Pilgrim can have any Battlekit from Procession of the Sacred Affliction Warband Armoury Tables.",
+      "secondaryProfile": true,
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-stigmatic-nuns",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-stigmatic-nuns",
+      "name": "Stigmatic Nuns",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "REGENERATE 1"
+      ],
+      "stats": {
+        "movement": "8\"/Infantry",
+        "movementInches": 8,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 60,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 4,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-stigmatic-nuns-agile",
+          "name": "Agile",
+          "description": "Add +1 DICE to Risky Success Roll when a Stigmatic Nun Climbs, Jumps, or makes a Diving Charge, or takes a Dash ACTION."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-stigmatic-nuns-blessed-stigmata",
+          "name": "Blessed Stigmata",
+          "description": "Each time you remove a BLOOD MARKER from a Stigmatic Nun due to the REGENERATE 1 Keyword, place 1 BLESSING MARKER next to the Stigmatic Nun."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Several orders of Stigmatic Nun have ties to the Processions – some sisterhoods are even blessed with the Sacred Affliction themselves. They often join Processions on long pilgrimages and share their burdens along the road. Their keen blades and martial spirit are greatly welcome in battle.",
+      "battlekitNote": "A Stigmatic Nun can have Battlekit from the Procession of the Sacred Affliction Warband Armoury Table. The only Ranged Weapons they can have are Automatic Pistols and Pistols, and the only Grenades they can have are Warcrosses. No restrictions apply to any other types of Battlekit.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-ecclesiastic-prisoners",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-ecclesiastic-prisoners",
+      "name": "Ecclesiastic Prisoners",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-awaited",
+          "name": "Awaited",
+          "description": "If an Ecclesiastic Prisoner is taken Out of Action when their Martyrdom Device is triggered, do not count this towards the number of models from the Warband that have been taken Out of Action for Morale Checks."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-feeble-flailing",
+          "name": "Feeble Flailing",
+          "description": "An Ecclesiastic Prisoner can make a Melee Attack even though it does not have a Melee Weapon. If it does so, add -1 DICE to the Success Roll."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-mad-dash",
+          "name": "Mad Dash",
+          "description": "Add +1 DICE to the Risky Success Roll for an Ecclesiastic Prisoner that is taking a Dash ACTION."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-ecclesiastic-prisoners-minenhelm-slam",
+          "name": "Minenhelm Slam",
+          "description": "An Ecclesiastic Prisoner that has a Minenhelm can make a Melee Attack even though they do not have a Melee Weapon."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Some are found to be beyond the gift of God’s love or redemption through toil and burden, so they seek a final sacrifice in the hope it can somehow cleanse their tarnished soul. A sad moment it may be for their Procession to have failed one of their number so, but a joyous hope that the Prisoner’s spiritual unburdening can at least erase the burdens of Heretic souls in the process. Particularly determined Prisoners of the Sacred Affliction are permitted to request a Minenhelm in place of the usual Martyrdom Device, ensuring that their last act of redemption will be truly and absolutely final.",
+      "battlekitNote": "Up to 4 Ecclesiastic Prisoners can have a Martyrdom Device for 25 👑 (▶ see below). They cannot have any other Battlekit. Ecclesiastic Prisoners that have a Martyrdom Device can upgrade it to a Minenhelm for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-procession-of-the-sacred-affliction-anchorite-shrine",
+      "entryId": "cf-entry-procession-of-the-sacred-affliction-anchorite-shrine",
+      "name": "Anchorite Shrine",
+      "factionId": "Procession of the Sacred Affliction",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "PILGRIM",
+        "FEAR",
+        "NEGATE SHRAPNEL",
+        "STRONG",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-",
+        "melee": "+2 DICE",
+        "armour": "-3",
+        "base": "60mm"
+      },
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-anchorite-shrine-broken-on-the-wheel",
+          "name": "Broken on the Wheel",
+          "description": "At the start of each game, before deployment, you can say that one Leper-Pilgrim or Ecclesiastic Prisoner will be broken on the wheel to show their piety and devotion. The model you choose is permanently removed from your Warband, but in a campaign you can redistribute their Battlekit to other models that would be allowed to have it in the following Quartermaster Step. The Anchorite Shrine then shatters the bones of the volunteer and carries the broken victim to battle upon its great wheel. Injuries that would be inflicted on the Anchorite Shrine are instead inflicted on its unfortunate victim, until the victim finally passes away. This is represented by the following special rules, which apply to the Anchorite Shrine until it suffers an Out of Action result on the Injury Table: It has an Armour Characteristic of 0 and does not have the NEGATE SHRAPNEL and TOUGH Keywords. It treats Down results as Minor Hit results. The first time the Anchorite Shrine suffers an Out of Action result on the Injury Table, it is treated as a No Effect result. When this happens, any BLOOD MARKERS on the Anchorite Shire are removed, and from then on these special rules no longer apply to the model."
+        },
+        {
+          "id": "cf-ability-procession-of-the-sacred-affliction-anchorite-shrine-symphony-of-slaughter",
+          "name": "Symphony of Slaughter",
+          "description": "An Anchorite Shrine is armed with two 1-Handed Melee Weapons (the Catherine Wheel and a Bonebreaker Mace). When it makes a Melee Attack, it can either attack once using either its Catherine Wheel or the Bonebreaker Mace, or twice, first with the Catherine Wheel and second with its Bonebreaker Mace (the Off-Hand Weapon modifier applies to the attack made with the Bonebreaker Mace). Note that both Weapons have the RISKY Keyword, which means that the Anchorite Shrine’s Activation ends immediately if the Success Roll for an attack made with either weapon is a Failure."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "In recognition of their ultimate devotion, Anchorite Shrines hold special significance for Processions. The pilot-monk interred within has taken on the burden of imprisonment inside an unfeeling machine, not only for their own soul’s sake, but for the sake of all the Faithful everywhere. As such they are celebrated members, often brightly garlanded and covered with prayers, talismans and keepsakes from the pilgrims. Where the path of an Anchorite Shrine may ultimately lead, none but the Almighty can say, but for however long an Anchorite Shrine may stay with a Procession it is beloved by all.",
+      "battlekitNote": "An Anchorite Shrine has a Bonebreaker Mace and a Catherine Wheel (▶ see below). These weapons are built into the Anchorite Shrine and cannot be removed or lost over the course of a campaign for any reason. The Shrine cannot have any other Battlekit.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-captain",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-captain",
+      "name": "Heretic Captain",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "LEADER",
+        "TOUGH"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 80,
+        "glory": 0
+      },
+      "min": 1,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-captain-puppet-master-action",
+          "name": "Puppet Master ACTION",
+          "description": "A Heretic Captain can take a Puppet Master ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the Heretic Captain’s Activation ends immediately. If the roll is a Success or Critical Success, pick 1 model (friend or foe) other than the Heretic Captain, that is within 12” of the Heretic Captain, and in their Line of Sight. You can move the model D6”. The move must be in a straight line, but can be in any direction, and can be used to make the model move within 1” of an enemy, make a retreat move, Climb, Jump, or Jump Down. The model cannot make a Diving Charge and does not count as charging if it finishes the move within 1” of an enemy model."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "A Heretic Naval Raiders Warband must include 1 Heretic Captain. The Heretic Captain is the absolute master of their ship and every soul aboard it. They are high priests and prophets to their crew, delivering sermons and making sacrifices upon the blood-slick deck. A Heretic Captain has pledged themselves wholly to one of the Seven-Headed Serpents, bartering their immortal soul in exchange for absolute power over their small mortal kingdom bordered only by wood or iron. They are strange, driven men, given to greed, madness and obsession, caught in an eternal geas to seek and plunder for their infernal masters to repay debts that can never be fulfilled.",
+      "battlekitNote": "A Heretic Captain can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-abyssal-commando",
+      "entryId": "cf-entry-heretic-naval-raiders-abyssal-commando",
+      "name": "Abyssal Commando",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "INFILTRATOR"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 90,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-mist-shrouded",
+          "name": "Mist-shrouded",
+          "description": "Add -1 DICE to Ranged Attacks that target an Abyssal Commando."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-fade-action",
+          "name": "Fade ACTION",
+          "description": "An Abyssal Commando can take a Fade ACTION if they are in contact with a terrain that is composed of water or a terrain piece at least ½” high. If they do so, take a Risky Success Roll for the model and add +1 DICE to the roll. If the roll is a Failure, the Abyssal Commando’s Activation ends immediately. If the roll is a Success or Critical Success, enemy models cannot choose the Abyssal Commando as the target for a Ranged Attack or Charge until the Abyssal Commando moves, charges, retreats, makes a Ranged Attack, or an enemy model moves within 1.5” of them. The Abyssal Commando can be hit if they are within the blast radius of a Weapon with the BLAST Keyword."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-abyssal-commando-abyssal-armour",
+          "name": "Abyssal Armour",
+          "description": "An Abyssal Commando in Abyssal Armour counts any terrain that is partially, or fully, made of water (such as pools, streams, and marshes) as Open terrain. In addition, when touching such terrain they may use a Fade ACTION and count as in Cover if the terrain’s area is larger than a 32mm base."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "The Abyssal Commando is a Death Commando who chooses to stalk the depths alone, often invading harbours and estuaries to doom ships hiding from the raiders upon the high seas. Outside the water Abyssal commandos are surrounded by a freezing mist born of the eternal cold that they carry with them from the lightless depths. They arise to work alongside Raider crews in response to a distant call only they can hear.",
+      "battlekitNote": "An Abyssal Commando can have Battlekit from the Heretic Legion Armoury Tables. The only Ranged Weapons they can have are Silenced Pistols and Tormentor Chains, and the only Grenades they can have are Gas Grenades. No restrictions apply to any other Types of Battlekit. An Abyssal Commando with Reinforced Armour can upgrade it to Abyssal Armour for 5 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-drowned-chorister",
+      "entryId": "cf-entry-heretic-naval-raiders-drowned-chorister",
+      "name": "Drowned Chorister",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Elite"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ELITE",
+        "FEAR"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-2 DICE",
+        "melee": "+2 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 65,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-drowned-chorister-unholy-hymns",
+          "name": "Unholy Hymns",
+          "description": "Add -1 DICE to Success Rolls taken for enemy models that are within 8” of one or more Drowned Choristers."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-drowned-chorister-leviathan-bell",
+          "name": "Leviathan Bell",
+          "description": "You do not have to take a Risky Success Roll for a Drowned Chorister with a Leviathan Bell when they Climb or Jump, nor make an Injury Roll if they Fall."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "It is said that those who experience near-death through drowning speak of hearing something in the deeps, a song or call or roar they cannot explain. Some can never shake the memory – it haunts their dreams and their waking world until they receive revelation and consummation. Doomed to search for it forever after, some take up the Leviathan bell, a sealed casque of abyssal waters. Within the bell they are drowned and reborn, recalling the sonorous calls of the darkest depths, a sound fit to cloud the mind and chill the marrow of any mortal souls who hear it. Drowned Choristers float eternally in unseen waters, their binding-chains stirred by ghostly currents.",
+      "battlekitNote": "A Drowned Chorister can have any Battlekit from the Heretic Naval Raiders Armoury Tables. A Drowned Chorister can have a Leviathan Bell for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-raider",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-raiders",
+      "name": "Heretic Raider",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-raider-heretic-raider-legionnaires",
+          "name": "Heretic Raider Legionnaires",
+          "description": "You can upgrade Heretic Raiders in your Warband to Heretic Raider Legionnaires, at a cost of 10 👑 each. You cannot upgrade a Heretic Raider if that would result in there being more Heretic Raider Legionnaires in your Warband than there are Heretic Raiders. When you upgrade a Heretic Raider to a Heretic Raider Legionnaire, you can change either their Ranged Characteristic or their Melee Characteristic from 0 to +1."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders make up the majority of the warband, sworn to serve beneath the Heretic Captain until Heaven cracks and the seas drain away. They are quick and well-armed, equipped with the pick of the plunder from a hundred raids. Heretic Raider Legionnaires are veterans of the crew, often trusted gunners and topside men, who vie to be the first to step ashore or invade a foreign deck.",
+      "battlekitNote": "A Heretic Raider or Heretic Raider Legionnaire can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-heretic-raider-legionnaire",
+      "entryId": "cf-entry-heretic-naval-raiders-heretic-raiders",
+      "name": "Heretic Raider Legionnaire",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "See below",
+        "melee": "See below",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-heretic-raider-legionnaire-heretic-raider-legionnaires",
+          "name": "Heretic Raider Legionnaires",
+          "description": "You can upgrade Heretic Raiders in your Warband to Heretic Raider Legionnaires, at a cost of 10 👑 each. You cannot upgrade a Heretic Raider if that would result in there being more Heretic Raider Legionnaires in your Warband than there are Heretic Raiders. When you upgrade a Heretic Raider to a Heretic Raider Legionnaire, you can change either their Ranged Characteristic or their Melee Characteristic from 0 to +1."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders make up the majority of the warband, sworn to serve beneath the Heretic Captain until Heaven cracks and the seas drain away. They are quick and well-armed, equipped with the pick of the plunder from a hundred raids. Heretic Raider Legionnaires are veterans of the crew, often trusted gunners and topside men, who vie to be the first to step ashore or invade a foreign deck.",
+      "battlekitNote": "A Heretic Raider or Heretic Raider Legionnaire can have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "secondaryProfile": true,
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-wretched",
+      "entryId": "cf-entry-heretic-naval-raiders-wretched",
+      "name": "Wretched",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "-1 DICE",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "25mm"
+      },
+      "cost": {
+        "ducats": 25,
+        "glory": 0
+      },
+      "min": null,
+      "max": null,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-chattel",
+          "name": "Chattel",
+          "description": "In a campaign, Wretched can be sold in the Quartermaster Step for 25 👑 plus half the cost in 👑 of any Battlekit they have."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-dark-blessing",
+          "name": "Dark Blessing",
+          "description": "When a Wretched is taken Out of Action, place 1 BLESSING MARKER next to the nearest friendly model with the ELITE and HERETIC Keywords. If 2 or more eligible models are equally close to the Wretched, you can choose which receives the BLESSING MARKER."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-wretched-law-of-hell",
+          "name": "Law of Hell",
+          "description": "If an attack made by a Wretched takes an enemy model with the ELITE Keyword out of Action, the Wretched model gains its freedom and is immediately removed from the game. It no longer counts as being part of the Warband for the purposes of Morale Checks and is removed from the Warband Roster."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Heretic Raiders have depopulated entire coastlines with their incessant attacks across the generations. Huge numbers of souls are taken by them as plunder to be sold to flesh-markets and caravans of Sin, though the strongest may be kept by the raiders themselves for sport and toil. Such Wretched are branded with cursed, flesh-eating tattoos as a safeguard against escape and heavily drugged to degrade and dull their will, while still leaving their aggression intact.",
+      "battlekitNote": "Wretched can have any Battlekit from the Heretic Naval Raiders Armoury Tables that costs up to 10 👑. A Wretched must have at least 1 Weapon – they cannot be sent into battle completely unarmed.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-anointed-heretic-raiders",
+      "entryId": "cf-entry-heretic-naval-raiders-anointed-heretic-raiders",
+      "name": "Anointed Heretic Raiders",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC",
+        "STRONG"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "-2",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 95,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 2,
+      "abilities": [],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Anointed Heretic Raiders are just as heavily armed and armoured as their shore-bound kin. Their brutish strength and damned souls make them perfect first mates and bosuns. On the ship they brutally enforce their captain’s word as law.",
+      "battlekitNote": "An Anointed Heretic Raider always has Reinforced Armour and an Infernal Brand (▶ see Standard Battlekit in the Trench Crusade Rulebook). This Battlekit cannot be removed or lost throughout the campaign for any reason. The Injury Modifier for the Armour is already included in the model’s profile above. They can also have any Battlekit from the Heretic Naval Raiders Armoury Tables.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-unit-heretic-naval-raiders-sea-hag",
+      "entryId": "cf-entry-heretic-naval-raiders-sea-hag",
+      "name": "Sea Hag",
+      "factionId": "Heretic Naval Raiders",
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "HERETIC",
+        "ARTIFICIAL",
+        "NEGATE FEAR",
+        "NEGATE GAS"
+      ],
+      "stats": {
+        "movement": "6\"/Infantry",
+        "movementInches": 6,
+        "movementType": "Infantry",
+        "ranged": "+0 DICE",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "base": "32mm"
+      },
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "min": 0,
+      "max": 1,
+      "abilities": [
+        {
+          "id": "cf-ability-heretic-naval-raiders-sea-hag-abiotic-life",
+          "name": "Abiotic Life",
+          "description": "Add -1 INJURY DICE for a Sea Hag that has been hit by an attack with the GAS Keyword."
+        },
+        {
+          "id": "cf-ability-heretic-naval-raiders-sea-hag-levitate",
+          "name": "Levitate",
+          "description": "You do not have to take a Risky Success Roll for a Sea Hag when they Climb or Jump, nor make an Injury Roll if they Fall."
+        }
+      ],
+      "options": [],
+      "battlekit": [],
+      "constraints": [],
+      "modifiers": [],
+      "lore": "Just as Artillery Witches stalk the battlefields on land, Sea Hags hunt upon the waves. They summon forth an endless tide of infernal sea mines to plague shipping and coastlines, paralysing movement through even the mere rumour of their presence. It is unlikely that the Heretics could have won so many naval victories without the baleful influence of the Sea Hags, for their dreadful weapons have been the doom of many a proud fighting ship.",
+      "battlekitNote": "A Sea Hag always has Infernal Bombs (▶ see the next page), and can have any Battlekit from the Heretic Naval Raiders Armoury Tables except for Ranged Weapons or Grenades. A Sea Hag may upgrade its Infernal Bombs to Infernal Mines for 10 👑.",
+      "sourceFile": "carcass-front-book.pdf"
     }
   ],
   "weapons": [
@@ -54782,6 +55552,358 @@ export const DATASET: Dataset = {
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-bells-of-warding",
+      "name": "Bells of Warding",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HELD",
+        "LEADER"
+      ],
+      "rules": "Gathering Call: Add +1 DICE to Risky Success Rolls for friendly models that are taking a Dash ACTION and are within 4” of one or more models with Bells of Warding or a Musical Instrument.",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only",
+        "Limit: 1"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "In many places the afflicted are required to announce their presence and status by ringing bells. In a Procession of Sacred Affliction, those who join have their bells gathered together and rung by a chosen member, the clangour declaring their unity and serving as a helpful guide to those of them blessed enough to be without sight.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-blessed-millstone",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-blessed-millstone",
+      "name": "Blessed Millstone",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Weighted with Sin: Subtract 1” from the Movement Characteristic of a model with a Blessed Millstone, but add +2 INJURY DICE because of the Punishing Millstones special rule instead of the usual +1 INJURY DICE. If the model takes an enemy Out of Action with a Melee Attack they can, at the option of the player, be freed of the crushing weight of the Blessed Millstone, regaining their full Movement Characteristic plus 1” additional (the freedom of a lightened soul), and using the Punishing Millstones special rule normally from then on. After the battle you can return the Blessed Millstone to the model or bestow it on a different model in the Warband.",
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Leper-Pilgrims only",
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "Followers of the Procession of Sacred Affliction carry weighty millstones as reminders of their sins. The most sinful in their past lives cry out for the Blessed Millstone, a consecrated object carved from the heaviest available stone, laden with the prayers and confessions of penitent souls.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-great-flail-scourge",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-great-flail-scourge",
+      "name": "Great Flail/Scourge",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "CUMBERSOME",
+        "HEAVY"
+      ],
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 3"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The Procession of the Sacred Affliction favour using the symbolic weight of their sins to educate Heretics, wielding flails made of stones bound with rope of woven hemp with ecstatic gusto.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-holy-icon-armour",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-holy-icon-armour",
+      "name": "Holy Icon Armour",
+      "type": "Armour",
+      "range": "Melee",
+      "keywords": [
+        "-1 INJURY MODIFIER",
+        "IMPERVIOUS"
+      ],
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "This suit of Armour is made of blessed icons and scripture text within decorative scrollwork, written with the blood of saints.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-penitents-phylactery",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-penitents-phylactery",
+      "name": "Penitent’s Phylactery",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Repudiation of Sin: When a model with a Penitent’s Phylactery makes a Melee Attack that targets a model with the HERETIC, THE COURT or BLACK GRAIL Keyword, place 1 extra BLOOD MARKER next to the target model after making the Injury Roll (even if the Injury Roll has No Effect).",
+      "cost": {
+        "ducats": 12,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "A small box of either leather or sandalwood strapped to the Faithful’s arm or head. It contains dried wafers of the blessed sores gleaned from those who bear the Sacred Affliction itself. Through divine auspice the bearer’s blows will afflict the Fallen with the physical import of their sins.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-punt-gun",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-punt-gun",
+      "name": "Punt Gun",
+      "type": "2-Handed",
+      "range": "18\"",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY",
+        "SHOTGUN",
+        "SHRAPNEL"
+      ],
+      "rules": "Overcharge: Before making a Ranged Attack with a model armed with a Punt Gun, you can say that the model will Overcharge the weapon. To do so, the model has to either have the STRONG Keyword or be in base-to-base contact with a friendly model. An Overcharged Ranged Attack gains the BLAST 3” and RELOAD Keywords. After an Overcharged attack has been carried out, place 1 BLOOD MARKER next to the model that made the attack, and its Activation immediately ends.",
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The Punt Gun is an enormous shotgun loaded with as much as 25 ounces of shot. It can be loaded with a risky amount of powder and square shot to cause widespread damage and destruction.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-ragged-vestments",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-ragged-vestments",
+      "name": "Ragged Vestments",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [],
+      "rules": "Leap of Faith: Add +1 DICE to Risky Success Roll whenever a model with Ragged Vestments Climbs, Jumps, or makes a Diving Charge, or takes a Dash ACTION, as long as the model does not have a Shield, or any Weapons with the HEAVY Keyword.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "The ragged clothes of penitents mark those who have wandered far across God’s creation. Amid the Procession, such wrappings mark those who will be undaunted by high precipices or leaps of faith.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+      "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-warcross",
+      "name": "Warcross",
+      "type": "Grenade",
+      "range": "8\"",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE LONG RANGE"
+      ],
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Procession of the Sacred Affliction",
+      "lore": "A four-pronged throwing weapon in the shape of a cross, each Warcross is engraved with prayers that guide it on an unerring path.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-blasphemous-staff",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-blasphemous-staff",
+      "name": "Blasphemous Staff",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "FIRE"
+      ],
+      "rules": "Evil Power: Add +1 DICE to Success Rolls or Risky Success Rolls for a model with a Blasphemous Staff, apart from the Success Rolls for a Ranged or Melee Attack, or the Risky Success Roll to take a Dash ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 2
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Crafted in mockery of the rod carried by the prophet Aaron, this evil staff unleashes searing hellfire, causing excruciating pain with the slightest touch.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-boarding-axe",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-boarding-axe",
+      "name": "Boarding Axe",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "ARMOUR PIERCING",
+        "CRITICAL",
+        "RISKY"
+      ],
+      "rules": "Boarding: Add +1 DICE to Risky Success Rolls for friendly models with this special rule that are attempting to Climb a sheer surface.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Raider boarding axes feature deeply serrated blades to grip hulls or rails and bite deep. Runes of ruin and despair are etched into their sodden hafts, and at their touch iron and steel flakes to rust.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-hull-drill",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-hull-drill",
+      "name": "Hull Drill",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "HELD",
+        "IGNORE ARMOUR",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Abyssal Commando only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "The Hull Drill is a favoured tool of the Abyssal Commandos. It is able to tear a hole in the bottom of a ship or through the throat of an armoured foe with equal ferocity.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-sacrificial-blade",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-sacrificial-blade",
+      "name": "Sacrificial Blade",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 23,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Terrifying blades blessed by the hand of a greater devil, these knives are used in Heretic rituals to sacrifice captives to the dark powers of Hell. They simply need to touch their opponents to cause indescribable pain, and even the most minor wound often proves fatal from the agony alone. They are risky even to their wielders, as the merest scratch will wound friend and foe alike.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-shark-tooth-talisman",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-shark-tooth-talisman",
+      "name": "Shark Tooth Talisman",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE",
+        "NEGATE FEAR"
+      ],
+      "rules": "Blood Frenzy: Once during a game, a model with a Shark Tooth Talisman can invoke a Blood Frenzy. If they do so and any model (friend or foe) within 1” of the model with the Shark Tooth Talisman has 1 or more BLOOD MARKERS, add +1 DICE to the Success Rolls for Melee Attacks made by the model with the Shark Tooth Talisman for the rest of their Activation.",
+      "cost": {
+        "ducats": 10,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Consumable"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Sharks are the wolves of the sea; raiders sacrifice bloody flesh, living or dead, to appease them often. Shoals of sharks trail behind every raider vessel, always hungry but assured they will soon be fed again. The fiercest raiders style talismans made from sharks’ teeth, they fear no peril at sea or on land and in battle they become gripped by the frenzied spirit of their totem.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-tartarus-claws",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-tartarus-claws",
+      "name": "Tartarus Claws",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "CLEAVE 2",
+        "CUMBERSOME"
+      ],
+      "rules": "Harrowing Assault: If the target is taken Down or Out of Action by a Melee Attack made with Tartarus Claws, you can immediately move the model up to 3”. You can use this move to move within 1” another enemy model, and if you do so, this model can take another Fight ACTION. However, it cannot make the 3” move again if the second attack takes the target Down or Out of Action.",
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "Death Commando only"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Made from severed hands of Malebranche, the Tartarus Claws are granted by archdevils only to those whose hearts are blackened with the sin of Wrath.",
+      "sourceFile": "carcass-front-book.pdf"
+    },
+    {
+      "id": "cf-weapon-heretic-naval-raiders-wreckers-torch",
+      "entryId": "cf-weapon-entry-heretic-naval-raiders-wreckers-torch",
+      "name": "Wrecker’s Torch",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "ARMOUR PIERCING",
+        "BLOCK",
+        "CUMBERSOME",
+        "FIRE",
+        "MF"
+      ],
+      "cost": {
+        "ducats": 15,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [],
+      "restrictions": [
+        "ELITE Only",
+        "Shield Combo"
+      ],
+      "factionId": "Heretic Naval Raiders",
+      "lore": "Fuelled by fires drawn from the River Phlegethon, the Wrecker’s Torch burns endlessly with a hellish glow. It serves as a beacon for Heretic Raiders and as a searing weapon against man or vessel.",
+      "sourceFile": "carcass-front-book.pdf"
     }
   ],
   "factions": [
@@ -54858,6 +55980,56 @@ export const DATASET: Dataset = {
       },
       "specialRules": [],
       "noSpecialRules": false
+    },
+    {
+      "id": "procession-of-the-sacred-affliction",
+      "name": "Procession of the Sacred Affliction",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "Punishing Millstones",
+          "description": "Add +1 INJURY DICE for Melee Attacks made by models from a Procession of the Sacred Affliction if the target is Down. Note that this bonus is in addition to the +1 Injury Dice modifier that normally applies when a target is Down, giving a total of +2 INJURY DICE to the roll."
+        },
+        {
+          "name": "Wrath of God",
+          "description": "Up to 1 Lazarist Castigator, Leper-Pilgrim, or Martyr Penitent can have the Wrath of God special rule at a cost of 15 👑. BLOOD MARKERS are never placed next to a model with the Wrath of God special rule, and it has the NEGATE FEAR Keyword. It cannot be Broken on the Wheel by an Anchorite Shrine. A model with the Wrath of God special rule cannot have Ranged Weapons or Armour (it can have a Shield). In addition, change the base size of the model to 32mm."
+        },
+        {
+          "name": "Mercenaries",
+          "description": "The Procession of the Sacred Afflictions can use any Faithful Mercenaries that can be taken by Trench Pilgrim Warbands."
+        }
+      ],
+      "noSpecialRules": false,
+      "alignment": "Faithful",
+      "source": "carcass-front"
+    },
+    {
+      "id": "heretic-naval-raiders",
+      "name": "Heretic Naval Raiders",
+      "budget": {
+        "ducats": 700,
+        "glory": 0
+      },
+      "specialRules": [
+        {
+          "name": "Fast as Lightning",
+          "description": "Add +1 DICE to the Risky Success Roll for models from a Heretic Naval Raiders Warband that are taking a Dash ACTION."
+        },
+        {
+          "name": "Unseen Advance",
+          "description": "Up to 3 models without the ELITE Keyword in a Heretic Naval Raiders Warband can be given the INFILTRATOR Keyword at a cost of +10 👑 each."
+        },
+        {
+          "name": "Mercenaries",
+          "description": "Heretic Naval Raiders Warbands can use any Fallen Mercenaries that can be taken by Heretic Legion Warbands."
+        }
+      ],
+      "noSpecialRules": false,
+      "alignment": "Fallen",
+      "source": "carcass-front"
     }
   ],
   "keywords": [
@@ -55643,8 +56815,631 @@ export const DATASET: Dataset = {
         }
       ],
       "mapImage": "/maps/great-war.png"
+    },
+    {
+      "number": 1,
+      "roman": "I",
+      "name": "The Ruins of Nineveh Novus",
+      "slug": "carcass-front-the-ruins-of-nineveh-novus",
+      "tagline": "Warbands push through sandstorms and into the exposed ruins of Nineveh Novus, hunting buried scrolls and tablets rumoured to hold the power to summon and bind Leviathan. In the dark and narrow chambers below, every corridor is contested ground, and each step risks uncovering secrets no mortal was meant to know.",
+      "quotation": "We see them, the scavengers and zealots, hungry to claim sacred knowledge clawed from the heights of Heaven and the depths of Hell. If only they knew what had been wrought here, what curse was laid upon this city, they would flee in terror, for the wrath of Heaven and Hell still hungers… -Ashur, Epistoliary Majoris of Nineveh Novus",
+      "epigraph": "Always the thirst of sacred knowledge without heeding the cost of its earning. Prophets and monsters who think themselves sagacious plunder our wisdom, but they are idiot children playing with the very tools of Creation, heedless of the consequences! Long will they rue the plunder of Nineveh Novus! -Shamiram, Celestial Diviner of Nineveh Novus",
+      "sections": [
+        {
+          "heading": "PATH TO LEVIATHAN CONSEQUENCES",
+          "body": "The Warband that wins Scenario I: The Ruins of Nineveh Novus gains a bonus to summoning Leviathan in the final scenario of the campaign, Scenario V: The Altar of Leviathan."
+        },
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the Decimated Ruins battlefield archetype. For this scenario, the more ruined buildings creating narrow corridors and corners the better the game will be.\n\n**Search Markers**\n\nAfter the terrain has been set up, the players must set up 6 Search Markers. The players alternate setting up the Markers, one at a time, starting with the player who set up the terrain. Search Markers must be set up more than 8” from the Deployment Zones, more than 6” away from any other Search Markers and more than 1” from Impassable terrain. Uncovering Markers: Roll a D6 and look up the roll on the Search Table on the next page if a friendly model finishes a move within 1” of a Search Marker. The Search Marker is removed after anything revealed by the search has been set up. The player who rolled on the Search Table can then carry on with their model’s Activation.\n\n**Search Table**\n\n| Roll | Result |\n| --- | --- |\n| 1 | The area is empty – nothing is revealed. |\n| 2 | The search reveals 2 Ancient Tablet Markers. |\n| 3-4 | The search reveals 3 Ancient Tablet Markers and 1 Lunatic Monk. |\n| 5-6 | The search reveals 4 Ancient Tablet Markers and 2 Lunatic Monks. |\n\nAncient Tablets: Ancient Tablet Markers are set up within 1” of the Search Marker by the player who did not roll on the Search Table. They can be set up in contact with or even underneath a model if desired.\n\nLunatic Monk: Lunatic Monks are represented by an unkempt and suitably monk-like model (▶ see the special rules for Lunatic Monks on the next page). If no suitable models are available, represent them with markers. Lunatic Monks are set up within 3” of the Search Marker by the player who did not roll on the Search Table. They can be set up within 1” or in contact with a Warband model or another Lunatic Monk if desired, but cannot be set up on top of another model."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 6” of a Search Marker."
+        },
+        {
+          "heading": "ANCIENT TABLETS",
+          "body": "These ancient tablets contain sorceries and rites needed to conduct the summoning ritual to call forth Leviathan.\n\nClaim ACTION: A model that is within 1” of any Ancient Tablet Markers can take a Claim ACTION. If it does so, take up to 2 Ancient Tablet Markers that are within 1” of the model and place them in contact with the model’s base to show it is carrying them (no Success Roll is required). A model can carry up to 2 Ancient Tablet Markers at the same time.\n\nCarrying Ancient Tablets: The only thing a model that is carrying a single tablet can do is Claim another ancient tablet, take Move or Retreat ACTIONS, or a Fight ACTION using a 1-Handed Melee or Ranged Weapon. If a model is carrying 2 tablets, it can only take Move or Retreat ACTIONS. At the end of its Activation, you can say that a model carrying an Ancient Tablet Marker will either drop it or hand it to a friendly model within 1”. If it has 2 Ancient Tablet Markers, it can drop or hand over one or both of them. When a model drops a tablet, place it within 1” of the model and not in contact with any other models. When a model hands over a tablet, place the Ancient Tablet Marker(s) in contact with the other model’s base. If a model carrying a tablet is taken Down or Out of Action, it immediately drops the Ancient Tablet Marker(s) as described above. If a model carrying a tablet finishes its Activation in its own Deployment Zone and on contact with the edge of the battlefield, it can escape with the tablets it’s carrying. Remove the model and the Ancient Tablet Markers from the battlefield. The model is still considered part of the Warband for the purposes of Morale Checks."
+        },
+        {
+          "heading": "LUNATIC MONKS",
+          "body": "Every time a Search Marker is uncovered, there’s a chance that the area may reveal the presence of one or more Lunatic Monks guarding its secrets.\n\n**Neutral Model Activation Rolls**\n\nLunatic Monks are neutral models. Neutral models are treated as enemy models by both sides. In addition, when a player finishes an Activation with one of their models, they must take a Neutral Model Activation Roll by rolling a D6. If they roll a 1-4, they can Activate a Lunatic Monk of their choice. They cannot Activate a Lunatic Monk that has already been Activated (by either player). Once all Lunatic Monks have been Activated during a Turn, stop making Neutral Model Activation Rolls until the following Turn or if any more Lunatic Monks are revealed by a search. When a player Activates a Lunatic Monk, they must carry out an Activation with it using the rules below. If a player runs out of models from their own Warband to Activate and there are still Lunatic Monks remaining to Activate, they must still make Neutral Model Activation Rolls. In the event that any Lunatic Monks remain to be Activated after both players have finished Activating models from their Warband, roll-off for each one – the winner must Activate the model.\n\n**Lunatic Monk Actions**\n\nWhen a player Activates a Lunatic Monk, it will choose a model as its prey. The Lunatic Monk’s prey is determined by using the following list of priorities: If there are any models carrying one or more Ancient Tablets, the Lunatic Monk will choose the closest as its prey. If 2 or more models are equally close, the player who Activated the Lunatic Monk can choose which model is its prey. If there are no models carrying Ancient Tablets, it will choose the closest model as its prey. If 2 or more models are equally close, the player who Activated can choose which model is its prey. Ignore other Lunatic Monk models when working out a Lunatic Monk’s prey. After determining the Lunatic Monk’s prey, the player who Activated the model must take 1 Move ACTION, and either 1 Dash ACTION or 1 Fight ACTION with the Lunatic Monk. The ACTIONS are carried out in the following way: When the Lunatic Monk moves, it must move towards its prey so that it finishes either in base contact with it or, if that is impossible, as close to its prey as possible. The Lunatic Monk can use the Move ACTION to move within 1” of its prey and does not need to use a Charge ACTION. If the Lunatic Monk is in contact with its prey after taking a move, it will take a Fight ACTION. If it is not in contact with its prey after it takes a move, it will take a Dash ACTION and move towards its prey as described above. When the Lunatic Monk makes a Fight ACTION, all of its attacks must target its prey. When a Lunatic Monk takes a Dash ACTION it will move towards its prey as described above. If the Lunatic Monk is within 1” of its prey when it is Activated, it will take a Fight ACTION. If the attack takes the prey Out of Action, choose new prey, then move the Lunatic Monk towards it as described above.\n\n**Lunatic Monk**\n\nUnnaturally long-lived scholars, driven mad by their doom, still linger amidst the ruins, twisted into deranged lunatics by the unleashed cataclysm.\n\n| Movement | Ranged | Melee | Armour | Base |\n| --- | --- | --- | --- | --- |\n| 8”/Infantry | - | +1 DICE | 0 | 25mm |\n\n**Battlekit:** A Lunatic Monk always has an Antique Blade. It cannot have any other Battlekit. **Abilities:** Antique Blade: When you make an Injury Roll for an attack made by a Lunatic Monk, you must spend any BLOOD MARKERS the target has to add Injury Dice to the roll, and, if possible, you must convert the Injury Roll into a Bloodbath Roll (▶ see the Trench Crusade Rulebook). **Keywords:** None.\n\n**Antique Blade**\n\n| Type | Range | Keywords |\n| --- | --- | --- |\n| 2-Handed | Melee | +2 INJURY DICE, RISKY |"
+        },
+        {
+          "heading": "THE CURSE OF NINEVEH",
+          "body": "The warding sorceries that once protected Nineveh Novus still maintain the city’s secrets after a fashion, despite its original inhabitants’ demise. Their cursing power lingers in the dusty air, invisible to the naked eye, seeping from corridor to corridor, burning lungs, blinding eyes, bursting eardrums, and setting ablaze the skin of those who do not possess the proper bloodline, or the forgotten sigils of protection carved beneath the skin by the sorcerers of old. This magic cannot be stopped, neither by clothing nor armour. The Curse of Nineveh is an expanding circle of cursed magic that spreads from the midpoint of the battlefield. At the start of each Turn, the Curse of Nineveh expands its radius by 4”. Thus, on the first turn it will affect everywhere within 4” of the midpoint of the battlefield, on the second Turn it will affect everywhere within 8” of the midpoint, on the third within 12” of the midpoint, and so on. When a player activates a Warband model that is fully or partially within the area affected by the Curse of Nineveh, they must place +1 BLOOD MARKER beside the model. In addition, add +1 DICE to Injury Rolls for models that are fully or partially within the area affected by the Curse of Nineveh when the Injury Roll is made. Lunatic Monks are not affected in any way by the Curse of Nineveh."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts six Turns, or until one side has no models left on the battlefield."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if the opposing Warband flees, typically due to failing a Morale Check. Otherwise, the player with more Victory Points (VPs) at the end of the game is the winner.\n\n**Victory Points**\n\nAt the end of the game each player scores:\n\n1 VP for each Ancient Tablet that is being carried by a friendly model.\n\n2 VPs for each Ancient Tablet that was being carried by a friendly model that escaped the battlefield.\n\n2 VPs for each Lunatic Monk a friendly model takes Out of Action.\n\n1 VP for each Glorious Deed a friendly model completes."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "Doomed: A friendly model takes an enemy model Out of Action with a Bloodbath Roll while within the area affected by the Curse of Nineveh.\n\nDoom Seeker: A friendly model takes a Lunatic Monk model Out of Action while within the area affected by the Curse of Nineveh.\n\nLunacy: A friendly model takes at least 2 Lunatic Monks Out of Action.\n\nOfficium Ante Mortem: A friendly model picks up 2 Ancient Tablet Markers that are within the area affected by the Curse of Nineveh.\n\nTomb Raider: A friendly model takes an enemy model carrying any Ancient Tablet Markers Out of Action and then escapes the battlefield carrying the tablets."
+        }
+      ],
+      "source": "carcass-front",
+      "mapImage": null
+    },
+    {
+      "number": 2,
+      "roman": "II",
+      "name": "Domus Demetrius",
+      "slug": "carcass-front-domus-demetrius",
+      "tagline": "A breach in the Corpse Rails has brought enemy forces into the Domus Demetrius. Among rusted cranes and rising mounds of the dead, warbands clash over the rotting souls of those long, or soon to be, gone.",
+      "quotation": "The dead are everywhere: mountains of severed limbs, piles of heads, lakes of blood and worse. The air is poisoned with the reek of opened bowels and bloated bellies. Drifting veils of myrrh seek to purify it, but neither that nor the blessed gas masks can keep the greasy miasma of a million corpses from my mouth. -Lieutenant Hartley, 203rd Demetrian Guard",
+      "epigraph": "When I die, burn me to ash or leave me where I fall for the rats to gnaw, for maggots to wriggle in my eyes. Better that than to be brought to this hellish place, to have men who forsake humanity devour my mortal remains. Throw my body into the path of shells and infernal flame rather than be brought to the Body Barn. -Yeoman Burke, 66th Auld Eidyn Battalion",
+      "sections": [
+        {
+          "heading": "PATH TO LEVIATHAN CONSEQUENCES",
+          "body": "The Warband that wins Scenario II: Domus Demetrius gains a bonus to summoning Leviathan in the final scenario of the campaign, Scenario V: The Altar of Leviathan."
+        },
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the Decimated Ruins battlefield archetype. In this scenario, the more ruined buildings that are used to create tight corridors and corners the better the game will be.\n\n**Extraction Zones**\n\nThe areas marked with an EZ shown on the map represent Extraction Zones. Each EZ is 3” by 3”. Other terrain pieces and markers cannot be set up within 3” of an Extraction Zone. If you have one, we recommend placing a piece of terrain like a large door, portal or tunnel entrance, or something similar, at the EZ locations to represent each extraction point.\n\n**Corpse Mound Markers**\n\n**The Markers shown on the map rep-**\n\nresent Corpse Mounds. The Markers are 3” in diameter and count as Difficult terrain. Other terrain pieces cannot be set up within 1” of a Corpse Mound Marker. You can download a set of Corpse Mound Markers from the Trench Crusade website that you can print out and stick to cardboard."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or up to 4” away from a Deployment Zone."
+        },
+        {
+          "heading": "CORPSE MOUNDS",
+          "body": "The corpse mounds rise to the roof, slick with rot. Beneath them, bone snaps and flesh tears – something is feeding. Each Corpse Mound contains 6 Coveted Corpses. We recommend that you keep track of how many corpses have been taken from each mound by putting a dice on top of the marker. A Corpse Mound with no more Coveted Corpses left is still considered as Difficult terrain.\n\nSearch Mound ACTION: A model that is on or within 1” of a Corpse Mound Marker can take a Search Mound ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, nothing happens (another model can try to search the mound later in the same Turn). If the roll is a Success or Critical Success, D6 Coveted Corpses Markers are revealed. Place the Coveted Corpse Markers on or within 1” of the Corpse Mound Marker. If any of the Coveted Corpses were not revealed in a search, the Mound can be searched again in a future Turn or by another model until no more corpses can be found.\n\nClaim Corpse ACTION: A model that is within 1” of a Coveted Corpse Marker can take a Claim Corpse ACTION. No Success Roll is needed. If it does so, the model is considered to be carrying the corpse.\n\nCarrying Corpses: Put the Coveted Corpse Marker in contact with the model’s base to show it is carrying it. The only thing a model carrying a corpse can do is take Move or Retreat ACTIONS – it cannot do anything else while carrying the corpse. At the end of its Activation, you can say that a model carrying a corpse will either drop it or hand it to a friendly model that is within 1”. When a model drops the corpse, place the Coveted Corpse Marker within 1” of the model and not in contact with any other models. When a model hands the corpse on, place the Coveted Corpse Marker in contact with the other model’s base. If a model carrying a corpse is taken Down or Out of Action, it immediately drops the corpse as described on the previous page. If a model carrying a corpse finishes its Activation on any of the Extraction Zones of the battlefield, it extracts the corpse. Remove the Coveted Corpse Marker from the battlefield and put it aside (▶ see Victory Points on the next page). The model remains on the battlefield."
+        },
+        {
+          "heading": "CARRION FEEDERS",
+          "body": "The muffled sound of screeching comes from somewhere deep amidst the piles of corpses. Every time a Corpse Mound is searched, regardless of the outcome, the player must then determine if their search attracts the attention of the bestial Carrion Feeders hidden amidst the corpses. Each time a Mound is searched, roll another D6. On a roll of 5-6, a Carrion Feeder appears. If a Carrion Feeder appears, the players roll-off and the winner can set up the Carrion Feeder model within 3” of the centre of the Corpse Mound and at least 1” away from any models. Carrion Feeders are neutral models (▶ see below). Each Carrion Feeder can be represented by a zombie or werewolf-like model. If no suitable models are available, represent them with Markers.\n\n**Neutral Model Activation Rolls**\n\nCarrion Feeders are neutral models. Neutral models are treated as enemy models by both sides. In addition, when a player finishes an Activation with one of their models, they must take a Neutral Model Activation Roll by rolling a D6. If they roll a 1-4, they can Activate a Carrion Feeder of their choice. They cannot Activate a Carrion Feeder that has already been Activated (by either player). Once all Carrion Feeders have been Activated during a Turn, stop making Neutral Model Activation Rolls until the following Turn or if any more Carrion Feeders are revealed by a search. When a player Activates a Carrion Feeder, they must carry out an Activation with it using the rules below. If a player runs out of models from their own Warband to Activate and there are still Carrion Feeders remaining to Activate, they must still make Neutral Model Activation Rolls. In the event that any Carrion Feeders remain to be Activated after both players have finished Activating models from their Warband, roll-off for each one and the winner must Activate the model.\n\n**Carrion Feeder Actions**\n\nWhen a player Activates a Carrion Feeder, it will choose the closest Coveted Corpse Marker or model as its prey. If 2 or more models are equally close, the player who Activated the Carrion Feeder can choose which model is its prey. A Carrion Feeder will not pick other Carrion Feeders as its prey. After determining the Carrion Feeder’s prey, the player who Activated the model must take 1 Move ACTION, and either 1 Dash ACTION or 1 Fight ACTION or 1 Feed ACTION with the Carrion Feeder. The ACTIONS are carried out in the following way. When the Carrion Feeder moves, it must move towards its prey so that it finishes either in base contact with it, or if that is impossible, as close to its prey as possible. The Carrion Feeder can use the Move ACTION to move within 1” of its prey and does not need to use a Charge ACTION. If the Carrion Feeder is in contact with its prey after taking a move, it will take a Fight ACTION if the prey is a model, or a Feed ACTION if it is not. If it is not in contact with its prey after it takes a move, it will take a Dash ACTION and move towards its prey as described in the left column of this page. When the Carrion Feeder takes a Fight ACTION, all of its attacks must target its prey. When the Carrion Feeder takes a Feed ACTION, the Coveted Corpse Marker that is its prey is removed from the battlefield. If the Carrion Feeder is within 1” of its prey when it is Activated, it will take a Fight ACTION. If the attack takes the prey Out of Action, choose new prey and then move the Carrion Feeder towards it as described in the left column of this page.\n\n**Carrion Feeder**\n\nHalf-beast, half-man, Carrion Feeders have shed their human form like sloughing off an old skin, revealing claws and beast heads beneath. Plagued by parasites, and a never-ending hunger, they stalk No Man’s Land in search of corpses – and make more when none are found.\n\n| Movement | Ranged | Melee | Armour | Base |\n| --- | --- | --- | --- | --- |\n| 8”/Infantry | - | +0 DICE | -2 | 25mm |\n\n**Battlekit:** Carrion Feeders always have Maws (▶ see below). They cannot have any other Battlekit. **Abilities:** Maws: A Carrion Feeder can make a Melee Attack even though it does not have a Melee Weapon.\n\n**Whenever a Melee Attack made by a Carrion**\n\n**Feeder causes 2 or more BLOOD MARKERS to**\n\nbe placed on the target, it becomes frenzied. From then on when it makes an Injury Roll, it must spend any BLOOD MARKERS the target has to add Injury Dice to the roll, and, if possible, it must convert the Injury Roll into a Bloodbath Roll (▶ see the Comprehensive Rules section for more details). **Keywords:** None.\n\n**Maws**\n\n| Type | Range | Keywords |\n| --- | --- | --- |\n| Special | Melee | +1 INJURY DICE |"
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts six Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees, typically due to failing a Morale Check. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nAt the end of the game each player scores 2 VPs for each Coveted Corpse they extracted, and 1 VP for each Glorious Deed they completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "Almost There: A friendly model takes an enemy model carrying a corpse within 8” of an Extraction Zone Out of Action.\n\nBecchini: A friendly model extracts 2 Coveted Corpses.\n\nBestial: A friendly model that has 3 or more BLOOD MARKERS uses a Bloodbath Roll to take a Carrion Feeder model Out of Action.\n\nBold: A friendly model extracts corpses through 2 different Extraction Zones.\n\nCorpse Lurker: A friendly model takes the Search Mound ACTION twice during the game and takes at least 1 Carrion Feeder Out of Action.\n\nResurrectionist: A friendly model takes an enemy model carrying a corpse Out of Action and then extracts the Corpse Marker the enemy model was carrying."
+        }
+      ],
+      "source": "carcass-front",
+      "mapImage": null
+    },
+    {
+      "number": 3,
+      "roman": "III",
+      "name": "The Steel Necropolis",
+      "slug": "carcass-front-the-steel-necropolis",
+      "tagline": "Warbands descend into the accursed mudflats to harvest the fused holy and unholy metals needed to bind Leviathan. Among drowned tanks and unexploded shells, they fight and scavenge over the sodden grounds, dismembering rusted metals while adding new bodies to the old graveyard, for the God of All Tanks gives with a hand and claims with the fire of a thousand cannons.",
+      "quotation": "We got it easy, lads. All we gotta do is scavenge what we can from some old tank graveyard the aeronauts pounded to scrap metal back before Yeoman Caleb here was even born. Strip out some broken steel and parts, then drag ’em back to New Antioch. That’s all we gotta do, right? Just watch out for the diesel pilgrims, yapping on about some tank god or summat… -Captain Selwyn, 235th Whitecliff Dragoons",
+      "epigraph": "Saw it with me own eyes, I did, sir. Can’t rightly describe it, no, because it was just a shape in a fog of blue diesel fumes, but it was big, a bloody colossus of grinding metal and guns. Still can’t hear right neither. Sounded like a thousand engines running full-tilt, and it chucked wrecked tank hulks at us like a fast bowler on the village green. -Yeoman Whitlock, 235th Whitecliff Dragoons",
+      "sections": [
+        {
+          "heading": "PATH TO LEVIATHAN CONSEQUENCES",
+          "body": "The Warband that wins Scenario III: The Steel Necropolis gains a bonus to taking over control of the mighty railway cannon in Scenario IV: The Sword of God"
+        },
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype.\n\n**Tank Markers**\n\nBefore the terrain is set up, the players must set up 6 Tank Markers. The Tank Markers represent rusted tank wrecks spread throughout the battlefield. Tank Markers can be represented by a wrecked tank model or a rectangular piece of cardboard that is approximately 3” by 5” in size. Tank Markers are Difficult terrain. On the Trench Crusade website you can download a set of Tank Markers that you can print out and stick to cardboard.\n\n**The players alternate setting up**\n\nthe Markers, one at a time, starting with the player who won the roll-off. Tank Markers must be set up more than 4” from the Deployment Zones, more than 4” away from any other Tank Markers and more than 1” from Impassable terrain.\n\n**After these have been set up, the**\n\nrest of the terrain for the battle should be added. Terrain pieces cannot be set up under a Tank Marker but can be placed in contact with it."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins."
+        },
+        {
+          "heading": "INFILTRATORS",
+          "body": "Infiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 6” of any Tank Marker.\n\n**Wrecked Tanks**\n\nThe amalgamation of infused holy and unholy metals that form these old tank carcasses hold the almighty strength and Goetic power needed to bring Leviathan ashore. Scrapping these tanks is vital for the success of both Faithful and Fallen sides alike – but some wrecks still retain the strength for one final shot, albeit at the cost of their own destruction.\n\nScavenge ACTION: For this scenario, all models are considered to be carrying backpacks or bags to store any metal scraps that they scavenge. A model that is on or within 1” of a Tank Marker can take a Scavenge ACTION. If it does so, take a Success Roll for the model. If the roll is a Failure, place D3 Scrap Markers on the Tank Marker. If the roll is a Success, place D6 Scrap Markers on the Tank Marker. If it is a Critical Success, place D6 Scrap Markers on the Tank Marker, and in addition the tank has one last shell locked and loaded, and ready to fire.\n\nClaim ACTION: A model that is within 1” of a Tank Marker with 1 or more Scrap Markers can take a Claim ACTION. If it does so, take up to 3 Scrap Markers from the Tank Marker and place them in contact with the model’s base to show it is carrying it (no Success Roll is required). A model can carry up to 3 Scrap Markers at the same time. A model with the STRONG Keyword can carry up to 5 Scrap Markers instead of only 3. If a model carrying Scrap Markers is taken Out of Action, remove the model from the battlefield but leave the Scrap Markers behind. They can be claimed by a model that is within 1” of them.\n\nLoaded Shells: If a Tank Marker has a loaded shell, it is treated as if it were a Sultanate Grand Cannon stationary gun battery with +3 Injury Dice, that can be used by any model but can only be fired once. You can find the rules for the Sultanate Grand Cannon in the Trench Crusade Rulebook."
+        },
+        {
+          "heading": "THE GOD OF ALL TANKS",
+          "body": "Pilgrim cults drawn by the divine diesel fumes roam the metal necropolis, chanting mechanical hymnals to a bellowing Tank God of iron and gasoline, of grinding tracks and shellfire. The Tank God does not approve of trespassers coming into his lands and stealing the corpses of his fallen children. At the start of the 2nd and the 4th Turns, before any models have been Activated, the Tank God will throw a tank wreck onto the battlefield. The players roll-off and the loser must determine where the wreck lands by dropping a Marker onto the battlefield from a height of 24” above the centre of the table. We recommend that the marker be made of paper to avoid it damaging any models when it lands. The player must place the Marker flat on their hand, then turn their hand over to let the marker flutter down naturally onto the battlefield. This is where the wreck tank hits the battlefield. If it flutters off the table, no wreck lands that Turn. When the tank hits the battlefield, it immediately explodes as if it were a model carrying a Sarcophagus Mine (▶ see the Trench Crusade Rulebook). The player who dropped the Marker may then place a suitable small or medium terrain piece (e.g. wreckage or a crater) on the table where the tank landed. However, the new terrain may not be placed in such a way that it will displace any models or existing terrain piece. No terrain piece has to be placed, and it may not be placed if the restriction noted above cannot be fulfilled. The players then take it in turn to set up D6 Scrap Markers within 6” of the landing point, starting with the player who dropped the Marker. The Markers must be set up more than 1” from any models and each other."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts six Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees, typically due to failing a Morale Check. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nAt the end of each Turn, a player scores 1 VP for each Scrap Metal Marker that a friendly model is carrying, and 1 VP for each Glorious Deed they completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "Bloody Wrecker: A friendly model takes an enemy model carrying any Scrap Markers Out of Action, and then claims the Markers the enemy model was carrying.\n\nOpportunist: A friendly model takes an enemy model within 1” of a Tank Marker Out of Action.\n\nScavenger: A friendly model claims Scrap Markers from at least 3 different Tank Markers.\n\nScrap King: Finish the game with all friendly models that are still on the Battlefield carrying at least 2 Scrap Markers each. The last friendly model to claim a Scrap Marker gains the ☼.\n\nTanker: A friendly model takes at least 2 enemy models Out of Action by firing a single shell from a Tank Marker."
+        }
+      ],
+      "source": "carcass-front",
+      "mapImage": null
+    },
+    {
+      "number": 4,
+      "roman": "IV",
+      "name": "The Sword of God",
+      "slug": "carcass-front-the-sword-of-god",
+      "tagline": "The Sword of God lies abandoned on the coastal tracks. Once a gift from the Sultanate to New Antioch, it now sits silent and inert, its Damascus-patterned barrel inlaid with the Seals of Solomon as warbands of Faithful and Fallen war over its possession, praying it will fire again. As the great gun moves along its ancient rails, warbands clash atop its wagon, each desperate to claim this powerful relic.",
+      "quotation": "Guided by Allah the Most Merciful, The Hands of Mortals wrought this cannon. In service of Dunya, let its divine fire rain down. The demons of Shaytān shall fall beneath this sword, May its roar be as the muezzin calls to prayer. Its shells will shake Jahannam’s foundations, Uproot the Zaqqum tree, And lay waste to all foes of Allah! Inshallah! -Inscription upon the Sword of God",
+      "epigraph": "I’ve never seen anything like it. A masterwork of engineering and art. Decades spent beneath the sands of the Carcass Front, and still its gears turn as if fresh from the foundry. The silver and gold on its barrel is as bright as the day its makers brought it before the walls of New Antioch. With a weapon such as this, nothing is safe from its shells. -Combat Engineer Malachai, 9th New Antioch Pioneers",
+      "sections": [
+        {
+          "heading": "PATH TO LEVIATHAN CONSEQUENCES",
+          "body": "The Warband that wins Scenario IV: The Sword of God gains control over the mighty railway cannon necessary to subdue Leviathan, should the summoning succeed in the final scenario of the campaign, Scenario V: The Altar of Leviathan. If this scenario is being played as part of the Path to Leviathan campaign, the winner of the Steel Necropolis scenario is named the Scrap Lord. Each friendly model belonging to the Scrap Lord counts as 2 models for the purposes of moving the Sword of God."
+        },
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The battlefield is 48” by 48” in size. The players roll-off and the winner sets up the terrain for the game. This scenario uses the No Man’s Land battlefield archetype.\n\n**The Railway & Wagons**\n\nWhen you start to set up the terrain for this battle, you must first place the railway for the Wagons that transport the Sword of God. The railway crosses the entirety of the middle section of the battlefield and is 4” wide. The railway tracks are treated as Open terrain. You can download a Sword of God Marker from the Trench Crusade website that you can print out and stick to cardboard. The Sword of God is mounted on the second of two connected Wagons. The dimensions and starting location of the Wagons are shown on the map. Each Wagon is 4” high and has ladders on both sides that allow models to Climb the sides without having to take a Risky Success Roll. Only models that are mounted on a base of 40mm or less can Climb up onto the Wagons. The top of the front Wagon is flat and treated as Open terrain. The back Wagon has a Marker that represents the Sword of God’s gun breach, placed in the centre of the Wagon. The Marker is 2” wide and 4” long and is treated as Impassable terrain that blocks any Line of Sight that crosses it. The rest of the top of the back Wagon is treated as Open terrain. The Wagons and the Sword of God can be represented by suitable models if you have any available. If you do not, then they can be represented by flat pieces of card that have been cut to the correct size."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 4” of either of the Wagons."
+        },
+        {
+          "heading": "THE SWORD OF GOD",
+          "body": "The Sword of God Wagons move along the railway during the game, travelling from one edge of the battlefield to the other. The speed at which they move depends on how many models are fighting to control it. If there are no models on top of the Wagons, then they do not move. At the end of each Turn, count the total number of models that are on top of the Sword of God’s Wagons. Remember that each model from the Scrap Lord’s Warbands counts as 2 models instead of 1 for this purpose. Both Wagons then move 1” along the railway for each model on top of the Wagons, up to a maximum speed of 8”. Models that are on top of the moving Wagons move with it. Any models in base contact with the Wagons but not on top of them are left behind as they move. Any model that comes into contact with a Wagon when it moves is run over and immediately taken Out of Action.\n\n**Controlling the Sword of God**\n\nAt the end of each Turn, after the Wagons have moved, determine which player controls the Sword of God. A player controls the Sword of God if they have more friendly models on top of the Wagons than their opponent. If both players have the same number of models on top of the Wagons, or if there are no models on the Wagons, then neither player controls it. For the purposes of determining control, the Scrap Lord’s models do not count as 2 models – they only count as 2 models when the Wagons move."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "The game ends when the Sword of God reaches the other side of the battlefield. Otherwise, this scenario lasts six Turns."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, or if the opposing Warband flees, typically due to failing a Morale Check. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nAt the end of each Turn, the player controlling the Sword of God wins 2 VPs. At the end of the game, each player scores 1 VP for each Glorious Deed they completed."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "Bloody Tracks: A friendly model takes 3 enemy models Out of Action during the game with a friendly model that is on a Wagon.\n\nCast them Out: A friendly model causes an enemy model to Fall from a Wagon.\n\nLord’s Claim: A friendly model takes an enemy ELITE model Out of Action while both models are on top of a Wagon.\n\nRide the Lightning: A friendly model ends 2 consecutive Turns on top of a Wagon without any enemy models having been on top of that Wagon for the same amount of time.\n\nRoadkill: A friendly model on top of a Wagon takes an enemy model Out of Action with a Ranged Attack."
+        }
+      ],
+      "source": "carcass-front",
+      "mapImage": null
+    },
+    {
+      "number": 5,
+      "roman": "V",
+      "name": "The Altar of Leviathan",
+      "slug": "carcass-front-the-altar-of-leviathan",
+      "tagline": "Faithful and Fallen warbands clash upon the storm-battered shore, racing to claim the Altar of Leviathan – a serrated obelisk of greenish black stone perched on a gale-blasted hill not far from Dorythol. Dragged from an ancient temple beneath the waves, the altar once saved the town from a thousand-foot tidal wave, but its protection demands blood and souls. Now both sides seek to complete the profane ritual that will summon the great beast from the depths.",
+      "quotation": "Normally the townsfolk of the Carrion Coast welcome Faithful warbands. Warily, aye, for soldiers can be rough sorts, always on the lookout for something warm and tasty, but the people of Dorythol locked their doors and turned us away. All we saw of them were frightened faces peering out from widows hung with strange symbols that Cleric Drazdau didn’t much like the look of. -Medic Elena Tarvydas, 33rd Lithuanian Hussars",
+      "epigraph": "Burn it. Burn it all. -Trench Cleric Viktor Drazdau, 33rd Lithuanian Hussars",
+      "sections": [
+        {
+          "heading": "PATH TO LEVIATHAN CONSEQUENCES",
+          "body": "The warband that succeeds in summoning Leviathan in Scenario V: The Altar of Leviathan is the overall winner of the campaign. (Yes, you could lose every other scenario and still win the campaign by winning this one game.) However, a full campaign victory as envisaged by War Priest Charon or Blessed Bartolomeo requires Leviathan to also be subdued using the Sword of God. This is explained fully in Campaign Conclusions. If this scenario is being played as part of the Path to Leviathan campaign, the winners of the Ruins of Nineveh Novus and Domus Demetrius scenarios can add +1 DICE to their Summon Rolls."
+        },
+        {
+          "heading": "FORCES",
+          "body": "No special restrictions apply to the models the players can include in their Forces in this scenario."
+        },
+        {
+          "heading": "THE BATTLEFIELD",
+          "body": "The players roll-off. The winner sets up the terrain for the game first, and the loser decides which side of the board is the Violent Shore, and which is the Cliff Wall. This scenario uses the No Man’s Land battlefield archetype. When you set up the terrain for this battle, you must first set up a hill terrain piece at the centre of the battlefield to represent the rocky plateau that the Altar of Leviathan sits upon. The hill measures 8” by 8”, and is 3-4” high. The sides of the hill are steep cliffs that must be climbed in order to reach the top, but there are steps on each of the four sides of the plateau that allow models to Climb without having to take a Risky Success Roll. After setting up the hill, place a landmark terrain piece to represent the Altar of Leviathan at the centre of the hill. The Altar is Impassable terrain and needs to be about 3-4” in diameter. The rest of the top of the hill is Open terrain. The hill and the Altar of Leviathan can be represented by suitable models if you have any available. If you do not, then the hill can be represented by a suitably sized box or a small pile of books, and the Altar by a flat piece of card that has been cut to the correct size."
+        },
+        {
+          "heading": "DEPLOYMENT",
+          "body": "The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. If a player runs out of models to set up, the other player sets up all their remaining models, one after another until they have none left. Once the players have set up their models, deployment ends and the game begins.\n\n**Infiltrators**\n\nInfiltrators can deploy normally or by using their special deployment rules. However, if they deploy using their special deployment rules, they cannot deploy within 4” of the hill."
+        },
+        {
+          "heading": "THE ALTAR OF LEVIATHAN",
+          "body": "To summon Leviathan requires perfect devotion – sacred words or blasphemous chants spoken in precise rhythm while the faithful lend their voices. But each successful invocation stirs the beast from the abyss, and the sea itself rages in response, threatening to drag all supplicants into the cold embrace of the deep.\n\n**Summoning Leviathan**\n\nAt the end of each Turn, if a player has at least 1 friendly model with the ELITE Keyword within 1” of the Altar of Leviathan and not within 1” of any enemy models, they can attempt to summon Leviathan by making a Summon Roll. Up to 3 friendly models within 1” of the Altar and not within 1” of an enemy model can assist with the summoning. Note that an assisting model does not have to be ELITE. A Summon Roll is made by rolling 2D6. Add +1 DICE to the roll for each model making an assist. The Summon Roll succeeds if one or more of the dice used for the roll show a “6”. Rolling more than one 6 has no additional effect. If both players can attempt to summon Leviathan, they should roll-off and the winner make their attempt first. If the Summon Roll is successful, set one of the dice that rolled a 6 in front of the player who made the roll. When the third such dice is placed in front of the player – so that their dice show “666” – then Leviathan has been summoned and the player immediately wins the game!"
+        },
+        {
+          "heading": "THE VIOLENT SHORE",
+          "body": "Each time that a Summoning Roll is successful, Leviathan stirs in the depths, causing massive waves to strike the shoreline, flooding the area and bringing tidal debris, pieces of sunken ruins, or even active sea bombs with it. If the Turn after a Summoning Roll is a Success, the waves strike the shore, and the following set of actions must then be taken by the players:\n\nWave Push: At the start of the Turn, models on the battlefield not on top of any piece of terrain that is at least 2” high are pushed 10” toward the Cliff Wall edge of the battlefield, and are then taken Down if they are not already Down. Models are moved one at a time, starting with the models that are closest to the Violent Shore edge of the battlefield. A model stops if it is pushed into a terrain piece, the Cliff Wall or another model. If one model is pushed into another model, the other model only moves 5” instead of 10” when it is pushed by the wave.\n\nWreckages: The wave brings forth new pieces of terrain onto the battlefield. After all models have been pushed by the wave, each player rolls once on the following table and sets up the indicated terrain piece anywhere on the battlefield more than 1” away from any other terrain and more than 1” from any models. If the terrain piece cannot be fitted, it is discarded.\n\n**Wreckages Table**\n\n| Roll | Result |\n| --- | --- |\n| 1-4 | Levant Hedgehog |\n| 5-6 | Naval Mine |\n\nWave Drag: At the end of the Turn, models on the battlefield that are not on top of any piece of terrain that is at least 2” high, are dragged 5” toward the Violent Shore edge of the battlefield, and are then taken Down if they are not already Down. Models are moved one at a time, starting with the models that are closest to the Cliff Wall edge of the battlefield. A model stops if it is dragged into a terrain piece or another model. If one model is dragged into another model, the other model only moves 2½” instead of 5” when it is dragged by the wave. If a model is dragged off the Violent Shore edge of the battlefield, it is taken Out of Action, and is dead (remove the model from its Roster and do not roll on the Trauma Table for it). It has become another piece of meat for Leviathan to feast upon."
+        },
+        {
+          "heading": "GAME LENGTH",
+          "body": "This scenario lasts eight Turns or until a player makes their third successful Summoning Roll."
+        },
+        {
+          "heading": "VICTORY CONDITIONS",
+          "body": "A player wins this scenario immediately if there are no enemy models on the battlefield, if the opposing Warband flees (typically due to failing a Morale Check), or if they have successfully summoned Leviathan. Otherwise, the player with more Victory Points at the end of the game is the winner.\n\n**Victory Points**\n\nAt the end of the game, each player scores 3 VPs for each Successful Summoning Roll they made during the game, and 1 VP for each Glorious Deed they completed during the game."
+        },
+        {
+          "heading": "GLORIOUS DEEDS",
+          "body": "Drowned Glory: A friendly model takes an enemy model Down and then the enemy model is dragged off the battlefield by the Wave Drag.\n\nHerald of the Deep: Make 3 Successful Summoning Rolls using the same ELITE model. This Glorious Deed earns you 3 ☼ instead of only 1 – and wins you the game!\n\nSilenced Prayer: A friendly model takes an enemy ELITE model that is within 3” of the Altar of Leviathan Out of Action.\n\nTidewalker: A friendly model ends 3 consecutive Turns within 10” of the Violent Shore edge of the battlefield."
+        }
+      ],
+      "source": "carcass-front",
+      "mapImage": null
     }
   ],
+  "terrain": [
+    {
+      "name": "LEVANT HEDGEHOG",
+      "slug": "levant-hedgehog",
+      "title": "Levant Hedgehog",
+      "body": "The so-called Levant Hedgehog was first created as an improvised form of defence during the Year of the Broken Trinity, when Heretic armoured forces came close to overrunning the entirety of the Levant. Levant Hedgehogs are simple welded crosspieces of steel beams or rails large enough to impale or foul the running gear of vehicles. They were inspired by earlier cavalry countermeasures like caltrops and chevaux de frise, scaled up to match the new mechanised enemies of the day. Being easy to place and virtually indestructible to artillery fire, rusting Levant Hedgehogs now litter the battlefields of Europe and Africa.\n\n**Levant Hedgehog Terrain Rules**\n\nLevant Hedgehogs are a variety of terrain common to the Decimated Ruins, No Man’s Land, and Trench Lines battlefield archetypes. Individual Levant Hedgehogs provide cover, are Dangerous terrain to vehicles and models with Machine Armour, and Difficult terrain to all other models. It is common practice to link two or more Levant Hedgehogs together with coils of barbed wire between them – the barbed wire acts as Linear Dangerous terrain to all models.",
+      "source": "carcass-front"
+    },
+    {
+      "name": "NAVAL MINE",
+      "slug": "naval-mine",
+      "title": "Naval Mine",
+      "body": "Countless naval mines have been laid by both sides over the course of the Great War against Hell. Heretic Raiders delight in dropping naval mines along the most likely sea routes, while the Faithful use them to help protect harbours and coasts from the incessant scourge of the Heretic navy. Mines that have broken free of their restraining chains and washed ashore are a common sight along many coasts, and the ready availability of naval mines means they are often co-opted as land mines for building defensive lines far from the sea.\n\n**Naval Mine Terrain Rules**\n\nNaval mines are a variety of terrain well suited to the Decimated Ruins, No Man’s Land, and Trench Lines battlefield archetypes, especially those that include beaches or riverbanks. Individual naval mines are Impassable terrain to all models and provide a somewhat risky form of cover. Models with the Defuse Mine ability or NEGATE MINED Keyword treat a naval mines as if it had the MINED Keyword. Models can choose a naval mine as the target of a Ranged Attack or a Melee Attack as if it were an enemy model. If they do so, the attack is assumed to automatically hit the mine, which may then explode as described next (do not make an Injury Roll for the mine). Note that a naval mine cannot be chosen as the target for a charge move. When a naval mine is subject to attack, whether deliberate or accidental, there is a chance that it will explode. The following things may cause the mine to explode: Ranged Attacks or Melee Attacks directed against a naval mine, an attack on a model in cover behind a naval mine that is a critical success, or an attack from a BLAST that includes the naval mine in its blast radius. After the result of an attack that may trigger the mine has been resolved against another other targets that it effects, roll 2D6 and look up the total in the following table:\n\n| Roll | Result |\n| --- | --- |\n| 2-6 | The naval mine does not explode now, but you must roll again if any future attack potentially triggers the mine. |\n| 7-11 | The naval mine is jostled enough to set off a rusty fuse timer making detonation imminent. Roll a D6 and place it by the naval mine. From now on, each time a player finishes an Activation with one of their models, they must reduce the number showing on the D6 by 1. When the D6 reaches zero the mine explodes as described below. |\n| 12 | The mine explodes immediately. |\n\n**Naval Mine Explosions**\n\nWhen a mine explodes it has the following effect:\n\n| Type | Range | Keywords |\n| --- | --- | --- |\n| Special | - | BLAST D6”, IGNORE COVER, SHRAPNEL |\n\nBad Hiding Spot: If a model was in contact with the naval mine when it explodes, apply the effect of the DEADLY Keyword to the Injury Roll for the model. Injury Rolls for other models caught in the naval mine’s BLAST are made normally.\n\nDuck: Add -1 INJURY DICE to the roll for a model that is hit by a naval mine’s blast if it is in contact with a terrain piece that is at least ½” tall and that lies in between the model and the naval mine (not including the mine itself ).\n\nMighty Explosion: If a model that has been hit by a naval mine explosion is not taken Out of Action by the Injury Roll, it is blown away D3” in a straight line directly away from the naval mine. Roll separately for each model to see how far it is blown away by the explosion. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb.",
+      "source": "carcass-front"
+    }
+  ],
+  "scenarioGenerator": {
+    "intro": "These rules can be used to generate scenarios for both one-off games and in a campaign. They can be used for one-off games if both players agree to use them. They can be used in a campaign if the instructions for the campaign require the players to generate a random scenario for a game, or if a “6” is rolled on the Campaign Scenario table and both players agree to use them.",
+    "steps": [
+      "Roll on the Battlefield Archetype chart.",
+      "Roll on the Deployment & Game Length chart.",
+      "Roll on the Victory Conditions chart.",
+      "Roll on the Glorious Deeds charts."
+    ],
+    "battlefield": {
+      "intro": "Roll a D6 and look up the result on the following chart. The rules for Battlefield Archetypes can be found in the Trench Crusade Rulebook.",
+      "header": [
+        "D6",
+        "Battlefield Archetype"
+      ],
+      "rows": [
+        {
+          "printed": "1-3",
+          "rolls": [
+            1,
+            2,
+            3
+          ],
+          "values": [
+            "No Man’s Land"
+          ]
+        },
+        {
+          "printed": "4-5",
+          "rolls": [
+            4,
+            5
+          ],
+          "values": [
+            "Decimated Ruins"
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Trench Lines"
+          ]
+        }
+      ],
+      "rules": []
+    },
+    "deployment": {
+      "intro": "Roll a D6 and look up the result on the following chart. Note that a single roll determines both the deployment and the game length.",
+      "header": [
+        "D6",
+        "Deployment",
+        "Game Length"
+      ],
+      "rows": [
+        {
+          "printed": "1",
+          "rolls": [
+            1
+          ],
+          "values": [
+            "Standard Deployment",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "2",
+          "rolls": [
+            2
+          ],
+          "values": [
+            "Flank Attack",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "3",
+          "rolls": [
+            3
+          ],
+          "values": [
+            "Tunnels",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "4",
+          "rolls": [
+            4
+          ],
+          "values": [
+            "Fog of War",
+            "Roll a D6 at the end of the fifth Turn. On a 1 or 2, the game ends immediately. On a 3 or more, the game will end at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "5",
+          "rolls": [
+            5
+          ],
+          "values": [
+            "Chance Encounter",
+            "The game ends at the end of the sixth Turn."
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Long-Distance Battle",
+            "The game ends at the end of the sixth Turn."
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "name": "Standard Deployment",
+          "slug": "standard-deployment",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s.\n\n**The players then alternate**\n\ndeploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "name": "Flank Attack",
+          "slug": "flank-attack",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s.\n\n**The players then alternate**\n\ndeploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        },
+        {
+          "name": "Tunnels",
+          "slug": "tunnels",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The winner must then set up a Tunnel Marker in the loser’s half of the battlefield and more than 6” from the loser’s Deployment Zone. The loser must then set up a Tunnel Marker in the winner’s half of the battlefield and more than 6” from the winner’s Deployment Zone. The players must then split their Warbands into two groups with an equal number of models. If a player has an odd number of models in their Warband, the extra model must go in the first group. The first group is the starting group, and the second group is their reinforcements. The players then alternate deploying their models in their starting group one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules, but must be set up more than 8” from the opposing player’s Tunnel Marker. Starting from the first Turn, the players can Activate the models from their reinforcements group, as well as the models that were deployed at the start of the battle (the reinforcements and previously deployed models can be Activated in any order). When they Activate a reinforcement, they must deploy it within 6” of their Tunnel Marker and more than 1” from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally except that the model cannot Dash. Both players can choose to hold back reinforcements if they wish to, but any that are not deployed by the end of the third Turn are treated as having been taken Out of Action (the tunnels have collapsed!)."
+        },
+        {
+          "name": "Fog of War",
+          "slug": "fog-of-war",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses whether the West or East Deployment Zone will be theirs. The players must then split their Warbands into two groups of models. The first group is the starting group, and the second group is their reinforcements. There must be more models in the starting group, and any models mounted on bases of 40mm or larger must be part of the starting group. The players then alternate deploying their models in their starting group one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators that are part of the starting group can deploy normally or by using their special deployment rules. In the first Turn, the players must Activate the models from their reinforcements group, as well as the models that were deployed at the start of the battle (the reinforcements and previously deployed models can be Activated in any order). When they Activate a reinforcement, they must roll a D6 and refer to the Deployment Zone chart below to see where the model is deployed. The model must be deployed wholly within the Deployment Zone and in contact with the edge of the battlefield, and more than 1” away from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally. Note that both players must Activate all of the models in their reinforcement group and they cannot choose to hold any back.\n\nImportant: If you are playing a game with the Breakthrough Victory Condition, then reinforcements cannot be set up within 12” of their extraction point.\n\n| D6 | Deployment Zone |\n| --- | --- |\n| 1 | The opposing player chooses the Deployment Zone. |\n| 2 | The model is deployed in the Northern Deployment Zone. |\n| 3 | The model is deployed in the Eastern Deployment Zone. |\n| 4 | The model is deployed in the Southern Deployment Zone. |\n| 5 | The model is deployed in the Western Deployment Zone. |\n| 6 | The player chooses which Deployment Zone is used. |"
+        },
+        {
+          "name": "Chance Encounter",
+          "slug": "chance-encounter",
+          "body": "**The players roll-off. The winner**\n\nof the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players must then split their Warbands into two groups with an equal number of models.\n\n**If a player has an odd number**\n\nof models in their Warband, the extra model must go in the second group. The first group is the player’s Turn 1 reinforcements, and the second group is their Turn 2 reinforcements. Infiltrators must deploy normally (they cannot use their special deployment rules). In the first Turn, the players can only Activate the models from their Turn 1 reinforcements group. When they Activate a model, they must deploy it wholly within their Deployment Zone, in contact with the edge of the battlefield, and more than 1” from any enemy models, even if it is an Infiltrator. The player can then carry out the rest of the model’s Activation normally. Note that both players must Activate all of the models in their reinforcement group and they cannot choose to hold any back. In the second Turn the players must Activate models from their Turn 2 reinforcements group in the same way, and they can also Activate the models they deployed during Turn 1 (the reinforcements and previously deployed models can be Activated in any order)."
+        },
+        {
+          "name": "Long-Distance Battle",
+          "slug": "long-distance-battle",
+          "body": "**The players roll-off. The**\n\nwinner of the roll-off chooses which Deployment Zone will be theirs. The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time, starting with the player who has more models in their Warband (roll-off if both players have the same number of models). Models must be set up wholly within their own Deployment Zone. Infiltrators can deploy normally or by using their special deployment rules."
+        }
+      ]
+    },
+    "victory": {
+      "intro": "Roll a D6 and look up the result on the following chart:",
+      "header": [
+        "D6",
+        "Victory Condition"
+      ],
+      "rows": [
+        {
+          "printed": "1",
+          "rolls": [
+            1
+          ],
+          "values": [
+            "Attritional Battle"
+          ]
+        },
+        {
+          "printed": "2",
+          "rolls": [
+            2
+          ],
+          "values": [
+            "Breakthrough"
+          ]
+        },
+        {
+          "printed": "3",
+          "rolls": [
+            3
+          ],
+          "values": [
+            "Over the Top"
+          ]
+        },
+        {
+          "printed": "4",
+          "rolls": [
+            4
+          ],
+          "values": [
+            "Retrieve"
+          ]
+        },
+        {
+          "printed": "5",
+          "rolls": [
+            5
+          ],
+          "values": [
+            "Sabotage"
+          ]
+        },
+        {
+          "printed": "6",
+          "rolls": [
+            6
+          ],
+          "values": [
+            "Take and Hold"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "name": "Attritional Battle",
+          "slug": "attritional-battle",
+          "body": "A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. Each player scores VPs for enemy models that were taken Out of Action equal to the model’s cost, divided by 10 if it has a cost in 👑, or by 3 if it has a cost in ☼ (rounding fractions up). Include the model’s Battlekit, Glory Items, and any other upgrades in its cost. If a model has items worth both 👑 and ☼, work out each separately. For example, a model that had a total cost of 100 👑 and 6 ☼ would be worth 100÷10 = 10 VPs, plus 6÷3 = 2 VPs, for a total of 12 VPs. At the end of the game each player scores 10 VPs for each Glorious Deed they completed."
+        },
+        {
+          "name": "Breakthrough",
+          "slug": "breakthrough",
+          "body": "Each side has an extraction point. They are directly opposite each other, on the edge of the battlefield at the centre of the opponent’s Deployment Zone. If a model finishes a move in contact with its extraction point, it is immediately removed from the battlefield. Models are also immediately extracted if they move into contact with an enemy model that is within 1” of their extraction point. Note that you cannot choose for a model to not be extracted. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with more Victory Points at the end of the game is the winner. Each player scores VPs for friendly models that were extracted equal to the model’s cost, divided by 10 if it has a cost in 👑, or by 3 if it has a cost in ☼ (rounding fractions up). Include the model’s Battlekit, Glory Items, and any other upgrades in its cost. If a model has items worth both 👑 and ☼, work out each separately. For example, a model that had a total cost of 100 👑 and 6 ☼ would be worth 100÷10 = 10 VPs, plus 6÷3 = 2 VPs, for a total of 12 VPs. At the end of the game each player scores 10 VPs for each Glorious Deed they completed."
+        },
+        {
+          "name": "Over the Top",
+          "slug": "over-the-top",
+          "body": "Before deploying any models, each player must set up 4 Trench sections that are at least 8” long in their Deployment Zone. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game each player scores:\n\n1 VP for each Trench section in their own Deployment Zone that has at least 1 friendly model in it and no enemy models in it.\n\n2 VPs for each Trench section in the enemy Deployment Zone that has at least 1 friendly model in it and no enemy models in it.\n\n1 VP for each Glorious Deed they completed.\n\nImportant: If Chance Encounter is rolled as the deployment for this scenario, roll on the deployment chart again until a different deployment is selected."
+        },
+        {
+          "name": "Retrieve",
+          "slug": "retrieve",
+          "body": "Place a Relic Marker at the midpoint of the battlefield. In addition, everywhere within 6” of the centre of the battlefield is covered by a dense unearthly fog. Models wholly within the fog are treated as being in cover, and movement within the fog is treated as if it were being made across Difficult terrain. Infiltrators cannot use their special rules to set up within 12” of the Relic Marker. A model within 1” of the Relic Markers takes a Pick Up Relic ACTION (you do not have to make a Success Roll). Put the Relic Marker in contact with the model’s base to show it is carrying it. The only thing a model carrying the relic can do is take Move or Retreat ACTIONS; it cannot do anything else or be moved in any other way (e.g. with teleportation, Puppet Master, Tormentor Chain, etc.). At the end of its Activation, you can say that a model that is carrying the relic can either keep it or hand it to a friendly model that is within 1”. When a model hands the relic on, place the Marker in contact with the other model’s base. A model that is handed the relic is treated as having been Activated, even if it has not yet been Activated this Turn. If a model carrying the relic is taken Down or Out of Action, or is chosen as the target of a Melee Attack, it immediately drops the relic. When a model drops the relic, place it within 1” of the model and not in contact with any other models. If the model carrying the relic moves into contact with a battlefield edge, it escapes with the Relic Marker and the controlling player immediately wins the game. A player wins this scenario immediately if the opposing Warband flees or if a friendly model carrying the relic finishes a move in contact with the edge of the battlefield. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game each player scores: 10 VPs if a friendly model has the Relic Marker.\n\n1 VP for each Glorious Deed they completed."
+        },
+        {
+          "name": "Sabotage",
+          "slug": "sabotage",
+          "body": "After the terrain has been set up, the players must set up 6 Objective Markers. The players roll-off, and then alternate setting up the Markers, one at a time, starting with the winner of the roll-off. Objective Markers must be set up more than 6” from the edge of the battlefield or a Deployment Zone, and more than 6” away from any other Markers. If this makes it impossible to set up all of the Markers, discard any that cannot be set up. The players then roll-off again. The winner is the attacker and the loser is the defender. All of the attacking models apart from Infiltrators that deploy using their special rules have Demo Charges and can take the following ACTIONS (no Success Rolls are necessary):\n\nPlace Demo Charge ACTION: A model that has Demo Charges and is in contact with an Objective Marker can take an ACTION to place the Demo Charge on the Marker. Once it does so, it no longer has the Demo Charge but can now use the Detonate Demo Charge ACTION.\n\nDetonate Demo Charge ACTION: A model that has set Demo Charges can take an ACTION to detonate the Demo Charge. It can take the ACTION at any time during the game, and can wait one or more Turns before it does so if desired (this gives the model a chance to move away so it does not get caught in the explosion). When it finally takes the ACTION, make an Injury Roll with the IGNORE ARMOUR Keyword for every model within 3” of the Marker. The Marker is then removed. Note that if a model that has placed a Demo Charge is taken Out of Action, it will not be possible to detonate the Demo Charge. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the game the attacker scores:\n\n5 VPs for each Objective Marker that has been removed.\n\n1 VP for each Glorious Deed they completed. At the end of the game the defender scores:\n\n5 VPs for each Objective Marker that has not been removed.\n\n1 VP for each Glorious Deed they completed."
+        },
+        {
+          "name": "Take and Hold",
+          "slug": "take-and-hold",
+          "body": "After the terrain has been set up, the players must set up 6 Objective Markers. The players roll-off, and then alternate setting up the Markers, one at a time, starting with the winner of the roll-off. Objective Markers must be set up more than 6” from the edge of the battlefield or a Deployment Zone, and more than 6” away from any other Markers. If this makes it impossible to use all of the Markers, discard any that cannot be set up. A player wins this scenario immediately if the opposing Warband flees. Otherwise, the player with the most Victory Points at the end of the game is the winner. At the end of the third Turn each player scores:\n\n3 VPs for each Objective Marker they control. A player controls an Objective Marker if there are more friendly models than enemy models within 1” of it. At the end of the game each player scores:\n\n5 VPs for each Objective Marker they control. A player controls an Objective Marker if there are more friendly models than enemy models within 1” of it.\n\n1 VP for each Glorious Deed they completed."
+        }
+      ]
+    },
+    "gloriousDeeds": {
+      "intro": "To determine the Glorious Deeds for the scenario, each player rolls two D6, one after the other. If a player rolls the same result on both dice, roll the second dice again until it shows a different result to the first dice. Then look up the rolls on the following charts to generate four different Glorious Deeds for the game. The older of the two players uses Chart 1 and the younger uses Chart 2. Note that each of the Glorious Deeds can be completed by either player, not just the player who rolled the result.",
+      "charts": [
+        {
+          "name": "Glorious Deeds Chart 1 (Older Player)",
+          "rows": [
+            {
+              "printed": "1",
+              "rolls": [
+                1
+              ],
+              "name": "Reaper",
+              "description": "A friendly model takes 3 enemy models Out of Action during the game."
+            },
+            {
+              "printed": "2",
+              "rolls": [
+                2
+              ],
+              "name": "Sharpshooter",
+              "description": "A friendly model takes an enemy model Out of Action with a Ranged Weapon Attack that has the Long Range and Cover modifiers. Attacks with the BLAST Keyword or that automatically hit without requiring a Success Roll cannot complete this Glorious Deed."
+            },
+            {
+              "printed": "3",
+              "rolls": [
+                3
+              ],
+              "name": "Bloodletting",
+              "description": "An attack made by a friendly model results in the sixth BLOOD MARKER being placed beside an enemy model."
+            },
+            {
+              "printed": "4",
+              "rolls": [
+                4
+              ],
+              "name": "Feigned Retreat",
+              "description": "A friendly model takes a Retreat ACTION and then hits an enemy model it was within 1” of at the start of the Activation with a Ranged Attack later in the same Activation."
+            },
+            {
+              "printed": "5",
+              "rolls": [
+                5
+              ],
+              "name": "Fickle Luck",
+              "description": "A player spends 2 or more BLOOD MARKERS to penalise a Success Roll for an enemy model."
+            },
+            {
+              "printed": "6",
+              "rolls": [
+                6
+              ],
+              "name": "Headhunter",
+              "description": "A friendly model takes 2 enemy models Out of Action with Ranged Attacks during the game."
+            }
+          ]
+        },
+        {
+          "name": "Glorious Deeds Chart 2 (Younger Player)",
+          "rows": [
+            {
+              "printed": "1",
+              "rolls": [
+                1
+              ],
+              "name": "Risk it All",
+              "description": "A friendly model takes 2 Risky Success Rolls in the same Activation, and both are a Success or Critical Success."
+            },
+            {
+              "printed": "2",
+              "rolls": [
+                2
+              ],
+              "name": "Live Dangerously",
+              "description": "A friendly model takes 2 Retreat ACTIONS during the game."
+            },
+            {
+              "printed": "3",
+              "rolls": [
+                3
+              ],
+              "name": "Killer Instinct",
+              "description": "A friendly model takes 2 enemy models Out of Action with Melee Attacks during the game."
+            },
+            {
+              "printed": "4",
+              "rolls": [
+                4
+              ],
+              "name": "No Escape",
+              "description": "A friendly model successfully charges an enemy model that it did not have a Line of Sight to at the start of its Activation."
+            },
+            {
+              "printed": "5",
+              "rolls": [
+                5
+              ],
+              "name": "Cast Them Down",
+              "description": "A friendly model causes an enemy model to Fall from a height of at least 3” (e.g. by taking the enemy model Down near a ledge, or by forcing it off a ledge in some way)."
+            },
+            {
+              "printed": "6",
+              "rolls": [
+                6
+              ],
+              "name": "Show of Mercy",
+              "description": "A friendly model takes a Retreat ACTION when it is within 1” of an enemy model that is Down."
+            }
+          ]
+        }
+      ],
+      "always": {
+        "name": "Victory or Death",
+        "description": "A Warband wins the game. This Glorious Deed is only used in campaign games and is determined after the result of the game has been decided. You do not receive any Victory Points for achieving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would do normally.",
+        "when": "In addition to the Glorious Deeds generated on the charts, the following Glorious Deed is always used for a Random Scenario that has been generated for a Campaign:"
+      }
+    }
+  },
   "coreRules": [
     {
       "id": "the-initiative-phase",
@@ -56532,6 +58327,77 @@ export const DATASET: Dataset = {
       }
     }
   ],
+  "weather": {
+    "procedure": "All of Creation reels and rends in response to the Great War, and even the weather is endowed with divine or devilish power. To represent this in your games of Trench Crusade, you and your opponent(s) may choose to influence your battles by generating a Weather Event. After the battlefield has been set up but before players have Deployed any models, each player rolls 2D6 on the Weather Event Table below. In a campaign, the player with the fewest Campaign Victory Points decides which of the rolled Weather Events to apply for the remainder of the battle. If all players have the same number of Campaign Victory Points, or you are playing a one-off game, simply roll-off, with the winner deciding which rolled Weather Event to apply for the battle.",
+    "events": [
+      {
+        "roll": 2,
+        "name": "Traumatised Earth",
+        "flavour": "Something truly awful happened here.",
+        "effect": "Warbands add –1 DICE to Morale Checks. If a Warband is Shaken, add –2 DICE to Morale Checks instead."
+      },
+      {
+        "roll": 3,
+        "name": "Hemorrhage Eclipse",
+        "flavour": "As the light of the sun is shrouded by a wicked moon, the blood thins in all cast beneath its punitive glow.",
+        "effect": "After making the Injury Roll for a Weapon with the SHRAPNEL Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 4,
+        "name": "Hungry Barbed Wire",
+        "flavour": "A nest of rusted serpents awoken by the heat coil and writhe in search of their next meal.",
+        "effect": "All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to 8” by 8” and gives them the DANGEROUS TERRAIN Keyword (if they don’t have it already). In addition, when a model ends a move within 3” of the picked terrain pieces, make an Injury Roll for that model with –1 DICE."
+      },
+      {
+        "roll": 5,
+        "name": "Churning Mud",
+        "flavour": "Boots and treads alike sink deep into the morass of the blood-saturated soil.",
+        "effect": "Add –1 DICE to the Risky Success Rolls of all Dash ACTIONS."
+      },
+      {
+        "roll": 6,
+        "name": "Oppressive Heat",
+        "flavour": "The heat from above leaves all in a state of near-combustion.",
+        "effect": "After making the Injury Roll for a Weapon with the FIRE Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 7,
+        "name": "Grim and Indifferent",
+        "flavour": "Creation doesn’t even deign to notice you.",
+        "effect": "No effect."
+      },
+      {
+        "roll": 8,
+        "name": "Graveyard Miasma",
+        "flavour": "The trenches are choked with the dead, and at times their hungry, grasping hands reach through the mire.",
+        "effect": "All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to 8” by 8” and gives them the DIFFICULT TERRAIN Keyword (if they don’t have it already). In addition, models making a Melee Attack whilst in or on the picked terrain pieces treat their target as if they had the FEAR Keyword."
+      },
+      {
+        "roll": 9,
+        "name": "Thin Air",
+        "flavour": "The squelching of muddy boots provides counterpoint to the heaving of weary lungs.",
+        "effect": "After making the Injury Roll for a Weapon with the GAS Keyword, place 2 extra BLOOD MARKERS next to the target model instead of 1 (even if the Injury Roll has No Effect)."
+      },
+      {
+        "roll": 10,
+        "name": "Smog Storm",
+        "flavour": "Emerald lightning crackles and barks within the heavy clouds of diesel smoke and ash.",
+        "effect": "The Cover/Defended Obstacle Modifiers is –2 DICE instead of –1 DICE."
+      },
+      {
+        "roll": 11,
+        "name": "Raining Blood",
+        "flavour": "Thick rivulets of viscera drop from the heavens, incensing all to shocking violence.",
+        "effect": "Add +1” to the Charge Bonus rolled for all Charge ACTIONS."
+      },
+      {
+        "roll": 12,
+        "name": "(Un)Holy Choir",
+        "flavour": "The skies are filled with the trumpets and hymns of beings barely comprehensible to those below.",
+        "effect": "Warbands automatically pass Morale Checks."
+      }
+    ]
+  },
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",
@@ -57976,7 +59842,8 @@ export const DATASET: Dataset = {
     "rulesetId": "trenchline",
     "baseCommit": "1b463a8e2eaafc9d6722ae6eeda93e296fb7012b",
     "layers": [
-      "dispatch-01"
+      "dispatch-01",
+      "carcass-front"
     ]
   },
   "armouries": [
@@ -58666,7 +60533,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Warcross",
-          "weaponId": null,
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
           "section": "Grenades",
           "cost": {
             "ducats": 5,
@@ -60387,6 +62254,1039 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Wretched & Yoke Fiends only"
           ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Unholy Relic",
+          "weaponId": "411f-228a-4117-3784",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Unholy Trinket",
+          "weaponId": "ab23-2c25-8507-9ca3",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "procession-of-the-sacred-affliction",
+      "faction": "Procession of the Sacred Affliction",
+      "rows": [
+        {
+          "name": "Automatic Pistol",
+          "weaponId": "8ac5-3721-e679-7c6e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Blunderbuss",
+          "weaponId": "2540-a186-5024-be0a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "9b21-3223-c112-c65f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musket",
+          "weaponId": "86be-7c29-216e-66b8",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "ae18-4990-fc3c-78ce",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Punt Gun",
+          "weaponId": "77ea-665d-7ac6-58ef",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "1d82-fcc9-aeda-b03a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sniper Rifle",
+          "weaponId": "6eb2-c600-98e7-16d3",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f366-4889-0ac5-375d",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Anti-Tank Hammer",
+          "weaponId": "8df3-f372-20a0-4a59",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 35,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Flail/Scourge",
+          "weaponId": "9e8c-dc75-19ab-36b0",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Flail/Scourge",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-great-flail-scourge",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Misericordia",
+          "weaponId": "d82e-4c7b-28ac-1413",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Molotov Cocktail",
+          "weaponId": "b16a-e1fa-433f-efc0",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Warcross",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Holy Icon Shield",
+          "weaponId": null,
+          "section": "Shield",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shield",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Holy Icon Armour",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-holy-icon-armour",
+          "section": "Armour",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Ragged Vestments",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-ragged-vestments",
+          "section": "Armour",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Bells of Warding",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only",
+            "Limit: 1"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Blessed Icon",
+          "weaponId": "3c35-dded-ffab-2e12",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
+        },
+        {
+          "name": "Blessed Millstone",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-blessed-millstone",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Leper-Pilgrims only",
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Field Shrine",
+          "weaponId": "5b7d-4bc2-5a44-43ce",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Holy Relic",
+          "weaponId": "0e24-838f-4297-c2b9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Martyrdom Pills",
+          "weaponId": "322c-cb76-719a-0cb9",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Medi-kit",
+          "weaponId": null,
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Penitent’s Phylactery",
+          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-penitents-phylactery",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "factionId": "heretic-naval-raiders",
+      "faction": "Heretic Naval Raiders",
+      "rows": [
+        {
+          "name": "Anti-Materiel Rifle",
+          "weaponId": null,
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Automatic Rifle",
+          "weaponId": "c35c-a506-683d-6c3f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Automatic Shotgun",
+          "weaponId": "a19d-90ab-da9f-95ff",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bolt-Action Rifle",
+          "weaponId": "2af8-2638-a777-f84e",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Flamethrower",
+          "weaponId": "9b21-3223-c112-c65f",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Grenade Launcher",
+          "weaponId": "3113-d133-1726-05a0",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 30,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Heavy Flamethrower",
+          "weaponId": "2fc0-bc43-b366-5b95",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 55,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Machine Gun",
+          "weaponId": "517c-652f-100e-71d6",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Pistol",
+          "weaponId": "ae18-4990-fc3c-78ce",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 6,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Semi-Automatic Rifle",
+          "weaponId": "1d82-fcc9-aeda-b03a",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug"
+          ]
+        },
+        {
+          "name": "Shotgun",
+          "weaponId": "c339-21cd-0b06-15fe",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Silenced Pistol",
+          "weaponId": "ad8a-00d3-726b-b10c",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only"
+          ]
+        },
+        {
+          "name": "Submachine Gun",
+          "weaponId": "f366-4889-0ac5-375d",
+          "section": "Ranged Weapons",
+          "cost": {
+            "ducats": 25,
+            "glory": 0
+          },
+          "restrictions": [
+            "Bayonet Lug",
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Bayonet",
+          "weaponId": "aa9b-a7a1-69a4-05f4",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 2,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Blasphemous Staff",
+          "weaponId": "6efb-9e82-7136-f983",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Boarding Axe",
+          "weaponId": "cf-weapon-heretic-naval-raiders-boarding-axe",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [],
+          "unique": true
+        },
+        {
+          "name": "Great Hammer/Maul",
+          "weaponId": "a6cd-257b-508a-11b9",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Great Sword/Axe",
+          "weaponId": "f11f-a0c6-d658-dcb6",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 12,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Hellblade",
+          "weaponId": "7490-f22e-68ff-79d3",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Hull Drill",
+          "weaponId": "cf-weapon-heretic-naval-raiders-hull-drill",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "restrictions": [
+            "Abyssal Commando Only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Polearm",
+          "weaponId": "1c55-92d4-5367-2e27",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Sacrificial Blade",
+          "weaponId": "1459-550f-ed53-b276",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 23,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE Only",
+            "Limit: 2"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Sword/Axe",
+          "weaponId": "ef6c-14c0-f6f6-4859",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 4,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Tartarus Claws",
+          "weaponId": "0999-4c6b-539f-d1b2",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Abyssal Commando Only"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Trench Club",
+          "weaponId": "53b3-b3f8-2109-1505",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Knife",
+          "weaponId": "c93b-27f6-78c1-68fa",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 1,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Wrecker’s Torch",
+          "weaponId": "cf-weapon-heretic-naval-raiders-wreckers-torch",
+          "section": "Melee Weapons",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE Only",
+            "Shield Combo"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Frag Grenades",
+          "weaponId": "00d3-c557-3993-f094",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 7,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Gas Grenades",
+          "weaponId": "5f7a-f61c-c4cc-98ad",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Grenades",
+          "weaponId": "3bfd-2c1d-2d6b-a36c",
+          "section": "Grenades",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shield",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Anointed Heretic Raiders only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Combat Helmet",
+          "weaponId": "f742-ff2c-671c-3e20",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Headgear"
+          ]
+        },
+        {
+          "name": "Gas Mask",
+          "weaponId": "29d4-73f4-67aa-ecbb",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable",
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Infernal Brand",
+          "weaponId": "e5d0-2e53-965c-1b78",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Shark Tooth Talisman",
+          "weaponId": "cf-weapon-heretic-naval-raiders-shark-tooth-talisman",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ],
+          "unique": true
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
         },
         {
           "name": "Troop Flag",
@@ -63433,6 +66333,130 @@ export const DATASET: Dataset = {
         "catalogue"
       ],
       "thirdParty": true
+    },
+    {
+      "id": "knights-of-saint-lazarus",
+      "entryId": "cf-variant-procession-of-the-sacred-affliction-knights-of-saint-lazarus",
+      "factionId": "Procession of the Sacred Affliction",
+      "name": "Knights of Saint Lazarus",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Sacred Code",
+          "description": "A Knights of Saint Lazarus Warband must include 1-6 Stigmatic Nuns. In addition, it cannot include Lazarist Communicants or Lazarist Castigators, and models in this Warband cannot voluntarily take a Retreat ACTION."
+        },
+        {
+          "name": "Knightly Order",
+          "description": "A Knights of Saint Lazarus Warband must include 1-3 Leper-Knights. The Leper-Knights use the Lazarist Castigator Warband entry but must wear a suit of Armour, have a Melee Characteristic of +2 DICE, and replace the Whip of God Ability with the Knightly Code Ability."
+        },
+        {
+          "name": "Knightly Code",
+          "description": "When a Leper-Knight makes a Melee Attack that takes an enemy model Out of Action, you can remove 1 BLOOD MARKER from the Leper-Knight or a friendly model within 3” of the Leper-Knight. If the enemy model had the ELITE Keyword, you can place 1 BLESSING MARKER beside the Leper-Knight instead of removing a BLOOD MARKER."
+        },
+        {
+          "name": "Blessed Armoury",
+          "description": "Automatic Pistols cost 15 👑 and Great Swords cost 7 👑 for a Knights of Saint Lazarus Warband. In addition, models in a Knights of Saint Lazarus Warband cannot have Ranged Weapons with a cost of more than 15 👑 or a cost in ☼."
+        },
+        {
+          "name": "Followers of Saint Lazarus",
+          "description": "A Knights of Saint Lazarus Warband may have a Temporal Lord as their Patron in addition to the standard options to choose from. Procession of the Blessed Flock During especially brutal campaigns, and particularly in the aftermath of the bloodiest battles, Lazarist Castigators will move among the dead seeking lost Communicants. They find those who have survived the deaths of their companions, been rendered insensible by artillery, or become trapped under piles of bodies or debris, and gather them together into a Procession. Communicants will often recover their wits and direction with time and care, but until they do the Lazarist Castigators remain on hand to carefully guide the Communicants’ focus. It is also not uncommon for a Blessed Flock to accumulate a large number of Ecclesiastic Prisoners seeking redemption for their sins."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "procession-of-the-blessed-flock",
+      "entryId": "cf-variant-procession-of-the-sacred-affliction-procession-of-the-blessed-flock",
+      "factionId": "Procession of the Sacred Affliction",
+      "name": "Procession of the Blessed Flock",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Shepherds and Lambs",
+          "description": "A Procession of the Blessed Flock Warband may include 1-3 Lazarist Castigators and 1-6 Lazarist Communicants. One Lazarist Castigator must be taken for each 2 Lazarist Communicants or part thereof (e.g. 3 Lazarist Communicants would need 2 Lazarist Castigators to watch over them). Lazarist Communicants in a Procession of the Blessed Flock Warband do not have the ELITE Keyword, but their cost remains the same."
+        },
+        {
+          "name": "Guidance",
+          "description": "If a friendly Lazarist Communicant Activates whilst not standing within 6” of a friendly Lazarist Castigator, all Success Rolls it takes during that Activation become Risky Success Rolls (there is no additional effect if they are Risky Success Rolls already)."
+        },
+        {
+          "name": "Dishevelled Procession",
+          "description": "A Procession of the Blessed Flock Warband can only have 0-2 Stigmatic Nuns, and cannot include Anchorite Shrines or Leper-Pilgrims."
+        },
+        {
+          "name": "Flagellant Flock",
+          "description": "Ecclesiastic Prisoners in a Procession of the Blessed Flock Warband have a Ranged Characteristic of -1 DICE at no additional cost in 👑. In addition, Ecclesiastic Prisoners in a Procession of the Blessed Flock Warband can purchase Muskets, Blunderbusses, Warcrosses, Flails/Scourges, Ragged Vestments, and Trench Shields from the Procession of the Sacred Affliction Armoury Table."
+        },
+        {
+          "name": "Scavenged Armoury",
+          "description": "A Procession of the Blessed Flock Warband cannot have Automatic Pistols, Semi-Automatic Rifles, Sniper Rifles, Submachine Guns, Incendiary Grenades, or Reinforced Armour."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "drowned-choir",
+      "entryId": "cf-variant-heretic-naval-raiders-drowned-choir",
+      "factionId": "Heretic Naval Raiders",
+      "name": "Drowned Choir",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "A Song Within the Deep",
+          "description": "Drowned Choir Warbands must include 1-3 Drowned Choristers. In addition, 1 Drowned Chorister must take the Leviathal Chorus upgrade at a cost of 20 👑. The Drowned Chorister with the Leviathal Chorus upgrade increases its base size to 40mm, has the LEADER and TOUGH Keywords, and replaces their Unholy Hymns ability with the Dread Harmony ability."
+        },
+        {
+          "name": "Dread Harmony",
+          "description": "All Success Rolls made by enemy models within 8” of a Leviathal Chorus become Risky Success Rolls (there is no additional effect if they are Risky Success Rolls already)."
+        },
+        {
+          "name": "A Wretched Chorus",
+          "description": "Wretched models in a Drowned Choir cost 30 👑 and have a Melee Characteristic of +0 DICE. Wretched models within 8” of any number of Drowned Chorister or Leviathal Chorus models have a Melee Characteristic of +1 DICE instead of +0 DICE."
+        },
+        {
+          "name": "Mounting Madness",
+          "description": "Increase the range of a Drowned Chorister’s Unholy Hymns Ability by +4” if it is within 8” of another friendly Drowned Chorister or Leviathal Chorus."
+        },
+        {
+          "name": "To No Purpose Save Their Own",
+          "description": "Drowned Choir Warbands cannot include any of the following models: Heretic Captain, Abyssal Commando, Sea Hag, Anointed Heretic Raiders. The Leviathan Shoal The most bloodthirsty Raider Captains can fall into the worship of mighty Leviathan itself, the great beast of oceans and once the Hell Prince of Envy, now cast down and cruelly bound. The Leviathan Shoal mercilessly slaughters the weakest of their numbers so that only the strongest survive. They sacrifice flesh and blood in Leviathan’s name, and they adopt the shark as their totem, holding that they are heralds and offspring of the great beast and that they share its immortal strength and bottomless hunger. Indeed, great shoals of sharks follow the ships of the Leviathan Shoal everywhere in hungry anticipation, for the warbands of the Leviathan Shoal are infamous for their brutality and terror, slaughtering all they capture. Ever eager to come to blows in physical combat, guns exhibit little allure for them. They cannibalise the flesh of the dead, friend and foe alike, growing fat on their vile feasting and tossing the remnants to the ever-present sharks that roil in their crimson wake. In lean times they will turn on another without thought, victor feasting on the vanquished, for they believe only the strongest deserve to thrive and a mortal life can only be kept intact by one strong and savage enough to protect it."
+        }
+      ],
+      "ops": []
+    },
+    {
+      "id": "leviathan-shoal",
+      "entryId": "cf-variant-heretic-naval-raiders-leviathan-shoal",
+      "factionId": "Heretic Naval Raiders",
+      "name": "Leviathan Shoal",
+      "sources": [
+        "carcass-front"
+      ],
+      "specialRules": [
+        {
+          "name": "Only the Strong Survive",
+          "description": "Leviathan Shoal Warbands can include 0-4 Anointed Heretic Raiders, and up to 1 can be recruited with the ELITE Keyword at no extra cost. In addition, Heretic Captains in this Warband have the STRONG Keyword, but it cannot include any Drowned Choristers, Wretched, or Sea Hags."
+        },
+        {
+          "name": "Charge and Rend",
+          "description": "The models in a Leviathan Shoal Warband cannot have more Ranged Weapons than Melee Weapons. If they ever do, you must remove Ranged Weapons from the Warband Roster until there are no more Ranged Weapons than Melee Weapons. In addition, models in this Warband cannot have Ranged Weapons with the HEAVY Keyword, Sacrificial Blades in this Warband are Limit: 4, and may be purchased for Anointed Heretic Raider models."
+        },
+        {
+          "name": "Feeding Frenzy",
+          "description": "Add +1 DICE to Success Rolls for Melee Attacks made by models from a Leviathan Shoal Warband for each model (friend or foe) with 1 or more BLOOD MARKERS within 1” of the model making the Melee Attack, to a maximum of +3 DICE."
+        },
+        {
+          "name": "Chosen Sons",
+          "description": "The first time in a game that an Anointed Heretic Raider in a Leviathan Shoal Warband takes an enemy model Out of Action with a Melee Attack, that Anointed Heretic Raider gains the TOUGH Keyword for the rest of the game."
+        }
+      ],
+      "ops": []
     }
   ]
 } as unknown as Dataset;

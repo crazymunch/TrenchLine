@@ -1,0 +1,66 @@
+Hell on 	eartHtrencH crusade WeatHer events
+
+-- 1 of 3 --
+
+Hell on Earth
+Trench Crusade Weather Events
+All of Creation reels and rends in response to the Great War, and even the weather is endowed with
+divine or devilish power. To represent this in your games of Trench Crusade, you and your opponent(s)
+may choose to influence your battles by generating a Weather Event. After the battlefield has been set up
+but before players have Deployed any models, each player rolls 2D6 on the Weather Event Table below.
+In a campaign, the player with the fewest Campaign Victory Points decides which of the rolled Weather
+Events to apply for the remainder of the battle. If all players have the same number of Campaign Victory
+Points, or you are playing a one-off game, simply roll-off, with the winner deciding which rolled Weather
+Event to apply for the battle.
+2
+
+-- 2 of 3 --
+
+Weather Events Table
+Roll (2D6) 	Weather Event
+2 	Traumatised Earth
+Something truly awful happened here.
+Warbands add –1 DICE to Morale Checks. If a Warband is Shaken, add –2 DICE to Morale Checks instead.
+3 	Hemorrhage Eclipse
+As the light of the sun is shrouded by a wicked moon, the blood thins in all cast beneath its punitive glow.
+After making the Injury Roll for a Weapon with the SHRAPNEL Keyword, place 2 extra BLOOD MARK-
+ERS next to the target model instead of 1 (even if the Injury Roll has No Effect).
+4 	Hungry Barbed Wire
+A nest of rusted serpents awoken by the heat coil and writhe in search of their next meal.
+All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to 8”
+by 8” and gives them the DANGEROUS TERRAIN Keyword (if they don’t have it already). In addition, when
+a model ends a move within 3” of the picked terrain pieces, make an Injury Roll for that model with –1 DICE.
+5 	Churning Mud
+Boots and treads alike sink deep into the morass of the blood-saturated soil.
+Add –1 DICE to the Risky Success Rolls of all Dash ACTIONS.
+6 	Oppressive Heat
+The heat from above leaves all in a state of near-combustion.
+After making the Injury Roll for a Weapon with the FIRE Keyword, place 2 extra BLOOD MARKERS next
+to the target model instead of 1 (even if the Injury Roll has No Effect).
+7 	Grim and Indifferent
+Creation doesn’t even deign to notice you.
+No effect.
+8 	Graveyard Miasma
+The trenches are choked with the dead, and at times their hungry, grasping hands reach through the mire.
+All players taking part in this game roll-off. The winner picks up to D3 terrain pieces on the battlefield up to
+8” by 8” and gives them the DIFFICULT TERRAIN Keyword (if they don’t have it already). In addition,
+models making a Melee Attack whilst in or on the picked terrain pieces treat their target as if they had the
+FEAR Keyword.
+9 	Thin Air
+The squelching of muddy boots provides counterpoint to the heaving of weary lungs.
+After making the Injury Roll for a Weapon with the GAS Keyword, place 2 extra BLOOD MARKERS next
+to the target model instead of 1 (even if the Injury Roll has No Effect).
+10 	Smog Storm
+Emerald lightning crackles and barks within the heavy clouds of diesel smoke and ash.
+The Cover/Defended Obstacle Modifiers is –2 DICE instead of –1 DICE.
+11 	Raining Blood
+Thick rivulets of viscera drop from the heavens, incensing all to shocking violence.
+Add +1” to the Charge Bonus rolled for all Charge ACTIONS.
+12 	(Un)Holy Choir
+The skies are filled with the trumpets and hymns of beings barely comprehensible to those below.
+Warbands automatically pass Morale Checks.
+Hell on Earth: Trench Crusade Weather Events	
+3
+
+-- 3 of 3 --
+

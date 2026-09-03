@@ -271,6 +271,35 @@ export interface UnitProfile {
    */
   allowedFactions?: string[];
 
+  /**
+   * The entry's Battlekit sentence, verbatim, where the source states one as
+   * prose rather than as links.
+   *
+   * "The only Ranged Weapons they can have are Automatic Pistols and Pistols"
+   * is a legality rule, and nothing in this model can express it: `battlekit`
+   * holds gear the model always has, and the Armoury Table says what the
+   * FACTION stocks, not what this entry may take of it. Paraphrasing it into
+   * a constraint would be a rewrite, so it is carried as text and shown to
+   * the player, who can then apply the rule the pipeline cannot.
+   */
+  battlekitNote?: string;
+
+  /**
+   * A printed statline that is NOT a recruitable model.
+   *
+   * Some entries print two: a Leper-Pilgrim and the Martyr Penitent it can be
+   * resurrected as, a Heretic Raider and the Legionnaire it can be upgraded
+   * to. The second is reached by paying a stated cost for a model you already
+   * have, under a condition the model cannot express ("you cannot have more
+   * Legionnaires than Raiders"). Recruiting one directly would let a player
+   * field a warband of Martyr Penitents at the Pilgrim's price.
+   *
+   * So it stays in the dataset — the Codex shows its statline and the entry's
+   * own ability explains what it costs — and `rules/recruitable.ts` keeps it
+   * out of the recruit list.
+   */
+  secondaryProfile?: boolean;
+
   lore?: string;
   /**
    * The catalogue entry is `hidden="true"`: off the list until a modifier
@@ -313,6 +342,17 @@ export interface Faction {
   id: string;
   name: string;
   specialRules: FactionSpecialRule[];
+  /**
+   * 'Faithful' or 'Fallen', where the source states it in Warband Creation.
+   *
+   * Load-bearing: Mercenaries are hired by alignment ("any Faithful
+   * Mercenaries that can be taken by Trench Pilgrim Warbands"), and several
+   * rules key off it. Only the Carcass Front lists print it today; absent
+   * means the source did not state it, never a default.
+   */
+  alignment?: string;
+  /** Which source introduced the faction, where it is not the catalogues. */
+  source?: string;
   /**
    * True when the book states this faction has no special rules — distinct from
    * an empty `specialRules`, which would also mean "we failed to find any".
@@ -393,6 +433,11 @@ export interface ArmouryRow {
   section: string;
   cost: Cost;
   restrictions: string[];
+  /**
+   * The row is printed with a bullet: the item is unique to this faction and
+   * its rules are in the faction's own Battlekit section, not the core one.
+   */
+  unique?: boolean;
 }
 
 /**
@@ -450,7 +495,7 @@ export interface ScenarioSection {
 }
 
 export interface ScenarioEntry {
-  /** 1-12. */
+  /** Its number within its own book: 1-12 in the rulebook, 1-5 in Carcass Front. */
   number: number;
   /** The numeral the book prints: 'I' … 'XII'. */
   roman: string;
@@ -459,8 +504,113 @@ export interface ScenarioEntry {
   slug: string;
   tagline: string;
   sections: ScenarioSection[];
-  /** The deployment map, verified to exist when the dataset was built. */
-  mapImage: string;
+  /**
+   * The deployment map, verified to exist when the dataset was built.
+   *
+   * Null where the source ships no map file. The rulebook's twelve all have
+   * one and the build fails if a file is missing — twelve broken images is
+   * what the hand-written scenarios shipped — but the Carcass Front book's
+   * maps have not been extracted from the PDF, and `null` says that plainly
+   * rather than pointing at a file that is not there.
+   */
+  mapImage: string | null;
+  /**
+   * Which book it is from: absent for the rulebook's twelve, `carcass-front`
+   * for the supplement's five. Both number their scenarios from I, so the
+   * numeral alone does not identify one.
+   */
+  source?: string;
+  /** The quotation the scenario opens on, above its summary. */
+  quotation?: string;
+  /** The quotation it closes on, printed under the Glorious Deeds. */
+  epigraph?: string;
+}
+
+/**
+ * A terrain piece with rules of its own.
+ *
+ * Kept apart from the scenarios because the book is explicit that it is:
+ * "rules for two different terrain pieces that you can use in ANY of your
+ * Trench Crusade games". Attaching them to the five Carcass Front scenarios
+ * would hide a naval mine from every other game.
+ */
+export interface TerrainPiece {
+  /** The slug the app addresses it by. */
+  slug: string;
+  /** As printed, in caps: `NAVAL MINE`. */
+  name: string;
+  /** Title Case, for display: `Naval Mine`. */
+  title: string;
+  /** The rules, as Markdown — including the 2D6 detonation table. */
+  body: string;
+  /** Which book it is from. */
+  source: string;
+}
+
+/** One row of a generator chart, with the rolls it answers already expanded. */
+export interface ChartRow {
+  /** As printed: `1-3`, `6`. */
+  printed: string;
+  /** Every roll the row answers: `1-3` -> [1, 2, 3]. */
+  rolls: number[];
+  /** The row's cells after the roll column, in printed order. */
+  values: string[];
+}
+
+/** A named rule a generator chart points at — one deployment, one condition. */
+export interface GeneratorRule {
+  name: string;
+  slug: string;
+  /** The rule as printed, as Markdown. */
+  body: string;
+}
+
+/** A chart, its introduction, and the rules it names. */
+export interface GeneratorChart {
+  /** The prose between the section heading and the chart. */
+  intro: string;
+  /** The chart's own column heads: `['D6', 'Deployment', 'Game Length']`. */
+  header: string[];
+  rows: ChartRow[];
+  /** Empty where the chart's results need no rules of their own. */
+  rules: GeneratorRule[];
+}
+
+/** One row of a Glorious Deeds chart: a named deed and how to complete it. */
+export interface GeneratorDeed {
+  printed: string;
+  rolls: number[];
+  name: string;
+  description: string;
+}
+
+/**
+ * The Random Scenario Generator, from the Carcass Front book.
+ *
+ * A procedure — "carry out the following steps in order" — so it is carried as
+ * one and the app runs it, rather than printing four charts and leaving the
+ * player to. It replaces a generator that rolled three invented tables (six
+ * weather conditions, six "complications", six "Secret Secondary Agendas"),
+ * none of which appears in any source.
+ */
+export interface ScenarioGenerator {
+  intro: string;
+  /** The four numbered steps, in order. The order is itself the rule. */
+  steps: string[];
+  battlefield: GeneratorChart;
+  deployment: GeneratorChart;
+  victory: GeneratorChart;
+  gloriousDeeds: {
+    intro: string;
+    /** Two charts of six: one for the older player, one for the younger. */
+    charts: { name: string; rows: GeneratorDeed[] }[];
+    /**
+     * The deed the book says is ALWAYS used in a campaign game, with its own
+     * condition. Not a seventh row on either chart — a rule about when the
+     * generator's output is complete.
+     */
+    always: { name: string; description: string; when: string };
+  };
 }
 
 export type ExplorationTableName = 'common' | 'rare' | 'legendary';
@@ -522,6 +672,24 @@ export interface CoreRuleSection {
   source: { file: string; page: number; lines: [number, number] };
 }
 
+/**
+ * One row of the Hell on Earth Weather Events table.
+ *
+ * An optional module the game publishes. It is the real thing the app's
+ * invented weather was standing in for — twenty-three fabricated "conditions"
+ * across the Codex and Play Mode, deleted in favour of nothing at all until
+ * this existed.
+ */
+export interface WeatherEvent {
+  /** 2 to 12. Every result has a row. */
+  roll: number;
+  name: string;
+  /** The italic line under the name. Not a rule. */
+  flavour: string;
+  /** The rule, verbatim. `Grim and Indifferent` is "No effect." */
+  effect: string;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -535,8 +703,31 @@ export interface Dataset {
   battlekit: BattlekitEntry[];
   /** The twelve scenarios, as printed. */
   scenarios: ScenarioEntry[];
+  /**
+   * Terrain pieces with rules of their own, usable in any game.
+   *
+   * Optional: the base rulebook publishes none, so an empty list and a missing
+   * one would say the same thing and neither would be a fact about the game.
+   */
+  terrain?: TerrainPiece[];
+  /**
+   * The Random Scenario Generator.
+   *
+   * Optional because only the Carcass Front book publishes one, and a ruleset
+   * that does not carry the supplement genuinely has none — which is a
+   * different thing from a generator we failed to read.
+   */
+  scenarioGenerator?: ScenarioGenerator;
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
+  /**
+   * Hell on Earth: the Weather Events table, and the procedure for using it.
+   *
+   * Optional by the module's own words — "you and your opponent(s) **may**
+   * choose to influence your battles by generating a Weather Event" — so the
+   * app offers it rather than applying it.
+   */
+  weather: { procedure: string; events: WeatherEvent[] };
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */

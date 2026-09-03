@@ -15,8 +15,30 @@
     "here: the pipeline resolves that by precedence (Dispatch > rulebook >",
     "catalogue). Only add an entry when two sources of the same standing",
     "state different things, or when one is more precise than the model can",
-    "currently express."
+    "currently express.",
+    "",
+    "The same keys also rule on a REPRINT disagreement: where a supplement",
+    "reprints an entry the dataset already carries and the two printings differ,",
+    "the build reports it here rather than picking a side. One entry answers",
+    "both checks, and each validates it from its own end — the reprint check",
+    "against the supplement, applyResolutions against the dataset and the book."
   ],
+
+  "Combat Biologist.cost.ducats": {
+    "chose": "battlescribe",
+    "value": 0,
+    "because": "Carcass Front reprints the Combat Biologist and prints the Ducat glyph on 'Cost: 3' where Warbands of Trench Crusade prints the Glory glyph on the same number. The number agrees; only the currency glyph differs. Glory is right: it is what the Warbands book prints, what Mercenaries.cat prices the model at, and what every other Mercenary in the game costs (2 to 7 Glory, none in Ducats). A Mercenary for 3 Ducats would be the cheapest model in Trench Crusade by a factor of six. Treated as a misprint or a font substitution in the Carcass Front PDF; reported every build so it cannot go quiet.",
+    "reviewed": "2026-09-02",
+    "reviewer": "claude, pending maintainer confirmation"
+  },
+
+  "Combat Biologist.cost.glory": {
+    "chose": "battlescribe",
+    "value": 3,
+    "because": "The other half of the same disagreement — see Combat Biologist.cost.ducats. Warbands of Trench Crusade and Mercenaries.cat both price the Combat Biologist at 3 Glory; the Carcass Front reprint of the entry sets the Ducat glyph on the same number. Every other field of the reprint agrees with what ships (Movement, Ranged, Melee, Armour, Base), which is what makes the currency glyph a glyph problem rather than a rules change.",
+    "reviewed": "2026-09-02",
+    "reviewer": "claude, pending maintainer confirmation"
+  },
 
   "Scripture Guardian.stats.ranged": {
     "chose": "rulebook",

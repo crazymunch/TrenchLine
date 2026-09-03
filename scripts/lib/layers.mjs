@@ -49,6 +49,25 @@ function findTarget(dataset, ref) {
   );
 }
 
+/**
+ * Stamp provenance on every leaf of an entity, `stats.ranged` and all.
+ *
+ * Mirrors the recursion in `findMissingProvenance`: skip `id`, `sourceFile`
+ * and anything underscore-prefixed, recurse into plain objects, and treat an
+ * array as a leaf.
+ */
+function stampLeaves(provenance, kind, id, obj, info, prefix = '') {
+  for (const [k, v] of Object.entries(obj ?? {})) {
+    if (k === 'id' || k === 'sourceFile' || k.startsWith('_')) continue;
+    const field = prefix ? `${prefix}.${k}` : k;
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      stampLeaves(provenance, kind, id, v, info, field);
+      continue;
+    }
+    provenance.stamp(kind, id, field, info);
+  }
+}
+
 /** Write `value` at a dotted path, creating intermediate objects. */
 function setPath(obj, dotted, value) {
   const parts = dotted.split('.');
@@ -93,11 +112,51 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
     if (op.op === 'add') {
       const coll = dataset[op.collection];
       if (!coll) { unresolved.push({ op, why: `no collection ${op.collection}` }); continue; }
+
+      /*
+        An `add` that duplicates something already in the collection is not an
+        addition, it is a second copy — and a second copy in the recruit list
+        is worse than a missing one, because a player picks one of the two and
+        has no way to tell which.
+
+        Carcass Front is why this exists: it REPRINTS the Combat Biologist,
+        which the Warbands book and the catalogues already carry, so a
+        faithful read of the book adds a Mercenary the dataset already has.
+        Matched on name plus faction, so the Naval Raiders' Wretched and the
+        Heretic Legion's Wretched — genuinely different models sharing a name —
+        stay two entries.
+
+        The op is noted, not dropped silently: a reprint is a second printing
+        of the same entry, and the caller can cross-check the two.
+      */
+      const already = coll.find((e) =>
+        e?.name?.toLowerCase() === op.entity?.name?.toLowerCase()
+        && (e.factionId ?? null) === (op.entity?.factionId ?? null));
+      if (already) {
+        notes.push({
+          op,
+          why: `add ${op.collection}/${op.entity.name}`
+             + `${op.entity.factionId ? ` (${op.entity.factionId})` : ''}: already in the `
+             + 'dataset, so the layer is reprinting it rather than introducing it — '
+             + 'skipped, and the existing entry stands',
+          reprintOf: already,
+        });
+        continue;
+      }
+
       coll.push(op.entity);
       const kind = Object.keys(COLLECTIONS).find((k) => COLLECTIONS[k] === op.collection);
-      for (const f of Object.keys(op.entity ?? {})) {
-        provenance.stamp(kind, op.entity.id ?? op.entity.name, f, { layer: layer.id, source });
-      }
+      /*
+        Stamp every leaf, not every top-level key.
+
+        `findMissingProvenance` walks nested objects — `stats.ranged`,
+        `cost.ducats` — so an entity added with a `stats` block and one stamp
+        on `stats` still fails the build. The Dispatch's only `add` ops write
+        flat scalars, so the shallow version was right until a whole faction
+        arrived through the same door.
+      */
+      stampLeaves(provenance, kind, op.entity.id ?? op.entity.name, op.entity,
+        { layer: layer.id, source });
       continue;
     }
 

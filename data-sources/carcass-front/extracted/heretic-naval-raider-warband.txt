@@ -1,0 +1,102 @@
+Tannin, The Deep Hymn
+(Drowned Chorister)
+Anat the Sordid
+(Heretic Raider Legionnaire)
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	-2 DICE 	+2 DICE 	-1 	32mm
+Battlekit 	Sacrificial Blade, Sword, Standard Armour
+Abilities 	** Unholy Hymns: Add -1 DICE to Success Rolls taken for enemy
+models that are within 8” of one or more Choristers.
+Keywords 	HERETIC, ELITE, FEAR
+Sacrificial Blade
+Type 	Range 	Keywords
+1-Handed 	Melee 	+2 INJURY MODIFIER, RISKY
+Sword
+Type 	Range 	Keywords
+1-Handed 	Melee 	CRITICAL
+Standard Armour
+Type 	Range 	Keywords
+Armour 	- 	-1 INJURY MODIFIER
+BATTLEKIT
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+1 DICE 	+0 DICE 	0 	25mm
+Battlekit 	Submachine Gun, Bayonet
+Abilities 	None
+Keywords 	HERETIC
+Submachine Gun
+Type 	Range 	Keywords
+2-Handed 	16” 	ASSAULT
+** Quick Bursts: A model armed with a Submachine Gun can take two Shoot
+ACTIONS during the same Activation, as long as the Submachine Gun is used
+to make both attacks. The Shoot ACTIONS can be taken one after the other, or
+other ACTIONS can be taken between the Shoot ACTIONS.
+Bayonet
+Type 	Range 	Keywords
+2-Handed 	Melee 	CUMBERSOME
+BATTLEKIT
+HERETIC NAVAL RAIDERS
+Introductory Warband
+A song of hopeless terror and a
+blade of unimaginable cruelty.
+Every moment,
+a dream of murder.
+
+-- 1 of 2 --
+
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+0 DICE 	+0 DICE 	0 	25mm
+Battlekit 	Bolt-Action Rifle, Bayonet
+Abilities 	None
+Keywords 	HERETIC
+Nahash Of Two Tongues
+(Heretic Raider)
+Bolt-Action Rifle
+Type 	Range 	Keywords
+2-Handed 	24” 	-
+Bayonet
+Type 	Range 	Keywords
+2-Handed 	Melee 	CUMBERSOME
+BATTLEKIT
+KEYWORDS
+KEYWORD GLOSSARY
++/- DICE: Dice that are added to Success Rolls. If the Keyword
+applies to a Weapon, the dice are only added to Success Rolls for
+Attacks made with it.
++/- INJURY DICE: Dice that are added to Injury Rolls. If the
+Keyword applies to a Weapon, the dice are only added to Injury
+Rolls for Attacks made with it.
++/- INJURY MODIFIER: Modifiers that are applied to the
+result of an Injury Roll. If the Keyword applies to a Weapon, the
+modifier is only added to Injury Rolls for Attacks made with it.
+ACTION: An activity a model can carry out when it is Activated.
+Common ACTIONS include Move, Dash, Shoot, and Fight.
+ASSAULT: Ranged Attacks made with Weapons that have this
+Keyword do not prevent a model from taking a Charge or Fight
+ACTION during the same Activation.
+BLOOD MARKER: BLOOD MARKERS are placed on models
+that suffer an injury.
+CRITICAL: Add +2 INJURY DICE instead of +1 INJURY
+DICE when a Critical Success is rolled for an attack made by a
+Weapon with this Keyword.
+CUMBERSOME: Weapons with this Keyword require two
+hands to use, even if the model has the STRONG Keyword.
+However, they can still be used alongside a Shield with the Shield
+Combo Stipulation.
+ELITE: The most senior and heroic models in a Warband.
+FEAR: Add -1 DICE to a Melee Attack that targets a model
+with this Keyword. Models that cause FEAR are immune to
+FEAR themselves.
+HERETIC: The model is a member of the Heretic Legions Faction.
+RISKY: If you must make a Success Roll for a model that is using
+a piece of Battlekit that has this Keyword, then the Success Roll
+becomes a Risky Success Roll (the model’s Activation will end if
+the Success Roll is a Failure). For example, the Success Roll for an
+attack made with a Weapon that has the RISKY Keyword would
+become a Risky Success Roll. This Effect is ignored if the Success
+Roll is already a Risky Success Roll.
+One tongue speaks truths
+unwanted, the other
+intoxicating lies.
+
+-- 2 of 2 --
+

@@ -143,6 +143,14 @@ export interface UnitProfile {
   requiresVariant?: { id: string; name: string }[];
   /** The source's own disclaimer, shown rather than paraphrased. */
   thirdPartyNotice?: string;
+  /**
+   * The entry's Battlekit sentence, verbatim, where the book states one as
+   * prose — "The only Ranged Weapons they can have are Automatic Pistols and
+   * Pistols". A legality rule nothing in either model can express, so it is
+   * shown to the player rather than paraphrased into a constraint. See
+   * `UnitProfile.battlekitNote` in types/catalogue.ts.
+   */
+  battlekitNote?: string;
   innateAbilities?: Ability[];
   /**
    * Gear the model always has, from the catalogue's `min="1"` entryLinks.

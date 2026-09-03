@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
+import { useDataset } from '../../rules/useDataset';
 import { DiceRoller } from './DiceRoller';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
@@ -13,8 +14,23 @@ import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { RulesProse } from '../codex/RulesProse';
 import { ViewMasthead } from '../ui/ViewMasthead';
+
+/**
+ * The books a scenario can come from, in the order the picker groups them.
+ *
+ * `source` is empty for the core rulebook — its entries carry no source field
+ * because they are the baseline. The order is publication order, so a player
+ * scrolling the list meets the twelve they are most likely to want first.
+ */
+const SCENARIO_BOOKS: { source: string; label: string }[] = [
+  { source: '', label: 'Trench Crusade Rulebook' },
+  { source: 'carcass-front', label: 'Carcass Front' },
+  { source: 'all-out-war', label: 'All Out War' },
+];
 import { parseDeeds } from './deeds';
 import { parseUnforeseenEvents } from '../../rules/unforeseen';
+import { rollWeatherForAll, type WeatherRoll } from '../../rules/weather';
+import type { WeatherEvent } from '../../types/catalogue';
 import { WarbandCombobox } from '../ui/WarbandCombobox';
 import { warbandCode } from '../../rules/warbandCode';
 import { 
@@ -38,6 +54,7 @@ import {
   Check,
   Sliders,
   Play,
+  CloudRain,
   Lock,
   History,
   TrendingUp,
@@ -94,6 +111,13 @@ export const PlayModeView: React.FC = () => {
   // The Unforeseen Event currently in effect, if the scenario has a table.
   const [environmentalHazard, setEnvironmentalHazard] = useState<string>('');
 
+  /*
+    Hell on Earth. `weatherRolls` is every player's 2D6; `activeWeather` is the
+    one the deciding player picked, which applies for the rest of the battle.
+  */
+  const [weatherRolls, setWeatherRolls] = useState<WeatherRoll[]>([]);
+  const [activeWeather, setActiveWeather] = useState<WeatherEvent | null>(null);
+
   // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
@@ -124,6 +148,17 @@ export const PlayModeView: React.FC = () => {
     that breaks. Every hook in this component now runs before any return.
   */
   const { scenarios } = useScenarios();
+
+  /*
+    The Weather Events table, from the ruleset rather than from a constant.
+
+    No fallback if the dataset has not loaded: the roll button is simply absent,
+    the same rule the rest of the app follows. A hard-coded copy of the table
+    here would be the fourth place in this codebase where game data got written
+    by hand, and the first three were all wrong.
+  */
+  const { dataset: playDataset } = useDataset();
+  const weatherTable = playDataset?.weather ?? null;
 
   if (!viewingWarband) {
     return (
@@ -281,6 +316,13 @@ export const PlayModeView: React.FC = () => {
     if (matchWarbandIds.length <= 1) return;
     setMatchWarbandIds((prev) => prev.filter((id) => id !== wbId));
     setActivePlayerIndex(0);
+  };
+
+  const handleRollWeather = () => {
+    soundEffects.playDiceRoll();
+    if (!weatherTable) return;
+    setWeatherRolls(rollWeatherForAll(weatherTable.events, matchWarbandIds.length));
+    setActiveWeather(null);
   };
 
   const handleNextTurnWithWhistle = () => {
@@ -466,16 +508,29 @@ export const PlayModeView: React.FC = () => {
                 <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
                   Select Mission / Scenario:
                 </label>
+                {/*
+                  Grouped by book. Three sources number their scenarios from I
+                  — the rulebook's twelve, Carcass Front's five, All Out War's
+                  three — so a flat list shows "I. Claim No Man's Land" and
+                  "I. The Ruins of Nineveh Novus" as peers, and two players
+                  agreeing on "scenario one" would set up different games.
+                */}
                 <select
                   value={selectedScenarioId}
                   onChange={(e) => setSelectedScenarioId(e.target.value)}
                   className="w-full bg-theme-base border-2 border-theme-primary rounded p-2.5 text-xs text-theme-text focus:outline-none"
                 >
-                  {scenarios.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
+                  {SCENARIO_BOOKS.map(({ source, label }) => {
+                    const inBook = scenarios.filter((s) => (s.source ?? '') === source);
+                    if (!inBook.length) return null;
+                    return (
+                      <optgroup key={label} label={label}>
+                        {inBook.map((s) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
                 </select>
 
                 {/* Map Preview with Lightbox Trigger */}
@@ -509,6 +564,9 @@ export const PlayModeView: React.FC = () => {
               <div className="lg:col-span-2 space-y-4 bg-theme-base p-4 rounded border border-theme-border">
                 <div>
                   <h3 className="font-gothic font-bold text-base text-theme-primary">{selectedScenario?.name}</h3>
+                  <span className="eyebrow text-theme-muted">
+                    {SCENARIO_BOOKS.find((b) => b.source === (selectedScenario?.source ?? ''))?.label}
+                  </span>
                   <p className="text-xs text-theme-muted italic pt-0.5">{selectedScenario?.tagline}</p>
 
                   {/* Published, or absent. The defaults these replaced —
@@ -676,6 +734,98 @@ export const PlayModeView: React.FC = () => {
                 3. TACTICAL RULES & ENVIRONMENTAL HAZARDS
               </h2>
             </div>
+
+            {/*
+              Hell on Earth: the Weather Event for this battle.
+
+              "After the battlefield has been set up but before players have
+              Deployed any models, each player rolls 2D6 on the Weather Event
+              Table" — so it belongs here, in the lobby, and every player rolls.
+              Optional by the module's own words, which is why nothing is rolled
+              until someone asks for it.
+            */}
+            {weatherTable && (
+            <div className="space-y-2 pb-4 border-b border-theme-border">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted">
+                  Weather Event (Hell on Earth) — optional
+                </label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={handleRollWeather}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow min-h-[44px] sm:min-h-0"
+                  >
+                    <CloudRain className="w-3.5 h-3.5" />
+                    <span>Roll 2D6 each ({matchWarbandIds.length})</span>
+                  </button>
+                  {weatherRolls.length > 0 && (
+                    <button
+                      onClick={() => { setWeatherRolls([]); setActiveWeather(null); }}
+                      className="px-3 py-2 bg-theme-base text-theme-muted border border-theme-border rounded text-xs font-bold uppercase min-h-[44px] sm:min-h-0"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {weatherRolls.length === 0 ? (
+                <p className="text-theme-muted text-xs sm:text-[11px] leading-relaxed">
+                  {weatherTable.procedure}
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {/*
+                    Whose call it is, stated rather than decided: the app cannot
+                    know the table's Campaign VP standings, and guessing would
+                    be worse than asking.
+                  */}
+                  <p className="text-theme-muted text-xs sm:text-[11px] leading-relaxed">
+                    The player with the fewest Campaign Victory Points picks which of these
+                    applies for the rest of the battle. Level, or a one-off game? Roll off.
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {weatherRolls.map((r) => {
+                      const wb = warbands.find((w) => w.id === matchWarbandIds[r.player]);
+                      const chosen = activeWeather?.name === r.event.name;
+                      return (
+                        <button
+                          key={r.player}
+                          onClick={() => setActiveWeather(chosen ? null : r.event)}
+                          className={`p-3 rounded border text-left transition-all ${
+                            chosen
+                              ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
+                              : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
+                          }`}
+                        >
+                          <div className="flex items-baseline justify-between gap-2">
+                            <span className="text-xs sm:text-[10px] uppercase text-theme-muted truncate">
+                              {wb?.name ?? `Player ${r.player + 1}`}
+                            </span>
+                            <span className="font-mono text-theme-primary flex-shrink-0">
+                              {r.dice[0]} + {r.dice[1]} = {r.total}
+                            </span>
+                          </div>
+                          <strong className="font-gothic font-bold text-base text-theme-text block">
+                            {r.event.name}
+                          </strong>
+                          <p className="text-theme-muted text-xs sm:text-[11px] leading-relaxed pt-0.5">
+                            {r.event.effect}
+                          </p>
+                          {chosen && (
+                            <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary block pt-1">
+                              In effect for this battle
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1.5">
@@ -1464,6 +1614,7 @@ export const PlayModeView: React.FC = () => {
       {attackingUnit && (
         <AttackCalculatorModal
           attacker={attackingUnit}
+          weather={activeWeather}
           onClose={() => setAttackingUnit(null)}
         />
       )}

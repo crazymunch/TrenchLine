@@ -5,8 +5,16 @@ import { useStore } from '../../store/useStore';
 import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
 import { parseUnforeseenEvents, rollUnforeseen } from '../../rules/unforeseen';
+import { rollWeather } from '../../rules/weather';
+import {
+  generateScenario, asText, type GeneratedScenario,
+} from '../../rules/scenarioGenerator';
+import { RulesProse } from './RulesProse';
+import { useDataset } from '../../rules/useDataset';
 import { 
   Dice6, 
+  Dices,
+  ClipboardCopy,
   CloudRain, 
   AlertTriangle, 
   RefreshCw, 
@@ -33,6 +41,12 @@ import {
  * scenario: UNFORESEEN EVENTS in Hunt for Heroes. That is what this rolls, read
  * from the scenario itself (▶ `rules/unforeseen.ts`). For the other eleven
  * scenarios it offers nothing, and says so.
+ *
+ * It publishes something else too, and that is what the Random Scenario mode
+ * is: the Carcass Front book's Random Scenario Generator — four charts and a
+ * stated order to roll them in. Where the invented generator handed a table
+ * three rules the game does not contain, this hands them a scenario the book
+ * would have printed.
  */
 
 export const MissionGenerator: React.FC = () => {
@@ -40,7 +54,7 @@ export const MissionGenerator: React.FC = () => {
   // The derived twelve plus the All Out War pack. Templates are seeded from
   // the book's own sections, so a custom mission starts from real rules.
   const { scenarios } = useScenarios();
-  const [activeMode, setActiveMode] = useState<'designer' | 'procedural'>('designer');
+  const [activeMode, setActiveMode] = useState<'designer' | 'random' | 'procedural'>('designer');
 
   /*
     Which scenario's table to roll. Only Hunt for Heroes has one, so it is the
@@ -51,6 +65,33 @@ export const MissionGenerator: React.FC = () => {
   const [eventScenarioId, setEventScenarioId] = useState<string>('');
   const [lastEvent, setLastEvent] = useState<ReturnType<typeof rollUnforeseen> | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  /*
+    Hell on Earth's Weather Events — the game's other published conditions
+    table, and the one that applies to any game rather than to one scenario.
+  */
+  const { dataset: genDataset } = useDataset();
+  const weather = genDataset?.weather ?? null;
+  const [lastWeather, setLastWeather] = useState<ReturnType<typeof rollWeather> | null>(null);
+
+  /*
+    The Carcass Front Random Scenario Generator. Absent from a ruleset that
+    does not carry the supplement, and the view says so rather than falling
+    back to anything — falling back to an invented table is precisely what this
+    replaced.
+  */
+  const generator = genDataset?.scenarioGenerator ?? null;
+  const [rolled, setRolled] = useState<GeneratedScenario | null>(null);
+  /** The book adds one more deed for a campaign game and none for a one-off. */
+  const [forCampaign, setForCampaign] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const handleRollScenario = () => {
+    if (!generator) return;
+    soundEffects.playDiceRoll();
+    setRolled(generateScenario(generator, forCampaign));
+    setCopied(false);
+  };
 
   // Custom Mission Designer State
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
@@ -163,6 +204,18 @@ export const MissionGenerator: React.FC = () => {
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Mission Designer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMode('random')}
+            className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
+              activeMode === 'random'
+                ? 'bg-theme-primary text-theme-base shadow'
+                : 'text-theme-muted hover:text-theme-text'
+            }`}
+          >
+            <Dices className="w-3.5 h-3.5" />
+            <span>Random Scenario</span>
           </button>
 
           <button
@@ -327,9 +380,303 @@ export const MissionGenerator: React.FC = () => {
         </div>
       )}
 
-      {/* MODE 2: UNFORESEEN EVENTS — the game's one published conditions table */}
-      {activeMode === 'procedural' && (
+      {/* MODE 2: the two published conditions tables */}
+      {/* MODE 2: THE PUBLISHED RANDOM SCENARIO GENERATOR */}
+      {activeMode === 'random' && (
         <div className="space-y-5 animate-fade-in font-mono text-xs">
+          {!generator ? (
+            <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">
+              <Dices className="w-8 h-8 text-theme-primary mx-auto opacity-60" />
+              <h4 className="font-gothic font-bold text-base text-theme-text">
+                No generator in this ruleset
+              </h4>
+              <p className="text-theme-muted leading-relaxed max-w-md mx-auto">
+                The Random Scenario Generator is published in the Carcass Front book.
+                Switch to a ruleset that carries it to roll one.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
+                <RulesProse source={generator.intro} className="text-theme-muted" />
+
+                {/*
+                  The four steps, in the book's order, because the order is the
+                  rule — and because a player watching the app roll should be
+                  able to see it doing what the book says.
+                */}
+                <ol className="space-y-1 pl-7 text-theme-muted">
+                  {generator.steps.map((step, i) => (
+                    <li key={step} className="relative">
+                      <span className="absolute -left-7 text-theme-primary tabular-nums" aria-hidden="true">
+                        {i + 1}.
+                      </span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
+                  <label className="flex items-center gap-2 text-theme-text min-h-[44px] sm:min-h-0 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={forCampaign}
+                      onChange={(e) => setForCampaign(e.target.checked)}
+                      className="w-5 h-5 accent-current text-theme-primary"
+                    />
+                    <span>
+                      For a campaign game
+                      <span className="block text-theme-muted">
+                        Adds the Victory or Death Glorious Deed, which the book uses only there.
+                      </span>
+                    </span>
+                  </label>
+
+                  <button
+                    onClick={handleRollScenario}
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow transition-all sm:ml-auto min-h-[44px]"
+                  >
+                    <Dices className="w-4 h-4" />
+                    <span>Generate Scenario</span>
+                  </button>
+                </div>
+              </div>
+
+              {rolled && (
+                <div className="space-y-4">
+                  {/*
+                    What was rolled, with the die that rolled it. A generator
+                    that shows only its answer cannot be checked against the
+                    book, and this one exists because the last one could not be.
+                  */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {[
+                      { label: 'Battlefield', result: rolled.battlefield },
+                      { label: 'Deployment', result: rolled.deployment },
+                      { label: 'Victory', result: rolled.victory },
+                    ].map(({ label, result }) => (
+                      <div
+                        key={label}
+                        className="p-3 bg-theme-base rounded border border-theme-primary/50 space-y-1"
+                      >
+                        <span className="eyebrow accent flex items-center justify-between gap-2">
+                          <span>{label}</span>
+                          <span className="text-theme-muted">D6 {result.roll}</span>
+                        </span>
+                        <strong className="block font-gothic text-sm text-theme-text">
+                          {result.row.values[0]}
+                        </strong>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-3 bg-theme-base rounded border border-theme-border space-y-1">
+                    <span className="eyebrow accent">Game length</span>
+                    <p className="text-theme-text leading-relaxed">{rolled.gameLength}</p>
+                  </div>
+
+                  {[rolled.deployment.rule, rolled.victory.rule].map((rule) => rule && (
+                    <div key={rule.slug} className="p-4 bg-theme-base rounded border border-theme-border space-y-2">
+                      <h4 className="font-gothic font-bold text-sm text-theme-primary uppercase">
+                        {rule.name}
+                      </h4>
+                      <RulesProse source={rule.body} />
+                    </div>
+                  ))}
+
+                  <div className="p-4 bg-theme-base rounded border border-theme-border space-y-3">
+                    <h4 className="font-gothic font-bold text-sm text-theme-primary uppercase">
+                      Glorious Deeds
+                    </h4>
+                    {/*
+                      "Note that each of the Glorious Deeds can be completed by
+                      either player, not just the player who rolled the result."
+                      Four deeds, shared — not two each — so they are one list.
+                    */}
+                    <p className="text-theme-muted leading-relaxed">
+                      Either player can complete any of these.
+                    </p>
+                    <div className="space-y-2">
+                      {rolled.deeds.map((deed) => (
+                        <div key={`${deed.chart}-${deed.printed}`} className="flex gap-3">
+                          <span className="font-bold text-theme-primary tabular-nums w-5 text-right flex-shrink-0">
+                            {deed.printed}
+                          </span>
+                          <p className="text-theme-text leading-relaxed min-w-0">
+                            <strong className="text-theme-text">{deed.name}:</strong>{' '}
+                            <span className="text-theme-muted">{deed.description}</span>
+                          </p>
+                        </div>
+                      ))}
+                      {rolled.always && (
+                        <div className="flex gap-3 pt-2 border-t border-theme-border/60">
+                          <span className="font-bold text-theme-primary w-5 text-right flex-shrink-0" aria-hidden="true">
+                            +
+                          </span>
+                          <p className="text-theme-text leading-relaxed min-w-0">
+                            <strong className="text-theme-text">{rolled.always.name}:</strong>{' '}
+                            <span className="text-theme-muted">{rolled.always.description}</span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/*
+                    Plain text, for an opponent who is not using the app. Both
+                    players have to agree on the scenario, and only one of them
+                    is holding this phone.
+                  */}
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(asText(rolled)).then(
+                        () => setCopied(true),
+                        () => setCopied(false),
+                      );
+                    }}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-bold uppercase min-h-[44px]"
+                  >
+                    <ClipboardCopy className="w-4 h-4" />
+                    <span>{copied ? 'Copied' : 'Copy for your opponent'}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* The charts themselves, so the roll can be checked against them. */}
+              <details className="bg-theme-base rounded border border-theme-border">
+                <summary className="px-4 py-3 min-h-[44px] flex items-center uppercase font-bold text-theme-muted cursor-pointer">
+                  The charts, as printed
+                </summary>
+                <div className="px-4 pb-4 space-y-4">
+                  {[generator.battlefield, generator.deployment, generator.victory].map((chart) => (
+                    <div key={chart.header.join('|')} className="space-y-1.5">
+                      <div className="-mx-1 overflow-x-auto">
+                        <table className="w-full min-w-[18rem] border-collapse">
+                          <thead>
+                            <tr>
+                              {chart.header.map((h, i) => (
+                                <th
+                                  key={h}
+                                  className={`text-left align-top py-1.5 px-2 eyebrow accent border-b border-theme-border ${
+                                    i === 0 ? 'whitespace-nowrap w-px' : ''
+                                  }`}
+                                >
+                                  {h}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {chart.rows.map((row) => (
+                              <tr key={row.printed} className="border-b border-theme-border/40 last:border-0">
+                                <td className="align-top py-1.5 px-2 whitespace-nowrap w-px font-mono tabular-nums text-theme-primary">
+                                  {row.printed}
+                                </td>
+                                {row.values.map((v, i) => (
+                                  <td key={i} className="align-top py-1.5 px-2 leading-relaxed text-theme-text">
+                                    {v}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))}
+
+                  {generator.gloriousDeeds.charts.map((chart) => (
+                    <div key={chart.name} className="space-y-1.5">
+                      <span className="eyebrow accent block">{chart.name}</span>
+                      <div className="space-y-1.5">
+                        {chart.rows.map((row) => (
+                          <div key={row.printed} className="flex gap-3">
+                            <span className="font-bold text-theme-primary tabular-nums w-5 text-right flex-shrink-0">
+                              {row.printed}
+                            </span>
+                            <p className="text-theme-muted leading-relaxed min-w-0">
+                              <strong className="text-theme-text">{row.name}:</strong> {row.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeMode === 'procedural' && (
+        <div className="space-y-6 animate-fade-in font-mono text-xs">
+
+          {/*
+            Hell on Earth. Applies to any game the players choose to use it in,
+            unlike Unforeseen Events, which belongs to one scenario — so it goes
+            first. The whole table is printed under the roll, because the point
+            of the Codex is to be readable when the book is not to hand.
+          */}
+          {weather && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-border pb-2">
+                <span className="uppercase font-bold text-theme-text flex items-center gap-1.5">
+                  <CloudRain className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>Hell on Earth — Weather Events</span>
+                </span>
+                <button
+                  onClick={() => {
+                    soundEffects.playDiceRoll();
+                    setLastWeather(rollWeather(weather.events, 0));
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow min-h-[44px] sm:min-h-0"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Roll 2D6</span>
+                </button>
+              </div>
+
+              <p className="text-theme-muted leading-relaxed">{weather.procedure}</p>
+
+              {lastWeather && (
+                <div className="p-4 bg-theme-elevated rounded border border-theme-primary space-y-1.5">
+                  <span className="uppercase text-theme-muted font-mono">
+                    {lastWeather.dice[0]} + {lastWeather.dice[1]} = {lastWeather.total}
+                  </span>
+                  <h4 className="font-gothic font-bold text-base text-theme-text">
+                    {lastWeather.event.name}
+                  </h4>
+                  <p className="text-theme-muted italic leading-relaxed">{lastWeather.event.flavour}</p>
+                  <p className="text-theme-text bg-theme-base p-2.5 rounded border border-theme-border/60 leading-relaxed">
+                    {lastWeather.event.effect}
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                {weather.events.map((e) => (
+                  <div
+                    key={e.roll}
+                    className={`p-3 rounded border flex gap-3 ${
+                      lastWeather?.event.roll === e.roll
+                        ? 'bg-theme-elevated border-theme-primary'
+                        : 'bg-theme-base border-theme-border'
+                    }`}
+                  >
+                    <span className="font-bold text-theme-primary flex-shrink-0 w-5 text-right tabular-nums">
+                      {e.roll}
+                    </span>
+                    <div className="min-w-0">
+                      <strong className="block text-theme-text">{e.name}</strong>
+                      <p className="text-theme-muted italic leading-relaxed pt-0.5">{e.flavour}</p>
+                      <p className="text-theme-muted leading-relaxed pt-1">{e.effect}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {withEvents.length === 0 ? (
             <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">

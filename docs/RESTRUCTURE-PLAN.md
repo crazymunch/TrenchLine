@@ -777,9 +777,160 @@ code is that it survives being spoken and typed. 32^5 is 33.5 million codes;
 `collidingCodes()` reports a duplicate rather than letting the UI show the
 wrong roster.
 
-## Phase 5 — Carcass Front preview (backburner)
+### Hell on Earth: Weather Events
 
-*Blocked on Phases 1–2. Do not start before the pipeline and rules engine work.*
+The first piece of Carcass Front to arrive as a **published** document rather
+than a preview article, and it lands as ordinary source data rather than
+anything speculative: a PDF in `data-sources/rulebook/`, an extract, a parser,
+a dataset field, tests against the printed table.
+
+Worth recording as the rehearsal Phase 5 §5.7 describes — release to shipped in
+one pass, with no hand-typed rules in between. `parse-weather.mjs` throws rather
+than returning a short table, because an 11-row 2D6 table read with a gap would
+hand a player a result the book does not have.
+
+One rule reaches into the engine: Smog Storm makes the Cover and Defended
+Obstacle modifiers -2 DICE instead of -1, so the attack calculator's chips take
+their value from the active Event. Deliberately narrow — one named Event, one
+modifier — rather than a general effect parser that would quietly mis-apply the
+ten it could not really read.
+
+### Carcass Front: the two faction lists
+
+The book itself. Phase 5 below is **closed without ever being built** — the
+speculative preview it describes was overtaken by the release, which is the
+outcome it was designed to want. §5.7 said what to do: *"delete the speculative
+layer, replace with a PDF-primary layer"*. There was no speculative layer to
+delete, so only the second half happened.
+
+Shipped: both Warbands (Procession of the Sacred Affliction, Heretic Naval
+Raiders), 15 entries, 2 × 44 armoury rows, 15 unique Battlekit items, 4 Warband
+Variants, 6 faction special rules, and the Combat Biologist Mercenary the book
+reprints.
+
+**The layer is generated, not transcribed.** This is the decision worth
+recording, and it is a departure from the Dispatch: see
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Transcribed or generated?" for the
+rule of thumb — *a source that states changes is transcribed, a source that
+states content is parsed* — and for what the pipeline had to learn to take a
+whole faction through the `add` op (leaf-level provenance, a duplicate guard, a
+reprint cross-check).
+
+Three things the app had to learn beyond the pipeline:
+
+- **A leader can be named by Keyword.** The catalogues state it as a `Leader`
+  role; both Carcass Front lists state it as the LEADER Keyword and carry no
+  role at all. Reading only the role left both new Warbands with nobody
+  eligible, so the auto-nominate did nothing. Only the Yüzbaşı Captain carries
+  both, which is what makes the two signals independent.
+- **A printed statline is not always a recruit.** A Martyr Penitent is a
+  resurrected Leper-Pilgrim (45 👑) and a Heretic Raider Legionnaire is an
+  upgraded Raider (10 👑) — both reached by paying for a model you already have,
+  under conditions the entity model cannot express. They stay in the dataset for
+  the Codex and are marked `secondaryProfile`, which keeps them out of the
+  recruit list; offering them would let a player field a warband of Martyr
+  Penitents at the Pilgrim's price.
+- **A Mercenary pool can be stated by delegation.** *"The Procession of the
+  Sacred Afflictions can use any Faithful Mercenaries that can be taken by
+  Trench Pilgrim Warbands."* Resolved from the faction's own special rule, so
+  the Procession inherits the Pilgrims' four hires and the Naval Raiders inherit
+  the Legions' one, without either list being typed anywhere.
+
+One fabrication went with it: `defaultRules.ts` carried a hand-written `rules`
+array per faction — *"Voice of Command"*, *"Ecstatic Zeal"* — that appears in no
+source. It was the last of the invented game data, sitting in the one file the
+audit's deletions had spared because its stated job is presentation. Deleted;
+`hydrateCatalogs` now copies the derived `dataset.factions[].specialRules` onto
+those records instead.
+
+### Carcass Front: the scenarios and the terrain
+
+Five scenarios (I–V, from The Ruins of Nineveh Novus to The Altar of Leviathan)
+and the two terrain pieces that carry rules of their own — the Levant Hedgehog
+and the Naval Mine, with its 2D6 detonation table and blast profile.
+
+Three decisions worth recording:
+
+- **The terrain pieces are their own collection**, not a section of the five
+  scenarios. The book says plainly they are "rules for two different terrain
+  pieces that you can use in **any** of your Trench Crusade games"; filed under
+  a scenario they would be invisible in every other one, and a naval mine's
+  detonation table is what a player reaches for mid-turn after someone has shot
+  at one. `dataset.terrain`, shown above the scenario list in the Codex.
+- **A scenario now says which book it is from.** The rulebook numbers its
+  twelve from I and Carcass Front numbers its five from I, so a flat picker
+  showed "I. Claim No Man's Land" and "I. The Ruins of Nineveh Novus" as peers
+  and two players agreeing on "scenario one" would set up different games. The
+  Play Mode picker groups by book; the Codex badges each entry.
+- **`mapImage` is nullable.** The rulebook's twelve are each checked against a
+  file in `public/maps/` and the build fails if one is missing — twelve broken
+  images is what the hand-written scenarios shipped. The Carcass Front maps
+  have not been extracted from the PDF, so those five carry `null`, which says
+  that rather than pointing at a file that is not there. Their DEPLOYMENT
+  sections describe the zones in words regardless.
+
+Two pieces of shared machinery came out of it:
+
+- **`RulesProse` renders tables.** The chapter turns on roll tables and the
+  renderer had no notion of one. They scroll inside their own container, never
+  the page — a 2D6 table with a sentence in every Result cell is wider than
+  375px whatever is done to it, and `overflow-x: hidden` on the body to hide
+  that is the thing [`MOBILE.md`](MOBILE.md) forbids.
+- **`dehyphenate.mjs`**, the shared rule for a hyphen at a line break. See
+  [`DATA-SOURCES.md`](DATA-SOURCES.md) § "Hyphens at a line break" — it is a
+  decision, not a formatting detail, and getting it wrong turns SHOTGUN into a
+  Keyword that matches nothing.
+
+### Carcass Front: the Random Scenario Generator
+
+Four charts and the stated order to roll them in, plus the six deployments and
+six victory conditions the charts name. The book states it as a procedure, so
+it is carried as one and the app runs it — `src/rules/scenarioGenerator.ts`,
+under a new **Scenario Generator** tab in the Codex.
+
+This retires the last of the invented tables. The Mission Generator rolled six
+weather conditions, six "complications" and six "Secret Secondary Agendas" with
+their own Glory and Ducat rewards; none of the eighteen appears in any source,
+and they gave themselves away on vocabulary — "Poison wounds", "battle rounds",
+"-1 Morale", "priority in Turn 1", none of which Trench Crusade has.
+
+Three rules in it are easy to get wrong and each is pinned by a test:
+
+- **The deed dice are rolled one after the other and a double re-rolls the
+  SECOND die.** Rolling 2D6 and taking a total, or allowing the double, gives
+  a player three deeds where the book gives four.
+- **Which chart a player uses is decided by age** — older uses Chart 1. The app
+  says whose chart is whose rather than deciding, the same treatment the
+  Weather Event's "fewest Campaign Victory Points" gets.
+- **Every deed is live for both players**, so the four are one list rather than
+  two each.
+
+And `Victory or Death` is added only for a campaign game, because the book adds
+it only there.
+
+**The one inference in the pipeline, and why it is not a guess.** The
+Deployment & Game Length chart has a vertically merged Game Length column and
+the extraction flattens merged cells: rows 1-4 print one value between them and
+rows 5-6 print another, so the text arrives with a third cell on rows 1 and 5
+and none on 2, 3, 4 and 6. Every row of a chart a player rolls on must have a
+game length, only two are printed, and each applies from the row it appears on
+until the next one does. `spreadMergedCell` repeats a printed value down the
+rows it covers and never invents one.
+
+**A live bug found on the way.** The Codex's `generator` tab has been rendered
+by `activeTab === 'generator'` since the Codex was built, and **nothing in the
+app ever set that state** — there was no button for it. The Mission Designer,
+the weather roller and the Unforeseen Events roller were all unreachable. Row 2
+of the tab nav now carries five buttons instead of four.
+
+Still to come from the book: the new Patrons and exploration tables, and the
+Carcass Front campaign with its Vision Cards.
+
+## Phase 5 — Carcass Front preview (SUPERSEDED — never built)
+
+*Kept for the record. The box shipped before this was started, so the predicted
+ruleset below was never written and §5.7's replacement is what exists. Read it
+as the plan that correctly anticipated its own obsolescence.*
 
 Build a **predicted** Carcass Front ruleset from published community reporting,
 so a warband can be drafted before the box ships. Sources so far:
@@ -836,9 +987,10 @@ The community catalogues lag official releases by months. Getting new content
 into the app within a day of the PDF dropping is a **primary product goal**, not
 a nice-to-have — it is the main advantage over NewRecruit for this game.
 
-The Carcass Front release is the first test. The mechanism is a PDF-primary
-layer; see [`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
-Phase 1 must land with that path working end-to-end, not just the correction path.
+The Carcass Front release was the first test, and it passed: both faction lists
+went from a release asset to a playable Warband in one pass, with no rules typed
+by hand at any point. The mechanism is a **generated** PDF-primary layer; see
+[`RULESET-MODEL.md`](RULESET-MODEL.md) § "Adding a brand-new faction".
 
 ## Feature parity
 

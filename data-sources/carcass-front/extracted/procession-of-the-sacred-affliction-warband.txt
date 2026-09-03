@@ -1,0 +1,131 @@
+Witness-His-Righteous-Fury
+(Stigmatic Nun)
+Abraham
+Strength-Through-Suffering
+(Leper-Pilgrim)
+Movement 	Ranged 	Melee 	Armour 	Base
+8”/Infantry 	+1 DICE 	+1 DICE 	0 	25mm
+Battlekit 	Anti-Tank Hammer, Warcross
+Abilities 	** Agile: Add +1 DICE to Risky Success Roll when a
+Stigmatic Nun Climbs, Jumps, or makes a Diving Charge, or
+takes a Dash ACTION.
+** Blessed Stigmata: Each time you remove a BLOOD MARKER
+from a Stigmatic Nun because of the REGENERATE 1 Keyword,
+place 1 BLESSING MARKER next to the Stigmatic Nun.
+Keywords 	PILGRIM, REGENERATE 1
+Anti-Tank Hammer
+Type 	Range 	Keywords
+2-Handed 	Melee 	+1 INJURY DICE, CRITICAL,
+IGNORE ARMOUR, RISKY
+** Dangerous: Place 1 BLOOD MARKER next to the model using this Weapon if it
+makes a Melee Attack and the Success Roll is a Success or a Critical Success.
+Warcross
+Type 	Range 	Keywords
+Grenade 	8” 	ASSAULT, IGNORE LONG RANGE
+BATTLEKIT
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+0 DICE 	+0 DICE 	0 	25mm
+Battlekit 	Flamethrower, Trench Club
+Abilities 	None
+Keywords 	PILGRIM
+Flamethrower
+Type 	Range 	Keywords
+2-Handed 	8” 	-1 INJURY DICE, FIRE,
+FLAMETHROWER,
+IGNORE ARMOUR
+Trench Club
+Type 	Range 	Keywords
+1-Handed 	Melee 	-
+BATTLEKIT
+PROCESSION OF THE SACRED AFFLICTION
+Introductory Warband
+A bolt of holy violence, made
+only stronger through her
+virtuous sacrifice.
+Fire and ash in His name.
+
+-- 1 of 2 --
+
+Movement 	Ranged 	Melee 	Armour 	Base
+6”/Infantry 	+0 DICE 	+0 DICE 	-1 	25mm
+Battlekit 	Shotgun, Great Sword, Standard Armour
+Abilities 	** Zealot Strength: This model has the STRONG Keyword.
+Keywords 	PILGRIM, STRONG
+Tekle Once-Of-Solomon
+(Leper-Pilgrim)
+Shotgun
+Type 	Range 	Keywords
+2-Handed 	12” 	+1 DICE, SHOTGUN
+Great Sword
+Type 	Range 	Keywords
+2-Handed 	Melee 	+1 DICE, CRITICAL, HEAVY
+Standard Armour
+Type 	Range 	Keywords
+Armour 	– 	-1 INJURY MODIFIER
+BATTLEKIT
+KEYWORDS
+KEYWORD GLOSSARY
++/- DICE: Dice that are added to Success Rolls. If the Keyword
+applies to a Weapon, the dice are only added to Success Rolls for
+Attacks made with it.
++/- INJURY DICE: Dice that are added to Injury Rolls. If the
+Keyword applies to a Weapon, the dice are only added to Injury
+Rolls for Attacks made with it.
++/- INJURY MODIFIER: Modifiers that are applied to the
+result of an Injury Roll. If the Keyword applies to a Weapon, the
+modifier is only added to Injury Rolls for Attacks made with it.
+ACTION: An activity a model can carry out when it is Activated.
+Common ACTIONS include Move, Dash, Shoot, and Fight.
+ASSAULT: Ranged Attacks made with Weapons that have this
+Keyword do not prevent a model from taking a Charge or Fight
+ACTION during the same Activation.
+BLESSING MARKER: The model is under the influence
+of a supernatural or chemical enhancement that provides
+temporary benefits.
+BLOOD MARKER: BLOOD MARKERS are placed on models
+that suffer an injury.
+CRITICAL: Add +2 INJURY DICE instead of +1 INJURY
+DICE when a Critical Success is rolled for an attack made by a
+Weapon with this Keyword.
+FIRE: After making the Injury Roll for a Weapon with this
+Keyword, place 1 extra BLOOD MARKER next to the target
+model even if the result is No Effect.
+FLAMETHROWER: When a Weapon with this Keyword is used
+to make a Ranged Attack it is automatically a Success. Do not
+make a Success Roll for the attack. Note that this means that the
+attack cannot achieve a Critical Success.
+HEAVY: A model cannot be equipped with more than one piece of
+Battlekit with this Keyword and it does not receive a Charge Bonus
+when it makes a charge move. In addition, if a Ranged Weapon or
+Grenade has this Keyword, you cannot use the Weapon or Grenade to
+make a Ranged Attack and take a Move, Charge or Retreat, or Dash
+ACTION with the attacking model as part of the same Activation.
+IGNORE ARMOUR: Ignore -INJURY DICE and -INJURY
+MODIFIERS for a target’s Armour Characteristic, and for any
+Armour or Shield pieces of Battlekit that it has, for attacks that
+have this Keyword.
+IGNORE [MODIFIER]: Ignore the Success Roll or Injury Roll
+modifier that is specified. For example, the Success Roll for an
+attack made with a Ranged Weapon that had the IGNORE
+LONG RANGE Keyword would not be affected by the -1 DICE
+modifier for a target at Long Range.
+NEGATE [KEYWORD]: A model with the NEGATE
+Keyword is notaffected by the specified Keyword’s Effect. For
+example, a model with NEGATE HEAVY ignores the Effect of
+the HEAVY Keyword.
+PILGRIM: This model is a part of the Trench Pilgrims Faction.
+REGENERATE (X): When you Activate a model with this
+Keyword, before carrying out any ACTIONS, you can remove up
+to X BLOOD MARKERS from the model.
+SHOTGUN: Add -1 INJURY DICE to rolls for attacks made at
+Long Range with a Weapon that has this Keyword, instead of the
+usual Long Range modifier (-1 DICE).
+STRONG: A model with this Keyword has the NEGATE HEAVY
+Keyword. In addition, it can equip and use one 2-Handed Melee
+Weapon as if it were a 1-Handed Melee Weapon.
+The boons of a royal lineage
+pale in comparison to
+spilling Heretic blood.
+
+-- 2 of 2 --
+

@@ -18,7 +18,17 @@ const sultanate = recruitable(DATASET, 'iron-sultanate', APP_FACTIONS);
 
 describe('what a player can recruit', () => {
   it('comes from the catalogues, not from a hand-written list', () => {
-    expect(sultanate.units.length).toBe(DATASET.units.length);
+    /*
+      Every unit in the dataset except the secondary profiles — a Martyr
+      Penitent is a resurrected Leper-Pilgrim and a Heretic Raider Legionnaire
+      is an upgraded Raider, so neither is a recruit. Asserted as the whole
+      list minus exactly those, so a unit going missing for any other reason
+      still fails here.
+    */
+    const secondary = DATASET.units.filter((u) => u.secondaryProfile);
+    expect(secondary.map((u) => u.name)).toEqual(['Martyr Penitent', 'Heretic Raider Legionnaire']);
+    expect(sultanate.units.length).toBe(DATASET.units.length - secondary.length);
+    expect(sultanate.units.some((u) => u.name === 'Martyr Penitent')).toBe(false);
     const lt = sultanate.units.find((u) => u.name === 'Lieutenant');
     expect(lt).toBeDefined();
     // The acceptance profile: every field traceable to New Antioch.cat.

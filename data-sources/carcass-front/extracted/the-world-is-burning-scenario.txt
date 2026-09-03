@@ -1,0 +1,54 @@
+An Introductory Scenario
+This scenario is designed to teach players the basics of Trench Crusade using a handful of models from the Carcass
+Front Campaign box. The Warbands and Battlefield used here are smaller than the ones in a full game, but this
+scenario covers all of the most important rules such as Activating your models, taking Success Rolls, using unique
+Keywords, and dealing damage to each other. Enjoy!
+
+-- 1 of 2 --
+
+FORCES
+This introductory scenario uses specific Warbands with specific models and Battlekit.
+One player chooses the Procession of the Sacred Affliction Introductory Warband, and the other player chooses the
+Heretic Naval Raider Introductory Warband.
+THE BATTLEFIELD
+This scenario uses a specific map for this game, as shown below, and both 4 Levant Hedgehogs and 2 Naval
+Mines as the terrain for game. The players roll-off, and the winner sets up the terrain. Each piece of terrain must
+be placed at least 4” away from any other piece of terrain. For this scenario, both of these types of terrain provide
+cover. In addition, Levant Hedgehogs are Difficult terrain, and Naval Mines are Impassable terrain (thankfully,
+they are duds!).
+12"
+3" 	3"
+DEPLOYMENT ZONE
+DEPLOYMENT ZONE
+As a reminder:
+** Cover: A model is in cover from another model if it is in
+contact with a terrain piece that is at least ½” high and at
+least as wide as its base, and the terrain piece lies between
+it and the other model in such a way that it partially
+blocks the Line of Sight between the two models.
+** Difficult Terrain: Every 1” a model is moved across
+Difficult Terrain counts as 2”.
+** Impassable Terrain: Models cannot be moved onto or
+across Impassable Terrain.
+DEPLOYMENT
+The players roll-off. The winner of the roll-off chooses which Deployment Zone will be theirs.
+The other Deployment Zone is their opponent’s. The players then alternate deploying their models one at a time,
+starting with the winner of the last roll-off. Models must be set up wholly within their own Deployment Zone. Once
+the players have set up their models, deployment ends and the game begins.
+GAME LENGTH
+This scenario lasts four Turns.
+VICTORY CONDITIONS
+A player wins this scenario immediately if there are no enemy models on the battlefield.
+OUTRO
+Congratulations! You’ve played your first game of Trench Crusade. If things still don’t make sense, don’t worry – feel
+free to replay this scenario as much as you need until you have the basics down. When you feel ready, you can build
+the rest of your chosen Warband and play a full game at 700 Ducats. Scenarios are available in the Trench Crusade
+Rulebook and Trench Crusade Digital Rulebook, and you can also use the Random Scenario Generator in the
+Carcass Front Book to generate a quick scenario to play.
+Levant Hedgehogs x4
+(Difficult Terrain)
+Naval Mines x2
+(Impassable Terrain)
+
+-- 2 of 2 --
+

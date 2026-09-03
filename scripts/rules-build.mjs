@@ -26,6 +26,11 @@ import { parseBattlekit } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
+import { parseWeatherEvents } from './lib/parse-weather.mjs';
+import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
+import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
+import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
+         LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -44,8 +49,25 @@ if (!fs.existsSync(path.join(CAT_DIR, 'MANIFEST.json'))) {
 }
 const manifest = JSON.parse(fs.readFileSync(path.join(CAT_DIR, 'MANIFEST.json'), 'utf8'));
 
+/*
+  The Carcass Front supplement is a GENERATED layer.
+
+  Every other layer is a `.layer.json` a maintainer wrote, and that is right for
+  the Dispatch: it is a list of errata sentences, and transcribing "change the
+  Cost of Incendiary Grenades to 10" is transcription. Carcass Front is two
+  faction lists — fifteen entries, ninety-odd armoury rows, fifteen unique
+  Battlekit items — and typing those by hand is exactly the failure rule 1 names.
+  So it is read from the book on every build, and if the extraction breaks the
+  build breaks with it rather than shipping a stale hand-copy.
+
+  Built once, outside the per-ruleset loop, because parsing a 104-page PDF twice
+  produces the same answer twice.
+*/
+const carcassFront = buildCarcassFrontLayer();
+
 /** Load every layer file a ruleset names. */
 function loadLayer(id) {
+  if (id === CARCASS_FRONT) return carcassFront.layer;
   const candidates = [
     `data-sources/dispatch/${id}.layer.json`,
     `data-sources/layers/${id}.layer.json`,
@@ -103,6 +125,24 @@ for (const ruleset of RULESETS) {
   // The twelve scenarios. The hand-written set had the wrong game length for
   // all twelve, inverted Claim No Man's Land's Infiltrator rule, and invented
   // 32 of its 46 Glorious Deeds.
+  /*
+    The Carcass Front book's five scenarios and its two terrain pieces.
+
+    Parsed once outside this loop would be cleaner, but the map check below is
+    per-ruleset and this keeps the two scenario sources side by side. They are
+    only added to a ruleset that carries the supplement's layer — playing a
+    Carcass Front scenario means using its terrain pieces and its neutral
+    models, which the `github-latest` catalogues know nothing about.
+  */
+  const cf = parseCarcassFrontScenarios();
+
+  /*
+    The Random Scenario Generator, printed in the same chapter. Parsed
+    separately because it is a different kind of thing: a procedure with four
+    charts, not a scenario.
+  */
+  const generator = parseScenarioGenerator();
+
   const scenarios = parseScenarios().map((s) => {
     // The map is not derived, it is *resolved*: the hand-written scenarios
     // pointed every one of them at /maps/scenario_N.webp, and not one of those
@@ -118,6 +158,19 @@ for (const ruleset of RULESETS) {
     return { ...s, mapImage: `/${file}` };
   });
 
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    /*
+      No map file, and `null` rather than a path to one that does not exist.
+
+      The rulebook's twelve are checked against `public/maps/` and the build
+      fails if a file is missing, because the hand-written scenarios pointed
+      all twelve at files that were never there. The Carcass Front maps have
+      not been extracted from the PDF; saying so is the honest answer, and the
+      scenario's DEPLOYMENT section describes the zones in words regardless.
+    */
+    scenarios.push(...cf.scenarios.map((s) => ({ ...s, mapImage: null })));
+  }
+
   /*
     The Core Rules and Comprehensive Rules chapters.
 
@@ -125,6 +178,14 @@ for (const ruleset of RULESETS) {
     is a hole in the Codex, so it fails the build rather than shipping a
     chapter list with a gap in it.
   */
+  /*
+    Hell on Earth's Weather Events. The parser throws rather than returning a
+    short table: an eleven-row 2D6 table read with a gap in it would hand a
+    player a result the book does not have, which is the exact failure the
+    invented weather was.
+  */
+  const weather = parseWeatherEvents();
+
   const coreRules = parseCoreRules();
   if (coreRules.missing.length) {
     throw new Error(
@@ -157,8 +218,27 @@ for (const ruleset of RULESETS) {
      * rather than flattened into one list.
      */
     keywords,
-    /** The twelve scenarios, as printed, with their maps resolved. */
+    /** The scenarios, as printed, with their maps resolved. */
     scenarios,
+    /**
+     * Terrain pieces that carry rules of their own — the Levant Hedgehog and
+     * the Naval Mine, with its 2D6 detonation table and blast profile.
+     *
+     * The book states they are for use in ANY game, not only its own five
+     * scenarios, so they are a collection rather than a section of one.
+     */
+    terrain: ruleset.layers.includes(CARCASS_FRONT)
+      ? cf.terrain.map((t) => ({ ...t, source: 'carcass-front' }))
+      : [],
+    /**
+     * The Random Scenario Generator, as a procedure the app can run.
+     *
+     * Undefined for a ruleset without the supplement — that ruleset genuinely
+     * has no generator, which is a different thing from one we failed to read,
+     * and the Codex says so rather than falling back to the invented tables it
+     * used to roll.
+     */
+    scenarioGenerator: ruleset.layers.includes(CARCASS_FRONT) ? generator : undefined,
     /**
      * The Core Rules and Comprehensive Rules chapters, in the book's order.
      *
@@ -171,6 +251,15 @@ for (const ruleset of RULESETS) {
      * when they cannot check the book.
      */
     coreRules: coreRules.chapters,
+    /**
+     * The Weather Events table, from the Hell on Earth module.
+     *
+     * The app used to roll six invented weather conditions in the Codex and
+     * offer five more in the Play Mode lobby, none of which appears in any
+     * source. They were deleted with nothing put in their place, because
+     * nothing beats a made-up rule at a table. This is the published one.
+     */
+    weather,
     /**
      * The Battlekit chapter, verbatim.
      *
@@ -260,6 +349,31 @@ for (const ruleset of RULESETS) {
     });
   }
   dataset.armouries = [...armouryByFaction.values()];
+
+  /*
+    Carcass Front prints its own Armoury Table per faction, in the same shape
+    and with the same authority. It is merged here rather than layered because
+    the assignment above replaces the whole collection — see loadLayer.
+
+    Only for a ruleset that actually carries the layer: `github-latest` is the
+    community catalogues as published, and the supplement is not in them.
+  */
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    for (const a of carcassFront.armouries) {
+      dataset.armouries.push({
+        ...a,
+        // Resolved against the layered weapon list, so a supplement row naming
+        // a core weapon (Sniper Rifle, Bolt-Action Rifle) points at the same
+        // profile every other faction's armoury does, and its own Battlekit
+        // points at the entry the layer just added.
+        rows: a.rows.map((r) => {
+          const w = weaponByName.get(r.name.toLowerCase());
+          if (!w) unmatchedRows++;
+          return { ...r, weaponId: w?.id ?? null };
+        }),
+      });
+    }
+  }
 
   // The weapon keeps the union of every armoury's restrictions as a quick
   // "this is restricted somewhere" signal, stamped so it can say where from.
@@ -364,6 +478,27 @@ for (const ruleset of RULESETS) {
     });
   }
 
+  // The supplement's four Warband Variants, for the same reason as its
+  // armouries: `dataset.variants` is assigned wholesale just above.
+  if (ruleset.layers.includes(CARCASS_FRONT)) {
+    dataset.variants.push(...carcassFront.variants);
+  }
+
+  /*
+    Mercenary pools stated by delegation — "can use any Faithful Mercenaries
+    that can be taken by Trench Pilgrim Warbands". Run for every ruleset, not
+    just the one carrying the supplement: it reads whatever faction rules the
+    dataset holds, so a future list stating its pool the same way is picked up
+    without another special case.
+  */
+  const delegated = applyMercenaryDelegation(dataset);
+  for (const d of delegated) {
+    provenance.stamp('unit', d.unit.id, 'allowedFactions', {
+      layer: 'derived',
+      source: `${d.to} faction special rule '${d.rule}' — delegates to ${d.from}`,
+    });
+  }
+
   const withOps = dataset.variants.filter((v) => v.ops.length).length;
   const bookOnlyCount = bookOnly.length;
 
@@ -418,6 +553,20 @@ for (const ruleset of RULESETS) {
   const unresolvedOps = layerReport.flatMap((r) => r.unresolved ?? []);
   const layerNotes = layerReport.flatMap((r) => r.notes ?? []);
 
+  /*
+    Entries a layer reprinted rather than introduced. The engine skipped the
+    duplicate; this reads the skipped copy as a SECOND SOURCE for the entry the
+    dataset already had, and reports where the two printings disagree.
+
+    A disagreement fails the build unless resolutions.json rules on it, for the
+    same reason a rulebook conflict does: two official books stating different
+    numbers for one model is a fact about the sources, and the app has to say
+    which one it followed and why.
+  */
+  const reprints = crossCheckReprints(layerNotes.filter((n) => n.reprintOf));
+  const reprintConflicts = reprints.disagreed.filter((d) => !resolutions[d.key]);
+  const reprintResolved = reprints.disagreed.filter((d) => resolutions[d.key]);
+
   summaries.push({ ruleset, v, missingProv, unresolvedOps, layerNotes, layerReport, dataset });
 
   console.log(`\n=== ${ruleset.name} (${ruleset.id}) ===`);
@@ -443,12 +592,35 @@ for (const ruleset of RULESETS) {
   const bkKeys = new Set(dataset.battlekit.map((b) => nameKey(b.name)));
   const armouryNames = new Set(dataset.armouries.flatMap((a) => a.rows.map((r) => nameKey(r.name))));
   const described = [...armouryNames].filter((n) => bkKeys.has(n)).length;
-  const deeds = dataset.scenarios.reduce((n, s) =>
-    n + (s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body.match(/^- /gm)?.length ?? 0), 0);
-  console.log(`  scenarios: ${dataset.scenarios.length} with maps, ${deeds} Glorious Deeds`);
+  /*
+    Glorious Deeds, counted across both books' notations. The rulebook bullets
+    them (`- Bloodletting: …`); the Carcass Front book sets each as its own
+    paragraph (`Doomed: A friendly model…`). Counting only bullets reported
+    the same 64 whether the supplement was in the ruleset or not, which made
+    the number useless as a check on the parse.
+  */
+  const deeds = dataset.scenarios.reduce((n, s) => {
+    const body = s.sections.find((x) => x.heading === 'GLORIOUS DEEDS')?.body ?? '';
+    const bullets = body.match(/^- /gm)?.length ?? 0;
+    const named = body.match(/^[A-Z][A-Za-z0-9’'/ -]{1,44}:\s/gm)?.length ?? 0;
+    return n + (bullets || named);
+  }, 0);
+  const mapped = dataset.scenarios.filter((s) => s.mapImage).length;
+  console.log(`  scenarios: ${dataset.scenarios.length} (${mapped} with maps), ${deeds} Glorious Deeds`);
+  if (dataset.terrain.length) {
+    console.log(`  terrain pieces with rules: ${dataset.terrain.map((t) => t.title).join(', ')}`);
+  }
+  if (dataset.scenarioGenerator) {
+    const g = dataset.scenarioGenerator;
+    const deeds = g.gloriousDeeds.charts.reduce((n, c) => n + c.rows.length, 0);
+    console.log(`  scenario generator: ${g.steps.length} steps, ` +
+      `${g.battlefield.rows.length} archetypes, ${g.deployment.rules.length} deployments, ` +
+      `${g.victory.rules.length} victory conditions, ${deeds} Glorious Deeds`);
+  }
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
+  console.log(`  weather: ${dataset.weather.events.length} Weather Events (2D6)`);
   console.log(`  keywords: ${dataset.keywords.length} glossary entries ` +
               `(${dataset.keywords.filter((k) => k.type === 'Effect').length} Effect, ` +
               `${dataset.keywords.filter((k) => k.type === 'Tag').length} Tag)`);
@@ -458,6 +630,12 @@ for (const ruleset of RULESETS) {
 
   const fRules = dataset.factions.reduce((n, f) => n + f.specialRules.length, 0);
   console.log(`  factions: ${dataset.factions.length} with budgets, ${fRules} faction special rules`);
+  if (delegated.length) {
+    const byFaction = new Map();
+    for (const d of delegated) byFaction.set(d.to, (byFaction.get(d.to) ?? 0) + 1);
+    console.log(`  Mercenary pools delegated by a faction rule: ` +
+      [...byFaction].map(([f, n]) => `${f} +${n}`).join(', '));
+  }
   console.log(`  variants: ${dataset.variants.length} — ${withOps} with derived ops` +
               (bookOnlyCount ? `, ${bookOnlyCount} in the rulebook only` : ''));
   console.log(`  layers applied: ${layers.map((l) => l.id).join(', ') || '(none)'}`);
@@ -472,6 +650,22 @@ for (const ruleset of RULESETS) {
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
   if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
+  if (reprints.agreed.length || reprints.disagreed.length) {
+    console.log(`  reprinted entries cross-checked: ${reprints.agreed.length} field(s) agree` +
+                (reprints.disagreed.length ? `, ${reprints.disagreed.length} disagree` : ''));
+    for (const d of reprintResolved) {
+      console.log(`    ${d.key.padEnd(34)} ours=${d.ours}  reprint=${d.book}` +
+                  `  -> ${resolutions[d.key].chose} (${resolutions[d.key].value})`);
+    }
+  }
+  if (reprintConflicts.length) {
+    failed = true;
+    console.log('\n  Two official printings of the same entry disagree — rule on each in');
+    console.log('  data-sources/resolutions.json:');
+    for (const d of reprintConflicts) {
+      console.log(`    ${d.key.padEnd(34)} shipped=${d.ours}  reprint=${d.book}`);
+    }
+  }
   if (unresolvedCurrency.length) {
     console.log(`\n  ⚠ ${unresolvedCurrency.length} cost(s) with an UNCONFIRMED CURRENCY:`);
     for (const u of unresolvedCurrency) console.log(`      ${u}`);
@@ -506,7 +700,7 @@ for (const ruleset of RULESETS) {
   }
 
   // 4. emit
-  if (!checkOnly && !v.conflicts.length && !missingProv.length) {
+  if (!checkOnly && !v.conflicts.length && !missingProv.length && !reprintConflicts.length) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     const banner =
       `// GENERATED FILE — DO NOT EDIT.\n` +
@@ -553,6 +747,17 @@ for (const ruleset of RULESETS) {
       'These applied, but the base data already carried the change. Each is a',
       'candidate for retirement from the layer once the base is confirmed current.', '');
     for (const n of layerNotes) lines.push(`- ${n.why}`);
+    lines.push('');
+  }
+  if (reprints.disagreed.length) {
+    lines.push('## Entries reprinted by a layer, where the two printings differ', '',
+      'The layer reprints a model the dataset already carries. Every other field',
+      `agreed (${reprints.agreed.length} of them).`, '',
+      '| field | shipped | reprint | ruling |', '|---|---|---|---|');
+    for (const d of reprints.disagreed) {
+      const r = resolutions[d.key];
+      lines.push(`| ${d.key} | ${d.ours} | ${d.book} | ${r ? `${r.chose} — ${r.because ?? ''}` : '**unresolved**'} |`);
+    }
     lines.push('');
   }
   if (v.conflicts.length) {
