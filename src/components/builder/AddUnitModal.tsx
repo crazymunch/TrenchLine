@@ -315,7 +315,17 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
           ) : (
             /* TAB: STANDARD PROFILES */
             <div className="divide-y divide-theme-border border border-theme-border rounded overflow-hidden">
-            {filtered.map((unit) => {
+            {filtered.map((unit, i) => {
+              /*
+                A heading wherever the role changes.
+
+                The list was already sorted Elite -> Trooper -> Mercenary but
+                ran as one unbroken column, so a Mercenary priced in Glory sat
+                indistinguishably beside a Trooper priced in Ducats. Derived
+                from the sort rather than from a second grouping pass, so the
+                headings cannot disagree with the order beneath them.
+              */
+              const startsGroup = i === 0 || filtered[i - 1].category !== unit.category;
               const isMercenary = unit.category === 'Mercenary' || unit.factionId === 'mercenaries';
               const count = countOf(unit.id);
               const floor = baseline.current[unit.id] ?? 0;
@@ -328,8 +338,21 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                 || !!unit.battlekitNote;
 
               return (
+                <React.Fragment key={unit.id}>
+                {startsGroup && (
+                  <div
+                    className="px-2 sm:px-3 py-1.5 bg-theme-base flex items-baseline gap-2"
+                    data-recruit-heading={unit.category}
+                  >
+                    <span className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-wider text-theme-primary">
+                      {unit.category}
+                    </span>
+                    <span className="text-xs sm:text-[10px] font-mono text-theme-muted">
+                      {filtered.filter((u) => u.category === unit.category).length}
+                    </span>
+                  </div>
+                )}
                 <div
-                  key={unit.id}
                   className="bg-theme-elevated"
                   data-recruit-row={unit.name}
                   data-category={unit.category}
@@ -358,8 +381,18 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       </span>
                       {/* The statline, on one line and always present. This is
                           what made the old list ragged: it was shown, then the
-                          abilities under it were shown only sometimes. */}
-                      <span className="font-mono text-xs text-theme-muted tabular-nums truncate">
+                          abilities under it were shown only sometimes.
+
+                          Set on its own tinted ground rather than only in a
+                          lighter grey. As plain muted text it read as a second
+                          sentence of the name above it; a faint panel says
+                          "this is a profile, not prose" without competing with
+                          the name for attention. `inline-block` with `w-fit`
+                          so the tint stops at the text instead of ruling a bar
+                          across the row. */}
+                      <span className="font-mono text-xs text-theme-muted tabular-nums truncate
+                                       inline-block w-fit max-w-full rounded-sm
+                                       bg-theme-base/70 border border-theme-border/60 px-1.5 py-0.5">
                         {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · A {unit.stats.armour}
                         {isMercenary && <span className="text-status-legal"> · Merc</span>}
                         {/* On the collapsed row, not only in the expanded panel:
@@ -524,6 +557,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                     </div>
                   )}
                 </div>
+                </React.Fragment>
               );
             })}
             </div>

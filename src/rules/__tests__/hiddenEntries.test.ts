@@ -34,7 +34,7 @@ const APP_FACTIONS = ['new-antioch', 'trench-pilgrims', 'iron-sultanate', 'heret
 */
 const offered = (factionId: string) =>
   recruitable(d, factionId, APP_FACTIONS).units
-    .filter((u) => factionMatches(u.factionId, factionId) || u.roles?.includes('Mercenary'))
+    .filter((u) => factionMatches(u.factionId, factionId) || u.category === 'Mercenary')
     .filter((u) => !u.requiresVariant?.length)
     .map((u) => u.name);
 
