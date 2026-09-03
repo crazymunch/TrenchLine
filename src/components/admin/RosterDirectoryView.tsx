@@ -640,14 +640,14 @@ export const RosterDirectoryView: React.FC = () => {
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-border/60 pb-2">
                       <div className="flex items-center space-x-2">
                         <span className="px-2 py-0.5 rounded bg-theme-accent/40 text-status-error font-bold text-xs sm:text-[10px] uppercase">
-                          {ticket.category}
+                          {ticket.area || 'General'}
                         </span>
                         <span className="px-2 py-0.5 rounded bg-theme-elevated text-theme-primary text-xs sm:text-[10px]">
                           {ticket.severity}
                         </span>
                       </div>
                       <span className="text-xs sm:text-[10px] text-theme-muted">
-                        {ticket.timestamp ? new Date(ticket.timestamp).toLocaleString() : 'Recent'}
+                        {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Recent'}
                       </span>
                     </div>
 
@@ -655,17 +655,25 @@ export const RosterDirectoryView: React.FC = () => {
                       {ticket.description}
                     </p>
 
-                    {ticket.stepsToReproduce && (
+                    {ticket.title && (
                       <div className="text-xs sm:text-[11px] text-theme-muted bg-theme-surface p-2 rounded border border-theme-border/40">
-                        <strong>Steps:</strong> {ticket.stepsToReproduce}
+                        <strong>Title:</strong> {ticket.title}
                       </div>
                     )}
 
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-[10px] text-theme-muted pt-1 border-t border-theme-border/40">
-                      <span>Reporter: <strong className="text-theme-text">{ticket.submittedBy || ticket.userEmail || 'Anonymous'}</strong></span>
-                      <span>Device: <strong>{ticket.deviceType} ({ticket.screenResolution})</strong></span>
-                      <span>View: <strong>{ticket.currentView}</strong></span>
-                      <span>Ruleset: <strong>v{ticket.rulesetVersion}</strong></span>
+                      {/*
+                        The reporter comes from the SESSION now, so this is
+                        either a real account or genuinely anonymous — it used
+                        to fall back to `body.userEmail`, which was whatever
+                        the submitter typed. The device, view and ruleset are
+                        appended to the description by the API rather than
+                        being columns of their own.
+                      */}
+                      <span>Reporter: <strong className="text-theme-text">
+                        {ticket.reporter?.name || ticket.reporter?.email || 'Anonymous'}
+                      </strong></span>
+                      <span>Status: <strong>{ticket.status}</strong></span>
                     </div>
                   </div>
                 ))
@@ -677,7 +685,7 @@ export const RosterDirectoryView: React.FC = () => {
               <button
                 onClick={() => {
                   const dump = bugTickets.map((t) => `### Bug: ${t.category} (${t.severity})
-- **Reporter:** ${t.submittedBy || t.userEmail}
+- **Reporter:** ${t.reporter?.name || t.reporter?.email || 'Anonymous'}
 - **Device:** ${t.deviceType} (${t.screenResolution})
 - **View:** ${t.currentView} (v${t.rulesetVersion})
 - **Description:** ${t.description}
