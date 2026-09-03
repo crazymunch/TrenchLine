@@ -56721,6 +56721,8 @@ export const DATASET: Dataset = {
       "source": "rulebook"
     }
   ],
+  "campaigns": [],
+  "visionCards": [],
   "battlekit": [
     {
       "name": "Anti-Materiel Rifle",

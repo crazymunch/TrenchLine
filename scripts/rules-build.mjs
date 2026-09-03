@@ -29,6 +29,8 @@ import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
 import { parsePatrons } from './lib/parse-patrons.mjs';
 import { parseCarcassFrontExploration } from './lib/parse-cf-exploration.mjs';
+import { parseCarcassFrontCampaigns } from './lib/parse-cf-campaign.mjs';
+import { parseVisionCards } from './lib/parse-vision-cards.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
 import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
@@ -212,6 +214,18 @@ for (const ruleset of RULESETS) {
   */
   const carcassFrontExploration = parseCarcassFrontExploration();
 
+  /*
+    The two campaigns the book prints, and the sixteen Vision cards.
+
+    Mostly sourced prose, section by section — most of a campaign chapter is
+    rules a player reads rather than numbers an app can hold — with the parts
+    the app can act on lifted out: the twelve Camp building tiers, the fourteen
+    Campaign Tracker rewards, the two Shared Objectives and the three
+    conclusions of the Path to Leviathan.
+  */
+  const campaigns = parseCarcassFrontCampaigns();
+  const visionCards = parseVisionCards();
+
   const coreRules = parseCoreRules();
   if (coreRules.missing.length) {
     throw new Error(
@@ -294,6 +308,15 @@ for (const ruleset of RULESETS) {
     patrons: ruleset.layers.includes(CARCASS_FRONT)
       ? patrons
       : patrons.filter((p) => p.source === 'rulebook'),
+    /**
+     * The Carcass Front campaigns and their Vision cards.
+     *
+     * Empty without the supplement's layer, which is the honest answer: that
+     * ruleset has no Carcass Front campaign, as distinct from one we failed to
+     * read.
+     */
+    campaigns: ruleset.layers.includes(CARCASS_FRONT) ? campaigns : [],
+    visionCards: ruleset.layers.includes(CARCASS_FRONT) ? visionCards : [],
     /**
      * The Battlekit chapter, verbatim.
      *
@@ -674,6 +697,20 @@ for (const ruleset of RULESETS) {
         ? `; ${introduced.length} item(s) printed among the Skills and carried apart: `
           + introduced.map((i) => `${i.name} (${i.kind})`).join(', ')
         : ''));
+  }
+  for (const c of dataset.campaigns) {
+    console.log(`  campaign "${c.name}": ${c.sections.length} sections`
+      + (c.buildings.length ? `, ${c.buildings.length} Camp buildings `
+        + `(${c.buildings.reduce((n, b) => n + b.tiers.length, 0)} tiers)` : '')
+      + (c.trackerRewards.length ? `, ${c.trackerRewards.length} Tracker rewards` : '')
+      + (c.sharedObjectives.length ? `, ${c.sharedObjectives.length} Shared Objectives` : '')
+      + (c.conclusions.length ? `, ${c.conclusions.length} conclusions `
+        + `(${c.conclusions.map((x) => x.result).join(' / ')})` : '')
+      + (c.requiresMap ? '  [needs the fold-out map from the box]' : ''));
+  }
+  if (dataset.visionCards.length) {
+    console.log(`  vision cards: ${dataset.visionCards.length}, `
+      + `${dataset.visionCards[0].maxPoints} 🏅 each if fully achieved`);
   }
   if (dataset.campaign.carcassFrontExploration) {
     const t = Object.values(dataset.campaign.carcassFrontExploration);

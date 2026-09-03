@@ -669,6 +669,100 @@ export interface CarcassFrontExplorationTable {
 }
 
 /**
+ * One section of a Carcass Front campaign chapter.
+ *
+ * `level` is the book's own two levels: an ALL-CAPS banner is a part of the
+ * chapter, a Title-Case heading is a rule within it. `markdown` carries the
+ * prose and any tables the section prints, and `RulesProse` renders both.
+ */
+export interface CampaignSection {
+  id: string;
+  level: 1 | 2;
+  heading: string;
+  markdown: string;
+}
+
+/** One of a Camp's four buildings, with its three tiers. */
+export interface CampBuilding {
+  id: string;
+  name: string;
+  /** The glyph the Campaign Tracker's rewards use to name it. */
+  glyph: string;
+  flavour: string;
+  /**
+   * Three tiers, and they stack: "Each new tier adds a new benefit, which is
+   * received in addition to the benefits from the lower tiers."
+   */
+  tiers: { tier: number; effect: string }[];
+}
+
+/**
+ * A campaign Carcass Front prints: the map campaign, or the Path to Leviathan.
+ *
+ * Mostly prose, because most of a campaign chapter is rules a player reads
+ * rather than numbers an app can hold. What is lifted into structure is what
+ * the app can act on: the twelve building tiers, the fourteen Tracker rewards,
+ * the two Shared Objectives, and the three ways the Path to Leviathan ends.
+ */
+export interface CampaignDefinition {
+  id: string;
+  name: string;
+  /** As the book states it: `2 or more`, or `2`. */
+  players: string;
+  intro: string;
+  sections: CampaignSection[];
+  buildings: CampBuilding[];
+  /** The Campaign Tracker's reward symbols and what each one does. */
+  trackerRewards: { symbol: string; effect: string }[];
+  /** Scored at the end, and split between players who tie on one. */
+  sharedObjectives: { id: string; name: string; points: number; description: string }[];
+  /**
+   * How the Path to Leviathan ends. Decided by two facts and nothing else:
+   * whether Leviathan was summoned in Scenario V, and whether the summoner
+   * also holds the railway cannon from Scenario IV.
+   */
+  conclusions: { id: string; name: string; result: string; description: string }[];
+  /**
+   * True when the campaign needs the fold-out map from the box.
+   *
+   * The Carcass Front Campaign does. Its zone board, the Carcass Front Zones
+   * table (which zone offers which Resources, and which scenario is played
+   * there), the Special Zones table and the Scenario Generator charts it uses
+   * are all printed on that map and appear in no PDF. Recorded as a fact about
+   * the campaign so the app can say so, rather than showing rules that refer
+   * to a table it does not have and leaving the player to work out why.
+   */
+  requiresMap: boolean;
+}
+
+/**
+ * One of the sixteen Vision cards.
+ *
+ * Dealt two to a player at the start of a Carcass Front campaign, of which
+ * they keep one, in secret, until the campaign ends. Three tiers of the same
+ * objective worth 10, 15 and 20 🏅, and the scores are cumulative — so a card
+ * fully achieved is worth 45.
+ */
+export interface VisionCard {
+  /**
+   * The card's title, lower-cased.
+   *
+   * The cards carry a printed number and it is deliberately not used: the
+   * numbers land wherever the print sheet's layout put them rather than beside
+   * the card they belong to, and one is printed twice.
+   */
+  id: string;
+  title: string;
+  tiers: { text: string; points: number }[];
+  /** 45 on every card. The three tiers are cumulative. */
+  maxPoints: number;
+  /** The quotation printed under the tiers. Empty on the seven cards with art instead. */
+  flavour: string;
+  /** A clarification or footnote the card prints about its own objective. */
+  note: string;
+}
+
+/**
  * A Patron: the choice a warband makes once, at the start of a campaign.
  *
  * It decides exactly one thing, and it decides it often — both ends of every
@@ -810,6 +904,19 @@ export interface Dataset {
    * are the only part of it that has rules attached.
    */
   patrons: Patron[];
+  /**
+   * The campaigns Carcass Front prints: the map campaign and the Path to
+   * Leviathan. Empty on a ruleset without the supplement's layer.
+   */
+  campaigns: CampaignDefinition[];
+  /**
+   * The sixteen Vision cards. Empty on a ruleset without the supplement.
+   *
+   * A player keeps theirs secret until the end of the campaign but has to
+   * work towards it from the first game, and has to keep evidence as they go —
+   * which needs the card's wording available all the way through.
+   */
+  visionCards: VisionCard[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
