@@ -9,6 +9,7 @@ import { UnitLoreModal } from './UnitLoreModal';
 import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit } from '../../rules/battlekit';
+import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -54,6 +55,19 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
     removeEquipment,
     saveUnitAsFavourite
   } = useStore();
+
+  /*
+    Formulae are separated from gear by the group the CATALOGUE put them in,
+    which the importer now keeps. It used to be a regex over the item's name:
+
+        /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i
+
+    None of the eight real Alchemical Formulae a Takwin Homunculus can buy
+    contains any of those words, so every one of them rendered here as ordinary
+    gear — `Additional Arm` under "Protection & Gear", beside a Gas Mask.
+  */
+  const formulaEquipment = unit.equippedEquipment.filter(isAlchemicalFormula);
+  const gear = unit.equippedEquipment.filter((e) => !isAlchemicalFormula(e));
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameVal, setNameVal] = useState(unit.customName);
@@ -541,7 +555,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           </div>
 
           {/* Equipped Armour & Gear */}
-          {(unit.equippedArmour.length > 0 || unit.equippedEquipment.length > 0) && (
+          {(unit.equippedArmour.length > 0 || gear.length > 0) && (
             <div className="space-y-1.5">
               <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-muted uppercase tracking-wider flex items-center space-x-1">
                 <Shield className="w-3 h-3" />
@@ -562,19 +576,14 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                     </button>
                   </span>
                 ))}
-                {unit.equippedEquipment.map((eq) => {
-                  const isFormula = /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(eq.name);
+                {gear.map((eq) => {
                   return (
                     <span
                       key={eq.instanceId}
-                      className={`inline-flex items-center space-x-1 text-xs font-mono px-2 py-0.5 rounded border ${
-                        isFormula
-                          ? 'bg-theme-accent/30 text-theme-primary border-theme-accent ring-1 ring-theme-primary/30'
-                          : 'bg-theme-elevated text-theme-text border-theme-border'
-                      }`}
+                      className="inline-flex items-center space-x-1 text-xs font-mono px-2 py-0.5 rounded border bg-theme-elevated text-theme-text border-theme-border"
                       title={eq.effect}
                     >
-                      <span>{isFormula ? `🧪 ${eq.name}` : eq.name}</span>
+                      <span>{eq.name}</span>
                       <button
                         onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
                         className="tap text-theme-muted hover:text-status-error ml-1"
@@ -588,15 +597,35 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             </div>
           )}
 
-          {/* Special Faction Upgrades (e.g. Secrets of the House of Wisdom) */}
-          {unit.specialUpgrades && unit.specialUpgrades.length > 0 && (
+          {/* Alchemical Formulae and other faction upgrades */}
+          {((unit.specialUpgrades?.length ?? 0) > 0 || formulaEquipment.length > 0) && (
             <div className="space-y-1">
               <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary uppercase tracking-wider flex items-center space-x-1">
                 <Flame className="w-3 h-3" />
-                <span>{unit.specialUpgrades[0].category}:</span>
+                {/*
+                  Named by the catalogue group when the Formulae were imported,
+                  and only otherwise by whatever category an in-app upgrade was
+                  filed under.
+                */}
+                <span>{formulaEquipment.length > 0 ? ALCHEMICAL_FORMULAE : unit.specialUpgrades![0].category}:</span>
               </span>
               <div className="flex flex-wrap gap-1">
-                {unit.specialUpgrades.map((upg) => (
+                {formulaEquipment.map((eq) => (
+                  <span
+                    key={eq.instanceId}
+                    title={eq.effect}
+                    className="inline-flex items-center space-x-1 text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"
+                  >
+                    <span>{eq.name} ({eq.cost} D)</span>
+                    <button
+                      onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
+                      className="tap text-theme-muted hover:text-status-error ml-1"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+                {(unit.specialUpgrades ?? []).map((upg) => (
                   <span
                     key={upg.id}
                     className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"

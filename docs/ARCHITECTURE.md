@@ -158,6 +158,34 @@ is no anonymous shared account.
 migration) against an existing database before deploying — it is nullable, and
 rows without it fall back to `updatedAt` in the merge.
 
+## Catalogue provenance on a roster item
+
+An item on a roster keeps **the group the catalogue put it in**, in
+`EquipmentItem.group` — `Alchemical Formulae`, or `Alchemical Formulae::Eye
+Options` for a sub-group. The importer already reads that group to decide
+whether to keep the selection; it now stores it.
+
+This exists because dropping it produced three bugs at once, and all three had
+the same shape: a question about game data answered by pattern-matching an
+item's **name**.
+
+| where | the guess | what it got wrong |
+|---|---|---|
+| `UnitCard` | `/formula\|elixir\|salve\|phial\|…/i` | none of the eight real Alchemical Formulae contains any of those words, so every one rendered as ordinary gear |
+| `AddEquipmentModal` | `/third arm\|extra arm\|limb/i` | `Additional Arm` matches none of the three, so the real Formula granted no third weapon hand and only an invented entry did |
+| `UnitAdvancementModal` | `category: 'Alchemical Formula'`, hard-coded | a Saga or a Strain was filed on the card as an Alchemical Formula |
+
+The rule that follows: **if the catalogue states it, carry it — do not
+re-derive it from a name downstream.** A name is an identifier, not a
+description of what a thing is, and a regex over one is a fallback in the sense
+rule 2 forbids: it returns a plausible answer where it should have had a real
+one.
+
+`group` is optional, and absent must never be read as "not a Formula". An item
+seeded in lore or written by hand has no catalogue behind it; the honest answer
+for one is "unknown", which `isAlchemicalFormula` renders as `false` for
+display purposes only.
+
 ## Theming
 
 Themes are defined as CSS custom properties on `[data-theme]` in `globals.css`

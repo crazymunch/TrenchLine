@@ -85,6 +85,17 @@ export interface EquipmentItem {
   gloryCost?: number;
   effect: string;
   category?: string;
+  /**
+   * The catalogue's own group path, verbatim — `Alchemical Formulae`, or
+   * `Alchemical Formulae::Eye Options`. Optional because an item written by
+   * hand or seeded in lore has no catalogue behind it, and absent must not be
+   * mistaken for "not a Formula" by anything that can tell the difference.
+   *
+   * The importer read this to decide whether to keep the selection at all and
+   * then discarded it, which left the unit card guessing from the name. See
+   * `src/rules/formulae.ts`.
+   */
+  group?: string;
   keywords?: string[];
   description?: string;
   factionId?: string;
