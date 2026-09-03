@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  clientMetadata,
+  clientFieldsOf,
+  metadataOf,
+} from '@/lib/api/warbandMetadata';
 import { getServerSession } from 'next-auth';
 import { authOptions, isUserAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -40,16 +45,6 @@ const PUBLIC_SELECT = {
   user: { select: { name: true } },
 } as const;
 
-/** Read the client-owned metadata that rides inside `notes`. */
-function metadataOf(notes: string | null): Record<string, unknown> {
-  const raw = notes ?? '';
-  if (!raw.startsWith('{') || !raw.endsWith('}')) return {};
-  try {
-    return JSON.parse(raw) as Record<string, unknown>;
-  } catch {
-    return {};
-  }
-}
 
 function toPublic(wb: {
   id: string; name: string; factionId: string; ducatLimit: number; gloryPoints: number;
@@ -109,20 +104,20 @@ function toOwn(wb: OwnRow) {
     armoryStash: wb.armoryStash,
     visibility: wb.visibility,
     notes: (metadata.rawNotes as string) ?? (wb.notes?.startsWith('{') ? '' : wb.notes ?? ''),
-    lore: metadata.lore,
-    motto: metadata.motto,
-    patron: metadata.patron,
-    chronicleLog: metadata.chronicleLog,
-    snapshots: metadata.snapshots,
+    /*
+      Every client-owned field, from the one list. `editedAt` is among them —
+      the sync merge compares it and nothing else; see services/sync.ts for why
+      `updatedAt` could not do that job.
+
+      Deliberately NOT spread into `toPublic`. That is the directory's
+      allowlist and it stays as narrow as it is.
+    */
+    ...clientFieldsOf(metadata),
     creatorId: wb.userId,
     creatorName: wb.user?.name || 'Crusade Commander',
     campaignMembers: wb.campaignMembers,
     createdAt: wb.createdAt.toISOString(),
     updatedAt: wb.updatedAt.toISOString(),
-    // When the player last changed the roster, as against when the row was
-    // last written. The sync merge compares this and nothing else — see
-    // services/sync.ts for why `updatedAt` could not do the job.
-    editedAt: metadata.editedAt,
   };
 }
 
@@ -209,22 +204,21 @@ export async function POST(req: NextRequest) {
     const isAdmin = isUserAdmin(userEmail);
     const body = await req.json();
 
-    const { 
-      id, 
-      name, 
-      factionId, 
-      ducatLimit, 
-      treasuryDucats, 
-      gloryPoints, 
-      units, 
-      armoryStash, 
-      notes,
-      lore,
-      motto,
-      patron,
-      chronicleLog,
-      snapshots,
-      editedAt,
+    /*
+      The columns this route writes. The CLIENT-OWNED fields are deliberately
+      absent: `clientMetadata` reads those off `body` using the single list in
+      CLIENT_OWNED, so adding one there makes it round-trip with no second edit
+      here. Listing them twice is the drift that lost six of them.
+    */
+    const {
+      id,
+      name,
+      factionId,
+      ducatLimit,
+      treasuryDucats,
+      gloryPoints,
+      units,
+      armoryStash,
       visibility
     } = body;
 
@@ -308,15 +302,7 @@ export async function POST(req: NextRequest) {
       If it ever needs to be indexed, add the column then and backfill from
       here. Doing it now buys nothing and costs a migration window.
     */
-    const metadataPayload = JSON.stringify({
-      rawNotes: notes || '',
-      lore: lore || '',
-      motto: motto || '',
-      patron: patron || '',
-      chronicleLog: chronicleLog || [],
-      snapshots: snapshots || [],
-      editedAt: editedAt || undefined
-    });
+    const metadataPayload = clientMetadata(body);
 
     const warband = await prisma.warband.upsert({
       where: { id: warbandId },
