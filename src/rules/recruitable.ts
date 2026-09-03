@@ -302,10 +302,23 @@ export function recruitable(
       equipment.push({
         id, name: row.name, cost: row.cost.ducats,
         gloryCost: row.cost.glory || undefined,
-        // `effect` is required by the legacy shape. The rules text where there
-        // is one, the keyword line otherwise, and an empty string rather than
-        // an invented sentence when the sources carry neither.
-        effect: b?.rules.join(' ') || b?.note || (b?.keywords ?? []).join(', ') || '',
+        /*
+          `effect` is required by the legacy shape. The rules text where there
+          is one, the keyword line otherwise, and an empty string rather than
+          an invented sentence when the sources carry neither.
+
+          Both sources are consulted, and that second one is the fix. `b` is
+          the rulebook's Battlekit chapter; an item published in a supplement
+          has no entry there and carries its rules on the catalogue profile `p`
+          instead. Reading only `b`, every piece of Carcass Front wargear
+          rendered with its name, cost and keywords and a blank where the rule
+          should be — the Bells of Warding lost "Gathering Call: Add +1 DICE to
+          Risky Success Rolls for friendly models that are taking a Dash ACTION
+          and are within 4” of one or more models with Bells of Warding or a
+          Musical Instrument", which is the whole of what the item does.
+        */
+        effect: b?.rules.join(' ') || p?.rules || b?.note
+          || (b?.keywords ?? p?.keywords ?? []).join(', ') || '',
         keywords: b?.keywords ?? p?.keywords ?? [],
         description: b?.description,
         category: section,
