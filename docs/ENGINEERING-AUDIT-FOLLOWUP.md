@@ -227,15 +227,21 @@ integration tests pass against Postgres.
 **Priority:** medium  
 **Dependency:** AUD-0; repository settings require maintainer action
 
-1. Enable GitHub's dependency graph and dependency review if the repository
-   plan supports them, then add `actions/dependency-review-action@v4` as a
+1. **Needs the maintainer.** Enable GitHub's dependency graph and dependency
+   review if the repository plan supports them, then add `actions/dependency-review-action@v4` as a
    high-severity PR gate. Until enabled, keep the existing explicit note rather
    than a permanently red or `continue-on-error` job.
 2. Keep `npm audit` fail-closed behavior from PR #27. Verify both advisory and
    endpoint-failure paths with the stubbed CI test already introduced there.
-3. Add a scheduled production-dependency scan so unchanged lockfiles are
-   rechecked when new advisories appear.
-4. Confirm HSTS at the actual TLS terminator before documenting it as enforced.
+3. ~~Add a scheduled production-dependency scan so unchanged lockfiles are
+   rechecked when new advisories appear.~~ **Done** —
+   `.github/workflows/dependency-advisories.yml`, daily at 07:00 UTC, running
+   the same gate as the pull-request check. `scripts/__tests__/auditGate` pins
+   the two identical, because the cost of copying nine lines of shell is drift
+   and one copy quietly falling behind is worse than either arrangement.
+4. **Needs the maintainer.** Confirm HSTS at the actual TLS terminator before
+   documenting it as enforced — it cannot be observed from inside the
+   application, which is the whole point of the item.
 5. Run a bounded CSP nonce/static-rendering spike. Measure the affected routes
    and cache behavior; adopt nonces only if the security gain justifies making
    those routes dynamic. Otherwise record the accepted `script-src
