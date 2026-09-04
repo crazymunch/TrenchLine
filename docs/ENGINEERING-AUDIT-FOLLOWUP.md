@@ -187,7 +187,14 @@ and tune false positives without reading secrets or message bodies.
 ### SYNC-1 — Implement campaign cloud synchronization as a real protocol
 
 **Priority:** medium-high product work  
-**Dependency:** AUD-0; can run independently of AUTH packages
+**Dependency:** AUD-0; can run independently of AUTH packages  
+**Status:** designed in [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md); **blocked on one
+decision**. The design turned up something this package did not anticipate: the
+`Campaign`/`TerritoryNode` tables model a campaign the app no longer creates —
+four fixed territories against the store's twelve theatres or thirty-two
+Carcass Front zones, with no concept of a framework or of perk provenance. A
+protocol built on an undecided data model means writing the migration twice,
+the second time with real campaigns in it. The question is in that document.
 
 `src/services/storage.ts` truthfully returns “not implemented.” Do not restore
 the deleted fire-and-forget create calls.

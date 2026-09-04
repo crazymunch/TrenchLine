@@ -56,3 +56,4 @@ These exist because the original codebase violated all four.
    or the source list updates the relevant document in the same commit.
 
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — what the environment must provide, and which layer enforces rate limiting.
+- [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md) — the design for campaign cloud sync, and the model decision it is waiting on.
