@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { openApp } from './helpers';
+import { openApp, expectTouchTargets } from './helpers';
 
 /**
  * Equipping a model, which used to be one-way traffic.
@@ -47,7 +47,7 @@ test('the sheet says why an item is refused rather than hiding it', async ({ pag
   await expect(refused.first()).toBeDisabled();
 });
 
-test('the stepper meets the mobile floor', async ({ page }, testInfo) => {
+test('the equip sheet meets the mobile floor', async ({ page }, testInfo) => {
   // Desktop is exempt, as it is in mobile.spec: a mouse does not need 44px.
   test.skip(testInfo.project.name === 'desktop');
 
@@ -55,17 +55,13 @@ test('the stepper meets the mobile floor', async ({ page }, testInfo) => {
   await dialog.getByRole('button', { name: /^equip$/i }).first().click();
 
   /*
-    Scoped to the stepper rather than the whole sheet.
+    The WHOLE sheet, not just the stepper.
 
-    The page-wide check also catches the sub-category chips, which were under
-    the floor before this change and are a separate fix — asserting on them
-    here would make this test fail for a reason that has nothing to do with
-    what it is named after.
+    This was scoped down while the sub-category chips were under the floor —
+    "All" measured 40 wide against a 44px minimum, because `px-2.5` on a short
+    word is only 40px across. That is fixed, so the assertion goes back to
+    covering everything a finger has to hit.
   */
-  const minus = dialog.getByRole('button', { name: /remove one/i }).first();
-  await expect(minus).toBeVisible();
-  const box = await minus.boundingBox();
-  expect(box, 'the stepper has no box').not.toBeNull();
-  expect(box!.height, 'the - button is under the 44px floor').toBeGreaterThanOrEqual(44);
-  expect(box!.width, 'the - button is under the 44px floor').toBeGreaterThanOrEqual(44);
+  await expect(dialog.getByRole('button', { name: /remove one/i }).first()).toBeVisible();
+  await expectTouchTargets(page);
 });
