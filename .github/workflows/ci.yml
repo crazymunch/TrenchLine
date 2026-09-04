@@ -164,7 +164,21 @@ jobs:
       - name: Audit production dependencies
         run: |
           set -o pipefail
-          npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err && status=0 || status=$?
+
+          # Up to three attempts. `npm audit` makes ONE POST to the advisory
+          # endpoint and does not retry it, and that endpoint answered
+          # `400 Bad Request` for a stretch on 2026-09-04 — from GitHub's
+          # runners, while the identical lockfile audited clean elsewhere in
+          # the same minutes. One bad answer should not fail a build, and
+          # three of them is a real outage rather than a blip.
+          for attempt in 1 2 3; do
+            npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err && status=0 || status=$?
+            # A report naming advisories is an answer: stop and act on it.
+            if [ "$status" -eq 0 ] || grep -q '"vulnerabilities"' audit.json; then break; fi
+            echo "attempt $attempt: npm audit exited $status without a report; retrying"
+            cat audit.err
+            sleep $((attempt * 10))
+          done
 
           # An unreadable report yields nothing rather than throwing, so the
           # exit-code branch below reports it as what it is.
