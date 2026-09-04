@@ -21,7 +21,8 @@ import path from 'node:path';
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
-         parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
+         parseSkillsTables, parseTraumaTable,
+         parseCampaignPhaseSteps } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
@@ -550,6 +551,16 @@ for (const ruleset of RULESETS) {
       // fabricated (AUDIT §1.13) — these are what replaces them.
       skills: parseSkillsTables(),
       trauma: parseTraumaTable(),
+      /**
+       * The six Campaign Phase Steps, in the order the book states.
+       *
+       * The app's post-battle wizard has four, two of them named things the
+       * book does not use, and it omits Reinforcements and Quartermaster
+       * entirely. The order is not decoration: Reinforcements comes BEFORE
+       * Exploration and taking it costs you both Exploration and the
+       * Quartermaster, which a four-step sequence cannot express.
+       */
+      phaseSteps: parseCampaignPhaseSteps(),
     },
     meta: {
       rulesetId: ruleset.id,

@@ -1136,6 +1136,16 @@ export interface Dataset {
   visionCards: VisionCard[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
+    /**
+     * The six Campaign Phase Steps, in the order the book states them.
+     *
+     * "To carry out a Campaign Phase you must go through the following
+     * Campaign Phase Steps in the order that they appear below". The order
+     * carries a rule: Reinforcements comes BEFORE Exploration, and taking it
+     * costs you both Exploration and the Quartermaster — which is why the
+     * app's four-step post-battle wizard cannot express the choice.
+     */
+    phaseSteps?: { name: string; description: string }[];
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
     thresholds: { game: number; threshold: number; fieldStrength: number }[];
     /** What a new warband recruits on. 700, read from the faction entries. */

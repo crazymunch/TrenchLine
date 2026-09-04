@@ -417,6 +417,72 @@ export function parseSkillsTables(src = RULEBOOK_TXT) {
   return out;
 }
 
+/* ----------------------------------------------------- campaign phase steps */
+
+/**
+ * The Campaign Phase Steps, in the order the book states.
+ *
+ * *"To carry out a Campaign Phase you must go through the following Campaign
+ * Phase Steps in the order that they appear below"* — and then SIX of them.
+ * The app's post-battle wizard has four, two of which ("Scavenge",
+ * "Chronicle") are not names the book uses, and it omits the Reinforcements
+ * and Quartermaster Steps entirely.
+ *
+ * The order is not decoration. Reinforcements comes BEFORE Exploration and
+ * taking it costs you both the Exploration and the Quartermaster Steps — *"if
+ * you do so you will not be able to Explore or visit the Quartermaster, so it
+ * is not a decision to be taken lightly"*. A sequence that puts those steps in
+ * a different order, or leaves them out, cannot express that trade at all.
+ *
+ * Derived so the app has something true to show while the wizard is decided.
+ */
+export function parseCampaignPhaseSteps(src = RULEBOOK_TXT) {
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+
+  const at = lines.findIndex((l) => /^CAMPAIGN PHASE STEPS\s*$/.test(l.trim()));
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: no CAMPAIGN PHASE STEPS heading in the rulebook. '
+      + 'These are the six steps the Campaign Phase runs in order, and nothing '
+      + 'else in either source states them.');
+  }
+
+  const steps = [];
+  let current = null;
+  for (let i = at + 1; i < Math.min(at + 40, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    /* The section ends at the next heading — `Disbanding a Warband` follows. */
+    if (/^[A-Z][A-Za-z’' ]+$/.test(t) && !t.startsWith('**') && steps.length) break;
+
+    const m = /^\*\*\s*(.+?)\s*:\s*(.*)$/.exec(t);
+    if (m) {
+      if (current) steps.push(current);
+      /* `(Optional)` is part of what the step IS, so it is kept in the name. */
+      current = { name: m[1].trim(), description: m[2].trim() ? [m[2].trim()] : [] };
+    } else if (current) {
+      if (SIDEBAR.test(t)) continue;
+      current.description.push(t);
+    }
+  }
+  if (current) steps.push(current);
+
+  const out = steps.map((s) => ({
+    name: s.name,
+    description: s.description.join(' ').replace(/\s+/g, ' ')
+      /* The book's cross-references point at chapters this has no link for. */
+      .replace(/\s*\(▶[^)]*\)/g, '').trim(),
+  }));
+
+  if (out.length !== 6) {
+    throw new Error(
+      `parse-campaign: expected 6 Campaign Phase Steps, read ${out.length} `
+      + `(${out.map((s) => s.name).join(', ')}). The book prints six and states `
+      + 'that the order matters, so a miscount is a sequence the app cannot follow.');
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ trauma */
 
 const CAMPAIGN_CAT = 'data-sources/battlescribe/Campaign Rules.cat';

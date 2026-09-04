@@ -1069,6 +1069,29 @@ export const CodexView: React.FC = () => {
                 "Warband Treasury" and an "Armory Stash", none of which appears
                 in any source.
               */}
+              {/*
+                The Exploration Step is the FOURTH of six, and where it sits
+                carries a rule: Reinforcements comes before it, and taking that
+                step costs you both this one and the Quartermaster. A player
+                looking at Exploration alone cannot see the choice they have
+                already made, so the whole sequence is shown above it.
+              */}
+              {(codexDataset?.campaign.phaseSteps ?? []).length > 0 && (
+                <div className="space-y-1.5 border-b border-theme-border pb-3">
+                  <span className="font-mono text-xs sm:text-[10px] font-bold uppercase tracking-wider text-theme-primary">
+                    The Campaign Phase, in order
+                  </span>
+                  <ol className="list-decimal list-inside text-theme-muted space-y-1 text-xs sm:text-[11px]">
+                    {(codexDataset?.campaign.phaseSteps ?? []).map((s) => (
+                      <li key={s.name}>
+                        <strong className="text-theme-text">{s.name}</strong>
+                        {s.description ? ` — ${s.description}` : ''}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
               <p className="text-theme-text leading-relaxed">
                 In the Exploration Step, <strong>each player</strong> explores the territory the
                 campaign is fought over. You are looking at the{' '}

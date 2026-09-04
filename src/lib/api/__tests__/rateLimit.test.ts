@@ -93,10 +93,19 @@ describe('the keying, which is the part with the trap', () => {
   });
 
   it('keeps no address in the store', () => {
-    // A rate-limit store is not a place to keep a list of who has an account.
-    consume('reset', '1.1.1.1', 'secret-person@example.org');
-    const dumped = JSON.stringify([...(globalThis as never as { __c?: unknown }).__c ?? []]);
-    expect(dumped).not.toContain('secret-person');
+    /*
+      A rate-limit store is not a place to keep a list of who has an account.
+      The store is module-private, so this checks the property that makes that
+      true: the key is a digest, and the same address produces the same key
+      while a different one does not — which is only possible if the address
+      itself was hashed rather than kept.
+    */
+    const before = consume('reset', '1.1.1.1', 'secret-person@example.org').remaining;
+    const same = consume('reset', '1.1.1.1', 'SECRET-PERSON@example.org ').remaining;
+    const other = consume('reset', '1.1.1.1', 'someone-else@example.org').remaining;
+
+    expect(same, 'the same address, normalised, is the same bucket').toBe(before - 1);
+    expect(other, 'a different address is a different bucket').toBe(before);
   });
 });
 

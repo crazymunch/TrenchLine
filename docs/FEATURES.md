@@ -86,7 +86,7 @@ the execution is the problem.
 | Shared campaign invite codes | ✅ | |
 | Territory map with node claiming | ✅ | |
 | Narrative chronicle feed | ✅ | |
-| **Post-battle sequence wizard** | 🟡 | 4 steps; D66 tables need verification |
+| **Post-battle sequence wizard** | 🟡 | Its D66 tables are now verified and fixed. The **sequence itself is still wrong**: the book prints **six** Campaign Phase Steps in a stated order and the wizard has four, two named things the book does not use (`Scavenge`, `Chronicle`), omitting Reinforcements and Quartermaster. The six are derived into `dataset.campaign.phaseSteps` and shown in the Codex; rebuilding the wizard on them is a product change and is not done |
 | D66 Trauma / injury rolls | ✅ | **Verified against the rulebook.** 22 rows, derived. Two were wrong: `12 Captured` was cut at a comma and lost the clause saying a paid ransom counts as a Full Recovery, and `65 Bitter Lessons` had run on into `66 Prominent Scar` and showed a player 66's rule. Both fixed and pinned; the build now fails on a rule that stops mid-sentence or carries another row's heading |
 | XP & advancement | ✅ | `UnitAdvancementModal`, 681 lines |
 | Exploration (No Man's Land) | ✅ | **Verified against the rulebook.** Three rows carried page furniture: `9 Survivor` and `20 Warband Strongbox` ended in the sidebar's `Glory Item Tables`, and `36 Fruit from the Tree…` in a stray `VM` mark. Fixed and pinned |

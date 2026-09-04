@@ -65072,6 +65072,32 @@ export const DATASET: Dataset = {
         "description": "Write down the name of the Warband from the game where this injury was received. Add +1 DICE to rolls for Melee Attacks made by this model if the target is a model from the Warband you have written down. It does not receive an Injury or a Battle Scar.",
         "source": "catalogue"
       }
+    ],
+    "phaseSteps": [
+      {
+        "name": "Trauma Step",
+        "description": "Check to see what has happened to any models that were taken Out of Action during the game."
+      },
+      {
+        "name": "Promotions & Experience Step",
+        "description": "Promote models, record Experience Points and check to see if any models in your Warband have learnt new Skills."
+      },
+      {
+        "name": "Reinforcements Step (Optional)",
+        "description": "If your Warband has suffered heavy losses, you can call for reinforcements. However, if you do so you will not be able to Explore or visit the Quartermaster, so it is not a decision to be taken lightly."
+      },
+      {
+        "name": "Exploration Step",
+        "description": "Roll to see what your Warband discovers in the area they are currently occupying."
+      },
+      {
+        "name": "Quartermaster Step",
+        "description": "You can add new recruits to your Warband, hire Mercenaries, and sell, purchase and reallocate the Battlekit for your Warband."
+      },
+      {
+        "name": "Roster Step",
+        "description": "Update your Warband Roster. You are now ready for the next game!"
+      }
     ]
   },
   "meta": {
