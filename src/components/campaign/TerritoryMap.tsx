@@ -52,6 +52,20 @@ export const TerritoryMap: React.FC = () => {
   */
   const onCarcassFront = frameworkOf(campaign) === 'carcass-front';
   const [viewMode, setViewMode] = useState<'map' | 'grid'>(onCarcassFront ? 'grid' : 'map');
+  /*
+    DERIVED, not corrected after the fact.
+
+    `useState`'s initializer runs once. Creating a Carcass Front campaign while
+    this view was already open left `viewMode` at `map`, and a Carcass Front
+    campaign has no map — so the map branch was suppressed, the grid branch was
+    false, and the switcher that would fix it is hidden for that framework.
+    Nothing rendered at all until the user changed tabs to force a remount.
+
+    Reading the mode through the framework makes that state unrepresentable
+    rather than repaired by an effect after a blank frame. Reported by Codex
+    review on #27.
+  */
+  const mode: 'map' | 'grid' = onCarcassFront ? 'grid' : viewMode;
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -180,7 +194,7 @@ export const TerritoryMap: React.FC = () => {
             <button
               onClick={() => setViewMode('map')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
-                viewMode === 'map'
+                mode === 'map'
                   ? 'bg-theme-primary text-theme-base shadow'
                   : 'text-theme-muted hover:text-theme-text'
               }`}
@@ -192,7 +206,7 @@ export const TerritoryMap: React.FC = () => {
             <button
               onClick={() => setViewMode('grid')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
-                viewMode === 'grid'
+                mode === 'grid'
                   ? 'bg-theme-primary text-theme-base shadow'
                   : 'text-theme-muted hover:text-theme-text'
               }`}
@@ -203,7 +217,7 @@ export const TerritoryMap: React.FC = () => {
           </div>
 
           {/* Map View Controls (Zoom & Toggles) */}
-          {viewMode === 'map' && !onCarcassFront && (
+          {mode === 'map' && (
             <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
               <button
                 onClick={handleZoomIn}
@@ -240,7 +254,7 @@ export const TerritoryMap: React.FC = () => {
       </div>
 
       {/* VIEW MODE 1: INTERACTIVE WORLD MAP VIEW */}
-      {viewMode === 'map' && !onCarcassFront && (
+      {mode === 'map' && (
         <div 
           ref={mapContainerRef}
           className="relative w-full rounded-md border-2 border-theme-border overflow-hidden bg-theme-base shadow-2xl"
@@ -313,7 +327,7 @@ export const TerritoryMap: React.FC = () => {
       )}
 
       {/* VIEW MODE 2: STRATEGIC THEATERS GRID VIEW */}
-      {viewMode === 'grid' && (
+      {mode === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {campaign.territories.map((node) => {
             const isControlledByMe = activeWb && node.controlledByWarbandId === activeWb.id;
@@ -503,13 +517,32 @@ export const TerritoryMap: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <p className="text-theme-muted leading-relaxed">
-                      No published rule attaches an effect to holding this theatre — it is part of
-                      this app&rsquo;s own map of the setting, so any bonus is one your campaign
-                      agrees. The published ones are the Carcass Front{' '}
-                      <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
-                      the Codex under Campaigns.
-                    </p>
+                    {/*
+                      Which kind of "no perk" this is. A Carcass Front zone is
+                      PUBLISHED — parsed from the fold-out map's own Zones
+                      table — and an empty perk there only means the book gives
+                      it no Outpost Bonus, not that the app invented the place.
+                      Saying otherwise about 22 of the 32 published zones is
+                      the same class of error as the sixteen invented perks:
+                      the app describing its own provenance wrongly.
+                      Reported by Codex review on #27.
+                    */}
+                    {onCarcassFront ? (
+                      <p className="text-theme-muted leading-relaxed">
+                        A published zone, but not one of the ten{' '}
+                        <strong className="text-theme-text">Special Zones</strong> — the book gives
+                        it no Outpost Bonus, so any bonus for holding it is one your campaign
+                        agrees.
+                      </p>
+                    ) : (
+                      <p className="text-theme-muted leading-relaxed">
+                        No published rule attaches an effect to holding this theatre — it is part of
+                        this app&rsquo;s own map of the setting, so any bonus is one your campaign
+                        agrees. The published ones are the Carcass Front{' '}
+                        <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
+                        the Codex under Campaigns.
+                      </p>
+                    )}
                     <button
                       onClick={handleEditPerk}
                       className="text-theme-primary underline min-h-[44px] lg:min-h-0 inline-flex items-center"

@@ -96,6 +96,9 @@ function itemsOf(
 ): RosterItem[] {
   const armoury = armouryFor(dataset, factionId);
   const out: RosterItem[] = [];
+  /* Counts the bundle SELECTIONS on this model, so two of the same bundle get
+     two grant ids — see the expansion below. */
+  let bundleSelections = 0;
 
   const gear = [
     ...(unit.equippedWeapons ?? []),
@@ -129,6 +132,18 @@ function itemsOf(
       const bundle = (dataset.bundles ?? []).find((b) => key(b.name) === key(g.name));
       if (bundle) {
         /*
+          THIS selection of the bundle, not the bundle's name.
+
+          `oneStatedLoadout` exempts the items of ONE stated loadout from being
+          policed against each other. Keyed on the name, a model carrying
+          `Polearm and Shield` twice produced four items all claiming the same
+          grant, so the exemption swallowed the whole set and hid two Shields
+          and four hands' worth of weapons. The entry states what it hands the
+          model ONCE; taking it twice is two loadouts, and the second one's
+          items are as countable as anything bought on top.
+        */
+        const grantedBy = `${bundle.name}#${bundleSelections++}`;
+        /*
           Priced as one thing, at the bundle's own cost, and NOT by pricing
           each part out of the Armoury Table: both bundles the catalogues
           define are free options in a Mercenary's `Loadout` group, and
@@ -140,7 +155,7 @@ function itemsOf(
           const cost = i === 0 ? bundle.cost : ZERO_COST;
           const w2 = dataset.weapons.find((x) => key(x.name) === key(part));
           if (w2) {
-            out.push({ weaponId: w2.id, name: part, cost, quantity: 1, grantedBy: bundle.name });
+            out.push({ weaponId: w2.id, name: part, cost, quantity: 1, grantedBy });
             return;
           }
           /*
@@ -154,7 +169,7 @@ function itemsOf(
             one-Shield limit while the model plainly has one.
           */
           const known = (dataset.battlekit ?? []).some((b) => key(b.name) === key(part));
-          if (known) { out.push({ name: part, cost, quantity: 1, grantedBy: bundle.name }); return; }
+          if (known) { out.push({ name: part, cost, quantity: 1, grantedBy }); return; }
           unmatched.push({ kind: 'wargear', name: part, on: unit.customName });
         });
         continue;

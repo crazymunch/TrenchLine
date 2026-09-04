@@ -74,6 +74,8 @@ export const CampaignHubView: React.FC = () => {
   // Sort leaderboard by Glory points descending
   const sortedMembers = [...campaign.members].sort((a, b) => b.glory - a.glory);
   const leadingMember = sortedMembers[0];
+  /* Which rules this campaign is played under — see the banner and the gauge. */
+  const onCarcassFrontCampaign = frameworkOf(campaign) === 'carcass-front';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
@@ -103,7 +105,7 @@ export const CampaignHubView: React.FC = () => {
               <span className="text-theme-primary font-bold">
                 {frameworkNamed(frameworkOf(campaign)).name}
               </span>
-              {frameworkOf(campaign) === 'carcass-front' ? (
+              {onCarcassFrontCampaign ? (
                 <> — won on the Campaign Tracker and the Shared Objectives.{' '}
                   <span className="text-theme-muted">See the Codex, under Campaigns.</span></>
               ) : (
@@ -146,7 +148,20 @@ export const CampaignHubView: React.FC = () => {
           </div>
         </div>
 
-        {/* Glory Leaderboard Progress Gauge */}
+        {/*
+          Glory Leaderboard.
+
+          The PROGRESS GAUGE is the classic campaign's, because the threshold
+          it fills toward is. A Carcass Front campaign is won on the Campaign
+          Tracker and the Shared Objectives — the banner above says so — and a
+          bar creeping toward "25 Glory" beneath that sentence states a victory
+          condition the book does not give this campaign, which is the same
+          invention the banner was written to avoid.
+
+          Glory itself is still earned and still ranks the table, so the leader
+          and their total stay; only the target and the bar go.
+          Reported by Codex review on #27.
+        */}
         {leadingMember && (
           <div className="p-3.5 bg-theme-base rounded border border-theme-border space-y-2">
             <div className="flex justify-between text-xs font-mono">
@@ -155,15 +170,23 @@ export const CampaignHubView: React.FC = () => {
                 <span>Current Leader: <strong className="text-theme-text">{leadingMember.warbandName}</strong> ({leadingMember.playerName})</span>
               </span>
               <span className="text-theme-primary font-bold">
-                {leadingMember.glory} / {campaign.gloryVictoryThreshold} Glory
+                {onCarcassFrontCampaign
+                  ? `${leadingMember.glory} Glory`
+                  : `${leadingMember.glory} / ${campaign.gloryVictoryThreshold} Glory`}
               </span>
             </div>
-            <div className="w-full bg-theme-surface h-2.5 rounded-full overflow-hidden border border-theme-border">
-              <div
-                className="bg-theme-primary h-full transition-all duration-500 shadow-glow"
-                style={{ width: `${Math.min(100, (leadingMember.glory / campaign.gloryVictoryThreshold) * 100)}%` }}
-              />
-            </div>
+            {onCarcassFrontCampaign ? (
+              <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
+                Glory ranks the table; it does not win this campaign.
+              </p>
+            ) : (
+              <div className="w-full bg-theme-surface h-2.5 rounded-full overflow-hidden border border-theme-border">
+                <div
+                  className="bg-theme-primary h-full transition-all duration-500 shadow-glow"
+                  style={{ width: `${Math.min(100, (leadingMember.glory / campaign.gloryVictoryThreshold) * 100)}%` }}
+                />
+              </div>
+            )}
           </div>
         )}
 

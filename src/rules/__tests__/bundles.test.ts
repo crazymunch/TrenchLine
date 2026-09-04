@@ -82,6 +82,36 @@ describe('a roster holding a bundle', () => {
     armoryStash: [], createdAt: '', updatedAt: '',
   } as unknown as Warband);
 
+  /*
+    Two of the same bundle are two loadouts, not one.
+
+    `oneStatedLoadout` exempts the items of ONE stated loadout from being
+    policed against each other, because the entry states what it hands the
+    model. It identified that loadout by the bundle's NAME, so a model carrying
+    `Polearm and Shield` twice produced four items all claiming the same grant
+    and the exemption swallowed the whole set — hiding two Shields and four
+    hands' worth of weapons on one model. Reported by Codex review on #27.
+  */
+  it('tells two of the same bundle apart', () => {
+    const { roster } = toRoster(warband(['Polearm and Shield', 'Polearm and Shield']), d);
+    const items = roster.units[0].items;
+
+    expect(items, 'two bundles expand to four items').toHaveLength(4);
+    const grants = [...new Set(items.map((i) => i.grantedBy))];
+    expect(grants, 'each bundle needs its own grant id').toHaveLength(2);
+    for (const g of grants) expect(g).toBeTruthy();
+  });
+
+  it('counts two Shields when the bundle is taken twice', () => {
+    const one = toRoster(warband(['Polearm and Shield']), d);
+    const oneMsgs = validateRoster(one.roster, d).violations.map((v) => v.message).join(' | ');
+    expect(oneMsgs, 'one bundle is a legal stated loadout').not.toMatch(/Shield/i);
+
+    const two = toRoster(warband(['Polearm and Shield', 'Polearm and Shield']), d);
+    const twoMsgs = validateRoster(two.roster, d).violations.map((v) => v.message).join(' | ');
+    expect(twoMsgs, 'two bundles put two Shields on one model').toMatch(/Shield/i);
+  });
+
   it('resolves it instead of reporting it as not in the ruleset', () => {
     const { unmatched } = toRoster(warband(['Polearm and Shield']), d);
     expect(unmatched.map((u) => u.name)).not.toContain('Polearm and Shield');
