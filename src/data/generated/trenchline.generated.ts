@@ -32198,6 +32198,106 @@ export const DATASET: Dataset = {
       "sourceFile": "Black Grail.cat"
     },
     {
+      "id": "aa15-64a9-87eb-87c8",
+      "entryId": "5df2-ef54-85ea-adfe",
+      "name": "Teeths & Claws",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [],
+      "cost": {
+        "ducats": 55,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "e5df-0eb4-a3c5-8cf7",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Wailers",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:e5df-0eb4-a3c5-8cf7",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Prowler",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Teeths & Claws",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "670f-9bed-3b5c-2b36",
+            "childName": "Infected"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Wailer",
+          "origin": "profile:Hound of the Black Grail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
       "id": "e635-2d2a-2df7-bafe",
       "entryId": "670f-9bed-3b5c-2b36",
       "name": "Infected Teeth & Claws",
@@ -32439,6 +32539,125 @@ export const DATASET: Dataset = {
       "sourceFile": "Black Grail.cat"
     },
     {
+      "id": "eaf6-e4c0-2039-b81a",
+      "entryId": "8f23-4665-3322-ca92",
+      "name": "Infected Proboscis",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [
+        "INFECTION MARKERS"
+      ],
+      "rules": "If a Melee Attack made by a Herald of Beelzebub causes any INFECTION MARKERS to be placed on the target model, you can remove up to 1 BLOOD MARKER from the attacking Herald of Beelzebub.",
+      "cost": {
+        "ducats": 50,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "904b-6f39-0451-bd48",
+          "type": "max",
+          "value": 4,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Weepers",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:904b-6f39-0451-bd48",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Weeper",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "0f19-7c79-420e-13bf",
+            "childName": "Dirge of the Great Hegemon",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Heralds of Beelzebub",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
       "id": "f726-9549-bfcb-51e6",
       "entryId": "909e-f461-d379-1619",
       "name": "Maddening Buzz",
@@ -32537,6 +32756,55 @@ export const DATASET: Dataset = {
             "scope": "model",
             "childId": "a657-8944-aecd-713d",
             "childName": "Matagot Hag"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Black Grail",
+      "sourceFile": "Black Grail.cat"
+    },
+    {
+      "id": "df74-aebf-4b7c-d575",
+      "entryId": "6291-8d16-b2c8-d9a7",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Great Hunger"
+      ],
+      "name": "Gnashing",
+      "type": "Melee",
+      "range": "-",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CLEAVE 2",
+        "INFECTION MARKERS"
+      ],
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7480-0914-6929-e8eb",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
           }
         }
       ],
@@ -43692,6 +43960,1200 @@ export const DATASET: Dataset = {
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
     },
     {
+      "id": "1ead-a287-0d10-eac8",
+      "entryId": "322d-1a69-dc2a-2e26",
+      "name": "Blessing of the Serpent Moon",
+      "type": "Spell (Cost 2/4/6)",
+      "range": "",
+      "keywords": [],
+      "rules": "You can cast this spell before an Injury Roll is made for the spellcaster. If you do so, add a -1 INJURY MODIFIER to the roll for every 2 BLOOD MARKERS that were paid to cast the spell.",
+      "cost": {
+        "ducats": 75,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "fbca-352e-df39-8dd7",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Sorcerer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "562f-9fca-8141-cf16",
+      "entryId": "bf89-44f3-36a0-c7b4",
+      "name": "Oracle Beast Cloak",
+      "type": "Spell (Cost 3)",
+      "range": "",
+      "keywords": [],
+      "rules": "You can cast this spell once per Turn after an Injury Roll is made for the spellcaster. If you do so, the result of the Injury Roll is changed to a No Effect result (make Injury Rolls for other models hit by the same attack normally).",
+      "cost": {
+        "ducats": 110,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3ddf-9a2c-9351-f29c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Oracle Beast Cloak",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "58a3-64fb-8c2d-5105",
+            "childName": "Bestial Skin Cloak",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "8393-ece2-0750-7df7",
+      "entryId": "bf89-44f3-36a0-c7b4",
+      "name": "Left-Hand Path",
+      "type": "Spell (Cost 2).",
+      "range": "",
+      "keywords": [],
+      "rules": "You can cast this spell when the spellcaster takes a Move, Dash or Charge Action and moves into contact with a terrain piece. If you do so, you can interrupt the spellcaster's move to remove them from the battlefield and then deploy them in contact with another terrain piece more than 1\" from any enemy models, unless the spellcaster is making a charge. If the spell is cast during a charge, the spellcaster must deploy closer to the target than it was before it was removed from the battlefield. You can then carry on with the spellcaster's move as normal. This spell can be used for a normal move or a charge or a retreat, and can be cast more than once during the course of a single ACTION (you must pay its cost each time it is cast). If it is cast as part of a charge, the spellcaster must still start the charge within 12\" of the target model, and you will need to take a Risky Success Roll for the spellcaster if they do not have a Line of Sight to the target model.",
+      "cost": {
+        "ducats": 110,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3ddf-9a2c-9351-f29c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Oracle Beast Cloak",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "58a3-64fb-8c2d-5105",
+            "childName": "Bestial Skin Cloak",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "c65a-d1b7-59d9-9d95",
+      "entryId": "bf89-44f3-36a0-c7b4",
+      "name": "Shadow Walker",
+      "type": "Spell (Cost 2)",
+      "range": "",
+      "keywords": [],
+      "rules": "You can cast this spell before the spellcaster takes a Retreat ACTION. If you do so, enemy models cannot make a Melee Attack on the spellcaster when they retreat.",
+      "cost": {
+        "ducats": 110,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3ddf-9a2c-9351-f29c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Oracle Beast Cloak",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "58a3-64fb-8c2d-5105",
+            "childName": "Bestial Skin Cloak",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "0dae-2ad7-bfec-82bb",
+      "entryId": "bf89-44f3-36a0-c7b4",
+      "name": "Bow of Lethe",
+      "type": "1-Handed",
+      "range": "24\"",
+      "keywords": [
+        "ASSAULT"
+      ],
+      "rules": "Special Ammunition: Before making an Injury Roll for an attack made with a Bow of Lethe, you must choose if the roll will have the +2 INJURY DICE Keyword or the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 110,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3ddf-9a2c-9351-f29c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Hunter of the Left-hand Path",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Oracle Beast Cloak",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "58a3-64fb-8c2d-5105",
+            "childName": "Bestial Skin Cloak",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "96cc-bbc5-3019-cf3b",
+      "entryId": "64c4-6b74-0805-0e82",
+      "name": "Blood Magic",
+      "type": "Spell (Cost 1)",
+      "range": "",
+      "keywords": [],
+      "rules": "You can cast this spell before making any Injury Rolls for an attack made by the spellcaster. If you do so, add +1 INJURY DICE to all of the Injury Rolls you make for the attack. For example, if the attack has the BLAST Keyword, you would add +1 INJURY DICE to the rolls for each model that was caught in the blast radius of the attack.",
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "a095-835e-9689-f1ed",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Hell Knight",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "c7c3-3548-f3e2-365a",
+      "entryId": "658a-8247-8e8a-8f85",
+      "name": "Slavemaster",
+      "type": "Spell (Cost 1)",
+      "range": "18\"",
+      "keywords": [],
+      "rules": "You must take a Cast Spell ACTION with the spellcaster in order for it to cast this spell. If you do so, you can carry out one of the following Commands with a Yoke Fiend that is within 18\" of the spellcaster. Carrying out a Command does not stop the Yoke Fiend from being Activated in the same Turn (before or after the Command was issued). - Sacrifice Command: The Yoke Fiend kills itself. It is taken Out of Action and crossed off its Warband Roster. - Fight Command: The Yoke Fiend carries out a Melee Attack. - Move Command: The Yoke Fiend carries out a Move (it cannot Charge or Retreat). - Shoot Command: The Yoke Fiend carries out a Ranged Attack.",
+      "cost": {
+        "ducats": 30,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Cultist",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "420c-0871-4283-b95b",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Void Cultist",
+          "origin": "entry",
+          "comment": "Fang of the Seething Black",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "8ba8-5e95-71aa-24e8",
+                "childName": "Embraced by the Void",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Yoke Fiend",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Hateful",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a805-292c-3b37-bc40",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "af16-e7f1-b528-97b9",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Torturer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Infinite Duress",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Hateful",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a805-292c-3b37-bc40",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "af16-e7f1-b528-97b9",
+                "childName": "Restraining Muzzle",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Slavemaster",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "8ba8-5e95-71aa-24e8",
+            "childName": "Embraced by the Void",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
       "id": "12d2-7961-1e16-963c",
       "entryId": "30b2-e154-1911-8f5e",
       "name": "Promoted!",
@@ -43915,6 +45377,332 @@ export const DATASET: Dataset = {
             "childId": "71f8-ee29-0f90-59ec",
             "childName": "Limited Potential"
           }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "97a3-246d-6495-8587",
+      "entryId": "4c27-9424-de7d-b905",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black"
+      ],
+      "name": "Slavemaster",
+      "type": "Spell (Cost 1)",
+      "range": "18\"",
+      "keywords": [],
+      "rules": "You must take a Cast Spell ACTION with the spellcaster in order for it to cast this spell. If you do so, you can carry out one of the following Commands with a Yoke Fiend that is within 18\" of the spellcaster. Carrying out a Command does not stop the Yoke Fiend from being Activated in the same Turn (before or after the Command was issued). - Sacrifice Command: The Yoke Fiend kills itself. It is taken Out of Action and crossed off its Warband Roster. - Fight Command: The Yoke Fiend carries out a Melee Attack. - Move Command: The Yoke Fiend carries out a Move (it cannot Charge or Retreat). - Shoot Command: The Yoke Fiend carries out a Ranged Attack.",
+      "cost": {
+        "ducats": 105,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "c8a8-9e5b-ef7d-4d8f",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Faceless",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Faceless",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Court of the Seven-Headed Serpent",
+      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+    },
+    {
+      "id": "1472-8a93-ec65-d12e",
+      "entryId": "fb1c-94da-c9c8-be8e",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Fang of the Seething Black"
+      ],
+      "name": "Void Blade",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "RISKY"
+      ],
+      "rules": "Touch of the Void: Before making an Injury Roll for an attack made with a Void Blade, you must choose if the roll will have the +2 INJURY DICE Keyword or the IGNORE ARMOUR Keyword.",
+      "cost": {
+        "ducats": 95,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "d26e-4f50-5a77-99a3",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "64ea-216e-161f-7584",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3a50-7a68-b3d9-d61c",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Stalker",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "247d-ad61-6d4c-1ad5",
+                "childName": "Infernal Iron Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "59c0-13d8-450a-c0b4",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b2ad-5df0-6687-13f1",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Stalker",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f3ea-ddbb-b749-1952",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
         }
       ],
       "restrictions": [],
@@ -44612,6 +46400,1370 @@ export const DATASET: Dataset = {
             "scope": "roster",
             "childId": "eee9-35a4-9eda-70e9",
             "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "46aa-d5a4-2a05-9708",
+      "entryId": "eab4-df0a-d8f3-302d",
+      "name": "Chainsaw Mouth",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "IGNORE ARMOUR",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 145,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "105c-8780-b389-2f18",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "War Hyena",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "140",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "40mm",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:105c-8780-b389-2f18",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "f0ef-ba0d-8963-331a",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "aa2f-f4b3-3003-4b43",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:War Wolf",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Appetisers",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "212b-163e-3eb6-575d",
+      "entryId": "eab4-df0a-d8f3-302d",
+      "name": "Shredding Claws",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "CUMBERSOME",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 145,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "105c-8780-b389-2f18",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "War Hyena",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "140",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.base",
+          "value": "40mm",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:105c-8780-b389-2f18",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "remove",
+          "field": "category",
+          "value": "914f-0020-0d97-e217",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "f0ef-ba0d-8963-331a",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "add",
+          "field": "category",
+          "value": "aa2f-f4b3-3003-4b43",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:War Wolf",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Appetisers",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "8755-5cd3-d0a0-1caa",
+      "entryId": "f2d9-0f99-61a1-fce5",
+      "name": "Infernal Bomb",
+      "type": "1-Handed",
+      "range": "36\"",
+      "keywords": [
+        "BLAST 3\"",
+        "IGNORE COVER",
+        "IGNORE ELEVATED POSITION",
+        "IGNORE LONG RANGE",
+        "RELOAD",
+        "SCATTER",
+        "SHRAPNEL"
+      ],
+      "rules": "* Duck: Add -1 INJURY DICE to the roll for a model that is hit by an Infernal Bomb if it is in contact with a terrain piece that is at least ½\" tall and that lies in between it and the target point. * Infernal Strike: If the Success Roll for a Ranged Attack with an Infernal Bomb that targets an enemy model is a Success or a Critical Success, or if the attack is a Failure and the target point scatters onto a model's base, apply the effect of the DEADLY Keyword to the Injury Roll for that model. Injury Rolls for other models caught in the Infernal Bomb’s BLAST are made normally. * Mighty Explosion: If a model that has been hit by an Infernal Bomb is not taken Out of Action by the Injury Roll, it is blown away D3” in a straight line by the explosion, even if the model has been taken Down by the Injury Roll. Roll separately for each model to see how far it is blown away by an Infernal Bomb. If the model was the target of the attack, it is blown directly away from the Artillery Witch. If the model was caught in the Blast of the weapon, it is blown directly away from the target point. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb.",
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ceb2-bf00-2a24-aa1d",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Phosphor Witch",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "95",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f468-49af-8d3b-7c7b",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Infernal Bomb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b0b0-1549-d4ec-7b5f",
+                "childName": "Cadaver Corps",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Gas Bomb",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Creator's Shadow",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "6d5e-3299-c138-e478",
+      "entryId": "f2d9-0f99-61a1-fce5",
+      "name": "Gas Bomb",
+      "type": "1-Handed",
+      "range": "36\"",
+      "keywords": [
+        "-1 INJURY DICE",
+        "BLAST 3\"",
+        "GAS",
+        "IGNORES ARMOUR",
+        "IGNORE COVER",
+        "IGNORE ELEVATED POSITION",
+        "IGNORE LONG RANGE",
+        "RELOAD",
+        "SCATTER"
+      ],
+      "rules": "Choking Gas: If a model that has been hit by a Gas Bomb is not taken Out of Action by the Injury Roll, it staggers D3” in a straight line trying to get away from the gas cloud. Roll separately for each model to see how far it staggers. If the model was the target of the attack, it staggers in a direction chosen by the player making the attack. If the model was caught in the Blast of the weapon, it staggers directly away from the target point. The model stops if it staggers into another model, Impassable terrain, or a terrain piece it cannot cross without having to Climb.",
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ceb2-bf00-2a24-aa1d",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Phosphor Witch",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "95",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f468-49af-8d3b-7c7b",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Infernal Bomb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b0b0-1549-d4ec-7b5f",
+                "childName": "Cadaver Corps",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Gas Bomb",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Creator's Shadow",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Heretic Legion",
+      "sourceFile": "Heretic Legion.cat"
+    },
+    {
+      "id": "65dd-6f03-4ee5-f07f",
+      "entryId": "f2d9-0f99-61a1-fce5",
+      "name": "Phosphor Bomb",
+      "type": "1-Handed",
+      "range": "18\"",
+      "keywords": [
+        "BLAST 3\"",
+        "FIRE",
+        "IGNORE COVER",
+        "IGNORE ELEVATED POSITION",
+        "IGNORE LONG RANGE",
+        "RELOAD",
+        "SCATTER"
+      ],
+      "rules": "* Duck: Add -1 INJURY DICE to the roll for a model that is hit by a Phosphor Bomb if it is in contact with a terrain piece that is at least ½\" tall and that lies in between it and the target point. * Phosphorous Strike: If a model was the target for a Phosphor Bomb and hit by it, or if a Phosphor Bomb scatters and the target point lands on a model's base, when you make the Injury Roll for that model, roll 3D6 and add all 3 dice together. Any +INJURY DICE or -INJURY DICE that applied to the Injury Roll will apply normally, except that you pick the 3 highest or lowest dice in the roll instead of the 2 highest or lowest. Additionally, it applies an additional +1 BLOOD MARKER to that model. Injury Rolls for other models caught in the Phosphor Bomb’s BLAST are made normally. * Mighty Explosion: If a model that has been hit by a Phosphor Bomb is not taken Out of Action by the Injury Roll, it is blown away D3\" in a straight line by the explosion. Roll separately for each model to see how far it is blown away by a Phosphor Bomb. If the model was the target of the attack, it is blown directly away from the Artillery Witch. If the model was caught in the Blast of the weapon, it is blown directly away from the target point. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb.",
+      "cost": {
+        "ducats": 100,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "ceb2-bf00-2a24-aa1d",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "4d05-603e-4b5a-aed4",
+                "childName": "Heretic Naval Raiders",
+                "includeChildSelections": true
+              },
+              {
+                "any": [
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "limit::8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  },
+                  {
+                    "type": "atLeast",
+                    "value": "1000",
+                    "field": "8d43-33fd-332d-17a6",
+                    "scope": "roster",
+                    "childId": "any"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "eee9-35a4-9eda-70e9",
+            "childName": "Trench Ghosts",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Phosphor Witch",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "cost.ducats",
+          "value": "95",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:ceb2-bf00-2a24-aa1d",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4a0e-6f55-3bac-71b1",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "05b8-022c-d235-e358",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a6fb-9aa2-1030-b5bf",
+                "childName": "Tarnished Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6f0b-f2e8-3e60-f596",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7070-bb46-c76d-9c48",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Artillery Witch",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f468-49af-8d3b-7c7b",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Infernal Bomb",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "b0b0-1549-d4ec-7b5f",
+                "childName": "Cadaver Corps",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Gas Bomb",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "c323-0c33-e628-56f0",
+            "childName": "Knights of Avarice",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Creator's Shadow",
+          "when": {
+            "type": "lessThan",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "b0b0-1549-d4ec-7b5f",
+            "childName": "Cadaver Corps",
             "includeChildSelections": true
           }
         }
@@ -49865,6 +53017,602 @@ export const DATASET: Dataset = {
       "sourceFile": "Iron Sultanate.cat"
     },
     {
+      "id": "c091-f6cc-758d-adeb",
+      "entryId": "b13b-7b29-752f-ab2e",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Nomads of Al-Badia"
+      ],
+      "name": "Weaponized Shovel",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [],
+      "cost": {
+        "ducats": 75,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "11f2-2b7a-289d-ebbe",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "7091-3f28-368f-eace",
+            "childName": "Nomads of Al-Badia",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Weaponized Shovel",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "bfe3-326a-87ad-256f",
+                "childName": "Melee Weapons",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "model",
+                "childId": "41a5-7586-9820-990b",
+                "childName": "Utility Hand",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "e292-e8a8-eaa9-2d0d",
+      "entryId": "d021-f84d-78e4-f486",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
+      "name": "Damascus Talons",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3731-98ea-d19a-d813",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:3731-98ea-d19a-d813",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "40a7-c3a6-c5ce-9b14",
+            "childName": "Shirdal",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Shirdal",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "6245-5f1b-848b-a5c1",
+      "entryId": "d021-f84d-78e4-f486",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
+      "name": "Crushing Beak",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "3731-98ea-d19a-d813",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:3731-98ea-d19a-d813",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "40a7-c3a6-c5ce-9b14",
+            "childName": "Shirdal",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Shirdal",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Shirdal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
+      "id": "0cf5-d84b-e1fe-ce92",
+      "entryId": "a98c-24cc-6885-daaa",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Ghazi of the Golden Path"
+      ],
+      "name": "Bident",
+      "type": "2-handed",
+      "range": "Melee",
+      "keywords": [
+        "CUMBERSOME",
+        "BLOCK"
+      ],
+      "rules": "Attacks made against model with the keywords DEMONIC, HERETIC, and BLACK GRAIL add +1 INJURY DICE.",
+      "cost": {
+        "ducats": 0,
+        "glory": 7
+      },
+      "constraints": [
+        {
+          "id": "4bd8-dab8-a6d7-c16c",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "5df2-4c17-7c8c-4f1e",
+            "childName": "Ghazi of the Golden Path",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "99ce-8e70-94c9-35c4",
+            "childName": "Shields",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "f03e-c896-c2ad-c3da",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Pairika",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "a2de-13d5-ab9c-8c93",
+                "childName": "Alchemist Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "cb77-5e52-9716-6bc2",
+                "childName": "Damascus Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "c60a-0cd3-a0a3-3b3e",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Pairika",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "c1fa-c327-3411-9462",
+            "childName": "Machine Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Iron Sultanate",
+      "sourceFile": "Iron Sultanate.cat"
+    },
+    {
       "id": "2843-d7c2-29ba-03db",
       "entryId": "0ef5-5146-4d29-b5c1",
       "name": "Coordinated Engagement",
@@ -50182,6 +53930,240 @@ export const DATASET: Dataset = {
       "sourceFile": "Melee Weapons.cat"
     },
     {
+      "id": "fec0-1360-af63-dd6c",
+      "entryId": "886c-6e17-ab87-8c9c",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims",
+        "New Antioch"
+      ],
+      "name": "Oculus Helm",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "Counts as Combat Helmet and Gas Mask (immune to GAS and SHRAPNEL)",
+      "cost": {
+        "ducats": 0,
+        "glory": 5
+      },
+      "constraints": [
+        {
+          "id": "2129-ccd3-56ef-6bcb",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "52b5-6f6c-cdac-8288",
+      "entryId": "fb45-9c9c-7cf1-6745",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims",
+        "New Antioch"
+      ],
+      "name": "Dignified Conduct",
+      "type": "Ability",
+      "range": "-",
+      "keywords": [],
+      "rules": "Witchburners are well aware of the dignity of their status. A Witchburner cannot take a Dash ACTION.",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "baab-302a-7af9-204e",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "04ac-4944-d9ff-e192",
+      "entryId": "fb45-9c9c-7cf1-6745",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims",
+        "New Antioch"
+      ],
+      "name": "Divine Judgement",
+      "type": "Ability",
+      "range": "24\"",
+      "keywords": [],
+      "rules": "ACTION: A Witchburner can take a Divine Judgement ACTION. If they do so, take a Risky Success Roll for the Witchburner. If the roll is a Failure, the Witchburner’s Activation ends. If the roll is a Success or a Critical Success, pick 1 enemy model within 24\" of the Witchburner (no Line of Sight is required) and place 1 BLOOD MARKER next to them. If the enemy model has the BLACK GRAIL, DEMONIC, or HERETIC Keyword, place 2 BLOOD MARKERS next to it instead of 1.",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "baab-302a-7af9-204e",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "ddce-0973-220d-51e0",
+      "entryId": "fb45-9c9c-7cf1-6745",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Trench Pilgrims",
+        "New Antioch"
+      ],
+      "name": "Gavel of Justice",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL"
+      ],
+      "rules": "Wrath of God: After making the Injury Roll for a Gavel of Justice, place 1 extra BLOOD MARKER next to the target model (even if the Injury Roll has No Effect). If the target has the BLACK GRAIL, DEMONIC, or HERETIC Keyword, place 2 BLOOD MARKERS next to it instead of 1.",
+      "cost": {
+        "ducats": 0,
+        "glory": 6
+      },
+      "constraints": [
+        {
+          "id": "baab-302a-7af9-204e",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "d54d-055d-bbc0-a20f",
+                "childName": "Trench Pilgrims"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
       "id": "c63d-fe53-a980-4a2a",
       "entryId": "4d1c-67e3-95cf-1169",
       "name": "Tenderizer Maul",
@@ -50218,6 +54200,302 @@ export const DATASET: Dataset = {
       "sourceFile": "Mercenaries.cat"
     },
     {
+      "id": "46b7-fdc4-77cd-5271",
+      "entryId": "52e5-2006-85e1-a7c7",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Dog Food"
+      ],
+      "name": "Bite",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "22ee-cd8f-9929-aa6b",
+          "type": "max",
+          "value": 0,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "1fda-e6a9-7628-9c49",
+                "childName": "Fang of the Seething Black",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Mercy Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "6871-d12d-d7fc-bb03",
+            "childName": "Mercy Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Martyrdom Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "d196-34d1-a003-da6f",
+            "childName": "Martyrdom Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Guard Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4d84-784e-a2c6-53c0",
+            "childName": "Guard Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Hellhound",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b990-d914-9dce-66af",
+            "childName": "Hellhound"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "05f3-2ee4-36c0-8c25",
+            "childName": "Dog Food",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "constraint:22ee-cd8f-9929-aa6b",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "05f3-2ee4-36c0-8c25",
+            "childName": "Dog Food",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Trench Dog",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "6871-d12d-d7fc-bb03",
+                "childName": "Mercy Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "d196-34d1-a003-da6f",
+                "childName": "Martyrdom Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "4d84-784e-a2c6-53c0",
+                "childName": "Guard Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b990-d914-9dce-66af",
+                "childName": "Hellhound"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Bite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "b990-d914-9dce-66af",
+            "childName": "Hellhound"
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "afc3-8575-429c-3c17",
+      "entryId": "b990-d914-9dce-66af",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Heretic Legion",
+        "Court of the Seven-Headed Serpent",
+        "Black Grail"
+      ],
+      "name": "Infernal Bite",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [
+        "FIRE"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 1
+      },
+      "constraints": [
+        {
+          "id": "ee60-7b0a-3bed-63a3",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "6941-ec54-3001-8288",
+                "childName": "Heretic Legion"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "44b9-e92b-2dc0-6820",
+                "childName": "Court of the Seven-Headed Serpent"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "0b26-15c1-cebd-0077",
+                "childName": "Black Grail"
+              }
+            ]
+          }
+        },
+        {
+          "op": "set",
+          "field": "keywords",
+          "value": "GAS",
+          "origin": "profile:Infernal Bite",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "c323-0c33-e628-56f0",
+                "childName": "Knights of Avarice",
+                "includeChildSelections": true
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "0b26-15c1-cebd-0077",
+                "childName": "Black Grail"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
       "id": "ce55-e4a0-f88f-0df9",
       "entryId": "5f45-ffc2-6635-0f8c",
       "name": "Man's Best Friend",
@@ -50239,6 +54517,67 @@ export const DATASET: Dataset = {
         }
       ],
       "modifiers": [],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "6dbf-5d41-0a93-b558",
+      "entryId": "ee4b-f5d6-afa4-9e50",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Iron Sultanate",
+        "New Antioch"
+      ],
+      "name": "Vivisector",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "BLOCK",
+        "CUMBERSOME"
+      ],
+      "rules": "Pain Amplifier: Lower the roll needed to achieve a Critical Success for a Melee Attack made by this weapon by 1 for each BLOOD MARKER next to the target by 1 (so an enemy with 1 BLOOD MARKER will suffer a Critical Success on a roll of 11+). Inflict Pain: If an attack made by this weapon against a target, without the ARTIFICIAL Keyword and mounted on a 40mm base or smaller is, a Critical Success, but the target is not taken Out of Action, then the target will move D3\" in a straight line directly away from the attacking model. It will stop if it moves into a friendly model, Impassable Terrain, a terrain piece it cannot cross without having to Climb, or immediately before it would move within 1\" of an enemy model other than the attacker. If the target model would finish the move more than 1\" from the attacking model, then the attacking model and any other models within 1\" of the target model can make an additional Melee Attack on it before it is moved, as if the target were carrying out a retreat move. If this causes the model to move a second time, add D3\" to the distance it is moved but do not attack it again.",
+      "cost": {
+        "ducats": 0,
+        "glory": 3
+      },
+      "constraints": [
+        {
+          "id": "afe6-45e9-ff41-16df",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "any": [
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "72ab-daa4-80ee-e9a5",
+                "childName": "Iron Sultanate"
+              },
+              {
+                "type": "instanceOf",
+                "value": "1",
+                "field": "selections",
+                "scope": "primary-catalogue",
+                "childId": "707d-5bdf-586e-f704",
+                "childName": "New Antioch"
+              }
+            ]
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
@@ -50406,6 +54745,103 @@ export const DATASET: Dataset = {
         }
       ],
       "modifiers": [],
+      "restrictions": [],
+      "factionId": "Mercenaries",
+      "sourceFile": "Mercenaries.cat"
+    },
+    {
+      "id": "9353-c8d6-219d-55ef",
+      "entryId": "22b8-dc59-428d-87cd",
+      "name": "Alchemical Jezzail",
+      "type": "2-Handed",
+      "range": "18\"",
+      "keywords": [
+        "+1 DICE",
+        "ASSAULT"
+      ],
+      "rules": "-",
+      "cost": {
+        "ducats": 0,
+        "glory": 4
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "68d9-a653-9765-d3e7",
+            "childName": "Polearm and Shield",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Mamluk Faris",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "range",
+          "value": "6",
+          "origin": "profile:Alchemical Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "4467-39c5-0252-1b2d",
+            "childName": "Far Shot [5]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Alchemical Jezzail",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "6ffb-5ac2-a05a-8c44",
+            "childName": "Lost Arm [26]",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Mercenaries",
       "sourceFile": "Mercenaries.cat"
@@ -52923,6 +57359,183 @@ export const DATASET: Dataset = {
       "sourceFile": "New Antioch.cat"
     },
     {
+      "id": "7c61-1bc1-44c7-6c9f",
+      "entryId": "50d8-f63e-e01d-2698",
+      "name": "Engineer Body Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "NEGATE SHRAPNEL"
+      ],
+      "rules": "Ballistic Box Armour: Add -1 INJURY DICE to Injury Rolls for a model that has Engineer Body Armour that has been hit by an attack with the SHRAPNEL Keyword.",
+      "cost": {
+        "ducats": 80,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "daa3-c5e8-36e2-48c5",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:daa3-c5e8-36e2-48c5",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:daa3-c5e8-36e2-48c5",
+          "value": "2",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "6aa4-b38b-5146-4106",
+            "childName": "Eire Rangers",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "stats.armour",
+          "value": "1",
+          "origin": "profile:Engineer",
+          "when": {
+            "all": [
+              {
+                "type": "lessThan",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "b287-2326-e785-fe67",
+                "childName": "Heavy Ballistic Shield",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e16d-0563-0aca-babe",
+                "childName": "Shields",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-1",
+          "origin": "profile:Engineer",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "e8e7-1db2-6be3-d1b7",
+            "childName": "Standard Armour",
+            "includeChildSelections": true
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-2",
+          "origin": "profile:Engineer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "7ab3-49d1-4294-3f83",
+                "childName": "Reinforced Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        },
+        {
+          "op": "set",
+          "field": "stats.armour",
+          "value": "-3",
+          "origin": "profile:Engineer",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "e6ac-8562-3982-4bfc",
+                "childName": "Machine Armour",
+                "includeChildSelections": true
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "03eb-5358-03ae-8046",
+                "childName": "Ducal Winged Armour",
+                "includeChildSelections": true
+              }
+            ]
+          },
+          "comment": "armour adjustments"
+        }
+      ],
+      "restrictions": [
+        "Combat Engineer only"
+      ],
+      "factionId": "New Antioch",
+      "sourceFile": "New Antioch.cat"
+    },
+    {
       "id": "9738-ded5-a2b7-3247",
       "entryId": "15ee-f66c-def4-a014",
       "name": "Fire Support Reconfiguration",
@@ -53389,6 +58002,217 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "constraints": [],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "New Antioch",
+      "sourceFile": "New Antioch.cat"
+    },
+    {
+      "id": "a413-643f-2229-c0cc",
+      "entryId": "e558-982e-ccda-bbe7",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "The Red Brigade"
+      ],
+      "name": "Bite",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [],
+      "cost": {
+        "ducats": 35,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "8ad8-a1f0-ebd3-34ff",
+          "type": "max",
+          "value": 0,
+          "scope": "parent",
+          "includeChildSelections": false
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "ea95-2310-99f0-6e97",
+            "childName": "The Red Brigade",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Mercy Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3fc9-edd8-0283-187b",
+            "childName": "Mercy Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Guard Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4f32-2acd-646e-b2c5",
+            "childName": "Guard Dog"
+          }
+        },
+        {
+          "op": "set",
+          "field": "name",
+          "value": "Attack Dog",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "ad89-2d46-a3ae-2cd6",
+            "childName": "Attack Dog"
+          }
+        },
+        {
+          "op": "decrement",
+          "field": "constraint:8ad8-a1f0-ebd3-34ff",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "increment",
+          "field": "constraint:8ad8-a1f0-ebd3-34ff",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Trench Dog",
+          "when": {
+            "any": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "3fc9-edd8-0283-187b",
+                "childName": "Mercy Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "4f32-2acd-646e-b2c5",
+                "childName": "Guard Dog"
+              },
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "self",
+                "childId": "ad89-2d46-a3ae-2cd6",
+                "childName": "Attack Dog"
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "New Antioch",
+      "sourceFile": "New Antioch.cat"
+    },
+    {
+      "id": "7a63-cb40-df95-b9e9",
+      "entryId": "4f32-2acd-646e-b2c5",
+      "name": "Warning Howl",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "No infiltrator can be placed within 12” of a Guard Dog, and you can charge any enemy within 4” of this dog even if it is out of sight.",
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "7244-54b5-9984-9f85",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "New Antioch",
+      "sourceFile": "New Antioch.cat"
+    },
+    {
+      "id": "5c53-c576-7840-b408",
+      "entryId": "3fc9-edd8-0283-187b",
+      "name": "Rescue Operation",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Mercy dogs can also drag any model within 1” that is Down at ½ speed with them, both with normal movement or when dashing.",
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b098-d485-a286-ba4e",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [],
+      "restrictions": [],
+      "factionId": "New Antioch",
+      "sourceFile": "New Antioch.cat"
+    },
+    {
+      "id": "a73a-b0cf-21dd-a38a",
+      "entryId": "3fc9-edd8-0283-187b",
+      "name": "Guardian Angel",
+      "type": "Battlekit",
+      "range": "",
+      "keywords": [],
+      "rules": "Mercy dogs carry a Medi-Kit which can be used by any friendly model on themselves within 1” of the dog",
+      "cost": {
+        "ducats": 5,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b098-d485-a286-ba4e",
+          "type": "max",
+          "value": 2,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
@@ -55613,6 +60437,52 @@ export const DATASET: Dataset = {
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
+      "id": "15f9-b36f-a952-7abe",
+      "entryId": "a43e-f0e1-fb97-0291",
+      "name": "Feeble Flailing",
+      "type": "Special",
+      "range": "Melee",
+      "keywords": [],
+      "cost": {
+        "ducats": 20,
+        "glory": 0
+      },
+      "constraints": [],
+      "modifiers": [
+        {
+          "op": "add",
+          "field": "error",
+          "value": "The Unclean: Max 2 Prisoners",
+          "origin": "entry",
+          "when": {
+            "all": [
+              {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "8b6b-5bd4-c742-bb12",
+                "childName": "Cavalcade of the Tenth Plague",
+                "includeChildSelections": true
+              },
+              {
+                "type": "greaterThan",
+                "value": "2",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "a43e-f0e1-fb97-0291",
+                "childName": "Ecclesiastic Prisoner",
+                "includeChildSelections": true
+              }
+            ]
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Trench Pilgrims",
+      "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
       "id": "8cbd-7395-617e-ef28",
       "entryId": "e69f-0453-287c-25ce",
       "name": "Awaited",
@@ -55697,6 +60567,146 @@ export const DATASET: Dataset = {
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
+      "id": "981d-f6b6-849a-b225",
+      "entryId": "f2e8-cc7b-df49-4819",
+      "name": "Bonebreaker Mace",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "RISKY"
+      ],
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "9509-6e8f-57f6-ac7e",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "increment",
+          "field": "constraint:9509-6e8f-57f6-ac7e",
+          "value": "1",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "constraint:9509-6e8f-57f6-ac7e",
+          "value": "1",
+          "origin": "entry"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "force",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "stats.ranged",
+          "value": "+0 Dice",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "4863-d3e6-bda5-f230",
+            "childName": "Sacred Geometry",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.ranged",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "3564-70ed-8e9e-6ee8",
+            "childName": "Ranged Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "increment",
+          "field": "stats.melee",
+          "value": "1",
+          "origin": "profile:Anchorite",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "self",
+            "childId": "2a4f-c258-5d70-a3c5",
+            "childName": "Melee Proficiency [7]",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Broken on the Wheel",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "52bc-6b21-136a-608d",
+            "childName": "War Pilgrimage of Saint Methodius",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Trench Pilgrims",
+      "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
       "id": "9e61-bd1d-33f1-f936",
       "entryId": "9e64-d0cb-9b5a-3df9",
       "name": "Third Party Subfactions",
@@ -55710,6 +60720,105 @@ export const DATASET: Dataset = {
       },
       "constraints": [],
       "modifiers": [],
+      "restrictions": [],
+      "factionId": "Trench Pilgrims",
+      "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "7e36-5ca4-b01e-f349",
+      "entryId": "f28e-7b89-120d-f905",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
+      "name": "Runeforged Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER"
+      ],
+      "rules": "If an attack would normally ignore armour, Runeforged Armour still grants a -1 INJURY MODIFIER.",
+      "cost": {
+        "ducats": 120,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "b768-7b40-dd27-88ce",
+          "type": "max",
+          "value": 3,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
+      "restrictions": [],
+      "factionId": "Trench Pilgrims",
+      "sourceFile": "Trench Pilgrims.cat"
+    },
+    {
+      "id": "99b6-6b5c-398a-f1c1",
+      "entryId": "f4ac-a238-b6de-4b57",
+      "hiddenByDefault": true,
+      "unlockedBy": [
+        "Children of Yggdrasil"
+      ],
+      "name": "Improvised Melee Weapon",
+      "type": "1-handed",
+      "range": "Melee",
+      "keywords": [
+        "RISKY",
+        "HEAVY",
+        "CRITICAL",
+        "+1 DICE"
+      ],
+      "rules": "Massive: The Improvised Melee Weapon rolls on the Injury Chart with 3D6 (instead of usual 2D6), adding all three dice together!",
+      "cost": {
+        "ducats": 140,
+        "glory": 0
+      },
+      "constraints": [
+        {
+          "id": "9a61-62c8-7422-11a3",
+          "type": "max",
+          "value": 1,
+          "scope": "roster",
+          "includeChildSelections": true
+        }
+      ],
+      "modifiers": [
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "65bd-e9b5-eea8-5f65",
+            "childName": "Children of Yggdrasil",
+            "includeChildSelections": true
+          }
+        }
+      ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
       "sourceFile": "Trench Pilgrims.cat"
@@ -62181,7 +67290,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Engineer Body Armour",
-          "weaponId": null,
+          "weaponId": "7c61-1bc1-44c7-6c9f",
           "section": "Armour",
           "cost": {
             "ducats": 45,

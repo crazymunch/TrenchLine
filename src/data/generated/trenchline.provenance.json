@@ -11949,6 +11949,64 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
+  "weapon:aa15-64a9-87eb-87c8": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
   "weapon:e635-2d2a-2df7-bafe": {
     "entryId": {
       "layer": "base",
@@ -12123,6 +12181,64 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
+  "weapon:eaf6-e4c0-2039-b81a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
   "weapon:f726-9549-bfcb-51e6": {
     "entryId": {
       "layer": "base",
@@ -12240,6 +12356,64 @@
     }
   },
   "weapon:9aa7-5a1a-cbf9-b1b5": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    }
+  },
+  "weapon:df74-aebf-4b7c-d575": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -25699,6 +25873,412 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
+  "weapon:1ead-a287-0d10-eac8": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:562f-9fca-8141-cf16": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:8393-ece2-0750-7df7": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:c65a-d1b7-59d9-9d95": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:0dae-2ad7-bfec-82bb": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:96cc-bbc5-3019-cf3b": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:c7c3-3548-f3e2-365a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
   "weapon:12d2-7961-1e16-963c": {
     "entryId": {
       "layer": "base",
@@ -25758,6 +26338,122 @@
     }
   },
   "weapon:2873-9e7a-3ad9-a547": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:97a3-246d-6495-8587": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    }
+  },
+  "weapon:1472-8a93-ec65-d12e": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
@@ -27221,6 +27917,296 @@
     }
   },
   "weapon:835c-9624-303f-5792": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:46aa-d5a4-2a05-9708": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:212b-163e-3eb6-575d": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:8755-5cd3-d0a0-1caa": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:6d5e-3299-c138-e478": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    }
+  },
+  "weapon:65dd-6f03-4ee5-f07f": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
@@ -34554,6 +35540,238 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
+  "weapon:c091-f6cc-758d-adeb": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:e292-e8a8-eaa9-2d0d": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:6245-5f1b-848b-a5c1": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
+  "weapon:0cf5-d84b-e1fe-ce92": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    }
+  },
   "weapon:2843-d7c2-29ba-03db": {
     "entryId": {
       "layer": "base",
@@ -35312,6 +36530,238 @@
       "source": "battlescribe:Melee Weapons.cat@1b463a8"
     }
   },
+  "weapon:fec0-1360-af63-dd6c": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:52b5-6f6c-cdac-8288": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:04ac-4944-d9ff-e192": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:ddce-0973-220d-51e0": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
   "weapon:c63d-fe53-a980-4a2a": {
     "entryId": {
       "layer": "base",
@@ -35370,7 +36820,181 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
+  "weapon:46b7-fdc4-77cd-5271": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:afc3-8575-429c-3c17": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
   "weapon:ce55-e4a0-f88f-0df9": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:6dbf-5d41-0a93-b558": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -35661,6 +37285,64 @@
     }
   },
   "weapon:9c1c-2178-d6c0-cf6a": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    }
+  },
+  "weapon:9353-c8d6-219d-55ef": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -38677,6 +40359,65 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
+  "weapon:7c61-1bc1-44c7-6c9f": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    }
+  },
   "weapon:9738-ded5-a2b7-3247": {
     "entryId": {
       "layer": "base",
@@ -39316,6 +41057,238 @@
     }
   },
   "weapon:ef92-4c10-4b69-05e3": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    }
+  },
+  "weapon:a413-643f-2229-c0cc": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    }
+  },
+  "weapon:7a63-cb40-df95-b9e9": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    }
+  },
+  "weapon:5c53-c576-7840-b408": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    }
+  },
+  "weapon:a73a-b0cf-21dd-a38a": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -42929,6 +44902,64 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
+  "weapon:15f9-b36f-a952-7abe": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    }
+  },
   "weapon:8cbd-7395-617e-ef28": {
     "entryId": {
       "layer": "base",
@@ -43045,7 +45076,181 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
+  "weapon:981d-f6b6-849a-b225": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    }
+  },
   "weapon:9e61-bd1d-33f1-f936": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    }
+  },
+  "weapon:7e36-5ca4-b01e-f349": {
+    "entryId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "unlockedBy": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "name": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "type": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "range": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "keywords": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "rules": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.ducats": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "cost.glory": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "constraints": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "modifiers": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "restrictions": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    }
+  },
+  "weapon:99b6-6b5c-398a-f1c1": {
     "entryId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
