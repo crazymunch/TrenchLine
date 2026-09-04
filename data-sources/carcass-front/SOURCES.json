@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "Carcass Front — the starter set and supplement, published as a GitHub",
+    "Carcass Front \u2014 the starter set and supplement, published as a GitHub",
     "release on this repository. Fetch with: npm run rules:carcass",
     "",
     "Same convention as data-sources/rulebook/SOURCES.json: the extracted text",
@@ -15,7 +15,7 @@
     "repo": "crazymunch/TrenchLine",
     "releaseId": 381606718,
     "name": "Carcass Front",
-    "note": "A DRAFT release, so it has no tag and no public download URL. Assets are fetched through the authenticated api.github.com asset endpoint by id."
+    "note": "Assets are fetched through the authenticated api.github.com asset endpoint by id."
   },
   "assets": [
     {
@@ -35,7 +35,7 @@
       "sha256": "71aaef7db100a9e815239f8efc0fc66fc6688ac1288b0df65fa4dafc364e702a",
       "extract": "extracted/quickstart-rules-reference.txt",
       "committed": true,
-      "role": "Introductory rules for the starter set. A cut-down restatement of the core rules rather than new content — held for cross-checking, not parsed."
+      "role": "Introductory rules for the starter set. A cut-down restatement of the core rules rather than new content \u2014 held for cross-checking, not parsed."
     },
     {
       "file": "the-world-is-burning-scenario.pdf",
@@ -80,13 +80,23 @@
       "sha256": "fdce5afc64710532297df11edbc73c7b92cbf79058dec0559fa62ba6215280d0",
       "extract": "extracted/campaign-tracker.txt",
       "committed": true,
-      "role": "The printable Campaign Tracker sheet. Image-only — it extracts to nothing, and is held for completeness rather than parsed."
+      "role": "The printable Campaign Tracker sheet. Image-only \u2014 it extracts to nothing, and is held for completeness rather than parsed."
+    },
+    {
+      "file": "carcass-front-map.pdf",
+      "assetId": 541837865,
+      "bytes": 4124741,
+      "sha256": "253addc1580635efe8f95d95cea5df3acc29d901fd2d579b85482adac390e9d2",
+      "extract": "extracted/carcass-front-map.txt",
+      "committed": true,
+      "role": "The fold-out campaign map. Page 1 is the Carcass Front Zones table (33 zones, their Resources and the scenario played there), the Special Zone Outpost Bonuses, and the Carcass Front Scenario Generator charts. Page 2 is the zone board itself, which is a graphic and extracts to nothing.",
+      "note": "Recorded in _notAdded as print material with no rules content until Sep 2026. That was wrong: three tables the book's own campaign rules point at are printed here and nowhere else."
     }
   ],
   "_notAdded": [
-    "Three release assets are print material with no rules content and are not",
+    "Two release assets are print material with no rules content and are not",
     "fetched: the spread-page edition of the book (a duplicate of the",
-    "single-page one), Carcass.Front.Map.pdf, and CF.token.sheet_V1.pdf.",
+    "single-page one) and CF.token.sheet_V1.pdf.",
     "",
     "Hell.on.Earth.Weather.Events.pdf is in this release too, but it was",
     "supplied separately first and already lives in data-sources/rulebook/",

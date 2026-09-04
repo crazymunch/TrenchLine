@@ -891,6 +891,160 @@ Sultanate, New Antioch and Trench Pilgrims. The Trench Dispatch, where every
 other Mercenary's hosts come from (§7b), never mentions it, so before this it
 fell through to the permissive default and all six Warbands were offered it.
 
+## 7d. Loadout bundles
+
+One selectable name that grants several items.
+
+`Polearm and Shield` is a `selectionEntry` in the Mamluk Faris's `Loadout`
+group with **no profile of its own**, which reaches a `Polearm` (Weapon) and a
+`Shield` (Battlekit) through `infoLink`s. It therefore matched no weapon and no
+Armoury Table row, and a roster holding it was told it was *"not in this
+ruleset"* — which drops the item out of every legality check while telling the
+player their list is only provisional.
+
+### Why own-versus-linked is the safe distinction
+
+An earlier attempt keyed on *"the entry's name differs from its profile's
+name"* and produced `Automatic Pistol -> Stolen: Automatic Pistol` and
+`Melee -> Knight Companion of the Bladed Fly` — aliases that would redirect
+ordinary wargear to another entry entirely. It was thrown away rather than
+shipped.
+
+A bundle is narrower and checkable: it contributes **no profile of its own**
+and hands out **two or more**, and its name resolves to nothing else in the
+dataset. Across every catalogue that yields exactly two, both real:
+
+| Bundle | Grants |
+| --- | --- |
+| `Polearm and Shield` | `Shield` + `Polearm` |
+| `Sword and Pistol` | `Sword/Axe` + `Pistol` |
+
+### Priced as one thing
+
+The bundle carries the **entry's own** cost, not the sum of its parts'. Both of
+these are free options in a `Loadout` group; pricing the parts out of the
+Armoury Table billed the Mamluk Faris 7 Ducats for a Polearm the book hands it
+for nothing.
+
+### The profiles a bundle grants reach the Battlekit chapter
+
+`Shield` is a generic Battlekit profile in the shared `.gst`. The chapter
+prints `Trench Shield`, a **different** entry that also exists, so neither may
+be renamed into the other; and the weapon emit deliberately skips Battlekit
+links, because resolving them there turns a Black Grail Strain into equipment
+anyone can buy. Granted and then unknown, the Shield counted against no limit
+at all — a model could carry two.
+
+So the build carries a granted profile nothing else names into
+`dataset.battlekit`, as a third source after the rulebook and Warbands of
+Trench Crusade. Its **section is derived from the chapter's own Type → section
+pairings**, not from a mapping written in the pipeline, and an ambiguous one is
+left unset: a wrong section is a legality error on a legal roster.
+
+### "Unless otherwise stated"
+
+The Battlekit Limits rule opens with those three words, and a model's own entry
+is where the book states otherwise:
+
+> A Mamluk Faris always has either a Greatsword, or a **Polearm and a Trench
+> Shield**, or a Pistol and a Sword/Axe.
+
+The catalogue names the generic `Shield` in that loadout rather than the Trench
+Shield the book names, and only the Trench Shield carries the `Shield Combo`
+stipulation. Policed against each other, the two halves of a loadout the book
+hands the model raise *"Polearm is 2-Handed and cannot be carried with a
+Shield"* — a legality error on a legal roster.
+
+`battlekitBreaches` therefore does not judge one stated loadout's items against
+each other. The exemption is scoped to items of **one** bundle, so a Shield
+bought on top of a bundled one is still counted: the entry states what it
+grants, not what may be added to it.
+
+### Counters are not wargear
+
+`Alchemical Ammuntion (Loaded)` is a hidden `selectionEntry` with a roster max
+of **zero** that a modifier increments by one for each `Alchemical Ammunition`
+the roster holds. It exists so BattleScribe can count purchases: no cost, no
+profile, no rules, and a player cannot choose it. Eleven of these are emitted
+as `dataset.counters`, and a roster carrying one no longer reports it as *"not
+in this ruleset"* — which told the player their list was provisional over a
+thing that is not an item.
+
+They are found by that **signature** and not by the `(Loaded)` most of them
+carry: the same shape without it is `Dog's Friend`, counting one marker per
+`Man's Best Friend`, and four of the names are spelled `Ammuntion` — the
+catalogue's own typo — so reading the name would need a table of misspellings.
+
+Two guards, each for a case that was wrong before it was added:
+
+- **Never a counter whose name is the name it counts.** `Satchel Charge` has an
+  entry of this shape counting `Satchel Charge`, and a Satchel Charge is a real
+  piece of wargear a model buys and throws. Dropping that name would lose the
+  item rather than the bookkeeping.
+- **A roster may carry the corrected spelling.** So the name is matched against
+  the counter's own name *and* against the counted item's name plus that
+  counter's parenthetical, which reaches `Alchemical Ammuntion (Loaded)` from
+  `Alchemical Ammunition (Loaded)`. Both strings come from the catalogue.
+
+### A territory perk the campaign writes
+
+The app publishes no territory perk of its own. Sixteen invented ones were
+removed because they rendered under the same *"Strategic Territory Perk"*
+heading a derived rule would, so a player could not tell the app's invention
+from the book.
+
+That left the campaign hub with no way to have a perk at all, which is honest
+but less useful than the group writing their own — provided the app says whose
+rule it is. `TerritoryNode.perkSource` records that:
+
+| `perkSource` | Meaning | Editable |
+| --- | --- | --- |
+| `published` | A rule a book prints — the Carcass Front Special Zone Outpost Bonuses, verbatim | **No** |
+| `campaign` | A house rule the organiser wrote in the app, shown as *"House rule (set by this campaign)"* | Yes |
+| absent | No perk | Yes — this is where a house rule starts |
+
+`setTerritoryPerk` refuses a `published` territory and returns `false`.
+Overwriting the book's own Outpost Bonus with invented text under a published
+label is exactly the bug the sixteen removed perks were, so it is closed in the
+store rather than only hidden in the UI.
+
+Clearing the text clears the source with it: a house rule with no words in it
+would render as an attributed rule that says nothing.
+
+### An allowance a model's own entry states
+
+*"Unless otherwise stated"* is the first line of the Battlekit Limits, and some
+entries state otherwise. Warbands of Trench Crusade, under `Human Hands`:
+
+> If a Takwin Homunculus with Human hands also has an Additional Arm, then it
+> can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one
+> 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one
+> 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. **If it takes a
+> Shield, then the Shield replaces one of the Melee Weapons** it can have but
+> the Shield Combo rule cannot be used for any of its weapons.
+
+`dataset.carryAllowances` carries these, and where one applies it **replaces**
+the chapter's rule for that section — including the chapter's Shield
+restrictions, which is the point: the app was calling a Homunculus's Siege
+Jezzail illegal because the chapter forbids a 2-Handed weapon beside a Shield,
+while this entry says the Shield replaces a *melee* weapon and forbids using
+Shield Combo at all. Demanding the stipulation demanded something the model may
+not do.
+
+**Combinations, not hand arithmetic.** The book states alternatives, and they
+are not a single capacity: this entry allows three items or three hands, while
+another in the same book allows *"up to three 1-Handed OR two 1-Handed and one
+2-Handed"* — three items in one branch and four hands in the other. Any formula
+over one capacity number gets one of the two wrong.
+
+**Only self-describing sentences are read.** `parse-carry-allowances.mjs` takes
+the condition from the sentence itself (*"If a X with Y also has Z, then…"*), so
+nothing about which Formula grants what is written in the app. The book states
+four more allowances of the same shape that say *"It can have…"*, where *it* is
+the entry the paragraph sits under; those need document structure this reader
+does not have, and the build **reports** them rather than attributing them by
+guess.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

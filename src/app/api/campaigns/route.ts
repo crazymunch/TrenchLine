@@ -113,30 +113,36 @@ export async function GET(req: NextRequest) {
  * Four fixed territories, as before. These are the app's own scaffolding for a
  * new campaign rather than anything the rulebook publishes, which is why they
  * are here and not in the generated dataset.
+ *
+ * And why every `perk` is empty: each carried an invented mechanical effect
+ * (`+5 Ducats supply bonus per round`, `+2 Glory on Victory when defending`)
+ * shown in the campaign hub as a "Strategic Territory Perk" beside rules the
+ * pipeline derives, with nothing to tell a player which was which. See
+ * `src/store/seed.ts` for the same fix on the twelve world theatres.
  */
 const STARTING_TERRITORIES = [
   {
     name: 'North Trench Sector A-1',
     type: 'Trench Line',
-    perk: '+5 Ducats supply bonus per round',
+    perk: '',
     description: 'Heavily fortified firing step overlooking the crater field.',
   },
   {
     name: 'Shrine of the Weeping Martyr',
     type: 'Ruined Shrine',
-    perk: 'Reroll 1 failed Morale check per match',
+    perk: '',
     description: 'Shattered marble chapel providing divine reassurance.',
   },
   {
     name: 'The Iron Foundry Bunker',
     type: 'Munitions Bunker',
-    perk: 'Free Frag Grenade in Warband Stash after each game',
+    perk: '',
     description: 'Underground armory depot filled with unexploded ordinance.',
   },
   {
     name: "Dead Man's Crater (Center)",
     type: "No Man's Land",
-    perk: '+2 Glory on Victory when defending',
+    perk: '',
     description: 'Contested central wasteland strewn with barbed wire and ruined tanks.',
   },
 ];

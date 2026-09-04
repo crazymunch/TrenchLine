@@ -15,7 +15,7 @@
  * saved numbers were computed against data the audit measured as 21% wrong on
  * Ducat costs, so re-pricing is the point of doing this at all.
  */
-import type { Dataset, UnitProfile } from '@/types/catalogue';
+import { ZERO_COST, type Dataset, type UnitProfile } from '@/types/catalogue';
 import { isAlchemicalFormula, traitsOf, hasExtraLimb } from './formulae';
 import { effectiveKeywords } from './keywordGrants';
 import type { Warband, ActiveUnit } from '@/types/warband';
@@ -68,6 +68,25 @@ function findProfile(
   );
 }
 
+/**
+ * Is this name one of the catalogue's counters rather than a piece of wargear?
+ *
+ * Matched against the counter's own name AND against the name it counts plus
+ * that counter's parenthetical. The catalogue spells four of these
+ * `Ammuntion` — its own typo — and a roster can carry the corrected spelling,
+ * so `Alchemical Ammunition (Loaded)` has to reach `Alchemical Ammuntion
+ * (Loaded)`. Built from the two strings the catalogue already gives, rather
+ * than from a table of misspellings written here.
+ */
+function isCounter(dataset: Dataset, name: string): boolean {
+  const want = key(name);
+  return (dataset.counters ?? []).some((c) => {
+    if (key(c.name) === want) return true;
+    const suffix = /\s(\([^()]*\))\s*$/.exec(c.name)?.[1];
+    return Boolean(suffix) && key(`${c.forName} ${suffix}`) === want;
+  });
+}
+
 /** Everything equipped on a model, priced from the faction's armoury. */
 function itemsOf(
   unit: ActiveUnit,
@@ -77,6 +96,9 @@ function itemsOf(
 ): RosterItem[] {
   const armoury = armouryFor(dataset, factionId);
   const out: RosterItem[] = [];
+  /* Counts the bundle SELECTIONS on this model, so two of the same bundle get
+     two grant ids — see the expansion below. */
+  let bundleSelections = 0;
 
   const gear = [
     ...(unit.equippedWeapons ?? []),
@@ -98,6 +120,74 @@ function itemsOf(
         out.push({ weaponId: row.weaponId ?? undefined, name: g.name, cost: row.cost, quantity: 1 });
         continue;
       }
+      /*
+        A loadout bundle grants several items under one name.
+
+        `Polearm and Shield` is a catalogue entry with no profile of its own
+        that links a Polearm and a Shield, so it matches no weapon and no
+        armoury row — and was reported as "not in this ruleset", which drops
+        it out of every legality check. Expanded into what it actually gives
+        the model, so the hands it uses and the shield it carries are counted.
+      */
+      const bundle = (dataset.bundles ?? []).find((b) => key(b.name) === key(g.name));
+      if (bundle) {
+        /*
+          THIS selection of the bundle, not the bundle's name.
+
+          `oneStatedLoadout` exempts the items of ONE stated loadout from being
+          policed against each other. Keyed on the name, a model carrying
+          `Polearm and Shield` twice produced four items all claiming the same
+          grant, so the exemption swallowed the whole set and hid two Shields
+          and four hands' worth of weapons. The entry states what it hands the
+          model ONCE; taking it twice is two loadouts, and the second one's
+          items are as countable as anything bought on top.
+        */
+        const grantedBy = `${bundle.name}#${bundleSelections++}`;
+        /*
+          Priced as one thing, at the bundle's own cost, and NOT by pricing
+          each part out of the Armoury Table: both bundles the catalogues
+          define are free options in a Mercenary's `Loadout` group, and
+          charging the parts separately billed the model 7 Ducats for a
+          Polearm it is handed for nothing. The cost rides on the first part
+          so the roster's total stays right whichever way it is summed.
+        */
+        bundle.grants.forEach((part, i) => {
+          const cost = i === 0 ? bundle.cost : ZERO_COST;
+          const w2 = dataset.weapons.find((x) => key(x.name) === key(part));
+          if (w2) {
+            out.push({ weaponId: w2.id, name: part, cost, quantity: 1, grantedBy });
+            return;
+          }
+          /*
+            No weapon profile and no armoury row does not make it unknown. The
+            Shield a `Polearm and Shield` grants is a real Battlekit profile in
+            the shared .gst that the weapon emit deliberately skips — resolving
+            Battlekit links there turns a Black Grail Strain into equipment
+            anyone can buy — and the build carries it into `dataset.battlekit`
+            instead, which is where the limit engine reads its section and
+            hands from. Reporting it unmatched would drop the Shield out of the
+            one-Shield limit while the model plainly has one.
+          */
+          const known = (dataset.battlekit ?? []).some((b) => key(b.name) === key(part));
+          if (known) { out.push({ name: part, cost, quantity: 1, grantedBy }); return; }
+          unmatched.push({ kind: 'wargear', name: part, on: unit.customName });
+        });
+        continue;
+      }
+
+      /*
+        BattleScribe's own bookkeeping, which is not wargear and is not
+        reported as missing from the ruleset.
+
+        `Alchemical Ammunition (Loaded)` is a hidden entry capped at zero
+        across the roster that the catalogue increments once per `Alchemical
+        Ammunition` bought — no cost, no profile, no rules, and not choosable.
+        Reported as "not in this ruleset" it told the player their list was
+        provisional over a thing that is not an item. It contributes nothing to
+        a legality check either, so it is dropped rather than counted.
+      */
+      if (isCounter(dataset, g.name)) continue;
+
       unmatched.push({ kind: 'wargear', name: g.name, on: unit.customName });
       continue;
     }

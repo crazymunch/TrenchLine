@@ -233,6 +233,26 @@ for each and says in a comment which failure it guards.
 The Scenarios & Terrain chapter (`parse-cf-scenarios.mjs`) hits the same class
 of problem three more times, and the tests are written the same way:
 
+- **The map image in the PDF is not the map.** What the PDF *stores* for each
+  scenario is the deployment map's **background art**: the terrain drawing,
+  with no deployment zones, no objective markers, no midpoint and no
+  dimensions. The map is that art with all of those drawn over it in vector, so
+  pulling the embedded image gets the layer underneath the map. Twelve
+  deployment maps with no deployment zones on them — and nothing reported it,
+  because the build's check only asks whether a file is *there*.
+  `scripts/crop-scenario-maps.py` crops the composed map out of the rendered
+  page instead, finding the box rather than measuring it: the rulebook draws a
+  red rule around every deployment map, and the vertical sides of that rule
+  give the crop its extent. A page whose rule is not found, or not closed, is
+  reported and skipped rather than cropped to a guess — a map cropped to the
+  wrong rectangle is worse than the art alone, because it looks authoritative.
+  `arsenal.test.ts` asserts the app is pointed at the crop and not at a `.png`.
+  The Carcass Front's five maps come out of the same script but not the same
+  way: that book draws no rule, and its map is a single large grey-filled
+  rectangle in the page's **vector drawings**, so the rectangle *is* the crop
+  box — read out of the PDF rather than detected in pixels. All five were
+  `mapImage: null` until then, which was the honest answer while the maps could
+  not be got out of the book.
 - **The deployment maps extract into the prose.** Labels and dimensions —
   `DEPLOYMENT ZONE`, `24’’`, `SWORD OF GOD` — arrive as bare lines mid-sentence.
   In scenario V they land between "within 1” of the Altar of Leviathan and" and
@@ -369,13 +389,44 @@ sentences, each opening a line, each following one that finished. The rules end
 where the fiction is introduced: a line closing on a colon whose next line
 opens a quotation.
 
-**The campaign map is not in the PDF.** The zone board, the Carcass Front Zones
-table (which zone offers which Resources, and which scenario is played there),
-the Special Zones table and the Scenario Generator charts the map campaign
-refers to are all printed on the fold-out map in the box. None of it can be
-derived from anything in this repo, so none of it is — `requiresMap` records
-the fact and the Codex says so, rather than leaving a player to work out why a
-rule points at a table the app does not have.
+**The campaign map is not in the book's PDF** — but it is not unobtainable.
+The zone board, the Carcass Front Zones table (which zone offers which
+Resources, and which scenario is played there), the Special Zones table and the
+Scenario Generator charts are printed on the fold-out map in the box, and the
+release carries that as `Carcass.Front.Map.pdf`. Its first page extracts to
+text: 33 zones with their Resources and scenario, ten Special Zone Outpost
+Bonuses, and the generator's Deployment × Victory Conditions charts. `parse-cf-map.mjs`
+reads all three; the file is in `SOURCES.json` and its extract is committed.
+
+Two of the three tables extract badly, and neither is put back together by
+guessing at the layout — both are reassembled against a vocabulary the sources
+already state:
+
+- **The Outpost Bonuses' zone names wrap.** A name that fits its column stays
+  on the row (`Kurd Dagh <tab> You can re-roll…`); one that does not is set
+  over as many as three lines with the bonus starting after it. So the boundary
+  is found by NAME — a line, or a run of up to three joined, that is one of the
+  32 zones the table above lists. Longest match first: read shortest-first,
+  `Ruins of Nineveh Novus` became `Ruins of`, which is not a zone either, so
+  the row was lost entirely and `Nineveh Novus` became the opening words of
+  somebody else's bonus.
+- **The D6 charts' cells wrap.** A row's six cells arrive over as many as six
+  lines with the tabs falling wherever the wrap did, so the row is flattened
+  and read against the vocabulary the **book's own** generator states — six
+  deployments, six victory conditions, three archetypes. A row that does not
+  resolve into exactly six published names is reported, not repaired: a chart
+  that sends a player to a deployment the book does not print is worse than no
+  chart. Hyphens and spaces are treated alike when matching, because the book
+  prints `Long-Distance Battle` and the map prints `Long Distance Battle`, and
+  what is emitted is the book's spelling so a chart cell and the generator's
+  rules text for that deployment are the same string.
+
+The Resource glyphs are read from the book's own legend (`Favour 👁`) rather
+than from a table typed into the pipeline: the map prints only the glyph.
+
+`requiresMap` still records that the campaign needs the **zone board** — which
+zone borders which, for supply lines and adjacency — which is a graphic on the
+printed sheet.
 
 ### The Vision cards: a card is not a chapter
 

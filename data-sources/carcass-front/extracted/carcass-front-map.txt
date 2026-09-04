@@ -1,0 +1,113 @@
+CarCass Front Zones
+This table lists the resources and scenarios for each zone on the Carcass Front Campaign map. The scenarios can be
+found in this book or the Trench Crusade Rulebook.
+Zone 	Resources 	Scenario
+Altar of Leviathan 	👁 🏺 📦 	Altar of Leviathan
+Baghras Fortress 	🏺 🌍 	Fields of Glory
+Basarfuth Castle 	🏺 📦 	Supply Raid
+Botfly Valley 	🏺 	Random Trench Lines Scenario
+Carrion Coast 	👁 	Random Derelict Ruins Scenario
+Cathedral of Wire 	🏺 	Random Derelict Ruins Scenario
+Desolate Trapesac 	📦 	Random No Man’s Land Scenario
+Domus Demetrius 	👁 📦 🌍 	Domus Demetrius
+Fields of Green Flame 	📦 	Random Trench Lines Scenario
+Geist Spires 	📦 🌍 	Supply Raid
+Guillaume Basin 	🌍 	Random Trench Lines Scenario
+Holy Choked Path 	👁 🌍 	Claim No Man’s Land
+House of Pillars 	🏺 📦 	Relic Hunt
+Kurd Dagh 	👁 🏺 🌍 	The High Ground
+Kyrrhos City 	👁 	Random No Man’s Land Scenario
+Little Jahannam 	🏺 	Random Derelict Ruins Scenario
+Lost Shih-al-Hadid 	🌍 	Random No Man’s Land Scenario
+Martyr’s Crossing 	👁 📦 	Claim No Man’s Land
+Mi’ilya Outskirts 	🌍 	Random No Man’s Land Scenario
+North Amanus Trenches 	👁 	Random Trench Lines Scenario
+Pilgrimage of Stone 	📦 	Random No Man’s Land Scenario
+Pillar of Jonah 	🏺 📦 🌍 	Trench Warfare
+Risen Ruins 	🏺 	Random Derelict Ruins Scenario
+Ruins of Nineveh Novus 	👁 🏺 🌍 	Ruins of Nineveh Novus
+Sacred Plains 	🏺 	Random No Man’s Land Scenario
+Scavenger Towns 	📦 	Claim No Man’s Land
+Shadow of Old Saints 	👁 🏺 	Hunt for Heroes
+South Amanus Trenches 	👁 🌍 	Hunt for Heroes
+Steel Necropolis 	👁 📦 🌍 	Steel Necropolis
+Syrian Gate 	🌍 	Random No Man’s Land Scenario
+The Sword of God 	👁 📦 🌍 	The Sword of God
+The Vivarium 	👁 🏺 📦 	Dragon Hunt
+SPECIAL ZONE OUTPOST BONUSES
+Each Special Zone confers an Outpost Bonus to Warbands that have an Outpost in that zone.
+Zone 	Outpost Bonus
+Altar of
+Leviathan
+Special rules apply to playing games in this zone (▶ see page 83).
+Baghras
+Fortress
+In the Quartermaster Step following the game where you establish an Outpost in this zone, you can
+recruit Mercenaries for half their listed cost in ☼ (rounded up).
+Domus
+Demetrius
+The first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal.
+In addition, if you have an Outpost in this zone it counts as two zones (instead of one) when working
+out which Warband has the longest supply line.
+House of
+Pillars
+Add +1 DICE to Success Rolls for Morale Checks for your Warband if you have an Outpost in this
+zone.
+Kurd Dagh 	You can re-roll one Promotion roll each Promotions & Experience Step if you have an Outpost in
+this zone.
+Ruins of
+Nineveh
+Novus
+The first player to establish an Outpost in this zone adds one Omen of Leviathan to their Warband’s
+Arsenal. In addition, you can add or subtract 1 from your Exploration Roll if you have an Outpost at
+this zone.
+Pillar of
+Jonah
+If you have an Outpost in this zone and you play a game at this zone or a zone that is linked to it, the
+opposing Warband starts the game with 2 BLOOD MARKERS distributed amongst their models
+as they wish. Note that if the opposing Warband also had an Outpost in this zone, you will start the
+game with 2 BLOOD MARKERS as well!
+Steel
+Necropolis
+In the Quartermaster Step following the round where you establish an Outpost in this zone, Armour
+and Shields cost half the listed price in 👑 (rounded up). In addition, the first player to establish an
+Outpost here adds one Omen of Leviathan to their Warband’s Arsenal.
+The Sword
+of God
+In the Quartermaster Step following the round where you place an Outpost in this zone, Ranged
+Weapons cost half the listed price in 👑 (rounded up). In addition, the first player to establish an
+Outpost here adds one Omen of Leviathan to their Warband’s Arsenal.
+The Vivarium 	If you have an Outpost in this zone, you can re-roll one Trauma roll in each of your Outcome Phases.
+CARCASS FRONT SCENARIO GENERATOR CHARTS
+Roll once on the following charts to determine the deployment that is used for a random scenario in a campaign game,
+then roll a second time to determine the Victory Conditions that apply to the game. All random scenarios have a game
+length of 6 Turns in a Carcass Front Campaign.
+D6
+No Man’s Land 	Decimated Ruins 	Trench Lines
+Deployment 	Victory
+Conditions
+Deployment 	Victory
+Conditions
+Deployment 	Victory
+Conditions
+1-2 	Standard
+Deployment
+Sabotage 	Flank Attack 	Attritional
+Battle
+Flank Attack 	Attritional
+Battle
+3-4 	Tunnels 	Over the Top 	Fog of War 	Sabotage 	Tunnels 	Breakthrough
+5-6 	Long Distance
+Battle
+Take and Hold 	Chance En-
+counter
+Retrieve 	Long Distance
+Battle
+Over the Top
+
+-- 1 of 2 --
+
+
+
+-- 2 of 2 --
+

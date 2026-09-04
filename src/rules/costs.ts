@@ -48,6 +48,16 @@ export interface RosterItem {
   name?: string;
   cost: Cost;
   quantity?: number;
+  /**
+   * The loadout bundle that handed this item to the model, if one did.
+   *
+   * "A Mamluk Faris always has either a Greatsword, or a Polearm and a Trench
+   * Shield, or a Pistol and a Sword/Axe" — the entry states its own Battlekit,
+   * which is what the carrying limits mean by "unless otherwise stated". The
+   * limit engine reads this so it does not police one stated loadout's items
+   * against each other.
+   */
+  grantedBy?: string;
 }
 
 export interface RosterUnit {

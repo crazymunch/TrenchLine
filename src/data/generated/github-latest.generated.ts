@@ -60313,7 +60313,7 @@ export const DATASET: Dataset = {
           "body": "- Bloodletting: An attack made by a friendly model results in the sixth BLOOD\n\nMARKER being placed beside an enemy model.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking the enemy model Down near a ledge, or by forcing it off a ledge in some way).\n\n- Hold Your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Lord of War: A friendly model takes two enemy models Out of Action with\n\nMelee Attacks in a single Turn.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers.\n\n- Suicidal Bravery: A friendly model successfully charges two models with the\n\nsame charge move."
         }
       ],
-      "mapImage": "/maps/claim-no-mans-land.png"
+      "mapImage": "/maps/claim-no-mans-land.webp"
     },
     {
       "number": 2,
@@ -60351,7 +60351,7 @@ export const DATASET: Dataset = {
           "body": "- Sharpshooter: A friendly model in cover takes an enemy ELITE model Out of\n\nAction with a Ranged Attack with the Long Range modifier.\n\n- Dangerous Fall: A friendly model causes an enemy model to Fall into a\n\ncrater (▶ see Unforeseen Events).\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- High Risk, High Reward: An Asset takes an enemy Mark Out of Action. To\n\nclaim this deed, the player must first reveal that their model was an Asset and that the enemy model was a Mark.\n\n- Kill their Leaders: Take all of the enemy Marks Out of Action. To claim this\n\ndeed, the player must first reveal which enemy models were their Marks. The model that took the last Mark Out of Action is credited with completing this Glorious Deed."
         }
       ],
-      "mapImage": "/maps/hunt-for-heroes.png"
+      "mapImage": "/maps/hunt-for-heroes.webp"
     },
     {
       "number": 3,
@@ -60393,7 +60393,7 @@ export const DATASET: Dataset = {
           "body": "- Blood Sacrifice: A friendly model causes three enemy models to be taken Out of\n\nAction during the game.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking it Down near a ledge or by forcing it off a ledge in some way).\n\n- Protect the Relic: A friendly model causes an enemy model that is within 1” of a\n\nReliquary Marker to be taken Out of Action.\n\n- Relic Hunter: A friendly model claims two different Reliquaries\n\nduring the game.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers."
         }
       ],
-      "mapImage": "/maps/relic-hunt.png"
+      "mapImage": "/maps/relic-hunt.webp"
     },
     {
       "number": 4,
@@ -60435,7 +60435,7 @@ export const DATASET: Dataset = {
           "body": "- Good Hunting: A friendly model takes an enemy model Out of Action with a\n\nRanged Attack that has the Long Range modifier.\n\n- Headshot: A friendly model that retreated earlier in its Activation takes one of\n\nthe enemy models it retreated from Out of Action.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Into the Trenches!: A friendly model successfully charges an enemy model\n\nin a trench section and then takes the enemy model Out of Action with a Melee Attack.\n\n- Survive to Tell the Tale: A friendly model that has two Injury Rolls made for it\n\nthat are caused by mine explosions and is not taken Out of Action by either of the explosions.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
         }
       ],
-      "mapImage": "/maps/trench-warfare.png"
+      "mapImage": "/maps/trench-warfare.webp"
     },
     {
       "number": 5,
@@ -60473,7 +60473,7 @@ export const DATASET: Dataset = {
           "body": "- King of the Hill: A friendly model ends 3 consecutive Turns on top of an\n\nembankment or the bridge and within 3” of a wagon.\n\n- Meat-Grinder: A friendly model takes 3 enemy models Out of Action during the\n\ngame using Ranged Attacks made with the Gun Battery.\n\n- No Stone Left Unturned: A friendly model unlocks two different wagons.\n\n- Over the Enemy Line: A friendly model escapes with a crate when it is wholly\n\nwithin the enemy Deployment Zone.\n\n- Supply Run: Two friendly models escape with a crate. The model that escaped\n\nwith the second crate is credited with completing this Glorious Deed."
         }
       ],
-      "mapImage": "/maps/armoured-train.png"
+      "mapImage": "/maps/armoured-train.webp"
     },
     {
       "number": 6,
@@ -60515,7 +60515,7 @@ export const DATASET: Dataset = {
           "body": "- Dragon Slayer: A friendly model on top of the Dragon takes the Dragon Out of\n\nAction with a Melee Attack (unless its Undying or Defiant abilities change the result to a Down result). You receive 2 ☼ for completing this Glorious Deed.\n\n- Fire with Fire: An attack made by a friendly model that has the FIRE, GAS\n\nand/or SHRAPNEL Keyword causes 2 BLOOD MARKERS to be placed next to the Dragon.\n\n- Genocidal: A model takes 3 Peasants Out of Action.\n\n- Opportunist: A model is within 3” of a Peasant when the Peasant is\n\ntrampled by the Dragon.\n\n- Off My Back: A friendly model takes a model that is on top of the Dragon\n\nDown, and the model then Falls off the Dragon."
         }
       ],
-      "mapImage": "/maps/dragon-hunt.png"
+      "mapImage": "/maps/dragon-hunt.webp"
     },
     {
       "number": 7,
@@ -60553,7 +60553,7 @@ export const DATASET: Dataset = {
           "body": "- Daring Raid (Attacker only): A friendly model destroys a Supply Cache Marker.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Rampage (Attacker only): A friendly model destroys a second Supply Cache Marker.\n\n- Save the Supplies! (Defender only): If there are four or more Supply Cache\n\nMarkers that have not been destroyed at the end of the game.\n\n- Stop Them! (Defender only): A friendly model takes an enemy Out of Action if\n\nthe enemy is fully or partially within their own Deployment Zone.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
         }
       ],
-      "mapImage": "/maps/supply-raid.png"
+      "mapImage": "/maps/supply-raid.webp"
     },
     {
       "number": 8,
@@ -60599,7 +60599,7 @@ export const DATASET: Dataset = {
           "body": "- Bloodlust: A friendly model that has been poisoned uses a Bloodbath Roll to\n\ntake an enemy model that has been poisoned Out of Action. You can convert an Injury Roll into a Bloodbath Roll by spending BLOOD MARKERS (▶ see BLOOD MARKERS).\n\n- For Science: A friendly model extracts 3 Ichor Vials.\n\n- Ichor Frenzy: A friendly model extracts an Ichor Vial when it is wholly within\n\nthe enemy Deployment Zone.\n\n- Risk Taker: A friendly model causes an explosion that takes 2 or more enemy\n\nmodels Out of Action.\n\n- Sadistic Wretch: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move into an Ichor Pit.\n\n- Vial Thief: A friendly model steals an Ichor Vial from an enemy model and then\n\nmanages to extract it."
         }
       ],
-      "mapImage": "/maps/from-below.png"
+      "mapImage": "/maps/from-below.webp"
     },
     {
       "number": 9,
@@ -60633,7 +60633,7 @@ export const DATASET: Dataset = {
           "body": "- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack that has the Diving Charge modifier.\n\n- Elite Hunter: A friendly model takes two enemy models with the ELITE\n\nKeyword Out of Action.\n\n- No Escape: A friendly model successfully charges an enemy model that it did\n\nnot have a Line of Sight to at the start of its Activation.\n\n- Personal Revenge: A friendly model uses a Bloodbath Roll to take an enemy\n\nmodel Out of Action if the enemy model had taken a friendly model Out of Action earlier in the game.\n\n- Reaper: A friendly model takes three enemy models Out of Action.\n\n- Risk It All: A friendly model takes two Risky Success Rolls in the same\n\nActivation, and both are a Success or Critical Success.\n\n- The Real Killer: A friendly model takes an enemy model that is on Dangerous or\n\nDifficult terrain Out of Action.\n\n- Trench Raider: A Warband captures a trench section that is at least 6” long and\n\nis wholly within 8” of the enemy Deployment Zone. A Warband captures a trench section if there are 1 or more friendly models in the trench and no enemy models are within 1” of it."
         }
       ],
-      "mapImage": "/maps/fields-of-glory.png"
+      "mapImage": "/maps/fields-of-glory.webp"
     },
     {
       "number": 10,
@@ -60683,7 +60683,7 @@ export const DATASET: Dataset = {
           "body": "- Burning Sight: A friendly model causes a Gas Cloud Marker that is more\n\nthan 14” away from it to explode, and the explosion takes one or more enemy models Out of Action.\n\n- Combustive: A friendly model causes a Gas Cloud Marker to explode, and the\n\nexplosion takes two or more enemy models Out of Action.\n\n- Deep Breaths: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move within 6” of the centre of a Gas Cloud Marker.\n\n- Iron Lungs: A Warband controls a Bunker that is within 6” of the centre\n\nof a Gas Cloud Marker at the end of two consecutive Turns. A Warband controls a Bunker if there are more friendly models within 1” of it than there are enemy models.\n\n- Poisonous Rage: A friendly model that is within 6” of the centre of a Gas Cloud\n\nmakes a Melee Attack that takes an enemy model Out of Action."
         }
       ],
-      "mapImage": "/maps/dont-breathe.png"
+      "mapImage": "/maps/dont-breathe.webp"
     },
     {
       "number": 11,
@@ -60721,7 +60721,7 @@ export const DATASET: Dataset = {
           "body": "- Back to the Mud: A friendly model causes an enemy model that is on an\n\nObjective to Fall and the Fall results in it being taken Out of Action.\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- Down with You: A friendly model on an Objective uses a Ranged Attack to take\n\nOut of Action an enemy model on a different, higher Objective.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- King of the Hill: A model has been on all five Objectives."
         }
       ],
-      "mapImage": "/maps/the-high-ground.png"
+      "mapImage": "/maps/the-high-ground.webp"
     },
     {
       "number": 12,
@@ -60755,7 +60755,7 @@ export const DATASET: Dataset = {
           "body": "There are no Glorious Deeds in this scenario, just victory or death!\n\n**MK**"
         }
       ],
-      "mapImage": "/maps/great-war.png"
+      "mapImage": "/maps/great-war.webp"
     }
   ],
   "terrain": [],
@@ -64048,6 +64048,120 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Shield",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "description": "",
+      "rules": [],
+      "section": "Shields",
+      "note": ""
+    }
+  ],
+  "bundles": [
+    {
+      "name": "Polearm and Shield",
+      "grants": [
+        "Shield",
+        "Polearm"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
+    },
+    {
+      "name": "Sword and Pistol",
+      "grants": [
+        "Sword/Axe",
+        "Pistol"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
+    }
+  ],
+  "counters": [
+    {
+      "name": "Incendiary Ammuntion (Loaded)",
+      "forName": "Incendiary Ammunition"
+    },
+    {
+      "name": "Dum-Dum Ammunition (Loaded)",
+      "forName": "Dum-Dum Bullets"
+    },
+    {
+      "name": "Armour-Piercing Ammunition (Loaded)",
+      "forName": "Armour Piercing Bullets"
+    },
+    {
+      "name": "Fireteam: Dog's Friend",
+      "forName": "Man's Best Friend"
+    },
+    {
+      "name": "Alchemical Ammuntion (Loaded)",
+      "forName": "Alchemical Ammunition"
+    },
+    {
+      "name": "Heavy Bore Ammuntion (Loaded)",
+      "forName": "Heavy Bore Ammunition"
+    },
+    {
+      "name": "Sparkpowder Ammuntion (Loaded)",
+      "forName": "Sparkpowder Ammunition"
+    },
+    {
+      "name": "Shayṭānic Shard Ammuntion (Loaded)",
+      "forName": "Shayṭānic Shard Ammunition"
+    },
+    {
+      "name": "Scrap Shot (Loaded)",
+      "forName": "Scrap Shot"
+    },
+    {
+      "name": "Purgation Ammunition (Loaded)",
+      "forName": "Purgation Ammunition"
+    },
+    {
+      "name": "Dog's Friend",
+      "forName": "Man's Best Friend"
+    }
+  ],
+  "carryAllowances": [
+    {
+      "raw": "It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield Combo rule cannot be used for any of its weapons.",
+      "model": "Takwin Homunculus",
+      "requires": [
+        "Human hands",
+        "Additional Arm"
+      ],
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ],
+        "Ranged Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ]
+      },
+      "shieldReplaces": "Melee Weapons",
+      "shieldComboUsable": false
     }
   ],
   "keywordGrants": [

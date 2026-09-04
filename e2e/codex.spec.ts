@@ -75,10 +75,27 @@ test('the Campaigns tab reads on a phone', async ({ page }) => {
   await expect(tab, 'the Campaigns tab has no button').toBeVisible();
   await tab.click();
 
-  // Both campaigns, and the notice that one of them needs the box's map.
+  // Both campaigns, and the notice saying which half of the map is missing.
   await expect(page.getByRole('button', { name: /The Carcass Front Campaign/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /The Path to Leviathan/ })).toBeVisible();
-  await expect(page.getByText(/fold-out map from the box/)).toBeVisible();
+  /*
+    The zone BOARD — which zone borders which — is still only on the printed
+    sheet, and the rules need it for supply lines and adjacency. Its three
+    TABLES are no longer missing, so this used to read "fold-out map from the
+    box", which was true of both halves and is now true of only one.
+  */
+  await expect(page.getByText(/zone board from the box/)).toBeVisible();
+
+  // And those three tables, which come off `carcass-front-map.pdf`.
+  await page.getByRole('button', { name: /Carcass Front Zones/ }).click();
+  await expect(page.getByText('The Vivarium')).toBeVisible();
+  await expect(page.getByRole('cell', { name: /Dragon Hunt/ })).toBeVisible();
+
+  await page.getByRole('button', { name: /Special Zone Outpost Bonuses/ }).click();
+  await expect(page.getByText(/re-roll one Promotion roll/)).toBeVisible();
+
+  await page.getByRole('button', { name: /Carcass Front Scenario Generator/ }).click();
+  await expect(page.getByText('Long-Distance Battle').first()).toBeVisible();
 
   // The twelve building tiers, which stack.
   await page.getByRole('button', { name: /Camp Buildings/ }).click();

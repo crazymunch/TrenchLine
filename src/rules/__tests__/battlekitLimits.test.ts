@@ -194,27 +194,54 @@ describe('an item the sources do not classify', () => {
 */
 describe('a real warband', () => {
   /*
-    Al-Qarn Rihla is nine models of mixed weapons, armour and equipment,
-    including a Homunculus with an extra limb, and it raises exactly two
-    Battlekit violations — both correct, and both about the same model.
+    Al-Qarn Rihla is nine models of mixed weapons, armour and equipment, and it
+    raises exactly ONE Battlekit violation — correct, and about the model the
+    app's owner reported.
 
-    "It cannot carry a 2-Handed Weapon unless the Weapon AND the Shield both
-    have the Shield Combo stipulation." Al-Masyukh carries a Trench Shield,
-    which the Iron Sultanate armoury does give Shield Combo, alongside a Great
-    Sword/Axe and a Siege Jezzail, which it does not. The book needs both.
+    It used to raise two, both quoting the chapter's Shield restriction
+    against Al-Masyukh's Great Sword/Axe and its Siege Jezzail. The Siege
+    Jezzail one was WRONG, and the pin is what caught the change.
 
-    Pinned exactly rather than asserted empty: these appeared once the second
-    book's wargear reached the dataset and the checker could finally tell what
-    those items were. If the count moves, something has changed about what the
-    engine can see, and that is worth failing over.
+    Al-Masyukh is a Favoured Takwin Homunculus, whose profile carries `Human
+    Hands` and `Additional Arm` among its innate abilities — so Warbands of
+    Trench Crusade states its allowance, and "unless otherwise stated" is the
+    first line of the chapter's rule:
+
+      "…it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon
+       and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged
+       Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon.
+       If it takes a Shield, then the Shield replaces one of the Melee Weapons
+       it can have but the Shield Combo rule cannot be used for any of its
+       weapons."
+
+    The Siege Jezzail is 2-Handed RANGED and the Shield replaces a MELEE
+    weapon, so the Shield never reaches it — and the stipulation the chapter
+    asks for is one this model is explicitly forbidden to use, so demanding it
+    demands the impossible.
+
+    The melee count is still over, and now says so against the model's own
+    entry rather than the chapter's: a Shield, a 1-Handed and a 2-Handed is one
+    more than either branch allows, because the Shield takes one of the melee
+    slots. That one is real.
+
+    Still pinned exactly. If it moves, something has changed about what the
+    engine can see, and that is worth failing over — which is how the wrong
+    one was found.
   */
-  it('raises exactly the two Shield violations the book calls for', () => {
+  it('raises exactly the one Battlekit violation the books call for', () => {
     const { roster } = toRoster(defaultSultanateWarband, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
     expect(v.map((x) => x.message).sort()).toEqual([
-      'Takwin Homunculus: Great Sword/Axe is 2-Handed and cannot be carried with a Shield unless both have Shield Combo.',
-      'Takwin Homunculus: Siege Jezzail is 2-Handed and cannot be carried with a Shield unless both have Shield Combo.',
+      "Takwin Homunculus: Great Sword/Axe, Sword/Axe with a Shield is more Melee Weapons "
+      + "than Takwin Homunculus's own entry allows.",
     ]);
+  });
+
+  it('no longer calls the Homunculus’s 2-Handed RANGED weapon illegal', () => {
+    // The reported bug, pinned in its own right so it cannot come back quietly.
+    const { roster } = toRoster(defaultSultanateWarband, d);
+    const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
+    expect(v.map((x) => x.message).join(' | ')).not.toMatch(/Siege Jezzail/);
   });
 
   it('and none of them are about the other eight models', () => {

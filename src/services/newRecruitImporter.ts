@@ -28,6 +28,18 @@ export interface ImportResult {
   unmatched: string[];
 }
 
+/*
+  The option groups a catalogue actually uses, taken from the dataset's own
+  `unit.options` group names rather than invented here.
+
+  Used only as the SECOND of two tests — a selection carrying an Ability
+  profile is already recognised without it. This catches an export that states
+  the group but ships no profile with the selection, which New Recruit's JSON
+  does for some entries.
+*/
+const OPTION_GROUP =
+  /^(Alchemical Formulae|Eye Options|Strains|Sagas|Martial Disciplines|Fireteams|Goetic Power|Arts of Assassination|Training Choice|Pride|Envy|Gluttony|Lust|Greed|Wrath|Butcher Knight Rank)$/i;
+
 export function importNewRecruitRoster(
   rawInput: string,
   knownUnits: UnitProfile[] = []
@@ -178,6 +190,24 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
     const equippedWeapons: EquippedWeapon[] = [];
     const equippedArmour: EquippedArmour[] = [];
     const equippedEquipment: EquippedEquipment[] = [];
+    /*
+      Alchemical Formulae, Eye Options, Strains, Sagas and the rest of a
+      model's purchasable options, in the SAME place the app's own purchase
+      path puts them.
+
+      They used to land in `equippedEquipment`, so an imported Homunculus wore
+      `Human Hands` and `Additional Arm` in its gear list beside its sword —
+      the player's words were "attached as some kind of wargear". Two costs to
+      that: the model reads wrongly, and an imported warband and one built in
+      the app were different shapes for the same thing, which is how the
+      legality engine came to need `traitsOf` reading three lists at once.
+
+      Told apart by the PROFILE the selection carries, which is structural and
+      always present, rather than by a list of group names written here: a
+      Weapon profile is a weapon, a Battlekit profile is armour or equipment,
+      and an Ability profile is something the model IS, not something it holds.
+    */
+    const specialUpgrades: { id: string; name: string; cost: number; category: string }[] = [];
     const advancements: string[] = [];
     const injuries: string[] = [];
     let xp = 0;
@@ -247,8 +277,35 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
           return;
         }
 
-        // Equipment / Battlekit items / Alchemical Formulae
-        if (subGroup.includes('Equipment') || subGroup.includes('Alchemical Formulae') || bKitProf) {
+        /*
+          An option the model bought: a Formula, an Eye Option, a Strain.
+
+          Carries an Ability profile and no Weapon or Battlekit one — it
+          changes what the model is rather than adding to what it holds. The
+          group is used when the export states it (New Recruit's JSON does),
+          because it is the more specific answer, but it is not required: a
+          BattleScribe `.ros` carries `entryGroupId`, a GUID, and no group
+          name at all, so requiring one would put every `.ros` import back
+          where it started.
+        */
+        const abilityProf = sub.profiles?.find((p: any) => p.typeName === 'Ability');
+        const isWargearGroup = /Weapons|Armour|Shields|Equipment|Battlekit/i.test(subGroup);
+        if ((abilityProf && !bKitProf && !isWargearGroup) || OPTION_GROUP.test(subGroup)) {
+          specialUpgrades.push({
+            id: `su-${subName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+            name: subName,
+            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            // The catalogue's own group name where the export gives one, so
+            // the advancement sheet can head these the way it heads the ones
+            // bought in the app.
+            category: subGroup || 'Upgrades',
+          });
+          if (sub.selections) parseSubSelections(sub.selections);
+          return;
+        }
+
+        // Equipment / Battlekit items
+        if (subGroup.includes('Equipment') || bKitProf) {
           const bChars: Record<string, string> = {};
           (bKitProf?.characteristics || []).forEach((c: any) => { bChars[c.name] = c.$text || ''; });
 
@@ -344,6 +401,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
       equippedWeapons,
       equippedArmour,
       equippedEquipment,
+      specialUpgrades,
       xp,
       advancements,
       injuries,
@@ -383,112 +441,94 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   };
 }
 
+/*
+  One BattleScribe `.ros` node, in the shape the JSON parser already reads.
+
+  The XML path used to walk the roster itself and build each unit inline — and
+  it never looked at a selection's children at all. Every model imported from a
+  `.ros` file arrived with no weapons, no armour, no equipment, no Formulae, no
+  XP and no advancements: the base profile and nothing else, silently, with the
+  import reporting success.
+
+  Normalising instead of re-walking means the two formats cannot drift apart
+  again, which is how this happened: `parseSubSelections` was written for the
+  JSON path and the XML path was simply never given it.
+
+  fast-xml-parser hands attributes back prefixed and wraps repeated children in
+  a named holder, so `<selection name="x">` is `{'@_name': 'x'}` and
+  `<selections><selection/></selections>` is `{selections: {selection: [...]}}`.
+  Both are undone here.
+*/
+function xmlSelectionToJson(node: any): any {
+  const arr = (x: any) => (x == null ? [] : Array.isArray(x) ? x : [x]);
+  return {
+    name: node['@_name'],
+    customName: node['@_customName'],
+    type: node['@_type'],
+    number: node['@_number'] != null ? Number(node['@_number']) : undefined,
+    /*
+      `group` where the export states one. A BattleScribe `.ros` carries
+      `entryGroupId` — a GUID with no name behind it in the roster file — so
+      this is usually absent and the profile type decides instead.
+    */
+    group: node['@_group'],
+    costs: arr(node.costs?.cost).map((c: any) => ({
+      name: c['@_name'],
+      value: Number(c['@_value'] ?? 0),
+    })),
+    categories: arr(node.categories?.category).map((c: any) => ({ name: c['@_name'] })),
+    profiles: arr(node.profiles?.profile).map((pr: any) => ({
+      id: pr['@_id'],
+      name: pr['@_name'],
+      typeName: pr['@_typeName'],
+      characteristics: arr(pr.characteristics?.characteristic).map((ch: any) => ({
+        name: ch['@_name'],
+        $text: ch['#text'] ?? '',
+      })),
+    })),
+    selections: arr(node.selections?.selection).map(xmlSelectionToJson),
+  };
+}
+
 function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): ImportResult {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '@_',
-    isArray: (name) => ['selection', 'profile', 'cost', 'characteristic'].includes(name)
+    isArray: (name) => ['selection', 'profile', 'cost', 'characteristic', 'category'].includes(name)
   });
 
   const parsed = parser.parse(xmlContent);
   const roster = parsed.roster || parsed.gameSystem || parsed;
-  const name = roster['@_name'] || 'Imported Roster XML';
 
-  const factionId = 'new-antioch';
-  const units: ActiveUnit[] = [];
-  /** Roster lines with no profile in the catalogues. Reported, not invented. */
-  const unmatched: string[] = [];
-
-  const selections = roster.forces?.force?.selections?.selection || roster.selections?.selection || [];
+  const forceNode = roster.forces?.force;
+  const force = Array.isArray(forceNode) ? forceNode[0] : forceNode;
+  const rawSelections =
+    force?.selections?.selection ?? roster.selections?.selection ?? [];
 
   /*
-    The Warband Variant, which the export states and this used to throw away.
+    Handed to the JSON parser rather than walked again here.
 
-    `Warband Variant` is a Configuration node, so it was skipped along with
-    `Campaign Rules` — but its child names the Variant, and dropping it meant
-    every imported roster was validated as the faction's standard list. A House
-    of Wisdom Warband came back with two errors it does not have: "0-1 Jabirean
-    Alchemist" (the Variant raises it to 2) and "must include 1 Yüzbaşı Captain"
-    (the Variant forbids the Yüzbaşı outright).
-
-    Stored as the name. `variantById` matches on id or name, and the name is
-    what the export carries.
+    That parser reads a selection's CHILDREN — weapons, armour, equipment,
+    Alchemical Formulae, Experience, advancements and injuries — and this one
+    never did. A `.ros` import produced models carrying nothing at all.
   */
-  let variantId: string | undefined;
-  for (const sel of selections as { '@_name'?: string; selections?: { selection?: unknown } }[]) {
-    if (sel['@_name'] !== 'Warband Variant') continue;
-    const inner = sel.selections?.selection;
-    const first = Array.isArray(inner) ? inner[0] : inner;
-    const picked = (first as { '@_name'?: string } | undefined)?.['@_name'];
-    if (picked) variantId = picked;
-  }
-
-  selections.forEach((sel: any, idx: number) => {
-    const selName = sel['@_name'] || `Unit ${idx + 1}`;
-    if (selName === 'Campaign Rules' || selName === 'Warband Variant') return;
-
-    /*
-      An entry we cannot match is REPORTED, never invented.
-
-      This used to fall back to a made-up profile: category Trooper, baseCost
-      35, and the statline `6" / +0 DICE / +1 DICE / -1` — numbers that came
-      from nowhere. A player importing a roster with one name the catalogues
-      spell differently got a warrior with a plausible statline and a plausible
-      cost, silently, and their roster total was wrong from that moment on.
-      It is the same failure as the fabricated GitHub commit deleted in Phase 0
-      and the 97%-wrong statlines the whole pipeline exists to stop: data with
-      no source, presented as if it had one.
-
-      The unmatched names are collected and handed back to the caller, which
-      shows them. An import that cannot resolve a line is a question for the
-      player, not a number for the app to guess.
-    */
-    const matchedProfile = allUnits.find(
-      (p) => p.name.toLowerCase() === selName.toLowerCase() || selName.toLowerCase().includes(p.name.toLowerCase())
-    );
-
-    if (!matchedProfile) {
-      unmatched.push(selName);
-      return;
-    }
-
-    units.push({
-      id: `u-xml-${Date.now()}-${idx}`,
-      customName: sel['@_customName'] || selName,
-      baseProfileId: matchedProfile.id,
-      profileSnapshot: matchedProfile,
-      equippedWeapons: [],
-      equippedArmour: [],
-      equippedEquipment: [],
-      xp: 0,
-      advancements: [],
-      injuries: [],
-      isDead: false,
-      totalCost: matchedProfile.baseCost,
-      currentWounds: 1,
-      maxWounds: 1,
-      bloodMarkers: 0,
-      status: 'Active',
-      hasActedThisTurn: false
-    });
-  });
-
-  return {
-    warband: {
-      id: `wb-${Date.now()}`,
-      name,
-      factionId,
-      variantId,
-      ducatLimit: 700,
-      treasuryDucats: 0,
-      gloryPoints: 0,
-      units,
-      armoryStash: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+  return parseNewRecruitJson({
+    roster: {
+      name: roster['@_name'] || 'Imported Roster XML',
+      gameSystemName: roster['@_gameSystemName'],
+      costLimits: (Array.isArray(roster.costLimits?.cost) ? roster.costLimits.cost : [])
+        .map((c: any) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
+      costs: (Array.isArray(roster.costs?.cost) ? roster.costs.cost : [])
+        .map((c: any) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
+      forces: [{
+        name: force?.['@_name'],
+        catalogueName: force?.['@_catalogueName'],
+        selections: (Array.isArray(rawSelections) ? rawSelections : [rawSelections])
+          .filter(Boolean)
+          .map(xmlSelectionToJson),
+      }],
     },
-    unmatched,
-  };
+  }, allUnits);
 }
 
 function parseNewRecruitText(text: string, allUnits: UnitProfile[]): ImportResult {

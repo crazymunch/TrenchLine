@@ -147,19 +147,55 @@ jobs:
 
       # Production dependencies only. A dev-only advisory is worth knowing
       # about and is not a reason to block a release, because it never ships.
+      #
+      # Both outcomes fail the job, and both used to be reported as the first
+      # one. The reason was inferred from the EXIT CODE and a grep of stderr
+      # for `4[0-9]{2}|ENOTFOUND|ETIMEDOUT|network`, so anything the grep did
+      # not recognise — a registry 5xx, a reset connection, a truncated
+      # response — was announced as "found high or critical advisories in
+      # production dependencies", with the list of offending packages printed
+      # empty underneath it because there were none. A check that names a
+      # cause it has no evidence for sends people to look for a vulnerability
+      # that is not there.
+      #
+      # So the finding is read from the REPORT and the failure from the exit
+      # code, separately. Neither is a pass: an audit that could not be run is
+      # still an audit that did not clear these dependencies.
       - name: Audit production dependencies
         run: |
           set -o pipefail
-          if ! npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err; then
-            if grep -qiE '4[0-9]{2}|ENOTFOUND|ETIMEDOUT|network' audit.err; then
-              echo "::error::The advisory endpoint could not be reached. This is NOT a pass."
-              cat audit.err
-              exit 1
-            fi
+
+          # Up to three attempts. `npm audit` makes ONE POST to the advisory
+          # endpoint and does not retry it, and that endpoint answered
+          # `400 Bad Request` for a stretch on 2026-09-04 — from GitHub's
+          # runners, while the identical lockfile audited clean elsewhere in
+          # the same minutes. One bad answer should not fail a build, and
+          # three of them is a real outage rather than a blip.
+          for attempt in 1 2 3; do
+            npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err && status=0 || status=$?
+            # A report naming advisories is an answer: stop and act on it.
+            if [ "$status" -eq 0 ] || grep -q '"vulnerabilities"' audit.json; then break; fi
+            echo "attempt $attempt: npm audit exited $status without a report; retrying"
+            cat audit.err
+            sleep $((attempt * 10))
+          done
+
+          # An unreadable report yields nothing rather than throwing, so the
+          # exit-code branch below reports it as what it is.
+          found=$(node -e "let a;try{a=require('./audit.json')}catch{process.exit(0)};for(const[k,v]of Object.entries(a.vulnerabilities??{}))if(['high','critical'].includes(v.severity))console.log(\`\${v.severity}: \${k} — \${(v.via??[]).map(x=>x.title??x).join(', ')}\`)")
+
+          if [ -n "$found" ]; then
             echo "::error::npm audit found high or critical advisories in production dependencies."
-            node -e "const a=require('./audit.json');for(const[k,v]of Object.entries(a.vulnerabilities??{}))if(['high','critical'].includes(v.severity))console.log(\`\${v.severity}: \${k} — \${(v.via??[]).map(x=>x.title??x).join(', ')}\`)"
+            echo "$found"
             exit 1
           fi
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::npm audit exited $status and reported no high or critical advisory — the advisory endpoint could not be reached, or its answer could not be read. This is NOT a pass."
+            cat audit.err
+            exit 1
+          fi
+
           echo "No high or critical advisories in production dependencies."
 
   # NOTE: `actions/dependency-review-action` is deliberately NOT here.

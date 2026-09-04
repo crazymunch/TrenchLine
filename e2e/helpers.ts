@@ -3,8 +3,7 @@ import { expect, type Page } from '@playwright/test';
 /**
  * Open the app and wait for it to stop moving.
  *
- * `/` redirects to `/roster`, which then redirects *client-side* to the active
- * warband's own URL. A fixed `waitForTimeout` after `goto('/')` races that
+ * `/roster` redirects *client-side* to the active warband's own URL. A fixed `waitForTimeout` after `goto('/')` races that
  * second hop: the test clicks a button on a tree that is about to be replaced,
  * the handler goes with it, and the failure reads as "the sheet did not open"
  * rather than as the race it is. Waiting for the settled URL is the same wait,
@@ -46,7 +45,16 @@ export async function seedWarband(page: Page, warband: unknown = TEST_WARBAND) {
   }, [warband]);
 }
 
-export async function openApp(page: Page, path = '/') {
+/*
+  `/roster`, not `/`.
+
+  `/` is the landing page now — what TrenchLine is, and a link into each
+  section — so it no longer forwards into the app. These tests are about the
+  app itself, and `/roster` is where they were always headed: it redirects
+  client-side to the active warband's own URL, which is the second hop the
+  wait below exists for. The landing page has its own spec.
+*/
+export async function openApp(page: Page, path = '/roster') {
   await seedWarband(page);
   await page.goto(path);
   // The dataset is fetched, not bundled, so the roster is empty until it lands.

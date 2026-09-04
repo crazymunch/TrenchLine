@@ -461,7 +461,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
               <button
                 onClick={() => setWeaponSubCategory('all')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -469,7 +469,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('melee')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'melee' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -477,7 +477,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('ranged')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'ranged' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -485,7 +485,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('shield')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'shield' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -493,7 +493,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('grenade')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'grenade' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -507,7 +507,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
               <button
                 onClick={() => setEquipmentSubCategory('all')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -524,7 +524,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('headgear')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'headgear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -532,7 +532,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('relic')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'relic' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -540,7 +540,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('gear')}
-                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'gear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >

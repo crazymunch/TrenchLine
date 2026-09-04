@@ -61642,7 +61642,7 @@ export const DATASET: Dataset = {
           "body": "- Bloodletting: An attack made by a friendly model results in the sixth BLOOD\n\nMARKER being placed beside an enemy model.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking the enemy model Down near a ledge, or by forcing it off a ledge in some way).\n\n- Hold Your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Lord of War: A friendly model takes two enemy models Out of Action with\n\nMelee Attacks in a single Turn.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers.\n\n- Suicidal Bravery: A friendly model successfully charges two models with the\n\nsame charge move."
         }
       ],
-      "mapImage": "/maps/claim-no-mans-land.png"
+      "mapImage": "/maps/claim-no-mans-land.webp"
     },
     {
       "number": 2,
@@ -61680,7 +61680,7 @@ export const DATASET: Dataset = {
           "body": "- Sharpshooter: A friendly model in cover takes an enemy ELITE model Out of\n\nAction with a Ranged Attack with the Long Range modifier.\n\n- Dangerous Fall: A friendly model causes an enemy model to Fall into a\n\ncrater (▶ see Unforeseen Events).\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- High Risk, High Reward: An Asset takes an enemy Mark Out of Action. To\n\nclaim this deed, the player must first reveal that their model was an Asset and that the enemy model was a Mark.\n\n- Kill their Leaders: Take all of the enemy Marks Out of Action. To claim this\n\ndeed, the player must first reveal which enemy models were their Marks. The model that took the last Mark Out of Action is credited with completing this Glorious Deed."
         }
       ],
-      "mapImage": "/maps/hunt-for-heroes.png"
+      "mapImage": "/maps/hunt-for-heroes.webp"
     },
     {
       "number": 3,
@@ -61722,7 +61722,7 @@ export const DATASET: Dataset = {
           "body": "- Blood Sacrifice: A friendly model causes three enemy models to be taken Out of\n\nAction during the game.\n\n- Cast Them Down: A friendly model causes an enemy model to Fall from a\n\nheight of at least 3” (e.g. by taking it Down near a ledge or by forcing it off a ledge in some way).\n\n- Protect the Relic: A friendly model causes an enemy model that is within 1” of a\n\nReliquary Marker to be taken Out of Action.\n\n- Relic Hunter: A friendly model claims two different Reliquaries\n\nduring the game.\n\n- Resist and Bite: A friendly model that began its Activation Down takes an\n\nenemy model Out of Action in the same Activation.\n\n- Sniper: A friendly model takes an enemy ELITE model Out of Action with a\n\nRanged Weapon Attack that has the Long Range and Cover modifiers."
         }
       ],
-      "mapImage": "/maps/relic-hunt.png"
+      "mapImage": "/maps/relic-hunt.webp"
     },
     {
       "number": 4,
@@ -61764,7 +61764,7 @@ export const DATASET: Dataset = {
           "body": "- Good Hunting: A friendly model takes an enemy model Out of Action with a\n\nRanged Attack that has the Long Range modifier.\n\n- Headshot: A friendly model that retreated earlier in its Activation takes one of\n\nthe enemy models it retreated from Out of Action.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Into the Trenches!: A friendly model successfully charges an enemy model\n\nin a trench section and then takes the enemy model Out of Action with a Melee Attack.\n\n- Survive to Tell the Tale: A friendly model that has two Injury Rolls made for it\n\nthat are caused by mine explosions and is not taken Out of Action by either of the explosions.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
         }
       ],
-      "mapImage": "/maps/trench-warfare.png"
+      "mapImage": "/maps/trench-warfare.webp"
     },
     {
       "number": 5,
@@ -61802,7 +61802,7 @@ export const DATASET: Dataset = {
           "body": "- King of the Hill: A friendly model ends 3 consecutive Turns on top of an\n\nembankment or the bridge and within 3” of a wagon.\n\n- Meat-Grinder: A friendly model takes 3 enemy models Out of Action during the\n\ngame using Ranged Attacks made with the Gun Battery.\n\n- No Stone Left Unturned: A friendly model unlocks two different wagons.\n\n- Over the Enemy Line: A friendly model escapes with a crate when it is wholly\n\nwithin the enemy Deployment Zone.\n\n- Supply Run: Two friendly models escape with a crate. The model that escaped\n\nwith the second crate is credited with completing this Glorious Deed."
         }
       ],
-      "mapImage": "/maps/armoured-train.png"
+      "mapImage": "/maps/armoured-train.webp"
     },
     {
       "number": 6,
@@ -61844,7 +61844,7 @@ export const DATASET: Dataset = {
           "body": "- Dragon Slayer: A friendly model on top of the Dragon takes the Dragon Out of\n\nAction with a Melee Attack (unless its Undying or Defiant abilities change the result to a Down result). You receive 2 ☼ for completing this Glorious Deed.\n\n- Fire with Fire: An attack made by a friendly model that has the FIRE, GAS\n\nand/or SHRAPNEL Keyword causes 2 BLOOD MARKERS to be placed next to the Dragon.\n\n- Genocidal: A model takes 3 Peasants Out of Action.\n\n- Opportunist: A model is within 3” of a Peasant when the Peasant is\n\ntrampled by the Dragon.\n\n- Off My Back: A friendly model takes a model that is on top of the Dragon\n\nDown, and the model then Falls off the Dragon."
         }
       ],
-      "mapImage": "/maps/dragon-hunt.png"
+      "mapImage": "/maps/dragon-hunt.webp"
     },
     {
       "number": 7,
@@ -61882,7 +61882,7 @@ export const DATASET: Dataset = {
           "body": "- Daring Raid (Attacker only): A friendly model destroys a Supply Cache Marker.\n\n- Hold your Ground: A Warband is the first to pass a Morale Check in this game.\n\nYou receive a Victory Point for achieving this Glorious Deed. In a campaign game you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- Rampage (Attacker only): A friendly model destroys a second Supply Cache Marker.\n\n- Save the Supplies! (Defender only): If there are four or more Supply Cache\n\nMarkers that have not been destroyed at the end of the game.\n\n- Stop Them! (Defender only): A friendly model takes an enemy Out of Action if\n\nthe enemy is fully or partially within their own Deployment Zone.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally."
         }
       ],
-      "mapImage": "/maps/supply-raid.png"
+      "mapImage": "/maps/supply-raid.webp"
     },
     {
       "number": 8,
@@ -61928,7 +61928,7 @@ export const DATASET: Dataset = {
           "body": "- Bloodlust: A friendly model that has been poisoned uses a Bloodbath Roll to\n\ntake an enemy model that has been poisoned Out of Action. You can convert an Injury Roll into a Bloodbath Roll by spending BLOOD MARKERS (▶ see BLOOD MARKERS).\n\n- For Science: A friendly model extracts 3 Ichor Vials.\n\n- Ichor Frenzy: A friendly model extracts an Ichor Vial when it is wholly within\n\nthe enemy Deployment Zone.\n\n- Risk Taker: A friendly model causes an explosion that takes 2 or more enemy\n\nmodels Out of Action.\n\n- Sadistic Wretch: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move into an Ichor Pit.\n\n- Vial Thief: A friendly model steals an Ichor Vial from an enemy model and then\n\nmanages to extract it."
         }
       ],
-      "mapImage": "/maps/from-below.png"
+      "mapImage": "/maps/from-below.webp"
     },
     {
       "number": 9,
@@ -61962,7 +61962,7 @@ export const DATASET: Dataset = {
           "body": "- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack that has the Diving Charge modifier.\n\n- Elite Hunter: A friendly model takes two enemy models with the ELITE\n\nKeyword Out of Action.\n\n- No Escape: A friendly model successfully charges an enemy model that it did\n\nnot have a Line of Sight to at the start of its Activation.\n\n- Personal Revenge: A friendly model uses a Bloodbath Roll to take an enemy\n\nmodel Out of Action if the enemy model had taken a friendly model Out of Action earlier in the game.\n\n- Reaper: A friendly model takes three enemy models Out of Action.\n\n- Risk It All: A friendly model takes two Risky Success Rolls in the same\n\nActivation, and both are a Success or Critical Success.\n\n- The Real Killer: A friendly model takes an enemy model that is on Dangerous or\n\nDifficult terrain Out of Action.\n\n- Trench Raider: A Warband captures a trench section that is at least 6” long and\n\nis wholly within 8” of the enemy Deployment Zone. A Warband captures a trench section if there are 1 or more friendly models in the trench and no enemy models are within 1” of it."
         }
       ],
-      "mapImage": "/maps/fields-of-glory.png"
+      "mapImage": "/maps/fields-of-glory.webp"
     },
     {
       "number": 10,
@@ -62012,7 +62012,7 @@ export const DATASET: Dataset = {
           "body": "- Burning Sight: A friendly model causes a Gas Cloud Marker that is more\n\nthan 14” away from it to explode, and the explosion takes one or more enemy models Out of Action.\n\n- Combustive: A friendly model causes a Gas Cloud Marker to explode, and the\n\nexplosion takes two or more enemy models Out of Action.\n\n- Deep Breaths: A friendly model causes an enemy model to be taken Out of\n\nAction by causing it to move within 6” of the centre of a Gas Cloud Marker.\n\n- Iron Lungs: A Warband controls a Bunker that is within 6” of the centre\n\nof a Gas Cloud Marker at the end of two consecutive Turns. A Warband controls a Bunker if there are more friendly models within 1” of it than there are enemy models.\n\n- Poisonous Rage: A friendly model that is within 6” of the centre of a Gas Cloud\n\nmakes a Melee Attack that takes an enemy model Out of Action."
         }
       ],
-      "mapImage": "/maps/dont-breathe.png"
+      "mapImage": "/maps/dont-breathe.webp"
     },
     {
       "number": 11,
@@ -62050,7 +62050,7 @@ export const DATASET: Dataset = {
           "body": "- Back to the Mud: A friendly model causes an enemy model that is on an\n\nObjective to Fall and the Fall results in it being taken Out of Action.\n\n- Death From Above: A friendly model takes an enemy model Out of Action with\n\na Melee Attack with the Diving Charge modifier.\n\n- Down with You: A friendly model on an Objective uses a Ranged Attack to take\n\nOut of Action an enemy model on a different, higher Objective.\n\n- Victory or Death: A Warband wins the game. This Glorious Deed is only used\n\nin campaign games and is determined after the result of the game has been decided. You do not receieve any Victory Points for acheiving this Glorious Deed, but you can award 1 Experience Point to 1 ELITE model from the Warband that has the LEADER Keyword if you have one available, and you receive Glory Points and an extra D6 for your Promotion Pool as you would normally.\n\n- King of the Hill: A model has been on all five Objectives."
         }
       ],
-      "mapImage": "/maps/the-high-ground.png"
+      "mapImage": "/maps/the-high-ground.webp"
     },
     {
       "number": 12,
@@ -62084,7 +62084,7 @@ export const DATASET: Dataset = {
           "body": "There are no Glorious Deeds in this scenario, just victory or death!\n\n**MK**"
         }
       ],
-      "mapImage": "/maps/great-war.png"
+      "mapImage": "/maps/great-war.webp"
     },
     {
       "number": 1,
@@ -62137,7 +62137,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-ruins-of-nineveh-novus.webp"
     },
     {
       "number": 2,
@@ -62186,7 +62186,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-domus-demetrius.webp"
     },
     {
       "number": 3,
@@ -62235,7 +62235,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-steel-necropolis.webp"
     },
     {
       "number": 4,
@@ -62280,7 +62280,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-sword-of-god.webp"
     },
     {
       "number": 5,
@@ -62329,7 +62329,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-altar-of-leviathan.webp"
     }
   ],
   "terrain": [
@@ -62709,6 +62709,380 @@ export const DATASET: Dataset = {
         "when": "In addition to the Glorious Deeds generated on the charts, the following Glorious Deed is always used for a Random Scenario that has been generated for a Campaign:"
       }
     }
+  },
+  "carcassFrontMap": {
+    "legend": {
+      "👁": "Favour",
+      "🏺": "Relics",
+      "📦": "Supplies",
+      "🌍": "Territories"
+    },
+    "zones": [
+      {
+        "name": "Altar of Leviathan",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Altar of Leviathan"
+      },
+      {
+        "name": "Baghras Fortress",
+        "resources": [
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "Fields of Glory"
+      },
+      {
+        "name": "Basarfuth Castle",
+        "resources": [
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Supply Raid"
+      },
+      {
+        "name": "Botfly Valley",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Carrion Coast",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Cathedral of Wire",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Desolate Trapesac",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Domus Demetrius",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Domus Demetrius"
+      },
+      {
+        "name": "Fields of Green Flame",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Geist Spires",
+        "resources": [
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Supply Raid"
+      },
+      {
+        "name": "Guillaume Basin",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Holy Choked Path",
+        "resources": [
+          "Favour",
+          "Territories"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "House of Pillars",
+        "resources": [
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Relic Hunt"
+      },
+      {
+        "name": "Kurd Dagh",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "The High Ground"
+      },
+      {
+        "name": "Kyrrhos City",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Little Jahannam",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Lost Shih-al-Hadid",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Martyr’s Crossing",
+        "resources": [
+          "Favour",
+          "Supplies"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "Mi’ilya Outskirts",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "North Amanus Trenches",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Pilgrimage of Stone",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Pillar of Jonah",
+        "resources": [
+          "Relics",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Trench Warfare"
+      },
+      {
+        "name": "Risen Ruins",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Ruins of Nineveh Novus",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "Ruins of Nineveh Novus"
+      },
+      {
+        "name": "Sacred Plains",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Scavenger Towns",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "Shadow of Old Saints",
+        "resources": [
+          "Favour",
+          "Relics"
+        ],
+        "scenario": "Hunt for Heroes"
+      },
+      {
+        "name": "South Amanus Trenches",
+        "resources": [
+          "Favour",
+          "Territories"
+        ],
+        "scenario": "Hunt for Heroes"
+      },
+      {
+        "name": "Steel Necropolis",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Steel Necropolis"
+      },
+      {
+        "name": "Syrian Gate",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "The Sword of God",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "The Sword of God"
+      },
+      {
+        "name": "The Vivarium",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Dragon Hunt"
+      }
+    ],
+    "outpostBonuses": [
+      {
+        "zone": "Altar of Leviathan",
+        "bonus": "Special rules apply to playing games in this zone (▶ see page 83)."
+      },
+      {
+        "zone": "Baghras Fortress",
+        "bonus": "In the Quartermaster Step following the game where you establish an Outpost in this zone, you can recruit Mercenaries for half their listed cost in ☼ (rounded up)."
+      },
+      {
+        "zone": "Domus Demetrius",
+        "bonus": "The first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal. In addition, if you have an Outpost in this zone it counts as two zones (instead of one) when working out which Warband has the longest supply line."
+      },
+      {
+        "zone": "House of Pillars",
+        "bonus": "Add +1 DICE to Success Rolls for Morale Checks for your Warband if you have an Outpost in this zone."
+      },
+      {
+        "zone": "Kurd Dagh",
+        "bonus": "You can re-roll one Promotion roll each Promotions & Experience Step if you have an Outpost in this zone."
+      },
+      {
+        "zone": "Ruins of Nineveh Novus",
+        "bonus": "The first player to establish an Outpost in this zone adds one Omen of Leviathan to their Warband’s Arsenal. In addition, you can add or subtract 1 from your Exploration Roll if you have an Outpost at this zone."
+      },
+      {
+        "zone": "Pillar of Jonah",
+        "bonus": "If you have an Outpost in this zone and you play a game at this zone or a zone that is linked to it, the opposing Warband starts the game with 2 BLOOD MARKERS distributed amongst their models as they wish. Note that if the opposing Warband also had an Outpost in this zone, you will start the game with 2 BLOOD MARKERS as well!"
+      },
+      {
+        "zone": "Steel Necropolis",
+        "bonus": "In the Quartermaster Step following the round where you establish an Outpost in this zone, Armour and Shields cost half the listed price in 👑 (rounded up). In addition, the first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal."
+      },
+      {
+        "zone": "The Sword of God",
+        "bonus": "In the Quartermaster Step following the round where you place an Outpost in this zone, Ranged Weapons cost half the listed price in 👑 (rounded up). In addition, the first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal."
+      },
+      {
+        "zone": "The Vivarium",
+        "bonus": "If you have an Outpost in this zone, you can re-roll one Trauma roll in each of your Outcome Phases."
+      }
+    ],
+    "generator": {
+      "intro": "Roll once on the following charts to determine the deployment that is used for a random scenario in a campaign game, then roll a second time to determine the Victory Conditions that apply to the game. All random scenarios have a game length of 6 Turns in a Carcass Front Campaign.",
+      "archetypes": [
+        "No Man’s Land",
+        "Decimated Ruins",
+        "Trench Lines"
+      ],
+      "rows": [
+        {
+          "printed": "1-2",
+          "rolls": [
+            1,
+            2
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Standard Deployment",
+              "victory": "Sabotage"
+            },
+            "Decimated Ruins": {
+              "deployment": "Flank Attack",
+              "victory": "Attritional Battle"
+            },
+            "Trench Lines": {
+              "deployment": "Flank Attack",
+              "victory": "Attritional Battle"
+            }
+          }
+        },
+        {
+          "printed": "3-4",
+          "rolls": [
+            3,
+            4
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Tunnels",
+              "victory": "Over the Top"
+            },
+            "Decimated Ruins": {
+              "deployment": "Fog of War",
+              "victory": "Sabotage"
+            },
+            "Trench Lines": {
+              "deployment": "Tunnels",
+              "victory": "Breakthrough"
+            }
+          }
+        },
+        {
+          "printed": "5-6",
+          "rolls": [
+            5,
+            6
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Long-Distance Battle",
+              "victory": "Take and Hold"
+            },
+            "Decimated Ruins": {
+              "deployment": "Chance Encounter",
+              "victory": "Retrieve"
+            },
+            "Trench Lines": {
+              "deployment": "Long-Distance Battle",
+              "victory": "Over the Top"
+            }
+          }
+        }
+      ]
+    },
+    "unreadable": []
   },
   "coreRules": [
     {
@@ -66936,6 +67310,120 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Shield",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "description": "",
+      "rules": [],
+      "section": "Shields",
+      "note": ""
+    }
+  ],
+  "bundles": [
+    {
+      "name": "Polearm and Shield",
+      "grants": [
+        "Shield",
+        "Polearm"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
+    },
+    {
+      "name": "Sword and Pistol",
+      "grants": [
+        "Sword/Axe",
+        "Pistol"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
+    }
+  ],
+  "counters": [
+    {
+      "name": "Incendiary Ammuntion (Loaded)",
+      "forName": "Incendiary Ammunition"
+    },
+    {
+      "name": "Dum-Dum Ammunition (Loaded)",
+      "forName": "Dum-Dum Bullets"
+    },
+    {
+      "name": "Armour-Piercing Ammunition (Loaded)",
+      "forName": "Armour Piercing Bullets"
+    },
+    {
+      "name": "Fireteam: Dog's Friend",
+      "forName": "Man's Best Friend"
+    },
+    {
+      "name": "Alchemical Ammuntion (Loaded)",
+      "forName": "Alchemical Ammunition"
+    },
+    {
+      "name": "Heavy Bore Ammuntion (Loaded)",
+      "forName": "Heavy Bore Ammunition"
+    },
+    {
+      "name": "Sparkpowder Ammuntion (Loaded)",
+      "forName": "Sparkpowder Ammunition"
+    },
+    {
+      "name": "Shayṭānic Shard Ammuntion (Loaded)",
+      "forName": "Shayṭānic Shard Ammunition"
+    },
+    {
+      "name": "Scrap Shot (Loaded)",
+      "forName": "Scrap Shot"
+    },
+    {
+      "name": "Purgation Ammunition (Loaded)",
+      "forName": "Purgation Ammunition"
+    },
+    {
+      "name": "Dog's Friend",
+      "forName": "Man's Best Friend"
+    }
+  ],
+  "carryAllowances": [
+    {
+      "raw": "It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield Combo rule cannot be used for any of its weapons.",
+      "model": "Takwin Homunculus",
+      "requires": [
+        "Human hands",
+        "Additional Arm"
+      ],
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ],
+        "Ranged Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ]
+      },
+      "shieldReplaces": "Melee Weapons",
+      "shieldComboUsable": false
     }
   ],
   "keywordGrants": [

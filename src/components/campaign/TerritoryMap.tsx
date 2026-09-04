@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { TerritoryNode } from '../../types/campaign';
+import { frameworkOf } from '@/rules/campaignFramework';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -27,6 +28,7 @@ export const TerritoryMap: React.FC = () => {
   const { 
     campaign, 
     claimTerritory, 
+    setTerritoryPerk,
     warbands, 
     allCloudWarbands, 
     fetchAllCloudWarbands, 
@@ -38,7 +40,32 @@ export const TerritoryMap: React.FC = () => {
 
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryNode | null>(null);
   const [selectedAssignWarbandId, setSelectedAssignWarbandId] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'map' | 'grid'>('map');
+  const [editingPerk, setEditingPerk] = useState(false);
+  const [perkDraft, setPerkDraft] = useState('');
+  /*
+    A Carcass Front campaign has NO pin coordinates. Its zone board — which
+    zone borders which — is a graphic on the fold-out sheet in the box, so
+    there is nowhere honest to put a marker, and scattering thirty-two of them
+    over a map of Europe would be inventing a geography the book does not
+    print. The list is the only view it has, and the World Map button is not
+    offered rather than being offered and showing an empty map.
+  */
+  const onCarcassFront = frameworkOf(campaign) === 'carcass-front';
+  const [viewMode, setViewMode] = useState<'map' | 'grid'>(onCarcassFront ? 'grid' : 'map');
+  /*
+    DERIVED, not corrected after the fact.
+
+    `useState`'s initializer runs once. Creating a Carcass Front campaign while
+    this view was already open left `viewMode` at `map`, and a Carcass Front
+    campaign has no map — so the map branch was suppressed, the grid branch was
+    false, and the switcher that would fix it is hidden for that framework.
+    Nothing rendered at all until the user changed tabs to force a remount.
+
+    Reading the mode through the framework makes that state unrepresentable
+    rather than repaired by an effect after a blank frame. Reported by Codex
+    review on #27.
+  */
+  const mode: 'map' | 'grid' = onCarcassFront ? 'grid' : viewMode;
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +83,33 @@ export const TerritoryMap: React.FC = () => {
     }
   });
   const allDirectoryWarbands = Array.from(allKnownWarbandsMap.values());
+
+  /*
+    Selecting a different territory leaves the editor, so an unsaved draft
+    cannot be carried onto another territory and saved there by mistake.
+  */
+  const selectTerritory = (node: TerritoryNode | null) => {
+    setEditingPerk(false);
+    setSelectedTerritory(node);
+  };
+
+  const handleEditPerk = () => {
+    if (!selectedTerritory) return;
+    setPerkDraft(selectedTerritory.perk ?? '');
+    setEditingPerk(true);
+  };
+
+  const handleSavePerk = () => {
+    if (!selectedTerritory) return;
+    if (!setTerritoryPerk(selectedTerritory.id, perkDraft)) return;
+    const text = perkDraft.trim();
+    setSelectedTerritory({
+      ...selectedTerritory,
+      perk: text,
+      perkSource: text ? 'campaign' : undefined,
+    });
+    setEditingPerk(false);
+  };
 
   const handleAssignTerritory = () => {
     if (!selectedTerritory) return;
@@ -126,18 +180,21 @@ export const TerritoryMap: React.FC = () => {
             </h3>
           </div>
           <p className="text-xs text-theme-muted">
-            Overarching world map of Trench Crusade. Click any strategic theater pin to assign control to any warband in the directory, or launch an offensive.
+            {onCarcassFront
+              ? 'The Carcass Front’s zones, each with the Resources it offers and the scenario played there. '
+                + 'Which zone borders which is on the fold-out map in the box; the app does not have the board.'
+              : 'Overarching world map of Trench Crusade. Click any strategic theater pin to assign control to any warband in the directory, or launch an offensive.'}
           </p>
         </div>
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Mode Switcher */}
-          <div className="flex bg-theme-base p-1 rounded border border-theme-border text-xs">
+          <div className={`flex bg-theme-base p-1 rounded border border-theme-border text-xs ${onCarcassFront ? 'hidden' : ''}`}>
             <button
               onClick={() => setViewMode('map')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
-                viewMode === 'map'
+                mode === 'map'
                   ? 'bg-theme-primary text-theme-base shadow'
                   : 'text-theme-muted hover:text-theme-text'
               }`}
@@ -149,7 +206,7 @@ export const TerritoryMap: React.FC = () => {
             <button
               onClick={() => setViewMode('grid')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
-                viewMode === 'grid'
+                mode === 'grid'
                   ? 'bg-theme-primary text-theme-base shadow'
                   : 'text-theme-muted hover:text-theme-text'
               }`}
@@ -160,7 +217,7 @@ export const TerritoryMap: React.FC = () => {
           </div>
 
           {/* Map View Controls (Zoom & Toggles) */}
-          {viewMode === 'map' && (
+          {mode === 'map' && (
             <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
               <button
                 onClick={handleZoomIn}
@@ -197,7 +254,7 @@ export const TerritoryMap: React.FC = () => {
       </div>
 
       {/* VIEW MODE 1: INTERACTIVE WORLD MAP VIEW */}
-      {viewMode === 'map' && (
+      {mode === 'map' && (
         <div 
           ref={mapContainerRef}
           className="relative w-full rounded-md border-2 border-theme-border overflow-hidden bg-theme-base shadow-2xl"
@@ -224,7 +281,7 @@ export const TerritoryMap: React.FC = () => {
               return (
                 <div
                   key={node.id}
-                  onClick={() => setSelectedTerritory(node)}
+                  onClick={() => selectTerritory(node)}
                   className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group z-20"
                   style={{
                     left: `${node.x}%`,
@@ -270,7 +327,7 @@ export const TerritoryMap: React.FC = () => {
       )}
 
       {/* VIEW MODE 2: STRATEGIC THEATERS GRID VIEW */}
-      {viewMode === 'grid' && (
+      {mode === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {campaign.territories.map((node) => {
             const isControlledByMe = activeWb && node.controlledByWarbandId === activeWb.id;
@@ -279,7 +336,7 @@ export const TerritoryMap: React.FC = () => {
             return (
               <div
                 key={node.id}
-                onClick={() => setSelectedTerritory(node)}
+                onClick={() => selectTerritory(node)}
                 className={`p-4 bg-theme-base border rounded-md transition-all cursor-pointer flex flex-col justify-between hover:border-theme-primary ${
                   isControlledByMe
                     ? 'border-status-legal bg-status-legal/5 ring-1 ring-status-legal'
@@ -316,14 +373,41 @@ export const TerritoryMap: React.FC = () => {
                   <p className="text-xs text-theme-muted leading-relaxed">
                     {node.description}
                   </p>
+
+                  {/*
+                    Carcass Front only, and read off the map's own Zones table.
+                    Which Resources a zone offers is what a player decides
+                    where to fight on, so it belongs on the card and not two
+                    taps away in the detail panel.
+                  */}
+                  {node.resources && node.resources.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {node.resources.map((r) => (
+                        <span
+                          key={r}
+                          className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated border border-theme-border text-theme-text"
+                        >
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {/* Territory Perk & Controller */}
+                {/*
+                  The perk is shown only where a campaign has one. Every
+                  theatre used to carry an invented mechanical effect — a
+                  "+15 Ducats & +1 Alchemical Formula discount per match" that
+                  no book states — presented beside rules the pipeline derives
+                  with nothing to tell a player which was which.
+                */}
                 <div className="mt-4 pt-3 border-t border-theme-border/60 space-y-1 text-xs">
-                  <div className="text-theme-primary flex items-center space-x-1 font-semibold">
-                    <Award className="w-3.5 h-3.5" />
-                    <span>Perk: {node.perk}</span>
-                  </div>
+                  {node.perk && (
+                    <div className="text-theme-primary flex items-center space-x-1 font-semibold">
+                      <Award className="w-3.5 h-3.5" />
+                      <span>Perk: {node.perk}</span>
+                    </div>
+                  )}
                   <div className="text-xs sm:text-[11px] text-theme-muted">
                     Controller: <strong className="text-theme-text">{node.controlledByPlayerName || 'None (Unclaimed)'}</strong>
                   </div>
@@ -346,7 +430,7 @@ export const TerritoryMap: React.FC = () => {
                 <h3 className="font-gothic font-bold text-lg text-theme-text">STRATEGIC THEATER DOSSIER</h3>
               </div>
               <button
-                onClick={() => setSelectedTerritory(null)}
+                onClick={() => selectTerritory(null)}
                 className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 <X className="w-5 h-5" />
@@ -368,10 +452,105 @@ export const TerritoryMap: React.FC = () => {
               </div>
 
               <div className="p-3.5 bg-theme-elevated rounded border border-theme-border space-y-2 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-theme-muted">Strategic Territory Perk:</span>
-                  <span className="text-theme-primary font-bold">{selectedTerritory.perk}</span>
-                </div>
+                {/*
+                  Says which it is, rather than showing a made-up effect. No
+                  published rule attaches anything to holding one of these
+                  theatres — they are the app's own map of the setting. The
+                  ones the game does publish are the Carcass Front Special Zone
+                  Outpost Bonuses, and those are in the Codex.
+                */}
+                {selectedTerritory.perkSource === 'published' ? (
+                  <div className="space-y-1">
+                    <span className="text-theme-muted">Outpost Bonus (published):</span>
+                    <p className="text-theme-primary font-bold leading-relaxed">
+                      {selectedTerritory.perk}
+                    </p>
+                  </div>
+                ) : editingPerk ? (
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="territory-perk"
+                      className="text-theme-muted block"
+                    >
+                      Your campaign&rsquo;s house rule for holding {selectedTerritory.name}:
+                    </label>
+                    <textarea
+                      id="territory-perk"
+                      value={perkDraft}
+                      onChange={(e) => setPerkDraft(e.target.value)}
+                      rows={3}
+                      maxLength={280}
+                      placeholder="e.g. The holder may re-roll one Exploration dice after each battle."
+                      className="w-full bg-theme-surface border border-theme-border rounded p-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSavePerk}
+                        className="flex-1 min-h-[44px] lg:min-h-0 lg:py-2 px-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
+                      >
+                        Save house rule
+                      </button>
+                      <button
+                        onClick={() => setEditingPerk(false)}
+                        className="min-h-[44px] lg:min-h-0 lg:py-2 px-3 bg-theme-surface border border-theme-border text-theme-text font-bold uppercase rounded text-xs"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : selectedTerritory.perk ? (
+                  <div className="space-y-1">
+                    {/*
+                      Says WHOSE rule it is. Sixteen invented perks used to
+                      render under "Strategic Territory Perk", the same heading
+                      a published one would get, which is what made them look
+                      like the book.
+                    */}
+                    <span className="text-theme-muted">House rule (set by this campaign):</span>
+                    <p className="text-theme-text leading-relaxed">{selectedTerritory.perk}</p>
+                    <button
+                      onClick={handleEditPerk}
+                      className="text-theme-primary underline min-h-[44px] lg:min-h-0 inline-flex items-center"
+                    >
+                      Edit or clear
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {/*
+                      Which kind of "no perk" this is. A Carcass Front zone is
+                      PUBLISHED — parsed from the fold-out map's own Zones
+                      table — and an empty perk there only means the book gives
+                      it no Outpost Bonus, not that the app invented the place.
+                      Saying otherwise about 22 of the 32 published zones is
+                      the same class of error as the sixteen invented perks:
+                      the app describing its own provenance wrongly.
+                      Reported by Codex review on #27.
+                    */}
+                    {onCarcassFront ? (
+                      <p className="text-theme-muted leading-relaxed">
+                        A published zone, but not one of the ten{' '}
+                        <strong className="text-theme-text">Special Zones</strong> — the book gives
+                        it no Outpost Bonus, so any bonus for holding it is one your campaign
+                        agrees.
+                      </p>
+                    ) : (
+                      <p className="text-theme-muted leading-relaxed">
+                        No published rule attaches an effect to holding this theatre — it is part of
+                        this app&rsquo;s own map of the setting, so any bonus is one your campaign
+                        agrees. The published ones are the Carcass Front{' '}
+                        <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
+                        the Codex under Campaigns.
+                      </p>
+                    )}
+                    <button
+                      onClick={handleEditPerk}
+                      className="text-theme-primary underline min-h-[44px] lg:min-h-0 inline-flex items-center"
+                    >
+                      Add your campaign&rsquo;s own house rule
+                    </button>
+                  </div>
+                )}
                 <div className="flex justify-between items-center border-t border-theme-border pt-2">
                   <span className="text-theme-muted">Current Controller:</span>
                   <span className="text-theme-text font-bold">

@@ -469,10 +469,13 @@ export function parseCarcassFrontCampaigns() {
       trackerRewards: rewards,
       sharedObjectives: parseSharedObjectives(sectionBody(map, 'SHARED CAMPAIGN OBJECTIVES')),
       /*
-        The zone board and its tables are printed on the fold-out map in the
-        box, not in the PDF, so nothing in this repo can derive them. Recorded
-        as a fact about the campaign rather than left for the reader to notice
-        that a rule refers to a table the app does not have.
+        The zone BOARD — the picture of which zone borders which — is still
+        only on the printed sheet. Its three tables are not: the Carcass Front
+        Zones table, the Special Zone Outpost Bonuses and the campaign's own D6
+        charts come off `carcass-front-map.pdf` and reach the app as
+        `dataset.carcassFrontMap` (see `parse-cf-map.mjs`). This stays true for
+        the board, which is what a rule about supply lines and adjacency needs,
+        and the Codex says which of the two it is missing.
       */
       requiresMap: true,
       conclusions: [],

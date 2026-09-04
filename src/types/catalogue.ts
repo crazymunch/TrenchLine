@@ -967,6 +967,39 @@ export interface WeatherEvent {
   effect: string;
 }
 
+/**
+ * The three tables printed on the Carcass Front fold-out campaign map.
+ *
+ * They are on the map and nowhere else — not in the book, not in the
+ * quickstart — and the book's campaign rules point at all three. The map PDF
+ * was recorded as print material with no rules content until Sep 2026, so the
+ * Codex told players it was short a table it could have had all along.
+ */
+export interface CarcassFrontMap {
+  /** Glyph -> Resource, read from the book's own legend, never written here. */
+  legend: Record<string, string>;
+  /** The Carcass Front Zones table: 32 zones. */
+  zones: { name: string; resources: string[]; scenario: string }[];
+  /** What an Outpost in one of the ten Special Zones confers. */
+  outpostBonuses: { zone: string; bonus: string }[];
+  /**
+   * The campaign's own D6 charts. A deployment and a victory condition per
+   * battlefield archetype, named with the BOOK's spelling so a cell and the
+   * generator's rules text for it are the same string.
+   */
+  generator: {
+    intro: string;
+    archetypes: string[];
+    rows: {
+      printed: string;
+      rolls: number[];
+      byArchetype: Record<string, { deployment: string; victory: string }>;
+    }[];
+  } | null;
+  /** Anything the page states that did not resolve. Empty is the fact. */
+  unreadable: string[];
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -985,6 +1018,72 @@ export interface Dataset {
    * validator treats as "do not enforce" rather than as "no limits".
    */
   battlekitLimits?: BattlekitLimits;
+  /**
+   * Loadout bundles: one selectable name that grants several items, such as
+   * `Polearm and Shield`. Keyed by the name a roster stores.
+   */
+  bundles?: {
+    name: string;
+    grants: string[];
+    /**
+     * The bundle's OWN cost, not the sum of its parts'.
+     *
+     * A loadout is priced as one thing, and both of the two the catalogues
+     * define are free options in a Mercenary's `Loadout` group. Pricing the
+     * parts out of the Armoury Table charged the model 7 Ducats for a Polearm
+     * the catalogue hands it for nothing.
+     */
+    cost: Cost;
+  }[];
+  /**
+   * BattleScribe's own bookkeeping entries, which are not wargear.
+   *
+   * A hidden entry with no cost, no profile and a roster max of ZERO that a
+   * modifier increments once per `forName` the roster holds. It exists to make
+   * BattleScribe count purchases; a player cannot choose it, and a roster
+   * carrying one was reported as "not in this ruleset".
+   *
+   * Identified by that signature, not by the `(Loaded)` in most of the names:
+   * the same shape without it is `Dog's Friend`, counting one marker per
+   * `Man's Best Friend`.
+   */
+  counters?: { name: string; forName: string }[];
+  /**
+   * Carrying allowances a model's own entry states, which replace the
+   * chapter's.
+   *
+   * "Unless otherwise stated" is the first line of the Battlekit Limits, and
+   * Warbands of Trench Crusade states otherwise for a Takwin Homunculus with
+   * `Human Hands` and an `Additional Arm`. That was why the app called its
+   * Siege Jezzail illegal: the chapter forbids a 2-Handed weapon alongside a
+   * Shield, and this entry says the Shield replaces a MELEE weapon.
+   *
+   * `bySection` is a list of COMBINATIONS, not an arithmetic of hand slots.
+   * The book states alternatives — "three 1-Handed, or one 1-Handed and one
+   * 2-Handed" — and they are not the same as three hands: another entry allows
+   * "up to three 1-Handed OR two 1-Handed and one 2-Handed", three items in
+   * one branch and four hands in the other. Any single capacity number gets
+   * one of the two wrong.
+   */
+  carryAllowances?: {
+    raw: string;
+    model: string;
+    /** Named by the sentence itself — nothing about Formulae written here. */
+    requires: string[];
+    bySection: Record<string, Record<string, number>[]>;
+    /** The section a Shield takes a slot from, where the entry says so. */
+    shieldReplaces?: string;
+    /** False where the entry forbids using Shield Combo. */
+    shieldComboUsable: boolean;
+  }[];
+  /**
+   * The Carcass Front campaign map's tables.
+   *
+   * Undefined for a ruleset without the supplement — that ruleset genuinely
+   * has no campaign map, which is a different thing from one we failed to
+   * read.
+   */
+  carcassFrontMap?: CarcassFrontMap;
   /** Keywords each option grants the model that buys it. */
   keywordGrants?: KeywordGrant[];
   /** The twelve scenarios, as printed. */

@@ -23,6 +23,7 @@ import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRul
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
+import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -33,6 +34,7 @@ import { parseCarcassFrontCampaigns } from './lib/parse-cf-campaign.mjs';
 import { parseVisionCards } from './lib/parse-vision-cards.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
 import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
+import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
@@ -124,6 +126,13 @@ for (const ruleset of RULESETS) {
   // same chapter, and the app enforced none of them — a model could wear
   // three suits of Armour and validate clean. Throws if the heading is gone.
   const battlekitLimits = parseBattlekitLimits();
+  /*
+    Carrying allowances a model's own entry states, which replace the
+    chapter's for that model. Only self-describing sentences are read; the
+    rest are reported below rather than attributed by guess.
+  */
+  const carryAllowances = parseCarryAllowances(
+    'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt');
 
   /*
     Faction-exclusive wargear, which the core chapter does not carry.
@@ -168,12 +177,44 @@ for (const ruleset of RULESETS) {
   */
   const generator = parseScenarioGenerator();
 
+  /*
+    The fold-out campaign map: 32 zones with their Resources and scenario, ten
+    Special Zone Outpost Bonuses, and the campaign's own D6 charts. All three
+    are printed on the map and nowhere else, and the book's campaign rules
+    point at all three — "the resources available in each zone are shown on the
+    Carcass Front Zones table on the campaign map".
+
+    The charts are checked against the vocabulary the BOOK's generator states,
+    which is why it is read after `parseScenarioGenerator`: every cell must be
+    one of the six deployments, six victory conditions and three archetypes the
+    book prints, or the row is reported rather than repaired. A generator chart
+    that sends a player to a deployment the book does not print is worse than
+    no chart.
+  */
+  const namesIn = (chart) => (chart?.rows ?? []).map((r) => r.values[0]).filter(Boolean);
+  const cfMap = parseCarcassFrontMap({
+    deployments: namesIn(generator?.deployment),
+    victories: namesIn(generator?.victory),
+    archetypes: namesIn(generator?.battlefield),
+  });
+
   const scenarios = parseScenarios().map((s) => {
-    // The map is not derived, it is *resolved*: the hand-written scenarios
-    // pointed every one of them at /maps/scenario_N.webp, and not one of those
-    // files exists — twelve broken images that nothing ever reported, the same
-    // failure as the campaign map's /world_map.png.
-    const file = `maps/${s.slug}.png`;
+    /*
+      The map is not derived, it is *resolved*: the hand-written scenarios
+      pointed every one of them at /maps/scenario_N.webp, and not one of those
+      files existed — twelve broken images that nothing ever reported, the same
+      failure as the campaign map's /world_map.png.
+
+      `.webp`, and cropped out of the rendered page by
+      `scripts/crop-scenario-maps.py`. It used to be `<slug>.png`, which was
+      the image the PDF *stores* — and that is the map's BACKGROUND ART, the
+      terrain drawing with none of the map on it. The zones, the objective
+      markers, the midpoint and the dimensions are drawn over it in vector, so
+      the embedded image is the layer underneath the map rather than the map.
+      Twelve deployment maps with no deployment zones on them, which nothing
+      reported either: the file existed, so the check below passed.
+    */
+    const file = `maps/${s.slug}.webp`;
     if (!fs.existsSync(path.join('public', file))) {
       throw new Error(
         `rules-build: scenario ${s.roman} (${s.name}) has no deployment map at ` +
@@ -185,15 +226,23 @@ for (const ruleset of RULESETS) {
 
   if (ruleset.layers.includes(CARCASS_FRONT)) {
     /*
-      No map file, and `null` rather than a path to one that does not exist.
+      Resolved the same way as the rulebook's twelve, and `null` only where
+      there is genuinely no file — never a path to one that does not exist,
+      which is how the app ended up showing twelve broken images.
 
-      The rulebook's twelve are checked against `public/maps/` and the build
-      fails if a file is missing, because the hand-written scenarios pointed
-      all twelve at files that were never there. The Carcass Front maps have
-      not been extracted from the PDF; saying so is the honest answer, and the
-      scenario's DEPLOYMENT section describes the zones in words regardless.
+      These were all five `null` until the maps could be got out of the book.
+      They are not raster art like the rulebook's: a Carcass Front map is a
+      single large grey-filled rectangle in the page's vector drawings, and
+      that rectangle IS the crop box — read from the PDF rather than detected,
+      so there is nothing to get wrong. See `scripts/crop-scenario-maps.py`.
     */
-    scenarios.push(...cf.scenarios.map((s) => ({ ...s, mapImage: null })));
+    scenarios.push(...cf.scenarios.map((s) => {
+      const file = `maps/${s.slug}.webp`;
+      return {
+        ...s,
+        mapImage: fs.existsSync(path.join('public', file)) ? `/${file}` : null,
+      };
+    }));
   }
 
   /*
@@ -263,6 +312,46 @@ for (const ruleset of RULESETS) {
     const k = nameKey(e.name);
     if (!kitByName.has(k)) kitByName.set(k, e);
   }
+
+  /*
+    A third source: the profiles a loadout bundle hands out that neither book
+    names and that the weapon emit deliberately skips.
+
+    `Shield` is the whole of it. It is a generic Battlekit profile in the
+    shared .gst; the chapter prints `Trench Shield`, which is a different entry
+    that also exists, so the two are not the same thing and neither may be
+    renamed into the other. Without this the Shield a `Polearm and Shield`
+    loadout grants was an item the engine knew nothing about: no section, so it
+    counted against the one-Shield limit not at all, and no hands, so it did
+    not trigger the Shield restrictions on the weapons beside it.
+
+    The section is derived from the chapter's OWN Type -> section pairings
+    rather than from a mapping written here, and an ambiguous one is left
+    unset: a wrong section is a legality error on a legal roster, which is the
+    failure mode this codebase has been paying for.
+  */
+  const sectionsByType = new Map();
+  for (const e of kitByName.values()) {
+    const k = `${e.type}|${/melee/i.test(e.range ?? '') ? 'melee' : 'ranged'}`;
+    if (!sectionsByType.has(k)) sectionsByType.set(k, new Set());
+    sectionsByType.get(k).add(e.section);
+  }
+  const bundleKit = [];
+  for (const pr of base.bundleProfiles ?? []) {
+    if (kitByName.has(nameKey(pr.name))) continue;
+    const found = sectionsByType.get(
+      `${pr.type}|${/melee/i.test(pr.range ?? '') ? 'melee' : 'ranged'}`);
+    const section = found && found.size === 1 ? [...found][0] : '';
+    const entry = { ...pr, section, note: '' };
+    kitByName.set(nameKey(pr.name), entry);
+    bundleKit.push(entry);
+  }
+
+  if (bundleKit.length) {
+    console.log(`  battlekit (granted by a loadout bundle): ${bundleKit.length} — `
+      + bundleKit.map((e) => `${e.name} (${e.section || 'SECTION UNRESOLVED'})`).join(', '));
+  }
+
   const allBattlekit = [...kitByName.values()];
   const dataset = {
     units: base.units,
@@ -307,6 +396,14 @@ for (const ruleset of RULESETS) {
      * used to roll.
      */
     scenarioGenerator: ruleset.layers.includes(CARCASS_FRONT) ? generator : undefined,
+    /**
+     * The Carcass Front campaign map's three tables.
+     *
+     * Undefined without the supplement, for the same reason as the generator
+     * above: that ruleset has no campaign map, which is a different thing from
+     * one we failed to read.
+     */
+    carcassFrontMap: ruleset.layers.includes(CARCASS_FRONT) ? cfMap : undefined,
     /**
      * The Core Rules and Comprehensive Rules chapters, in the book's order.
      *
@@ -355,6 +452,35 @@ for (const ruleset of RULESETS) {
      * the prose they do not print.
      */
     battlekit: allBattlekit,
+    /**
+     * Loadout bundles: one selectable name that grants several items.
+     *
+     * `Polearm and Shield` is a Mercenaries entry with no profile of its own
+     * that links a Polearm and a Shield. A roster holding that name matched
+     * nothing and was reported as "not in this ruleset" — excluded from every
+     * legality check while the player was told their list was provisional.
+     */
+    bundles: base.bundles ?? [],
+    /**
+     * BattleScribe's own bookkeeping entries, which are not wargear.
+     *
+     * `Alchemical Ammuntion (Loaded)` is a hidden entry capped at zero across
+     * the roster that a modifier increments once per `Alchemical Ammunition`
+     * bought. It has no cost, no profile and no rules, and a player cannot
+     * choose it — but a roster carrying one was reported under "NOT IN THIS
+     * RULESET", telling the player their list is provisional over a thing that
+     * is not an item.
+     */
+    counters: base.counters ?? [],
+    /**
+     * Carrying allowances a model's own entry states — see the type.
+     *
+     * Only the sentences that name their own condition are read. The book
+     * states four more of the same shape that say "It can have…", where "it"
+     * is the entry the paragraph sits under; those need document structure
+     * this reader does not have and are REPORTED below rather than guessed at.
+     */
+    carryAllowances: carryAllowances.allowances,
     /**
      * The per-model carrying limits, from the chapter's own bullets.
      *
@@ -744,6 +870,32 @@ for (const ruleset of RULESETS) {
   if (dataset.terrain.length) {
     console.log(`  terrain pieces with rules: ${dataset.terrain.map((t) => t.title).join(', ')}`);
   }
+  if (dataset.carcassFrontMap) {
+    const m = dataset.carcassFrontMap;
+    console.log(`  campaign map: ${m.zones.length} zones, `
+      + `${m.outpostBonuses.length} Special Zone Outpost Bonuses, `
+      + `${m.generator?.rows?.length ?? 0} generator rows across `
+      + `${m.generator?.archetypes?.length ?? 0} archetypes`
+      + (m.unreadable.length ? `  (${m.unreadable.length} UNREADABLE: `
+                              + `${m.unreadable.join(' | ')})` : ''));
+  }
+
+  /*
+    Carrying allowances, and the ones this reader will not attribute.
+
+    Reported rather than dropped, the same way an unreadable Battlekit bullet
+    is: a stated rule that silently goes unread is a rule silently unenforced,
+    and these four are real allowances the book gives real models.
+  */
+  console.log(`  carry allowances: ${carryAllowances.allowances.length} read `
+    + `(${carryAllowances.allowances.map((a) => a.model).join(', ') || 'none'})`
+    + (carryAllowances.unattributed.length
+        ? `  (${carryAllowances.unattributed.length} STATED BUT UNATTRIBUTED — `
+          + 'each says "it can have…" where "it" is the entry the paragraph sits '
+          + 'under, which needs document structure this reader does not have: '
+          + carryAllowances.unattributed.map((u) => `"${u.slice(0, 70)}…"`).join(' | ') + ')'
+        : ''));
+
   if (dataset.scenarioGenerator) {
     const g = dataset.scenarioGenerator;
     const deeds = g.gloriousDeeds.charts.reduce((n, c) => n + c.rows.length, 0);

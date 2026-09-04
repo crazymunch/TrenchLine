@@ -11,7 +11,7 @@ import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warb
 import type { InitialState } from '../init';
 import { persistWarbands } from '../persist';
 
-export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -250,7 +250,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
     // Campaign Management
     campaign: init.campaign,
-    createCampaign: (name, maxDucats, gloryThreshold) => {
+    createCampaign: (name, maxDucats, gloryThreshold, framework = 'classic', territories) => {
       const state = get();
       const activeWb = state.getActiveWarband();
 
@@ -260,6 +260,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         inviteCode: `TRENCH-${Math.floor(1000 + Math.random() * 9000)}`,
         adminName: 'Commander',
         status: 'active',
+        /*
+          Recorded on the campaign and never changed after. The two frameworks
+          do not agree on what a territory is, what a turn is or how the
+          campaign is won, so a switch mid-campaign would leave every game
+          already logged meaning something other than what it meant when it
+          was played.
+        */
+        framework,
         currentTurn: 1,
         maxWarbandDucats: maxDucats,
         gloryVictoryThreshold: gloryThreshold,
@@ -280,13 +288,24 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
               }
             ]
           : [],
-        territories: defaultFreshCampaign.territories,
+        /*
+          A Carcass Front campaign is played on its own 32 zones, which the
+          view passes in from the dataset. The app's twelve world theatres are
+          the `classic` map and mean nothing under those rules.
+
+          An empty list would be a Carcass Front campaign with no map at all,
+          which is worse than the wrong one, so it falls back and the view says
+          the dataset did not load rather than silently seating the player
+          somewhere else.
+        */
+        territories: territories?.length ? territories : defaultFreshCampaign.territories,
         matches: [],
         chronicleLogs: [
           {
             id: `c-${Date.now()}`,
             timestamp: 'Just now',
-            text: `Crusade campaign "${name}" established.`,
+            text: `Crusade campaign "${name}" established`
+                + (framework === 'carcass-front' ? ' on the Carcass Front.' : '.'),
             category: 'territory'
           }
         ]
@@ -323,6 +342,60 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         storage.saveCampaign(updatedCampaign);
         return { campaign: updatedCampaign };
       });
+    },
+
+    /*
+      A house rule on a territory, written by the campaign's organiser.
+
+      The app ships no perk of its own: sixteen invented ones ("+15 Ducats &
+      +1 Alchemical Formula discount per match" and the like) were removed
+      because they rendered under the same heading a derived rule would, so a
+      player could not tell the app's invention from the book. This is the
+      honest version of the same feature — the people playing write the rule,
+      and it is stored and shown as theirs.
+
+      A published perk is refused. The Carcass Front Special Zones carry the
+      book's own Outpost Bonus verbatim, and letting a house rule overwrite one
+      would put invented text back under a published label — the exact bug.
+    */
+    setTerritoryPerk: (territoryId, perk) => {
+      const target = get().campaign.territories.find((t) => t.id === territoryId);
+      if (!target || target.perkSource === 'published') return false;
+
+      const text = perk.trim();
+      set((state) => {
+        const updatedTerritories = state.campaign.territories.map((t) =>
+          t.id === territoryId
+            ? {
+                ...t,
+                perk: text,
+                // Cleared rather than left saying "campaign" over an empty
+                // string, which would render as a house rule with no text.
+                ...(text ? { perkSource: 'campaign' as const } : { perkSource: undefined }),
+              }
+            : t
+        );
+
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          territories: updatedTerritories,
+          chronicleLogs: [
+            {
+              id: `c-${Date.now()}`,
+              timestamp: 'Just now',
+              text: text
+                ? `House rule set on ${target.name}: ${text}`
+                : `House rule cleared on ${target.name}`,
+              category: 'territory' as const,
+            },
+            ...state.campaign.chronicleLogs,
+          ],
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+      return true;
     },
 
     logCampaignMatch: (
