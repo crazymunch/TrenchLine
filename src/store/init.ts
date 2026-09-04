@@ -21,6 +21,33 @@ export interface InitialState {
   ruleset: RulesetVersion;
 }
 
+/**
+ * What the store starts with, before the browser's saved state is read.
+ *
+ * The store is created when its module is imported, which on the client is
+ * BEFORE React hydrates. Reading `localStorage` there makes the first client
+ * render differ from the HTML built at deploy time — which cannot see saved
+ * state and therefore always renders "no warbands" — and React reports the
+ * difference as a hydration mismatch (#418) on every view.
+ *
+ * So nothing is read here. `readInitialState` does the read, and the app calls
+ * it from an effect once mounted: both passes then render the same empty state
+ * and the saved one arrives immediately after. That is also why the prerendered
+ * HTML stays useful offline — it is a real, if empty, page rather than a blank
+ * waiting for JavaScript.
+ */
+export function emptyInitialState(): InitialState {
+  return {
+    warbands: [],
+    activeWarbandId: null,
+    customUnits: [],
+    customWeapons: [],
+    campaign: { ...defaultFreshCampaign, territories: DEFAULT_WORLD_THEATERS },
+    theme: 'iron-sanctum',
+    ruleset: '1.0.2',
+  };
+}
+
 export function readInitialState(): InitialState {
   /*
     What the browser has, and nothing else.

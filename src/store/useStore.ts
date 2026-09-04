@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 
 import type { AppState } from './state';
-import { readInitialState } from './init';
+import { emptyInitialState, readInitialState } from './init';
 import { createSettingsSlice } from './slices/settings';
 import { createCatalogSlice } from './slices/catalog';
 import { createRosterSlice } from './slices/roster';
@@ -33,7 +33,12 @@ export type { AppState, AppView } from './state';
 export { DEFAULT_WORLD_THEATERS } from './seed';
 
 export const useStore = create<AppState>()((...a) => {
-  const init = readInitialState();
+  /*
+    Empty, deliberately. The saved state is read by `hydrateStore()` from an
+    effect once React has mounted — see `emptyInitialState` for why reading it
+    here made every view report a hydration mismatch.
+  */
+  const init = emptyInitialState();
 
   // Applying the theme here rather than in the settings slice keeps the slice
   // a pure state creator: this is a side effect on the document, and it belongs
@@ -52,3 +57,27 @@ export const useStore = create<AppState>()((...a) => {
     ...createCampaignSlice(init)(...a),
   };
 });
+
+/**
+ * Read the browser's saved state into the store.
+ *
+ * Called once from the app shell's mount effect. Separate from store creation
+ * because the store is built at import time, before React hydrates, and
+ * reading `localStorage` then makes the first client render disagree with the
+ * prerendered HTML.
+ */
+export function hydrateStore(): void {
+  const saved = readInitialState();
+  useStore.setState({
+    warbands: saved.warbands,
+    activeWarbandId: saved.activeWarbandId,
+    customUnits: saved.customUnits,
+    customWeapons: saved.customWeapons,
+    campaign: saved.campaign,
+    currentTheme: saved.theme,
+    rulesetVersion: saved.ruleset,
+  });
+  if (typeof window !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', saved.theme);
+  }
+}

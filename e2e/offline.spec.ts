@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { seedWarband } from './helpers';
 
 /**
  * The app opens at a table with no signal.
@@ -18,6 +19,14 @@ test.describe('with no network', () => {
     // with the network cut is genuinely slow. The default 30s budget is for a
     // test that clicks something.
     test.setTimeout(150_000);
+
+    /*
+      A warband to open. The app no longer ships one — it used to seed a
+      specific player's roster into every empty browser — and Play Mode has
+      nothing to design a match for without one, so the heading this asserts
+      never appears. The fixture is the harness saying what it needs.
+    */
+    await seedWarband(page);
 
     // Online first: a service worker can only cache what it has been asked for
     // once. Visiting each route is what a player does before they lose signal.
@@ -70,7 +79,7 @@ test.describe('with no network', () => {
       // the active warband's own URL client-side; starting a fresh `goto`
       // while that redirect is in flight aborts it, which reads as an offline
       // failure and is not one.
-      ['/roster', /Al-Qarn Rihla|Warband Command/i],
+      ['/roster', /E2E Test Warband|Warband Command/i],
     ] as const) {
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1').first(), `${path} offline`)
@@ -94,6 +103,7 @@ test.describe('with no network', () => {
       }
     });
 
+    await seedWarband(page);
     await page.goto('/roster', { waitUntil: 'networkidle' });
     await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });
     // The sync runs on mount; give it room to have made a request if it were

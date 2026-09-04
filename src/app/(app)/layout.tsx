@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useStore } from '@/store/useStore';
+import { useStore, hydrateStore } from '@/store/useStore';
 import { useDataset } from '@/rules/useDataset';
 import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
 import { Navbar } from '@/components/layout/Navbar';
@@ -30,6 +30,26 @@ import { viewForPath, pathForView } from '@/lib/routes';
  * store lives outside React and cannot call `useRouter` itself.
  */
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  /*
+    The browser's saved state, read once React has mounted.
+
+    The store is created when its module is imported, which on the client is
+    before hydration — so reading `localStorage` there made the first client
+    render disagree with the HTML built at deploy time, which cannot see saved
+    state. React reported it as a mismatch (#418) on every view.
+
+    It stayed invisible for as long as the app SEEDED a warband into an empty
+    browser: both sides then agreed, but only for someone who had never saved
+    anything. Everyone else has been hitting it. Removing that seed is what
+    made the suite notice.
+
+    Reading it here rather than at import is the fix. Both passes render the
+    same empty state, the saved one arrives immediately after, and the
+    prerendered HTML stays a real page — which is what a phone with no signal
+    gets before its JavaScript runs.
+  */
+  useEffect(() => { hydrateStore(); }, []);
+
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -118,6 +138,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           on the cross axis, which put 200px of sideways scroll on the phone.
           `flex-1` alone already stretches it in the parent column, and the
           content decides its own layout.
+        */}
+        {/*
+          NOT gated. The prerendered HTML is what a phone with no signal gets
+          before its JavaScript runs, so emptying it here cost the offline
+          guarantee the suite exists to protect: /play and /codex came back
+          with no heading at all. Neither depends on stored state, so neither
+          mismatches; only the shell and the roster list do.
         */}
         <main className="sheet flex-1 min-w-0 pb-nav-safe lg:pb-0">
           {children}
