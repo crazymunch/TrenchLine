@@ -10,7 +10,44 @@ import { expect, type Page } from '@playwright/test';
  * rather than as the race it is. Waiting for the settled URL is the same wait,
  * expressed as the condition instead of a guess at how long it takes.
  */
+/**
+ * A warband for the tests to work on.
+ *
+ * The app used to ship one — a specific player's roster, seeded into every
+ * empty browser — and the suite quietly relied on it. It does not ship one any
+ * more, because a stranger opening the site was being shown someone else's
+ * warband as their own. So the harness supplies its own instead, which is
+ * where a fixture belonged all along: the tests now say what they need rather
+ * than inheriting it from production data.
+ *
+ * Deliberately minimal. Models are recruited by the tests that need them, so
+ * this is an empty Iron Sultanate roster with a budget and nothing else.
+ */
+export const TEST_WARBAND = {
+  id: 'wb-e2e',
+  name: 'E2E Test Warband',
+  factionId: 'iron-sultanate',
+  ducatLimit: 1000,
+  treasuryDucats: 0,
+  gloryPoints: 0,
+  units: [],
+  armoryStash: [],
+  snapshots: [],
+  chronicleLog: [],
+  createdAt: '2026-01-01T00:00:00Z',
+  updatedAt: '2026-01-01T00:00:00Z',
+};
+
+/** Put it in place before any app code runs. */
+export async function seedWarband(page: Page, warband: unknown = TEST_WARBAND) {
+  await page.addInitScript(([wb]) => {
+    localStorage.setItem('tc_warbands_v1', JSON.stringify([wb]));
+    localStorage.setItem('tc_active_warband_id', (wb as { id: string }).id);
+  }, [warband]);
+}
+
 export async function openApp(page: Page, path = '/') {
+  await seedWarband(page);
   await page.goto(path);
   // The dataset is fetched, not bundled, so the roster is empty until it lands.
   await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });

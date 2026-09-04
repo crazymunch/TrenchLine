@@ -9,7 +9,7 @@
  */
 import { Warband } from '../types/warband';
 import { Campaign, TerritoryNode } from '../types/campaign';
-import { SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
+import { SULTANATE_WARBAND_LORE, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
 
 export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
   {
@@ -146,7 +146,10 @@ export const defaultFreshCampaign: Campaign = {
   gloryVictoryThreshold: 25,
   members: [],
   territories: DEFAULT_WORLD_THEATERS,
-  matches: SULTANATE_MATCH_HISTORY,
+  // No matches. A fresh campaign has not been played yet, and filling it with
+  // one player's battle record made every new campaign open on someone else's
+  // history.
+  matches: [],
   chronicleLogs: []
 };
 
