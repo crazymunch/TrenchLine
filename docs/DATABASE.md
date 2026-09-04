@@ -71,6 +71,45 @@ Destructive steps — dropping a column, tightening a constraint, adding a
 `NOT NULL` without a default — belong in **contract**, alone, after the code
 that needed them has been running for long enough to be trusted.
 
+## The administrator role
+
+Authority used to be derived from an **address** — a constant list in
+`auth.ts`, then `TRENCHLINE_ADMIN_EMAILS`. That closed the takeover chain but
+left the grant on a mutable, user-supplied field, with no record of who granted
+it or when, and revocable only by a deploy.
+
+`User.role` is the grant now; `roleGrantedAt` and `roleGrantedBy` are the
+evidence. `src/lib/adminRole.ts` is the one place that decides, and it reads
+both sources in a defined order while the migration is in progress:
+
+| the user | decided by |
+|---|---|
+| `roleGrantedAt` is set | `role`, and the email list is ignored |
+| never set | the email list, for now |
+
+The first row is what makes revocation real: demoting someone whose address is
+still listed must actually demote them, or the persisted grant is decorative.
+The second is what keeps a deployment working before anyone is backfilled.
+
+This is the **migrate** step. Deleting the fallback — and `TRENCHLINE_ADMIN_EMAILS`
+with it — is **contract**, a later release on its own.
+
+### Granting it
+
+```bash
+# The very first administrator. Refuses once one exists.
+node scripts/grant-role.mjs --email someone@example.com --role ADMIN --bootstrap
+
+# Every one after that names who is making the change.
+node scripts/grant-role.mjs --email someone@example.com --role ADMIN --actor boss@example.com
+node scripts/grant-role.mjs --email someone@example.com --role USER  --actor boss@example.com
+```
+
+It never creates the account it promotes — a command that invents an identity
+*and* gives it authority is the shape of the bug this replaced — and it reports
+what changed, including when nothing did. A change takes effect on that user's
+next request: the role is resolved on every JWT refresh, not only at sign-in.
+
 ## Backups and rollback
 
 Rolling back *code* is a deploy. Rolling back *schema* is not: a migration that

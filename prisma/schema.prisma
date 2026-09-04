@@ -35,6 +35,17 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// Who may act as an application administrator.
+///
+/// Authorization used to be derived from an ADDRESS — a constant list in
+/// `auth.ts`, later `TRENCHLINE_ADMIN_EMAILS`. That closed the takeover chain
+/// but left authority attached to a mutable, user-supplied field with no
+/// record of who granted it or when.
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id               String               @id @default(cuid())
   name             String?
@@ -42,6 +53,16 @@ model User {
   emailVerified    DateTime?
   password         String?
   image            String?
+  /// The persisted grant. Defaulted, never null, so the EXPAND step needs no
+  /// backfill to be readable and old code that does not select it is unaffected.
+  role             UserRole             @default(USER)
+  /// When the role was last changed, and by whom — the evidence an email list
+  /// could not provide. Null on a user whose role has never been set.
+  roleGrantedAt    DateTime?
+  /// The `User.id` of the actor who set it, or the literal `bootstrap` for the
+  /// one-shot promotion that creates the first administrator. Not a relation:
+  /// an audit trail must survive the granting account being deleted.
+  roleGrantedBy    String?
   accounts         Account[]
   sessions         Session[]
   warbands         Warband[]
@@ -77,20 +98,20 @@ enum WarbandVisibility {
 
 // Trench Crusade Application Models
 model Warband {
-  id              String           @id @default(cuid())
+  id              String            @id @default(cuid())
   name            String
   factionId       String
-  ducatLimit      Int              @default(700)
-  treasuryDucats  Int              @default(0)
-  gloryPoints     Int              @default(0)
-  units           Json             @default("[]")
-  armoryStash     Json             @default("[]")
-  notes           String?          @db.Text
+  ducatLimit      Int               @default(700)
+  treasuryDucats  Int               @default(0)
+  gloryPoints     Int               @default(0)
+  units           Json              @default("[]")
+  armoryStash     Json              @default("[]")
+  notes           String?           @db.Text
   visibility      WarbandVisibility @default(PRIVATE)
   userId          String
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaignMembers CampaignMember[]
-  createdAt       DateTime         @default(now())
+  createdAt       DateTime          @default(now())
 
   // When this row was last written, set by Prisma. A PUSH time, not an edit
   // time — which is the trap: sync used to compare it, so a device that merely
@@ -100,7 +121,7 @@ model Warband {
   // sync merge actually compares, is deliberately NOT a column here. It rides
   // in the `notes` metadata JSON with the other client-owned fields. See the
   // note in src/app/api/warbands/route.ts for why.
-  updatedAt       DateTime         @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model Campaign {

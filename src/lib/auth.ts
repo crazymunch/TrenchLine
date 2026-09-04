@@ -3,7 +3,8 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from './prisma';
-import { adminEmails, requireEnv } from './env';
+import { requireEnv } from './env';
+import { isAdminUserId, emailGrantsAdmin } from './adminRole';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -30,10 +31,7 @@ import bcrypt from 'bcryptjs';
  * auditable role on the user record is what finally retires this.
  */
 export function isUserAdmin(email?: string | null): boolean {
-  if (!email) return false;
-  const allowed = adminEmails();
-  if (!allowed.length) return false;
-  return allowed.includes(email.toLowerCase().trim());
+  return emailGrantsAdmin(email);
 }
 
 /**
@@ -154,11 +152,26 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) token.sub = user.id;
       /*
-        Resolved on every call rather than only at sign-in, so that removing an
-        address from `TRENCHLINE_ADMIN_EMAILS` takes effect on the next request
-        instead of when the last session happens to expire.
+        Resolved on every call rather than only at sign-in, so a revocation
+        takes effect on the next request instead of when the last session
+        happens to expire.
+
+        Read from the USER RECORD now, by id, not from the token's email: the
+        grant is `User.role` and the email list only still answers for a user
+        nobody has decided about yet — see `adminRole.ts`. By id, so an address
+        change confers and removes nothing, and a deleted account cannot keep
+        authority through a token that outlives it.
+
+        A lookup failure is not an admin. This runs on every authenticated
+        request, so a database blip must fail closed rather than either
+        granting authority or throwing the caller out of their session.
       */
-      token.isAdmin = isUserAdmin((user?.email ?? token.email) as string | null | undefined);
+      const userId = (user?.id ?? token.sub) as string | undefined;
+      try {
+        token.isAdmin = await isAdminUserId(userId);
+      } catch {
+        token.isAdmin = false;
+      }
       token.role = token.isAdmin ? 'ADMIN' : 'USER';
       return token;
     },

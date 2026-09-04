@@ -29,9 +29,18 @@ process.env.TRENCHLINE_ADMIN_EMAILS = 'ops@example.org';
 const { GET, POST } = await import('../route');
 
 const ALICE = { id: 'alice', email: 'alice@example.org' };
-const ADMIN = { id: 'ops', email: 'ops@example.org' };
+/*
+  `isAdmin` on the SESSION, because that is where it comes from now.
 
-const signedInAs = (user: { id: string; email: string } | null) =>
+  The role is resolved once, in the JWT callback, from the user's persisted
+  `User.role` — see `src/lib/adminRole.ts`. `policy.ts` reads it off the
+  session rather than recomputing it from the address, so a session fixture
+  that omits it is a session that is not an administrator, which is exactly
+  what the app would do with one.
+*/
+const ADMIN = { id: 'ops', email: 'ops@example.org', isAdmin: true };
+
+const signedInAs = (user: { id: string; email: string; isAdmin?: boolean } | null) =>
   getServerSession.mockResolvedValue(user ? { user } : null);
 
 const post = async (body: unknown) => {
