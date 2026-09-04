@@ -967,6 +967,39 @@ export interface WeatherEvent {
   effect: string;
 }
 
+/**
+ * The three tables printed on the Carcass Front fold-out campaign map.
+ *
+ * They are on the map and nowhere else — not in the book, not in the
+ * quickstart — and the book's campaign rules point at all three. The map PDF
+ * was recorded as print material with no rules content until Sep 2026, so the
+ * Codex told players it was short a table it could have had all along.
+ */
+export interface CarcassFrontMap {
+  /** Glyph -> Resource, read from the book's own legend, never written here. */
+  legend: Record<string, string>;
+  /** The Carcass Front Zones table: 32 zones. */
+  zones: { name: string; resources: string[]; scenario: string }[];
+  /** What an Outpost in one of the ten Special Zones confers. */
+  outpostBonuses: { zone: string; bonus: string }[];
+  /**
+   * The campaign's own D6 charts. A deployment and a victory condition per
+   * battlefield archetype, named with the BOOK's spelling so a cell and the
+   * generator's rules text for it are the same string.
+   */
+  generator: {
+    intro: string;
+    archetypes: string[];
+    rows: {
+      printed: string;
+      rolls: number[];
+      byArchetype: Record<string, { deployment: string; victory: string }>;
+    }[];
+  } | null;
+  /** Anything the page states that did not resolve. Empty is the fact. */
+  unreadable: string[];
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -1002,6 +1035,14 @@ export interface Dataset {
      */
     cost: Cost;
   }[];
+  /**
+   * The Carcass Front campaign map's tables.
+   *
+   * Undefined for a ruleset without the supplement — that ruleset genuinely
+   * has no campaign map, which is a different thing from one we failed to
+   * read.
+   */
+  carcassFrontMap?: CarcassFrontMap;
   /** Keywords each option grants the model that buys it. */
   keywordGrants?: KeywordGrant[];
   /** The twelve scenarios, as printed. */

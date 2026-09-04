@@ -395,10 +395,38 @@ Resources, and which scenario is played there), the Special Zones table and the
 Scenario Generator charts are printed on the fold-out map in the box, and the
 release carries that as `Carcass.Front.Map.pdf`. Its first page extracts to
 text: 33 zones with their Resources and scenario, ten Special Zone Outpost
-Bonuses, and the generator's Deployment × Victory Conditions charts. It is not
-yet in `SOURCES.json` — this note previously recorded it as print material with
-no rules content, which was wrong — so `requiresMap` still records that the
-Codex is short a table.
+Bonuses, and the generator's Deployment × Victory Conditions charts. `parse-cf-map.mjs`
+reads all three; the file is in `SOURCES.json` and its extract is committed.
+
+Two of the three tables extract badly, and neither is put back together by
+guessing at the layout — both are reassembled against a vocabulary the sources
+already state:
+
+- **The Outpost Bonuses' zone names wrap.** A name that fits its column stays
+  on the row (`Kurd Dagh <tab> You can re-roll…`); one that does not is set
+  over as many as three lines with the bonus starting after it. So the boundary
+  is found by NAME — a line, or a run of up to three joined, that is one of the
+  32 zones the table above lists. Longest match first: read shortest-first,
+  `Ruins of Nineveh Novus` became `Ruins of`, which is not a zone either, so
+  the row was lost entirely and `Nineveh Novus` became the opening words of
+  somebody else's bonus.
+- **The D6 charts' cells wrap.** A row's six cells arrive over as many as six
+  lines with the tabs falling wherever the wrap did, so the row is flattened
+  and read against the vocabulary the **book's own** generator states — six
+  deployments, six victory conditions, three archetypes. A row that does not
+  resolve into exactly six published names is reported, not repaired: a chart
+  that sends a player to a deployment the book does not print is worse than no
+  chart. Hyphens and spaces are treated alike when matching, because the book
+  prints `Long-Distance Battle` and the map prints `Long Distance Battle`, and
+  what is emitted is the book's spelling so a chart cell and the generator's
+  rules text for that deployment are the same string.
+
+The Resource glyphs are read from the book's own legend (`Favour 👁`) rather
+than from a table typed into the pipeline: the map prints only the glyph.
+
+`requiresMap` still records that the campaign needs the **zone board** — which
+zone borders which, for supply lines and adjacency — which is a graphic on the
+printed sheet.
 
 ### The Vision cards: a card is not a chapter
 

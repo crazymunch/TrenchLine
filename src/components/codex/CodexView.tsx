@@ -91,6 +91,7 @@ export const CodexView: React.FC = () => {
   const patrons = codexDataset?.patrons ?? [];
   const campaigns = codexDataset?.campaigns ?? [];
   const visionCards = codexDataset?.visionCards ?? [];
+  const carcassFrontMap = codexDataset?.carcassFrontMap;
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -1326,6 +1327,7 @@ export const CodexView: React.FC = () => {
         <CampaignsView
           campaigns={campaigns}
           visionCards={visionCards}
+          map={carcassFrontMap}
           error={codexDatasetError}
         />
       )}

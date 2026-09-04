@@ -62710,6 +62710,380 @@ export const DATASET: Dataset = {
       }
     }
   },
+  "carcassFrontMap": {
+    "legend": {
+      "👁": "Favour",
+      "🏺": "Relics",
+      "📦": "Supplies",
+      "🌍": "Territories"
+    },
+    "zones": [
+      {
+        "name": "Altar of Leviathan",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Altar of Leviathan"
+      },
+      {
+        "name": "Baghras Fortress",
+        "resources": [
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "Fields of Glory"
+      },
+      {
+        "name": "Basarfuth Castle",
+        "resources": [
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Supply Raid"
+      },
+      {
+        "name": "Botfly Valley",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Carrion Coast",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Cathedral of Wire",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Desolate Trapesac",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Domus Demetrius",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Domus Demetrius"
+      },
+      {
+        "name": "Fields of Green Flame",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Geist Spires",
+        "resources": [
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Supply Raid"
+      },
+      {
+        "name": "Guillaume Basin",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Holy Choked Path",
+        "resources": [
+          "Favour",
+          "Territories"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "House of Pillars",
+        "resources": [
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Relic Hunt"
+      },
+      {
+        "name": "Kurd Dagh",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "The High Ground"
+      },
+      {
+        "name": "Kyrrhos City",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Little Jahannam",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Lost Shih-al-Hadid",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Martyr’s Crossing",
+        "resources": [
+          "Favour",
+          "Supplies"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "Mi’ilya Outskirts",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "North Amanus Trenches",
+        "resources": [
+          "Favour"
+        ],
+        "scenario": "Random Trench Lines Scenario"
+      },
+      {
+        "name": "Pilgrimage of Stone",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Pillar of Jonah",
+        "resources": [
+          "Relics",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Trench Warfare"
+      },
+      {
+        "name": "Risen Ruins",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random Derelict Ruins Scenario"
+      },
+      {
+        "name": "Ruins of Nineveh Novus",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Territories"
+        ],
+        "scenario": "Ruins of Nineveh Novus"
+      },
+      {
+        "name": "Sacred Plains",
+        "resources": [
+          "Relics"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "Scavenger Towns",
+        "resources": [
+          "Supplies"
+        ],
+        "scenario": "Claim No Man’s Land"
+      },
+      {
+        "name": "Shadow of Old Saints",
+        "resources": [
+          "Favour",
+          "Relics"
+        ],
+        "scenario": "Hunt for Heroes"
+      },
+      {
+        "name": "South Amanus Trenches",
+        "resources": [
+          "Favour",
+          "Territories"
+        ],
+        "scenario": "Hunt for Heroes"
+      },
+      {
+        "name": "Steel Necropolis",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "Steel Necropolis"
+      },
+      {
+        "name": "Syrian Gate",
+        "resources": [
+          "Territories"
+        ],
+        "scenario": "Random No Man’s Land Scenario"
+      },
+      {
+        "name": "The Sword of God",
+        "resources": [
+          "Favour",
+          "Supplies",
+          "Territories"
+        ],
+        "scenario": "The Sword of God"
+      },
+      {
+        "name": "The Vivarium",
+        "resources": [
+          "Favour",
+          "Relics",
+          "Supplies"
+        ],
+        "scenario": "Dragon Hunt"
+      }
+    ],
+    "outpostBonuses": [
+      {
+        "zone": "Altar of Leviathan",
+        "bonus": "Special rules apply to playing games in this zone (▶ see page 83)."
+      },
+      {
+        "zone": "Baghras Fortress",
+        "bonus": "In the Quartermaster Step following the game where you establish an Outpost in this zone, you can recruit Mercenaries for half their listed cost in ☼ (rounded up)."
+      },
+      {
+        "zone": "Domus Demetrius",
+        "bonus": "The first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal. In addition, if you have an Outpost in this zone it counts as two zones (instead of one) when working out which Warband has the longest supply line."
+      },
+      {
+        "zone": "House of Pillars",
+        "bonus": "Add +1 DICE to Success Rolls for Morale Checks for your Warband if you have an Outpost in this zone."
+      },
+      {
+        "zone": "Kurd Dagh",
+        "bonus": "You can re-roll one Promotion roll each Promotions & Experience Step if you have an Outpost in this zone."
+      },
+      {
+        "zone": "Ruins of Nineveh Novus",
+        "bonus": "The first player to establish an Outpost in this zone adds one Omen of Leviathan to their Warband’s Arsenal. In addition, you can add or subtract 1 from your Exploration Roll if you have an Outpost at this zone."
+      },
+      {
+        "zone": "Pillar of Jonah",
+        "bonus": "If you have an Outpost in this zone and you play a game at this zone or a zone that is linked to it, the opposing Warband starts the game with 2 BLOOD MARKERS distributed amongst their models as they wish. Note that if the opposing Warband also had an Outpost in this zone, you will start the game with 2 BLOOD MARKERS as well!"
+      },
+      {
+        "zone": "Steel Necropolis",
+        "bonus": "In the Quartermaster Step following the round where you establish an Outpost in this zone, Armour and Shields cost half the listed price in 👑 (rounded up). In addition, the first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal."
+      },
+      {
+        "zone": "The Sword of God",
+        "bonus": "In the Quartermaster Step following the round where you place an Outpost in this zone, Ranged Weapons cost half the listed price in 👑 (rounded up). In addition, the first player to establish an Outpost here adds one Omen of Leviathan to their Warband’s Arsenal."
+      },
+      {
+        "zone": "The Vivarium",
+        "bonus": "If you have an Outpost in this zone, you can re-roll one Trauma roll in each of your Outcome Phases."
+      }
+    ],
+    "generator": {
+      "intro": "Roll once on the following charts to determine the deployment that is used for a random scenario in a campaign game, then roll a second time to determine the Victory Conditions that apply to the game. All random scenarios have a game length of 6 Turns in a Carcass Front Campaign.",
+      "archetypes": [
+        "No Man’s Land",
+        "Decimated Ruins",
+        "Trench Lines"
+      ],
+      "rows": [
+        {
+          "printed": "1-2",
+          "rolls": [
+            1,
+            2
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Standard Deployment",
+              "victory": "Sabotage"
+            },
+            "Decimated Ruins": {
+              "deployment": "Flank Attack",
+              "victory": "Attritional Battle"
+            },
+            "Trench Lines": {
+              "deployment": "Flank Attack",
+              "victory": "Attritional Battle"
+            }
+          }
+        },
+        {
+          "printed": "3-4",
+          "rolls": [
+            3,
+            4
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Tunnels",
+              "victory": "Over the Top"
+            },
+            "Decimated Ruins": {
+              "deployment": "Fog of War",
+              "victory": "Sabotage"
+            },
+            "Trench Lines": {
+              "deployment": "Tunnels",
+              "victory": "Breakthrough"
+            }
+          }
+        },
+        {
+          "printed": "5-6",
+          "rolls": [
+            5,
+            6
+          ],
+          "byArchetype": {
+            "No Man’s Land": {
+              "deployment": "Long-Distance Battle",
+              "victory": "Take and Hold"
+            },
+            "Decimated Ruins": {
+              "deployment": "Chance Encounter",
+              "victory": "Retrieve"
+            },
+            "Trench Lines": {
+              "deployment": "Long-Distance Battle",
+              "victory": "Over the Top"
+            }
+          }
+        }
+      ]
+    },
+    "unreadable": []
+  },
   "coreRules": [
     {
       "id": "the-initiative-phase",

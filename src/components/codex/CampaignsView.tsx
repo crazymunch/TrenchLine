@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, Map as MapIcon, Home, Trophy, Eye } from 'lucide-react';
 import { RulesProse } from './RulesProse';
-import type { CampaignDefinition, CampaignSection, VisionCard } from '@/types/catalogue';
+import type {
+  CampaignDefinition, CampaignSection, VisionCard, CarcassFrontMap,
+} from '@/types/catalogue';
 
 /**
  * The two campaigns Carcass Front prints, and its sixteen Vision cards.
@@ -14,6 +16,16 @@ import type { CampaignDefinition, CampaignSection, VisionCard } from '@/types/ca
  * accordion rather than a page. A player opens this at a table, on a phone,
  * having just finished a game and wanting the one step they are on.
  */
+
+/**
+ * The glyph the map prints for a Resource.
+ *
+ * The legend is read out of the book (`Favour 👁`) and stored glyph-to-name,
+ * so this is the reverse lookup. Returns nothing rather than a guessed emoji
+ * where the legend does not name it.
+ */
+const glyphFor = (map: CarcassFrontMap, resource: string): string =>
+  Object.entries(map.legend).find(([, name]) => name === resource)?.[0] ?? '';
 
 /** A level-1 banner and the level-2 rules printed under it. */
 interface Group {
@@ -76,8 +88,14 @@ const Panel: React.FC<{
 export const CampaignsView: React.FC<{
   campaigns: CampaignDefinition[];
   visionCards: VisionCard[];
+  /**
+   * The three tables printed on the fold-out map. Optional: a ruleset without
+   * the supplement genuinely has no campaign map, which is a different thing
+   * from one we failed to read.
+   */
+  map?: CarcassFrontMap;
   error?: string | null;
-}> = ({ campaigns, visionCards, error }) => {
+}> = ({ campaigns, visionCards, map, error }) => {
   const [activeId, setActiveId] = useState(campaigns[0]?.id ?? '');
   const [openKey, setOpenKey] = useState<string | null>(null);
 
@@ -119,21 +137,19 @@ export const CampaignsView: React.FC<{
       </div>
 
       {/*
-        The fold-out map is not in the PDF, and neither is anything printed on
-        it: the zone board, the Carcass Front Zones table (which zone offers
-        which Resources and which scenario is played there), the Special Zones
-        table, and the generator charts. Said here rather than leaving a player
-        to work out why the rules below keep pointing at a table that is not in
-        the app.
+        The BOARD — which zone borders which — is still only on the printed
+        sheet, and a rule about supply lines and adjacency needs it. Its three
+        tables are no longer missing: they come off `carcass-front-map.pdf` and
+        are the three panels below. Said here rather than leaving a player to
+        work out which half of the map the app does not have.
       */}
       {campaign.requiresMap && (
         <div className="p-3.5 bg-theme-base rounded border border-theme-accent/50 flex gap-2.5">
           <MapIcon className="w-4 h-4 text-theme-accent shrink-0 mt-0.5" />
           <p className="text-[11px] font-mono text-theme-text leading-relaxed">
-            This campaign is played on the <strong>fold-out map from the box</strong>. The zone
-            board, the Carcass Front Zones table, the Special Zones table and the generator
-            charts are printed there and appear in no PDF, so they are not in the app — the
-            rules below say what to do with them.
+            This campaign is played on the <strong>zone board from the box</strong> — which zone
+            borders which is printed there and nowhere else, and the rules below need it for
+            supply lines and adjacency. The tables printed beside it{map ? ' are below' : ' are not in the app'}.
           </p>
         </div>
       )}
@@ -142,6 +158,130 @@ export const CampaignsView: React.FC<{
         <div className="p-3.5 bg-theme-surface border border-theme-border rounded-md">
           <RulesProse source={campaign.intro} />
         </div>
+      )}
+
+      {/*
+        The three tables printed on the fold-out map beside the board.
+
+        Only on this campaign: `map` is the Carcass Front Campaign's map, and
+        the Path to Leviathan is not played on it — the guard is the campaign's
+        own `requiresMap`, not merely "the dataset has a map".
+      */}
+      {campaign.requiresMap && map && map.zones.length > 0 && (
+        <Panel
+          title={<span className="flex items-center gap-2"><MapIcon className="w-4 h-4" />Carcass Front Zones</span>}
+          subtitle={`${map.zones.length} zones, and the scenario played at each`}
+          open={openKey === 'zones'}
+          onToggle={() => toggle('zones')}
+        >
+          {/* A lookup table, so it scrolls inside its own container and never
+              the page — see docs/MOBILE.md. */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-[11px] font-mono border-collapse">
+              <thead>
+                <tr className="border-b border-theme-border text-theme-muted text-left">
+                  <th className="py-2 pr-3 font-normal">Zone</th>
+                  <th className="py-2 pr-3 font-normal">Resources</th>
+                  <th className="py-2 font-normal">Scenario</th>
+                </tr>
+              </thead>
+              <tbody>
+                {map.zones.map((z) => (
+                  <tr key={z.name} className="border-b border-theme-border last:border-0">
+                    <td className="py-2 pr-3 whitespace-nowrap font-bold text-theme-primary align-top">
+                      {z.name}
+                    </td>
+                    {/* The glyph AND the word: the map prints only the glyph,
+                        and a player who has not read the legend cannot use a
+                        column of emoji. */}
+                    <td className="py-2 pr-3 text-theme-text align-top">
+                      {z.resources.length
+                        ? z.resources.map((r) => (
+                            <span key={r} className="inline-block whitespace-nowrap pr-2">
+                              {glyphFor(map, r)} {r}
+                            </span>
+                          ))
+                        : <span className="text-theme-muted">—</span>}
+                    </td>
+                    <td className="py-2 text-theme-text align-top">{z.scenario}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      )}
+
+      {campaign.requiresMap && map && map.outpostBonuses.length > 0 && (
+        <Panel
+          title="Special Zone Outpost Bonuses"
+          subtitle={`${map.outpostBonuses.length} zones confer a bonus on the Warband holding an Outpost`}
+          open={openKey === 'outposts'}
+          onToggle={() => toggle('outposts')}
+        >
+          <div className="space-y-2">
+            {map.outpostBonuses.map((b) => (
+              <div key={b.zone} className="p-3 bg-theme-base rounded border border-theme-border">
+                <span className="font-gothic font-bold text-xs text-theme-primary">{b.zone}</span>
+                <p className="text-[11px] font-mono text-theme-text leading-relaxed pt-1">
+                  {b.bonus}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      )}
+
+      {campaign.requiresMap && map?.generator && (
+        <Panel
+          title="Carcass Front Scenario Generator"
+          subtitle="Deployment and Victory Conditions for a random campaign scenario"
+          open={openKey === 'cf-generator'}
+          onToggle={() => toggle('cf-generator')}
+        >
+          <p className="text-[11px] font-mono text-theme-muted leading-relaxed pb-3">
+            {map.generator.intro}
+          </p>
+          {/*
+            One table per archetype, stacked, rather than the map's six-column
+            grid. Three columns of paired cells is unreadable at 375px, and a
+            player rolling in a campaign game has already chosen which
+            battlefield they are on.
+          */}
+          <div className="space-y-3">
+            {map.generator.archetypes.map((arch) => (
+              <div key={arch} className="p-3 bg-theme-base rounded border border-theme-border">
+                <span className="font-gothic font-bold text-xs text-theme-primary">{arch}</span>
+                <div className="overflow-x-auto pt-1">
+                  <table className="w-full text-[11px] font-mono border-collapse">
+                    <thead>
+                      <tr className="border-b border-theme-border text-theme-muted text-left">
+                        <th className="py-2 pr-3 font-normal">D6</th>
+                        <th className="py-2 pr-3 font-normal">Deployment</th>
+                        <th className="py-2 font-normal">Victory Conditions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {map.generator!.rows.map((r) => (
+                        <tr key={r.printed} className="border-b border-theme-border last:border-0">
+                          <td className="py-2 pr-3 whitespace-nowrap text-theme-muted align-top">
+                            {r.printed}
+                          </td>
+                          <td className="py-2 pr-3 text-theme-text align-top">
+                            {r.byArchetype[arch]?.deployment ?? '—'}
+                          </td>
+                          <td className="py-2 text-theme-text align-top">
+                            {r.byArchetype[arch]?.victory ?? '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
       )}
 
       {/* The twelve Camp building tiers, which stack. */}

@@ -33,6 +33,7 @@ import { parseCarcassFrontCampaigns } from './lib/parse-cf-campaign.mjs';
 import { parseVisionCards } from './lib/parse-vision-cards.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
 import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
+import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
 import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
@@ -167,6 +168,27 @@ for (const ruleset of RULESETS) {
     charts, not a scenario.
   */
   const generator = parseScenarioGenerator();
+
+  /*
+    The fold-out campaign map: 32 zones with their Resources and scenario, ten
+    Special Zone Outpost Bonuses, and the campaign's own D6 charts. All three
+    are printed on the map and nowhere else, and the book's campaign rules
+    point at all three — "the resources available in each zone are shown on the
+    Carcass Front Zones table on the campaign map".
+
+    The charts are checked against the vocabulary the BOOK's generator states,
+    which is why it is read after `parseScenarioGenerator`: every cell must be
+    one of the six deployments, six victory conditions and three archetypes the
+    book prints, or the row is reported rather than repaired. A generator chart
+    that sends a player to a deployment the book does not print is worse than
+    no chart.
+  */
+  const namesIn = (chart) => (chart?.rows ?? []).map((r) => r.values[0]).filter(Boolean);
+  const cfMap = parseCarcassFrontMap({
+    deployments: namesIn(generator?.deployment),
+    victories: namesIn(generator?.victory),
+    archetypes: namesIn(generator?.battlefield),
+  });
 
   const scenarios = parseScenarios().map((s) => {
     /*
@@ -366,6 +388,14 @@ for (const ruleset of RULESETS) {
      * used to roll.
      */
     scenarioGenerator: ruleset.layers.includes(CARCASS_FRONT) ? generator : undefined,
+    /**
+     * The Carcass Front campaign map's three tables.
+     *
+     * Undefined without the supplement, for the same reason as the generator
+     * above: that ruleset has no campaign map, which is a different thing from
+     * one we failed to read.
+     */
+    carcassFrontMap: ruleset.layers.includes(CARCASS_FRONT) ? cfMap : undefined,
     /**
      * The Core Rules and Comprehensive Rules chapters, in the book's order.
      *
@@ -812,6 +842,16 @@ for (const ruleset of RULESETS) {
   if (dataset.terrain.length) {
     console.log(`  terrain pieces with rules: ${dataset.terrain.map((t) => t.title).join(', ')}`);
   }
+  if (dataset.carcassFrontMap) {
+    const m = dataset.carcassFrontMap;
+    console.log(`  campaign map: ${m.zones.length} zones, `
+      + `${m.outpostBonuses.length} Special Zone Outpost Bonuses, `
+      + `${m.generator?.rows?.length ?? 0} generator rows across `
+      + `${m.generator?.archetypes?.length ?? 0} archetypes`
+      + (m.unreadable.length ? `  (${m.unreadable.length} UNREADABLE: `
+                              + `${m.unreadable.join(' | ')})` : ''));
+  }
+
   if (dataset.scenarioGenerator) {
     const g = dataset.scenarioGenerator;
     const deeds = g.gloriousDeeds.charts.reduce((n, c) => n + c.rows.length, 0);
