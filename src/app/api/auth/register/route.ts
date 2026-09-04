@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
 import { sendVerification, notifyExistingAccount } from '@/lib/accountMail';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 
 /**
  * Create an account.
@@ -69,6 +70,17 @@ export async function POST(req: NextRequest) {
       { error: `A password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD} characters.` },
       { status: 400 });
   }
+
+  /*
+    Counted AFTER the shape checks and BEFORE the database.
+
+    After, so a malformed body cannot spend a real caller's allowance. Before,
+    so the expensive half — a lookup, a bcrypt hash and a mail — is what the
+    limit actually protects. Keyed on IP and on IP+address together, never the
+    address alone: see `rateLimit.ts`.
+  */
+  const limited = limitAccountRoute('register', req.headers, email);
+  if (limited) return limited;
 
   const name = typeof rawName === 'string' && rawName.trim()
     ? rawName.trim().slice(0, MAX_NAME)

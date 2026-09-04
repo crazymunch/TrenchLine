@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { consumeToken } from '@/lib/authTokens';
 import { sendPasswordReset } from '@/lib/accountMail';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 
 /**
  * Password reset, both halves.
@@ -34,6 +35,19 @@ export async function POST(req: NextRequest) {
   }
 
   const { email: rawEmail, token, password } = body as Record<string, unknown>;
+
+  /*
+    Both halves are limited, and the spend half is limited WITHOUT a subject.
+
+    A token names the account, but the caller holding it may not own that
+    account — that is the case being guarded. Keying the spend on the token's
+    owner would let an attacker with one stolen link exhaust the real owner's
+    allowance, so the spend is limited by IP alone: what needs slowing there is
+    someone trying tokens, and they are all coming from somewhere.
+  */
+  const subject = typeof rawEmail === 'string' ? rawEmail : null;
+  const limited = limitAccountRoute('reset', req.headers, token ? null : subject);
+  if (limited) return limited;
 
   /* ---- spend a link ---- */
   if (typeof token === 'string' && token) {

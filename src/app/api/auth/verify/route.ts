@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { consumeToken } from '@/lib/authTokens';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 
 /**
  * Confirm an address from the link in a verification mail.
@@ -20,6 +21,10 @@ export async function POST(req: NextRequest) {
   if (typeof token !== 'string' || !token) {
     return NextResponse.json({ error: 'A token is required.' }, { status: 400 });
   }
+
+  /* By IP alone: the caller holding a link may not be the account's owner. */
+  const limited = limitAccountRoute('register', req.headers, null);
+  if (limited) return limited;
 
   const result = await consumeToken(token, 'EMAIL_VERIFICATION');
   if (!result.ok) {

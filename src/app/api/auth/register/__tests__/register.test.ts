@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { resetRateLimits } from '@/lib/api/rateLimit';
 
 /**
  * Registration.
@@ -41,6 +42,13 @@ const post = async (body: unknown) => {
 };
 
 beforeEach(() => {
+  /*
+    A fresh caller per test. Every request here comes from the same absent
+    address, so without this the suite spends the register bucket — five an
+    hour — and the sixth test onwards measures the rate limiter instead of the
+    route. That the limit bites at all is the limiter working.
+  */
+  resetRateLimits();
   findUnique.mockReset().mockResolvedValue(null);
   create.mockReset().mockImplementation(async ({ data, select }: never) => ({
     id: 'u1', email: (data as Record<string, string>).email,

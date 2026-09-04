@@ -54,3 +54,5 @@ These exist because the original codebase violated all four.
    enhancement, added at `sm:` and up. See `MOBILE.md`.
 4. **Documented decisions.** A change to the data model, the ruleset layering,
    or the source list updates the relevant document in the same commit.
+
+- [`DEPLOYMENT.md`](DEPLOYMENT.md) — what the environment must provide, and which layer enforces rate limiting.

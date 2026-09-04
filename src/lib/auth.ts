@@ -6,6 +6,7 @@ import { prisma } from './prisma';
 import { requireEnv } from './env';
 import { isAdminUserId, emailGrantsAdmin } from './adminRole';
 import { authRequiresVerification } from './mail';
+import { consume, clientIp } from './api/rateLimit';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -83,6 +84,7 @@ export const MIN_PASSWORD_LENGTH = 10;
  */
 export async function verifyCredentials(
   credentials: Record<string, string> | undefined,
+  req?: { headers?: Headers | Record<string, string | string[] | undefined> },
 ): Promise<{ id: string; name: string | null; email: string | null; image: string | null } | null> {
   const email = credentials?.email?.toLowerCase().trim();
   const password = credentials?.password;
@@ -90,6 +92,27 @@ export async function verifyCredentials(
   // Both are required. A missing password is a failed sign-in, never a reason
   // to skip the check.
   if (!email || !password) return null;
+
+  /*
+    Rate-limited before the password is compared.
+
+    This is the endpoint an attacker walks a password list through, and bcrypt
+    makes each attempt expensive for the SERVER as well as the attacker — so an
+    unlimited sign-in is a CPU exhaustion surface as much as a guessing one.
+
+    Two buckets, both on the IP: one for the address alone, one for the address
+    paired with the caller. Never on the address by itself — a bucket a
+    stranger can fill is a way to lock a real user out of their own account.
+
+    NextAuth hands `authorize` a request-like object whose headers may be a
+    plain record rather than a `Headers`, so both are accepted. A caller with
+    no headers at all — a direct unit-test call — is limited by a constant key
+    rather than skipped, so the limit cannot be dodged by omitting them.
+  */
+  const headers = toHeaders(req?.headers);
+  const ip = clientIp(headers);
+  if (!consume('signIn', ip).ok) return null;
+  if (!consume('signIn', ip, email).ok) return null;
 
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -126,6 +149,27 @@ export async function verifyCredentials(
   return { id: user.id, name: user.name, email: user.email, image: user.image };
 }
 
+/**
+ * NextAuth's request headers, as a `Headers`.
+ *
+ * The object handed to `authorize` is not a `NextRequest`: depending on the
+ * runtime its `headers` is either a real `Headers` or a plain record. Both are
+ * normalised here so the rate limiter has one shape to read.
+ */
+function toHeaders(
+  raw: Headers | Record<string, string | string[] | undefined> | undefined,
+): Headers {
+  if (!raw) return new Headers();
+  if (typeof (raw as Headers).get === 'function') return raw as Headers;
+
+  const out = new Headers();
+  for (const [key, value] of Object.entries(raw)) {
+    if (typeof value === 'string') out.set(key, value);
+    else if (Array.isArray(value) && value[0]) out.set(key, value[0]);
+  }
+  return out;
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -149,7 +193,11 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email', placeholder: 'commander@example.org' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize: verifyCredentials,
+      /*
+        Both arguments. NextAuth passes the request second, and that is where
+        the caller's address comes from for the rate limit above.
+      */
+      authorize: (credentials, req) => verifyCredentials(credentials, req as never),
     }),
   ],
   callbacks: {

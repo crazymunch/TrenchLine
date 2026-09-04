@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 import { handle } from '@/lib/api/http';
 import { readAndParse, text } from '@/lib/api/parse';
 import { currentActor, requireAdmin } from '@/lib/api/policy';
@@ -109,6 +110,19 @@ export async function POST(req: NextRequest) {
   return handle('bug-reports.POST', async () => {
     const body = await readAndParse(req, NewReport);
     const actor = await currentActor();
+
+    /*
+      Anonymous submissions are limited by IP; a signed-in one is not.
+
+      A report from an account is already attributable and already costs the
+      submitter something, and rate-limiting a signed-in user who is trying to
+      tell us about a bug is the wrong trade. The flood risk is the anonymous
+      surface.
+    */
+    if (!actor) {
+      const limited = limitAccountRoute('bugReport', req.headers, null);
+      if (limited) return limited;
+    }
 
     /*
       The context is appended to the description rather than given columns of

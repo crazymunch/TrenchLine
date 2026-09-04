@@ -55,11 +55,45 @@ const user = (over: Record<string, unknown> = {}) => ({
   what the provider is actually wired to.
 */
 describe('the provider wiring', () => {
-  it('uses verifyCredentials, not something else', () => {
-    const provider = authOptions.providers.find((p) => p.id === 'credentials') as unknown as {
-      options?: { authorize?: unknown };
+  /*
+    Delegation, not identity.
+
+    `authorize` is a thin wrapper now rather than `verifyCredentials` itself,
+    because NextAuth passes the REQUEST as its second argument and the sign-in
+    rate limit needs the caller's address from it. So the assertion is that the
+    wrapper reaches the real verifier AND hands the request through — which is
+    a stronger claim than the equality it replaces, and covers the thing the
+    limit depends on.
+  */
+  const credentialsProvider = () =>
+    authOptions.providers.find((p) => p.id === 'credentials') as unknown as {
+      options?: { authorize?: (c: unknown, r: unknown) => Promise<unknown> };
     };
-    expect(provider.options?.authorize).toBe(verifyCredentials);
+
+  it('reaches verifyCredentials, and passes the request through', async () => {
+    findUnique.mockResolvedValue(user());
+    const authorizeFn = credentialsProvider().options?.authorize;
+    expect(typeof authorizeFn).toBe('function');
+
+    const req = { headers: new Headers({ 'x-forwarded-for': '198.51.100.7' }) };
+    await expect(authorizeFn!({ email: 'player@example.org', password: PASSWORD }, req))
+      .resolves.toMatchObject({ id: 'u1', email: 'player@example.org' });
+
+    // The real verifier ran: it is the only thing that reads the user record.
+    expect(findUnique).toHaveBeenCalled();
+  });
+
+  it('is not a stub that answers null to everything', async () => {
+    /*
+      The failure this whole section exists to catch. `CredentialsProvider(...)`
+      returns an object whose own `authorize` is `() => null`, so a suite
+      reaching for the wrong one passes every "rejects a bad credential"
+      assertion while proving nothing.
+    */
+    findUnique.mockResolvedValue(user());
+    const authorizeFn = credentialsProvider().options?.authorize;
+    await expect(authorizeFn!({ email: 'player@example.org', password: PASSWORD }, {}))
+      .resolves.not.toBeNull();
   });
 });
 

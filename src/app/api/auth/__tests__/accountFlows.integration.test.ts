@@ -29,13 +29,20 @@ vi.mock('@/lib/prisma', () => ({ prisma }));
 process.env.NEXTAUTH_SECRET = 'test-secret';
 process.env.NEXTAUTH_URL = 'https://trenchline.test';
 
+const { resetRateLimits } = await import('@/lib/api/rateLimit');
 const { POST: register } = await import('../register/route');
 const { POST: verify } = await import('../verify/route');
 const { POST: reset } = await import('../reset/route');
 const { verifyCredentials } = await import('@/lib/auth');
 
 const call = async (handler: (r: never) => Promise<Response>, body: unknown) => {
-  const res = await handler({ json: async () => body } as never);
+  /* Headers, as a real request has them — the routes rate-limit on the
+     caller's address, and a fixture without them would exercise a path a
+     browser never takes. */
+  const res = await handler({
+    json: async () => body,
+    headers: new Headers({ 'x-forwarded-for': '203.0.113.1' }),
+  } as never);
   return { status: res.status, body: await res.json() as Record<string, unknown> };
 };
 
@@ -50,6 +57,9 @@ describeDb('account flows', () => {
     await prisma.$disconnect();
   });
   beforeEach(async () => {
+    /* Every request here comes from the same absent address; without this the
+       suite spends its own bucket and later tests measure the limiter. */
+    resetRateLimits();
     sent.length = 0;
     await prisma.user.deleteMany({ where: { email: { endsWith: DOMAIN } } });
   });
