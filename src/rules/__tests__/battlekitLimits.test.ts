@@ -193,10 +193,34 @@ describe('an item the sources do not classify', () => {
   equipment, including a Homunculus with an extra limb.
 */
 describe('a real warband', () => {
-  it('raises no Battlekit violation', () => {
+  /*
+    Al-Qarn Rihla is nine models of mixed weapons, armour and equipment,
+    including a Homunculus with an extra limb, and it raises exactly two
+    Battlekit violations — both correct, and both about the same model.
+
+    "It cannot carry a 2-Handed Weapon unless the Weapon AND the Shield both
+    have the Shield Combo stipulation." Al-Masyukh carries a Trench Shield,
+    which the Iron Sultanate armoury does give Shield Combo, alongside a Great
+    Sword/Axe and a Siege Jezzail, which it does not. The book needs both.
+
+    Pinned exactly rather than asserted empty: these appeared once the second
+    book's wargear reached the dataset and the checker could finally tell what
+    those items were. If the count moves, something has changed about what the
+    engine can see, and that is worth failing over.
+  */
+  it('raises exactly the two Shield violations the book calls for', () => {
     const { roster } = toRoster(defaultSultanateWarband, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
-    expect(v.map((x) => x.message)).toEqual([]);
+    expect(v.map((x) => x.message).sort()).toEqual([
+      'Takwin Homunculus: Great Sword/Axe is 2-Handed and cannot be carried with a Shield unless both have Shield Combo.',
+      'Takwin Homunculus: Siege Jezzail is 2-Handed and cannot be carried with a Shield unless both have Shield Combo.',
+    ]);
+  });
+
+  it('and none of them are about the other eight models', () => {
+    const { roster } = toRoster(defaultSultanateWarband, d);
+    const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
+    expect(new Set(v.map((x) => x.unitId)).size).toBe(1);
   });
 });
 

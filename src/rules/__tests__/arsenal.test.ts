@@ -16,13 +16,17 @@ const arsenal = buildArsenal(DATASET);
 const find = (name: string) => arsenal.find((i) => i.key === nameKey(name));
 
 describe('the Battlekit chapter', () => {
-  it('is derived, and covers the whole chapter', () => {
-    // 18 ranged, 10 melee, 5 grenades, 1 shield, 2 armour, 20 equipment.
-    expect(DATASET.battlekit).toHaveLength(56);
+  it('is derived, and covers both books', () => {
+    /*
+      56 from the core rulebook's Battlekit chapter, plus the faction-exclusive
+      entries from Warbands of Trench Crusade. Reading only the first is why
+      Alchemist Armour rendered as a name and a blank and the Wind Amulet's
+      dossier showed no rules at all.
+    */
+    expect(DATASET.battlekit.length).toBeGreaterThan(56);
     const sections = new Set(DATASET.battlekit.map((b) => b.section));
-    expect([...sections].sort()).toEqual([
-      'Armour', 'Equipment', 'Grenades', 'Melee Weapons', 'Ranged Weapons', 'Shields',
-    ]);
+    expect([...sections].sort()).toEqual(
+      ['Armour', 'Equipment', 'Grenades', 'Melee Weapons', 'Ranged Weapons', 'Shields']);
   });
 
   it('carries the published description verbatim', () => {

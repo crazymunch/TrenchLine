@@ -317,6 +317,23 @@ export function recruitable(
   const chapter = new Map(
     (dataset.battlekit ?? []).map((b) => [nameKey(b.name), b] as const));
 
+  /*
+    Which source describes an item, when more than one does.
+
+    The catalogue's own `lore` wins over the books' chapters, because it is the
+    more specific source: two factions print a `Holy Icon Armour` and they are
+    not the same item — Warbands of Trench Crusade gives the Trench Pilgrims'
+    as "scripture scrolls written with the blood of saints", the Carcass Front
+    book gives the Procession's as "scripture text within decorative
+    scrollwork". Keyed on name alone, the chapters would show a Procession
+    player the other faction's armour.
+
+    `||` rather than `??` on purpose: the catalogue stores an empty string for
+    an item it does not describe, and empty is not "absent" to `??`. Core
+    wargear has no catalogue lore, so the rulebook still wins for it — there is
+    a test that keeps it that way.
+  */
+
   const weapons: WeaponProfile[] = [];
   const armour: ArmourProfile[] = [];
   const equipment: EquipmentItem[] = [];
@@ -338,7 +355,7 @@ export function recruitable(
         // neither source states one — never defaulted to a plausible -1.
         modifier: (b?.keywords ?? p?.keywords ?? []).find((kw) => /INJURY MODIFIER/i.test(kw)),
         keywords: b?.keywords ?? p?.keywords ?? [],
-        description: b?.description ?? p?.lore,
+        description: p?.lore || b?.description,
         category: section,
         factionId: appId(armoury.factionId),
       });
@@ -367,7 +384,7 @@ export function recruitable(
         effect: b?.rules.join(' ') || p?.rules || b?.note
           || (b?.keywords ?? p?.keywords ?? []).join(', ') || '',
         keywords: b?.keywords ?? p?.keywords ?? [],
-        description: b?.description ?? p?.lore,
+        description: p?.lore || b?.description,
         category: section,
         factionId: appId(armoury.factionId),
       });
@@ -386,7 +403,7 @@ export function recruitable(
       modifiers: (b?.keywords ?? p?.keywords ?? [])
         .filter((kw) => /DICE|INJURY|ARMOUR PIERCING/i.test(kw)).join(', ') || '-',
       keywords: b?.keywords ?? p?.keywords ?? [],
-      description: b?.description ?? p?.lore,
+      description: p?.lore || b?.description,
       hands: b?.type === '2-Handed' ? 2 : b?.type === '1-Handed' ? 1 : undefined,
       category: section,
       factionId: appId(armoury.factionId),

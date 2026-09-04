@@ -5,6 +5,11 @@ import { hasExtraLimb } from '../../rules/formulae';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
+import { canEquip } from '../../rules/equipGate';
+import { armouryFor } from '../../rules/armoury';
+import { traitsOf } from '../../rules/formulae';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
 import { 
   Shield, 
@@ -43,7 +48,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
   const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
   const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'formulae' | 'headgear' | 'relic' | 'gear'>('all');
-  const [filterLegalOnly] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>('');
 
   const activeWarband = getActiveWarband();
@@ -51,10 +55,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const factionId = activeWarband?.factionId || 'universal';
   const unitProfileName = unit?.profileSnapshot.name || unitName;
 
-  // Unit Type Flags
-  const isHomunculus = /homunculus/i.test(unitProfileName) || /homunculus/i.test(unitName);
-  const isBeast = /lion|dog|hound|beast/i.test(unitProfileName) || /lion|dog|hound/i.test(unitName);
-  const isHeavyConstruct = /brazen|golem|mamluk|mechanized/i.test(unitProfileName);
 
   // Equipment arrays
   const currentWeapons = unit?.equippedWeapons || [];
@@ -100,97 +100,26 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const isOverRangedHands = rangedHandsUsed > maxRangedHands;
   const isOverArmourLimit = currentArmour.length > 1;
 
-  // Accurate Unit and Faction Legality Filter for Weapons
-  const isWeaponLegal = (w: WeaponProfile) => {
-    if (isBeast) return false;
+  /*
+    The three name-pattern predicates that stood here are gone.
 
-    // Homunculus rules: Melee weapons & Shields only; no heavy 2H firearms or heavy weaponry
-    if (isHomunculus) {
-      if (w.type === 'Ranged' && (w.hands === 2 || /cannon|mortar|mg|heavy|sniper|anti-materiel|flamethrower/i.test(w.name))) {
-        return false;
-      }
-    }
+    `isWeaponLegal`, `isArmourLegal` and `isEquipmentLegal` decided what a model
+    could take from regexes over NAMES — a second, hand-written rules engine
+    beside the derived one, and the exact pattern the audit was about:
 
-    // Explicit Allowed Units check
-    if (w.allowedUnits && w.allowedUnits.length > 0) {
-      return w.allowedUnits.some(uName => 
-        unitProfileName.toLowerCase().includes(uName.toLowerCase()) ||
-        unitName.toLowerCase().includes(uName.toLowerCase())
-      );
-    }
+        isBeast = /lion|dog|hound|beast/i.test(unitProfileName)  -> equips nothing
+        isHeavyConstruct = /brazen|golem|mamluk|mechanized/i.test(unitProfileName)
+        isHeavySpecialWeapon = /titan|cannon|autocannon/i.test(w.name)
+        if (isHeavySpecialWeapon && !isHeavyConstruct) return false;
 
-    // Heavy Construct restrictions (e.g. Titan weapons, flame cannons)
-    const isHeavySpecialWeapon = /titan|cannon|autocannon/i.test(w.name);
-    if (isHeavySpecialWeapon && !isHeavyConstruct) {
-      return false;
-    }
+    Those last two hid the Titan Zulfiqar from a Takwin Homunculus — including
+    one with Gargantuan Size, which the catalogue explicitly reveals it to —
+    and the filter was permanently on, so nothing on screen said why.
 
-    // Faction restriction
-    if (w.allowedFactions && w.allowedFactions.length > 0) {
-      if (!w.allowedFactions.includes(factionId)) return false;
-    } else if (w.factionId && w.factionId !== 'universal' && w.factionId !== factionId) {
-      return false;
-    }
-
-    return true;
-  };
-
-  // Accurate Legality Filter for Armour
-  const isArmourLegal = (a: ArmourProfile) => {
-    if (isBeast) return false;
-
-    // HOMUNCULUS RULE: Homunculi cannot wear body armour; they may ONLY carry Shields!
-    if (isHomunculus) {
-      const isShield = a.category === 'Shield' || /shield|pavise|mantlet/i.test(a.name) || Boolean(a.keywords?.includes('SHIELD'));
-      return isShield;
-    }
-
-    if (a.allowedUnits && a.allowedUnits.length > 0) {
-      return a.allowedUnits.some(uName => 
-        unitProfileName.toLowerCase().includes(uName.toLowerCase()) ||
-        unitName.toLowerCase().includes(uName.toLowerCase())
-      );
-    }
-
-    // Machine Armour only on heavy constructs
-    if (a.id === 'arm-machine' || a.name.includes('Machine Armour')) {
-      return isHeavyConstruct;
-    }
-
-    if (a.allowedFactions && a.allowedFactions.length > 0) {
-      if (!a.allowedFactions.includes(factionId)) return false;
-    } else if (a.factionId && a.factionId !== 'universal' && a.factionId !== factionId) {
-      return false;
-    }
-
-    return true;
-  };
-
-  // Accurate Legality Filter for Equipment, Relics & Formulae
-  const isEquipmentLegal = (e: EquipmentItem) => {
-    if (isBeast) return false;
-
-    // HOMUNCULUS RULE: Full access to Alchemical Formulae and Elixirs!
-    const isFormula = e.category === 'Formula' || /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(e.name) || Boolean(e.keywords?.includes('FORMULA')) || Boolean(e.keywords?.includes('ELIXIR'));
-    if (isHomunculus && isFormula) {
-      return true;
-    }
-
-    if (e.allowedUnits && e.allowedUnits.length > 0) {
-      return e.allowedUnits.some(uName => 
-        unitProfileName.toLowerCase().includes(uName.toLowerCase()) ||
-        unitName.toLowerCase().includes(uName.toLowerCase())
-      );
-    }
-
-    if (e.allowedFactions && e.allowedFactions.length > 0) {
-      if (!e.allowedFactions.includes(factionId)) return false;
-    } else if (e.factionId && e.factionId !== 'universal' && e.factionId !== factionId) {
-      return false;
-    }
-
-    return true;
-  };
+    `gateFor` below asks the validator's own question of the same data instead,
+    which is also what stops a greyed-out button and a legality error from ever
+    disagreeing.
+  */
 
   /*
     Gear the model already has.
@@ -204,13 +133,62 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     a row they can never take is noise at a table. The kit itself is shown on
     the model's own card, where it belongs.
   */
+  /*
+    Whether an item may be taken, asked of the SAME data the validator uses.
+
+    This replaces a hand-written engine of regexes over names — `isBeast`,
+    `isHomunculus`, `isHeavyConstruct`, `isHeavySpecialWeapon` — two of which
+    hid the Titan Zulfiqar from a Takwin Homunculus with Gargantuan Size: the
+    weapon matches /titan/, the model does not match /brazen|golem|mamluk/,
+    and the filter was permanently on. So the model could not be offered a
+    weapon the catalogue explicitly reveals to it.
+
+    Items that fail are now shown DISABLED with the published sentence that
+    forbids them, rather than silently removed: a player looking for a weapon
+    that is not in the list cannot tell whether the app is enforcing a rule or
+    has lost the entry.
+  */
+  const { dataset } = useDataset(
+    (typeof window !== 'undefined'
+      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+
+  const carriedNow = React.useMemo(() => ([
+    ...(unit?.equippedWeapons ?? []),
+    ...(unit?.equippedArmour ?? []),
+    ...(unit?.equippedEquipment ?? []),
+  ] as { id?: string; name: string }[]).map((g) => ({ name: g.name, weaponId: g.id })),
+  [unit]);
+
+  const gateFor = React.useCallback((item: { id?: string; name: string }) => {
+    if (!dataset) return { allowed: true };
+    return canEquip(item, {
+      dataset,
+      armoury: armouryFor(dataset, factionId),
+      carried: carriedNow,
+      unit: {
+        name: unitProfileName,
+        keywords: unit?.profileSnapshot?.stats?.keywords,
+        roles: unit?.profileSnapshot?.category ? [unit.profileSnapshot.category] : [],
+      },
+      traits: traitsOf(unit),
+      extraLimb: hasExtraLimb(unit),
+    });
+  }, [dataset, factionId, carriedNow, unitProfileName, unit]);
+
   const kit = forcedBattlekit(unit?.profileSnapshot);
   const alreadyCarried = <T extends { id?: string; name: string }>(item: T) =>
     carriesAsBattlekit(unit?.profileSnapshot, item);
 
-  // Filtering Weapons
-  let displayedWeapons = (filterLegalOnly ? weapons.filter(isWeaponLegal) : weapons)
-    .filter((w) => !alreadyCarried(w));
+  /*
+    Every entry the faction stocks, DISABLED where a rule forbids it rather
+    than removed.
+
+    `filterLegalOnly` dropped them silently, and a player looking for a weapon
+    that is not in the list cannot tell whether the app is enforcing a rule or
+    has lost the entry. The Titan Zulfiqar was the case that proved it: hidden
+    from a Homunculus by a regex, with nothing on screen to say why.
+  */
+  let displayedWeapons = weapons.filter((w) => !alreadyCarried(w));
   if (weaponSubCategory === 'ranged') {
     displayedWeapons = displayedWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range.startsWith('Melee') && !/shield/i.test(w.name)));
   } else if (weaponSubCategory === 'melee') {
@@ -221,13 +199,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     displayedWeapons = displayedWeapons.filter(w => /grenade|bomb|molotov|dynamite|flask|pot/i.test(w.name) || w.keywords?.includes('GRENADE'));
   }
 
-  // Filtering Armour
-  let displayedArmour = (filterLegalOnly ? armour.filter(isArmourLegal) : armour)
-    .filter((a) => !alreadyCarried(a));
+  let displayedArmour = armour.filter((a) => !alreadyCarried(a));
 
-  // Filtering Equipment
-  let displayedEquipment = (filterLegalOnly ? equipment.filter(isEquipmentLegal) : equipment)
-    .filter((e) => !alreadyCarried(e));
+  let displayedEquipment = equipment.filter((e) => !alreadyCarried(e));
   if (equipmentSubCategory === 'formulae') {
     displayedEquipment = displayedEquipment.filter(e => 
       e.category === 'Formula' || 
@@ -493,7 +467,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           {tab === 'weapons' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedWeapons.map((w) => {
-                const legal = isWeaponLegal(w);
+                const legal = gateFor(w).allowed;
                 return (
                   <div
                     key={w.id}
@@ -556,7 +530,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           {tab === 'armour' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedArmour.map((a) => {
-                const legal = isArmourLegal(a);
+                const legal = gateFor(a).allowed;
                 const isShield = a.category === 'Shield' || /shield|pavise|mantlet/i.test(a.name) || Boolean(a.keywords?.includes('SHIELD'));
 
                 return (
@@ -595,9 +569,15 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         </p>
                       )}
 
-                      {!legal && isHomunculus && (
+                      {/*
+                        The rule that forbids it, quoted. This was a
+                        hand-written sentence — "Homunculus restriction:
+                        Shields only. Body armour prohibited." — that appears
+                        in no book and was shown whenever a name regex fired.
+                      */}
+                      {!legal && (
                         <span className="text-xs sm:text-[10px] text-status-error block font-bold">
-                          ⚠️ Homunculus restriction: Shields only. Body armour prohibited.
+                          ⚠️ {gateFor(a).reason ?? 'Not available to this model.'}
                         </span>
                       )}
                     </div>
@@ -625,7 +605,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedEquipment.map((e) => {
                 const isFormula = e.category === 'Formula' || /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(e.name) || Boolean(e.keywords?.includes('FORMULA')) || Boolean(e.keywords?.includes('ELIXIR'));
-                const legal = isEquipmentLegal(e);
+                const legal = gateFor(e).allowed;
 
                 return (
                   <div
@@ -682,17 +662,25 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <span className="text-xs sm:text-[10px] text-theme-muted">
                         {isFormula ? 'Alchemical Infusion' : 'Gear / Relic'}
                       </span>
+                      {(() => { const gate = gateFor(e); return (
                       <button
                         onClick={() => handleEquipEquipment(e)}
+                        disabled={!gate.allowed}
+                        title={gate.reason}
                         className={`px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
-                          isFormula
-                            ? 'bg-theme-accent hover:bg-status-error text-white'
-                            : 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border'
+                          !gate.allowed
+                            ? 'bg-transparent text-theme-muted border border-theme-border/50 cursor-not-allowed'
+                            : isFormula
+                              ? 'bg-theme-accent hover:bg-status-error text-white'
+                              : 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border'
                         }`}
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        <span>{isFormula ? 'Infuse Formula' : 'Equip'}</span>
+                        <span>
+                          {!gate.allowed ? 'Not allowed' : isFormula ? 'Infuse Formula' : 'Equip'}
+                        </span>
                       </button>
+                      ); })()}
                     </div>
                   </div>
                 );

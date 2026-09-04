@@ -872,7 +872,16 @@ export function parseCatalogues(dir) {
           modifiers: unitModifiers,
           sourceFile: file,
         });
-        return;
+        /*
+          Falls through to the gear emit below rather than returning.
+
+          A unit entry can carry Weapon profiles of its own — the Mamluk Faris
+          defines the Alchemical Jezzail on itself rather than in an armoury —
+          and returning here dropped every one of them. A roster holding such a
+          weapon then matched nothing and was reported as "not in this
+          ruleset", which excludes it from every legality check while telling
+          the player their list is only provisional.
+        */
       }
 
       for (const g of gearProfiles) {
