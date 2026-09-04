@@ -80,6 +80,8 @@ export function carcassFrontTerritories(map: CarcassFrontMap | undefined): Terri
       name: z.name,
       type: bonus ? 'Special Zone' : 'Zone',
       perk: bonus,
+      // The book prints this one, so it is not the organiser's to overwrite.
+      ...(bonus ? { perkSource: 'published' as const } : {}),
       // The scenario is what a player needs to know about a zone before
       // fighting over it, so it is the line under the name rather than a
       // sentence of atmosphere the book does not print for these.

@@ -986,6 +986,31 @@ Two guards, each for a case that was wrong before it was added:
   counter's parenthetical, which reaches `Alchemical Ammuntion (Loaded)` from
   `Alchemical Ammunition (Loaded)`. Both strings come from the catalogue.
 
+### A territory perk the campaign writes
+
+The app publishes no territory perk of its own. Sixteen invented ones were
+removed because they rendered under the same *"Strategic Territory Perk"*
+heading a derived rule would, so a player could not tell the app's invention
+from the book.
+
+That left the campaign hub with no way to have a perk at all, which is honest
+but less useful than the group writing their own — provided the app says whose
+rule it is. `TerritoryNode.perkSource` records that:
+
+| `perkSource` | Meaning | Editable |
+| --- | --- | --- |
+| `published` | A rule a book prints — the Carcass Front Special Zone Outpost Bonuses, verbatim | **No** |
+| `campaign` | A house rule the organiser wrote in the app, shown as *"House rule (set by this campaign)"* | Yes |
+| absent | No perk | Yes — this is where a house rule starts |
+
+`setTerritoryPerk` refuses a `published` territory and returns `false`.
+Overwriting the book's own Outpost Bonus with invented text under a published
+label is exactly the bug the sixteen removed perks were, so it is closed in the
+store rather than only hidden in the UI.
+
+Clearing the text clears the source with it: a house rule with no words in it
+would render as an attributed rule that says nothing.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

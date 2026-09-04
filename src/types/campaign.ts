@@ -92,6 +92,21 @@ export interface TerritoryNode {
    * Outpost Bonus and this carries it verbatim.
    */
   perk: string;
+  /**
+   * Where the perk above came from, so the two can never be confused.
+   *
+   * `published` is a rule a book prints — the Carcass Front Special Zone
+   * Outpost Bonuses, carried verbatim. `campaign` is a house rule the
+   * organiser wrote in the app. Absent means no perk.
+   *
+   * This exists because of what it replaced: sixteen invented perks sat in
+   * `seed.ts` and rendered under the same "Strategic Territory Perk" heading a
+   * derived rule would, so a player could not tell which was which. Letting an
+   * organiser write one is only safe if the app says whose rule it is — and a
+   * `published` perk is never editable, because overwriting the book's own
+   * Outpost Bonus with a house rule would recreate exactly that confusion.
+   */
+  perkSource?: 'published' | 'campaign';
   description: string;
   x?: number; // Map position X percentage (0-100)
   y?: number; // Map position Y percentage (0-100)

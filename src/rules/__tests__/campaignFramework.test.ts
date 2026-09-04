@@ -54,10 +54,20 @@ describe('a Carcass Front campaign’s territories', () => {
     expect(special.every((z) => z.type === 'Special Zone')).toBe(true);
     expect(zones.find((z) => z.name === 'Kurd Dagh')?.perk)
       .toMatch(/^You can re-roll one Promotion roll/);
+
+    /*
+      Marked as the BOOK's, which is what makes them un-overwritable by the
+      organiser's house rule in the campaign hub. A published Outpost Bonus
+      wearing a house-rule label, or the reverse, is the confusion the sixteen
+      invented perks caused.
+    */
+    for (const z of special) expect(z.perkSource, z.name).toBe('published');
   });
 
   it('leaves the other 22 with no perk rather than inventing one', () => {
     const plain = zones.filter((z) => !z.perk);
+    // No source either: an organiser may write a house rule onto one of these.
+    for (const z of plain) expect(z.perkSource, z.name).toBeUndefined();
     expect(plain).toHaveLength(22);
     expect(plain.every((z) => z.type === 'Zone')).toBe(true);
   });

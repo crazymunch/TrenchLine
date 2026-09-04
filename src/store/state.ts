@@ -230,6 +230,17 @@ export interface AppState {
     territories?: TerritoryNode[],
   ) => void;
   claimTerritory: (territoryId: string, warbandId: string, playerName: string) => void;
+  /**
+   * Write a house rule onto a territory, or clear it with an empty string.
+   *
+   * The app ships no perk of its own any more — sixteen invented ones were
+   * removed because they read as published rules — so this is how a campaign
+   * gets one at all: its organiser writes it, and it is labelled as theirs.
+   *
+   * Refuses a territory whose perk the book publishes. Returns whether it
+   * wrote, so a caller can say why nothing happened.
+   */
+  setTerritoryPerk: (territoryId: string, perk: string) => boolean;
   logCampaignMatch: (
     p1WarbandId: string,
     p2WarbandId: string,

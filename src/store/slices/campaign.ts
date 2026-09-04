@@ -11,7 +11,7 @@ import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warb
 import type { InitialState } from '../init';
 import { persistWarbands } from '../persist';
 
-export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -342,6 +342,60 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         storage.saveCampaign(updatedCampaign);
         return { campaign: updatedCampaign };
       });
+    },
+
+    /*
+      A house rule on a territory, written by the campaign's organiser.
+
+      The app ships no perk of its own: sixteen invented ones ("+15 Ducats &
+      +1 Alchemical Formula discount per match" and the like) were removed
+      because they rendered under the same heading a derived rule would, so a
+      player could not tell the app's invention from the book. This is the
+      honest version of the same feature — the people playing write the rule,
+      and it is stored and shown as theirs.
+
+      A published perk is refused. The Carcass Front Special Zones carry the
+      book's own Outpost Bonus verbatim, and letting a house rule overwrite one
+      would put invented text back under a published label — the exact bug.
+    */
+    setTerritoryPerk: (territoryId, perk) => {
+      const target = get().campaign.territories.find((t) => t.id === territoryId);
+      if (!target || target.perkSource === 'published') return false;
+
+      const text = perk.trim();
+      set((state) => {
+        const updatedTerritories = state.campaign.territories.map((t) =>
+          t.id === territoryId
+            ? {
+                ...t,
+                perk: text,
+                // Cleared rather than left saying "campaign" over an empty
+                // string, which would render as a house rule with no text.
+                ...(text ? { perkSource: 'campaign' as const } : { perkSource: undefined }),
+              }
+            : t
+        );
+
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          territories: updatedTerritories,
+          chronicleLogs: [
+            {
+              id: `c-${Date.now()}`,
+              timestamp: 'Just now',
+              text: text
+                ? `House rule set on ${target.name}: ${text}`
+                : `House rule cleared on ${target.name}`,
+              category: 'territory' as const,
+            },
+            ...state.campaign.chronicleLogs,
+          ],
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+      return true;
     },
 
     logCampaignMatch: (

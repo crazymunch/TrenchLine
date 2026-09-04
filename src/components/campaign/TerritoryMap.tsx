@@ -28,6 +28,7 @@ export const TerritoryMap: React.FC = () => {
   const { 
     campaign, 
     claimTerritory, 
+    setTerritoryPerk,
     warbands, 
     allCloudWarbands, 
     fetchAllCloudWarbands, 
@@ -39,6 +40,8 @@ export const TerritoryMap: React.FC = () => {
 
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryNode | null>(null);
   const [selectedAssignWarbandId, setSelectedAssignWarbandId] = useState<string>('');
+  const [editingPerk, setEditingPerk] = useState(false);
+  const [perkDraft, setPerkDraft] = useState('');
   /*
     A Carcass Front campaign has NO pin coordinates. Its zone board — which
     zone borders which — is a graphic on the fold-out sheet in the box, so
@@ -66,6 +69,33 @@ export const TerritoryMap: React.FC = () => {
     }
   });
   const allDirectoryWarbands = Array.from(allKnownWarbandsMap.values());
+
+  /*
+    Selecting a different territory leaves the editor, so an unsaved draft
+    cannot be carried onto another territory and saved there by mistake.
+  */
+  const selectTerritory = (node: TerritoryNode | null) => {
+    setEditingPerk(false);
+    setSelectedTerritory(node);
+  };
+
+  const handleEditPerk = () => {
+    if (!selectedTerritory) return;
+    setPerkDraft(selectedTerritory.perk ?? '');
+    setEditingPerk(true);
+  };
+
+  const handleSavePerk = () => {
+    if (!selectedTerritory) return;
+    if (!setTerritoryPerk(selectedTerritory.id, perkDraft)) return;
+    const text = perkDraft.trim();
+    setSelectedTerritory({
+      ...selectedTerritory,
+      perk: text,
+      perkSource: text ? 'campaign' : undefined,
+    });
+    setEditingPerk(false);
+  };
 
   const handleAssignTerritory = () => {
     if (!selectedTerritory) return;
@@ -237,7 +267,7 @@ export const TerritoryMap: React.FC = () => {
               return (
                 <div
                   key={node.id}
-                  onClick={() => setSelectedTerritory(node)}
+                  onClick={() => selectTerritory(node)}
                   className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group z-20"
                   style={{
                     left: `${node.x}%`,
@@ -292,7 +322,7 @@ export const TerritoryMap: React.FC = () => {
             return (
               <div
                 key={node.id}
-                onClick={() => setSelectedTerritory(node)}
+                onClick={() => selectTerritory(node)}
                 className={`p-4 bg-theme-base border rounded-md transition-all cursor-pointer flex flex-col justify-between hover:border-theme-primary ${
                   isControlledByMe
                     ? 'border-status-legal bg-status-legal/5 ring-1 ring-status-legal'
@@ -386,7 +416,7 @@ export const TerritoryMap: React.FC = () => {
                 <h3 className="font-gothic font-bold text-lg text-theme-text">STRATEGIC THEATER DOSSIER</h3>
               </div>
               <button
-                onClick={() => setSelectedTerritory(null)}
+                onClick={() => selectTerritory(null)}
                 className="tap text-theme-muted hover:text-theme-text p-1"
               >
                 <X className="w-5 h-5" />
@@ -415,19 +445,78 @@ export const TerritoryMap: React.FC = () => {
                   ones the game does publish are the Carcass Front Special Zone
                   Outpost Bonuses, and those are in the Codex.
                 */}
-                {selectedTerritory.perk ? (
-                  <div className="flex justify-between items-center gap-3">
-                    <span className="text-theme-muted">Strategic Territory Perk:</span>
-                    <span className="text-theme-primary font-bold text-right">{selectedTerritory.perk}</span>
+                {selectedTerritory.perkSource === 'published' ? (
+                  <div className="space-y-1">
+                    <span className="text-theme-muted">Outpost Bonus (published):</span>
+                    <p className="text-theme-primary font-bold leading-relaxed">
+                      {selectedTerritory.perk}
+                    </p>
+                  </div>
+                ) : editingPerk ? (
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="territory-perk"
+                      className="text-theme-muted block"
+                    >
+                      Your campaign&rsquo;s house rule for holding {selectedTerritory.name}:
+                    </label>
+                    <textarea
+                      id="territory-perk"
+                      value={perkDraft}
+                      onChange={(e) => setPerkDraft(e.target.value)}
+                      rows={3}
+                      maxLength={280}
+                      placeholder="e.g. The holder may re-roll one Exploration dice after each battle."
+                      className="w-full bg-theme-surface border border-theme-border rounded p-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSavePerk}
+                        className="flex-1 min-h-[44px] lg:min-h-0 lg:py-2 px-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs"
+                      >
+                        Save house rule
+                      </button>
+                      <button
+                        onClick={() => setEditingPerk(false)}
+                        className="min-h-[44px] lg:min-h-0 lg:py-2 px-3 bg-theme-surface border border-theme-border text-theme-text font-bold uppercase rounded text-xs"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : selectedTerritory.perk ? (
+                  <div className="space-y-1">
+                    {/*
+                      Says WHOSE rule it is. Sixteen invented perks used to
+                      render under "Strategic Territory Perk", the same heading
+                      a published one would get, which is what made them look
+                      like the book.
+                    */}
+                    <span className="text-theme-muted">House rule (set by this campaign):</span>
+                    <p className="text-theme-text leading-relaxed">{selectedTerritory.perk}</p>
+                    <button
+                      onClick={handleEditPerk}
+                      className="text-theme-primary underline min-h-[44px] lg:min-h-0 inline-flex items-center"
+                    >
+                      Edit or clear
+                    </button>
                   </div>
                 ) : (
-                  <p className="text-theme-muted leading-relaxed">
-                    No published rule attaches an effect to holding this theatre — it is part of
-                    this app&rsquo;s own map of the setting, so any bonus is one your campaign
-                    agrees. The published ones are the Carcass Front{' '}
-                    <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
-                    the Codex under Campaigns.
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-theme-muted leading-relaxed">
+                      No published rule attaches an effect to holding this theatre — it is part of
+                      this app&rsquo;s own map of the setting, so any bonus is one your campaign
+                      agrees. The published ones are the Carcass Front{' '}
+                      <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
+                      the Codex under Campaigns.
+                    </p>
+                    <button
+                      onClick={handleEditPerk}
+                      className="text-theme-primary underline min-h-[44px] lg:min-h-0 inline-flex items-center"
+                    >
+                      Add your campaign&rsquo;s own house rule
+                    </button>
+                  </div>
                 )}
                 <div className="flex justify-between items-center border-t border-theme-border pt-2">
                   <span className="text-theme-muted">Current Controller:</span>
