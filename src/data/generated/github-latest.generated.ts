@@ -64949,7 +64949,7 @@ export const DATASET: Dataset = {
       {
         "roll": "12",
         "name": "Captured",
-        "description": "The enemy captures the model. Before continuing the Trauma Step, you and your opponent from the game can negotiate a ransom price in 👑 for the release of the model. If the ransom is not paid, the captured model is executed – remove them from your Warband Roster. If the ransom is paid, transfer the 👑 from your Strongbox to your opponent’s,",
+        "description": "The enemy captures the model. Before continuing the Trauma Step, you and your opponent from the game can negotiate a ransom price in 👑 for the release of the model. If the ransom is not paid, the captured model is executed – remove them from your Warband Roster. If the ransom is paid, transfer the 👑 from your Strongbox to your opponent’s, and treat this result as a Full Recovery. Continue with the Trauma Step after resolving the outcome of the ransom.",
         "source": "rulebook"
       },
       {
@@ -65063,7 +65063,7 @@ export const DATASET: Dataset = {
       {
         "roll": "65",
         "name": "Bitter Lessons",
-        "description": "This model gains D3 extra Experience Points. It does not receive an Injury or a Battle Scar. 66 Prominent Scar Write down the name of the Warband from the game where this injury was received. Add +1 DICE to rolls for Melee",
+        "description": "This model gains D3 extra Experience Points. It does not receive an Injury or a Battle Scar.",
         "source": "catalogue+rulebook"
       },
       {

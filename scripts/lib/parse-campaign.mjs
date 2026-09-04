@@ -417,9 +417,30 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
 
     for (const i of candidates) {
       const text = [lines[i].split('\t').slice(1).join(' ').trim()];
-      for (let j = i + 1; j < Math.min(i + 6, lines.length); j++) {
+      /*
+        The window was six lines, and `12 Captured` is eight. Its rule came out
+        ending "...transfer the 👑 from your Strongbox to your opponent's," —
+        cut at a comma, losing the half that says what PAYING the ransom does.
+        A player reading it would have removed a model they had just bought
+        back.
+
+        Fourteen is generous enough for the longest row in the table and still
+        bounded, so a missed boundary cannot run away down the page. The
+        boundaries below are what actually stops it.
+      */
+      for (let j = i + 1; j < Math.min(i + 14, lines.length); j++) {
         const t = lines[j].trim();
-        if (!t || /^\d{2}[\s-]/.test(t) || /^--\s*\d+\s+of/.test(t)) break;
+        if (!t || /^--\s*\d+\s+of/.test(t)) break;
+        /*
+          A new row, whether or not the name follows on the same line.
+
+          This was `^\d{2}[\s-]`, which needs something after the digits — and
+          the book prints `66` alone on its line with `Prominent Scar` beneath.
+          So `65 Bitter Lessons` did not stop there: it ran on and took row
+          66's heading and half its rule with it, and the app showed a player
+          rolling 65 a rule that belongs to 66.
+        */
+        if (/^\d{2}([\s-]|$)/.test(t)) break;
         if (/^(Wound|Head Wound X?|Campaign|Games|Patrons|Trauma Step)$/.test(t)) break;
         if (isScrambled(t)) break;
         text.push(t);
@@ -471,6 +492,36 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
     throw new Error(
       `parse-campaign: Trauma rows whose text is scrambled column data: ` +
       `${dirty.map((r) => `${r.roll} ${r.name}`).join(', ')}.`);
+  }
+
+  /*
+    A rule that stops mid-sentence, and a rule that has swallowed the next row.
+
+    Both shipped. `12 Captured` ended at "...transfer the 👑 from your Strongbox
+    to your opponent's," — cut at a comma, losing the clause that says paying
+    the ransom counts as a Full Recovery, so a player who paid would still have
+    removed the model. `65 Bitter Lessons` ran on into `66 Prominent Scar` and
+    showed a player rolling 65 a rule belonging to 66.
+
+    Neither is detectable by eye in a 22-row table, and neither was caught by
+    the blank and scrambled checks above, which is why they are their own.
+  */
+  const cut = out.filter((r) => /[,;–—]$|\b(and|or|the|a|to|with|from|for|of|if)$/i.test(r.description));
+  if (cut.length) {
+    throw new Error(
+      `parse-campaign: Trauma rows whose rules text stops mid-sentence: ` +
+      `${cut.map((r) => `${r.roll} ${r.name} (…"${r.description.slice(-40)}")`).join(', ')}. ` +
+      'A rule cut at a comma is a rule the player will act on wrongly.');
+  }
+
+  /* Another row's heading inside this row's text: `… Battle Scar. 66 Prominent Scar Write down …` */
+  const runOn = out.filter((r) => /\s\d{2}\s+[A-Z][a-z]+(\s+[A-Z][a-z]+)*\s+[A-Z]/.test(r.description)
+    && out.some((o) => o !== r && r.description.includes(`${o.roll} ${o.name}`)));
+  if (runOn.length) {
+    throw new Error(
+      `parse-campaign: Trauma rows carrying another row's heading and rule: ` +
+      `${runOn.map((r) => `${r.roll} ${r.name}`).join(', ')}. ` +
+      'The row boundary was missed, so this shows a player the wrong injury.');
   }
 
   // Every D66 result must land somewhere. A hole means a roll the app cannot
