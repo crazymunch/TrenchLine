@@ -22,7 +22,7 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
-import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom } from './lib/parse-battlekit.mjs';
+import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -124,6 +124,17 @@ for (const ruleset of RULESETS) {
   // same chapter, and the app enforced none of them — a model could wear
   // three suits of Armour and validate clean. Throws if the heading is gone.
   const battlekitLimits = parseBattlekitLimits();
+
+  /*
+    Faction-exclusive wargear, which the core chapter does not carry.
+
+    `arsenal.ts` read one source and said so to the player's face — the Wind
+    Amulet's dossier printed "Described in Warbands of Trench Crusade rather
+    than the Battlekit chapter, which is what this view reads" where its rules
+    belong. This is that second book, read the same way. The core chapter wins
+    a name collision: it is the primary source, and the second only fills gaps.
+  */
+  const warbandsKit = parseWarbandsBattlekit();
 
   // The Keyword Glossary. The app's hand-written copy had 46 entries against
   // the book's 59, invented HEAVY COVER and LIGHT COVER outright, and split the
@@ -246,6 +257,13 @@ for (const ruleset of RULESETS) {
 
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
+
+  const kitByName = new Map(battlekit.entries.map((b) => [nameKey(b.name), b]));
+  for (const e of warbandsKit.entries) {
+    const k = nameKey(e.name);
+    if (!kitByName.has(k)) kitByName.set(k, e);
+  }
+  const allBattlekit = [...kitByName.values()];
   const dataset = {
     units: base.units,
     weapons: base.weapons,
@@ -336,7 +354,7 @@ for (const ruleset of RULESETS) {
      * six by construction. Prices come from the Armoury Tables; this carries
      * the prose they do not print.
      */
-    battlekit: battlekit.entries,
+    battlekit: allBattlekit,
     /**
      * The per-model carrying limits, from the chapter's own bullets.
      *
@@ -775,6 +793,9 @@ for (const ruleset of RULESETS) {
               ` (${described}/${armouryNames.size} distinct armoury items carry a description)` +
               (battlekit.unreadable.length ? `  (${battlekit.unreadable.length} unreadable)` : ''));
 
+  console.log(`  battlekit (Warbands of Trench Crusade): ${warbandsKit.entries.length} ` +
+              `faction-exclusive entries, ${warbandsKit.entries.filter((e) => e.rules.length).length} with rules` +
+              (warbandsKit.unreadable.length ? `  (${warbandsKit.unreadable.length} reported)` : ''));
   console.log(`  battlekit limits: ${dataset.battlekitLimits.limits.length} carrying rules` +
               (dataset.battlekitLimits.withShield ? ', plus the Shield restrictions' : '') +
               `, ${keywordCarry.rules.length} by keyword ` +

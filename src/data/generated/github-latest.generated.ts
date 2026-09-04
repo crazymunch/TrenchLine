@@ -62755,6 +62755,1299 @@ export const DATASET: Dataset = {
       "rules": [
         "Talisman: Once during a game, when a Risky Success Roll for a model with an Unholy Trinket is a Failure, you can say that the model will use it. If you do, the model’s Activation does not end. GD"
       ]
+    },
+    {
+      "name": "Engineer Body Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER"
+      ],
+      "description": "New Antioch Combat Engineers are clad in specially designed reinforced armour.",
+      "rules": [],
+      "restrictions": [
+        "Combat Engineer only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Heavy Ballistic Shield",
+      "section": "Shields",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "COVER"
+      ],
+      "description": "only, Shield Combo These massive shields are made of aramid fibre mesh and orichalcum steel alloy. They are so heavy that they can only be carried by Heavy Mechanized Infantry, and even then, they are too cumbersome to be used in fast-paced melee. They are mainly used for protection during their ponderous advance towards the enemy.",
+      "rules": [],
+      "restrictions": [
+        "Models wearing Machine Armour"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Machine Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-3 INJURY MODIFIER"
+      ],
+      "description": "1 excluding Mechanized Heavy Infantry Combining the rarest of divine metal alloys and the latest technology of New Antioch, machine armour makes its wearer a virtual tank.",
+      "rules": [
+        "Bulky: Change the base size of a model that has Machine Armour to 40mm unless it is already 40mm or larger. In addition, a model with Machine Armour cannot be equipped with a Trench Shield and has a Charge Bonus of D3” instead of D6”.",
+        "Standfast: When a model that has Machine Armour suffers a Down result on the Injury table, it is treated as a Minor Hit result instead."
+      ],
+      "restrictions": [
+        "ELITE & Mechanized Heavy Infantry only, Limit:"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Supreme Pontiff ’s Crucifix",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "This holy gift has been blessed by the Supreme Pontiff themselves and inspires the wearer to overcome any adversity.",
+      "rules": [
+        "Inspiring Relic: The bearer of this relic does not end their activation after a failed Risky Success Roll. PP"
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Tank-Splitter Sword",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE"
+      ],
+      "description": "It takes years of gruelling Mensur practice and field drills to acquire the precision and speed required to use the specialist tank-splitter swords of the Gardekorps. Despite their great size (often over 6 feet long), they are remarkably light, and due to the large quantities of orichalcum used in their forging process, they are virtually unbreakable. They are often used to disable tanks and other armoured vehicles, by either slicing their armour open or disabling them with an accurate swing to sever their tracks. Before any battle, they are treated with a special metal-corroding chemical compound which melts armour, making it far deadlier against armoured targets than those who wear none.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Holy Smoke",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "Made of a mixture of frankincense, agarwood, and secret chemicals from the Mendelist Order, this burned incense is inhaled by Prussian Trench Clerics before battle. It is highly addictive but grants great physical and mental resilience.",
+      "rules": [
+        "Chemical Incense: When you deploy a model that has Holy Smoke, you can say that they will consume it. If you do so, until the end of the game, the model has the NEGATE FEAR Keyword if it doesn't already have it, and -1 INJURY DICE is added to Injury Rolls for attacks that hit it."
+      ],
+      "restrictions": [
+        "Consumable, Trench Clerics only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Shotel",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL"
+      ],
+      "description": "Since the days of ancient Axum, the Shotel has been the weapon of choice for the Ethiopian warrior-elite. Its curved blade is designed to reach around an opponent’s shield and stab them in vital areas, such as the kidneys or lungs.",
+      "rules": [
+        "Bypass Shield: The Shotel is specifically designed to overcome enemy shields. Ignore -INJURY DICE or -INJURY MODIFIERS for Shields against Melee Attacks made with a Shotel. Any other Keywords or special rules that apply to the Shield are used normally. MF"
+      ],
+      "restrictions": [
+        "Chewa & ELITE only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Holy Water of Lalibela",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "Vials of holy water from the rock-hewn churches of Lalibela are carried by the Ethiopian warriors on their campaigns. It has great power over demonic entities and aids in healing.",
+      "rules": [
+        "Healing Waters: Add +1 DICE when a model with the Holy Water of Lalibela takes a Success Roll for an ACTION that can remove BLOOD MARKERS and/or INFECTION MARKERS from another model or itself."
+      ],
+      "restrictions": [
+        "Consumable, Limit: 5"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Anfarro (Warriors Crown)",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE FEAR"
+      ],
+      "description": "An Anfarro is made from a ring of lion’s hair held in a filigree gilt metal coronet studded with blue and red gemstones. It is granted by the Emperor to an aristocratic warrior and lion hunter as a token of honour and bravery.",
+      "rules": [
+        "Token of Honour: Add +1 DICE to the Melee Characteristic of a model with an Anfarro."
+      ],
+      "restrictions": [
+        "Chewa & ELITE only, Headgear, Limit: 6"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Tabot",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "Made from alabaster, marble, or wood from an acacia tree, these are blessed replicas of the Ark of the Covenant. A priest who accompanies the forces of the King of Kings to New Antioch will take the holy tabot with them, wrapped in silk cloth decorated with gold string. Its miraculous powers reward those who perform virtuous deeds on the battlefield.",
+      "rules": [
+        "Virtuous Rewards: Place 1 BLESSING MARKER next to a model that has a Tabot each time that an ACTION carried out by a friendly model results in one or more BLOOD MARKERS and/or INFECTION MARKERS being removed from one or more friendly models."
+      ],
+      "restrictions": [
+        "Holy warrior only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Holy Icon Shield",
+      "section": "Shields",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER",
+        "IMPERVIOUS"
+      ],
+      "description": "These shields are made from icons that have performed miracles. Mounted on blessed wood, they are harder than any steel and virtually indestructible. Only the most revered fighters in the service of the Church carry one.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Iron Capirote",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE FEAR",
+        "NEGATE SHRAPNEL"
+      ],
+      "description": "A conical helmet blessed by the Church and often containing a fragment of a relic. Iron capirotes shield their wearers from the psychological horror of war and allow them to face creatures from the pits of Hell unflinchingly.",
+      "rules": [],
+      "restrictions": [
+        "Headgear"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Punt Gun",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "18’’",
+      "keywords": [
+        "+1 DICE",
+        "+1 INJURY DICE",
+        "HEAVY"
+      ],
+      "description": "A Punt Gun is an enormous shotgun loaded with up to 25 ounces of shot. It can be loaded with a risky amount of powder and square shot, which causes widespread damage and destruction. It is a very popular weapon among Trench Pilgrims who lack access to conventional heavy weapons.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Warcross",
+      "section": "Grenades",
+      "type": "Grenade",
+      "range": "8”",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE LONG RANGE"
+      ],
+      "description": "A warcross (also known as a wurfkreuz in the Holy Roman Empire) is a four- pronged throwing weapon in the shape of a cross. It is engraved with prayers and psalms that guide it on an unerring path.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Holy Icon Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER",
+        "IMPERVIOUS Warband"
+      ],
+      "description": "This suit of armour is made of blessed icons and scripture scrolls written with the blood of saints.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Autocannon",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "48”",
+      "keywords": [
+        "+1 INJURY DICE",
+        "AUTOMATIC 3",
+        "HEAVY"
+      ],
+      "description": "Autocannons are fully automatic guns that fire large-calibre 0.787 shells. Capable of generating extremely rapid firepower, autocannons overheat quickly if used for sustained fire. Autocannon (Bursts)",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Gas Filters",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [
+        "NEGATE GAS"
+      ],
+      "description": "The Anchorite is installed with a holy incense system that cleanses and purifies the air the monk inside the Anchorite breathes.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Gas Censer",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "6”",
+      "keywords": [
+        "(▶ see below) GAS",
+        "IGNORE ARMOUR",
+        "RELOAD"
+      ],
+      "description": "This censer is a lethal chemical weapon and an object of veneration to the Pilgrims.",
+      "rules": [
+        "Cloud of Gas: When you take a Shoot ACTION with this model, instead of making a Ranged Attack, you can unleash a cloud of gas. If you do so, do not make a Success Roll. Instead, all other models within 6” of the model using the Gas Censer are hit, and an Injury Roll must be made for each one. Note that the attack hits all models, friend or foe, apart from the model making the attack, regardless of Line of Sight."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Grand Anchorite",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "Built to an extraordinary size, the Anchorite Shrine is all but impossible to stop or slow down once it starts moving.",
+      "rules": [
+        "Impossible to Stop: Enemy models are not allowed to make a Melee Attack when a Grand Anchorite Shrine that is within 1” of them retreats. In addition, a Grand Anchorite Shrine can take a Move or Charge ACTION if it starts within 1” of any enemy models."
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Hallowed Anchorite",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "The Anchorite has been anointed with holy chrism, the oil made of pure myrrh, the ash from burnt icons and fifty-six other sacred ingredients.",
+      "rules": [
+        "Manifold Blessings: A Hallowed Anchorite Shrine can be promoted to ELITE status in the Promotions & Experience Step of the Campaign Phase (▶ see Campaign in the Trench Crusade Digital Rulebook)."
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Holy Diesel Engine",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "The Anchorite is equipped with an advanced diesel engine with an experimental cooling system.",
+      "rules": [
+        "Advanced Design: When you take a Dash ACTION with this Anchorite Shrine, you can choose to add +2 DICE to the Risky Success Roll. If you do so, you must place 1 BLOOD MARKER next to the model."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Piston Legs",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "The feet of the Anchorite Shrine are equipped with special piston engines designed to grind its enemies into a shattered ruin of broken bones and burst flesh.",
+      "rules": [
+        "Grind to Dust ACTION: This Anchorite Shrine can take a Grind to Dust ACTION. If it does so, it makes a Melee Attack but must target an enemy model within 1” that is Down and is mounted on a base that is 32mm or smaller. The attack does not use a Melee Weapon."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Sacred Geometry",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "The monk is well-versed in geometries intended to make the viewer see the world through mathematics, granting a better understanding of the divine.",
+      "rules": [
+        "Divine Accuracy: Add +1 DICE to the Ranged Characteristic of this Anchorite Shrine."
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Trench Mortar",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "6”",
+      "keywords": [
+        "-36” +1 INJURY DICE",
+        "BLAST 3”",
+        "FIRE",
+        "HEAVY"
+      ],
+      "description": "A trench mortar is a smooth-bore, muzzle-loading weapon with high angles of fire. The shell contains both explosives and deadly Greek fire.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Wrathful Cherub Face",
+      "section": "Equipment",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "description": "The Anchorite is decorated with an angelic face that is the very image of the wrath of the Lord. All must cower before the face of the Lord.",
+      "rules": [
+        "Cower Before The Lord: An enemy model that does not have the FEAR keyword and that starts an Activation within 1” of this Anchorite Shrine must take a Retreat ACTION as part of the Activation. It cannot take any ACTIONS that require a Risky Success Roll while it is within 1” of this Anchorite Shrine."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Sacrificial Lamb",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "Before the battle, this lamb is sacrificed to God’s glory, and the Pilgrim then anoints themselves with its blood, averting the wrath of Yahweh while fighting for His cause.",
+      "rules": [
+        "Warded by Blood: When you deploy a model that has a Sacrificial Lamb, you can say that they will sacrifice it and anoint themselves with its blood. If you do so, the first BLOOD MARKER placed on the model is ignored. MK"
+      ],
+      "restrictions": [
+        "Consumable"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Alaybozan",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "12”",
+      "keywords": [
+        "SHRAPNEL"
+      ],
+      "description": "This blunderbuss is based on the traditional design of tribal warriors and modernised by the foundries of the Sultanate. It has proven its worth as the preferred weapon of the Sapper Corps, who often fight in close quarters. It shoots a hail of lead bullets and iron shrapnel.",
+      "rules": [],
+      "restrictions": [
+        "Sultanate Sappers only, Shield Combo"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Alchemical Ammunition",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "AMMUNITION (+1 DICE)"
+      ],
+      "description": "Jabirean Alchemists craft these jezzail bullets from the slivers of the Iron Wall. Each such shot is carved with the Seal of Solomon, guiding it with divine aim to its target.",
+      "rules": [
+        "Guiding Path: Alchemical Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Alchemical Ammunition to another model."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Alchemist Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "NEGATE"
+      ],
+      "description": "A suit of armour that protects against almost all harm. An essential tool of the Alchemists’ craft, festooned with the Seals of Solomon, it grants mastery over the elements of Creation and shields the wearer from the devices of Hell.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Assassin’s Dagger",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "CRITICAL"
+      ],
+      "description": "The blades of the Assassins are imbued with deadly venom. In chambers deep below the surface, generations of young assassins are raised in the dark, fed a diet of scorpions, frogs, deadly mushrooms and even stranger, more noxious things. Generation by generation their tolerance grows. The corrupted blood of these willing vessels is drawn and smelted into toxic iron. The iron is forged into blades, with deadly spells of slaying layered into each fold of the envenomed metal. Thus the blood of the first generation of Assassins lives on, growing more potent with each generation.",
+      "rules": [
+        "Slashing Attack: If an Assassin’s Dagger causes at least one BLOOD MARKER to be placed next to the target model, the Assassin can use a Dash ACTION to Retreat in the same Activation. In addition, if the Assassin Retreats (by Dashing or using the normal Retreat ACTION) during the same Activation, enemy models within 1” cannot make a Melee Attack against it before it is moved as they would normally be able to do."
+      ],
+      "restrictions": [
+        "Sultanate Assassins only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Cloak of Alamut",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "Created by the secret arts of the Assassin sect aeons ago, this cloak bends the light so that its wearer looks almost indistinguishable against any surface when they are still. It is this masterwork of Alamut that has led to tales of a fabled Cloak of Invisibility in the legends of the Sultanate.",
+      "rules": [
+        "Blend In: The Ranged Attack Modifier for a target being in Cover is -2 DICE instead of -1 DICE if the target has a Cloak of Alamut."
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Flame Cannon",
+      "section": "Ranged Weapons",
+      "type": "1-Handed",
+      "range": "12”",
+      "keywords": [
+        "FIRE",
+        "HEAVY",
+        "IGNORE ARMOUR"
+      ],
+      "description": "A great cannon that shoots a stream of alchemical fire with tremendous force. It has a tendency to overheat and ignite the skin of its artillery crew, but the mighty Brazen Bulls use them as mere handguns. The secret formula used for the fuel of the flame cannons was gleaned from the ruins of lost Constantinople, and is commonly known as Greek fire.",
+      "rules": [
+        "Greek Fire: When a Flame Cannon is used to make a Ranged Attack, do not make a Success Roll for the attack. Instead, measure a straight line 1mm wide and up to 12” long from the attacking model to a point on the ground or a model’s base. The line stops if it reaches a terrain piece that is taller than the model making the Attack. Make an Injury Roll for every model (friend or foe) that is touched by the line, apart from the attacking model itself."
+      ],
+      "restrictions": [
+        "Brazen Bull only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Halberd-Gun",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "/24” ASSAULT",
+        "BLOCK",
+        "CUMBERSOME"
+      ],
+      "description": "An invention of the House of Wisdom, this weapon acts both as a symbol of high rank and an excellent weapon in combat.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Jezzail",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "18”",
+      "keywords": [],
+      "description": "These long arms are by far the most common weapons carried by the soldiers of the Sultanate of the Great Iron Wall. Their barrels are smoothbore, which limits their accurate range, but this is more than made up for by the fact that this allows them to be loaded with different types of alchemical ammunition made by the Jabirean Alchemists.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Marid Shovel",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HEAVY"
+      ],
+      "description": "This enormous shovel is made from alchemical bronze which makes it almost indestructible. Brazen Bulls use it for public works (such as digging canals, foundations of buildings and mining) during peacetime, while at war it is used for digging trenches, ditches and bunkers.",
+      "rules": [
+        "Industrial Tool: A Brazen Bull equipped with a Marid Shovel that starts the game on Open terrain has the COVER Keyword until it moves away from its starting position. In addition, a Brazen Bull equipped with a Marid Shovel can use it as if it were a Trench Club (▶ see Battlekit in the Trench Crusade Digital Rulebook)."
+      ],
+      "restrictions": [
+        "Brazen Bull only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "M.U.R.A.D. Bombard",
+      "section": "Ranged Weapons",
+      "type": "1-Handed",
+      "range": "36”",
+      "keywords": [
+        "BLAST 3”",
+        "HEAVY",
+        "SCATTER"
+      ],
+      "description": "Named after the great Sultan who commissioned the first of these weapons to defend the Iron Wall, this mighty bombard is used to disrupt advancing enemy formations. The echo of its blast recites the 99 names of Allah, throwing even the greatest of warriors to ground like chaff.",
+      "rules": [
+        "Echoing Blast: If the Success Roll for a Ranged Attack with an M.U.R.A.D Bombard that targets an enemy model is a Success or a Critical Success, or if the attack is a Failure and the target point scatters onto a model's base, apply the effect of the DEADLY Keyword to the Injury Roll for that model. All other models caught in the M.U.R.A.D. Bombard’s blast radius, or that are in the M.U.R.A.D. Bombard's blast radius if it did not hit the target model or scatter onto a model's base, are taken Down (do not make an Injury Roll for them)."
+      ],
+      "restrictions": [
+        "Brazen Bull only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Siege Jezzail",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "30”",
+      "keywords": [
+        "+1 INJURY DICE",
+        "HEAVY"
+      ],
+      "description": "Heavier version of the standard jezzail. It is a large weapon with a shot of lead or iron weighing as much as four pounds, designed to take out even the most powerful enemies with a single shot. Azebs armed with these weapons use tripod stakes when firing them, but the mighty Janissaries often use them as their standard service gun.",
+      "rules": [],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Takwin Anqā Bird",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "This Takwin creation is popular with the Sultanate’s nobility. It is used for hunting, and also valued for its ability to recite the Surah with a resonating sound that is painful to hear for the enemies of Allah, and for its hypnotic eyes that confuse and disorient foes.",
+      "rules": [
+        "Cause Confusion: Success Rolls taken for Melee Attacks that target a model with a Takwin Anqā Bird become Risky Success Rolls (there is no additional effect if they are Risky Success Rolls already). In addition, before an enemy model within 1” of a model with Takwin Anqā Bird makes a retreat, the opposing player must take a Risky Success Roll for the model. If the Roll is a Failure the enemy model cannot retreat and its Activation ends. If the Roll is a Success or a Critical Success, the enemy model can retreat normally."
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Titan Zulfiqar",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER"
+      ],
+      "description": "This twin-tongued great sword can weigh up to 300 pounds, only the mighty Brazen Bulls can even lift this monstrous blade, let alone wield it in combat. Its sheer weight and mono-molecule sharpness cuts through even the thickest armour when swung by the superhuman strength of the Takwin monstrosities.",
+      "rules": [],
+      "restrictions": [
+        "Brazen Bull only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Wind Amulet",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "An amulet created by the Jabirean Alchemists, capturing the essence of the Element of Wind within it.",
+      "rules": [
+        "Gusts of Wind: Once per game, when you Activate a model that has a Wind Amulet you may declare that it will use the amulet before it takes any ACTIONS. Using the Wind Amulet adds 3” to the model’s Movement Characteristic for the rest of the Activation."
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Bow of Alamut",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "40”",
+      "keywords": [
+        "ASSAULT",
+        "CRITICAL",
+        "IGNORE ARMOUR"
+      ],
+      "description": "This terrifying double-stringed bow looses its deadly barbs through both time and space. Its arrows can reach impossible distances and pass through armour by flickering through time, leaving behind a temporal slipstream that the Assassin can travel through in an eyeblink. These bows are some of the greatest treasures of Alamut, and only six are said to exist in the secret armoury of the Old Man of the Mountain. The trees producing the wood for these bows are planted into the skulls of ancient Assassins in the Garden of Alamut, passing their mystic powers on to the wood.",
+      "rules": [
+        "Temporal Slipstream: If a Ranged Attack made with this Weapon causes any BLOOD MARKERS to be placed on the target model, you can immediately redeploy the attacking model within 1” of the target model, regardless of the distance or any intervening obstacles. Note that if the attack takes the target Out of Action, no BLOOD MARKERS are placed and this ability cannot be used. VP"
+      ],
+      "restrictions": [
+        "Master Assassin & Sultanate Assassins only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Golden Khanjar",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY MODIFIER",
+        "CLEAVE 2"
+      ],
+      "description": "Assassins only, Limit: 2 Placed in the hand of an especially favoured killer by the Old Man of the Mountain himself, these wickedly curved daggers gleam as if they were made of gold, but instead they are crystallised poison, and allow their wielder to attack twice in the same instance of time. Only the Master of Alamut himself knows the secret of making these blades.",
+      "rules": [],
+      "restrictions": [
+        "Master Assassin & Sultanate"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Hashashin Leaf",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "These leaves from the secret Garden of Alamut enhance the strength of anyone who eats them threefold. Once the effect wears off the subject will suffer from agonising muscle tears and torn ligaments, but many of the Order of Assassins feel that this is a small price to pay for being able to use deadlier weapons.",
+      "rules": [
+        "Enhanced Strength: When you deploy a model with a Hashashin Leaf for the first time in a game, you can say that the model will consume the Hashashin Leaf. If you do so, the model has the STRONG Keyword for the rest of the game."
+      ],
+      "restrictions": [
+        "Consumable, Limit: 4"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Elixir of Al-Khidr",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "This is an extraordinary creation of the House of Wisdom. It is said that within the Sultanate’s gardens lies the hidden Fountain of Life, whose waters are used as an ingredient in this powerful alchemical formula.",
+      "rules": [
+        "Fountain of Life: When deploying a model with an Elixir of Al-Khidr for the first time in a game, you can say that the model will consume the Elixir of Al-Khidr. If you do so, the model has the TOUGH Keyword for the rest of the game. An Elixir of Al- Khidr cannot be used by models with the ARTIFICIAL Keyword."
+      ],
+      "restrictions": [
+        "Consumable, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Fire Shield",
+      "section": "Shields",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER",
+        "NEGATE FIRE"
+      ],
+      "description": "An invention of the al-Jazari School of Engineering within the House of Wisdom, this shield is treated with an alchemical formula that makes it highly resistant to fire weapons. It has proven its value in many desperate battles against the flame-wielding Heretics.",
+      "rules": [
+        "Flame Repellent: Add -1 INJURY DICE to Injury Rolls for attacks with the FIRE Keyword that targets a model that has a Fire Shield, even if the attacking weapon has the IGNORE ARMOUR Keyword."
+      ],
+      "restrictions": [
+        "Shield Combo, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Anqā Guard",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "DEPLOYABLE",
+        "HEAVY"
+      ],
+      "description": "Shaped into the likeness of the wondrous anqā bird, and created by the Imperial School of Military Engineering in association with the House of Wisdom, these movable defensive walls are lightweight and extraordinarily resistant to damage. Their resilience comes from a richly-decorated ceramic layer on their outer surface and a secret compound of ceramic and alchemical steel at its core. Each unit can be carried into battle on a Sapper’s back. With the press of a single button, the guard spreads its wings wide, revealing a face of beautiful yet terrifying countenance.",
+      "rules": [
+        "Pre-battle Deployment: After you deploy a model with an Anqā Guard, you can also deploy their Anqā Guard. If you do so, deploy the Anqā Guard anywhere wholly within your deployment zone. Once deployed, the model that had the Anqā Guard is not considered to be carrying it for the rest of the game.",
+        "Combat Deployment ACTION: A model that has an Anqā Guard can take a Combat Deployment ACTION. If it does so, take a Risky Success Roll for the model and add +2 DICE to the roll. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or Critical Success, you can deploy the Anqā Guard within 1” of the model. Once deployed, the model that had the Anqā Guard is not considered to be carrying it for the rest of the game."
+      ],
+      "restrictions": [
+        "Sultanate Sappers only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Banner of Desert Wind",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HELD",
+        "LEADER"
+      ],
+      "description": "The alchemical compounds woven into this banner attract desert winds that make it impossible for flying machines or winged creatures to overcome the Iron Wall.",
+      "rules": [
+        "Sandstorm: Models that start an Activation within 24” of an enemy model that has the Banner of Desert Wind have 1 subtracted from their Movement Characteristic until the end of the Activation. This rule does not apply if the model with the Banner of Desert Wind is Down."
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Explosive Charges",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "CONSUMABLE"
+      ],
+      "description": "Sappers only, Limit: 1 Sultanate Sapper Corps specialise in using explosive charges to overcome defended enemy positions such as walls, bunkers, casemates and pillboxes. Experts at timing the fuses of their bombs, many a battle has been turned thanks to a well-timed blast.",
+      "rules": [
+        "Hidden Explosives: At the start of the game, after Deployment, you can say that a model that has Explosive Charges is going to plant them on the battlefield. If you do so, secretly write down their location on a piece of paper. The Explosive Charges must be planted on a terrain piece that measures up to 8” by 8”, is not fully or partially within the enemy deployment zone or within 1” of a model, and which is not a scenario objective that is worth any Victory Points.",
+        "Detonating the Explosives: When you Activate a friendly model, before you carry out any ACTIONS you can say that the model is going to detonate any hidden explosives you set up at the start of the game. If you do so, show your opponent the piece of paper saying where the explosives are hidden, and then make an Injury Roll with the SHRAPNEL Keyword for each model (friend or foe) that is in on or in contact with the terrain piece. The terrain piece is then removed from the game. Models that were on top of the terrain piece Fall directly down to the battlefield, and an additional Injury Roll may have to be made for them if they Fall 3” or more."
+      ],
+      "restrictions": [
+        "Consumable, Silahdar & Sultanate"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Iron Wall Kalkan",
+      "section": "Shields",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "COVER"
+      ],
+      "description": "It is rare that even the greatest artillery bombardments manage to dent the Invincible Iron Wall, but sometimes when the most powerful of enemy Sorcerers enchant Heretic artillery ammunition, a sliver of the Wall is splintered. Such shards and slivers of the divine metal are carefully gathered by the Alchemists and incorporated into mighty shields to be used solely by the Brazen Bulls.",
+      "rules": [
+        "Othismos: When a Brazen Bull that has an Iron Wall Kalkan takes a Move ACTION (not a Dash or Charge) and is in contact with 1 enemy model that is mounted on a base of 40mm or less, then the Brazen Bull can use the Iron Wall Kalkan to push the enemy model when it moves. The Brazen Bull must move in a straight line, directly towards the enemy model. The enemy model is pushed in front of the Brazen Bull as the Brazen Bull moves along. The move can also be used to push a model off a terrain piece, so that it Falls (▶ see Comprehensive Rules in the Trench Crusade Digital Rulebook). If the move pushes the enemy model into contact with another model, both the enemy model and the Brazen Bull must stop moving. If it pushes the enemy into contact with a terrain piece that is more than ½” high, the enemy model and the Brazen Bull must stop moving and an Injury Roll is made for the enemy model."
+      ],
+      "restrictions": [
+        "Brazen Bull only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Sultanate Grand Cannon",
+      "section": "Ranged Weapons",
+      "type": "1-Handed",
+      "range": "48”",
+      "keywords": [
+        "+2 INJURY DICE",
+        "DEPLOYABLE"
+      ],
+      "description": "Mounted on the Great Iron Wall, these are the main artillery that the Sultanate produces, and in vast numbers. Normally fixed in place, a variant suited for the massive hands of the Brazen Bulls has been designed so the living field artillery of the Padishah can take on truly heavily armoured enemies and vehicles.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Blasphemous Staff",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CRITICAL",
+        "FIRE"
+      ],
+      "description": "Crafted in mockery of the rod carried by the prophet Aaron, this evil staff unleashes searing hellfire, causing excruciating pain with the slightest touch.",
+      "rules": [
+        "Evil Power: Add +1 DICE to Success Rolls or Risky Success Rolls for a model with a Blasphemous Staff, apart from the Success Rolls for a Ranged or Melee Attack, or the Risky Success Roll to take a Dash ACTION."
+      ],
+      "restrictions": [
+        "ELITE only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Hellblade",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "FIRE"
+      ],
+      "description": "Crafted from iron ore from the mines of Dis in Inferno, this weapon burns with the unquenchable fires of Hell.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Sacrificial Blade",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY MODIFIER",
+        "RISKY"
+      ],
+      "description": "Terrifying blades blessed by the hand of a greater devil, these knives are used in Heretic rituals to sacrifice captives to the dark powers of Hell. They simply need to touch their opponents to cause indescribable pain, and even the most minor wound often proves fatal from the agony alone. They are risky even to their wielders, as the merest scratch wounds friend and foe alike.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Tartarus Claws",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "CLEAVE 2",
+        "CRITICAL",
+        "CUMBERSOME"
+      ],
+      "description": "Made from severed hands of Malebranche, the Tartarus claws are granted by archdevils only to those whose hearts are blackened with the sin of Wrath.",
+      "rules": [
+        "Harrowing Assault: If the target is taken Down or Out of Action by a Melee Attack made with Tartarus Claws, you can immediately move the model up to 3”. You can use this move to move within 1” another enemy model, and if you do so, this model can take another Fight ACTION. However, it cannot make the 3” move if the second attack takes the target Down or Out of Action. MM"
+      ],
+      "restrictions": [
+        "Death Commando only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Sarcophagus Mine",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-3 INJURY MODIFIER",
+        "BLAST 3”"
+      ],
+      "description": "Heretic Troopers can be encased in suits of thick armour that have been filled with explosives, which can be triggered by the Trooper when the enemy draws close.",
+      "rules": [
+        "Walking Bomb: A model that has a Sarcophagus Mine cannot have any other Battlekit. A model with a Sarcophagus Mine can take a Trigger ACTION (▶ see below). In addition, if an enemy model finishes a move within 3” of a model with a Sarcophagus Mine, you can interrupt its Activation and detonate the Sarcophagus Mine without having to take a Trigger ACTION. * Trigger ACTION: When a model with a Sarcophagus Mine takes a Trigger ACTION, you must take a Risky Success Roll for the model with +1 DICE. If the roll is a Failure, nothing happens (but you can try again the next time the model is Activated). If the roll is a Success or Critical Success, the Sarcophagus Mine detonates as described below.",
+        "Detonation: When a Sarcophagus Mine detonates, all models (friend or foe) within 3” of the model carrying the Sarcophagus Mine and in its Line of Sight are hit by a Ranged Attack with the SHRAPNEL Keyword. Add +1 INJURY DICE to the Injury Rolls for models that are within 1” of the model carrying the Sarcophagus Mine. The model carrying the Sarcophagus Mine is then taken Out of Action."
+      ],
+      "restrictions": [
+        "Heretic Troopers only, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Tank Palanquin",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-3 INJURY MODIFIER",
+        "STRONG"
+      ],
+      "description": "Trench Ghost Heretic Priests sometimes ride into battle standing on top of an armoured platform called a Tank Palanquin. From their lofty vantage point, they rain destruction upon the foe.",
+      "rules": [
+        "Bulky: A model that has a Tank Palanquin must be mounted on a 50mm base and cannot be equipped with a Shield. In addition, it has a Charge Bonus of D3” instead of D6”.",
+        "Death From On High: Add 3” to the height of a model that has a Tank Palanquin when determining if it receives the Elevated Position modifier for any Ranged Attacks that it makes.",
+        "Standfast: When a model that has a Tank Palanquin suffers a Down result on the Injury table, it is treated as a Minor Hit result instead."
+      ],
+      "restrictions": [
+        "Heretic Priest only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Coin Hammer",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+1 INJURY DICE",
+        "HEAVY"
+      ],
+      "description": "This double-handed hammer bears the rune of Mammon on its head. Its strike burns through even the heaviest armour, leaving a permanent, painful scar in the shape of the rune.",
+      "rules": [
+        "Rune of Mammon: If the Injury Roll for an attack made by a Coin Hammer results in 1 or more BLOOD MARKERS being placed next to the target, place 1 BLESSING MARKER next to the model using the Coin Hammer."
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Golden Calf Altar",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "DEPLOYABLE",
+        "HEAVY"
+      ],
+      "description": "This portable altar of Mammon creates illusions of immense wealth, taking the form of whatever its target covets most.",
+      "rules": [
+        "Illusions: Enemy models treat Open ground and all terrain within 3” of a model with a Golden Calf Altar or a Golden Calf Altar terrain piece as being Difficult terrain (if it is not already), even if they have the FLYING Keyword.",
+        "Place Altar ACTION: A model with a Golden Calf Altar can take a Place Altar ACTION. If they do so, deploy the Golden Calf Altar anywhere within 1”of the model. Once deployed, the model that had the Golden Calf Altar is not considered to be carrying it for the rest of the game. In addition, the Golden Calf Altar is lost at the end of the game and removed from your Warband Roster."
+      ],
+      "restrictions": [
+        "Limit: 3"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Standard of Mammon",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "HELD",
+        "LEADER"
+      ],
+      "description": "The Battle Standards of Mammon are opulently decorated works of art, icons and banners created in mockery of the virtues of Charity and Temperance. Crafted from the most extravagant materials, each is a unique work of dark genius, often depicting saints performing vile sins or famous acts of Greed. These standards have the power to make anyone kneel before the Prince of Greed.",
+      "rules": [
+        "Kneel Before Me: An enemy model that is Down and within 1” of a model with the Standard of Mammon cannot stand back up. In addition, the opposing player must take a Success Roll for any of their models that finish a charge within 1” of a model with the Standard of Mammon. If the roll is a Failure, the enemy model is marked as being Down. If the roll is a Success or a Critical Success, the enemy model stays on its feet."
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Tarnished Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "NEGATE GAS"
+      ],
+      "description": "This suit of armour, gilded with gleaming gold, comes with a helmet often adorned with a beautiful, cherub-like face, corrupted in some way with grotesque detailing such as inhuman eyes or a face twisted upside-down. Despite its splendour, the armour is always tarnished by blood, offal, or other kinds of corruption. Merely seeing it fills mortals with incredible greed and makes the wearer an immediate target of their wrath as they desperately try to take it from them.",
+      "rules": [
+        "Target of Wrath: An enemy model must choose a model that has Tarnished Armour as the target of the charge if the model is in its Line of Sight, not already within 1” of an enemy model, and can be reached without the charging model having to Climb, Jump, make a Diving Charge, or move across Dangerous terrain. VP"
+      ],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Beelzebub’s Axe",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "+2 INJURY DICE",
+        "HEAVY"
+      ],
+      "description": "With blades crafted in the form of a fly spreading its wings, this enormous axe is eternally covered with corruption and filth of Beelzebub.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Black Grail Shield",
+      "section": "Shields",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "description": "This device of the Cult of the Black Grail carries the blessing of the Lord of Flies. It has a will of its own, moving to intercept any bullets or other projectiles that might impede the work of Beelzebub.",
+      "rules": [
+        "Power of the Cult of the Black Grail: When a model with a Black Grail Shield is chosen as the target for a Ranged Attack, it will draw on the Power of the Black Grail before the Success Roll is made for the attack. Take a Success Roll for the model with the Black Grail Shield. If the roll is a Failure, nothing happens and the attack is carried out as normal. If the roll is a Success, add -2 DICE to the roll for the Ranged Attack. If the roll is a Critical Success, the attack is automatically a Failure (do not make a Success Roll for the attack)."
+      ],
+      "restrictions": [
+        "ELITE only, Shield Combo"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Compound Eyes Helmet",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "NEGATE SHRAPNEL"
+      ],
+      "description": "This ancient helmet fuses with its wearer, linking their nerves to its compound eyes, granting enhanced vision.",
+      "rules": [
+        "Enhanced Vision: Add +1 DICE to the Success Roll of Ranged Attacks taken for a model that has a Compound Eyes Helmet."
+      ],
+      "restrictions": [
+        "ELITE & Heralds only, Headgear, Limit: 3"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Corruption Belcher",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "8”",
+      "keywords": [
+        "FLAMETHROWER"
+      ],
+      "description": "Corruption belchers spew forth noxious gas and corrosive fumes captured from the Bolgias that divide the putrid swamps of the Eighth Circle of Hell.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Grail Devotee",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "Given birth by Matagot Hags after devouring living victims whole, these diminutive thralls are driven by an unspeakable thirst for fluids tainted by the Cult of the Black Grail. They attach themselves to the nobles of the Order of the Fly, endlessly grovelling and begging for any secretion or discharge of fluid their master might be able to spare.",
+      "rules": [
+        "Grovelling Followers: Up to 2 models can have up to 2 Grail Devotees each. Add +1 INJURY MODIFIER to Injury Rolls for Melee attacks made by the model for each Grail Devotee that it has. Each Grail Devotee can be represented by a model if you wish. Place them adjacent to the model that they are following but note that Grail Devotees are not treated as models for any rules purposes, just move them out of the way if they get in the way of a “proper” model.",
+        "Jealous Obsession: The Limit of 2 is the number of models that can have Grail Devotees; each model can have up to 2 Grail Devotees. The cost of the second Grail Devotee taken for a model is paid in ☼ instead of 👑 . Grail Devotees cannot be reallocated unless the model that had them is removed from the Warband Roster."
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Infested Rifle",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "18”",
+      "keywords": [
+        "ARMOUR-PIERCING"
+      ],
+      "description": "Armour offers little protection against the horrid, tainted bullets of this rifle, polluted by the power of Beelzebub himself. The bullets are semi-sentient, flying through the tiniest chinks in any armour.",
+      "rules": [],
+      "restrictions": [
+        "Bayonet Lug"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Plague Blade",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [
+        "INFECTION MARKERS"
+      ],
+      "description": "Carrying the viral strain of Beelzebub himself, these weapons are the terror of all mortals. Even the tiniest nick or scratch usually leads to an agonising death and eternal servitude to the Lord of Flies as a ghastly walking corpse.",
+      "rules": [],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Putrid Shotgun",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "12”",
+      "keywords": [
+        "+1 DICE",
+        "ASSAULT",
+        "INFECTION"
+      ],
+      "description": "Each a corroded, winged and demon-possessed cartridge filled with infected parasitic larvae, the rounds of putrid shotguns are almost impossible to avoid. This repulsive weapon is nicknamed “blunderpus” by the New Antioch troops.",
+      "rules": [],
+      "restrictions": [
+        "Bayonet Lug, Shield Combo, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Viscera Cannon",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "24”",
+      "keywords": [
+        "+2 DICE",
+        "HEAVY"
+      ],
+      "description": "This heavy firearm is the most loathsome and repulsive of all the weapons in the arsenal of the Cult of the Black Grail – and that is saying something. A warrior armed with this pride of Beelzebub inserts its tubes into their own abdomen and then shoots their own corrosive fluids and innards at the enemy. It is operated by a hand crank that first builds pressure inside the user until they are at the point of bursting, and then releases the spray of viscera at their foe. The greater the amount of their own flesh the user releases, the more horrific the damage.",
+      "rules": [
+        "Self Sacrifice: If a Viscera Cannon hits a target, after resolving the Injury Roll, you can place up to 3 BLOOD MARKERS next to model that made the Attack (until it has a maximum of 6 markers). Then place 1 INFECTION MARKER next to the target for each BLOOD MARKER that you placed on the attacking model. GD"
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Broken Crown",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "Made from the twisted and torn remains of their Hegemon’s shattered armour, this crown of barbs and thorns is a constant reminder to the Mourners of their failure.",
+      "rules": [
+        "Locus of Despair: Each time the model with the Broken Crown is Activated, before carrying out any ACTIONS with the model, place 1 INFECTION MARKER next to each enemy model within 1” of the model with the Broken Crown."
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Urn of the Bitter Ashes",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "This black urn contains ashes from the burned body of the fallen Hegemon, which still retain a faint echo of its hateful will. Fragments swirl and churn in the air, and sinister whispers emanate from within.",
+      "rules": [
+        "Sinister Whispers: Add -1 DICE to the roll for Ranged Attacks that target a model that has the Urn of Bitter Ashes or that is within 3” of the model with the Urn of Bitter Ashes. MF MM"
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Arquebus",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "18”",
+      "keywords": [
+        "CUMBERSOME"
+      ],
+      "description": "A primitive matchlock weapon, simple enough that even a Yoke Fiend is capable of operating it and sturdy enough to be used as a club with which to batter an opponent in a melee.",
+      "rules": [
+        "Batter: A model that has an Arquebus can use it as a 2-Handed Melee Weapon."
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Crown of Hellfire",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "This burning crown is held aloft by the pain-seared hands of an invisible damned soul, whose weeping cries can still be heard. It is a reward that an elite member of the Court can earn through some extraordinary act in the service of the Serpent Head they are pledged to. Of the slave soldiers of the Court, only the Pit Locusts are allowed to wear this symbol of prestige due the fundamental role they played at the start of the Great War.",
+      "rules": [
+        "Searing Flames: When a model with a Crown of Hellfire ends an Activation, place 1 BLOOD MARKER next to each enemy model within 1” of the model with a Crown of Hellfire, except for enemy models that have the NEGATE FIRE Keyword."
+      ],
+      "restrictions": [
+        "ELITE & Pit Locusts only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Headtaker",
+      "section": "Melee Weapons",
+      "type": "1-Handed",
+      "range": "Melee",
+      "keywords": [],
+      "description": "Said to contain a tiny sliver of the stone that Cain used to murder Abel, this weapon allows its wielder to identify any point in the body of their enemy that would bring it instant and agonising death. This makes it a superb ambush weapon much favoured by the Hunters of the Left-Hand Path.",
+      "rules": [
+        "Ambush Weapon: Add a +2 INJURY MODIFIER to rolls made for this weapon if the target has not yet been Activated this Turn."
+      ],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Infernal Iron Armour",
+      "section": "Armour",
+      "type": "Armour",
+      "range": "-",
+      "keywords": [
+        "-2 INJURY MODIFIER",
+        "IMPERVIOUS"
+      ],
+      "description": "This armour is forged simultaneously in Hell and on Earth, so that no weapon, whether Infernal or man-made, can overcome its protection.",
+      "rules": [],
+      "restrictions": [
+        "Hell Knights only"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Malebranche Sword",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [
+        "DEADLY",
+        "HEAVY"
+      ],
+      "description": "These forked Abyssal swords are terrible weapons as well as symbols of prestige. They are given to demons who have performed great deeds in the service of the Court and were once carried by fallen seraphim in battles against Heaven.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 1"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Ophidian Rifle",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "30”",
+      "keywords": [
+        "HEAVY"
+      ],
+      "description": "This wheel-lock hunting rifle is produced in the forges of the demon Sabnock, the great marquis of war. Made of both Infernal and Earthly metals and materials, it exists simultaneously in the twisted dimension of Hell as well as on Earth. A thing that should not be, the shots of this firearm pervert the laws of God, so targets taking cover are easier to hit, and firing over great distances aids the user of this Hell-made rifle instead of hindering their aim.",
+      "rules": [
+        "Unnatural Inversion: Add +1 DICE to roll for attacks made with this weapon if the Cover or Long Range modifiers apply to the attack, instead of adding -1 DICE. Note that this means you add +2 DICE to the roll if both modifiers apply to the attack."
+      ],
+      "restrictions": [
+        "ELITE only, Limit: 3"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Restraining Muzzle",
+      "section": "Equipment",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "description": "Yoke Fiends are unruly beasts, and almost impossible to control when they smell mortal blood. Court nobles use these cruel, barbed muzzles to bring them to heel. Each is attuned to the will of its master, who can constrict them with a command word, until the pain becomes so unbearable that even the most bestial Yoke Fiend is made to obey.",
+      "rules": [
+        "Brought to Heel: Add +1 DICE to rolls made for a Ranged Attack made by a Yoke Fiend that has a Restraining Muzzle. In addition, the Hateful ability does not apply to a Yoke Fiend that has a Restraining Muzzle."
+      ],
+      "restrictions": [
+        "Yoke Fiend only, Limit: 3"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Serpent Assault Gun",
+      "section": "Ranged Weapons",
+      "type": "2-Handed",
+      "range": "36”",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 2",
+        "GAS",
+        "HEAVY"
+      ],
+      "description": "This terrifying and enormous hand cannon contains a portal to the foetid swamps and bogs of the Fifth Circle of Hell. Each bullet it fires is enveloped with an awful gas.",
+      "rules": [],
+      "restrictions": [
+        "Limit: 2"
+      ],
+      "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Torture Instrument",
+      "section": "Melee Weapons",
+      "type": "2-Handed",
+      "range": "Melee",
+      "keywords": [],
+      "description": "Great scourges made from living spines, red-hot rods, man-catchers, and other tools of torment fashioned by the sadistic smiths of Dis are widely used by the Court’s warbands. Their main function is not to kill, but to cause as much agonising pain as possible. Forged in hellfire and quenched in the black waters of the River Styx, their wounds cause suffering that lasts for days.",
+      "rules": [
+        "Agonising Injuries: When you make an Injury Roll for an attack made with a Torture Instrument, roll 1D6 instead of 2D6, but then double the number of BLOOD MARKERS that are caused by the roll (if there are any). Any +INJURY DICE or -INJURY DICE that applied to the Injury Roll will apply normally, except that you pick the single highest or lowest dice in the roll instead of the 2 highest or lowest. Note that when you make a Bloodbath Roll for an attack made with a Torture Instrument, you only roll 2D6 instead of 3D6, but you can then double the number of BLOOD MARKERS that are caused by the roll. VM"
+      ],
+      "restrictions": [],
+      "sourceFile": "warbands-of-trench-crusade.txt"
     }
   ],
   "keywordGrants": [

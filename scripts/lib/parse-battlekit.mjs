@@ -646,3 +646,177 @@ export function keywordGrantsFrom(description) {
   }
   return [...out];
 }
+
+/* --------------------------------------- wargear from Warbands of Trench Crusade */
+
+export const WARBANDS_TXT =
+  'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt';
+
+/**
+ * Faction-exclusive wargear, which the core Battlekit chapter does not carry.
+ *
+ * `arsenal.ts` read one source and said so in its own comment — "Null for
+ * faction-exclusive Battlekit, which is described in Warbands of Trench
+ * Crusade rather than the Battlekit chapter" — and the app printed that
+ * sentence to the player in place of the rules. So Alchemist Armour, Engineer
+ * Body Armour, Infernal Iron Armour and Ragged Vestments rendered as a name
+ * and a blank, and the Wind Amulet's dossier showed no rules at all: not what
+ * it does, not its type, not its range.
+ *
+ * The second book states them in almost the same shape as the first:
+ *
+ *     Wind Amulet | 10 👑  | Limit: 2          <- name, price, restrictions
+ *     An amulet created by the Jabirean Alchemists…   <- description, wrapped
+ *     Type \t Range \t Keywords                 <- the SAME profile header
+ *     Equipment \t - \t -                       <- the row
+ *     ** Gusts of Wind: Once per game…          <- its rules
+ *
+ * The header is identical, which is what lets one reader serve both. The
+ * difference is the name line: here it carries the price and the restrictions
+ * on the same line, and there it is a bare name.
+ *
+ * Prices are NOT taken from it. The Armoury Tables are the price authority —
+ * the same item costs differently per faction — and this is only the prose
+ * they do not print.
+ */
+
+/** `Wind Amulet | 10 👑  | Limit: 2` — name, then price, then restrictions. */
+const WB_NAME = /^(.{2,60}?)\s*\|\s*[^|]*?[👑☼][^|]*?(?:\|\s*(.*))?$/u;
+
+/** The running furniture: page markers and the chapter strip down the edge. */
+const WB_PAGE = /^--\s*\d+\s+of\s+\d+\s*--$/;
+/*
+  A section banner, set in capitals: `DEFENDERS OF THE IRON WALL`. The lore
+  that follows one is not the preceding item's rules — the Fire Shield's single
+  real rule was running on into two paragraphs about Sultan Malik.
+*/
+const WB_BANNER = /^[^a-z]{8,}$/u;
+const WB_SIDEBAR = new Set([
+  'Warband', 'Creation', 'Special', 'Rules', 'Armoury', 'Tables', 'Elite',
+  'Entries', 'Troops', 'Mercenaries', 'Battlekit', 'Keywords', 'Index',
+  'Warband Creation', 'Special Rules', 'Armoury Tables', 'Elite Warband',
+  'Troops Warband', 'Elite Warband Entries', 'Troops Warband Entries',
+]);
+
+/**
+ * Read them.
+ *
+ * Returns `{ entries, unreadable }`. An entry whose profile row cannot be
+ * split is reported rather than emitted with blanks — a half-read profile on
+ * a card is indistinguishable from a real one.
+ */
+export function parseWarbandsBattlekit(src = WARBANDS_TXT) {
+  const raw = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = raw.map((l) => l.replace(/\s+$/, ''));
+
+  const headers = [];
+  lines.forEach((l, i) => { if (PROFILE_HEADER.test(l.trim())) headers.push(i); });
+  if (!headers.length) {
+    throw new Error(
+      `parse-battlekit: no wargear profiles in ${src}. This is the only source ` +
+      'for faction-exclusive Battlekit rules; without it the Codex shows a ' +
+      'name and a blank, which is the failure this reader exists to end.');
+  }
+
+  const entries = [];
+  const unreadable = [];
+
+  for (let k = 0; k < headers.length; k++) {
+    const h = headers[k];
+
+    // The name line: the nearest line above that prices something.
+    let nameAt = -1;
+    for (let i = h - 1; i >= Math.max(0, h - 16); i--) {
+      if (WB_NAME.test(lines[i].trim())) { nameAt = i; break; }
+    }
+    if (nameAt < 0) { unreadable.push(`no name line above ${lines[h + 1] ?? ''}`); continue; }
+
+    const m = WB_NAME.exec(lines[nameAt].trim());
+    const name = m[1].trim().replace(/\s+/g, ' ');
+    const restrictions = m[2] ? [m[2].trim().replace(/\s+/g, ' ')] : [];
+
+    // Everything between the name and the header is the description.
+    const description = lines.slice(nameAt + 1, h)
+      .map((l) => l.trim())
+      .filter((l) => l && !WB_PAGE.test(l) && !WB_SIDEBAR.has(l) && !/^\d+$/.test(l))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // The row, then its rules, up to the next entry's name.
+    const row = splitRow((lines[h + 1] ?? '').replace(/\s+/g, ' ').trim());
+    /*
+      Stop at the NEXT PRICED ENTRY, not at the next profile header.
+
+      Reading to the header let the Wind Amulet's one rule run on through the
+      chapter strip and into the Iron Sultanate's Elite entries — "…for the
+      rest of the Activation. Variants Starting a New Antioch Trench Pilgrims
+      … 1 Yüzbaşı - Cost: 70 👑". A rule that keeps going until the next
+      diagram is worse than no rule: it reads as though the book says it.
+    */
+    let stop = k + 1 < headers.length ? headers[k + 1] : lines.length;
+    for (let i = h + 2; i < stop; i++) {
+      const l = lines[i].trim();
+      // The next priced entry, a Warband entry ("1 Yüzbaşı - Cost: 70 👑"),
+      // a section banner, or the chapter strip the book prints down the edge
+      // of each page — whichever comes first.
+      if (WB_NAME.test(l) || /\s-\s*Cost:/.test(l) || /^ª–/.test(l)
+          || WB_BANNER.test(l)
+          || WB_SIDEBAR.has(l) || WB_PAGE.test(l)) { stop = i; break; }
+    }
+    const rules = [];
+    for (let i = h + 2; i < stop; i++) {
+      const l = lines[i].trim();
+      if (!l) continue;
+      if (BULLET.test(l)) rules.push(l.replace(BULLET, '').trim());
+      else if (rules.length) rules[rules.length - 1] += ` ${l}`;
+    }
+
+    if (!name || !row) { unreadable.push(lines[nameAt].trim()); continue; }
+
+    /*
+      A rule that ran into a Warband entry is not a rule.
+
+      Nine of these still run past their own item and into the models printed
+      after them — the giveaway is a statline header or a model's price inside
+      the text. The description and the profile row above are unaffected and
+      still worth having, so those are kept and the RULES are dropped and
+      reported. A rule that reads as though the book says it, and does not, is
+      the one outcome worse than a blank.
+    */
+    const swallowed = rules.some((r) =>
+      /Movement\s+Ranged\s+Melee/.test(r) || /-\s*Cost:\s*\d/.test(r));
+    if (swallowed) unreadable.push(`${name}: rules ran past the entry`);
+
+    /*
+      The section the Armoury Tables would file it under, from the profile row
+      rather than guessed from the name. `Type` names the kind directly for
+      Armour, Shields, Grenades and Equipment; a handed weapon is Melee or
+      Ranged according to whether the row prints a distance. `Special` is the
+      book's own catch-all and is left as Equipment, which is where the tables
+      put those rows.
+    */
+    const section =
+      row.type === 'Armour' ? 'Armour'
+      : row.type === 'Shield' ? 'Shields'
+      : row.type === 'Grenade' ? 'Grenades'
+      : /^\d-Handed$/.test(row.type)
+        ? (!row.range || row.range === '-' || /^Melee$/i.test(row.range)
+            ? 'Melee Weapons' : 'Ranged Weapons')
+        : 'Equipment';
+
+    entries.push({
+      name,
+      section,
+      type: row.type,
+      range: row.range,
+      keywords: row.keywords,
+      description,
+      rules: swallowed ? [] : rules,
+      restrictions,
+      sourceFile: 'warbands-of-trench-crusade.txt',
+    });
+  }
+
+  return { entries, unreadable };
+}
