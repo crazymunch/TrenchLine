@@ -247,6 +247,12 @@ of problem three more times, and the tests are written the same way:
   reported and skipped rather than cropped to a guess — a map cropped to the
   wrong rectangle is worse than the art alone, because it looks authoritative.
   `arsenal.test.ts` asserts the app is pointed at the crop and not at a `.png`.
+  The Carcass Front's five maps come out of the same script but not the same
+  way: that book draws no rule, and its map is a single large grey-filled
+  rectangle in the page's **vector drawings**, so the rectangle *is* the crop
+  box — read out of the PDF rather than detected in pixels. All five were
+  `mapImage: null` until then, which was the honest answer while the maps could
+  not be got out of the book.
 - **The deployment maps extract into the prose.** Labels and dimensions —
   `DEPLOYMENT ZONE`, `24’’`, `SWORD OF GOD` — arrive as bare lines mid-sentence.
   In scenario V they land between "within 1” of the Altar of Leviathan and" and
@@ -383,13 +389,16 @@ sentences, each opening a line, each following one that finished. The rules end
 where the fiction is introduced: a line closing on a colon whose next line
 opens a quotation.
 
-**The campaign map is not in the PDF.** The zone board, the Carcass Front Zones
-table (which zone offers which Resources, and which scenario is played there),
-the Special Zones table and the Scenario Generator charts the map campaign
-refers to are all printed on the fold-out map in the box. None of it can be
-derived from anything in this repo, so none of it is — `requiresMap` records
-the fact and the Codex says so, rather than leaving a player to work out why a
-rule points at a table the app does not have.
+**The campaign map is not in the book's PDF** — but it is not unobtainable.
+The zone board, the Carcass Front Zones table (which zone offers which
+Resources, and which scenario is played there), the Special Zones table and the
+Scenario Generator charts are printed on the fold-out map in the box, and the
+release carries that as `Carcass.Front.Map.pdf`. Its first page extracts to
+text: 33 zones with their Resources and scenario, ten Special Zone Outpost
+Bonuses, and the generator's Deployment × Victory Conditions charts. It is not
+yet in `SOURCES.json` — this note previously recorded it as print material with
+no rules content, which was wrong — so `requiresMap` still records that the
+Codex is short a table.
 
 ### The Vision cards: a card is not a chapter
 

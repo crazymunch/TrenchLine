@@ -196,15 +196,23 @@ for (const ruleset of RULESETS) {
 
   if (ruleset.layers.includes(CARCASS_FRONT)) {
     /*
-      No map file, and `null` rather than a path to one that does not exist.
+      Resolved the same way as the rulebook's twelve, and `null` only where
+      there is genuinely no file — never a path to one that does not exist,
+      which is how the app ended up showing twelve broken images.
 
-      The rulebook's twelve are checked against `public/maps/` and the build
-      fails if a file is missing, because the hand-written scenarios pointed
-      all twelve at files that were never there. The Carcass Front maps have
-      not been extracted from the PDF; saying so is the honest answer, and the
-      scenario's DEPLOYMENT section describes the zones in words regardless.
+      These were all five `null` until the maps could be got out of the book.
+      They are not raster art like the rulebook's: a Carcass Front map is a
+      single large grey-filled rectangle in the page's vector drawings, and
+      that rectangle IS the crop box — read from the PDF rather than detected,
+      so there is nothing to get wrong. See `scripts/crop-scenario-maps.py`.
     */
-    scenarios.push(...cf.scenarios.map((s) => ({ ...s, mapImage: null })));
+    scenarios.push(...cf.scenarios.map((s) => {
+      const file = `maps/${s.slug}.webp`;
+      return {
+        ...s,
+        mapImage: fs.existsSync(path.join('public', file)) ? `/${file}` : null,
+      };
+    }));
   }
 
   /*

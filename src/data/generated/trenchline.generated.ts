@@ -62137,7 +62137,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-ruins-of-nineveh-novus.webp"
     },
     {
       "number": 2,
@@ -62186,7 +62186,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-domus-demetrius.webp"
     },
     {
       "number": 3,
@@ -62235,7 +62235,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-steel-necropolis.webp"
     },
     {
       "number": 4,
@@ -62280,7 +62280,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-sword-of-god.webp"
     },
     {
       "number": 5,
@@ -62329,7 +62329,7 @@ export const DATASET: Dataset = {
         }
       ],
       "source": "carcass-front",
-      "mapImage": null
+      "mapImage": "/maps/carcass-front-the-altar-of-leviathan.webp"
     }
   ],
   "terrain": [

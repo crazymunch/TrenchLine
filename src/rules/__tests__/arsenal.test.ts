@@ -213,6 +213,19 @@ describe('the twelve scenarios', () => {
     }
   });
 
+  it('gives the Carcass Front five a map too, not a null', () => {
+    /*
+      All five were `null` — honestly so, because the maps had not been got out
+      of the book, and a path to a file that is not there is how the app came
+      to show twelve broken images. They are not raster art like the
+      rulebook's: a Carcass Front map is a single large grey-filled rectangle
+      in the page's vector drawings, and that rectangle IS the crop box.
+    */
+    const cf = (DATASET.scenarios ?? []).filter((s) => s.slug.startsWith('carcass-front-'));
+    expect(cf.length).toBe(5);
+    for (const s of cf) expect(s.mapImage, s.name).toBe(`/maps/${s.slug}.webp`);
+  });
+
   it('and at the map, not at the art underneath it', () => {
     /*
       `<slug>.png` was the image the PDF STORES, which is the map's background

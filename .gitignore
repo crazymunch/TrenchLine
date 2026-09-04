@@ -55,3 +55,6 @@ trenchline-artboards.zip
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Python bytecode from the one-off asset scripts (scripts/*.py).
+__pycache__/
