@@ -17,6 +17,7 @@ import {
   Package, 
   Plus, 
   Search,
+  Minus,
   AlertTriangle,
   FlaskConical
 } from 'lucide-react';
@@ -27,6 +28,84 @@ interface AddEquipmentModalProps {
   unitName: string;
   onClose: () => void;
 }
+
+/**
+ * Equip, or adjust how many.
+ *
+ * The recruit screen has had a stepper for unit counts since Phase 3 and the
+ * equip sheet did not: every extra Grenade meant hunting for the row again,
+ * and removing one meant leaving the sheet for the model's card. This is the
+ * same control, in the place the player is already looking.
+ *
+ * The `+` is gated by the rules — see `canEquip` — so the ceiling is the one
+ * the book states, whether that is a per-model `Limit: 3 (1 per model)` from
+ * the Armoury Table or a carrying limit from the Battlekit chapter. The `-`
+ * is never gated: a player must always be able to undo, and a model already
+ * over a limit needs that more than anyone.
+ *
+ * Both buttons hold the 44px touch floor up to `lg:`, not `sm:`. The project's
+ * own definition of done applies that floor to the TABLET as well as the phone
+ * — see mobile.spec, which exempts only desktop — and the tablet viewport is
+ * exactly 768px, which is where `md:` STARTS applying. `lg:` is the first
+ * breakpoint above it, and a tablet is still a device held at a table.
+ */
+const EquipControl: React.FC<{
+  gate: { allowed: boolean; reason?: string };
+  owned: number;
+  onAdd: () => void;
+  onRemove: () => void;
+  addLabel?: string;
+  addClassName?: string;
+}> = ({ gate, owned, onAdd, onRemove, addLabel = 'Equip', addClassName }) => {
+  if (owned > 0) {
+    return (
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onRemove}
+          aria-label={`Remove one — ${owned} carried`}
+          className="min-h-[44px] min-w-[44px] lg:min-h-[32px] lg:min-w-[32px] flex items-center justify-center rounded border border-theme-border bg-theme-elevated text-theme-text hover:bg-status-error hover:text-white transition-colors"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+        <span className="min-w-[2ch] text-center font-bold text-sm text-theme-text tabular-nums">
+          {owned}
+        </span>
+        <button
+          onClick={onAdd}
+          disabled={!gate.allowed}
+          title={gate.reason}
+          aria-label={gate.allowed ? 'Add one more' : gate.reason}
+          className={`min-h-[44px] min-w-[44px] lg:min-h-[32px] lg:min-w-[32px] flex items-center justify-center rounded border transition-colors ${
+            gate.allowed
+              ? 'border-theme-border bg-theme-elevated text-theme-text hover:bg-theme-primary hover:text-theme-base'
+              // Clearly spent, not merely quiet: at a glance the disabled `+`
+              // sat beside an enabled `-` looking much the same, and a control
+              // that might be pressable is worse than one that plainly is not.
+              : 'border-theme-border/40 bg-transparent text-theme-muted opacity-40 cursor-not-allowed'
+          }`}
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={onAdd}
+      disabled={!gate.allowed}
+      title={gate.reason}
+      className={addClassName ?? `px-3 py-1 border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
+        gate.allowed
+          ? 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border-theme-border'
+          : 'bg-transparent text-theme-muted border-theme-border/50 cursor-not-allowed'
+      }`}
+    >
+      <Plus className="w-3.5 h-3.5" />
+      <span>{gate.allowed ? addLabel : 'Not allowed'}</span>
+    </button>
+  );
+};
 
 export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   warbandId,
@@ -41,6 +120,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     equipWeapon, 
     equipArmour, 
     equipEquipment, 
+    removeWeapon,
+    removeArmour,
+    removeEquipment,
     getActiveWarband 
   } = useStore();
 
@@ -59,6 +141,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   // Equipment arrays
   const currentWeapons = unit?.equippedWeapons || [];
   const currentArmour = unit?.equippedArmour || [];
+  const currentEquipment = unit?.equippedEquipment || [];
 
   // Check special traits: STRONG and Extra Limbs (3rd Arm / Homunculus)
   const isStrong = Boolean(
@@ -174,6 +257,24 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
       extraLimb: hasExtraLimb(unit),
     });
   }, [dataset, factionId, carriedNow, unitProfileName, unit]);
+
+  /*
+    How many of a thing the model already carries, and which instance to drop.
+
+    The store removes by `instanceId`, so decrementing takes the LAST one
+    added — the same one the player just added with `+`, which is what makes
+    the pair read as one control rather than two unrelated buttons.
+  */
+  const sameItem = (a: { id?: string; name: string }, b: { id?: string; name: string }) =>
+    (b.id != null && a.id === b.id) || a.name === b.name;
+  const ownedIn = (
+    list: { instanceId?: string; id?: string; name: string }[],
+    item: { id?: string; name: string },
+  ) => list.filter((x) => sameItem(x, item)).length;
+  const lastInstanceIn = (
+    list: { instanceId?: string; id?: string; name: string }[],
+    item: { id?: string; name: string },
+  ) => [...list].reverse().find((x) => sameItem(x, item))?.instanceId;
 
   const kit = forcedBattlekit(unit?.profileSnapshot);
   const alreadyCarried = <T extends { id?: string; name: string }>(item: T) =>
@@ -360,7 +461,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
               <button
                 onClick={() => setWeaponSubCategory('all')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -368,7 +469,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('melee')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'melee' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -376,7 +477,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('ranged')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'ranged' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -384,7 +485,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('shield')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'shield' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -392,7 +493,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setWeaponSubCategory('grenade')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   weaponSubCategory === 'grenade' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -406,7 +507,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
               <button
                 onClick={() => setEquipmentSubCategory('all')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'all' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -423,7 +524,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('headgear')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'headgear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -431,7 +532,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('relic')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'relic' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -439,7 +540,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('gear')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
+                className={`px-2.5 min-h-[44px] lg:min-h-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
                   equipmentSubCategory === 'gear' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
                 }`}
               >
@@ -512,13 +613,15 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <span className="text-xs sm:text-[10px] text-theme-muted">
                         Mod: <strong className="text-theme-text">{typeof w.modifiers === 'string' ? w.modifiers : '-'}</strong>
                       </span>
-                      <button
-                        onClick={() => handleEquipWeapon(w)}
-                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Equip</span>
-                      </button>
+                      <EquipControl
+                        gate={gateFor(w)}
+                        owned={ownedIn(currentWeapons as never, w)}
+                        onAdd={() => handleEquipWeapon(w)}
+                        onRemove={() => {
+                          const id = lastInstanceIn(currentWeapons as never, w);
+                          if (id) removeWeapon(warbandId, unitId, id);
+                        }}
+                      />
                     </div>
                   </div>
                 );
@@ -586,13 +689,15 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <span className="text-xs sm:text-[10px] text-theme-muted">
                         Save Mod: <strong className="text-theme-primary">{a.armourModifier || a.modifier || '-'}</strong>
                       </span>
-                      <button
-                        onClick={() => handleEquipArmour(a)}
-                        className="px-3 py-1 bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Equip</span>
-                      </button>
+                      <EquipControl
+                        gate={gateFor(a)}
+                        owned={ownedIn(currentArmour as never, a)}
+                        onAdd={() => handleEquipArmour(a)}
+                        onRemove={() => {
+                          const id = lastInstanceIn(currentArmour as never, a);
+                          if (id) removeArmour(warbandId, unitId, id);
+                        }}
+                      />
                     </div>
                   </div>
                 );
@@ -662,25 +767,19 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <span className="text-xs sm:text-[10px] text-theme-muted">
                         {isFormula ? 'Alchemical Infusion' : 'Gear / Relic'}
                       </span>
-                      {(() => { const gate = gateFor(e); return (
-                      <button
-                        onClick={() => handleEquipEquipment(e)}
-                        disabled={!gate.allowed}
-                        title={gate.reason}
-                        className={`px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
-                          !gate.allowed
-                            ? 'bg-transparent text-theme-muted border border-theme-border/50 cursor-not-allowed'
-                            : isFormula
-                              ? 'bg-theme-accent hover:bg-status-error text-white'
-                              : 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border border-theme-border'
-                        }`}
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>
-                          {!gate.allowed ? 'Not allowed' : isFormula ? 'Infuse Formula' : 'Equip'}
-                        </span>
-                      </button>
-                      ); })()}
+                      <EquipControl
+                        gate={gateFor(e)}
+                        owned={ownedIn(currentEquipment as never, e)}
+                        onAdd={() => handleEquipEquipment(e)}
+                        onRemove={() => {
+                          const id = lastInstanceIn(currentEquipment as never, e);
+                          if (id) removeEquipment(warbandId, unitId, id);
+                        }}
+                        addLabel={isFormula ? 'Infuse Formula' : 'Equip'}
+                        addClassName={isFormula && gateFor(e).allowed
+                          ? 'px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 bg-theme-accent hover:bg-status-error text-white'
+                          : undefined}
+                      />
                     </div>
                   </div>
                 );
