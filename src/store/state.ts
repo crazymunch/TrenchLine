@@ -15,7 +15,7 @@
  * 2,000 lines of *behaviour*, not of the type.
  */
 import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
-import { Campaign, CasualtyRecord } from '../types/campaign';
+import { Campaign, CampaignFramework, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import type { Dataset } from '../types/catalogue';
@@ -213,7 +213,22 @@ export interface AppState {
 
   // Multiplayer Campaign State
   campaign: Campaign;
-  createCampaign: (name: string, maxDucats: number, gloryThreshold: number) => void;
+  createCampaign: (
+    name: string,
+    maxDucats: number,
+    gloryThreshold: number,
+    /**
+     * Which rules the campaign is played under, and the territories that go
+     * with them. Fixed here and never changed after — see
+     * `src/rules/campaignFramework.ts`.
+     *
+     * The territories arrive from the caller rather than being built here
+     * because a Carcass Front campaign's are the published zones, which live
+     * in the dataset, and the dataset is fetched asynchronously by the view.
+     */
+    framework?: CampaignFramework,
+    territories?: TerritoryNode[],
+  ) => void;
   claimTerritory: (territoryId: string, warbandId: string, playerName: string) => void;
   logCampaignMatch: (
     p1WarbandId: string,

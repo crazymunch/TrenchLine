@@ -58,17 +58,48 @@ export interface MatchRecord {
   turningPoints?: string;
 }
 
+/**
+ * Which campaign rules a campaign is played under.
+ *
+ * Fixed when the campaign is created and never changed after: the two do not
+ * agree on what a territory is, what a turn is or how the campaign is won, so
+ * switching mid-campaign would leave every recorded game meaning something
+ * different from what it meant when it was played.
+ *
+ * `classic` is the app's own: the world map of the setting, a Glory-point
+ * victory threshold and a match log. `carcass-front` is the published Carcass
+ * Front Campaign — its 32 zones with their Resources, the Camp buildings, the
+ * Campaign Tracker and the Shared Objectives, all derived from the book and
+ * the fold-out map.
+ *
+ * Optional on `Campaign` because campaigns saved before this existed have no
+ * such field, and every one of them is a `classic`.
+ */
+export type CampaignFramework = 'classic' | 'carcass-front';
+
 export interface TerritoryNode {
   id: string;
   name: string;
   type: string;
   controlledByWarbandId?: string;
   controlledByPlayerName?: string;
-  perk: string; // e.g. "+10 Ducats exploration reward"
+  /**
+   * What holding it confers.
+   *
+   * EMPTY on the app's own theatres: no published rule attaches an effect to
+   * holding one, and the twelve that shipped an invented one presented it as
+   * a rule. Set on a Carcass Front Special Zone, where the book publishes an
+   * Outpost Bonus and this carries it verbatim.
+   */
+  perk: string;
   description: string;
   x?: number; // Map position X percentage (0-100)
   y?: number; // Map position Y percentage (0-100)
   region?: string;
+  /** Carcass Front only: Favour / Relics / Supplies / Territories. */
+  resources?: string[];
+  /** Carcass Front only: the scenario played at this zone. */
+  scenario?: string;
 }
 
 export interface Campaign {
@@ -77,6 +108,11 @@ export interface Campaign {
   inviteCode: string;
   adminName: string;
   status: 'active' | 'archived';
+  /**
+   * Which rules this campaign is played under. Absent on campaigns saved
+   * before the choice existed, and every one of those is a `classic`.
+   */
+  framework?: CampaignFramework;
   currentTurn: number;
   /**
    * Which game of the campaign is being prepared for. Drives the Threshold

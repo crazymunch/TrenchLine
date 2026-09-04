@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { TerritoryNode } from '../../types/campaign';
+import { frameworkOf } from '@/rules/campaignFramework';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { 
@@ -38,7 +39,16 @@ export const TerritoryMap: React.FC = () => {
 
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryNode | null>(null);
   const [selectedAssignWarbandId, setSelectedAssignWarbandId] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'map' | 'grid'>('map');
+  /*
+    A Carcass Front campaign has NO pin coordinates. Its zone board — which
+    zone borders which — is a graphic on the fold-out sheet in the box, so
+    there is nowhere honest to put a marker, and scattering thirty-two of them
+    over a map of Europe would be inventing a geography the book does not
+    print. The list is the only view it has, and the World Map button is not
+    offered rather than being offered and showing an empty map.
+  */
+  const onCarcassFront = frameworkOf(campaign) === 'carcass-front';
+  const [viewMode, setViewMode] = useState<'map' | 'grid'>(onCarcassFront ? 'grid' : 'map');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -126,14 +136,17 @@ export const TerritoryMap: React.FC = () => {
             </h3>
           </div>
           <p className="text-xs text-theme-muted">
-            Overarching world map of Trench Crusade. Click any strategic theater pin to assign control to any warband in the directory, or launch an offensive.
+            {onCarcassFront
+              ? 'The Carcass Front’s zones, each with the Resources it offers and the scenario played there. '
+                + 'Which zone borders which is on the fold-out map in the box; the app does not have the board.'
+              : 'Overarching world map of Trench Crusade. Click any strategic theater pin to assign control to any warband in the directory, or launch an offensive.'}
           </p>
         </div>
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Mode Switcher */}
-          <div className="flex bg-theme-base p-1 rounded border border-theme-border text-xs">
+          <div className={`flex bg-theme-base p-1 rounded border border-theme-border text-xs ${onCarcassFront ? 'hidden' : ''}`}>
             <button
               onClick={() => setViewMode('map')}
               className={`px-3 py-1 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
@@ -160,7 +173,7 @@ export const TerritoryMap: React.FC = () => {
           </div>
 
           {/* Map View Controls (Zoom & Toggles) */}
-          {viewMode === 'map' && (
+          {viewMode === 'map' && !onCarcassFront && (
             <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
               <button
                 onClick={handleZoomIn}
@@ -197,7 +210,7 @@ export const TerritoryMap: React.FC = () => {
       </div>
 
       {/* VIEW MODE 1: INTERACTIVE WORLD MAP VIEW */}
-      {viewMode === 'map' && (
+      {viewMode === 'map' && !onCarcassFront && (
         <div 
           ref={mapContainerRef}
           className="relative w-full rounded-md border-2 border-theme-border overflow-hidden bg-theme-base shadow-2xl"
@@ -316,6 +329,25 @@ export const TerritoryMap: React.FC = () => {
                   <p className="text-xs text-theme-muted leading-relaxed">
                     {node.description}
                   </p>
+
+                  {/*
+                    Carcass Front only, and read off the map's own Zones table.
+                    Which Resources a zone offers is what a player decides
+                    where to fight on, so it belongs on the card and not two
+                    taps away in the detail panel.
+                  */}
+                  {node.resources && node.resources.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {node.resources.map((r) => (
+                        <span
+                          key={r}
+                          className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated border border-theme-border text-theme-text"
+                        >
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/*

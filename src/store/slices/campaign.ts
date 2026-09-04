@@ -250,7 +250,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
     // Campaign Management
     campaign: init.campaign,
-    createCampaign: (name, maxDucats, gloryThreshold) => {
+    createCampaign: (name, maxDucats, gloryThreshold, framework = 'classic', territories) => {
       const state = get();
       const activeWb = state.getActiveWarband();
 
@@ -260,6 +260,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         inviteCode: `TRENCH-${Math.floor(1000 + Math.random() * 9000)}`,
         adminName: 'Commander',
         status: 'active',
+        /*
+          Recorded on the campaign and never changed after. The two frameworks
+          do not agree on what a territory is, what a turn is or how the
+          campaign is won, so a switch mid-campaign would leave every game
+          already logged meaning something other than what it meant when it
+          was played.
+        */
+        framework,
         currentTurn: 1,
         maxWarbandDucats: maxDucats,
         gloryVictoryThreshold: gloryThreshold,
@@ -280,13 +288,24 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
               }
             ]
           : [],
-        territories: defaultFreshCampaign.territories,
+        /*
+          A Carcass Front campaign is played on its own 32 zones, which the
+          view passes in from the dataset. The app's twelve world theatres are
+          the `classic` map and mean nothing under those rules.
+
+          An empty list would be a Carcass Front campaign with no map at all,
+          which is worse than the wrong one, so it falls back and the view says
+          the dataset did not load rather than silently seating the player
+          somewhere else.
+        */
+        territories: territories?.length ? territories : defaultFreshCampaign.territories,
         matches: [],
         chronicleLogs: [
           {
             id: `c-${Date.now()}`,
             timestamp: 'Just now',
-            text: `Crusade campaign "${name}" established.`,
+            text: `Crusade campaign "${name}" established`
+                + (framework === 'carcass-front' ? ' on the Carcass Front.' : '.'),
             category: 'territory'
           }
         ]
