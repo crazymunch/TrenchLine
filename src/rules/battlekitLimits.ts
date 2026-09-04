@@ -63,6 +63,15 @@ export interface CarrierContext {
    */
   extraLimb?: boolean;
   /**
+   * Every name the model holds — Formulae, Strains, innate abilities.
+   *
+   * Used to match a carrying allowance the model's own entry states. Supplied
+   * by `traitsOf`, which reads all three places a Formula can be recorded,
+   * because the importer used to file them differently from the app's own
+   * purchase path.
+   */
+  traits?: string[];
+  /**
    * The model's own Keywords.
    *
    * STRONG is one of the four carrying rules the Keyword Glossary states, and
@@ -191,6 +200,70 @@ const ruleFor = (limits: BattlekitLimits, section: string): BattlekitLimit | und
  * "unknown", never "no limits", so an older ruleset simply is not policed
  * rather than being declared legal.
  */
+/**
+ * The allowance this model's own entry states, if it states one.
+ *
+ * "Unless otherwise stated" is the first line of the Battlekit Limits. A
+ * Takwin Homunculus with `Human Hands` and an `Additional Arm` is stated
+ * otherwise, and the app was calling its Siege Jezzail illegal because the
+ * chapter forbids a 2-Handed weapon alongside a Shield — while the entry says
+ * the Shield replaces a MELEE weapon.
+ *
+ * Matched on the traits the model actually holds. The names come from the
+ * book's own sentence, so nothing about which Formula grants what is written
+ * here; `traitsOf` supplies the model's side from all three places a Formula
+ * can be recorded.
+ */
+function statedAllowance(ctx: CarrierContext) {
+  const traits = (ctx.traits ?? []).map((t) => t.trim().toLowerCase());
+  if (!traits.length) return undefined;
+  return (ctx.dataset.carryAllowances ?? []).find(
+    (a) => a.requires.every((r) => traits.includes(r.trim().toLowerCase())));
+}
+
+/**
+ * Do these weapons fit any combination the entry allows?
+ *
+ * Combinations, not hand arithmetic: the book says "three 1-Handed, or one
+ * 1-Handed and one 2-Handed", and another entry in the same book says "up to
+ * three 1-Handed OR two 1-Handed and one 2-Handed" — three items in one
+ * branch and four hands in the other. A single capacity number gets one wrong.
+ *
+ * `spend` is the slot a Shield takes where the entry says it replaces one of
+ * these weapons.
+ */
+function fitsAllowance(
+  combos: Record<string, number>[],
+  carried: Carried[],
+  ctx: CarrierContext,
+  spend: number,
+): boolean {
+  const have = new Map<number, number>();
+  for (const c of carried) {
+    const h = handsOf(c, ctx);
+    if (h === undefined) continue;      // Unknown kind: never counted.
+    have.set(h, (have.get(h) ?? 0) + 1);
+  }
+
+  return combos.some((combo) => {
+    /* The Shield takes one of the weapons the branch allows — the cheapest,
+       so the branch is given its best reading before anything is refused. */
+    const budget = new Map<number, number>(
+      Object.entries(combo).map(([h, n]) => [Number(h), n]));
+    let toSpend = spend;
+    for (const h of [...budget.keys()].sort((a, b) => a - b)) {
+      while (toSpend > 0 && (budget.get(h) ?? 0) > 0) {
+        budget.set(h, budget.get(h)! - 1);
+        toSpend--;
+      }
+    }
+    if (toSpend > 0) return false;
+
+    for (const [h, n] of have) if (n > (budget.get(h) ?? 0)) return false;
+    return true;
+  });
+}
+
 export function battlekitBreaches(items: Carried[], ctx: CarrierContext): BattlekitBreach[] {
   const limits = ctx.dataset.battlekitLimits;
   if (!limits?.limits?.length) return [];
@@ -269,6 +342,27 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
       For the published 2-and-1 that is two slots and one apiece, and the
       arithmetic reproduces the sentence exactly rather than assuming it.
     */
+    /*
+      An allowance this model's own entry states replaces the chapter's for
+      this section — "unless otherwise stated". Checked as a set of
+      combinations rather than through the hand arithmetic below, because the
+      book states alternatives that are not a single capacity.
+    */
+    const stated = statedAllowance(ctx);
+    const combos = stated?.bySection[section];
+    if (combos?.length) {
+      const spend = stated!.shieldReplaces === section ? shields.length : 0;
+      if (!fitsAllowance(combos, carried, ctx, spend) && !oneStatedLoadout(carried)) {
+        out.push({
+          section, raw: stated!.raw,
+          message: `${carried.map((c) => c.name).join(', ')}`
+                 + (spend ? ` with a Shield` : '')
+                 + ` is more ${section} than ${stated!.model}'s own entry allows.`,
+        });
+      }
+      continue;   // The entry's allowance stands in place of the chapter's.
+    }
+
     if (rule.byHands) {
       const perHand = (h: number) => rule.byHands![String(h)];
       const capacity = perHand(1);
@@ -327,7 +421,21 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
     while a Shield is actually carried, which is why it sits outside the loop.
   */
   const ws: ShieldRestrictions | undefined = limits.withShield;
-  if (ws && shields.length) {
+  /*
+    Not applied to a model whose own entry states its allowance WITH a Shield.
+
+    This is the half that made the app call Al-Masyukh's Siege Jezzail
+    illegal. The chapter says a 2-Handed weapon cannot be carried alongside a
+    Shield unless both have Shield Combo; the Homunculus entry says the Shield
+    replaces one of its MELEE weapons and that Shield Combo cannot be used at
+    all — so its 2-Handed RANGED weapon is untouched by the Shield, and the
+    stipulation the chapter asks for is one this model is forbidden to use.
+    Enforcing both at once demands something the entry forbids.
+  */
+  const shieldStated = shields.length ? statedAllowance(ctx) : undefined;
+  const chapterShieldApplies = !(shieldStated && shieldStated.shieldReplaces);
+
+  if (ws && shields.length && chapterShieldApplies) {
     for (const section of ['Melee Weapons', 'Ranged Weapons']) {
       const carried = bySection.get(sectionKey(section))?.items ?? [];
 

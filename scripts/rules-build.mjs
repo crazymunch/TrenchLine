@@ -23,6 +23,7 @@ import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRul
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
+import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -125,6 +126,13 @@ for (const ruleset of RULESETS) {
   // same chapter, and the app enforced none of them — a model could wear
   // three suits of Armour and validate clean. Throws if the heading is gone.
   const battlekitLimits = parseBattlekitLimits();
+  /*
+    Carrying allowances a model's own entry states, which replace the
+    chapter's for that model. Only self-describing sentences are read; the
+    rest are reported below rather than attributed by guess.
+  */
+  const carryAllowances = parseCarryAllowances(
+    'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt');
 
   /*
     Faction-exclusive wargear, which the core chapter does not carry.
@@ -464,6 +472,15 @@ for (const ruleset of RULESETS) {
      * is not an item.
      */
     counters: base.counters ?? [],
+    /**
+     * Carrying allowances a model's own entry states — see the type.
+     *
+     * Only the sentences that name their own condition are read. The book
+     * states four more of the same shape that say "It can have…", where "it"
+     * is the entry the paragraph sits under; those need document structure
+     * this reader does not have and are REPORTED below rather than guessed at.
+     */
+    carryAllowances: carryAllowances.allowances,
     /**
      * The per-model carrying limits, from the chapter's own bullets.
      *
@@ -862,6 +879,22 @@ for (const ruleset of RULESETS) {
       + (m.unreadable.length ? `  (${m.unreadable.length} UNREADABLE: `
                               + `${m.unreadable.join(' | ')})` : ''));
   }
+
+  /*
+    Carrying allowances, and the ones this reader will not attribute.
+
+    Reported rather than dropped, the same way an unreadable Battlekit bullet
+    is: a stated rule that silently goes unread is a rule silently unenforced,
+    and these four are real allowances the book gives real models.
+  */
+  console.log(`  carry allowances: ${carryAllowances.allowances.length} read `
+    + `(${carryAllowances.allowances.map((a) => a.model).join(', ') || 'none'})`
+    + (carryAllowances.unattributed.length
+        ? `  (${carryAllowances.unattributed.length} STATED BUT UNATTRIBUTED — `
+          + 'each says "it can have…" where "it" is the entry the paragraph sits '
+          + 'under, which needs document structure this reader does not have: '
+          + carryAllowances.unattributed.map((u) => `"${u.slice(0, 70)}…"`).join(' | ') + ')'
+        : ''));
 
   if (dataset.scenarioGenerator) {
     const g = dataset.scenarioGenerator;

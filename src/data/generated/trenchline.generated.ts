@@ -67394,6 +67394,38 @@ export const DATASET: Dataset = {
       "forName": "Man's Best Friend"
     }
   ],
+  "carryAllowances": [
+    {
+      "raw": "It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield Combo rule cannot be used for any of its weapons.",
+      "model": "Takwin Homunculus",
+      "requires": [
+        "Human hands",
+        "Additional Arm"
+      ],
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ],
+        "Ranged Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 1,
+            "2": 1
+          }
+        ]
+      },
+      "shieldReplaces": "Melee Weapons",
+      "shieldComboUsable": false
+    }
+  ],
   "keywordGrants": [
     {
       "name": "Hellfly Host",

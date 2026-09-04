@@ -1011,6 +1011,40 @@ store rather than only hidden in the UI.
 Clearing the text clears the source with it: a house rule with no words in it
 would render as an attributed rule that says nothing.
 
+### An allowance a model's own entry states
+
+*"Unless otherwise stated"* is the first line of the Battlekit Limits, and some
+entries state otherwise. Warbands of Trench Crusade, under `Human Hands`:
+
+> If a Takwin Homunculus with Human hands also has an Additional Arm, then it
+> can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one
+> 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one
+> 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. **If it takes a
+> Shield, then the Shield replaces one of the Melee Weapons** it can have but
+> the Shield Combo rule cannot be used for any of its weapons.
+
+`dataset.carryAllowances` carries these, and where one applies it **replaces**
+the chapter's rule for that section — including the chapter's Shield
+restrictions, which is the point: the app was calling a Homunculus's Siege
+Jezzail illegal because the chapter forbids a 2-Handed weapon beside a Shield,
+while this entry says the Shield replaces a *melee* weapon and forbids using
+Shield Combo at all. Demanding the stipulation demanded something the model may
+not do.
+
+**Combinations, not hand arithmetic.** The book states alternatives, and they
+are not a single capacity: this entry allows three items or three hands, while
+another in the same book allows *"up to three 1-Handed OR two 1-Handed and one
+2-Handed"* — three items in one branch and four hands in the other. Any formula
+over one capacity number gets one of the two wrong.
+
+**Only self-describing sentences are read.** `parse-carry-allowances.mjs` takes
+the condition from the sentence itself (*"If a X with Y also has Z, then…"*), so
+nothing about which Formula grants what is written in the app. The book states
+four more allowances of the same shape that say *"It can have…"*, where *it* is
+the entry the paragraph sits under; those need document structure this reader
+does not have, and the build **reports** them rather than attributing them by
+guess.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

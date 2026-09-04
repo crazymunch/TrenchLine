@@ -1049,6 +1049,34 @@ export interface Dataset {
    */
   counters?: { name: string; forName: string }[];
   /**
+   * Carrying allowances a model's own entry states, which replace the
+   * chapter's.
+   *
+   * "Unless otherwise stated" is the first line of the Battlekit Limits, and
+   * Warbands of Trench Crusade states otherwise for a Takwin Homunculus with
+   * `Human Hands` and an `Additional Arm`. That was why the app called its
+   * Siege Jezzail illegal: the chapter forbids a 2-Handed weapon alongside a
+   * Shield, and this entry says the Shield replaces a MELEE weapon.
+   *
+   * `bySection` is a list of COMBINATIONS, not an arithmetic of hand slots.
+   * The book states alternatives — "three 1-Handed, or one 1-Handed and one
+   * 2-Handed" — and they are not the same as three hands: another entry allows
+   * "up to three 1-Handed OR two 1-Handed and one 2-Handed", three items in
+   * one branch and four hands in the other. Any single capacity number gets
+   * one of the two wrong.
+   */
+  carryAllowances?: {
+    raw: string;
+    model: string;
+    /** Named by the sentence itself — nothing about Formulae written here. */
+    requires: string[];
+    bySection: Record<string, Record<string, number>[]>;
+    /** The section a Shield takes a slot from, where the entry says so. */
+    shieldReplaces?: string;
+    /** False where the entry forbids using Shield Combo. */
+    shieldComboUsable: boolean;
+  }[];
+  /**
    * The Carcass Front campaign map's tables.
    *
    * Undefined for a ruleset without the supplement — that ruleset genuinely
