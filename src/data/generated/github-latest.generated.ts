@@ -64460,7 +64460,7 @@ export const DATASET: Dataset = {
               "to": 9
             },
             "name": "Survivor",
-            "description": "You find a soldier staggering in No Man’s Land; a deserter, perhaps, or a squaddie whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). * New Antioch: A Yeoman without a Ranged Weapon. * Trench Pilgrims: Ecclesiastical Prisoner. * Iron Sultanate: Azeb. * Heretic Legions: Wretched. * Black Grail: Grail Thrall. * The Court: Wretched. Glory Item Tables"
+            "description": "You find a soldier staggering in No Man’s Land; a deserter, perhaps, or a squaddie whose comrades were wiped out by one of the horrors roaming the battlefields of the Great War. It is time to put them to work. Add the model listed below for your Faction to your Warband. The model does not have any Battlekit (you can purchase Battlekit for it in the Quartermaster Step). * New Antioch: A Yeoman without a Ranged Weapon. * Trench Pilgrims: Ecclesiastical Prisoner. * Iron Sultanate: Azeb. * Heretic Legions: Wretched. * Black Grail: Grail Thrall. * The Court: Wretched."
           },
           {
             "roll": {
@@ -64508,7 +64508,7 @@ export const DATASET: Dataset = {
               "to": 20
             },
             "name": "Warband Strongbox",
-            "description": "You find the hidden strongbox of a Warband lost in the Great War. Choose one of the following options: * Trove: Choose one or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑 , and add them to your Arsenal. * Panoply: Choose one or more Glory Items worth a total of up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the Cost of any Weapons by 1 ☼ to a minimum of 1 ☼ . Glory Item Tables"
+            "description": "You find the hidden strongbox of a Warband lost in the Great War. Choose one of the following options: * Trove: Choose one or more pieces of Battlekit from your Warband’s Armoury Tables that are worth a total of up to 120 👑 , and add them to your Arsenal. * Panoply: Choose one or more Glory Items worth a total of up to 9 ☼, and add them to your Arsenal. In addition, when you are choosing the items, reduce the Cost of any Weapons by 1 ☼ to a minimum of 1 ☼ ."
           }
         ],
         "rare": [
@@ -64558,7 +64558,7 @@ export const DATASET: Dataset = {
               "to": 17
             },
             "name": "Book of Golems",
-            "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add a Takwin Homunculus from The House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword, and replaces the SULTANATE Keyword with your Faction's Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas. Glory Item Tables"
+            "description": "You find a Rabbinic manual on creating Golems. Studying it allows you to create a Golem. Add a Takwin Homunculus from The House of Wisdom Variant Warband in the Iron Sultanate Faction List to your Warband. It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free (you do not have to pay for the Formulas that you choose). The Golem has the GOLEM Keyword, and replaces the SULTANATE Keyword with your Faction's Keyword. You can purchase Battlekit for it in the Quartermaster Step, using your own Armoury Tables instead of the ones in the Iron Sultanate Faction List. The model is treated as an Ally that can never be Promoted or receive additional Alchemical Formulas."
           },
           {
             "roll": {
@@ -64598,7 +64598,7 @@ export const DATASET: Dataset = {
               "to": 32
             },
             "name": "Abandoned Resurrection Machines",
-            "description": "You find remnants of machines that were once used as part of the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and its corresponding Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used. Glory Item Tables"
+            "description": "You find remnants of machines that were once used as part of the Meta-Christ Programme. Most of them are broken, torn apart by some immense force, but one of them works and can be dismantled. Add a Salvaged Resurrection Machine to your Warband’s Arsenal. In any future Quartermaster Step, you can use the Salvaged Resurrection Machine to remove 1 Battle Scar and its corresponding Trauma from a model in your Warband. Remove the Salvaged Resurrection Machine from your Warband Roster after it is used."
           }
         ],
         "legendary": [
@@ -64640,7 +64640,7 @@ export const DATASET: Dataset = {
               "to": 14
             },
             "name": "Black Network Contact",
-            "description": "You make contact with one of the legendary Merchant Princes of the Black Network. From now on, in the Quartermaster Step, you can purchase Glory Items costing 12 ☼ or less. Glory Item Tables"
+            "description": "You make contact with one of the legendary Merchant Princes of the Black Network. From now on, in the Quartermaster Step, you can purchase Glory Items costing 12 ☼ or less."
           },
           {
             "roll": {
@@ -64680,7 +64680,7 @@ export const DATASET: Dataset = {
               "to": 26
             },
             "name": "Sample of Holy DNA",
-            "description": "You find a sample of Holy DNA. Pick 1 model in your Warband and note on your Warband Roster that they have been treated with Holy DNA. From then on, when you Activate the model, before you carry out any ACTIONS you can remove 1 BLOOD MARKER or INFECTION MARKER from the model and replace it with a BLESSING MARKER. Glory Item Tables"
+            "description": "You find a sample of Holy DNA. Pick 1 model in your Warband and note on your Warband Roster that they have been treated with Holy DNA. From then on, when you Activate the model, before you carry out any ACTIONS you can remove 1 BLOOD MARKER or INFECTION MARKER from the model and replace it with a BLESSING MARKER."
           },
           {
             "roll": {
@@ -64696,7 +64696,7 @@ export const DATASET: Dataset = {
               "to": 36
             },
             "name": "Fruit from the Tree of Good and Evil Knowledge",
-            "description": "Amongst the bones of giant humans unearthed by the ravages of war you discover a golden- hued fruit wrapped in spun cloth. Pick 1 model in your Warband. The model you pick eats the fruit you discovered. They gain the DEMONIC Keyword and you can give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Patron Skill (it does not have to be one from your own Patron), or any Exploration Skill. VM Glory Item Tables"
+            "description": "Amongst the bones of giant humans unearthed by the ravages of war you discover a golden- hued fruit wrapped in spun cloth. Pick 1 model in your Warband. The model you pick eats the fruit you discovered. They gain the DEMONIC Keyword and you can give them one Skill of your choice. You can choose a Skill from any of the Skill Tables, or any Patron Skill (it does not have to be one from your own Patron), or any Exploration Skill."
           }
         ]
       },
@@ -64764,7 +64764,7 @@ export const DATASET: Dataset = {
         {
           "roll": 12,
           "name": "Patron Skill",
-          "description": "Pick one of the Skill offered by your Patron. Glory Item Tables"
+          "description": "Pick one of the Skill offered by your Patron."
         }
       ],
       "ranged": [
@@ -64821,7 +64821,7 @@ export const DATASET: Dataset = {
         {
           "roll": 12,
           "name": "Patron Skill",
-          "description": "Pick one of the Skills offered by your Patron. Glory Item Tables"
+          "description": "Pick one of the Skills offered by your Patron."
         }
       ],
       "stealth": [
@@ -64878,7 +64878,7 @@ export const DATASET: Dataset = {
         {
           "roll": 12,
           "name": "Patron Skill",
-          "description": "Pick one of the Skills offered by your Patron. Glory Item Tables"
+          "description": "Pick one of the Skills offered by your Patron."
         }
       ],
       "wildcard": [
@@ -64935,7 +64935,7 @@ export const DATASET: Dataset = {
         {
           "roll": 12,
           "name": "Patron Skill",
-          "description": "Pick one of the Skills offered by your Patron. Glory Item Tables"
+          "description": "Pick one of the Skills offered by your Patron."
         }
       ]
     },

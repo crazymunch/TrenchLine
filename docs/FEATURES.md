@@ -89,8 +89,8 @@ the execution is the problem.
 | **Post-battle sequence wizard** | 🟡 | 4 steps; D66 tables need verification |
 | D66 Trauma / injury rolls | ✅ | **Verified against the rulebook.** 22 rows, derived. Two were wrong: `12 Captured` was cut at a comma and lost the clause saying a paid ransom counts as a Full Recovery, and `65 Bitter Lessons` had run on into `66 Prominent Scar` and showed a player 66's rule. Both fixed and pinned; the build now fails on a rule that stops mid-sentence or carries another row's heading |
 | XP & advancement | ✅ | `UnitAdvancementModal`, 681 lines |
-| Exploration (No Man's Land) | 🟡 | Common/Rare/Legendary tables need verification |
-| Skills roller & compendium | 🟡 | Melee/Ranged/Stealth/Wildcard — need verification |
+| Exploration (No Man's Land) | ✅ | **Verified against the rulebook.** Three rows carried page furniture: `9 Survivor` and `20 Warband Strongbox` ended in the sidebar's `Glory Item Tables`, and `36 Fruit from the Tree…` in a stray `VM` mark. Fixed and pinned |
+| Skills roller & compendium | ✅ | **Verified against the rulebook.** All four tables dense from 2 to 12. The Patron Skill row at 12 in every one of them ended in the sidebar's `Glory Item Tables`. Fixed and pinned |
 | Warband treasury & stash | ✅ | |
 | Titles / deeds / scars | ✅ | A genuinely nice original idea |
 | Warband lore & chronicle | ✅ | |

@@ -171,15 +171,86 @@ function parseRollTable(lines, heading, endHeadings) {
       if (!t) continue;
       if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(t)) continue;
       if (/^\d+\s+Campaign Rules-\s+Trench Crusade$/.test(t)) continue;
-      if (/^(Campaign|Games|Phase|Patrons|Trauma Step|Exploration Step|Quartermaster|Step|Reinforcements|Glory Item|Cartulary|Introduction|The World|in Flames|Core Rules|Comprehensive|Rules|Keywords|Terrain|Battlekit|Scenarios|Promotions &|Experience Step)$/.test(t)) continue;
+      if (SIDEBAR.test(t)) continue;
       current.text.push(t);
     }
   }
   if (current) rows.push(current);
 
   if (!rows.length) throw new Error(`parse-campaign: "${heading}" produced no rows.`);
-  return rows.map((r) => ({ roll: r.roll, name: r.name, description: r.text.join(' ').replace(/\s+/g, ' ').trim() }));
+
+  const out = rows.map((r) => ({
+    roll: r.roll, name: r.name, description: r.text.join(' ').replace(/\s+/g, ' ').trim(),
+  }));
+
+  /*
+    A rule that has swallowed the sidebar, detected WITHOUT consulting the list.
+
+    The line filter above missed `Glory Item Tables` for months because the
+    inline list said `Glory Item` and was anchored — so the Patron Skill row at
+    12 in all four Skills tables shipped reading "…offered by your Patron.
+    Glory Item Tables".
+
+    Checking the finished text against that same list would be circular: it can
+    only ever catch a label already in it, which is the one case that needs no
+    catching. So the SHAPE is what is checked. Sidebar bleed is a short,
+    capitalised fragment left dangling after the rule's last full stop, with no
+    terminator of its own — which is not how a rule ends, whatever the chapter
+    happens to be called.
+  */
+  const trailing = (text) => {
+    const stop = text.lastIndexOf('. ');
+    return stop < 0 ? '' : text.slice(stop + 2).trim();
+  };
+  const bled = out.filter((r) => {
+    const tail = trailing(r.description);
+    return tail.length > 0 && tail.length < 40
+      && !/[.!?]$/.test(tail)
+      && /^[A-Z]/.test(tail)
+      && tail.split(/\s+/).length <= 4;
+  });
+  if (bled.length) {
+    throw new Error(
+      `parse-campaign: "${heading}" rows ending in a dangling capitalised ` +
+      `fragment, which is how the page sidebar bleeds into a rule: ` +
+      `${bled.map((r) => `${r.roll} ${r.name} (…"${trailing(r.description)}")`).join(', ')}.`);
+  }
+
+  return out;
 }
+
+/**
+ * The sidebar's list of chapter names, which is not table content.
+ *
+ * Every page of the rulebook carries this strip down its edge, and the
+ * extraction interleaves it with the body — so a table row that runs to the
+ * end of a page picks it up as rules text.
+ *
+ * The list used to be written inline with `Glory Item` in it, anchored `^...$`
+ * — and the sidebar's actual line is `Glory Item Tables`, which that does not
+ * match. So the Patron Skill row at 12 in ALL FOUR Skills tables shipped
+ * reading "…one of the Skills offered by your Patron. Glory Item Tables".
+ *
+ * Written out one entry per line, because the failure was a two-word entry
+ * hiding inside a forty-alternative regex nobody was going to read.
+ */
+const SIDEBAR = new RegExp(`^(${[
+  'Campaign', 'Games', 'Phase', 'Patrons',
+  'Trauma Step', 'Exploration Step', 'Quartermaster', 'Step', 'Reinforcements',
+  'Promotions &', 'Experience Step',
+  'Glory Item Tables', 'Glory Item', 'Cartulary',
+  'Introduction', 'The World', 'in Flames',
+  'Core Rules', 'Comprehensive', 'Rules', 'Keywords', 'Terrain', 'Battlekit',
+  'Scenarios',
+  /*
+    A stray two-letter mark, once, on the Legendary Exploration page — between
+    the last rule and the sidebar strip. Not an abbreviation the book uses
+    anywhere else: it appears exactly once, alone on its line, and the rule
+    before it ends in a full stop. Found by the shape check below rather than
+    by reading the page, which is the point of having one.
+  */
+  'VM',
+].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})$`);
 
 /**
  * The Exploration Sequence, as the book numbers it.
