@@ -68,6 +68,25 @@ function findProfile(
   );
 }
 
+/**
+ * Is this name one of the catalogue's counters rather than a piece of wargear?
+ *
+ * Matched against the counter's own name AND against the name it counts plus
+ * that counter's parenthetical. The catalogue spells four of these
+ * `Ammuntion` — its own typo — and a roster can carry the corrected spelling,
+ * so `Alchemical Ammunition (Loaded)` has to reach `Alchemical Ammuntion
+ * (Loaded)`. Built from the two strings the catalogue already gives, rather
+ * than from a table of misspellings written here.
+ */
+function isCounter(dataset: Dataset, name: string): boolean {
+  const want = key(name);
+  return (dataset.counters ?? []).some((c) => {
+    if (key(c.name) === want) return true;
+    const suffix = /\s(\([^()]*\))\s*$/.exec(c.name)?.[1];
+    return Boolean(suffix) && key(`${c.forName} ${suffix}`) === want;
+  });
+}
+
 /** Everything equipped on a model, priced from the faction's armoury. */
 function itemsOf(
   unit: ActiveUnit,
@@ -140,6 +159,19 @@ function itemsOf(
         });
         continue;
       }
+
+      /*
+        BattleScribe's own bookkeeping, which is not wargear and is not
+        reported as missing from the ruleset.
+
+        `Alchemical Ammunition (Loaded)` is a hidden entry capped at zero
+        across the roster that the catalogue increments once per `Alchemical
+        Ammunition` bought — no cost, no profile, no rules, and not choosable.
+        Reported as "not in this ruleset" it told the player their list was
+        provisional over a thing that is not an item. It contributes nothing to
+        a legality check either, so it is dropped rather than counted.
+      */
+      if (isCounter(dataset, g.name)) continue;
 
       unmatched.push({ kind: 'wargear', name: g.name, on: unit.customName });
       continue;

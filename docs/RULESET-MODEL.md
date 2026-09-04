@@ -960,6 +960,32 @@ each other. The exemption is scoped to items of **one** bundle, so a Shield
 bought on top of a bundled one is still counted: the entry states what it
 grants, not what may be added to it.
 
+### Counters are not wargear
+
+`Alchemical Ammuntion (Loaded)` is a hidden `selectionEntry` with a roster max
+of **zero** that a modifier increments by one for each `Alchemical Ammunition`
+the roster holds. It exists so BattleScribe can count purchases: no cost, no
+profile, no rules, and a player cannot choose it. Eleven of these are emitted
+as `dataset.counters`, and a roster carrying one no longer reports it as *"not
+in this ruleset"* — which told the player their list was provisional over a
+thing that is not an item.
+
+They are found by that **signature** and not by the `(Loaded)` most of them
+carry: the same shape without it is `Dog's Friend`, counting one marker per
+`Man's Best Friend`, and four of the names are spelled `Ammuntion` — the
+catalogue's own typo — so reading the name would need a table of misspellings.
+
+Two guards, each for a case that was wrong before it was added:
+
+- **Never a counter whose name is the name it counts.** `Satchel Charge` has an
+  entry of this shape counting `Satchel Charge`, and a Satchel Charge is a real
+  piece of wargear a model buys and throws. Dropping that name would lose the
+  item rather than the bookkeeping.
+- **A roster may carry the corrected spelling.** So the name is matched against
+  the counter's own name *and* against the counted item's name plus that
+  counter's parenthetical, which reaches `Alchemical Ammuntion (Loaded)` from
+  `Alchemical Ammunition (Loaded)`. Both strings come from the catalogue.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

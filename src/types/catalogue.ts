@@ -1036,6 +1036,19 @@ export interface Dataset {
     cost: Cost;
   }[];
   /**
+   * BattleScribe's own bookkeeping entries, which are not wargear.
+   *
+   * A hidden entry with no cost, no profile and a roster max of ZERO that a
+   * modifier increments once per `forName` the roster holds. It exists to make
+   * BattleScribe count purchases; a player cannot choose it, and a roster
+   * carrying one was reported as "not in this ruleset".
+   *
+   * Identified by that signature, not by the `(Loaded)` in most of the names:
+   * the same shape without it is `Dog's Friend`, counting one marker per
+   * `Man's Best Friend`.
+   */
+  counters?: { name: string; forName: string }[];
+  /**
    * The Carcass Front campaign map's tables.
    *
    * Undefined for a ruleset without the supplement — that ruleset genuinely

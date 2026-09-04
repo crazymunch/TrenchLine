@@ -64086,6 +64086,52 @@ export const DATASET: Dataset = {
       }
     }
   ],
+  "counters": [
+    {
+      "name": "Incendiary Ammuntion (Loaded)",
+      "forName": "Incendiary Ammunition"
+    },
+    {
+      "name": "Dum-Dum Ammunition (Loaded)",
+      "forName": "Dum-Dum Bullets"
+    },
+    {
+      "name": "Armour-Piercing Ammunition (Loaded)",
+      "forName": "Armour Piercing Bullets"
+    },
+    {
+      "name": "Fireteam: Dog's Friend",
+      "forName": "Man's Best Friend"
+    },
+    {
+      "name": "Alchemical Ammuntion (Loaded)",
+      "forName": "Alchemical Ammunition"
+    },
+    {
+      "name": "Heavy Bore Ammuntion (Loaded)",
+      "forName": "Heavy Bore Ammunition"
+    },
+    {
+      "name": "Sparkpowder Ammuntion (Loaded)",
+      "forName": "Sparkpowder Ammunition"
+    },
+    {
+      "name": "Shayṭānic Shard Ammuntion (Loaded)",
+      "forName": "Shayṭānic Shard Ammunition"
+    },
+    {
+      "name": "Scrap Shot (Loaded)",
+      "forName": "Scrap Shot"
+    },
+    {
+      "name": "Purgation Ammunition (Loaded)",
+      "forName": "Purgation Ammunition"
+    },
+    {
+      "name": "Dog's Friend",
+      "forName": "Man's Best Friend"
+    }
+  ],
   "keywordGrants": [
     {
       "name": "Hellfly Host",

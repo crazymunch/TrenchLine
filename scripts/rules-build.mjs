@@ -454,6 +454,17 @@ for (const ruleset of RULESETS) {
      */
     bundles: base.bundles ?? [],
     /**
+     * BattleScribe's own bookkeeping entries, which are not wargear.
+     *
+     * `Alchemical Ammuntion (Loaded)` is a hidden entry capped at zero across
+     * the roster that a modifier increments once per `Alchemical Ammunition`
+     * bought. It has no cost, no profile and no rules, and a player cannot
+     * choose it — but a roster carrying one was reported under "NOT IN THIS
+     * RULESET", telling the player their list is provisional over a thing that
+     * is not an item.
+     */
+    counters: base.counters ?? [],
+    /**
      * The per-model carrying limits, from the chapter's own bullets.
      *
      * Derived rather than typed into a constant for the ordinary reason: a

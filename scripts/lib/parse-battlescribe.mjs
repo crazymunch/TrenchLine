@@ -624,6 +624,23 @@ export function parseCatalogues(dir) {
   const bundles = new Map();
   /** The profiles a bundle hands out, keyed by name — see the emit below. */
   const bundleProfiles = new Map();
+  /*
+    BattleScribe's own bookkeeping entries, which are not wargear.
+
+    `Alchemical Ammuntion (Loaded)` is a hidden selectionEntry with a roster
+    max of ZERO that a modifier increments by one for each `Alchemical
+    Ammunition` on the roster. It exists to make BattleScribe count purchases;
+    it has no cost, no profile and no rules, and a player cannot choose it. But
+    a roster carrying one matched nothing in the dataset and was reported under
+    "NOT IN THIS RULESET" — the worst shape for a miss, because it tells the
+    player their list is provisional over a thing that is not an item.
+
+    Identified by that signature and not by the `(Loaded)` in the name: the
+    same shape without it is `Dog's Friend`, counting one marker per `Man's
+    Best Friend`. Reading the name instead would also have to cope with the
+    catalogue spelling four of them `Ammuntion`, which is its own typo.
+  */
+  const counters = new Map();
   const abilitiesSeen = new Map();
 
   // The authoritative list of Warband Variants: the children of each faction's
@@ -762,6 +779,34 @@ export function parseCatalogues(dir) {
     const faction = factionOf(file);
 
     walk(doc, (node) => {
+      /*
+        A counter, in the sense above: hidden, costless, profileless, capped at
+        zero across the roster, and incremented once per something else the
+        roster holds — which is the entry it is counting.
+      */
+      const revealedBy = arr(node?.modifiers?.modifier).find(
+        (m) => attr(m, 'type') === 'set' && attr(m, 'field') === 'hidden'
+            && String(attr(m, 'value')) === 'false');
+      const counting = revealedBy
+        && arr(revealedBy?.conditions?.condition).find((c) => attr(c, 'childId'));
+      const zeroRoster = arr(node?.constraints?.constraint).find(
+        (c) => attr(c, 'type') === 'max' && attr(c, 'scope') === 'roster'
+            && Number(attr(c, 'value')) === 0);
+      const tallies = zeroRoster && arr(node?.modifiers?.modifier).some(
+        (m) => attr(m, 'type') === 'increment' && attr(m, 'field') === attr(zeroRoster, 'id')
+            && arr(m?.repeats?.repeat).length);
+      if (attr(node, 'hidden') === 'true' && counting && tallies
+          && !costsOf(node).ducats && !costsOf(node).glory
+          && !arr(node?.profiles?.profile).length
+          && !arr(node?.infoLinks?.infoLink).some((l) => attr(l, 'type') === 'profile')) {
+        const counted = byId.get(attr(counting, 'childId'));
+        const nm = clean(attr(node, 'name'));
+        if (counted && nm) {
+          counters.set(nm, { name: nm, forName: clean(attr(counted, 'name')) });
+        }
+      }
+
+
       // An entry may inline its profile or reach it through an infoLink, and the
       // catalogues use both freely for gear as well as for options: the
       // Sultanate's Jezzail, Siege Jezzail, Wind Amulet, Alchemist Armour and
@@ -1054,6 +1099,15 @@ export function parseCatalogues(dir) {
       .map((n) => bundleProfiles.get(nameKeyOf(n)))
       .filter(Boolean)
       .filter((pr) => !emittedNames.has(nameKeyOf(pr.name))),
+    /*
+      Never a counter whose name is the name of the thing it counts.
+
+      `Satchel Charge` has an entry of this shape counting `Satchel Charge`,
+      and a Satchel Charge is a real piece of wargear a model buys and throws.
+      Dropping the name would lose the item rather than the bookkeeping.
+    */
+    counters: [...counters.values()].filter(
+      (c) => c.forName && nameKeyOf(c.name) !== nameKeyOf(c.forName)),
     abilities: [...abilitiesSeen.values()],
     variantEntries,
     links,
