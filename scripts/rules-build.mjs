@@ -169,11 +169,22 @@ for (const ruleset of RULESETS) {
   const generator = parseScenarioGenerator();
 
   const scenarios = parseScenarios().map((s) => {
-    // The map is not derived, it is *resolved*: the hand-written scenarios
-    // pointed every one of them at /maps/scenario_N.webp, and not one of those
-    // files exists — twelve broken images that nothing ever reported, the same
-    // failure as the campaign map's /world_map.png.
-    const file = `maps/${s.slug}.png`;
+    /*
+      The map is not derived, it is *resolved*: the hand-written scenarios
+      pointed every one of them at /maps/scenario_N.webp, and not one of those
+      files existed — twelve broken images that nothing ever reported, the same
+      failure as the campaign map's /world_map.png.
+
+      `.webp`, and cropped out of the rendered page by
+      `scripts/crop-scenario-maps.py`. It used to be `<slug>.png`, which was
+      the image the PDF *stores* — and that is the map's BACKGROUND ART, the
+      terrain drawing with none of the map on it. The zones, the objective
+      markers, the midpoint and the dimensions are drawn over it in vector, so
+      the embedded image is the layer underneath the map rather than the map.
+      Twelve deployment maps with no deployment zones on them, which nothing
+      reported either: the file existed, so the check below passed.
+    */
+    const file = `maps/${s.slug}.webp`;
     if (!fs.existsSync(path.join('public', file))) {
       throw new Error(
         `rules-build: scenario ${s.roman} (${s.name}) has no deployment map at ` +

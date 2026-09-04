@@ -233,6 +233,20 @@ for each and says in a comment which failure it guards.
 The Scenarios & Terrain chapter (`parse-cf-scenarios.mjs`) hits the same class
 of problem three more times, and the tests are written the same way:
 
+- **The map image in the PDF is not the map.** What the PDF *stores* for each
+  scenario is the deployment map's **background art**: the terrain drawing,
+  with no deployment zones, no objective markers, no midpoint and no
+  dimensions. The map is that art with all of those drawn over it in vector, so
+  pulling the embedded image gets the layer underneath the map. Twelve
+  deployment maps with no deployment zones on them — and nothing reported it,
+  because the build's check only asks whether a file is *there*.
+  `scripts/crop-scenario-maps.py` crops the composed map out of the rendered
+  page instead, finding the box rather than measuring it: the rulebook draws a
+  red rule around every deployment map, and the vertical sides of that rule
+  give the crop its extent. A page whose rule is not found, or not closed, is
+  reported and skipped rather than cropped to a guess — a map cropped to the
+  wrong rectangle is worse than the art alone, because it looks authoritative.
+  `arsenal.test.ts` asserts the app is pointed at the crop and not at a `.png`.
 - **The deployment maps extract into the prose.** Labels and dimensions —
   `DEPLOYMENT ZONE`, `24’’`, `SWORD OF GOD` — arrive as bare lines mid-sentence.
   In scenario V they land between "within 1” of the Altar of Leviathan and" and

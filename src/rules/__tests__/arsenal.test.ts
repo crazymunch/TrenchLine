@@ -208,8 +208,25 @@ describe('the twelve scenarios', () => {
     // All twelve pointed at /maps/scenario_N.webp, and not one of those files
     // is in the repo. The build resolves the slug against public/maps/.
     for (const s of scenarios) {
-      expect(s.mapImage, s.name).toBe(`/maps/${s.slug}.png`);
+      expect(s.mapImage, s.name).toBe(`/maps/${s.slug}.webp`);
       expect(s.mapImage).not.toMatch(/scenario_\d+\.webp/);
+    }
+  });
+
+  it('and at the map, not at the art underneath it', () => {
+    /*
+      `<slug>.png` was the image the PDF STORES, which is the map's background
+      art: the terrain drawing with no deployment zones, no objective markers,
+      no midpoint and no dimensions on it. The map is that art with all of
+      those drawn over it in vector, so the embedded image is the layer
+      underneath the map rather than the map.
+
+      Nothing reported it, because the check above only asks whether a file is
+      there. `scripts/crop-scenario-maps.py` crops the composed map out of the
+      rendered page instead, and this asserts the app is pointed at that.
+    */
+    for (const s of scenarios) {
+      expect(s.mapImage, s.name).not.toMatch(/\.png$/);
     }
   });
 });
