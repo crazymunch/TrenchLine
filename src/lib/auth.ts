@@ -5,6 +5,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from './prisma';
 import { requireEnv } from './env';
 import { isAdminUserId, emailGrantsAdmin } from './adminRole';
+import { authRequiresVerification } from './mail';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -104,6 +105,24 @@ export async function verifyCredentials(
 
   if (!(await bcrypt.compare(password, user.password))) return null;
 
+  /*
+    The password is right. Is the address proved?
+
+    Checked AFTER the password, on purpose. Checked before, this endpoint would
+    answer differently for a registered-but-unverified address than for one
+    with no account at all — the same membership oracle registration was
+    changed to close, moved one route over.
+
+    Only where the deployment can actually send mail. `authRequiresVerification`
+    is tied to the transport for the reason in `mail.ts`: demanding proof that
+    nobody can produce locks every account out, including the maintainer's.
+
+    OAUTH IS UNTOUCHED. This function is the credentials path only. Google owns
+    that proof for a Google account, and NextAuth's adapter writes
+    `emailVerified` itself — so an OAuth user is not asked to prove twice.
+  */
+  if (!user.emailVerified && authRequiresVerification()) return null;
+
   return { id: user.id, name: user.name, email: user.email, image: user.image };
 }
 
@@ -173,6 +192,40 @@ export const authOptions: NextAuthOptions = {
         token.isAdmin = false;
       }
       token.role = token.isAdmin ? 'ADMIN' : 'USER';
+
+      /*
+        The session epoch, which is how one user's tokens are revoked.
+
+        A password reset increments `User.sessionEpoch`. A token carrying an
+        older one is refused here — so resetting a password because someone
+        else is in the account actually removes them, instead of leaving their
+        JWT working until it expires.
+
+        The alternative, rotating `NEXTAUTH_SECRET`, signs out every account on
+        the deployment to fix one.
+
+        On a fresh sign-in the epoch is stamped. On a refresh it is compared;
+        a mismatch clears the subject, which is what makes the session invalid
+        rather than merely unprivileged. A lookup failure changes nothing —
+        this runs on every request and must not sign people out over a blip.
+      */
+      try {
+        if (userId) {
+          const row = await prisma.user.findUnique({
+            where: { id: userId }, select: { sessionEpoch: true },
+          });
+          if (!row) {
+            delete token.sub;
+          } else if (user) {
+            token.epoch = row.sessionEpoch;
+          } else if (token.epoch !== row.sessionEpoch) {
+            delete token.sub;
+            token.isAdmin = false;
+            token.role = 'USER';
+          }
+        }
+      } catch { /* Leave the token as it is; a blip is not a sign-out. */ }
+
       return token;
     },
   },

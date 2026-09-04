@@ -110,6 +110,51 @@ It never creates the account it promotes — a command that invents an identity
 what changed, including when nothing did. A change takes effect on that user's
 next request: the role is resolved on every JWT refresh, not only at sign-in.
 
+## Verification, recovery and the session epoch
+
+`AuthToken` carries both the email-verification and the password-reset links.
+One model, because they have identical security properties and two
+nearly-identical tables is two places to get them wrong.
+
+**The raw token is never stored.** What goes in the row is a SHA-256 of it, so
+a backup, a log or a replica someone reached does not hand over the ability to
+verify an address or take an account. SHA-256 rather than bcrypt on purpose: a
+work factor exists to slow a guess at a *low-entropy* secret, and these are 32
+random bytes. The lookup is *on* the digest, so it has to be fast and
+deterministic to be an indexed read at all.
+
+Spending is a conditional update — `where: { id, usedAt: null }` — so two
+requests arriving together cannot both succeed; the loser updates zero rows.
+Rows are marked, not deleted, so a replayed link is distinguishable from one
+that never existed.
+
+`User.sessionEpoch` is how one user's stateless JWTs are revoked. A password
+reset increments it, and the JWT callback refuses a token carrying an older
+one. The alternative — rotating `NEXTAUTH_SECRET` — signs out every account on
+the deployment to fix one.
+
+### Mail is a deployment choice
+
+`MAIL_TRANSPORT` is explicit and has no default:
+
+| | |
+|---|---|
+| `log` | writes to the server log, for development. Prints the link but **never the address**, so a log does not become a list of who has an account here |
+| `none`, or unset | no mail is sent, and the application knows it |
+
+A real provider is a new `Transport` in `src/lib/mail.ts` and a case in
+`mailer()`. Nothing in a route changes — that is the point of the seam.
+
+**Verification is required only where mail can be sent.** Demanding proof that
+nobody can produce locks every account out, including the maintainer's, so
+`authRequiresVerification()` is tied to the transport. That is a real stated
+limitation rather than a silent one, and it is the thing to revisit before
+inviting public sign-ups.
+
+Pre-existing password accounts are **not** given a manufactured `emailVerified`.
+On a deployment with a transport configured they must verify — the same link
+anyone else gets — which AUTH-2 asks for explicitly.
+
 ## Backups and rollback
 
 Rolling back *code* is a deploy. Rolling back *schema* is not: a migration that

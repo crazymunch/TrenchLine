@@ -50,8 +50,13 @@ beforeEach(() => {
 
 describe('creating an account', () => {
   it('stores a hashed password, never the password', async () => {
+    /*
+      202, not 201. This endpoint no longer says whether a resource was
+      created: three of its four branches create nothing, and answering
+      differently is the membership oracle the flow was changed to close.
+    */
     const { status } = await post({ email: 'new@example.org', password: GOOD, name: 'Player' });
-    expect(status).toBe(201);
+    expect(status).toBe(202);
 
     const { data } = create.mock.calls[0][0];
     expect(data.email).toBe('new@example.org');
@@ -63,7 +68,7 @@ describe('creating an account', () => {
   it('never returns the password hash', async () => {
     const { body } = await post({ email: 'new@example.org', password: GOOD });
     expect(JSON.stringify(body)).not.toMatch(/\$2[aby]\$/);
-    expect(create.mock.calls[0][0].select).toEqual({ id: true, email: true, name: true });
+    expect(create.mock.calls[0][0].select).toEqual({ id: true, email: true });
   });
 
   it('normalises the email and defaults the name from it', async () => {
@@ -85,9 +90,14 @@ describe('creating an account', () => {
     Registration must not mint a session. One code path decides whether a
     caller gets one, and it is the sign-in path, which checks a password.
   */
-  it('issues no session and no token', async () => {
+  it('issues no session and no token, and returns no user', async () => {
+    /*
+      The user is gone from the body too. Returning one for the created case
+      and not for the others would put the oracle back in the shape of the
+      response rather than its status.
+    */
     const { body } = await post({ email: 'new@example.org', password: GOOD });
-    expect(Object.keys(body)).toEqual(['user']);
+    expect(Object.keys(body).sort()).toEqual(['message', 'ok']);
     expect(JSON.stringify(body)).not.toMatch(/token|session|secret/i);
   });
 });
@@ -146,26 +156,38 @@ describe('rejected input', () => {
 });
 
 /*
-  Registration is enumerable, and the route says so rather than pretending
-  otherwise: a distinct 409 for the duplicate case is a membership oracle
-  whatever the body says. Closing it properly means answering every
-  registration identically and moving the outcome into an email only the
-  address owner receives, and this application has no mailer — returning 201
-  here instead would tell a genuine user their account was created when it was
-  not. The wording still avoids confirming anything the status has not already
-  given away.
+  Registration used to be enumerable and said so: a distinct 409 for the
+  duplicate case is a membership oracle whatever the body says, and the old
+  code documented that and accepted it because closing it needs somewhere else
+  to put the real outcome.
+
+  That somewhere is the verification mail. Every branch now answers 202 with
+  the same body, and the four cases differ only in what is sent to the address.
+  `accountFlows.integration.test.ts` proves that against a real database and a
+  fake transport; these prove the route itself does not branch.
 */
 describe('an address that already exists', () => {
+  it('answers exactly as it does for a new address', async () => {
+    findUnique.mockResolvedValue({ id: 'existing', emailVerified: new Date() });
+    const taken = await post({ email: 'taken@example.org', password: GOOD });
+
+    findUnique.mockResolvedValue(null);
+    const fresh = await post({ email: 'new@example.org', password: GOOD });
+
+    expect(taken.status).toBe(fresh.status);
+    expect(taken.body).toEqual(fresh.body);
+  });
+
   it('does not spell out that the address is taken', async () => {
-    findUnique.mockResolvedValue({ id: 'existing' });
+    findUnique.mockResolvedValue({ id: 'existing', emailVerified: new Date() });
     const { status, body } = await post({ email: 'taken@example.org', password: GOOD });
-    expect(status).toBe(409);
-    expect(body.error).not.toMatch(/already registered|address is taken|that email/i);
+    expect(status).toBe(202);
+    expect(JSON.stringify(body)).not.toMatch(/already registered|address is taken|exists/i);
     expect(create).not.toHaveBeenCalled();
   });
 
   it('never overwrites the existing account', async () => {
-    findUnique.mockResolvedValue({ id: 'existing', password: 'their-hash' });
+    findUnique.mockResolvedValue({ id: 'existing', password: 'their-hash', emailVerified: new Date() });
     await post({ email: 'taken@example.org', password: GOOD });
     expect(create).not.toHaveBeenCalled();
   });

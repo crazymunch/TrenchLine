@@ -63,6 +63,12 @@ model User {
   /// one-shot promotion that creates the first administrator. Not a relation:
   /// an audit trail must survive the granting account being deleted.
   roleGrantedBy    String?
+  /// Bumped to revoke this user's stateless JWTs — a password reset, for
+  /// instance — without rotating `NEXTAUTH_SECRET` and signing everybody out.
+  /// The token carries the epoch it was issued under and is refused when it
+  /// no longer matches.
+  sessionEpoch     Int                  @default(0)
+  authTokens       AuthToken[]
   accounts         Account[]
   sessions         Session[]
   warbands         Warband[]
@@ -72,6 +78,40 @@ model User {
   bugReports       BugReport[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
+}
+
+/// What a single-use token is for. One model serves both, because they have
+/// identical security properties — hashed at rest, expiring, single use — and
+/// two nearly-identical tables is two places to get that wrong.
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+/// A single-use, expiring token sent to an address.
+///
+/// The RAW token is never stored. What is stored is a SHA-256 of it, so a read
+/// of this table — a backup, a log, a compromised replica — does not hand
+/// anyone the ability to verify an address or reset a password. The raw value
+/// exists only in the mail that was sent and in the link the user clicks.
+///
+/// NextAuth's own `VerificationToken` is left alone: it stores the token in
+/// clear, and it is keyed by identifier rather than by user.
+model AuthToken {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the raw token, hex. Unique so a lookup is a single indexed read
+  /// and a collision cannot silently resolve to the wrong row.
+  tokenHash String           @unique
+  purpose   AuthTokenPurpose
+  expiresAt DateTime
+  /// Set the moment it is spent. Single use is enforced on this, not on
+  /// deletion, so a replayed link can be told apart from one that never existed.
+  usedAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, purpose])
 }
 
 model VerificationToken {
