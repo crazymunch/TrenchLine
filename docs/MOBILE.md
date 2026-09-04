@@ -115,7 +115,10 @@ clipping after a type change, not just for size.
 ### 5. No dynamic Tailwind class names
 
 Tailwind resolves classes by static scanning and cannot see interpolated
-strings. This is a live bug in `MobileNav.tsx:32`:
+strings. `MobileNav` was the shipped example and is **fixed** — the bar is now a
+flex row of `flex-1` buttons, which takes any number of items without naming a
+column count at all. The broken shape is kept below because the rule it
+illustrates has not changed:
 
 ```jsx
 /* BROKEN — grid-cols-7 is never generated, the nav collapses to one column */
@@ -182,7 +185,9 @@ Fix: link the manifest, generate real maskable icons at 192/512, add
 
 Ordered by how much time a user spends in them on a phone:
 
-1. **`MobileNav`** — broken; fix first.
+1. ~~**`MobileNav`** — broken; fix first.~~ **Done.** Flex row, `flex-1`
+   buttons, 44px targets, and a comment in the file saying why it is not a
+   grid.
 2. **`UnitCard`** (622 lines, 1 breakpoint) — the most-used component. Needs a
    phone layout: collapsed summary row, tap to expand, statline as a scrollable
    strip, actions in a sheet rather than a 3-column button bar.

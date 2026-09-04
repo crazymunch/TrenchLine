@@ -157,10 +157,22 @@ All are covered by regression tests.
 
 ### Still outstanding
 
-- **1.7 is partial.** `dispatch-01.layer.json` covers the changes that map onto
-  the current model. Still to transcribe: the Black Grail Strains and Vile
-  Corpus (needs `UnitOption` wired through the build), the Amalgam and Grail
-  Thrall replacements, the Mercenary keyword rewrites, and the new Glory Items.
+- **1.7 is partial, and less partial than this said.** `dispatch-01.layer.json`
+  covers the changes that map onto the current model — 66 ops.
+
+  `UnitOption` **is** wired through the build now, so the Strains arrived with
+  it: 18 Strain options across the Black Grail entries. The Amalgam and Grail
+  Thrall replacements are transcribed too, and all three units are in the
+  dataset. What is genuinely still to transcribe is the **Vile Corpus**, the
+  **Mercenary keyword rewrites** and the **new Glory Items**.
+
+  One decision is recorded rather than taken, in the layer's own note: the
+  Dispatch's Amalgam ability list omits `Six-armed Monstrosity` and
+  `Strong-ish`, which the catalogue has. Taken literally a full entry
+  replacement drops both. They are NOT removed, because asserting the removal
+  means asserting the PDF extraction captured a complete list, and an ability
+  wrongly deleted is harder to notice than one wrongly kept. Confirm against
+  the printed page.
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.
@@ -588,7 +600,8 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
 
 ### The Codex's rules prose was written, not extracted
 
-The Codex's first tab shipped `src/data/officialCoreRules.ts`: eight chapters
+The Codex's first tab shipped a hand-written `officialCoreRules.ts` under
+`src/data/` — since deleted: eight chapters
 of hand-written Core and Comprehensive Rules. It was wrong about the three
 things a player looks up mid-game — Initiative went to the highest D6 roll
 rather than the fewest models, the Success table's failure band read `1-6` when
@@ -941,7 +954,7 @@ so a warband can be drafted before the box ships. Sources so far:
 
 | # | Task |
 |---|---|
-| 5.1 | Archive each article to `data-sources/preview/carcass-front/` with fetch date and URL — articles get edited and deleted |
+| 5.1 | Archive each article to a `preview/carcass-front/` directory under `data-sources/` with fetch date and URL — articles get edited and deleted. **Never created: this phase was superseded by the real release.** |
 | 5.2 | Widen the search: other previews, designer commentary, event reports |
 | 5.2a | **Check what is already published first.** Two of the three linked articles name things that already exist in the current Warbands book — `Heretic Naval Raiders` and `Procession of the Sacred Affliction` are both existing Warband Variants with published special rules. Sort genuinely-new Carcass Front content from reworks of existing entries before predicting anything; published rules go in a normal layer, not the speculative one. |
 | 5.3 | Transcribe to `carcass-front.layer.json` with `status: 'speculative'`, per-field citation and `stated`/`inferred` confidence |
@@ -975,7 +988,7 @@ skipped. Phases 0 and 4 can be picked up any time.
 
 | # | Decision | Status |
 |---|---|---|
-| 1 | Rulebook PDFs | **Partly resolved.** Changelog 1.0.2, Rules Commentaries 1.0.2 and All Out War are committed. **Still needed: Core Rulebook + Warbands of Trench Crusade** — the two that unblock statline verification. Delivery via GitHub release asset (verified reachable) or split uploads. |
+| 1 | Rulebook PDFs | **Closed.** All six are committed under `data-sources/rulebook/` and extracted to text beside them, the Core Rulebook (`trench-crusade-digital-rulebook.pdf`) and Warbands of Trench Crusade included. Statline verification is no longer blocked on an asset. |
 | 2 | Saved warbands | **Closed.** No general migration. One warband is preserved (1,320-Ducat Iron Sultanate *House of Wisdom*, heavy lore); the rest are discarded. Its narrative fields are carried over verbatim and it becomes a regression fixture. See [`RULESET-MODEL.md`](RULESET-MODEL.md) §8. |
 | 3 | Licensing | **Closed.** Not a blocker; sources stay in `data-sources/`. |
 | 4 | Fabricated data | **Closed.** Delete what is verifiably invented — but verify each file first rather than tossing wholesale. All Out War data turned out to be correct; see [`FEATURES.md`](FEATURES.md). |

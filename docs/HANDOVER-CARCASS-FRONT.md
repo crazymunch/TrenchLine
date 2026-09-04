@@ -183,28 +183,54 @@ below, plus two things this pass deliberately did not do.
 
 ### Loose ends anyone could pick up
 
-- **The five CF scenarios have no deployment maps.** `mapImage` is `null` for
-  them, deliberately — the maps have not been extracted from the PDF. The
-  rulebook's twelve are checked against `public/maps/` and the build fails if
-  one is missing. Extracting the CF maps would need a PDF page rasteriser;
-  `pdftoppm` is **not installed** in this sandbox.
-- **Three CF armoury rows name Battlekit the catalogues lack** — `Holy Icon
-  Shield`, `Medi-kit` (catalogue spells it `Medikit`), `Anti-Materiel Rifle`
-  (catalogue spells it `Anti-Material Rifle`). Reported every build by the
-  "row(s) name Battlekit the catalogues lack" counter. Two are spelling drift
-  and could be reconciled; one is genuinely absent upstream.
-- **Duplicate React keys in the Codex core-rules list** (`blood-markers`,
-  `actions`, `terrain`, …). Pre-existing, unrelated to this work, visible in
-  any dev-server console.
-- **`officialRulesData.ts` still holds hand-written skills and trauma tables.**
-  The derived versions are in `dataset.campaign`; the old file has not been
-  deleted.
-- **The campaign map is not in any PDF.** The zone board, the Carcass Front
-  Zones table (Resources and scenario per zone), the Special Zones table and
-  the generator charts the map campaign uses are printed on the fold-out map in
-  the box. `CampaignDefinition.requiresMap` records this and the Codex says so.
-  Deriving them would need the map supplied as an image and read by hand — the
-  same shape of problem as the five scenarios' missing deployment maps.
+- ~~**The five CF scenarios have no deployment maps.**~~ **Done.** They are not
+  raster art like the rulebook's twelve: each is a single grey-filled rectangle
+  in the page's **vector drawings**, and that rectangle is the crop box, read
+  out of the PDF rather than detected in pixels. `pdftoppm` is still not
+  installed and was never needed — PyMuPDF renders the page.
+
+  The rulebook's twelve were also wrong, separately: every one of them was the
+  map's **background art**, the terrain drawing with no deployment zones,
+  objective markers, midpoint or dimensions. That is what the PDF stores as an
+  embedded image, because the map is that art with the zones drawn over it in
+  vector. `arsenal.test.ts` now asserts no scenario map is a `.png`, so the art
+  layer cannot come back under a passing "the file exists" check.
+- **Armoury rows naming Battlekit the catalogues lack** — the build's own
+  counter now reports **21** across 8 factions, not the 3 this listed, because
+  more armouries are parsed than when it was written. The named three still
+  stand as examples: `Holy Icon Shield`, `Medi-kit` (catalogue spells it
+  `Medikit`), `Anti-Materiel Rifle` (catalogue spells it `Anti-Material
+  Rifle`). Most are spelling drift and could be reconciled by matching on a
+  normalised name; some are genuinely absent upstream. Reported every build,
+  never guessed at.
+- ~~**Duplicate React keys in the Codex core-rules list**~~ **Fixed**, and it
+  was a real rendering bug rather than console noise: React resolves a
+  duplicate key by reusing one element for two different items, so the second
+  copy could render the first one's text.
+
+  Seven rules are printed in two chapters — `Actions` is Core Rules p14 and
+  Comprehensive Rules p34 — and `Terrain` is printed twice inside one chapter,
+  at p23 and p38. All of them are real sections and all are shown;
+  deduplicating would drop something the book prints. The key is now
+  `category/page/slug`, which is what tells them apart in the book and what the
+  badge beside each heading already displayed.
+- ~~**`officialRulesData.ts` still holds hand-written skills and trauma
+  tables.**~~ **Not true, and the file should stay.** It has no exports left.
+  What it holds is the record of what each deleted export was wrong about, and
+  `npm run rules:audit:campaign` fails the build if any of those names
+  reappears in it — a file that once held fabricated data is where fabricated
+  data comes back. Deleting it would remove the guard.
+- **The campaign map's three TABLES are done; its BOARD is not.**
+  `Carcass.Front.Map.pdf` was in the release the whole time — `SOURCES.json`
+  recorded it as print material with no rules content, so it was never fetched.
+  Its first page gives the 32 zones with their Resources and scenario, the ten
+  Special Zone Outpost Bonuses, and the generator's Deployment × Victory
+  Conditions charts. All three are parsed and in the Codex.
+
+  What is still only on the printed sheet is the **zone board** — which zone
+  borders which — because it is a graphic. That is what a rule about supply
+  lines or adjacency needs, and `requiresMap` now says which half is missing
+  rather than claiming the whole map is.
 - ~~The rulebook's Exploration Step banner in the Codex is hand-written
   prose.~~ **Fixed.** It said *"the winner of the match rolls on the …
   Exploration Table"* — every player who played explores unless they Called for
@@ -220,8 +246,9 @@ below, plus two things this pass deliberately did not do.
 
 Most of this is in [`CLAUDE.md`](../CLAUDE.md); these are the ones that bit.
 
-- **`api.github.com` IS reachable** with `$GITHUB_TOKEN` present.
-  `CLAUDE.md` says otherwise and that line is stale.
+- **`api.github.com` IS reachable** — 200 unauthenticated from this sandbox,
+  and `$GITHUB_TOKEN` is not needed for public reads. `CLAUDE.md` has been
+  corrected.
 - **`pdftoppm` is not installed.** Use `scripts/extract-pdf.mjs` for PDFs.
   Never use the Read tool on a PDF in `data-sources/` — it is a 33MB binary.
 - **Build with** `NODE_ENV=production DATABASE_URL=… NEXTAUTH_SECRET=… npx next build`.

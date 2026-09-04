@@ -41,7 +41,10 @@ Hard requirements (full list in [`docs/MOBILE.md`](docs/MOBILE.md)):
 - `dvh`, never `vh`, for anything that must stay on screen.
 - 44px minimum touch targets; 16px minimum for form inputs.
 - **No dynamic Tailwind class names** — `` `grid-cols-${n}` `` does not compile.
-  This is a live bug in `MobileNav.tsx:32`.
+  `MobileNav` was the shipped example and is **fixed**: the bar is a flex row of
+  `flex-1` buttons, so it takes any number of items without naming a column
+  count. The rule stands; the example is now a comment in that file explaining
+  why it is written the way it is.
 - Never `overflow-x: hidden` to hide a layout problem.
 
 ### 4. Document decisions with the change
@@ -64,8 +67,11 @@ npm run rules:extract     # PDF -> text
 - `trenchcrusade.com` is **not reachable** from the sandbox (proxy returns 403).
   Official rulebook PDFs must be supplied by the user and committed to
   `data-sources/rulebook/`.
-- `raw.githubusercontent.com` **is** reachable; `api.github.com` is not. The
-  fetch script resolves commit SHAs with `git ls-remote` for that reason.
+- `raw.githubusercontent.com` **is** reachable, and so is `api.github.com` —
+  verified from this sandbox, 200 unauthenticated. This note used to say the API
+  was blocked; that was wrong and `HANDOVER-CARCASS-FRONT.md` had already
+  flagged it. The fetch script still resolves commit SHAs with `git ls-remote`,
+  which needs no token and no rate limit, so there is no reason to change it.
 - `pdf-parse` (a devDependency) handles PDF text extraction — see
   `scripts/extract-pdf.mjs`. The system Python's `cryptography` module is broken,
   so Python PDF libraries do not work here.
@@ -81,8 +87,9 @@ npm run rules:extract     # PDF -> text
   ```bash
   NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... npx next build
   ```
-- `src/store/useStore.ts` is 2,364 lines covering every domain. Scheduled to be
-  split (Phase 4.2); until then, change it carefully.
-- Components carry ~3,700 hardcoded hex colours and use none of the theme
-  tokens, so the theme switcher does almost nothing. New code uses the
-  `theme-*` Tailwind tokens.
+- `src/store/useStore.ts` **was** 2,364 lines covering every domain. Phase 4.2
+  split it into seven slices under `src/store/slices/`; the entry point is now
+  83 lines. Change the slice, not the entry point.
+- Components **were** carrying ~3,700 hardcoded hex colours, so the theme
+  switcher did almost nothing. That migration is essentially finished: 13 hex
+  literals remain across 6 files. Use the `theme-*` Tailwind tokens.

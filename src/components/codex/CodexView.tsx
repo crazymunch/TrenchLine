@@ -315,7 +315,26 @@ export const CodexView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredRules.map((chapter) => (
               <div
-                key={chapter.id}
+                /*
+                  Keyed on the CATEGORY too, because seven rules are printed in
+                  both chapters: `Actions` is Core Rules p14 and Comprehensive
+                  Rules p34, and the slug is the same for both. Keyed on the
+                  slug alone React saw seven duplicate keys, which it resolves
+                  by reusing one element for two different rules — so the
+                  second copy could render the first one's text.
+
+                  The PAGE as well, because the same chapter can print a slug
+                  twice: `Terrain` is Comprehensive Rules p23, a note in "what
+                  you need to play", and again at p38, where the actual terrain
+                  rules are. Different sections, same heading.
+
+                  All of them are real and all are shown; it is the KEY that
+                  had to be unique, not the rule. Deduplicating would drop a
+                  section the book prints — and the page is what tells them
+                  apart in the book, which is why the badge beside each heading
+                  already shows it.
+                */
+                key={`${chapter.category}/${chapter.page}/${chapter.id}`}
                 className="bg-theme-surface border border-theme-border rounded-md p-5 space-y-3 bevel-container hover:border-theme-primary/40 transition-colors"
               >
                 <div className="flex items-center justify-between border-b border-theme-border pb-2">

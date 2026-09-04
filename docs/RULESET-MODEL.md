@@ -327,7 +327,7 @@ human before it lands. It is not automatic.
 
 ### Adding a future Dispatch
 
-Extract → transcribe to `data-sources/dispatch/NN.layer.json` → append
+Extract → transcribe to `data-sources/dispatch/<NN>.layer.json` → append
 `'dispatch-NN'` to the `trenchline` ruleset. No dataset fork, no data rewrite.
 
 ### Adding a brand-new faction (the Carcass Front case)

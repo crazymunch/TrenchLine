@@ -70,8 +70,8 @@ the execution is the problem.
 | Turn/phase counter | ✅ | |
 | Dice roller (D6 / 2D6 / D66) | ✅ | `DiceRoller.tsx`, 523 lines |
 | Risky Success Roll support | ✅ | |
-| Keyword popovers | ✅ | Text is paraphrased, not official |
-| Attack calculator | ✅ | Runs on wrong statlines |
+| Keyword popovers | ✅ | 61 keywords, derived from the glossary rather than paraphrased |
+| Attack calculator | ✅ | Reads `profileSnapshot`, so it runs on the derived statlines now |
 | Range calculator | ✅ | |
 | Dice probability tool | ✅ | |
 | Scenario reference + map lightbox | ✅ | Real official maps |
@@ -103,7 +103,7 @@ the execution is the problem.
 | Betrayal card engine (52-card) | ✅ | **Verified word-for-word** against All Out War |
 | Scenario compendium + maps | ✅ | |
 | Mission designer / generator | ✅ | |
-| Keyword glossary | 🟡 | 116 entries, paraphrased; **missing 7 of the 12 keywords the 1.0.2 changelog defines**, including `CLEAVE (X)` and `DEADLY` (`AUDIT.md` §1.3a) |
+| Keyword glossary | ✅ | 61 entries, derived. Was 116 hand-written ones missing 7 of the 12 the 1.0.2 changelog defines; `CLEAVE` and `DEADLY` are both present now (`AUDIT.md` §1.3a) |
 | Armoury / weapon / armour tables | 🟡 | Present, values invented |
 | Rules customizer (local overrides) | ✅ | |
 | GitHub 3-way diff resolver | ✅ | Wired up and functional |
