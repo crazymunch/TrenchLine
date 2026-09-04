@@ -318,12 +318,20 @@ export const TerritoryMap: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Territory Perk & Controller */}
+                {/*
+                  The perk is shown only where a campaign has one. Every
+                  theatre used to carry an invented mechanical effect — a
+                  "+15 Ducats & +1 Alchemical Formula discount per match" that
+                  no book states — presented beside rules the pipeline derives
+                  with nothing to tell a player which was which.
+                */}
                 <div className="mt-4 pt-3 border-t border-theme-border/60 space-y-1 text-xs">
-                  <div className="text-theme-primary flex items-center space-x-1 font-semibold">
-                    <Award className="w-3.5 h-3.5" />
-                    <span>Perk: {node.perk}</span>
-                  </div>
+                  {node.perk && (
+                    <div className="text-theme-primary flex items-center space-x-1 font-semibold">
+                      <Award className="w-3.5 h-3.5" />
+                      <span>Perk: {node.perk}</span>
+                    </div>
+                  )}
                   <div className="text-xs sm:text-[11px] text-theme-muted">
                     Controller: <strong className="text-theme-text">{node.controlledByPlayerName || 'None (Unclaimed)'}</strong>
                   </div>
@@ -368,10 +376,27 @@ export const TerritoryMap: React.FC = () => {
               </div>
 
               <div className="p-3.5 bg-theme-elevated rounded border border-theme-border space-y-2 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-theme-muted">Strategic Territory Perk:</span>
-                  <span className="text-theme-primary font-bold">{selectedTerritory.perk}</span>
-                </div>
+                {/*
+                  Says which it is, rather than showing a made-up effect. No
+                  published rule attaches anything to holding one of these
+                  theatres — they are the app's own map of the setting. The
+                  ones the game does publish are the Carcass Front Special Zone
+                  Outpost Bonuses, and those are in the Codex.
+                */}
+                {selectedTerritory.perk ? (
+                  <div className="flex justify-between items-center gap-3">
+                    <span className="text-theme-muted">Strategic Territory Perk:</span>
+                    <span className="text-theme-primary font-bold text-right">{selectedTerritory.perk}</span>
+                  </div>
+                ) : (
+                  <p className="text-theme-muted leading-relaxed">
+                    No published rule attaches an effect to holding this theatre — it is part of
+                    this app&rsquo;s own map of the setting, so any bonus is one your campaign
+                    agrees. The published ones are the Carcass Front{' '}
+                    <strong className="text-theme-text">Special Zone Outpost Bonuses</strong>, in
+                    the Codex under Campaigns.
+                  </p>
+                )}
                 <div className="flex justify-between items-center border-t border-theme-border pt-2">
                   <span className="text-theme-muted">Current Controller:</span>
                   <span className="text-theme-text font-bold">

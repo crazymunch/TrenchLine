@@ -3,9 +3,22 @@
  * warband a first-run install starts with.
  *
  * Presentation and demo content, not game data — the theatres are the app's own
- * map of the setting and the example warband is there so a new install is not
- * an empty screen. Nothing here is a statline, a cost or a rule; those come
+ * map of the setting. Nothing here is a statline, a cost or a rule; those come
  * from the pipeline.
+ *
+ * Every `perk` is EMPTY, and that is the point. Each carried an invented
+ * mechanical effect — `+15 Ducats & +1 Alchemical Formula discount per match`,
+ * `+1 Armour Characteristic on Turn 1`, `Reroll 1 failed Initiative roll per
+ * battle` — presented in the campaign hub as a "Strategic Territory Perk",
+ * beside rules the pipeline derives and with nothing to tell a player which
+ * was which. No published rule attaches any effect to holding one of these
+ * theatres, because these theatres are the app's own; the ones the game does
+ * publish are the Carcass Front Special Zone Outpost Bonuses, which are
+ * derived and in the Codex.
+ *
+ * Empty rather than removed: `TerritoryNode.perk` is a required column, and a
+ * campaign's organiser agreeing a house rule for a theatre is a real thing to
+ * want. What is not allowed is the app writing one and not saying so.
  */
 import { Warband } from '../types/warband';
 import { Campaign, TerritoryNode } from '../types/campaign';
@@ -19,7 +32,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Levant Front',
     x: 82.5,
     y: 77.0,
-    perk: '+15 Ducats & +1 Alchemical Formula discount per match',
+    perk: '',
     description: 'The monumental 800-year-old alchemically reinforced wall holding back the demonic incursions of the Jerusalem Hell Breach.'
   },
   {
@@ -29,7 +42,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'The Holy Land',
     x: 79.5,
     y: 83.5,
-    perk: '+2 Glory on Victory; -1 Morale check penalty for opposing forces',
+    perk: '',
     description: 'Epicenter of the Ultimate Heresy where mortal earth and Hell collide in volcanic brimstone and madness.'
   },
   {
@@ -39,7 +52,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Iron Sultanate',
     x: 89.0,
     y: 74.0,
-    perk: 'Free Alchemical Reagents & +10 Ducats exploration bonus',
+    perk: '',
     description: 'Seat of golden alchemical science, where master alchemists forge living brass golems and naphtha flamethrowers.'
   },
   {
@@ -49,7 +62,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Rus Frontier',
     x: 69.0,
     y: 46.0,
-    perk: 'Reroll 1 failed Initiative roll per battle',
+    perk: '',
     description: 'Snow-dusted trenches and rolling steppes defended by fierce Cossacks against barbarian and demon hordes.'
   },
   {
@@ -59,7 +72,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Northern Frontier',
     x: 71.0,
     y: 22.0,
-    perk: '+1 Armour Characteristic on Turn 1 from hardened winter fortifications',
+    perk: '',
     description: 'Frozen tundras and iron cathedral-citadels standing vigil against abominations from the Arctic deeps.'
   },
   {
@@ -69,7 +82,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Central Europe',
     x: 46.0,
     y: 46.0,
-    perk: 'Free Reinforced Armour upgrade in Warband Stash after battle',
+    perk: '',
     description: 'Heartland of Church industry and knightly orders, churning out heavy machine plate and blessed ammunition.'
   },
   {
@@ -79,7 +92,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Britannic Sector',
     x: 32.0,
     y: 36.0,
-    perk: '+10 Ducats supply income & +1 Ranged DICE on defensive turns',
+    perk: '',
     description: 'Moated island redoubt guarded by massive dreadnought fleets and razor-wire shoreline trenches.'
   },
   {
@@ -89,7 +102,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Danubian Sector',
     x: 57.0,
     y: 55.0,
-    perk: 'Ignore first casualty in post-battle Trauma phase (Full Recovery)',
+    perk: '',
     description: 'Grisly mountain passes and fortified river crossings resisting incursions from the Cult of the Black Grail.'
   },
   {
@@ -99,7 +112,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Italian Peninsula',
     x: 45.0,
     y: 69.0,
-    perk: 'Warband starts each match with 1 permanent Blessing Marker',
+    perk: '',
     description: 'Sacred throne of the Supreme Pontiff, defended by walking Anchorite shrines and zealot crusaders.'
   },
   {
@@ -109,7 +122,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'North African Bulwark',
     x: 18.0,
     y: 81.0,
-    perk: '+1" Movement Characteristic across difficult or open ground',
+    perk: '',
     description: 'Sun-scorched fortresses and nomadic warriors guarding the southern flank from demonic desert horrors.'
   },
   {
@@ -119,7 +132,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Southern Infernal Sector',
     x: 73.0,
     y: 92.0,
-    perk: '+25 Ducats loot bounty upon winning a match in this theater',
+    perk: '',
     description: 'Avarice-choked salt plains and demonic refineries guarded by Heretic Shocktroopers and brass fiends.'
   },
   {
@@ -129,7 +142,7 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
     region: 'Arabian Heartland',
     x: 94.0,
     y: 90.0,
-    perk: '+1 Glory Point & +1 Reroll on Morale Checks',
+    perk: '',
     description: 'Inviolable holy sanctuary protected by miraculous alchemical storms and elite Janissary cohorts.'
   }
 ];
