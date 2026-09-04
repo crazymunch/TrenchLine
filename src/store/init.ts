@@ -9,8 +9,7 @@ import type { Warband } from '../types/warband';
 import type { Campaign } from '../types/campaign';
 import type { UnitProfile, WeaponProfile, RulesetVersion } from '../types/rules';
 import { storage } from '../services/storage';
-import { enrichUnitWithLore, SULTANATE_WARBAND_LORE, SULTANATE_MATCH_HISTORY, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
-import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign, defaultSultanateWarband } from './seed';
+import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign } from './seed';
 
 export interface InitialState {
   warbands: Warband[];
@@ -23,36 +22,29 @@ export interface InitialState {
 }
 
 export function readInitialState(): InitialState {
-  const storedWarbands = storage.getWarbands();
-  const rawList = storedWarbands.length > 0 ? storedWarbands : [defaultSultanateWarband];
+  /*
+    What the browser has, and nothing else.
 
-  const warbands = rawList.map((wb) => {
-    const isSultanate = wb.factionId === 'iron-sultanate' || wb.name.toLowerCase().includes('qarn') || wb.name.toLowerCase().includes('sultanate');
-    
-    // Preserve the user's actual stored units if they exist
-    const actualUnits = (wb.units && wb.units.length > 0)
-      ? wb.units.map(enrichUnitWithLore)
-      : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS[2].units : []);
+    This used to seed one specific player's warband — Al-Qarn Rihla, nine
+    models, its lore, its match history — into every browser that arrived with
+    empty storage, so a stranger opening the site was shown someone else's
+    warband as if it were their own. It then went further and injected that
+    player's content into warbands that were not theirs:
 
-    const actualSnapshots = (wb.snapshots && wb.snapshots.length > 0)
-      ? wb.snapshots
-      : (isSultanate ? SULTANATE_WARBAND_SNAPSHOTS : []);
+      isSultanate           any warband whose faction was iron-sultanate, or
+                            whose NAME contained "qarn" or "sultanate", took
+                            that player's lore, motto, patron and chronicle
+                            wherever its own were empty
+      enrichUnitWithLore    any model whose name matched a pattern took that
+                            player's biography, quote, titles and deeds
+      SULTANATE_MATCH_HISTORY  every campaign with no matches of its own was
+                            given that player's battle record
 
-    return {
-      ...wb,
-      units: actualUnits,
-      snapshots: actualSnapshots,
-      lore: wb.lore || (isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined),
-      motto: wb.motto || (isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined),
-      patron: wb.patron || (isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined),
-      chronicleLog: (wb.chronicleLog && wb.chronicleLog.length > 0) ? wb.chronicleLog : (isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : [])
-    };
-  });
-
-  // Only seed to localStorage if it was empty
-  if (storedWarbands.length === 0) {
-    storage.saveWarbands(warbands);
-  }
+    All four are gone. A visitor with no warbands has no warbands, and the
+    dashboard already says so — "Your command ledger is currently empty" —
+    which is both true and more useful than a stranger's roster.
+  */
+  const warbands = storage.getWarbands();
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();
@@ -61,11 +53,7 @@ export function readInitialState(): InitialState {
     ? rawCampaign.territories
     : DEFAULT_WORLD_THEATERS;
 
-  const storedCampaign: Campaign = {
-    ...rawCampaign,
-    territories,
-    matches: (rawCampaign.matches && rawCampaign.matches.length > 0) ? rawCampaign.matches : SULTANATE_MATCH_HISTORY
-  };
+  const storedCampaign: Campaign = { ...rawCampaign, territories };
   const initialTheme = storage.getTheme();
   const initialRuleset = (storage.getRulesetVersion() as RulesetVersion) || '1.0.2';
 
