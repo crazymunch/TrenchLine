@@ -15,7 +15,7 @@
  * saved numbers were computed against data the audit measured as 21% wrong on
  * Ducat costs, so re-pricing is the point of doing this at all.
  */
-import type { Dataset, UnitProfile } from '@/types/catalogue';
+import { ZERO_COST, type Dataset, type UnitProfile } from '@/types/catalogue';
 import { isAlchemicalFormula, traitsOf, hasExtraLimb } from './formulae';
 import { effectiveKeywords } from './keywordGrants';
 import type { Warband, ActiveUnit } from '@/types/warband';
@@ -98,6 +98,49 @@ function itemsOf(
         out.push({ weaponId: row.weaponId ?? undefined, name: g.name, cost: row.cost, quantity: 1 });
         continue;
       }
+      /*
+        A loadout bundle grants several items under one name.
+
+        `Polearm and Shield` is a catalogue entry with no profile of its own
+        that links a Polearm and a Shield, so it matches no weapon and no
+        armoury row — and was reported as "not in this ruleset", which drops
+        it out of every legality check. Expanded into what it actually gives
+        the model, so the hands it uses and the shield it carries are counted.
+      */
+      const bundle = (dataset.bundles ?? []).find((b) => key(b.name) === key(g.name));
+      if (bundle) {
+        /*
+          Priced as one thing, at the bundle's own cost, and NOT by pricing
+          each part out of the Armoury Table: both bundles the catalogues
+          define are free options in a Mercenary's `Loadout` group, and
+          charging the parts separately billed the model 7 Ducats for a
+          Polearm it is handed for nothing. The cost rides on the first part
+          so the roster's total stays right whichever way it is summed.
+        */
+        bundle.grants.forEach((part, i) => {
+          const cost = i === 0 ? bundle.cost : ZERO_COST;
+          const w2 = dataset.weapons.find((x) => key(x.name) === key(part));
+          if (w2) {
+            out.push({ weaponId: w2.id, name: part, cost, quantity: 1, grantedBy: bundle.name });
+            return;
+          }
+          /*
+            No weapon profile and no armoury row does not make it unknown. The
+            Shield a `Polearm and Shield` grants is a real Battlekit profile in
+            the shared .gst that the weapon emit deliberately skips — resolving
+            Battlekit links there turns a Black Grail Strain into equipment
+            anyone can buy — and the build carries it into `dataset.battlekit`
+            instead, which is where the limit engine reads its section and
+            hands from. Reporting it unmatched would drop the Shield out of the
+            one-Shield limit while the model plainly has one.
+          */
+          const known = (dataset.battlekit ?? []).some((b) => key(b.name) === key(part));
+          if (known) { out.push({ name: part, cost, quantity: 1, grantedBy: bundle.name }); return; }
+          unmatched.push({ kind: 'wargear', name: part, on: unit.customName });
+        });
+        continue;
+      }
+
       unmatched.push({ kind: 'wargear', name: g.name, on: unit.customName });
       continue;
     }

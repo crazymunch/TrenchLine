@@ -263,6 +263,46 @@ for (const ruleset of RULESETS) {
     const k = nameKey(e.name);
     if (!kitByName.has(k)) kitByName.set(k, e);
   }
+
+  /*
+    A third source: the profiles a loadout bundle hands out that neither book
+    names and that the weapon emit deliberately skips.
+
+    `Shield` is the whole of it. It is a generic Battlekit profile in the
+    shared .gst; the chapter prints `Trench Shield`, which is a different entry
+    that also exists, so the two are not the same thing and neither may be
+    renamed into the other. Without this the Shield a `Polearm and Shield`
+    loadout grants was an item the engine knew nothing about: no section, so it
+    counted against the one-Shield limit not at all, and no hands, so it did
+    not trigger the Shield restrictions on the weapons beside it.
+
+    The section is derived from the chapter's OWN Type -> section pairings
+    rather than from a mapping written here, and an ambiguous one is left
+    unset: a wrong section is a legality error on a legal roster, which is the
+    failure mode this codebase has been paying for.
+  */
+  const sectionsByType = new Map();
+  for (const e of kitByName.values()) {
+    const k = `${e.type}|${/melee/i.test(e.range ?? '') ? 'melee' : 'ranged'}`;
+    if (!sectionsByType.has(k)) sectionsByType.set(k, new Set());
+    sectionsByType.get(k).add(e.section);
+  }
+  const bundleKit = [];
+  for (const pr of base.bundleProfiles ?? []) {
+    if (kitByName.has(nameKey(pr.name))) continue;
+    const found = sectionsByType.get(
+      `${pr.type}|${/melee/i.test(pr.range ?? '') ? 'melee' : 'ranged'}`);
+    const section = found && found.size === 1 ? [...found][0] : '';
+    const entry = { ...pr, section, note: '' };
+    kitByName.set(nameKey(pr.name), entry);
+    bundleKit.push(entry);
+  }
+
+  if (bundleKit.length) {
+    console.log(`  battlekit (granted by a loadout bundle): ${bundleKit.length} — `
+      + bundleKit.map((e) => `${e.name} (${e.section || 'SECTION UNRESOLVED'})`).join(', '));
+  }
+
   const allBattlekit = [...kitByName.values()];
   const dataset = {
     units: base.units,
@@ -355,6 +395,15 @@ for (const ruleset of RULESETS) {
      * the prose they do not print.
      */
     battlekit: allBattlekit,
+    /**
+     * Loadout bundles: one selectable name that grants several items.
+     *
+     * `Polearm and Shield` is a Mercenaries entry with no profile of its own
+     * that links a Polearm and a Shield. A roster holding that name matched
+     * nothing and was reported as "not in this ruleset" — excluded from every
+     * legality check while the player was told their list was provisional.
+     */
+    bundles: base.bundles ?? [],
     /**
      * The per-model carrying limits, from the chapter's own bullets.
      *

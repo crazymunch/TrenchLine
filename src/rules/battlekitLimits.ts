@@ -37,6 +37,8 @@ export interface Carried {
   name: string;
   weaponId?: string;
   quantity?: number;
+  /** The loadout bundle that handed this to the model — see `oneStatedLoadout`. */
+  grantedBy?: string;
 }
 
 export interface BattlekitBreach {
@@ -140,6 +142,30 @@ function hasStipulation(item: Carried, name: string, ctx: CarrierContext): boole
 const sectionKey = (s: string) => nameKey(s).replace(/s$/, '');
 
 /**
+ * Do these items all arrive together, from one entry that states the loadout?
+ *
+ * "UNLESS OTHERWISE STATED a model is limited to the following Battlekit" is
+ * the first line of the rule, and a model's own entry is where the book states
+ * otherwise:
+ *
+ *     A Mamluk Faris always has either a Greatsword, or a Polearm and a
+ *     Trench Shield, or a Pistol and a Sword/Axe.
+ *
+ * The catalogue offers that as one selection, `Polearm and Shield`, and names
+ * the generic `Shield` profile rather than the Trench Shield the book names.
+ * The generic one carries no Shield Combo stipulation, so policed against each
+ * other the two halves of a loadout the book hands the model raise a breach on
+ * a legal roster — the exact failure this file exists to stop making.
+ *
+ * Scoped to items of ONE bundle, so a Shield bought on top of a bundled one is
+ * still counted: the entry states what it grants, not what may be added to it.
+ */
+const oneStatedLoadout = (items: Carried[]): boolean => {
+  const grant = items[0]?.grantedBy;
+  return Boolean(grant) && items.every((i) => i.grantedBy === grant);
+};
+
+/**
  * Is the model exempt from a keyword's Effect?
  *
  * "NEGATE [KEYWORD] (Effect): A model with the NEGATE Keyword is not affected
@@ -195,7 +221,7 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
 
     // "One suit of Armour", "One Shield" — a flat ceiling on the section.
     if (typeof rule.max === 'number' && !rule.per) {
-      if (carried.length > rule.max) {
+      if (carried.length > rule.max && !oneStatedLoadout(carried)) {
         out.push({
           section, raw: rule.raw,
           message: `${carried.length} ${section} carried — the limit is ${rule.max}: `
@@ -207,7 +233,7 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
     // "One type of Grenade" — a ceiling on distinct KINDS, not on how many.
     if (typeof rule.max === 'number' && rule.per === 'name') {
       const kinds = new Set(carried.map((c) => nameKey(c.name)));
-      if (kinds.size > rule.max) {
+      if (kinds.size > rule.max && !oneStatedLoadout(carried)) {
         out.push({
           section, raw: rule.raw,
           message: `${kinds.size} kinds of ${section} carried — the limit is ${rule.max}: `
@@ -226,6 +252,7 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
         else seen.set(k, c.name);
       }
       for (const name of dupes) {
+        if (oneStatedLoadout(carried.filter((c) => nameKey(c.name) === nameKey(name)))) continue;
         out.push({
           section, raw: rule.raw,
           message: `Two or more ${name} — a model cannot have two pieces of `
@@ -268,6 +295,7 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
 
         let used = 0;
         const counted: string[] = [];
+        const countedItems: Carried[] = [];
         for (const c of carried) {
           let hands = handsOf(c, ctx);
           if (hands === undefined) continue;
@@ -281,8 +309,9 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
           const allowed = perHand(hands);
           used += allowed ? capacity / allowed : hands;
           counted.push(c.name);
+          countedItems.push(c);
         }
-        if (used > slots) {
+        if (used > slots && !oneStatedLoadout(countedItems)) {
           out.push({
             section, raw: rule.raw,
             message: `${counted.join(', ')} needs ${used} hands and the model has `
@@ -304,7 +333,8 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
 
       if (typeof ws.oneHandedEach === 'number') {
         const oneHanded = carried.filter((c) => handsOf(c, ctx) === (ws.hands ?? 1));
-        if (oneHanded.length > ws.oneHandedEach) {
+        if (oneHanded.length > ws.oneHandedEach
+            && !oneStatedLoadout([...oneHanded, ...shields])) {
           out.push({
             section, raw: ws.raw,
             message: `${oneHanded.length} ${ws.hands ?? 1}-Handed ${section} with a Shield `
@@ -318,6 +348,7 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
         // Legal only where the weapon AND the Shield both carry the stipulation.
         const blocked = carried.filter((c) =>
           handsOf(c, ctx) === ws.blocksHands
+          && !shields.some((s) => oneStatedLoadout([c, s]))
           && !(ws.unlessBoth
                && hasStipulation(c, ws.unlessBoth, ctx)
                && shields.some((s) => hasStipulation(s, ws.unlessBoth!, ctx))));

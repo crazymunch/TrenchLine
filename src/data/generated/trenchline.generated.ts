@@ -66936,6 +66936,42 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "sourceFile": "warbands-of-trench-crusade.txt"
+    },
+    {
+      "name": "Shield",
+      "type": "Shield",
+      "range": "-",
+      "keywords": [
+        "-1 INJURY MODIFIER"
+      ],
+      "description": "",
+      "rules": [],
+      "section": "Shields",
+      "note": ""
+    }
+  ],
+  "bundles": [
+    {
+      "name": "Polearm and Shield",
+      "grants": [
+        "Shield",
+        "Polearm"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
+    },
+    {
+      "name": "Sword and Pistol",
+      "grants": [
+        "Sword/Axe",
+        "Pistol"
+      ],
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      }
     }
   ],
   "keywordGrants": [

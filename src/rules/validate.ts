@@ -603,6 +603,7 @@ function checkBattlekitLimits(
       name: item.name ?? (item.weaponId ? weapons.get(item.weaponId)?.name ?? '' : ''),
       weaponId: item.weaponId,
       quantity: item.quantity,
+      grantedBy: item.grantedBy,
     })).filter((c) => c.name || c.weaponId);
 
     for (const b of battlekitBreaches(carried, {

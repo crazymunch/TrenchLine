@@ -602,7 +602,28 @@ export function parseCatalogues(dir) {
   const factionOf = (file) => path.basename(file, path.extname(file));
 
   const units = [];
+  const nameKeyOf = (n) => String(n ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
   const weapons = [];
+  /*
+    Loadout bundles: a selectionEntry with NO profile of its own that links
+    two or more items, granting them under a name of its own.
+
+    `Polearm and Shield` is the case — it links the `Polearm` (Weapon) and
+    `Shield` (Battlekit) profiles from the shared .gst and defines neither
+    itself. A roster holding that name matched nothing and was reported as
+    "not in this ruleset", which excludes it from every legality check while
+    telling the player their list is only provisional.
+
+    The distinction that makes this safe is OWN versus LINKED. An earlier
+    attempt keyed on "the entry name differs from its profile's name" and
+    produced `Automatic Pistol -> Stolen: Automatic Pistol` and `Melee ->
+    Knight Companion of the Bladed Fly` — aliases that would redirect ordinary
+    wargear to another entry entirely. A bundle is narrower and checkable: it
+    contributes no profile itself, and hands out several.
+  */
+  const bundles = new Map();
+  /** The profiles a bundle hands out, keyed by name — see the emit below. */
+  const bundleProfiles = new Map();
   const abilitiesSeen = new Map();
 
   // The authoritative list of Warband Variants: the children of each faction's
@@ -884,6 +905,53 @@ export function parseCatalogues(dir) {
         */
       }
 
+      const ownProfiles = arr(node?.profiles?.profile);
+      const bundled = arr(node?.infoLinks?.infoLink)
+        .filter((l) => attr(l, 'type') === 'profile')
+        .map((l) => byId.get(attr(l, 'targetId')))
+        .filter(Boolean)
+        .filter((pr) => ['Weapon', 'Battlekit'].includes(attr(pr, 'typeName')));
+      const bundledNames = [...new Set(bundled.map((pr) => clean(attr(pr, 'name'))))]
+        .filter(Boolean);
+      const bundleName = clean(attr(node, 'name'));
+      if (bundleName && !ownProfiles.length && bundledNames.length >= 2
+          && !bundledNames.includes(bundleName)) {
+        /*
+          The entry's own cost, not the sum of its parts'.
+
+          A loadout is priced as one thing — both of these are free options in
+          a Mercenary's `Loadout` group — and pricing the parts separately out
+          of the Armoury Table charged a model 7 Ducats for a Polearm the
+          catalogue hands it for nothing.
+        */
+        bundles.set(bundleName, { grants: bundledNames, cost: costsOf(node) });
+        /*
+          And the profiles themselves, so the chapter can say what they are.
+
+          `Shield` is a generic Battlekit profile in the shared .gst that the
+          Battlekit chapter does not name (it prints `Trench Shield`, a
+          different entry that also exists) and that nothing emits as a weapon,
+          because resolving Battlekit links into the weapon list turns a Black
+          Grail Strain into equipment anyone can buy. Granted and then unknown,
+          it counted against no limit: a model could carry two.
+        */
+        for (const pr of bundled) {
+          const nm = clean(attr(pr, 'name'));
+          if (nm && !bundleProfiles.has(nameKeyOf(nm))) {
+            const c = charMap(pr);
+            bundleProfiles.set(nameKeyOf(nm), {
+              name: nm,
+              type: clean(c.Type),
+              range: clean(c.Range),
+              keywords: clean(c.Keywords).split(',')
+                .map((k) => clean(k)).filter((k) => k && k !== '-'),
+              description: clean(c.Description || ''),
+              rules: clean(c.Rules) && clean(c.Rules) !== '-' ? [clean(c.Rules)] : [],
+            });
+          }
+        }
+      }
+
       for (const g of gearProfiles) {
         const c = charMap(g);
         weapons.push({
@@ -959,9 +1027,33 @@ export function parseCatalogues(dir) {
       o.description.length > 0);
   }
 
+  /*
+    Only a bundle whose name resolves to nothing else is worth keeping: if the
+    catalogue already has an entry by that name, the roster will find it and
+    an alias could only send it somewhere worse.
+  */
+  const emittedNames = new Set([
+    ...weapons.map((w) => nameKeyOf(w.name)),
+    ...units.map((u) => nameKeyOf(u.name)),
+  ]);
+
   return {
     units: dedupe(units),
     weapons: dedupe(weapons),
+    bundles: [...bundles]
+      .filter(([name]) => !emittedNames.has(nameKeyOf(name)))
+      .map(([name, b]) => ({ name, grants: b.grants, cost: b.cost })),
+    /*
+      Only the granted profiles nothing else in the dataset represents. Where
+      the catalogue already emits one as a weapon, that record is richer and
+      wins; this exists for the handful the weapon emit deliberately skips.
+    */
+    bundleProfiles: [...bundles]
+      .filter(([name]) => !emittedNames.has(nameKeyOf(name)))
+      .flatMap(([, b]) => b.grants)
+      .map((n) => bundleProfiles.get(nameKeyOf(n)))
+      .filter(Boolean)
+      .filter((pr) => !emittedNames.has(nameKeyOf(pr.name))),
     abilities: [...abilitiesSeen.values()],
     variantEntries,
     links,

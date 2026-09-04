@@ -891,6 +891,75 @@ Sultanate, New Antioch and Trench Pilgrims. The Trench Dispatch, where every
 other Mercenary's hosts come from (§7b), never mentions it, so before this it
 fell through to the permissive default and all six Warbands were offered it.
 
+## 7d. Loadout bundles
+
+One selectable name that grants several items.
+
+`Polearm and Shield` is a `selectionEntry` in the Mamluk Faris's `Loadout`
+group with **no profile of its own**, which reaches a `Polearm` (Weapon) and a
+`Shield` (Battlekit) through `infoLink`s. It therefore matched no weapon and no
+Armoury Table row, and a roster holding it was told it was *"not in this
+ruleset"* — which drops the item out of every legality check while telling the
+player their list is only provisional.
+
+### Why own-versus-linked is the safe distinction
+
+An earlier attempt keyed on *"the entry's name differs from its profile's
+name"* and produced `Automatic Pistol -> Stolen: Automatic Pistol` and
+`Melee -> Knight Companion of the Bladed Fly` — aliases that would redirect
+ordinary wargear to another entry entirely. It was thrown away rather than
+shipped.
+
+A bundle is narrower and checkable: it contributes **no profile of its own**
+and hands out **two or more**, and its name resolves to nothing else in the
+dataset. Across every catalogue that yields exactly two, both real:
+
+| Bundle | Grants |
+| --- | --- |
+| `Polearm and Shield` | `Shield` + `Polearm` |
+| `Sword and Pistol` | `Sword/Axe` + `Pistol` |
+
+### Priced as one thing
+
+The bundle carries the **entry's own** cost, not the sum of its parts'. Both of
+these are free options in a `Loadout` group; pricing the parts out of the
+Armoury Table billed the Mamluk Faris 7 Ducats for a Polearm the book hands it
+for nothing.
+
+### The profiles a bundle grants reach the Battlekit chapter
+
+`Shield` is a generic Battlekit profile in the shared `.gst`. The chapter
+prints `Trench Shield`, a **different** entry that also exists, so neither may
+be renamed into the other; and the weapon emit deliberately skips Battlekit
+links, because resolving them there turns a Black Grail Strain into equipment
+anyone can buy. Granted and then unknown, the Shield counted against no limit
+at all — a model could carry two.
+
+So the build carries a granted profile nothing else names into
+`dataset.battlekit`, as a third source after the rulebook and Warbands of
+Trench Crusade. Its **section is derived from the chapter's own Type → section
+pairings**, not from a mapping written in the pipeline, and an ambiguous one is
+left unset: a wrong section is a legality error on a legal roster.
+
+### "Unless otherwise stated"
+
+The Battlekit Limits rule opens with those three words, and a model's own entry
+is where the book states otherwise:
+
+> A Mamluk Faris always has either a Greatsword, or a **Polearm and a Trench
+> Shield**, or a Pistol and a Sword/Axe.
+
+The catalogue names the generic `Shield` in that loadout rather than the Trench
+Shield the book names, and only the Trench Shield carries the `Shield Combo`
+stipulation. Policed against each other, the two halves of a loadout the book
+hands the model raise *"Polearm is 2-Handed and cannot be carried with a
+Shield"* — a legality error on a legal roster.
+
+`battlekitBreaches` therefore does not judge one stated loadout's items against
+each other. The exemption is scoped to items of **one** bundle, so a Shield
+bought on top of a bundled one is still counted: the entry states what it
+grants, not what may be added to it.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

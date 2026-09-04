@@ -985,6 +985,23 @@ export interface Dataset {
    * validator treats as "do not enforce" rather than as "no limits".
    */
   battlekitLimits?: BattlekitLimits;
+  /**
+   * Loadout bundles: one selectable name that grants several items, such as
+   * `Polearm and Shield`. Keyed by the name a roster stores.
+   */
+  bundles?: {
+    name: string;
+    grants: string[];
+    /**
+     * The bundle's OWN cost, not the sum of its parts'.
+     *
+     * A loadout is priced as one thing, and both of the two the catalogues
+     * define are free options in a Mercenary's `Loadout` group. Pricing the
+     * parts out of the Armoury Table charged the model 7 Ducats for a Polearm
+     * the catalogue hands it for nothing.
+     */
+    cost: Cost;
+  }[];
   /** Keywords each option grants the model that buys it. */
   keywordGrants?: KeywordGrant[];
   /** The twelve scenarios, as printed. */
