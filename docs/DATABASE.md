@@ -50,6 +50,92 @@ cat prisma/migrations/*_what_it_does/migration.sql
 `npx prisma migrate deploy`. **Never `db push`** against a database anyone
 cares about: it is the thing this document exists to replace.
 
+Migrations need the **unpooled** connection. `prisma/schema.prisma` sets
+`directUrl = env("DIRECT_DATABASE_URL")` for exactly this: Neon's pooler runs
+PgBouncer in transaction mode, which has no session state and so cannot hold
+the advisory lock a migration takes. Pass both:
+
+```bash
+DATABASE_URL="<pooled Neon URL>" \
+DIRECT_DATABASE_URL="<unpooled Neon URL, no -pooler in the host>" \
+npx prisma migrate deploy
+```
+
+### Nothing checks that this happened, and it once did not
+
+On 5 September 2026 Google sign-in stopped working in production. The cause
+was not the auth code: **the deployed database was three migrations behind the
+deployed application**, and had been for a day.
+
+```
+prisma/migrations/                       production
+  20260903031234_baseline                  applied
+  20260903031552_warband_visibility…       applied
+  20260904224810_user_role_expand          MISSING
+  20260904225558_auth_tokens_and_…         MISSING
+  20260905021934_campaign_sync_expand      MISSING
+```
+
+The symptom was nothing like the cause. Signing in with Google bounced back to
+the landing page with no session, on every device, which reads as an OAuth
+misconfiguration — and the OAuth configuration was perfect.
+
+**Prisma selects every column the schema declares.** The schema declared
+`User.role`, `roleGrantedAt`, `roleGrantedBy` and `sessionEpoch`; the database
+had none of them. So *every* query touching `User` threw `column "role" does
+not exist` — including the ones NextAuth's `PrismaAdapter` makes to link a
+Google account. NextAuth caught the failure and redirected to its error page,
+and `pages: { signIn: '/' }` makes that page the landing page. Hence a loop
+back to where you started, with nothing in the logs a user could see.
+
+The same gap had `AuthToken` missing, so email verification and password
+recovery were dead, and `CampaignSyncOp` missing, so campaign sync was dead.
+Neither had been noticed, because neither is on the path a maintainer walks.
+
+Two things to take from it:
+
+- **A schema that is behind is invisible from the outside.** The site is up,
+  the build is green, the tests pass — they run against a database built from
+  the migrations, which is the one database guaranteed to be current.
+- **The failure surfaces somewhere else entirely.** This one surfaced as an
+  auth bug, four files away from anything to do with schema.
+
+### Checking, before something breaks
+
+From anywhere that can reach the database:
+
+```sql
+select migration_name, finished_at from _prisma_migrations order by started_at;
+```
+
+against `ls prisma/migrations/`. If the lists differ, the deployed app is
+running on a schema it was not written for.
+
+### When the only door is a SQL console
+
+`migrate deploy` needs a direct TCP connection on 5432. Somewhere that has only
+HTTPS — a sandbox behind a proxy, a locked-down runner — cannot run it, and the
+temptation is to paste the migration's DDL into Neon's SQL editor instead.
+
+**That works and leaves a trap.** The DDL changes the schema and tells Prisma
+nothing, so `_prisma_migrations` still lists the migration as pending. The next
+`migrate deploy` runs it again, hits "column already exists" and fails — and now
+the deploy is broken as well as the record being wrong. A half-applied state is
+worse than an unapplied one, because neither side shows it.
+
+```bash
+node scripts/emit-pending-migration-sql.mjs <migration> [<migration> …]
+```
+
+emits the DDL **and** the `_prisma_migrations` row for each, in one
+transaction. The row carries the sha256 of the migration file, which is what
+Prisma stores and compares on the next run; a wrong checksum makes `migrate
+deploy` report the migration as MODIFIED, which is louder but still a failure.
+The algorithm was verified against an already-applied row before it was
+trusted.
+
+This is a fallback, not a policy. `migrate deploy` is the way.
+
 ## Expand, migrate, contract
 
 A deployment is never atomic — the old code and the new code run at the same
