@@ -72,8 +72,33 @@ match record means someone used it. That rule is tested rather than trusted to
 the maintainer's confirmation staying true —
 `scripts/__tests__/clearExampleCampaigns.test.mjs`.
 
-Still to build: the `/api/campaigns/sync` endpoint below, and the client outbox
-keyed by operation.
+`POST /api/campaigns/sync` is built, with three operation kinds — the ones the
+app actually performs today:
+
+| kind | who | writes |
+|---|---|---|
+| `campaign.settings` | organiser | name, turn, game, budgets, framework, house rules |
+| `territory.perk` | organiser | `perk` + `perkSource`, refused on a published one |
+| `territory.claim` | member | the controlling warband, named from the membership |
+
+**What no operation can touch:** membership, `inviteCode`, `adminId`, user
+identity. The enforcement is that no op *kind* exists for them — a filter can
+be forgotten, a missing case cannot be used.
+
+Two implementation choices the tests pin, both of which sound like details and
+are not:
+
+- **The `CampaignSyncOp` record is written inside the same transaction as the
+  change**, and first. A crash between the two would otherwise leave one
+  without the other, and idempotency that holds only when nothing goes wrong
+  is not idempotency.
+- **A conflict throws, so the transaction rolls back.** Returning it would
+  commit the op record for an operation that changed nothing — and the
+  client's retry, after merging, would then be skipped as a duplicate and the
+  merged edit lost silently. That is the worst failure this protocol can have.
+
+Still to build: the client outbox keyed by operation, and the browser test of
+the pending / synced / conflict / failed states.
 
 ## Authority: who owns which field
 
