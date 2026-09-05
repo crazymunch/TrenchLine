@@ -13,8 +13,8 @@
 | Icons | `lucide-react` |
 
 > The root `README.md` previously described a Vite app. It does not. Next.js App
-> Router is the framework; `src/App.tsx` and `src/main.tsx` are dead Vite
-> scaffolding scheduled for deletion.
+> Router is the framework, and the dead Vite scaffolding it mentioned —
+> `App.tsx` and `main.tsx` at the root of `src/` — has since been deleted.
 
 ## Current layout
 

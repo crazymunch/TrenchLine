@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions, isUserAdmin } from '@/lib/auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { abort, forbidden, notFound, unauthorized } from './http';
 
@@ -26,9 +26,18 @@ export interface Actor {
 /** The session's actor, or null when signed out. */
 export async function currentActor(): Promise<Actor | null> {
   const session = await getServerSession(authOptions);
-  const user = session?.user as { id?: string; email?: string | null } | undefined;
+  const user = session?.user as
+    { id?: string; email?: string | null; isAdmin?: boolean } | undefined;
   if (!user?.id) return null;
-  return { userId: user.id, email: user.email ?? null, isAdmin: isUserAdmin(user.email) };
+  /*
+    Taken from the SESSION, which the JWT callback resolved from the user's
+    persisted role — not recomputed from the email here.
+
+    Recomputing from the address would reinstate exactly what `adminRole.ts`
+    exists to remove: two places deciding authority, one of them from a mutable
+    field, and a revocation that only half applies.
+  */
+  return { userId: user.id, email: user.email ?? null, isAdmin: Boolean(user.isAdmin) };
 }
 
 /**

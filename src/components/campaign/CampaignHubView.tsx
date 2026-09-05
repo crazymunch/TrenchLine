@@ -8,6 +8,7 @@ import {
 } from '@/rules/campaignFramework';
 import type { CampaignFramework } from '@/types/campaign';
 import { TerritoryMap } from './TerritoryMap';
+import { CampaignSyncStatus } from './CampaignSyncStatus';
 import { LogMatchModal } from './LogMatchModal';
 import { 
   Sparkles, 
@@ -25,6 +26,15 @@ import {
 export const CampaignHubView: React.FC = () => {
   const { campaign, factions, createCampaign, getActiveWarband } = useStore();
   const activeWb = getActiveWarband();
+  const syncCampaign = useStore((s) => s.syncCampaignWithCloud);
+
+  /*
+    Reconcile on arrival. A campaign with no cloud copy resolves to
+    "On this device" without a request, so this costs nothing for the local
+    case — which today is every case, since nothing yet gives a campaign a
+    `cloudId`. See the "first sync" section of `docs/CAMPAIGN-SYNC.md`.
+  */
+  React.useEffect(() => { void syncCampaign(); }, [syncCampaign, campaign.cloudId]);
 
   /*
     The dataset, for the Carcass Front zones a `carcass-front` campaign is
@@ -116,6 +126,7 @@ export const CampaignHubView: React.FC = () => {
 
           {/* Action & Invite Box */}
           <div className="flex flex-wrap items-center gap-3">
+            <div className="w-full"><CampaignSyncStatus /></div>
             <div className="bg-theme-base border border-theme-border p-2.5 rounded-md flex items-center space-x-3">
               <div>
                 <span className="text-xs sm:text-[9px] font-mono text-theme-muted uppercase tracking-wider block">Invite Code</span>

@@ -122,3 +122,53 @@ test('the Campaigns tab reads on a phone', async ({ page }) => {
     document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow2, 'the Path to Leviathan scrolls the page sideways').toBeLessThanOrEqual(0);
 });
+
+/**
+ * The Rules FAQ tab.
+ *
+ * Reachable by a button, for the reason at the top of this file: a tab whose
+ * only proof of existence is a `&&` in the JSX has the Mission Designer's
+ * failure available to it — rendered for years, reachable by nobody.
+ *
+ * And it carries the document's own references. `RULES Q1` is what a player
+ * quotes to an opponent across a table, so it has to be on screen and it has
+ * to be findable by searching for it.
+ */
+test('the Rules FAQ is reachable, referenced and searchable', async ({ page }) => {
+  await openApp(page);
+  await goTo(page, 'Codex');
+
+  const faq = page.getByRole('button', { name: /Rules FAQ \(\d+\)/ });
+  await expect(faq, 'the Rules FAQ tab has no button').toBeVisible();
+  await faq.click();
+
+  await expect(page.getByRole('heading', { name: 'Rules Commentaries 1.0.2' })).toBeVisible();
+
+  /*
+    The first entry, carried verbatim from the official PDF, under the
+    document's own reference — and the reference is asserted INSIDE the entry's
+    own card rather than anywhere on the page. The panel's own introduction
+    cites `RULES Q1` as an example of what a reference looks like, so a bare
+    text match finds the prose and passes whether or not the entry rendered.
+  */
+  const firstEntry = page.locator('div').filter({
+    hasText: 'In what order do players apply BLOOD and BLESSING MARKERS to the same roll?',
+  }).last();
+  await expect(firstEntry).toBeVisible();
+  await expect(firstEntry.getByText('RULES Q1', { exact: true })).toBeVisible();
+
+  /* A section heading has not bled into the answer above it: this one sits
+     directly above `The Cult of the Black Grail`. */
+  await page.getByPlaceholder(/Search core rules/).fill('Stealth Generator');
+  await expect(page.getByText(/It has no effect on a Blast that targets a point on the ground\.$/))
+    .toBeVisible();
+  await expect(page.getByText(/The Cult of the Black Grail/)).toHaveCount(0);
+
+  /* Searchable by the reference itself, which is what a player is given. */
+  await page.getByPlaceholder(/Search core rules/).fill('MISC. Q7');
+  await expect(page.getByText('Does a model have a Line of Sight to itself?')).toBeVisible();
+
+  // The tab bar still fits its viewport.
+  const de = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+  expect(de, 'the Codex scrolls sideways with the FAQ tab added').toBe(true);
+});

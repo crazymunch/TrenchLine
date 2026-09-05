@@ -46,7 +46,7 @@
       "sha256": "c04d0f745c07cc48b62befe0d360f71a6abd8d9d417f3574b96a6bdbb725db5c",
       "extract": "extracted/changelog-1.0.2.txt",
       "committed": true,
-      "role": "Official 1.0.2 errata table. Transcribes to a layer."
+      "role": "Official 1.0.2 errata table — what changed from 1.0.1, NOT a delta to apply. The digital rulebook here is already 1.0.2 (its cover reads 1`0`2) and carries every rewrite the changelog lists, so no layer transcribes it and none should. Kept as evidence: it is what the Keyword completeness check reads the expected list out of, and it names the pages a rule changed on."
     },
     {
       "file": "rules-commentaries-1.0.2.pdf",
@@ -55,7 +55,7 @@
       "sha256": "a30dae0ca4370b08b9caef75ed907879444fee8054c13d9e7a71dfbd5c14c4f7",
       "extract": "extracted/rules-commentaries-1.0.2.txt",
       "committed": true,
-      "role": "Official FAQ. Feeds the Codex and rules-engine edge cases."
+      "role": "Official FAQ, 51 entries. Parsed by scripts/lib/parse-commentaries.mjs into dataset.commentaries and shown in the Codex under Rules FAQ. This line used to claim the same thing while nothing in the tree opened the file."
     },
     {
       "file": "hell-on-earth-weather-events.pdf",

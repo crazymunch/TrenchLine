@@ -22,6 +22,7 @@ no design documentation at all.
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
+| [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version
@@ -53,3 +54,6 @@ These exist because the original codebase violated all four.
    enhancement, added at `sm:` and up. See `MOBILE.md`.
 4. **Documented decisions.** A change to the data model, the ruleset layering,
    or the source list updates the relevant document in the same commit.
+
+- [`DEPLOYMENT.md`](DEPLOYMENT.md) — what the environment must provide, and which layer enforces rate limiting.
+- [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md) — the design for campaign cloud sync, and the model decision it is waiting on.

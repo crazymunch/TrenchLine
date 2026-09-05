@@ -608,6 +608,9 @@ function checkBattlekitLimits(
 
     for (const b of battlekitBreaches(carried, {
       armoury, dataset, extraLimb: u.extraLimb, traits: u.traits,
+      // The ENTRY's name, not the one the player typed: two entries state a
+      // carrying allowance that belongs to the entry itself.
+      modelName: profiles.get(u.profileId)?.name,
       // STRONG is a Keyword the model has, not a word in an ability's name.
       // The model's EFFECTIVE Keywords, computed with the ones its Formulae
       // grant. The base entry alone is why a legal Homunculus was told its

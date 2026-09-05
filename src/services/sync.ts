@@ -108,13 +108,14 @@ export const outbox = {
  * Deliberately not "the whole object": `updatedAt` is derived from this
  * comparison, so including it would make every warband differ from itself, and
  * the transient Play Mode fields on a unit (`hasActedThisTurn`, `bloodMarkers`,
+ * `blessingMarkers`,
  * `currentWounds`) change constantly during a game. Those are match state, not
  * roster state — they are saved locally so a phone that sleeps mid-game does
  * not lose the board, but they must not mark the roster dirty and start a push
  * on every wound.
  */
 const TRANSIENT_UNIT_FIELDS = new Set([
-  'hasActedThisTurn', 'bloodMarkers', 'currentWounds', 'status', 'activationOrder',
+  'hasActedThisTurn', 'bloodMarkers', 'blessingMarkers', 'currentWounds', 'status', 'activationOrder',
 ]);
 
 function stableShape(w: Warband): string {

@@ -34,12 +34,13 @@ import {
   Flag,
   ExternalLink,
   Layers,
-  CheckCircle2
+  CheckCircle2,
+  HelpCircle
 } from 'lucide-react';
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
-  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons' | 'campaigns'>('rules');
+  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons' | 'campaigns' | 'faq'>('rules');
 
   /**
    * The reference tables, from the generated dataset.
@@ -92,6 +93,14 @@ export const CodexView: React.FC = () => {
   const campaigns = codexDataset?.campaigns ?? [];
   const visionCards = codexDataset?.visionCards ?? [];
   const carcassFrontMap = codexDataset?.carcassFrontMap;
+  /**
+   * The official Rules Commentaries — the game's own FAQ.
+   *
+   * Empty on a ruleset built without the extract, which is a real state; the
+   * parser throws rather than return an empty list when the file is present
+   * and unreadable, so an empty list here never means "we failed to read it".
+   */
+  const commentaries = codexDataset?.commentaries ?? [];
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -146,6 +155,20 @@ export const CodexView: React.FC = () => {
   const filteredKeywords = keywords.filter(
     (k) => k.name.toLowerCase().includes(filterText) || (k.description || '').toLowerCase().includes(filterText) || (k.type || '').toLowerCase().includes(filterText)
   );
+
+  /*
+    Question, answer AND label, so `RULES Q1` finds its own entry: that label
+    is what a player quotes to an opponent across a table, and searching for
+    the thing you were shown should find it.
+  */
+  const filteredCommentaries = commentaries.filter(
+    (c) => c.question.toLowerCase().includes(filterText)
+      || c.answer.toLowerCase().includes(filterText)
+      || c.label.toLowerCase().includes(filterText)
+      || c.section.toLowerCase().includes(filterText)
+  );
+  /** The document's own order, kept: sections run Core Rules first, Misc last. */
+  const commentarySections = [...new Set(filteredCommentaries.map((c) => c.section))];
 
   /**
    * The arsenal: the Armoury Tables joined to the rulebook's Battlekit chapter.
@@ -278,7 +301,17 @@ export const CodexView: React.FC = () => {
             Mission Designer and every generator in it were unreachable. Six
             buttons on two rows of three at phone width, four across from `sm`.
           */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2">
+          {/*
+            `lg:grid-cols-4`, not 7, since the FAQ made this eight buttons.
+            Eight across at 1440px truncates `Weapons Codex (108)` to nothing
+            useful; two rows of four gives every label its full width. Phone
+            and tablet are unchanged — 8 items over 2 columns is the same four
+            rows 7 items took, and over 3 columns the same three.
+
+            Literal class names, both of them. A templated `lg:grid-cols-${n}`
+            does not compile (docs/MOBILE.md).
+          */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
@@ -290,6 +323,7 @@ export const CodexView: React.FC = () => {
               // `Campaigns (2)` truncates to `CAMPAIGNS (…` at 375px, which
               // shows the parenthesis and hides the count.
               { id: 'campaigns', label: 'Campaigns', icon: <Flag className="w-4 h-4" /> },
+              { id: 'faq', label: `Rules FAQ (${commentaries.length})`, icon: <HelpCircle className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -315,7 +349,26 @@ export const CodexView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredRules.map((chapter) => (
               <div
-                key={chapter.id}
+                /*
+                  Keyed on the CATEGORY too, because seven rules are printed in
+                  both chapters: `Actions` is Core Rules p14 and Comprehensive
+                  Rules p34, and the slug is the same for both. Keyed on the
+                  slug alone React saw seven duplicate keys, which it resolves
+                  by reusing one element for two different rules — so the
+                  second copy could render the first one's text.
+
+                  The PAGE as well, because the same chapter can print a slug
+                  twice: `Terrain` is Comprehensive Rules p23, a note in "what
+                  you need to play", and again at p38, where the actual terrain
+                  rules are. Different sections, same heading.
+
+                  All of them are real and all are shown; it is the KEY that
+                  had to be unique, not the rule. Deduplicating would drop a
+                  section the book prints — and the page is what tells them
+                  apart in the book, which is why the badge beside each heading
+                  already shows it.
+                */
+                key={`${chapter.category}/${chapter.page}/${chapter.id}`}
                 className="bg-theme-surface border border-theme-border rounded-md p-5 space-y-3 bevel-container hover:border-theme-primary/40 transition-colors"
               >
                 <div className="flex items-center justify-between border-b border-theme-border pb-2">
@@ -1050,6 +1103,29 @@ export const CodexView: React.FC = () => {
                 "Warband Treasury" and an "Armory Stash", none of which appears
                 in any source.
               */}
+              {/*
+                The Exploration Step is the FOURTH of six, and where it sits
+                carries a rule: Reinforcements comes before it, and taking that
+                step costs you both this one and the Quartermaster. A player
+                looking at Exploration alone cannot see the choice they have
+                already made, so the whole sequence is shown above it.
+              */}
+              {(codexDataset?.campaign.phaseSteps ?? []).length > 0 && (
+                <div className="space-y-1.5 border-b border-theme-border pb-3">
+                  <span className="font-mono text-xs sm:text-[10px] font-bold uppercase tracking-wider text-theme-primary">
+                    The Campaign Phase, in order
+                  </span>
+                  <ol className="list-decimal list-inside text-theme-muted space-y-1 text-xs sm:text-[11px]">
+                    {(codexDataset?.campaign.phaseSteps ?? []).map((s) => (
+                      <li key={s.name}>
+                        <strong className="text-theme-text">{s.name}</strong>
+                        {s.description ? ` — ${s.description}` : ''}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
               <p className="text-theme-text leading-relaxed">
                 In the Exploration Step, <strong>each player</strong> explores the territory the
                 campaign is fought over. You are looking at the{' '}
@@ -1330,6 +1406,62 @@ export const CodexView: React.FC = () => {
           map={carcassFrontMap}
           error={codexDatasetError}
         />
+      )}
+
+      {/* TAB: THE OFFICIAL RULES COMMENTARIES */}
+      {activeTab === 'faq' && (
+        <div className="space-y-6">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-4 bevel-container">
+            <h2 className="font-gothic font-bold text-lg text-theme-primary">Rules Commentaries 1.0.2</h2>
+            <p className="text-xs font-mono text-theme-muted mt-1.5 leading-relaxed">
+              The game’s official answers to questions players actually asked, carried
+              verbatim. Each entry keeps its own reference — <span className="text-theme-text">RULES Q1</span>,
+              {' '}<span className="text-theme-text">MISC. Q7</span> — so you can quote it across a table.
+            </p>
+          </div>
+
+          {commentaries.length === 0 && (
+            /* Says which, rather than rendering an empty page. This ruleset has
+               no commentaries; that is not the same as failing to read them. */
+            <p className="text-xs font-mono text-theme-muted">
+              This ruleset carries no Rules Commentaries.
+            </p>
+          )}
+
+          {commentaries.length > 0 && filteredCommentaries.length === 0 && (
+            <p className="text-xs font-mono text-theme-muted">
+              No commentary matches “{searchQuery}”.
+            </p>
+          )}
+
+          {commentarySections.map((section) => (
+            <div key={section} className="space-y-3">
+              <h3 className="font-gothic font-bold text-base text-theme-text border-b border-theme-border pb-1.5">
+                {section}
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {filteredCommentaries.filter((c) => c.section === section).map((c) => (
+                  <div
+                    key={c.id}
+                    className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container"
+                  >
+                    <span className="inline-block text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-muted uppercase">
+                      {c.label}
+                    </span>
+                    <p className="text-xs font-mono font-bold text-theme-text leading-relaxed">
+                      {c.question}
+                    </p>
+                    {/* The answer is what the reader came for, so it is the one
+                        thing here in the body colour rather than the muted one. */}
+                    <p className="text-xs font-mono text-theme-text leading-relaxed border-l-2 border-theme-primary/60 pl-3">
+                      {c.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
       {activeTab === 'generator' && <MissionGenerator />}

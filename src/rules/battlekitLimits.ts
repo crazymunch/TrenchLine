@@ -79,6 +79,16 @@ export interface CarrierContext {
    * ability NAMES. It is a keyword; the dataset carries it as one.
    */
   keywords?: string[];
+  /**
+   * The ENTRY's name — `Desecrated Saint`, not what the player called this
+   * model.
+   *
+   * Two of the stated carrying allowances are unconditional: they belong to
+   * the entry rather than to anything the model can acquire. Without this
+   * they could only be matched on `requires`, and `requires` is empty for
+   * them — which every model would satisfy.
+   */
+  modelName?: string;
 }
 
 const q = (i: Carried) => Math.max(1, i.quantity ?? 1);
@@ -216,9 +226,26 @@ const ruleFor = (limits: BattlekitLimits, section: string): BattlekitLimit | und
  */
 function statedAllowance(ctx: CarrierContext) {
   const traits = (ctx.traits ?? []).map((t) => t.trim().toLowerCase());
-  if (!traits.length) return undefined;
-  return (ctx.dataset.carryAllowances ?? []).find(
-    (a) => a.requires.every((r) => traits.includes(r.trim().toLowerCase())));
+  const model = ctx.modelName ? nameKey(ctx.modelName) : undefined;
+
+  return (ctx.dataset.carryAllowances ?? []).find((a) => {
+    /*
+      Conditional: the sentence names what the model must hold, and holding it
+      is the whole test. The Homunculus allowance is stated about Formulae,
+      not about being a Homunculus.
+    */
+    if (a.requires.length) {
+      return traits.length
+        && a.requires.every((r) => traits.includes(r.trim().toLowerCase()));
+    }
+    /*
+      Unconditional: it belongs to the entry, so the entry has to match. An
+      empty `requires` is satisfied by every model — matching on it alone
+      would have given every model in the game the Desecrated Saint's arms.
+      With no entry name to check against, the chapter's limits stand.
+    */
+    return model !== undefined && nameKey(a.model) === model;
+  });
 }
 
 /**

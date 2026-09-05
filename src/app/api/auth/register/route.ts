@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
+import { sendVerification, notifyExistingAccount } from '@/lib/accountMail';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 
 /**
  * Create an account.
@@ -20,8 +22,7 @@ import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
  *
  * Deliberately loose: the address is an identifier here, and a regex that
  * tries to be RFC-complete rejects real addresses. Proving the address works
- * is what an email verification step is for, and this application does not
- * have one yet — see the note on `emailVerified` below.
+ * is what the verification mail does.
  */
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,6 +30,16 @@ const MAX_EMAIL = 254;
 const MAX_NAME = 80;
 /** bcrypt only reads the first 72 bytes; a longer password is a wasted DoS. */
 const MAX_PASSWORD = 72;
+
+/**
+ * The one thing this endpoint ever says on success.
+ *
+ * Worded so it is true whether an account was created, an existing one was
+ * left alone, or the address belongs to a Google sign-in.
+ */
+const ACCEPTED =
+  'If that address can be registered, a confirmation link is on its way. '
+  + 'Check your inbox to finish setting up the account.';
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -60,54 +71,82 @@ export async function POST(req: NextRequest) {
       { status: 400 });
   }
 
+  /*
+    Counted AFTER the shape checks and BEFORE the database.
+
+    After, so a malformed body cannot spend a real caller's allowance. Before,
+    so the expensive half — a lookup, a bcrypt hash and a mail — is what the
+    limit actually protects. Keyed on IP and on IP+address together, never the
+    address alone: see `rateLimit.ts`.
+  */
+  const limited = limitAccountRoute('register', req.headers, email);
+  if (limited) return limited;
+
   const name = typeof rawName === 'string' && rawName.trim()
     ? rawName.trim().slice(0, MAX_NAME)
     : email.split('@')[0];
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    /*
-      A neutral message — and an honest note about what it does not achieve.
+  /*
+    ONE ANSWER, whatever is true.
 
-      "That address is already registered" is a membership oracle: it lets
-      anyone walk a list of addresses through this endpoint and learn which
-      ones have accounts here. The wording below avoids confirming it.
+    This used to return 409 for an address that already had an account. A
+    distinct status is a membership oracle whatever the body says: anyone could
+    walk a list of addresses through here and learn which have accounts. The
+    old comment said so and accepted it, because closing it needs somewhere
+    else to put the real outcome.
 
-      **The 409 still confirms it.** A distinct status for the duplicate case
-      is an oracle whatever the body says, and the only way to close that is to
-      answer every registration identically and move the real outcome into an
-      email that only the address owner receives. This application has no
-      mailer, so it cannot do that yet, and pretending otherwise by returning
-      201 here would tell a genuine user their account was created when it was
-      not.
+    That somewhere is the verification mail, which only the address owner
+    receives, so the four cases below now differ ONLY in what is sent:
 
-      So the enumeration is accepted, deliberately, and written down: it is
-      bounded by rate limiting rather than removed, and email verification is
-      what actually closes it.
-    */
-    return NextResponse.json(
-      { error: 'That account could not be created. Try signing in instead.' },
-      { status: 409 });
-  }
+      new address        create the account, send a verification link
+      already registered create nothing, send "someone tried to register"
+      OAuth-only         create nothing, send "you already sign in with Google"
+      already verified   create nothing, send the same as above
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name,
-      password: await bcrypt.hash(password, 10),
-      /*
-        `emailVerified` stays null. Nothing here proves the registrant owns the
-        address, so nothing should claim it does — and a later verification
-        step has somewhere truthful to write.
-      */
-    },
-    select: { id: true, email: true, name: true },
+    Every one of them answers 202 with the same body. A caller learns nothing;
+    the person holding the address learns everything.
+  */
+  const existing = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, password: true, emailVerified: true },
   });
 
+  if (!existing) {
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        password: await bcrypt.hash(password, 10),
+        /*
+          `emailVerified` stays null. Nothing here proves the registrant owns
+          the address, so nothing claims it does; the link below is what
+          writes it.
+        */
+      },
+      select: { id: true, email: true },
+    });
+    await sendVerification(user.id, user.email!);
+  } else if (!existing.emailVerified) {
+    /*
+      An unverified account, registered again. Re-sending is right: the first
+      link may never have arrived, and the address owner is the only one who
+      can act on the second. The stored password is NOT replaced — that would
+      let anyone with the address change the credential on an account they do
+      not own.
+    */
+    await sendVerification(existing.id, email);
+  } else {
+    await notifyExistingAccount(email, Boolean(existing.password));
+  }
+
   /*
-    No session is issued. The client signs in with the credentials it just
-    chose, through the same path as every other sign-in, so there is exactly
-    one way to obtain a session and one place that decides whether to.
+    No session is issued, and no user is returned. The client signs in through
+    the same path as every other sign-in, so there is exactly one way to obtain
+    a session and one place that decides whether to.
+
+    202, not 201: what this promises is that the request was accepted and a
+    message sent, which is true in every branch. 201 would claim a resource was
+    created, and in three of the four branches nothing was.
   */
-  return NextResponse.json({ user }, { status: 201 });
+  return NextResponse.json({ ok: true, message: ACCEPTED }, { status: 202 });
 }

@@ -55,11 +55,45 @@ const user = (over: Record<string, unknown> = {}) => ({
   what the provider is actually wired to.
 */
 describe('the provider wiring', () => {
-  it('uses verifyCredentials, not something else', () => {
-    const provider = authOptions.providers.find((p) => p.id === 'credentials') as unknown as {
-      options?: { authorize?: unknown };
+  /*
+    Delegation, not identity.
+
+    `authorize` is a thin wrapper now rather than `verifyCredentials` itself,
+    because NextAuth passes the REQUEST as its second argument and the sign-in
+    rate limit needs the caller's address from it. So the assertion is that the
+    wrapper reaches the real verifier AND hands the request through — which is
+    a stronger claim than the equality it replaces, and covers the thing the
+    limit depends on.
+  */
+  const credentialsProvider = () =>
+    authOptions.providers.find((p) => p.id === 'credentials') as unknown as {
+      options?: { authorize?: (c: unknown, r: unknown) => Promise<unknown> };
     };
-    expect(provider.options?.authorize).toBe(verifyCredentials);
+
+  it('reaches verifyCredentials, and passes the request through', async () => {
+    findUnique.mockResolvedValue(user());
+    const authorizeFn = credentialsProvider().options?.authorize;
+    expect(typeof authorizeFn).toBe('function');
+
+    const req = { headers: new Headers({ 'x-forwarded-for': '198.51.100.7' }) };
+    await expect(authorizeFn!({ email: 'player@example.org', password: PASSWORD }, req))
+      .resolves.toMatchObject({ id: 'u1', email: 'player@example.org' });
+
+    // The real verifier ran: it is the only thing that reads the user record.
+    expect(findUnique).toHaveBeenCalled();
+  });
+
+  it('is not a stub that answers null to everything', async () => {
+    /*
+      The failure this whole section exists to catch. `CredentialsProvider(...)`
+      returns an object whose own `authorize` is `() => null`, so a suite
+      reaching for the wrong one passes every "rejects a bad credential"
+      assertion while proving nothing.
+    */
+    findUnique.mockResolvedValue(user());
+    const authorizeFn = credentialsProvider().options?.authorize;
+    await expect(authorizeFn!({ email: 'player@example.org', password: PASSWORD }, {}))
+      .resolves.not.toBeNull();
   });
 });
 
@@ -218,20 +252,68 @@ describe('the session callback', () => {
 describe('the jwt callback', () => {
   const jwt = authOptions.callbacks!.jwt!;
 
+  /*
+    Resolution is BY USER ID, against the persisted role, on every refresh.
+
+    It used to be by the token's email against `TRENCHLINE_ADMIN_EMAILS`. The
+    grant is `User.role` now — `src/lib/adminRole.ts` — and the email list only
+    still answers for a user nobody has decided about yet. By id, so an address
+    change confers and removes nothing.
+  */
+  const asUser = (row: unknown) => findUnique.mockResolvedValue(row);
+
   it('resolves the role on every call, so a revoked grant takes effect', async () => {
-    process.env.TRENCHLINE_ADMIN_EMAILS = 'boss@example.org';
-    const promoted = await jwt({ token: { email: 'boss@example.org' } } as never);
+    asUser({ email: 'boss@example.org', role: 'ADMIN', roleGrantedAt: new Date() });
+    const promoted = await jwt({ token: { sub: 'u1', email: 'boss@example.org' } } as never);
     expect(promoted.isAdmin).toBe(true);
 
-    process.env.TRENCHLINE_ADMIN_EMAILS = 'someone-else@example.org';
-    const demoted = await jwt({ token: { email: 'boss@example.org', isAdmin: true } } as never);
+    asUser({ email: 'boss@example.org', role: 'USER', roleGrantedAt: new Date() });
+    const demoted = await jwt({ token: { sub: 'u1', email: 'boss@example.org', isAdmin: true } } as never);
     expect(demoted.isAdmin).toBe(false);
     expect(demoted.role).toBe('USER');
   });
 
+  it('falls back to the configured list only for a user nobody has decided about', async () => {
+    process.env.TRENCHLINE_ADMIN_EMAILS = 'boss@example.org';
+    asUser({ email: 'boss@example.org', role: 'USER', roleGrantedAt: null });
+    expect((await jwt({ token: { sub: 'u1' } } as never)).isAdmin).toBe(true);
+
+    asUser({ email: 'player@example.org', role: 'USER', roleGrantedAt: null });
+    expect((await jwt({ token: { sub: 'u2' } } as never)).isAdmin).toBe(false);
+  });
+
+  it('does not follow the address on the token', async () => {
+    /*
+      The token can carry any email; the role comes from the row the id names.
+      Putting a listed address on a token must not confer anything.
+    */
+    process.env.TRENCHLINE_ADMIN_EMAILS = 'boss@example.org';
+    asUser({ email: 'player@example.org', role: 'USER', roleGrantedAt: null });
+    const out = await jwt({ token: { sub: 'u2', email: 'boss@example.org' } } as never);
+    expect(out.isAdmin).toBe(false);
+  });
+
+  it('is nobody when the user record has gone', async () => {
+    // A deleted account must not keep authority through a token that outlives it.
+    asUser(null);
+    expect((await jwt({ token: { sub: 'deleted' } } as never)).isAdmin).toBe(false);
+  });
+
+  it('fails closed when the lookup throws', async () => {
+    /*
+      This runs on every authenticated request. A database blip must not grant
+      authority — and must not throw the caller out of their session either.
+    */
+    findUnique.mockRejectedValue(new Error('connection reset'));
+    const out = await jwt({ token: { sub: 'u1' } } as never);
+    expect(out.isAdmin).toBe(false);
+    expect(out.role).toBe('USER');
+  });
+
   it('ignores an isAdmin claim already on the token', async () => {
     process.env.TRENCHLINE_ADMIN_EMAILS = 'boss@example.org';
-    const out = await jwt({ token: { email: 'player@example.org', isAdmin: true, role: 'ADMIN' } } as never);
+    findUnique.mockResolvedValue({ email: 'player@example.org', role: 'USER', roleGrantedAt: null });
+    const out = await jwt({ token: { sub: 'u2', email: 'player@example.org', isAdmin: true, role: 'ADMIN' } } as never);
     expect(out.isAdmin).toBe(false);
     expect(out.role).toBe('USER');
   });

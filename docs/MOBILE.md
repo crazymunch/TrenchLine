@@ -115,7 +115,10 @@ clipping after a type change, not just for size.
 ### 5. No dynamic Tailwind class names
 
 Tailwind resolves classes by static scanning and cannot see interpolated
-strings. This is a live bug in `MobileNav.tsx:32`:
+strings. `MobileNav` was the shipped example and is **fixed** — the bar is now a
+flex row of `flex-1` buttons, which takes any number of items without naming a
+column count at all. The broken shape is kept below because the rule it
+illustrates has not changed:
 
 ```jsx
 /* BROKEN — grid-cols-7 is never generated, the nav collapses to one column */
@@ -152,6 +155,24 @@ Replace all of them with one primitive:
 The primitive owns body scroll lock, focus trap, `Escape`, and the safe-area and
 `dvh` handling — so those are fixed once rather than thirty times.
 
+**Until a modal has moved, it calls `useOverlay`.** Migrating thirty modals to
+`Sheet` structurally is a lot of JSX surgery, and the behaviour does not have to
+wait for it: `src/components/ui/useOverlay.ts` is the implementation `Sheet`
+uses, extracted so a component still rendering its own overlay gets the scroll
+lock, the focus trap and `Escape` from one call. A component that has moved to
+`Sheet` does not call it — `Sheet` does.
+
+`TerritoryMap`'s dossier is the first adopter: it had none of the three, so it
+could not be closed from a keyboard, Tab walked out into the map behind it, and
+the page scrolled under a finger on the panel.
+
+**A thing you can click is a `<button>`.** Not a `<div>` with an `onClick` —
+that has no focus, no Enter or Space, and nothing announcing it as pressable, so
+it is unreachable without a pointer. The territory pins and theatre cards were
+both written that way; making them buttons is what gives them all three, with no
+`onKeyDown` of our own. Where the drawn control is smaller than the touch floor
+(the map pin is 24px), `tap` widens the hit area without changing what is drawn.
+
 `headerAside` pins a live figure to the top-right of the sticky header, left of
 the close button. The recruit sheet uses it for Ducats remaining: on a phone the
 budget is otherwise a scroll away on the view behind, so it was only ever
@@ -170,19 +191,47 @@ raw `<img>` tags.
 
 ### 9. PWA
 
-`public/manifest.json` exists, is never linked from `layout.tsx`, and declares
-2.5 MB design mockups as its 192/512 icons. For a table-side companion,
-install-to-home-screen is the single highest-value mobile feature.
+**Done.** `public/manifest.json` is linked from `layout.tsx`, declares icons at
+192/512 in both `any` and `maskable`, an `apple-touch-icon`, a `theme-color`,
+and `display: standalone` with `orientation: any` (players hold tablets both
+ways). Install-to-home-screen is the highest-value mobile feature for a
+table-side companion, and it works.
 
-Fix: link the manifest, generate real maskable icons at 192/512, add
-`apple-touch-icon` and `theme-color`, and set `display: standalone` with
-`orientation: any` (players hold tablets both ways).
+**The home-screen icon is full bleed.** A maskable icon is cropped by the
+launcher to a shape the app does not choose — a circle on a Pixel, a squircle
+on Samsung, a rounded rect on iOS — so *every pixel is artwork* and the mark
+sits inside the guaranteed safe circle (80% of the width).
+
+This was got wrong once, and the failure is worth remembering because the
+manifest was correct throughout: it declared `purpose: "maskable"` from the
+start, while the artwork was a small silver badge floating on a near-black
+ground. Masked to a circle that is a dark disc with a little square inside it;
+letterboxed instead, a dark square. The app's owner sent a screenshot of his
+launcher with TrenchLine as the only square tile in a grid of circles.
+
+Two rules follow, and `scripts/__tests__/appIcons.test.mjs` holds both:
+
+- **No border, no margin, no backdrop.** The outer edge must be artwork —
+  light, and continuous with the pixels behind it. Anything the author treats
+  as margin is something the launcher may treat as the icon.
+- **The mark clears the safe CIRCLE, not the safe square.** A wordmark sized
+  to fit the square still loses its corners to a circular mask, which is how
+  `T✝C` comes out as `✝`.
+
+`npm run icons:build` regenerates the maskable and Apple icons from
+`public/icons/icon-512.png`: it lifts the mark off its badge, extends the
+badge's own gradient to the edges, and re-places the mark at a size whose
+bounding circle clears the safe zone. Derived rather than hand-drawn, so the
+icons can be rebuilt when the artwork changes rather than being binaries
+nobody can regenerate.
 
 ## Component priorities
 
 Ordered by how much time a user spends in them on a phone:
 
-1. **`MobileNav`** — broken; fix first.
+1. ~~**`MobileNav`** — broken; fix first.~~ **Done.** Flex row, `flex-1`
+   buttons, 44px targets, and a comment in the file saying why it is not a
+   grid.
 2. **`UnitCard`** (622 lines, 1 breakpoint) — the most-used component. Needs a
    phone layout: collapsed summary row, tap to expand, statline as a scrollable
    strip, actions in a sheet rather than a 3-column button bar.

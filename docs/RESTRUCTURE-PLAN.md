@@ -157,10 +157,65 @@ All are covered by regression tests.
 
 ### Still outstanding
 
-- **1.7 is partial.** `dispatch-01.layer.json` covers the changes that map onto
-  the current model. Still to transcribe: the Black Grail Strains and Vile
-  Corpus (needs `UnitOption` wired through the build), the Amalgam and Grail
-  Thrall replacements, the Mercenary keyword rewrites, and the new Glory Items.
+- **1.7 is partial, and less partial than this said.** `dispatch-01.layer.json`
+  covers the changes that map onto the current model — 66 ops.
+
+  `UnitOption` **is** wired through the build now, so the Strains arrived with
+  it: 18 Strain options across the Black Grail entries. The Amalgam and Grail
+  Thrall replacements are transcribed too, and all three units are in the
+  dataset.
+
+  The **Mercenary keyword rewrites** are done and this line was stale: the
+  layer carries 11 Mercenary ops — the MERCENARY glossary entry, the keyword
+  rewrites, two cost changes, three statline corrections and the ability
+  replacements.
+
+  The **new Glory Items** are done: *Blessings of Beelzebub* (Black Grail,
+  9 Glory, Lord of Tumours only) and *Regimental Kaşık* (Sultanate, 4 Glory).
+  Each needed a profile AND an armoury row, and the layer format could only do
+  the first — `add` writes a top-level collection and an armoury row is nested
+  inside `armouries[].rows` — so there is now an `addArmouryRow` op, applied in
+  a second pass because `dataset.armouries` does not exist when the layers run.
+  Ops deferred to that pass are counted, and the build throws if one is lost
+  between the two.
+
+  Their **currency** did not need a maintainer ruling, unlike the Grail Strain
+  costs. The Dispatch prints the glyph and the extraction drops it, but these
+  rows are added to tables the base rulebook already prints, and all 51 priced
+  rows in the rulebook's Glory Items Tables are in Glory with no exceptions —
+  so the currency is read off the table the row joins.
+
+  **The Amalgam ability list is settled, at the printed page.** This was
+  recorded as an open decision — the Dispatch's list omits `Six-armed
+  Monstrosity` and `Strong-ish`, and dropping them meant asserting the PDF
+  extraction had captured a complete list. It had. The Dispatch PDF is a
+  release asset (`data-sources/dispatch/SOURCES.json`); it was fetched,
+  rendered and read. The page shows the complete entry — heading, statline
+  table, Battlekit, five abilities, the Keyword row and the Gluttonous Arsenal
+  box — and neither ability is on it, nor is STRONG in the Keyword row.
+
+  Both are removed now, by a new `removeAbility` op. Keeping them had produced
+  an entry that contradicted itself: the Amalgam may carry nothing but its
+  Gluttonous Arsenal and one Vile Corpus, while `Strong-ish` let it wield two
+  HEAVY weapons and asserted a Keyword the same layer removes.
+
+  **The Vile Corpus is transcribed, and there is only one of it.** An earlier
+  note here claimed the extraction had dropped entries, reasoning from *"each
+  Amalgam in a Warband must have a different Vile Corpus"* — a rule requiring
+  difference cannot be met by a list of one. **That reasoning was wrong.** The
+  rendered page shows a single bullet in the Vile Corpus Abilities box and then
+  the next section; the rule is satisfiable while only one exists, and reads as
+  forward-looking in a Public Beta. `Bombardment Horde`, 20 Ducats, is now an
+  option on the Amalgam.
+
+  **Costs in the Dispatch have to be read from the rendered page.** The
+  currency glyphs are drawn from a Type3 font and are not in the PDF's text
+  stream at all, so no extractor recovers them — pdf-parse and PyMuPDF both
+  yield a bare number, and this is not a defect in either. A crown in a filled
+  disc is Ducats; an eight-pointed sun in an outlined disc is Glory. That is
+  how the Vile Corpus cost was confirmed, and it independently confirms the two
+  Glory Items, whose currency had been derived from the tables they join.
+
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.
@@ -309,8 +364,16 @@ be the worse error.
 ### Also outstanding in Phase 2
 
 - **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
-  Collections* extends the faction armoury; nothing reads that yet, so
+  Collections* extends the faction armoury; nothing reads the grant yet, so
   `wargear-not-stocked` is advisory rather than blocking (2.4).
+
+  The rule itself is now **read and shown**. It had been missing from the app
+  entirely — the book prints eight special rules for The House of Wisdom and
+  the app carried seven — because a rule the catalogue also models
+  mechanically gets a `selectionEntryGroup` of its own and its Ability profile
+  goes on the group rather than on the Variant entry. The Kingdom of Alba's
+  *Cold Steel* was missing for the same reason. Both are read now; what
+  remains is the grant's *effect* on the armoury, which is the 2.4 item above.
 ### 2.5 — the campaign economy
 
 "Budget presets" was the wrong name for this. The rulebook keeps **three**
@@ -588,7 +651,8 @@ Two real bugs surfaced while restyling, both fixed with the same parser:
 
 ### The Codex's rules prose was written, not extracted
 
-The Codex's first tab shipped `src/data/officialCoreRules.ts`: eight chapters
+The Codex's first tab shipped a hand-written `officialCoreRules.ts` under
+`src/data/` — since deleted: eight chapters
 of hand-written Core and Comprehensive Rules. It was wrong about the three
 things a player looks up mid-game — Initiative went to the highest D6 roll
 rather than the fewest models, the Success table's failure band read `1-6` when
@@ -941,7 +1005,7 @@ so a warband can be drafted before the box ships. Sources so far:
 
 | # | Task |
 |---|---|
-| 5.1 | Archive each article to `data-sources/preview/carcass-front/` with fetch date and URL — articles get edited and deleted |
+| 5.1 | Archive each article to a `preview/carcass-front/` directory under `data-sources/` with fetch date and URL — articles get edited and deleted. **Never created: this phase was superseded by the real release.** |
 | 5.2 | Widen the search: other previews, designer commentary, event reports |
 | 5.2a | **Check what is already published first.** Two of the three linked articles name things that already exist in the current Warbands book — `Heretic Naval Raiders` and `Procession of the Sacred Affliction` are both existing Warband Variants with published special rules. Sort genuinely-new Carcass Front content from reworks of existing entries before predicting anything; published rules go in a normal layer, not the speculative one. |
 | 5.3 | Transcribe to `carcass-front.layer.json` with `status: 'speculative'`, per-field citation and `stated`/`inferred` confidence |
@@ -975,7 +1039,7 @@ skipped. Phases 0 and 4 can be picked up any time.
 
 | # | Decision | Status |
 |---|---|---|
-| 1 | Rulebook PDFs | **Partly resolved.** Changelog 1.0.2, Rules Commentaries 1.0.2 and All Out War are committed. **Still needed: Core Rulebook + Warbands of Trench Crusade** — the two that unblock statline verification. Delivery via GitHub release asset (verified reachable) or split uploads. |
+| 1 | Rulebook PDFs | **Closed.** All six are committed under `data-sources/rulebook/` and extracted to text beside them, the Core Rulebook (`trench-crusade-digital-rulebook.pdf`) and Warbands of Trench Crusade included. Statline verification is no longer blocked on an asset. |
 | 2 | Saved warbands | **Closed.** No general migration. One warband is preserved (1,320-Ducat Iron Sultanate *House of Wisdom*, heavy lore); the rest are discarded. Its narrative fields are carried over verbatim and it becomes a regression fixture. See [`RULESET-MODEL.md`](RULESET-MODEL.md) §8. |
 | 3 | Licensing | **Closed.** Not a blocker; sources stay in `data-sources/`. |
 | 4 | Fabricated data | **Closed.** Delete what is verifiably invented — but verify each file first rather than tossing wholesale. All Out War data turned out to be correct; see [`FEATURES.md`](FEATURES.md). |

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { limitAccountRoute } from '@/lib/api/rateLimit';
 import { badRequest, handle, notFound } from '@/lib/api/http';
 import { readAndParse, id, text, count } from '@/lib/api/parse';
 import {
@@ -74,6 +75,18 @@ export async function GET(req: NextRequest) {
       joining is a separate, explicit act.
     */
     if (code) {
+      /*
+        Limited by IP. An invite code is short enough to guess given enough
+        attempts, and this is the one read that needs no membership — so it is
+        the surface that would be walked.
+
+        No subject: the code names a campaign the caller may have no
+        relationship with, and keying on it would let anyone lock a real
+        invite out of use.
+      */
+      const limited = limitAccountRoute('invite', req.headers, null);
+      if (limited) return limited;
+
       const campaign = await prisma.campaign.findUnique({
         where: { inviteCode: code },
         select: PREVIEW,

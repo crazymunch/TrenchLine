@@ -63,6 +63,56 @@ conditional modifiers.
 `npm run rules:verify` reports what changed. Bumping the pinned SHA is a
 deliberate, reviewed commit.
 
+### What `rules:crosscheck` reports, and what each line means
+
+`npm run rules:crosscheck` compares every unit in the generated dataset against
+these catalogues on Movement / Ranged / Melee / Armour. Its buckets are not
+interchangeable, and the distinction is the whole value of the report:
+
+| line | means |
+|---|---|
+| `MISMATCHED` | The catalogue and the app disagree, and no layer says why. A defect. |
+| `explained by a layer` | They disagree because an erratum or the Carcass Front layer changed it on purpose. Listed apart so an intentional change is never re-investigated as drift. |
+| `unmatched` | The app says a unit came from a named `.cat` and that file has no such entry. Also a defect: a wrong name, or an entry that has gone. |
+| `outside the catalogue` | The unit came from a book BattleScribe does not carry. A fact about coverage, named per source and per unit. |
+| `no source recorded` | Nothing says where the unit came from. The state the pipeline exists to end. |
+
+**Exit code:** 0 for a statline disagreement — deciding one needs the book, and
+that gate is `rules:verify`'s, per the restructure plan. Non-zero for
+`unmatched` or `no source recorded`, which are not questions about the game but
+about the app's own bookkeeping, are answerable without opening a rulebook, and
+are both currently zero. Not wired into CI here: which checks gate the build is
+a policy decision the plan assigns to `rules:verify`.
+
+**`unmatched` and `outside the catalogue` used to be one bucket**, and that hid
+things in both directions. Fifteen Carcass Front models sat under "no catalogue
+entry of this name" as if the app had invented them, while a genuine naming
+error would have been the sixteenth line in that list. Splitting them on the
+unit's own `sourceFile` — the pipeline already records it — took `unmatched` to
+0 and made the nine genuinely uncovered models visible **by name**, which is
+what lets a reader spot one the catalogue does in fact carry.
+
+Two matching rules, both narrower than they look:
+
+- **Five Carcass Front models are aliased to their catalogue entries.** The
+  book reprints models the catalogues already have under its own warband's
+  names — a Procession of the Sacred Affliction `Lazarist Castigator` is the
+  Trench Pilgrims `Castigator`. The pairing is asserted only where the two
+  statlines were confirmed identical at the four compared fields; if the book
+  ever restates one differently, the check reports a mismatch, which is the
+  signal wanted. No parent-faction relationship is assumed — the Carcass Front
+  parser records none, and inferring one from overlapping models would be a
+  claim the source does not make.
+- **A name-only fallback may now match several agreeing candidates.** It used
+  to demand a globally unique name, because "Guard Dog" exists in both
+  `Mercenaries.cat` and `New Antioch.cat` with different statlines and picking
+  blind reported four mismatches that were the check's own bookkeeping. But
+  uniqueness is stricter than its reason: candidates that agree on every
+  compared field offer nothing to choose wrongly. `Wretched` is the case —
+  identical profiles in `Heretic Legion.cat` and `Court of the Seven-Headed
+  Serpent.cat`, and the app's copy went unchecked against both for want of a
+  tie-break that was never needed.
+
 ## 2. Official rulebooks — cross-check and prose
 
 **Source:** <https://www.trenchcrusade.com/rules/> (all PDFs linked there)
@@ -75,8 +125,8 @@ All five committed:
 |---|---|---|
 | `warbands-of-trench-crusade.pdf` | 186 | **The statline authority.** 48 warband entries, each with recruitment limits, Ducat cost, full statline, keywords and abilities. Machine-parseable — see below. |
 | `trench-crusade-digital-rulebook.pdf` | 197 | Core + Comprehensive rules, keyword glossary, D66 trauma/exploration/skills tables, scenarios. |
-| `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — transcribes directly to a layer. Defines 12 keywords and rewrites core rules (Retreat, Line of Sight, Terrain Types, Model Placement). |
-| `rules-commentaries-1.0.2.pdf` | 8 | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
+| `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — a record of what changed from 1.0.1, **not** a delta to apply. The digital rulebook above is already 1.0.2 and carries every rewrite it lists, so nothing transcribes it to a layer. Kept as evidence: it is where the Keyword completeness check reads the expected list from. |
+| `rules-commentaries-1.0.2.pdf` | 8 | **Official FAQ**, 51 entries. Not layer material: it answers questions about the rules rather than changing them. Parsed by `scripts/lib/parse-commentaries.mjs` into `dataset.commentaries` and shown in the Codex under **Rules FAQ**. |
 | `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
 
 ### The Warbands book is parseable, not just searchable
@@ -150,6 +200,38 @@ bottom-to-top). The current `scripts/extract-pdf.mjs` output does not have this
 problem on these documents — the Warbands book parses cleanly. Verification
 still treats an `unconfirmed` result as non-fatal, because prose sections of the
 Digital Rulebook are less regular than the warband entry tables.
+
+### Reading the Rules Commentaries
+
+Attribution is the document's own. Every question opens with a label —
+`RULES Q1`, `KEYWORDS Q4`, `MISC. Q7` — and that label IS the section, so the
+parser detects no headings at all.
+
+That matters because heading detection is where this class of parser goes
+wrong. In this document headings **stack**: `Faction Lists Questions` sits above
+`Trench Pilgrims`, which sits above the section's first question. And the
+running head `Rules Commentaries 1.0.2` looks like a heading on every page. A
+label the document repeats on every single entry cannot drift from the entry it
+labels.
+
+Two failures the parser is built against, both of which happened while writing
+it:
+
+- **`MISC.` has a full stop in its label.** A character class without one
+  matches 44 of the 51 questions and reports no error — the silent
+  under-read that is worse than a crash.
+- **A section heading sits between one section's last answer and the next
+  section's first question.** An answer that keeps reading swallows it, and
+  ships "It has no effect on a Blast that targets a point on the ground. The
+  Cult of the Black Grail" as the official answer. That is the sidebar bleed
+  the D66 tables had, in a different document — so the same shape check backs
+  it up: a short capitalised fragment dangling after the answer's last full
+  stop throws, without consulting any list of heading names.
+
+The parser also refuses a near-empty read, throws on a question with no answer,
+and throws when two answers run together. Extraction spacing is tidied — the
+PDF's justified text leaves `itself ?` and a stray full stop — which changes no
+word.
 
 ## 3. Trench Dispatch — the patch layer
 

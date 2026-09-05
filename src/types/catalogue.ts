@@ -936,6 +936,37 @@ export interface TraumaRow {
  * (1 is not a result on 2D6), and read Morale off "50% of starting models"
  * rather than the book's "half the models in your Warband, rounded up".
  */
+/**
+ * One question and answer from the official Rules Commentaries.
+ *
+ * `label` is the document's own — `RULES Q1`, `MISC. Q7` — and is what a
+ * player would quote to an opponent across a table, so it is carried rather
+ * than reduced to an index. `section` is derived from that same label, not
+ * from the heading the entry sits under: headings stack in this document
+ * (`Faction Lists Questions` above `Trench Pilgrims` above the first
+ * question), and a label repeated on every entry cannot drift from it.
+ */
+export interface RulesCommentary {
+  id: string;
+  section: string;
+  label: string;
+  question: string;
+  answer: string;
+}
+
+export interface BattleMarker {
+  /** `BLOOD MARKERS`, as the book sets it. */
+  name: string;
+  id: string;
+  /** The printed limit, or `null` where the book states none. */
+  cap: number | null;
+  /** Who may spend them — the book states this, and the two pools differ. */
+  spentBy: 'opponent' | 'controller';
+  page: number;
+  /** The published section, quoted rather than paraphrased. */
+  rules: string;
+}
+
 export interface CoreRuleSection {
   /** Slugified title, stable across builds. */
   id: string;
@@ -1068,9 +1099,34 @@ export interface Dataset {
   carryAllowances?: {
     raw: string;
     model: string;
-    /** Named by the sentence itself — nothing about Formulae written here. */
+    /**
+     * Named by the sentence itself — nothing about Formulae written here.
+     *
+     * Empty where the entry states the allowance unconditionally, in which
+     * case it belongs to the MODEL and `model` is what selects it. A
+     * Desecrated Saint's several arms are not something another model can
+     * acquire by holding the right Formula.
+     */
     requires: string[];
+    /**
+     * What the entry does with these combinations.
+     *
+     * `permitted` is a ceiling only — "It can have up to three 1-Handed Melee
+     * Weapons or…". `required` and `innate` also state a FLOOR: a Scripture
+     * Guardian "must have either two 1-Handed Melee Weapons or one 2-Handed
+     * Melee Weapon", and an Anchorite Shrine "is armed with" its two. All
+     * three cap what the model may carry and the validator enforces that
+     * much; the floor is recorded here and reported by the build, not
+     * enforced — see `docs/RULESET-MODEL.md` §7d.
+     */
+    modality: 'permitted' | 'required' | 'innate';
     bySection: Record<string, Record<string, number>[]>;
+    /**
+     * The entry forbids everything else — "It cannot have any other
+     * Battlekit", which the Desecrated Saint's entry says. Recorded and
+     * reported rather than enforced, for the same reason as the floor.
+     */
+    noOtherBattlekit?: boolean;
     /** The section a Shield takes a slot from, where the entry says so. */
     shieldReplaces?: string;
     /** False where the entry forbids using Shield Combo. */
@@ -1106,6 +1162,31 @@ export interface Dataset {
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
   /**
+   * The battle marker pools — BLOOD and BLESSING.
+   *
+   * Play Mode capped Blood with a literal `Math.min(6, …)` in the store and
+   * had no Blessing pool at all. The two are not mirror images and the book
+   * says so: Blood is capped at 6 and spent by your OPPONENT, Blessing has no
+   * printed cap and is spent by YOU. `cap: null` means the book states none,
+   * which is a fact about the game rather than a gap in the reading.
+   */
+  markers?: BattleMarker[];
+  /**
+   * The official Rules Commentaries — the game's own FAQ.
+   *
+   * The PDF was fetched, extracted and committed, `SOURCES.json` recorded its
+   * role as "feeds the Codex and rules-engine edge cases", and nothing in the
+   * tree ever opened it. Several of its 51 answers settle things the app has
+   * to get right: whether a model is within X" of itself, how a 30x60mm base
+   * is measured for a rule that cares about 40mm, who rolls an Injury Roll
+   * that comes from something other than an attack.
+   *
+   * Optional because a ruleset built without the extract genuinely has no FAQ,
+   * which is different from one we failed to read — and the parser throws
+   * rather than return an empty list if the file is there and unreadable.
+   */
+  commentaries?: RulesCommentary[];
+  /**
    * Hell on Earth: the Weather Events table, and the procedure for using it.
    *
    * Optional by the module's own words — "you and your opponent(s) **may**
@@ -1136,6 +1217,16 @@ export interface Dataset {
   visionCards: VisionCard[];
   /** The campaign economy's published numbers, derived from the rulebook. */
   campaign: {
+    /**
+     * The six Campaign Phase Steps, in the order the book states them.
+     *
+     * "To carry out a Campaign Phase you must go through the following
+     * Campaign Phase Steps in the order that they appear below". The order
+     * carries a rule: Reinforcements comes BEFORE Exploration, and taking it
+     * costs you both Exploration and the Quartermaster — which is why the
+     * app's four-step post-battle wizard cannot express the choice.
+     */
+    phaseSteps?: { name: string; description: string }[];
     /** The Warband Threshold Table: game -> Force cost cap and model cap. */
     thresholds: { game: number; threshold: number; fieldStrength: number }[];
     /** What a new warband recruits on. 700, read from the faction entries. */

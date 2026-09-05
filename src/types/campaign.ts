@@ -81,6 +81,8 @@ export interface TerritoryNode {
   id: string;
   name: string;
   type: string;
+  /** The server version this copy was last known to match — see `Campaign.version`. */
+  version?: number;
   controlledByWarbandId?: string;
   controlledByPlayerName?: string;
   /**
@@ -117,8 +119,45 @@ export interface TerritoryNode {
   scenario?: string;
 }
 
+/**
+ * The deviations a campaign has chosen, one field per rule.
+ *
+ * Deliberately not a free-text bag: a house rule the app ACTS on has to be
+ * something the app can read, and a rule it merely displays belongs in the
+ * chronicle. Each field names the published rule it relaxes.
+ */
+export interface CampaignHouseRules {
+  /**
+   * Taking Reinforcements does not cost this campaign its Exploration and
+   * Quartermaster Steps.
+   *
+   * The book states the cost unconditionally — *"if you do so you will not be
+   * able to Explore or visit the Quartermaster, so it is not a decision to be
+   * taken lightly"* — and the app lets a player through either way. This only
+   * decides whether the wizard presents that as a rule being set aside or as
+   * the way this group plays.
+   */
+  reinforcementsKeepExploration?: boolean;
+}
+
 export interface Campaign {
   id: string;
+  /**
+   * The id the SERVER knows this campaign by, once it knows it at all.
+   *
+   * `id` is minted locally — `camp-<timestamp>` — and always has been, so it
+   * is not something the API would recognise. Sync operations name a campaign
+   * the server can find, so they are queued only for a campaign that has one
+   * of these, and a campaign without one is local and says so.
+   *
+   * Nothing sets it yet. `POST /api/campaigns` creates a campaign with four
+   * fixed territories of its own and no framework, so it cannot yet represent
+   * a campaign this app made — see the "first sync" section of
+   * `docs/CAMPAIGN-SYNC.md` for what that needs. This field exists so the gap
+   * is visible in the type rather than showing up as every campaign failing
+   * to sync against an id the server never issued.
+   */
+  cloudId?: string;
   name: string;
   inviteCode: string;
   adminName: string;
@@ -138,6 +177,23 @@ export interface Campaign {
   currentGame?: number;
   /** Set only where a campaign deviates from the published Threshold Table. */
   thresholdOverride?: number;
+  /**
+   * Where this group deliberately plays something differently from the book.
+   *
+   * Set by the organiser, and labelled as theirs wherever it changes what the
+   * app says — the same distinction territory perks draw between a rule the
+   * books publish and one the campaign wrote. Absent on every campaign that
+   * plays it straight, which is most of them.
+   */
+  houseRules?: CampaignHouseRules;
+  /**
+   * The server version this copy was last known to match.
+   *
+   * A sync operation states the version it was made AGAINST, so the client has
+   * to remember one. Absent on a campaign that has never been pushed, which is
+   * the same as 1: that is where a server row starts.
+   */
+  version?: number;
   maxWarbandDucats: number;
   gloryVictoryThreshold: number;
   members: CampaignMember[];

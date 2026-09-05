@@ -15,12 +15,13 @@
  * 2,000 lines of *behaviour*, not of the type.
  */
 import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
-import { Campaign, CampaignFramework, CasualtyRecord, TerritoryNode } from '../types/campaign';
+import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import type { Dataset } from '../types/catalogue';
+import type { Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
+import type { CampaignSyncState } from '../services/campaignSync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
 
@@ -99,6 +100,32 @@ export interface AppState {
    * `services/sync.ts`.
    */
   sync: SyncState;
+
+  /**
+   * What the CAMPAIGN's cloud copy is doing. Same idea as `sync` above, one
+   * state richer: a campaign is pushed as operations against a version, so
+   * "the server moved on under this edit" is an outcome a warband push cannot
+   * produce. See `services/campaignSync.ts`.
+   */
+  campaignSync: CampaignSyncState;
+  /**
+   * Fetch the campaign, then push everything queued for it.
+   *
+   * In that order, and it stops if the fetch fails: an offline device that
+   * pushes blind overwrites a newer cloud copy with an older one, and a fetch
+   * that cannot be made is not permission to write.
+   */
+  syncCampaignWithCloud: () => Promise<void>;
+  /**
+   * Take the campaign's copy for every conflicting edit this device made.
+   *
+   * The one resolution the app offers, and deliberately the one that cannot
+   * invent anything: the server's value is adopted locally and the operation
+   * leaves the queue. "Keep mine" would mean re-issuing the edit over somebody
+   * else's, which is a decision with a person on the other end of it, so it is
+   * not offered until there is a screen that says whose change it overwrites.
+   */
+  discardCampaignConflicts: () => void;
 
   // Warband Management
   warbands: Warband[];
@@ -186,6 +213,16 @@ export interface AppState {
   resetMatchState: () => void;
   updateUnitWounds: (warbandId: string, unitId: string, delta: number) => void;
   updateUnitBloodMarkers: (warbandId: string, unitId: string, delta: number) => void;
+  updateUnitBlessingMarkers: (warbandId: string, unitId: string, delta: number) => void;
+  /**
+   * The battle marker pools, from the rulebook.
+   *
+   * Empty until `hydrateCatalogs` runs, like the catalogs above and for the
+   * same reason: the cap used to be a literal `6` in the match slice, so a
+   * rule the book states was a number in the app's source. Empty means "not
+   * loaded", and an unloaded cap is not enforced rather than guessed at.
+   */
+  markers: BattleMarker[];
   setUnitStatus: (warbandId: string, unitId: string, status: 'Active' | 'Downed' | 'Out of Action') => void;
   toggleUnitActed: (warbandId: string, unitId: string) => void;
 
@@ -241,6 +278,15 @@ export interface AppState {
    * wrote, so a caller can say why nothing happened.
    */
   setTerritoryPerk: (territoryId: string, perk: string) => boolean;
+  /**
+   * Record a house rule the organiser has chosen for this campaign.
+   *
+   * Returns false where there is no campaign to write to, the same shape as
+   * `setTerritoryPerk`. Every rule it can set is a documented deviation from
+   * a published one — see `CampaignHouseRules`.
+   */
+  setCampaignHouseRule: <K extends keyof CampaignHouseRules>(
+    rule: K, value: CampaignHouseRules[K]) => boolean;
   logCampaignMatch: (
     p1WarbandId: string,
     p2WarbandId: string,

@@ -19,7 +19,7 @@ import type { TerritoryNode } from '@/types/campaign';
 
 vi.mock('@/services/storage', async (orig) => {
   const actual = await orig<typeof import('@/services/storage')>();
-  return { ...actual, storage: { ...actual.storage, saveCampaign: vi.fn(), syncCampaignToCloud: vi.fn() } };
+  return { ...actual, storage: { ...actual.storage, saveCampaign: vi.fn() } };
 });
 
 const territories = (): TerritoryNode[] => useStore.getState().campaign.territories;

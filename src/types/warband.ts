@@ -55,6 +55,16 @@ export interface ActiveUnit {
   currentWounds: number;
   maxWounds: number;
   bloodMarkers: number;
+  /**
+   * BLESSING MARKERS.
+   *
+   * Optional because every warband saved before this existed has none, and a
+   * missing pool and an empty one are the same thing here. Not a mirror of
+   * `bloodMarkers`: the book caps Blood at 6 and states no cap for Blessing,
+   * and it is the opponent who spends Blood while the controller spends
+   * Blessing — see `dataset.markers`.
+   */
+  blessingMarkers?: number;
   status: 'Active' | 'Downed' | 'Out of Action';
   hasActedThisTurn: boolean;
   notes?: string;

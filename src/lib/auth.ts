@@ -3,7 +3,10 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from './prisma';
-import { adminEmails, requireEnv } from './env';
+import { requireEnv } from './env';
+import { isAdminUserId, emailGrantsAdmin } from './adminRole';
+import { authRequiresVerification } from './mail';
+import { consume, clientIp } from './api/rateLimit';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -30,10 +33,7 @@ import bcrypt from 'bcryptjs';
  * auditable role on the user record is what finally retires this.
  */
 export function isUserAdmin(email?: string | null): boolean {
-  if (!email) return false;
-  const allowed = adminEmails();
-  if (!allowed.length) return false;
-  return allowed.includes(email.toLowerCase().trim());
+  return emailGrantsAdmin(email);
 }
 
 /**
@@ -84,6 +84,7 @@ export const MIN_PASSWORD_LENGTH = 10;
  */
 export async function verifyCredentials(
   credentials: Record<string, string> | undefined,
+  req?: { headers?: Headers | Record<string, string | string[] | undefined> },
 ): Promise<{ id: string; name: string | null; email: string | null; image: string | null } | null> {
   const email = credentials?.email?.toLowerCase().trim();
   const password = credentials?.password;
@@ -91,6 +92,27 @@ export async function verifyCredentials(
   // Both are required. A missing password is a failed sign-in, never a reason
   // to skip the check.
   if (!email || !password) return null;
+
+  /*
+    Rate-limited before the password is compared.
+
+    This is the endpoint an attacker walks a password list through, and bcrypt
+    makes each attempt expensive for the SERVER as well as the attacker — so an
+    unlimited sign-in is a CPU exhaustion surface as much as a guessing one.
+
+    Two buckets, both on the IP: one for the address alone, one for the address
+    paired with the caller. Never on the address by itself — a bucket a
+    stranger can fill is a way to lock a real user out of their own account.
+
+    NextAuth hands `authorize` a request-like object whose headers may be a
+    plain record rather than a `Headers`, so both are accepted. A caller with
+    no headers at all — a direct unit-test call — is limited by a constant key
+    rather than skipped, so the limit cannot be dodged by omitting them.
+  */
+  const headers = toHeaders(req?.headers);
+  const ip = clientIp(headers);
+  if (!consume('signIn', ip).ok) return null;
+  if (!consume('signIn', ip, email).ok) return null;
 
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -106,7 +128,46 @@ export async function verifyCredentials(
 
   if (!(await bcrypt.compare(password, user.password))) return null;
 
+  /*
+    The password is right. Is the address proved?
+
+    Checked AFTER the password, on purpose. Checked before, this endpoint would
+    answer differently for a registered-but-unverified address than for one
+    with no account at all — the same membership oracle registration was
+    changed to close, moved one route over.
+
+    Only where the deployment can actually send mail. `authRequiresVerification`
+    is tied to the transport for the reason in `mail.ts`: demanding proof that
+    nobody can produce locks every account out, including the maintainer's.
+
+    OAUTH IS UNTOUCHED. This function is the credentials path only. Google owns
+    that proof for a Google account, and NextAuth's adapter writes
+    `emailVerified` itself — so an OAuth user is not asked to prove twice.
+  */
+  if (!user.emailVerified && authRequiresVerification()) return null;
+
   return { id: user.id, name: user.name, email: user.email, image: user.image };
+}
+
+/**
+ * NextAuth's request headers, as a `Headers`.
+ *
+ * The object handed to `authorize` is not a `NextRequest`: depending on the
+ * runtime its `headers` is either a real `Headers` or a plain record. Both are
+ * normalised here so the rate limiter has one shape to read.
+ */
+function toHeaders(
+  raw: Headers | Record<string, string | string[] | undefined> | undefined,
+): Headers {
+  if (!raw) return new Headers();
+  if (typeof (raw as Headers).get === 'function') return raw as Headers;
+
+  const out = new Headers();
+  for (const [key, value] of Object.entries(raw)) {
+    if (typeof value === 'string') out.set(key, value);
+    else if (Array.isArray(value) && value[0]) out.set(key, value[0]);
+  }
+  return out;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -132,7 +193,11 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email', placeholder: 'commander@example.org' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize: verifyCredentials,
+      /*
+        Both arguments. NextAuth passes the request second, and that is where
+        the caller's address comes from for the rate limit above.
+      */
+      authorize: (credentials, req) => verifyCredentials(credentials, req as never),
     }),
   ],
   callbacks: {
@@ -154,12 +219,61 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) token.sub = user.id;
       /*
-        Resolved on every call rather than only at sign-in, so that removing an
-        address from `TRENCHLINE_ADMIN_EMAILS` takes effect on the next request
-        instead of when the last session happens to expire.
+        Resolved on every call rather than only at sign-in, so a revocation
+        takes effect on the next request instead of when the last session
+        happens to expire.
+
+        Read from the USER RECORD now, by id, not from the token's email: the
+        grant is `User.role` and the email list only still answers for a user
+        nobody has decided about yet — see `adminRole.ts`. By id, so an address
+        change confers and removes nothing, and a deleted account cannot keep
+        authority through a token that outlives it.
+
+        A lookup failure is not an admin. This runs on every authenticated
+        request, so a database blip must fail closed rather than either
+        granting authority or throwing the caller out of their session.
       */
-      token.isAdmin = isUserAdmin((user?.email ?? token.email) as string | null | undefined);
+      const userId = (user?.id ?? token.sub) as string | undefined;
+      try {
+        token.isAdmin = await isAdminUserId(userId);
+      } catch {
+        token.isAdmin = false;
+      }
       token.role = token.isAdmin ? 'ADMIN' : 'USER';
+
+      /*
+        The session epoch, which is how one user's tokens are revoked.
+
+        A password reset increments `User.sessionEpoch`. A token carrying an
+        older one is refused here — so resetting a password because someone
+        else is in the account actually removes them, instead of leaving their
+        JWT working until it expires.
+
+        The alternative, rotating `NEXTAUTH_SECRET`, signs out every account on
+        the deployment to fix one.
+
+        On a fresh sign-in the epoch is stamped. On a refresh it is compared;
+        a mismatch clears the subject, which is what makes the session invalid
+        rather than merely unprivileged. A lookup failure changes nothing —
+        this runs on every request and must not sign people out over a blip.
+      */
+      try {
+        if (userId) {
+          const row = await prisma.user.findUnique({
+            where: { id: userId }, select: { sessionEpoch: true },
+          });
+          if (!row) {
+            delete token.sub;
+          } else if (user) {
+            token.epoch = row.sessionEpoch;
+          } else if (token.epoch !== row.sessionEpoch) {
+            delete token.sub;
+            token.isAdmin = false;
+            token.role = 'USER';
+          }
+        }
+      } catch { /* Leave the token as it is; a blip is not a sign-out. */ }
+
       return token;
     },
   },

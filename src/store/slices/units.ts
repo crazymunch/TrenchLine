@@ -72,6 +72,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
         currentWounds: maxHp,
         maxWounds: maxHp,
         bloodMarkers: 0,
+        blessingMarkers: 0,
         status: 'Active',
         hasActedThisTurn: false
       };

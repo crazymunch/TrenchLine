@@ -171,15 +171,86 @@ function parseRollTable(lines, heading, endHeadings) {
       if (!t) continue;
       if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(t)) continue;
       if (/^\d+\s+Campaign Rules-\s+Trench Crusade$/.test(t)) continue;
-      if (/^(Campaign|Games|Phase|Patrons|Trauma Step|Exploration Step|Quartermaster|Step|Reinforcements|Glory Item|Cartulary|Introduction|The World|in Flames|Core Rules|Comprehensive|Rules|Keywords|Terrain|Battlekit|Scenarios|Promotions &|Experience Step)$/.test(t)) continue;
+      if (SIDEBAR.test(t)) continue;
       current.text.push(t);
     }
   }
   if (current) rows.push(current);
 
   if (!rows.length) throw new Error(`parse-campaign: "${heading}" produced no rows.`);
-  return rows.map((r) => ({ roll: r.roll, name: r.name, description: r.text.join(' ').replace(/\s+/g, ' ').trim() }));
+
+  const out = rows.map((r) => ({
+    roll: r.roll, name: r.name, description: r.text.join(' ').replace(/\s+/g, ' ').trim(),
+  }));
+
+  /*
+    A rule that has swallowed the sidebar, detected WITHOUT consulting the list.
+
+    The line filter above missed `Glory Item Tables` for months because the
+    inline list said `Glory Item` and was anchored — so the Patron Skill row at
+    12 in all four Skills tables shipped reading "…offered by your Patron.
+    Glory Item Tables".
+
+    Checking the finished text against that same list would be circular: it can
+    only ever catch a label already in it, which is the one case that needs no
+    catching. So the SHAPE is what is checked. Sidebar bleed is a short,
+    capitalised fragment left dangling after the rule's last full stop, with no
+    terminator of its own — which is not how a rule ends, whatever the chapter
+    happens to be called.
+  */
+  const trailing = (text) => {
+    const stop = text.lastIndexOf('. ');
+    return stop < 0 ? '' : text.slice(stop + 2).trim();
+  };
+  const bled = out.filter((r) => {
+    const tail = trailing(r.description);
+    return tail.length > 0 && tail.length < 40
+      && !/[.!?]$/.test(tail)
+      && /^[A-Z]/.test(tail)
+      && tail.split(/\s+/).length <= 4;
+  });
+  if (bled.length) {
+    throw new Error(
+      `parse-campaign: "${heading}" rows ending in a dangling capitalised ` +
+      `fragment, which is how the page sidebar bleeds into a rule: ` +
+      `${bled.map((r) => `${r.roll} ${r.name} (…"${trailing(r.description)}")`).join(', ')}.`);
+  }
+
+  return out;
 }
+
+/**
+ * The sidebar's list of chapter names, which is not table content.
+ *
+ * Every page of the rulebook carries this strip down its edge, and the
+ * extraction interleaves it with the body — so a table row that runs to the
+ * end of a page picks it up as rules text.
+ *
+ * The list used to be written inline with `Glory Item` in it, anchored `^...$`
+ * — and the sidebar's actual line is `Glory Item Tables`, which that does not
+ * match. So the Patron Skill row at 12 in ALL FOUR Skills tables shipped
+ * reading "…one of the Skills offered by your Patron. Glory Item Tables".
+ *
+ * Written out one entry per line, because the failure was a two-word entry
+ * hiding inside a forty-alternative regex nobody was going to read.
+ */
+const SIDEBAR = new RegExp(`^(${[
+  'Campaign', 'Games', 'Phase', 'Patrons',
+  'Trauma Step', 'Exploration Step', 'Quartermaster', 'Step', 'Reinforcements',
+  'Promotions &', 'Experience Step',
+  'Glory Item Tables', 'Glory Item', 'Cartulary',
+  'Introduction', 'The World', 'in Flames',
+  'Core Rules', 'Comprehensive', 'Rules', 'Keywords', 'Terrain', 'Battlekit',
+  'Scenarios',
+  /*
+    A stray two-letter mark, once, on the Legendary Exploration page — between
+    the last rule and the sidebar strip. Not an abbreviation the book uses
+    anywhere else: it appears exactly once, alone on its line, and the rule
+    before it ends in a full stop. Found by the shape check below rather than
+    by reading the page, which is the point of having one.
+  */
+  'VM',
+].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})$`);
 
 /**
  * The Exploration Sequence, as the book numbers it.
@@ -346,6 +417,72 @@ export function parseSkillsTables(src = RULEBOOK_TXT) {
   return out;
 }
 
+/* ----------------------------------------------------- campaign phase steps */
+
+/**
+ * The Campaign Phase Steps, in the order the book states.
+ *
+ * *"To carry out a Campaign Phase you must go through the following Campaign
+ * Phase Steps in the order that they appear below"* — and then SIX of them.
+ * The app's post-battle wizard has four, two of which ("Scavenge",
+ * "Chronicle") are not names the book uses, and it omits the Reinforcements
+ * and Quartermaster Steps entirely.
+ *
+ * The order is not decoration. Reinforcements comes BEFORE Exploration and
+ * taking it costs you both the Exploration and the Quartermaster Steps — *"if
+ * you do so you will not be able to Explore or visit the Quartermaster, so it
+ * is not a decision to be taken lightly"*. A sequence that puts those steps in
+ * a different order, or leaves them out, cannot express that trade at all.
+ *
+ * Derived so the app has something true to show while the wizard is decided.
+ */
+export function parseCampaignPhaseSteps(src = RULEBOOK_TXT) {
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+
+  const at = lines.findIndex((l) => /^CAMPAIGN PHASE STEPS\s*$/.test(l.trim()));
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: no CAMPAIGN PHASE STEPS heading in the rulebook. '
+      + 'These are the six steps the Campaign Phase runs in order, and nothing '
+      + 'else in either source states them.');
+  }
+
+  const steps = [];
+  let current = null;
+  for (let i = at + 1; i < Math.min(at + 40, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    /* The section ends at the next heading — `Disbanding a Warband` follows. */
+    if (/^[A-Z][A-Za-z’' ]+$/.test(t) && !t.startsWith('**') && steps.length) break;
+
+    const m = /^\*\*\s*(.+?)\s*:\s*(.*)$/.exec(t);
+    if (m) {
+      if (current) steps.push(current);
+      /* `(Optional)` is part of what the step IS, so it is kept in the name. */
+      current = { name: m[1].trim(), description: m[2].trim() ? [m[2].trim()] : [] };
+    } else if (current) {
+      if (SIDEBAR.test(t)) continue;
+      current.description.push(t);
+    }
+  }
+  if (current) steps.push(current);
+
+  const out = steps.map((s) => ({
+    name: s.name,
+    description: s.description.join(' ').replace(/\s+/g, ' ')
+      /* The book's cross-references point at chapters this has no link for. */
+      .replace(/\s*\(▶[^)]*\)/g, '').trim(),
+  }));
+
+  if (out.length !== 6) {
+    throw new Error(
+      `parse-campaign: expected 6 Campaign Phase Steps, read ${out.length} `
+      + `(${out.map((s) => s.name).join(', ')}). The book prints six and states `
+      + 'that the order matters, so a miscount is a sequence the app cannot follow.');
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ trauma */
 
 const CAMPAIGN_CAT = 'data-sources/battlescribe/Campaign Rules.cat';
@@ -417,9 +554,30 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
 
     for (const i of candidates) {
       const text = [lines[i].split('\t').slice(1).join(' ').trim()];
-      for (let j = i + 1; j < Math.min(i + 6, lines.length); j++) {
+      /*
+        The window was six lines, and `12 Captured` is eight. Its rule came out
+        ending "...transfer the 👑 from your Strongbox to your opponent's," —
+        cut at a comma, losing the half that says what PAYING the ransom does.
+        A player reading it would have removed a model they had just bought
+        back.
+
+        Fourteen is generous enough for the longest row in the table and still
+        bounded, so a missed boundary cannot run away down the page. The
+        boundaries below are what actually stops it.
+      */
+      for (let j = i + 1; j < Math.min(i + 14, lines.length); j++) {
         const t = lines[j].trim();
-        if (!t || /^\d{2}[\s-]/.test(t) || /^--\s*\d+\s+of/.test(t)) break;
+        if (!t || /^--\s*\d+\s+of/.test(t)) break;
+        /*
+          A new row, whether or not the name follows on the same line.
+
+          This was `^\d{2}[\s-]`, which needs something after the digits — and
+          the book prints `66` alone on its line with `Prominent Scar` beneath.
+          So `65 Bitter Lessons` did not stop there: it ran on and took row
+          66's heading and half its rule with it, and the app showed a player
+          rolling 65 a rule that belongs to 66.
+        */
+        if (/^\d{2}([\s-]|$)/.test(t)) break;
         if (/^(Wound|Head Wound X?|Campaign|Games|Patrons|Trauma Step)$/.test(t)) break;
         if (isScrambled(t)) break;
         text.push(t);
@@ -471,6 +629,36 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
     throw new Error(
       `parse-campaign: Trauma rows whose text is scrambled column data: ` +
       `${dirty.map((r) => `${r.roll} ${r.name}`).join(', ')}.`);
+  }
+
+  /*
+    A rule that stops mid-sentence, and a rule that has swallowed the next row.
+
+    Both shipped. `12 Captured` ended at "...transfer the 👑 from your Strongbox
+    to your opponent's," — cut at a comma, losing the clause that says paying
+    the ransom counts as a Full Recovery, so a player who paid would still have
+    removed the model. `65 Bitter Lessons` ran on into `66 Prominent Scar` and
+    showed a player rolling 65 a rule belonging to 66.
+
+    Neither is detectable by eye in a 22-row table, and neither was caught by
+    the blank and scrambled checks above, which is why they are their own.
+  */
+  const cut = out.filter((r) => /[,;–—]$|\b(and|or|the|a|to|with|from|for|of|if)$/i.test(r.description));
+  if (cut.length) {
+    throw new Error(
+      `parse-campaign: Trauma rows whose rules text stops mid-sentence: ` +
+      `${cut.map((r) => `${r.roll} ${r.name} (…"${r.description.slice(-40)}")`).join(', ')}. ` +
+      'A rule cut at a comma is a rule the player will act on wrongly.');
+  }
+
+  /* Another row's heading inside this row's text: `… Battle Scar. 66 Prominent Scar Write down …` */
+  const runOn = out.filter((r) => /\s\d{2}\s+[A-Z][a-z]+(\s+[A-Z][a-z]+)*\s+[A-Z]/.test(r.description)
+    && out.some((o) => o !== r && r.description.includes(`${o.roll} ${o.name}`)));
+  if (runOn.length) {
+    throw new Error(
+      `parse-campaign: Trauma rows carrying another row's heading and rule: ` +
+      `${runOn.map((r) => `${r.roll} ${r.name}`).join(', ')}. ` +
+      'The row boundary was missed, so this shows a player the wrong injury.');
   }
 
   // Every D66 result must land somewhere. A hole means a roll the app cannot

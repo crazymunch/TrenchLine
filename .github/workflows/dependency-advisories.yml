@@ -1,0 +1,68 @@
+name: Dependency advisories
+
+# The SAME audit CI runs, on a clock.
+#
+# A pull-request gate only rechecks a lockfile when something changes it, and
+# an advisory published against a dependency you have not touched is exactly
+# the case that never fires. OPS-1 asks for unchanged lockfiles to be rechecked
+# when new advisories appear; this is that.
+#
+# Deliberately a copy of the step rather than a shared composite action: the
+# gate is nine lines of shell, and a wrapper around it would be one more thing
+# between a failure and the person reading it. `scripts/__tests__/auditGate`
+# pins that the two stay identical.
+
+on:
+  schedule:
+    # 07:00 UTC daily. Not midnight: every scheduler on GitHub is busiest then,
+    # and a security scan that starts an hour late is no worse for it.
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Audit production dependencies
+        run: |
+          set -o pipefail
+
+          # Up to three attempts. `npm audit` makes ONE POST to the advisory
+          # endpoint and does not retry it, and that endpoint answered
+          # `400 Bad Request` for a stretch on 2026-09-04 — from GitHub's
+          # runners, while the identical lockfile audited clean elsewhere in
+          # the same minutes. One bad answer should not fail a build, and
+          # three of them is a real outage rather than a blip.
+          for attempt in 1 2 3; do
+            npm audit --omit=dev --audit-level=high --json > audit.json 2> audit.err && status=0 || status=$?
+            # A report naming advisories is an answer: stop and act on it.
+            if [ "$status" -eq 0 ] || grep -q '"vulnerabilities"' audit.json; then break; fi
+            echo "attempt $attempt: npm audit exited $status without a report; retrying"
+            cat audit.err
+            sleep $((attempt * 10))
+          done
+
+          # An unreadable report yields nothing rather than throwing, so the
+          # exit-code branch below reports it as what it is.
+          found=$(node -e "let a;try{a=require('./audit.json')}catch{process.exit(0)};for(const[k,v]of Object.entries(a.vulnerabilities??{}))if(['high','critical'].includes(v.severity))console.log(\`\${v.severity}: \${k} — \${(v.via??[]).map(x=>x.title??x).join(', ')}\`)")
+
+          if [ -n "$found" ]; then
+            echo "::error::npm audit found high or critical advisories in production dependencies."
+            echo "$found"
+            exit 1
+          fi
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::npm audit exited $status and reported no high or critical advisory — the advisory endpoint could not be reached, or its answer could not be read. This is NOT a pass."
+            cat audit.err
+            exit 1
+          fi
+
+          echo "No high or critical advisories in production dependencies."

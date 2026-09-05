@@ -16,6 +16,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
+import { byNameAlone, classifyUnmatched, norm } from './lib/crosscheck-match.mjs';
 
 const CAT_DIR = 'data-sources/battlescribe';
 /*
@@ -107,12 +108,25 @@ const appUnits = dataset.units.map((u) => ({
   id: u.id,
   name: u.name,
   faction: u.factionId,
+  /*
+    Which document this unit was derived FROM.
+
+    The pipeline reads two kinds of source, and only one of them is the
+    catalogue: `New Antioch.cat` and its siblings, against which a statline can
+    be checked, and `carcass-front-book.pdf`, which prints warbands BattleScribe
+    does not carry at all. Without this the two are one bucket, and fifteen
+    Carcass Front models sit under "no catalogue entry of this name" as if the
+    app had invented them — while a genuine naming error would be the sixteenth
+    line in that list and nobody would look twice.
+  */
+  source: u.sourceFile,
   cost: u.cost.ducats,
   movement: u.stats.movement,
   ranged: u.stats.ranged,
   melee: u.stats.melee,
   armour: u.stats.armour,
 }));
+
 
 /*
   Refuse to report a pass on nothing. This is the failure mode that hid a dead
@@ -133,31 +147,63 @@ const ALIASES = {
   'Trench Dog / War Hound': 'Trench Dog',
   'Anchorite Shrine': 'Anchorite',
   'Yüzbaşı': 'Yüzbaşı Captain',
+
+  /*
+    The Carcass Front book reprints five models the catalogues already carry,
+    under its own warband's names — a `Lazarist Castigator` in a Procession of
+    the Sacred Affliction is the Trench Pilgrims `Castigator`. Their statlines
+    were identical at the four fields this compares when these were added,
+    which is what makes the pairing safe to assert; if the book ever restates
+    one differently, this reports a mismatch, which is the signal wanted.
+
+    Without these five they fall into "outside the catalogue" with the twenty-one
+    models BattleScribe genuinely does not carry, and five checkable statlines
+    go unchecked.
+  */
+  'Lazarist Castigator': 'Castigator',
+  'Lazarist Communicant': 'Communicant',
+  'Stigmatic Nuns': 'Stigmatic Nun',
+  'Ecclesiastic Prisoners': 'Ecclesiastic Prisoner',
+  'Drowned Chorister': 'Chorister',
 };
 
-const norm = (s) =>
-  String(s).toLowerCase().replace(/dice/g, '').replace(/[”"']/g, '').replace(/\s+/g, '');
 
-const results = { ok: 0, mismatched: 0, unmatched: 0, explained: 0 };
+
+const results = { matched: 0, ok: 0, mismatched: 0, unmatched: 0, explained: 0, uncovered: 0, sourceless: 0 };
 const rows = [];
+/** Units outside the catalogue's coverage, by the document they came from. */
+const uncovered = new Map();
 
 for (const unit of appUnits) {
   const name = ALIASES[unit.name] ?? unit.name;
   // The dataset's factionId is the catalogue's file name for these.
-  const truth = source.get(catKey(unit.faction, name))
-    // A unit the app files under one faction that the catalogues keep in
-    // another still deserves a comparison; fall back to a unique name match.
-    ?? [...source.entries()]
-        .filter(([k]) => k.endsWith(`::${name}`))
-        .map(([, v]) => v)
-        .find((_, i, all) => all.length === 1);
+  const truth = source.get(catKey(unit.faction, name)) ?? byNameAlone(source, name);
 
   if (!truth) {
-    results.unmatched++;
-    rows.push({ name: unit.name, status: 'unmatched', detail: 'no catalogue entry of this name' });
+    /*
+      A unit the app says came from a `.cat` and the catalogue does not have is
+      a real problem — the name is wrong, or the entry is gone. A unit from a
+      book the catalogues do not carry is a fact about coverage, and saying so
+      is not the same as excusing it: it is counted, grouped by source, and a
+      catalogue that grows to cover one will move it back into this check
+      without anybody editing a list.
+    */
+    const why = classifyUnmatched(unit);
+    if (why === 'unmatched') {
+      results.unmatched++;
+      rows.push({ name: unit.name, status: 'unmatched', detail: `no entry of this name in ${unit.source}` });
+    } else if (why === 'uncovered') {
+      results.uncovered++;
+      if (!uncovered.has(unit.source)) uncovered.set(unit.source, []);
+      uncovered.get(unit.source).push(unit.name);
+    } else {
+      results.sourceless++;
+      rows.push({ name: unit.name, status: 'sourceless', detail: 'no source recorded, and no catalogue entry' });
+    }
     continue;
   }
 
+  results.matched++;
   const diffs = [];
   const explained = [];
   const note = (field, statField, label, appVal, catVal) => {
@@ -192,8 +238,12 @@ for (const unit of appUnits) {
 
 /* ---------- 4. report ----------------------------------------------------- */
 
-const matched = results.ok + results.mismatched;
-const pct = matched ? Math.round((results.mismatched / matched) * 100) : 0;
+/* Every unit that found a catalogue row, including one whose only differences
+   a layer explains. Counting `ok + mismatched` left those out of the total
+   they were compared in, so the headline undercounted the work done. */
+const matched = results.matched;
+const compared = results.ok + results.mismatched;
+const pct = compared ? Math.round((results.mismatched / compared) * 100) : 0;
 
 console.log(`\nCross-check: ${APP_DATA} vs ${CAT_DIR}\n`);
 console.log(`  app units parsed        ${appUnits.length}`);
@@ -203,8 +253,16 @@ console.log(`    correct               ${results.ok}`);
 console.log(`    MISMATCHED            ${results.mismatched}  (${pct}%)`);
 // Fields a layer changed on purpose. Listed apart so an intentional erratum
 // never has to be re-investigated as if it were drift.
-console.log(`    explained by a layer  ${results.explained}`);
-console.log(`  unmatched               ${results.unmatched}`);
+console.log(`    explained by a layer  ${results.explained}  (on ${matched - compared} unit${matched - compared === 1 ? '' : 's'} with no other difference)`);
+console.log(`  unmatched               ${results.unmatched}  (in a .cat the app names)`);
+if (results.sourceless) console.log(`  no source recorded      ${results.sourceless}`);
+console.log(`  outside the catalogue   ${results.uncovered}`);
+for (const [src, names] of [...uncovered].sort()) {
+  console.log(`    ${src.padEnd(24)} ${names.length}`);
+  /* Named, not just counted. A count says "ten models the catalogue does not
+     carry"; the names are what let a reader notice one that it does. */
+  for (const n of names.sort()) console.log(`      ${n}`);
+}
 
 const shown = rows.filter((r) => r.status !== 'ok');
 console.log(`\n--- discrepancies ${full ? '' : `(first 25 of ${shown.length}; --full for all)`} ---`);
@@ -213,5 +271,26 @@ for (const r of full ? shown : shown.slice(0, 25)) {
 }
 console.log();
 
-// Reports only — exit 0 regardless. Once Phase 1 lands, `rules:verify` is the
-// gate that fails the build.
+/*
+  A statline disagreement is a REPORT: deciding it needs the book, and the gate
+  for that is `rules:verify`, per the restructure plan. Exit 0 for those.
+
+  `unmatched` and `no source recorded` are different in kind. Neither is a
+  question about the game: one says a unit names a catalogue file that has no
+  such entry, the other that nothing records where a unit came from at all.
+  Both are the app's own bookkeeping, both are answerable without opening a
+  rulebook, and both are currently zero — so a non-zero exit says something
+  regressed rather than describing the state of the world.
+
+  Deliberately not wired into CI here. Which checks gate the build is a policy
+  decision the restructure plan assigns to `rules:verify`; this only makes the
+  answer available to whoever, or whatever, runs the script.
+*/
+const defects = results.unmatched + results.sourceless;
+if (defects) {
+  console.error(
+    `error: ${defects} unit${defects === 1 ? '' : 's'} could not be reconciled with the ` +
+    'source the app names for them. This is not a disagreement about a statline — ' +
+    'it is a unit pointing at a catalogue entry that is not there, or at nothing at all.');
+  process.exit(1);
+}

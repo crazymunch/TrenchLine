@@ -69,6 +69,11 @@ function stampLeaves(provenance, kind, id, obj, info, prefix = '') {
 }
 
 /** Write `value` at a dotted path, creating intermediate objects. */
+/** The value at a dotted path, or undefined. */
+function getPath(obj, dotted) {
+  return String(dotted).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+
 function setPath(obj, dotted, value) {
   const parts = dotted.split('.');
   let cur = obj;
@@ -85,7 +90,7 @@ function setPath(obj, dotted, value) {
  * errata line the catalogues have since caught up with, say. Optional, so the
  * caller that does not care need not pass one.
  */
-export function applyLayer(dataset, layer, provenance, notes = []) {
+export function applyLayer(dataset, layer, provenance, notes = [], deferred = [], removals = []) {
   const unresolved = [];
   const source = `${layer.id}:${layer.sourceRef ?? ''}`;
 
@@ -160,14 +165,54 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
       continue;
     }
 
+    /*
+      A row in a faction's Armoury Table is applied LATER.
+
+      `dataset.armouries` does not exist yet at this point in the build — the
+      armouries are assembled out of the catalogues after the layers have run,
+      so an `addArmouryRow` applied here finds no armoury and reports itself
+      unresolved, which is what it did.
+
+      Deferred rather than skipped: `applyArmouryRowOps` runs once the
+      armouries exist, and the caller checks that every op deferred here was
+      accounted for there. A layer op that quietly disappears between two
+      passes is a published rule the app does not have and nobody is told
+      about.
+    */
+    if (op.op === 'addArmouryRow') { deferred.push({ op, layer: layer.id, source }); continue; }
+
     const target = findTarget(dataset, op.target);
     if (!target) { unresolved.push({ op, why: `target not found: ${op.target?.kind}/${op.target?.id}` }); continue; }
 
     switch (op.op) {
-      case 'set':
+      case 'set': {
+        /*
+          A `set` that REMOVES a keyword is worth saying out loud.
+
+          The Dispatch replaces the Amalgam's entry and its keyword row prints
+          four where the catalogue carries five, so the layer correctly drops
+          STRONG. The catalogue's `Strong-ish` ability survives, and its text
+          is "Two of the arms of the Amalgam have the Keyword STRONG" — so the
+          shipped entry both does and does not have the keyword.
+
+          Reported rather than resolved: an ability that contradicts its own
+          entry needs the printed page, and the alternative to reporting it is
+          that nobody notices for another year. See `keywordRemovals` in the
+          build.
+        */
+        const before = op.field === 'keywords' || op.field?.endsWith('.keywords')
+          ? getPath(target, op.field) : undefined;
         setPath(target, op.field, op.value);
+        if (Array.isArray(before)) {
+          const now = new Set((op.value ?? []).map((k) => String(k).toUpperCase()));
+          const gone = before
+            .map((k) => String(k).toUpperCase())
+            .filter((k) => !now.has(k));
+          if (gone.length) removals.push({ target, entity: target.name, removed: gone, op });
+        }
         stamp(op.target, op.field, target);
         break;
+      }
 
       case 'replace':
         for (const [k, v] of Object.entries(op.entity)) {
@@ -217,6 +262,36 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
         break;
       }
 
+      /*
+        Take an ability off an entry.
+
+        The counterpart to `addAbility`, and it exists because of one verified
+        case rather than for symmetry. The Dispatch's Amalgam page was read at
+        the printed page: it lists exactly five abilities and four Keywords,
+        and the catalogue's `Six-armed Monstrosity` and `Strong-ish` are not
+        among them. "Replace the … Warband Entries with the following" is
+        literal.
+
+        Keeping them was the conservative choice while the list could not be
+        confirmed, and it produced an entry that contradicted itself — it
+        cannot have any Battlekit but its Gluttonous Arsenal, while
+        `Strong-ish` let it wield two HEAVY weapons and asserted a STRONG
+        Keyword the same layer removes.
+
+        Unresolved rather than silent when the ability is not there: an errata
+        that removes something already gone has rotted, and that is worth
+        knowing.
+      */
+      case 'removeAbility': {
+        target.abilities ??= [];
+        const i = target.abilities.findIndex(
+          (a) => a.name?.toLowerCase() === op.name.toLowerCase());
+        if (i < 0) { unresolved.push({ op, why: `no ability named ${op.name}` }); break; }
+        target.abilities.splice(i, 1);
+        stamp(op.target, 'abilities', target);
+        break;
+      }
+
       case 'replaceAbility': {
         target.abilities ??= [];
         const i = target.abilities.findIndex(
@@ -258,7 +333,7 @@ export function applyLayer(dataset, layer, provenance, notes = []) {
 }
 
 /** Apply an ordered list of layers, honouring the ruleset's beta preference. */
-export function applyLayers(dataset, layers, provenance, { includeBeta = true } = {}) {
+export function applyLayers(dataset, layers, provenance, { includeBeta = true, deferred = [], removals = [] } = {}) {
   const report = [];
   for (const layer of layers) {
     if (!includeBeta && layer.status === 'public-beta') {
@@ -272,10 +347,59 @@ export function applyLayers(dataset, layers, provenance, { includeBeta = true } 
       continue;
     }
     const notes = [];
-    const unresolved = applyLayer(dataset, layer, provenance, notes);
+    const unresolved = applyLayer(dataset, layer, provenance, notes, deferred, removals);
     report.push({ layer: layer.id, ops: layer.ops.length, unresolved, notes });
   }
   return report;
+}
+
+/**
+ * The layer ops that had to wait for the armouries to exist.
+ *
+ * `applyLayers` runs before `dataset.armouries` is assembled, so a row cannot
+ * be added there. This is the second pass, and it must be given the `deferred`
+ * list the first one produced — the caller compares the two counts, so an op
+ * cannot fall between the passes unnoticed.
+ *
+ * Armoury rows carry no provenance stamps (`findMissingProvenance` does not
+ * walk `armouries`), so unlike `add` this does not stamp. The row's authority
+ * is its layer's own `_src`.
+ */
+export function applyArmouryRowOps(dataset, deferred) {
+  const unresolved = [];
+  const notes = [];
+  let applied = 0;
+
+  for (const { op } of deferred) {
+    if (op.op !== 'addArmouryRow') {
+      unresolved.push({ op, why: `deferred op ${op.op} has no second-pass handler` });
+      continue;
+    }
+    const armoury = (dataset.armouries ?? []).find((a) => a.factionId === op.factionId);
+    if (!armoury) {
+      unresolved.push({ op, why: `no armoury for faction ${op.factionId}` });
+      continue;
+    }
+    /* Same reasoning as `add`: a second row is worse than none, because the
+       player picks one of two and cannot tell which is the real price. */
+    const already = (armoury.rows ?? []).find(
+      (r) => r.name?.toLowerCase() === op.row?.name?.toLowerCase()
+          && r.section === op.row?.section);
+    if (already) {
+      notes.push({
+        op,
+        why: `addArmouryRow ${op.factionId}/${op.row.name}: already stocked, so the `
+           + 'layer is reprinting the row rather than introducing it — skipped, '
+           + 'and the existing row stands',
+        reprintOf: already,
+      });
+      continue;
+    }
+    (armoury.rows ??= []).push(op.row);
+    applied++;
+  }
+
+  return { applied, unresolved, notes };
 }
 
 /** Stamp every field of the freshly parsed base data. */

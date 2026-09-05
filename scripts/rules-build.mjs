@@ -21,9 +21,12 @@ import path from 'node:path';
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
-         parseSkillsTables, parseTraumaTable } from './lib/parse-campaign.mjs';
+         parseSkillsTables, parseTraumaTable,
+         parseCampaignPhaseSteps } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
+import { parseMarkers } from './lib/parse-markers.mjs';
+import { loadCommentaries } from './lib/parse-commentaries.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -37,7 +40,7 @@ import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
-import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
+import { createProvenance, applyLayers, applyArmouryRowOps, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
 
@@ -297,6 +300,20 @@ for (const ruleset of RULESETS) {
   const visionCards = parseVisionCards();
 
   const coreRules = parseCoreRules();
+  /*
+    The two battle marker pools. Read from the sections above, because the
+    cap was a literal `6` in the store and Blessing Markers were not in the
+    app at all — a number and an absence, both decided by hand.
+  */
+  const markers = parseMarkers(coreRules.chapters);
+  /*
+    The official FAQ. `SOURCES.json` said this file "feeds the Codex and
+    rules-engine edge cases" while nothing in the tree opened it — a documented
+    role the code did not honour. Several of its answers settle things the app
+    itself has to get right: whether a model is within X" of itself, how a
+    30x60mm base is measured, who rolls an Injury Roll from a non-attack effect.
+  */
+  const commentaries = loadCommentaries();
   if (coreRules.missing.length) {
     throw new Error(
       `rules-build: ${coreRules.missing.length} rulebook section(s) in the table of `
@@ -416,6 +433,16 @@ for (const ruleset of RULESETS) {
      * when they cannot check the book.
      */
     coreRules: coreRules.chapters,
+    markers,
+    /**
+     * The official Rules Commentaries — the game's own FAQ, 51 entries.
+     *
+     * Attributed by the label the document puts on every question (`RULES Q1`,
+     * `MISC. Q7`) rather than by which heading it sits under, because heading
+     * detection is where this class of parser goes wrong and a per-entry label
+     * cannot drift from the entry it labels.
+     */
+    commentaries,
     /**
      * The Weather Events table, from the Hell on Earth module.
      *
@@ -550,6 +577,16 @@ for (const ruleset of RULESETS) {
       // fabricated (AUDIT §1.13) — these are what replaces them.
       skills: parseSkillsTables(),
       trauma: parseTraumaTable(),
+      /**
+       * The six Campaign Phase Steps, in the order the book states.
+       *
+       * The app's post-battle wizard has four, two of them named things the
+       * book does not use, and it omits Reinforcements and Quartermaster
+       * entirely. The order is not decoration: Reinforcements comes BEFORE
+       * Exploration and taking it costs you both Exploration and the
+       * Quartermaster, which a four-step sequence cannot express.
+       */
+      phaseSteps: parseCampaignPhaseSteps(),
     },
     meta: {
       rulesetId: ruleset.id,
@@ -566,9 +603,48 @@ for (const ruleset of RULESETS) {
 
   // 2. layer
   const layers = ruleset.layers.map(loadLayer);
+  /*
+    Ops that need `dataset.armouries`, which does not exist yet — the
+    armouries are assembled below, out of the catalogues, after the layers
+    have run. They are applied in a second pass and counted, so one cannot
+    fall between the two.
+  */
+  const deferredOps = [];
+  /* Keywords a layer took OFF an entry — see the cross-check below. */
+  const keywordRemovals = [];
   const layerReport = applyLayers(dataset, layers, provenance, {
     includeBeta: ruleset.includeBeta,
+    deferred: deferredOps,
+    removals: keywordRemovals,
   });
+
+  /*
+    An entry that both does and does not have a keyword.
+
+    When a layer replaces an entry it sets the keyword row the new page
+    prints, which can REMOVE one — the Dispatch's Amalgam row prints four
+    where the catalogue carries five, so STRONG goes. The catalogue's
+    abilities are kept, deliberately: dropping an ability asserts that the PDF
+    extraction captured a complete list, and an ability wrongly deleted is
+    harder to notice than one wrongly kept.
+
+    That reasoning assumed a wrongly-kept ability is inert. It is not always:
+    the Amalgam keeps `Strong-ish`, whose text is "Two of the arms of the
+    Amalgam have the Keyword STRONG", so the shipped entry contradicts itself.
+
+    Reported, not resolved — resolving it means deleting a published ability
+    or restoring a keyword the printed row omits, and both need the page.
+  */
+  for (const r of keywordRemovals) {
+    const contradicts = (r.target.abilities ?? []).filter((a) =>
+      r.removed.some((k) => new RegExp(`\\b${k}\\b`).test(a.description ?? '')));
+    if (!contradicts.length) continue;
+    console.log(`  ⚠ ${r.entity}: the layer removed the ${r.removed.join(', ')} `
+      + `Keyword${r.removed.length > 1 ? 's' : ''}, but ${contradicts.length} retained `
+      + `ability still names ${r.removed.length > 1 ? 'one' : 'it'}: `
+      + `${contradicts.map((a) => a.name).join(', ')}. The entry contradicts itself; `
+      + 'confirm against the printed page.');
+  }
 
   // ------------------------------------------------------------- armouries
   //
@@ -634,6 +710,29 @@ for (const ruleset of RULESETS) {
       });
     }
   }
+
+  /*
+    The second layer pass: rows a layer adds to a faction's Armoury Table.
+
+    The Dispatch's two new Glory Items arrive here. Without it they would have
+    profiles in the Codex and no price and no faction stocking them — readable
+    by a player and takeable by nobody.
+
+    Every op deferred by the first pass must be accounted for by this one. A
+    layer op that quietly disappears between two passes is a published rule the
+    app does not have and nobody is told about, which is the failure this
+    pipeline exists to prevent.
+  */
+  const armouryOps = applyArmouryRowOps(dataset, deferredOps);
+  if (armouryOps.applied + armouryOps.unresolved.length + armouryOps.notes.length
+      !== deferredOps.length) {
+    throw new Error(
+      `rules-build: ${deferredOps.length} layer op(s) were deferred to the armoury `
+      + `pass but only ${armouryOps.applied + armouryOps.unresolved.length
+         + armouryOps.notes.length} were accounted for. An op has been lost `
+      + 'between the two passes.');
+  }
+
 
   // The weapon keeps the union of every armoury's restrictions as a quick
   // "this is restricted somewhere" signal, stamped so it can say where from.
@@ -888,13 +987,39 @@ for (const ruleset of RULESETS) {
     and these four are real allowances the book gives real models.
   */
   console.log(`  carry allowances: ${carryAllowances.allowances.length} read `
-    + `(${carryAllowances.allowances.map((a) => a.model).join(', ') || 'none'})`
+    + `(${carryAllowances.allowances.map((a) => `${a.model} [${a.modality}]`)
+        .join(', ') || 'none'})`
     + (carryAllowances.unattributed.length
         ? `  (${carryAllowances.unattributed.length} STATED BUT UNATTRIBUTED — `
-          + 'each says "it can have…" where "it" is the entry the paragraph sits '
-          + 'under, which needs document structure this reader does not have: '
+          + 'the entry heading and the prose disagree about which model states '
+          + 'these, so neither is trusted: '
           + carryAllowances.unattributed.map((u) => `"${u.slice(0, 70)}…"`).join(' | ') + ')'
         : ''));
+
+  /*
+    What is read and NOT enforced, said out loud.
+
+    A `required` or `innate` allowance states a FLOOR as well as a ceiling —
+    a Scripture Guardian "must have either two 1-Handed Melee Weapons or one
+    2-Handed Melee Weapon" — and `noOtherBattlekit` forbids everything else.
+    The validator enforces the ceiling only. Printing the rest is the
+    difference between a rule we have decided not to enforce yet and a rule
+    nobody knows went unread.
+  */
+  const floors = carryAllowances.allowances.filter((a) => a.modality !== 'permitted');
+  const closed = carryAllowances.allowances.filter((a) => a.noOtherBattlekit);
+  if (floors.length || closed.length) {
+    console.log('    ceiling enforced, floor recorded only: '
+      + [...floors.map((a) => `${a.model} (${a.modality})`),
+         ...closed.map((a) => `${a.model} (no other Battlekit)`)].join(', '));
+  }
+  if (carryAllowances.chapterLevel.length) {
+    console.log(`    ${carryAllowances.chapterLevel.length} stated by a Keyword `
+      + 'rather than an entry, read by the Keyword carrying rules: '
+      + carryAllowances.chapterLevel
+          .map((c) => c.match(/\b([A-Z][A-Z ]{2,})\s*\(/)?.[1].trim() ?? '?')
+          .join(', '));
+  }
 
   if (dataset.scenarioGenerator) {
     const g = dataset.scenarioGenerator;
@@ -903,6 +1028,13 @@ for (const ruleset of RULESETS) {
       `${g.battlefield.rows.length} archetypes, ${g.deployment.rules.length} deployments, ` +
       `${g.victory.rules.length} victory conditions, ${deeds} Glorious Deeds`);
   }
+  console.log('  battle markers: '
+    + (dataset.markers ?? []).map((m) =>
+        `${m.name} (${m.cap === null ? 'no published cap' : `cap ${m.cap}`}, `
+        + `spent by the ${m.spentBy})`).join(', '));
+
+  console.log(`  commentaries: ${dataset.commentaries.length} FAQ entries across `
+            + `${new Set(dataset.commentaries.map((c) => c.section)).size} sections`);
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);
@@ -981,7 +1113,24 @@ for (const ruleset of RULESETS) {
     for (const a of res.applied) console.log(`    ${a}`);
   }
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
-  if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+  unresolvedOps.push(...armouryOps.unresolved);
+  if (armouryOps.applied) {
+    console.log(`  armoury rows added by layers: ${armouryOps.applied}`);
+  }
+  if (unresolvedOps.length) {
+    console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+    /*
+      And WHY. The count alone sent me looking in the wrong place: two
+      `addArmouryRow` ops were being reported as a number with no reason, and
+      a layer op that cannot be applied is a published rule the app does not
+      have — the one thing this pipeline exists to make visible.
+    */
+    for (const u of unresolvedOps) {
+      console.log(`    ${u.op?.op ?? '?'} ${u.op?.collection ?? u.op?.factionId ?? ''}`
+        + `${u.op?.row?.name ? `/${u.op.row.name}` : ''}`
+        + `${u.op?.entity?.name ? `/${u.op.entity.name}` : ''}: ${u.why}`);
+    }
+  }
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
   if (reprints.agreed.length || reprints.disagreed.length) {
     console.log(`  reprinted entries cross-checked: ${reprints.agreed.length} field(s) agree` +

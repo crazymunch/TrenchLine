@@ -35,6 +35,17 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// Who may act as an application administrator.
+///
+/// Authorization used to be derived from an ADDRESS — a constant list in
+/// `auth.ts`, later `TRENCHLINE_ADMIN_EMAILS`. That closed the takeover chain
+/// but left authority attached to a mutable, user-supplied field with no
+/// record of who granted it or when.
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id               String               @id @default(cuid())
   name             String?
@@ -42,6 +53,22 @@ model User {
   emailVerified    DateTime?
   password         String?
   image            String?
+  /// The persisted grant. Defaulted, never null, so the EXPAND step needs no
+  /// backfill to be readable and old code that does not select it is unaffected.
+  role             UserRole             @default(USER)
+  /// When the role was last changed, and by whom — the evidence an email list
+  /// could not provide. Null on a user whose role has never been set.
+  roleGrantedAt    DateTime?
+  /// The `User.id` of the actor who set it, or the literal `bootstrap` for the
+  /// one-shot promotion that creates the first administrator. Not a relation:
+  /// an audit trail must survive the granting account being deleted.
+  roleGrantedBy    String?
+  /// Bumped to revoke this user's stateless JWTs — a password reset, for
+  /// instance — without rotating `NEXTAUTH_SECRET` and signing everybody out.
+  /// The token carries the epoch it was issued under and is refused when it
+  /// no longer matches.
+  sessionEpoch     Int                  @default(0)
+  authTokens       AuthToken[]
   accounts         Account[]
   sessions         Session[]
   warbands         Warband[]
@@ -51,6 +78,40 @@ model User {
   bugReports       BugReport[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
+}
+
+/// What a single-use token is for. One model serves both, because they have
+/// identical security properties — hashed at rest, expiring, single use — and
+/// two nearly-identical tables is two places to get that wrong.
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+/// A single-use, expiring token sent to an address.
+///
+/// The RAW token is never stored. What is stored is a SHA-256 of it, so a read
+/// of this table — a backup, a log, a compromised replica — does not hand
+/// anyone the ability to verify an address or reset a password. The raw value
+/// exists only in the mail that was sent and in the link the user clicks.
+///
+/// NextAuth's own `VerificationToken` is left alone: it stores the token in
+/// clear, and it is keyed by identifier rather than by user.
+model AuthToken {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the raw token, hex. Unique so a lookup is a single indexed read
+  /// and a collision cannot silently resolve to the wrong row.
+  tokenHash String           @unique
+  purpose   AuthTokenPurpose
+  expiresAt DateTime
+  /// Set the moment it is spent. Single use is enforced on this, not on
+  /// deletion, so a replayed link can be told apart from one that never existed.
+  usedAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, purpose])
 }
 
 model VerificationToken {
@@ -77,20 +138,20 @@ enum WarbandVisibility {
 
 // Trench Crusade Application Models
 model Warband {
-  id              String           @id @default(cuid())
+  id              String            @id @default(cuid())
   name            String
   factionId       String
-  ducatLimit      Int              @default(700)
-  treasuryDucats  Int              @default(0)
-  gloryPoints     Int              @default(0)
-  units           Json             @default("[]")
-  armoryStash     Json             @default("[]")
-  notes           String?          @db.Text
+  ducatLimit      Int               @default(700)
+  treasuryDucats  Int               @default(0)
+  gloryPoints     Int               @default(0)
+  units           Json              @default("[]")
+  armoryStash     Json              @default("[]")
+  notes           String?           @db.Text
   visibility      WarbandVisibility @default(PRIVATE)
   userId          String
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaignMembers CampaignMember[]
-  createdAt       DateTime         @default(now())
+  createdAt       DateTime          @default(now())
 
   // When this row was last written, set by Prisma. A PUSH time, not an edit
   // time — which is the trap: sync used to compare it, so a device that merely
@@ -100,7 +161,7 @@ model Warband {
   // sync merge actually compares, is deliberately NOT a column here. It rides
   // in the `notes` metadata JSON with the other client-owned fields. See the
   // note in src/app/api/warbands/route.ts for why.
-  updatedAt       DateTime         @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model Campaign {
@@ -114,11 +175,47 @@ model Campaign {
   maxWarbandDucats      Int              @default(700)
   gloryVictoryThreshold Int              @default(25)
   chronicleLogs         Json             @default("[]")
+  /// Which rules this campaign is played under — `classic` or `carcass-front`.
+  /// The database had no concept of one, which is half of why a campaign in
+  /// the app was never the campaign in the database (docs/CAMPAIGN-SYNC.md).
+  framework             String?
+  /// House rules this campaign has chosen, one key per relaxed rule. Mirrors
+  /// `Campaign.houseRules` in the client; see `CampaignHouseRules`.
+  houseRules            Json?
+  /// Monotonic, bumped on every accepted write.
+  ///
+  /// Conflicts are decided on the version an edit was MADE against, not on
+  /// when it arrived: receipt order is a property of the network rather than
+  /// of the work, so two devices on one flaky connection would otherwise have
+  /// the slower one silently win.
+  version               Int              @default(1)
   members               CampaignMember[]
   matches               MatchRecord[]
   territories           TerritoryNode[]
+  syncOps               CampaignSyncOp[]
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
+}
+
+/// One applied sync operation, remembered so a repeat is skipped.
+///
+/// This is the property the deleted fire-and-forget code lacked: it called
+/// create on every attempt, which is how one campaign became several. A retry
+/// is only safe if the server can recognise it, so the client generates the
+/// `opId` and the server records it.
+model CampaignSyncOp {
+  /// Client-generated. The primary key IS the idempotency: a second insert of
+  /// the same operation is a constraint violation rather than a second write.
+  opId       String   @id
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  /// What it did, for an operator reading the table after an incident.
+  kind       String
+  /// Who the server attributed it to — never taken from the request body.
+  actorId    String
+  appliedAt  DateTime @default(now())
+
+  @@index([campaignId, appliedAt])
 }
 
 model CampaignMember {
@@ -165,7 +262,16 @@ model TerritoryNode {
   controlledByWarbandId  String?
   controlledByPlayerName String?
   perk                   String
+  /// `published`, `campaign`, or absent.
+  ///
+  /// The difference between a rule the books state and one this group wrote,
+  /// which the app has drawn since the sixteen invented perks came out of
+  /// `seed.ts` and the database has not. A published perk is writable by
+  /// nobody — see the authority table in docs/CAMPAIGN-SYNC.md.
+  perkSource             String?
   description            String   @db.Text
+  /// Monotonic, bumped on every accepted write. See `Campaign.version`.
+  version                Int      @default(1)
 }
 
 /// A bug report.

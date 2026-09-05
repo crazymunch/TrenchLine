@@ -173,28 +173,45 @@ export const storage = {
   },
 
   /**
-   * Campaigns are LOCAL-ONLY. This does nothing, deliberately.
+   * The campaign's cloud copy, read before anything is pushed to it.
    *
-   * What it used to do was not sync. It POSTed `{ action: 'create', ...campaign }`
-   * on **every** campaign mutation — six call sites, each firing on an ordinary
-   * edit — so each change minted a brand new campaign row rather than updating
-   * one. There is no update action on the API and nothing reconciles the local
-   * campaign's id with the server's, so nothing ever read those rows back.
-   * Signed out, they were all filed under the shared
-   * `commander@trenchline.org` account.
+   * **This is the gate, not a merge.** `docs/CAMPAIGN-SYNC.md` requires a
+   * fetch before every push and requires the push to stop if that fetch fails:
+   * an offline device that writes blind overwrites a newer cloud copy with an
+   * older one, and a fetch that cannot be made is not permission to write. So
+   * what comes back is used for exactly two things — proof the server is
+   * reachable, and proof this campaign is still there and still ours.
    *
-   * It also swallowed every failure and returned `void`, so none of that was
-   * visible: the UI could not tell saved from unauthenticated from offline —
-   * the exact distinction `CloudResult` exists to make for warbands, three
-   * functions above this one.
+   * Deliberately NOT used to adopt the server's version numbers. The client
+   * chains its own as it queues (see `queueOp` in the campaign slice), and
+   * overwriting that chain mid-flight would make the operations already in the
+   * outbox state a version they were not made against. Where the two genuinely
+   * disagree, the push comes back with a conflict carrying the server's copy,
+   * and the app shows it.
    *
-   * Restoring it needs an API that can update a campaign, a rule about which
-   * copy wins, and the outbox treatment warbands already have. Until then this
-   * says so rather than generating rows nobody reads, and returns a
-   * `CloudResult` so a caller that starts checking gets a truthful answer.
+   * What this replaces: a `syncCampaignToCloud` that POSTed
+   * `{ action: 'create', ...campaign }` on **every** campaign mutation, so
+   * each edit minted a new campaign row that nothing ever read back — and
+   * swallowed every failure, so the UI could not tell saved from offline. The
+   * update path it lacked is now `POST /api/campaigns/sync`, and the
+   * fire-and-forget calls are gone rather than pointed at it.
    */
-  async syncCampaignToCloud(_campaign: Campaign): Promise<CloudResult<void>> {
-    return { ok: false, reason: 'server', detail: 'Campaign cloud sync is not implemented.' };
+  async fetchCampaignFromCloud(campaignId: string): Promise<CloudResult<{ id: string; version: number }>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request(`/api/campaigns?id=${encodeURIComponent(campaignId)}`, {}, (data) => {
+      const c = data?.campaign;
+      /* Thrown rather than defaulted: `request` turns it into a `server`
+         failure, and a campaign the server did not return is not a campaign
+         at version 1. Inventing one here would push against a row that may
+         not exist. */
+      if (!c?.id) throw new Error('The server returned no campaign.');
+      /* No default for a missing version. The column has one — every row is at
+         least 1 — so its absence means the response is not the shape this
+         thinks it is, and guessing turns that into a push against a version
+         nobody holds. */
+      if (typeof c.version !== 'number') throw new Error('The campaign came back without a version.');
+      return { id: String(c.id), version: c.version };
+    });
   },
 
   getCustomUnits(): UnitProfile[] {

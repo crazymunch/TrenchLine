@@ -442,6 +442,55 @@ function recruitLimits(constraints) {
   return { min: min ? min.value : null, max: max ? max.value : null };
 }
 
+/**
+ * A variant's special rules, including the ones stated by a group rather than
+ * by the variant entry itself.
+ *
+ * The House of Wisdom prints eight special rules and the app carried seven;
+ * the Kingdom of Alba Assault Detachment was missing one too. Both were
+ * missing for the same reason: most rules are Ability profiles on the variant
+ * entry, but a rule the catalogue also models MECHANICALLY gets a group of its
+ * own, and its profile goes on the group.
+ *
+ *   selectionEntry      "The House of Wisdom"
+ *     selectionEntryGroup "Weapon Collections"        <- max=1 sub-groups for
+ *       profile           "Weapon Collections"           each foreign armoury
+ *
+ *   selectionEntry      "Kingdom of Alba Assault Detachment"
+ *     selectionEntryGroup "Cold Steel Discounts"      <- the discounted entries
+ *       profile           "Cold Steel"
+ *
+ * A reader that looks only at the entry's own profiles cannot see either, and
+ * the player was not shown a rule their Warband has.
+ *
+ * Only DIRECT children of the variant entry are read, and that is the whole
+ * condition. A variant entry also contains its armoury, but those groups nest
+ * further down — `Ranged (One-Handed)` and the rest are grandchildren — so
+ * depth alone separates a rule from a rack of weapons.
+ *
+ * An earlier version of this also required the group's name to match its
+ * profile's, on the theory that it distinguished a group that IS a rule from
+ * one that merely contains things. It does not: `Cold Steel` lives under
+ * `Cold Steel Discounts`, and the extra condition silently dropped it. Across
+ * all 27 variants the direct-child rule adds exactly these two rules and
+ * nothing else, which is what `variantSpecialRules.test.ts` pins.
+ */
+function variantSpecialRules(entry) {
+  const abilityProfiles = (node) => arr(node?.profiles?.profile)
+    .filter((pr) => attr(pr, 'typeName') === 'Ability');
+
+  const rules = abilityProfiles(entry);
+
+  for (const g of arr(entry?.selectionEntryGroups?.selectionEntryGroup)) {
+    rules.push(...abilityProfiles(g));
+  }
+
+  return rules.map((pr) => ({
+    name: clean(attr(pr, 'name')),
+    description: clean(charMap(pr).Description),
+  }));
+}
+
 export function parseCatalogues(dir) {
   const files = fs.readdirSync(dir).filter((f) => /\.(cat|gst)$/.test(f));
 
@@ -719,8 +768,7 @@ export function parseCatalogues(dir) {
           if (attr(e, 'id') === attr(holder, 'id')) continue;
           // A Warband Variant states its special rules as Ability profiles.
           // An entry with none is something else that happens to sit here.
-          const rules = arr(e?.profiles?.profile)
-            .filter((pr) => attr(pr, 'typeName') === 'Ability');
+          const rules = variantSpecialRules(e);
           if (!rules.length) continue;
           variantEntries.push({
             id: attr(e, 'id'),
@@ -732,12 +780,7 @@ export function parseCatalogues(dir) {
               in, rather than showing it as published material.
             */
             thirdParty: (thirdParty || thirdPartyVariantIds.has(attr(e, 'id'))) || undefined,
-            specialRules: arr(e?.profiles?.profile)
-              .filter((pr) => attr(pr, 'typeName') === 'Ability')
-              .map((pr) => ({
-                name: clean(attr(pr, 'name')),
-                description: clean(charMap(pr).Description),
-              })),
+            specialRules: rules,
           });
         }
       }
@@ -750,18 +793,14 @@ export function parseCatalogues(dir) {
   */
   for (const { e, file } of thirdPartyVariantNodes) {
     if (variantEntries.some((v) => v.id === attr(e, 'id'))) continue;
-    const rules = arr(e?.profiles?.profile)
-      .filter((pr) => attr(pr, 'typeName') === 'Ability');
+    const rules = variantSpecialRules(e);
     if (!rules.length) continue;
     variantEntries.push({
       id: attr(e, 'id'),
       name: clean(attr(e, 'name')),
       factionId: path.basename(file, path.extname(file)),
       thirdParty: true,
-      specialRules: rules.map((pr) => ({
-        name: clean(attr(pr, 'name')),
-        description: clean(charMap(pr).Description),
-      })),
+      specialRules: rules,
     });
   }
 

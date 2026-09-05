@@ -544,8 +544,8 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "battlekit": {
       "layer": "base",
@@ -45328,6 +45328,58 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-glory-blessings-of-beelzebub": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-glory-regimental-kasik": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
