@@ -1068,9 +1068,34 @@ export interface Dataset {
   carryAllowances?: {
     raw: string;
     model: string;
-    /** Named by the sentence itself — nothing about Formulae written here. */
+    /**
+     * Named by the sentence itself — nothing about Formulae written here.
+     *
+     * Empty where the entry states the allowance unconditionally, in which
+     * case it belongs to the MODEL and `model` is what selects it. A
+     * Desecrated Saint's several arms are not something another model can
+     * acquire by holding the right Formula.
+     */
     requires: string[];
+    /**
+     * What the entry does with these combinations.
+     *
+     * `permitted` is a ceiling only — "It can have up to three 1-Handed Melee
+     * Weapons or…". `required` and `innate` also state a FLOOR: a Scripture
+     * Guardian "must have either two 1-Handed Melee Weapons or one 2-Handed
+     * Melee Weapon", and an Anchorite Shrine "is armed with" its two. All
+     * three cap what the model may carry and the validator enforces that
+     * much; the floor is recorded here and reported by the build, not
+     * enforced — see `docs/RULESET-MODEL.md` §7d.
+     */
+    modality: 'permitted' | 'required' | 'innate';
     bySection: Record<string, Record<string, number>[]>;
+    /**
+     * The entry forbids everything else — "It cannot have any other
+     * Battlekit", which the Desecrated Saint's entry says. Recorded and
+     * reported rather than enforced, for the same reason as the floor.
+     */
+    noOtherBattlekit?: boolean;
     /** The section a Shield takes a slot from, where the entry says so. */
     shieldReplaces?: string;
     /** False where the entry forbids using Shield Combo. */

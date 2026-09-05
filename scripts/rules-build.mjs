@@ -899,13 +899,39 @@ for (const ruleset of RULESETS) {
     and these four are real allowances the book gives real models.
   */
   console.log(`  carry allowances: ${carryAllowances.allowances.length} read `
-    + `(${carryAllowances.allowances.map((a) => a.model).join(', ') || 'none'})`
+    + `(${carryAllowances.allowances.map((a) => `${a.model} [${a.modality}]`)
+        .join(', ') || 'none'})`
     + (carryAllowances.unattributed.length
         ? `  (${carryAllowances.unattributed.length} STATED BUT UNATTRIBUTED — `
-          + 'each says "it can have…" where "it" is the entry the paragraph sits '
-          + 'under, which needs document structure this reader does not have: '
+          + 'the entry heading and the prose disagree about which model states '
+          + 'these, so neither is trusted: '
           + carryAllowances.unattributed.map((u) => `"${u.slice(0, 70)}…"`).join(' | ') + ')'
         : ''));
+
+  /*
+    What is read and NOT enforced, said out loud.
+
+    A `required` or `innate` allowance states a FLOOR as well as a ceiling —
+    a Scripture Guardian "must have either two 1-Handed Melee Weapons or one
+    2-Handed Melee Weapon" — and `noOtherBattlekit` forbids everything else.
+    The validator enforces the ceiling only. Printing the rest is the
+    difference between a rule we have decided not to enforce yet and a rule
+    nobody knows went unread.
+  */
+  const floors = carryAllowances.allowances.filter((a) => a.modality !== 'permitted');
+  const closed = carryAllowances.allowances.filter((a) => a.noOtherBattlekit);
+  if (floors.length || closed.length) {
+    console.log('    ceiling enforced, floor recorded only: '
+      + [...floors.map((a) => `${a.model} (${a.modality})`),
+         ...closed.map((a) => `${a.model} (no other Battlekit)`)].join(', '));
+  }
+  if (carryAllowances.chapterLevel.length) {
+    console.log(`    ${carryAllowances.chapterLevel.length} stated by a Keyword `
+      + 'rather than an entry, read by the Keyword carrying rules: '
+      + carryAllowances.chapterLevel
+          .map((c) => c.match(/\b([A-Z][A-Z ]{2,})\s*\(/)?.[1].trim() ?? '?')
+          .join(', '));
+  }
 
   if (dataset.scenarioGenerator) {
     const g = dataset.scenarioGenerator;

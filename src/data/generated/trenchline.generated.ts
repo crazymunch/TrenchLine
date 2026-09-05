@@ -67396,12 +67396,27 @@ export const DATASET: Dataset = {
   ],
   "carryAllowances": [
     {
-      "raw": "It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield Combo rule cannot be used for any of its weapons.",
+      "raw": "When this happens, any BLOOD MARKERS on the Anchorite Shrine are removed, and from then on, these special rules no longer apply to the model, it has an Armour Characteristic of -3, and gains the NEGATE SHRAPNEL and TOUGH Keywords (the TOUGH Keyword will apply the next time the Anchorite Shrine suffers an Out of Action result on the Injury Table). ** Symphony of Slaughter: An Anchorite Shrine is armed with two 1-Handed Melee Weapons (the Catherine Wheel and Bonebreaker Mace).",
+      "model": "Anchorite Shrine",
+      "requires": [],
+      "modality": "innate",
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 2
+          }
+        ]
+      },
+      "shieldComboUsable": true
+    },
+    {
+      "raw": "A Homunculus cannot have the Human Hands Alchemical Formula if it has the Wings Alchemical Formula. It cannot use its Pummelling Blows ability if it is armed with any Melee Weapons * If a Takwin Homunculus with Human hands also has an Additional Arm, then it can have three 1-Handed Melee Weapons or one 1-Handed Melee Weapon and one 2-Handed Melee Weapon, and it can have three 1-Handed Ranged Weapons or one 1-Handed Ranged Weapon and one 2-Handed Ranged Weapon. If it takes a Shield, then the Shield replaces one of the Melee Weapons it can have but the Shield Combo rule cannot be used for any of its weapons.",
       "model": "Takwin Homunculus",
       "requires": [
         "Human hands",
         "Additional Arm"
       ],
+      "modality": "permitted",
       "bySection": {
         "Melee Weapons": [
           {
@@ -67424,6 +67439,42 @@ export const DATASET: Dataset = {
       },
       "shieldReplaces": "Melee Weapons",
       "shieldComboUsable": false
+    },
+    {
+      "raw": "Movement Ranged Melee Armour Base 6”/Infantry - +3 DICE -3 60mm Battlekit A Desecrated Saint has several arms. It can have up to three 1-Handed Melee Weapons from The Court's Armoury Tables or two 1-Handed Melee Weapons and one 2-Handed Melee Weapon. It cannot have any other Battlekit.",
+      "model": "Desecrated Saint",
+      "requires": [],
+      "modality": "permitted",
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 3
+          },
+          {
+            "1": 2,
+            "2": 1
+          }
+        ]
+      },
+      "shieldComboUsable": true,
+      "noOtherBattlekit": true
+    },
+    {
+      "raw": "Movement Ranged Melee Armour Base 6”/Infantry - +1 DICE -2 40mm Battlekit A Scripture Guardian always has Reinforced Armour and a Combat Helmet. In addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon.",
+      "model": "Scripture Guardian",
+      "requires": [],
+      "modality": "required",
+      "bySection": {
+        "Melee Weapons": [
+          {
+            "1": 2
+          },
+          {
+            "2": 1
+          }
+        ]
+      },
+      "shieldComboUsable": true
     }
   ],
   "keywordGrants": [

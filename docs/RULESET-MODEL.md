@@ -1037,13 +1037,57 @@ another in the same book allows *"up to three 1-Handed OR two 1-Handed and one
 2-Handed"* — three items in one branch and four hands in the other. Any formula
 over one capacity number gets one of the two wrong.
 
-**Only self-describing sentences are read.** `parse-carry-allowances.mjs` takes
-the condition from the sentence itself (*"If a X with Y also has Z, then…"*), so
-nothing about which Formula grants what is written in the app. The book states
-four more allowances of the same shape that say *"It can have…"*, where *it* is
-the entry the paragraph sits under; those need document structure this reader
-does not have, and the build **reports** them rather than attributing them by
-guess.
+**Two ways an allowance is attributed, and both must hold.** A sentence that
+names its own condition (*"If a X with Y also has Z, then…"*) is believed as
+written, so nothing about which Formula grants what is in the app. The rest say
+*"It can have…"*, where *it* is the entry the paragraph sits under — the book
+prints one heading per entry (`0-1 Desecrated Saint - Cost: 140 👑`), and that
+heading is the *it*. Structure alone is not trusted, because the extracted text
+carries page furniture between entries: the heading is **cross-checked against
+the prose**, which must name the model the heading names, and an allowance that
+cannot clear both is reported rather than guessed at.
+
+Four were reported and unenforced before this. Three were entries — the
+Desecrated Saint, the Scripture Guardian and the Anchorite Shrine — and the
+fourth was the **STRONG** Keyword, which states a carrying rule about a Keyword
+rather than a model and is read by `parseKeywordCarryRules`. It is detected by
+the glossary's own shape (`STRONG (Effect):`) and not by where it falls, because
+the book prints two worked example entries *before* the glossary: by position
+the glossary sits inside an entry and belongs to none of it.
+
+**Modality: a ceiling is enforced, a floor is recorded.** The three entries do
+different things with the combinations they name:
+
+| Modality | Stated as | Example |
+| --- | --- | --- |
+| `permitted` | *"can have up to…"* | Desecrated Saint, Takwin Homunculus |
+| `required` | *"must have either…"* | Scripture Guardian |
+| `innate` | *"is armed with…"* | Anchorite Shrine |
+
+All three **cap** what the model may carry, and that is what `battlekitBreaches`
+enforces. The last two also state a **floor**, and `noOtherBattlekit` (the
+Desecrated Saint's *"It cannot have any other Battlekit"*) closes the entry off
+entirely. Those are recorded on the allowance and **printed by the build** —
+*"ceiling enforced, floor recorded only"* — rather than enforced. A rule we have
+decided not to enforce yet and a rule nobody knows went unread are different
+things, and only the first is acceptable.
+
+**An unconditional allowance is matched on the entry, never on `requires`.**
+`requires` is empty for these, and `[].every(…)` is true — so matching on it
+alone hands the Desecrated Saint's several arms to every model in the game.
+`CarrierContext.modelName` carries the *entry's* name (not what the player
+called the model), and with no entry name supplied the chapter's limits stand.
+
+**A guard on the alternatives.** The book interposes clauses inside a list —
+*"up to three 1-Handed Melee Weapons **from The Court's Armoury Tables** or two
+1-Handed Melee Weapons and one 2-Handed Melee Weapon"* — and a single pattern
+spanning the list stops at the first `Weapons`, never sees the `or`, and keeps
+the last fragment. That is how the Desecrated Saint read as *"one 2-Handed Melee
+Weapon"*. The combinations are now built from the connectors between items, and
+the build **fails** where a sentence has an `or` between two items of one kind
+and fewer than two combinations came out of it. The guard is checked against the
+sentence, not against a list of entries the reader keeps, so it cannot pass by
+agreeing with itself; reverting the connector reading makes it fire.
 
 ## 8. Migration of saved warbands
 

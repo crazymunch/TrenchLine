@@ -76,8 +76,14 @@ export function canEquip(
     so a model already over a limit for some other reason is not told it
     cannot take an unrelated item.
   */
-  const before = battlekitBreaches(ctx.carried, ctx);
-  const after = battlekitBreaches([...ctx.carried, { name: item.name, weaponId: item.id }], ctx);
+  /* `ctx.unit.name` is the entry's name — see `unitProfileName` in
+     AddEquipmentModal — which is what an unconditional carrying allowance is
+     stated about. Without it the modal would refuse a Desecrated Saint its
+     third arm while the validator allowed it. */
+  const carrier = { ...ctx, modelName: ctx.unit.name };
+  const before = battlekitBreaches(ctx.carried, carrier);
+  const after = battlekitBreaches(
+    [...ctx.carried, { name: item.name, weaponId: item.id }], carrier);
   if (after.length > before.length) {
     const fresh = after[after.length - 1];
     return { allowed: false, reason: fresh.raw };
