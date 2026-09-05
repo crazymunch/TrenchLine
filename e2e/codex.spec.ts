@@ -172,3 +172,52 @@ test('the Rules FAQ is reachable, referenced and searchable', async ({ page }) =
   const de = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
   expect(de, 'the Codex scrolls sideways with the FAQ tab added').toBe(true);
 });
+
+/**
+ * The scenarios tab lists every scenario the app can play, not only the
+ * derived ones.
+ *
+ * The Codex read `dataset.scenarios` — the rulebook's twelve and Carcass
+ * Front's five — while every other screen read `useScenarios()`, which also
+ * carries the three hand-written All Out War scenarios. So the pack was
+ * selectable in Play Mode and absent from the screen a player opens to look a
+ * scenario up. A unit test cannot see that: the data was always there, and it
+ * was the wiring in one component that dropped it.
+ */
+test('the scenarios tab shows the All Out War pack, and says it is not derived', async ({ page }) => {
+  await openApp(page);
+  await goTo(page, 'Codex');
+
+  const tab = page.getByRole('button', { name: /Scenarios \(\d+\) & Maps/ });
+  await expect(tab, 'the Scenarios tab has no button').toBeVisible();
+
+  // The count in the label is the count of what the tab can show, so it is the
+  // cheapest place for a dropped source to be visible.
+  const label = await tab.innerText();
+  const count = Number(label.match(/\((\d+)\)/)?.[1]);
+  expect(count, `the tab offers ${count} scenarios; the twelve, the five and the three are twenty`)
+    .toBe(20);
+
+  await tab.click();
+
+  for (const name of [
+    'All Out War: The Looters (3 to 8 Players)',
+    'All Out War: Brothers in Arms (2v2 Team Battle)',
+    'All Out War: Alliance & Betrayal (3 to 4 Players)',
+  ]) {
+    await expect(page.getByRole('heading', { name }), `${name} is not listed`).toBeVisible();
+  }
+
+  /*
+    And it says which of them are transcribed rather than read out of the
+    catalogue. A reference screen that shows both without distinguishing them
+    is how a player comes to trust the wrong line.
+  */
+  await expect(page.getByText('Transcribed, not derived').first()).toBeVisible();
+
+  // The card opens, and carries the book's own sections rather than a stub.
+  await page.getByRole('heading', { name: 'All Out War: The Looters (3 to 8 Players)' }).click();
+  const card = page.locator('div').filter({ hasText: /^GLORIOUS DEEDS/ }).first();
+  await expect(card, 'the pack has no GLORIOUS DEEDS section').toBeVisible();
+  await expect(page.getByText(/This scenario lasts four Turns/).first()).toBeVisible();
+});

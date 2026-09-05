@@ -186,15 +186,17 @@ export const PlayModeView: React.FC = () => {
 
   const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
-  // Check if scenario is All Out War (Multiplayer card deck applies only here)
-  const isAllOutWarScenario = Boolean(
-    selectedScenario && (
-      /all out war/i.test(selectedScenario.name) ||
-      /all-out-war/i.test(selectedScenario.id) ||
-      selectedScenario.tagline?.toLowerCase().includes('all out war') ||
-      (selectedScenario.number && selectedScenario.number > 12)
-    )
-  );
+  /**
+   * Whether the card, betrayal and alliance console applies.
+   *
+   * `useScenarios()` already labels every scenario with the book it came from,
+   * so this asks it. It used to guess: four patterns over the name, the id, the
+   * tagline and `number > 12`. Each is a near-miss waiting to happen — a
+   * scenario whose tagline mentions all out war, or a third supplement whose
+   * thirteenth entry has nothing to do with the pack — and the app has already
+   * deleted one rules engine built out of name patterns.
+   */
+  const isAllOutWarScenario = selectedScenario?.source === 'all-out-war';
 
   // Score for current warband
   const currentScoreObj = warbandScores[viewingWarband.id] || { vp: 0, completedDeeds: {}, turnScores: {} };

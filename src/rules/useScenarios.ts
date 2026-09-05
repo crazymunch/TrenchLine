@@ -16,11 +16,19 @@
  *     labels rather than invented rules — so they are materially better than
  *     the core twelve were, but they are not derived, and `derived: false` says
  *     so rather than letting them pass as sourced.
+ *
+ * Every screen that offers a scenario reads this, and that is the point of it.
+ * The Codex used to read `dataset.scenarios` directly — the derived set — so
+ * the three All Out War scenarios were selectable in Play Mode, loggable
+ * against a campaign, and findable in the quick search, but absent from the
+ * one screen a player opens to look a scenario up. Both shapes now carry an
+ * `entry`, so one card renders either.
  */
 import { useMemo } from 'react';
 import type { ScenarioEntry } from '@/types/catalogue';
 import type { Scenario } from '@/types/rules';
 import { ALL_OUT_WAR_SCENARIOS } from '@/data/allOutWarData';
+import { legacyEntry } from './legacyScenario';
 import { useDataset } from './useDataset';
 import { DEFAULT_RULESET_ID } from './rulesets';
 
@@ -50,7 +58,15 @@ export interface ScenarioChoice {
    * book each is from. Absent means the core rulebook.
    */
   source?: string;
-  /** Present only on derived scenarios. */
+  /**
+   * The scenario as sections, in the book's own headings.
+   *
+   * Present on all of them. The All Out War pack stores its rules in named
+   * fields rather than sections, so `legacySections` maps those onto the six
+   * headings every published scenario prints — which is what lets one card
+   * render both. `derived` above, not the presence of this, is what says
+   * whether the text came from the pipeline.
+   */
   entry?: ScenarioEntry;
 }
 
@@ -75,6 +91,7 @@ const fromLegacy = (s: Scenario): ScenarioChoice => ({
   gameLength: s.gameLength ?? null,
   derived: false,
   source: 'all-out-war',
+  entry: legacyEntry(s),
 });
 
 /**

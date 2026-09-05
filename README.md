@@ -5,7 +5,7 @@
 > [NewRecruit](https://www.newrecruit.eu/app/MySystems) for one game system,
 > with the campaign tooling built in.
 
-![TrenchLine](public/assets/stitch/campaign_hub_map.png)
+![TrenchLine](public/brand/banner.png)
 
 ## Status
 

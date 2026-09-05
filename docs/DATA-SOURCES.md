@@ -591,7 +591,10 @@ the app ships its own.
 | | provenance |
 |---|---|
 | `public/brand/icon.svg` | **Ours** — the app owner's own artwork. The single source of every icon, the favicon and the masthead. |
-| `public/brand/banner.png`, `bannercode.html` | Ours, same origin. Not wired into anything yet. |
+| `public/brand/banner.png`, `bannercode.html` | Ours, same origin. The README's hero image; not wired into the app itself. |
+| `data-sources/photography/duellists.jpg` | **Ours** — the app owner's own photograph of their own painted models. A source, not an asset: nothing references it and the 2.1 MB original never reaches a visitor. |
+| `public/brand/hero-wide.webp`, `hero-tall.webp` | Derived from that photograph by `node scripts/build-hero-image.mjs` — graded and cropped at build time so no CSS `filter` runs on a hero-sized image on a phone. |
+| `src/components/brand/GoogleMark.tsx` | **Not ours** — Google's mark, as Google draws it, vendored rather than hotlinked because `next.config.mjs` sets `img-src 'self' data: blob:` and loosening a content policy for a logo is a bad trade. Never recoloured, redrawn, or themed. |
 | `public/brand/icon.png` | Ours: a raster export of `icon.svg`. Nothing reads it, and it can drift from the SVG — it is kept as the delivered original, not as a source. |
 | `public/icons/*`, `public/logo.*` | Derived from `icon.svg` by `npm run icons:build`. |
 | `public/images/world-map.webp` | **Not ours** — still the publisher's. See below. |

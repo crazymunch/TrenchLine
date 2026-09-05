@@ -110,6 +110,55 @@
   --status-error: 196 52 43;
   --status-warning: 138 106 22;
   --status-legal: 44 97 82;
+
+  /*
+    ------------------------------------------------------------------------
+    Brand. Fixed across every theme, and deliberately not an accent.
+
+    The landing page renders before any warband is active, so there is no
+    faction for `--color-primary` to take — and `--accent-paper` is overridden
+    by all six themes below, so a page built on it would greet a visitor in
+    whichever faction's colour they last looked at. These do not move.
+
+    Contrast is measured, not assumed. Two results decide how they are used:
+
+      oxblood on the iron ground     1.98:1   never text
+      oxblood on the banded row      6.38:1   Glory costs, on paper
+      oxblood-ink on the iron ground 6.10:1   the text colour that replaces it
+      gold on the hero ground        7.49:1
+
+    So `--brand-oxblood` is a RULE and a FILL — the 3px card top rules, the
+    primary button, the Glory column on cream — and never a letterform on the
+    chrome. `--brand-oxblood-ink` is the one that goes on dark.
+    ------------------------------------------------------------------------
+  */
+  --brand-oxblood: 140 32 27;        /* #8C201B */
+  --brand-oxblood-lit: 163 42 36;    /* #A32A24  primary button hover */
+  --brand-oxblood-ink: 192 138 132;  /* #C08A84  oxblood's voice on dark */
+  --brand-gold: 197 155 39;          /* #C59B27  from the banner wordmark */
+
+  /*
+    The landing page's own grounds and hairlines.
+
+    Only what the theme tokens do not already say. Six of the design's values
+    turned out to be tokens the app has: #16181C is `--bg-base`, #1E2127 is
+    `--bg-surface`, #1A1D22 is `--bg-elevated`, #2A2E36 is `--color-border`,
+    #E9E4D7 is `--color-text` and #7A8290 is `--color-muted`. Those are used
+    as tokens rather than repeated here.
+
+    `--brand-ground-2` covers two values the design gave separately, #101215
+    and #0F1013, which differ by two parts in 255 — below the threshold of a
+    difference anyone can see, and above the threshold at which a second token
+    starts being chosen by coin toss.
+  */
+  --brand-ground: 12 13 16;          /* #0C0D10  the hero ground */
+  --brand-ground-2: 16 18 21;        /* #101215  inset panels, ghost buttons */
+  --brand-hover: 27 30 36;           /* #1B1E24  index row hover */
+  --brand-line: 58 64 76;            /* #3A404C  controls inside a preview */
+  --brand-line-2: 74 80 92;          /* #4A505C  secondary button border */
+  --brand-body: 168 174 185;         /* #A8AEB9  body copy,  7.97:1 on base */
+  --brand-lede: 216 211 198;         /* #D8D3C6  the hero lede, 13.0:1 */
+  --brand-plate: 201 205 212;        /* #C9CDD4  nav hover, plate captions */
 }
 
 /*
