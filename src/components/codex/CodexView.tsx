@@ -34,12 +34,13 @@ import {
   Flag,
   ExternalLink,
   Layers,
-  CheckCircle2
+  CheckCircle2,
+  HelpCircle
 } from 'lucide-react';
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
-  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons' | 'campaigns'>('rules');
+  const [activeTab, setActiveTab] = useState<'rules' | 'keywords' | 'scenarios' | 'skills' | 'charts' | 'weapons' | 'armour' | 'generator' | 'rulesets' | 'patrons' | 'campaigns' | 'faq'>('rules');
 
   /**
    * The reference tables, from the generated dataset.
@@ -92,6 +93,14 @@ export const CodexView: React.FC = () => {
   const campaigns = codexDataset?.campaigns ?? [];
   const visionCards = codexDataset?.visionCards ?? [];
   const carcassFrontMap = codexDataset?.carcassFrontMap;
+  /**
+   * The official Rules Commentaries — the game's own FAQ.
+   *
+   * Empty on a ruleset built without the extract, which is a real state; the
+   * parser throws rather than return an empty list when the file is present
+   * and unreadable, so an empty list here never means "we failed to read it".
+   */
+  const commentaries = codexDataset?.commentaries ?? [];
   const [searchQuery, setSearchQuery] = useState('');
   const [isProbabilityOpen, setIsProbabilityOpen] = useState(false);
   const [expandedScenarioId, setExpandedScenarioId] = useState<string>('claim-no-mans-land');
@@ -146,6 +155,20 @@ export const CodexView: React.FC = () => {
   const filteredKeywords = keywords.filter(
     (k) => k.name.toLowerCase().includes(filterText) || (k.description || '').toLowerCase().includes(filterText) || (k.type || '').toLowerCase().includes(filterText)
   );
+
+  /*
+    Question, answer AND label, so `RULES Q1` finds its own entry: that label
+    is what a player quotes to an opponent across a table, and searching for
+    the thing you were shown should find it.
+  */
+  const filteredCommentaries = commentaries.filter(
+    (c) => c.question.toLowerCase().includes(filterText)
+      || c.answer.toLowerCase().includes(filterText)
+      || c.label.toLowerCase().includes(filterText)
+      || c.section.toLowerCase().includes(filterText)
+  );
+  /** The document's own order, kept: sections run Core Rules first, Misc last. */
+  const commentarySections = [...new Set(filteredCommentaries.map((c) => c.section))];
 
   /**
    * The arsenal: the Armoury Tables joined to the rulebook's Battlekit chapter.
@@ -278,7 +301,17 @@ export const CodexView: React.FC = () => {
             Mission Designer and every generator in it were unreachable. Six
             buttons on two rows of three at phone width, four across from `sm`.
           */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2">
+          {/*
+            `lg:grid-cols-4`, not 7, since the FAQ made this eight buttons.
+            Eight across at 1440px truncates `Weapons Codex (108)` to nothing
+            useful; two rows of four gives every label its full width. Phone
+            and tablet are unchanged — 8 items over 2 columns is the same four
+            rows 7 items took, and over 3 columns the same three.
+
+            Literal class names, both of them. A templated `lg:grid-cols-${n}`
+            does not compile (docs/MOBILE.md).
+          */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {[
               { id: 'skills', label: 'Skills Compendium', icon: <Zap className="w-4 h-4" /> },
               { id: 'charts', label: 'Campaign D66 Tables', icon: <Skull className="w-4 h-4" /> },
@@ -290,6 +323,7 @@ export const CodexView: React.FC = () => {
               // `Campaigns (2)` truncates to `CAMPAIGNS (…` at 375px, which
               // shows the parenthesis and hides the count.
               { id: 'campaigns', label: 'Campaigns', icon: <Flag className="w-4 h-4" /> },
+              { id: 'faq', label: `Rules FAQ (${commentaries.length})`, icon: <HelpCircle className="w-4 h-4" /> },
             ].map((t) => (
               <button
                 key={t.id}
@@ -1372,6 +1406,62 @@ export const CodexView: React.FC = () => {
           map={carcassFrontMap}
           error={codexDatasetError}
         />
+      )}
+
+      {/* TAB: THE OFFICIAL RULES COMMENTARIES */}
+      {activeTab === 'faq' && (
+        <div className="space-y-6">
+          <div className="bg-theme-surface border border-theme-border rounded-md p-4 bevel-container">
+            <h2 className="font-gothic font-bold text-lg text-theme-primary">Rules Commentaries 1.0.2</h2>
+            <p className="text-xs font-mono text-theme-muted mt-1.5 leading-relaxed">
+              The game’s official answers to questions players actually asked, carried
+              verbatim. Each entry keeps its own reference — <span className="text-theme-text">RULES Q1</span>,
+              {' '}<span className="text-theme-text">MISC. Q7</span> — so you can quote it across a table.
+            </p>
+          </div>
+
+          {commentaries.length === 0 && (
+            /* Says which, rather than rendering an empty page. This ruleset has
+               no commentaries; that is not the same as failing to read them. */
+            <p className="text-xs font-mono text-theme-muted">
+              This ruleset carries no Rules Commentaries.
+            </p>
+          )}
+
+          {commentaries.length > 0 && filteredCommentaries.length === 0 && (
+            <p className="text-xs font-mono text-theme-muted">
+              No commentary matches “{searchQuery}”.
+            </p>
+          )}
+
+          {commentarySections.map((section) => (
+            <div key={section} className="space-y-3">
+              <h3 className="font-gothic font-bold text-base text-theme-text border-b border-theme-border pb-1.5">
+                {section}
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {filteredCommentaries.filter((c) => c.section === section).map((c) => (
+                  <div
+                    key={c.id}
+                    className="bg-theme-surface border border-theme-border rounded-md p-4 space-y-2 bevel-container"
+                  >
+                    <span className="inline-block text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-elevated text-theme-muted uppercase">
+                      {c.label}
+                    </span>
+                    <p className="text-xs font-mono font-bold text-theme-text leading-relaxed">
+                      {c.question}
+                    </p>
+                    {/* The answer is what the reader came for, so it is the one
+                        thing here in the body colour rather than the muted one. */}
+                    <p className="text-xs font-mono text-theme-text leading-relaxed border-l-2 border-theme-primary/60 pl-3">
+                      {c.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
       {activeTab === 'generator' && <MissionGenerator />}

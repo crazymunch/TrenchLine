@@ -936,6 +936,24 @@ export interface TraumaRow {
  * (1 is not a result on 2D6), and read Morale off "50% of starting models"
  * rather than the book's "half the models in your Warband, rounded up".
  */
+/**
+ * One question and answer from the official Rules Commentaries.
+ *
+ * `label` is the document's own — `RULES Q1`, `MISC. Q7` — and is what a
+ * player would quote to an opponent across a table, so it is carried rather
+ * than reduced to an index. `section` is derived from that same label, not
+ * from the heading the entry sits under: headings stack in this document
+ * (`Faction Lists Questions` above `Trench Pilgrims` above the first
+ * question), and a label repeated on every entry cannot drift from it.
+ */
+export interface RulesCommentary {
+  id: string;
+  section: string;
+  label: string;
+  question: string;
+  answer: string;
+}
+
 export interface BattleMarker {
   /** `BLOOD MARKERS`, as the book sets it. */
   name: string;
@@ -1153,6 +1171,21 @@ export interface Dataset {
    * which is a fact about the game rather than a gap in the reading.
    */
   markers?: BattleMarker[];
+  /**
+   * The official Rules Commentaries — the game's own FAQ.
+   *
+   * The PDF was fetched, extracted and committed, `SOURCES.json` recorded its
+   * role as "feeds the Codex and rules-engine edge cases", and nothing in the
+   * tree ever opened it. Several of its 51 answers settle things the app has
+   * to get right: whether a model is within X" of itself, how a 30x60mm base
+   * is measured for a rule that cares about 40mm, who rolls an Injury Roll
+   * that comes from something other than an attack.
+   *
+   * Optional because a ruleset built without the extract genuinely has no FAQ,
+   * which is different from one we failed to read — and the parser throws
+   * rather than return an empty list if the file is there and unreadable.
+   */
+  commentaries?: RulesCommentary[];
   /**
    * Hell on Earth: the Weather Events table, and the procedure for using it.
    *

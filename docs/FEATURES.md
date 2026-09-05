@@ -161,8 +161,8 @@ verified individually rather than deleted wholesale.
 
 ## Verification queue
 
-What has been read against the committed PDFs, and what has not. A row leaves
-this table by being checked, not by looking fine.
+What has been read against the committed PDFs. A row leaves this table by
+being checked, not by looking fine — and every row has now been checked.
 
 | Data | Source | State |
 |---|---|---|
@@ -173,7 +173,7 @@ this table by being checked, not by looking fine.
 | Unit statlines | BattleScribe + Warbands book | ✅ Checked both ways — `rules:crosscheck` reports 0 mismatched over 96 units, `rules:threeway` reports 0 app-vs-rulebook disagreements over 42 |
 | Keyword glossary | 1.0.2 Changelog | ✅ Checked. The 7 gaps §1.3a found — `CLEAVE (X)`, `DEADLY`, the three terrain Keywords, `REGENERATE (X)`, `SKIRMISHER` — are closed. All **17** Keywords the changelog names are present, and `scripts/__tests__/keywordGlossary.test.mjs` re-checks it |
 | Injury/Down/Out of Action rules | 1.0.2 Changelog | ✅ Checked. Nothing to apply: the digital rulebook the app derives from **is** 1.0.2 and already carries the changelog's rewrites — see below |
-| FAQ / edge cases | Rules Commentaries 1.0.2 | ⛔ **Not checked** |
+| FAQ / edge cases | Rules Commentaries 1.0.2 | ✅ Read and shipped. All 51 entries are derived into `dataset.commentaries` and shown in the Codex under **Rules FAQ**. The file had been fetched, extracted and committed, and nothing in the tree ever opened it |
 
 Five of these sat here as "needs checking" after they had been checked and
 fixed, in a document whose own tables above said so. That is the failure AUD-1

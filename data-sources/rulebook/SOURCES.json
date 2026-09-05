@@ -55,7 +55,7 @@
       "sha256": "a30dae0ca4370b08b9caef75ed907879444fee8054c13d9e7a71dfbd5c14c4f7",
       "extract": "extracted/rules-commentaries-1.0.2.txt",
       "committed": true,
-      "role": "Official FAQ. Feeds the Codex and rules-engine edge cases."
+      "role": "Official FAQ, 51 entries. Parsed by scripts/lib/parse-commentaries.mjs into dataset.commentaries and shown in the Codex under Rules FAQ. This line used to claim the same thing while nothing in the tree opened the file."
     },
     {
       "file": "hell-on-earth-weather-events.pdf",

@@ -26,6 +26,7 @@ import { parseThresholdTable, parseStartingBudget, parseExploration,
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
+import { loadCommentaries } from './lib/parse-commentaries.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -305,6 +306,14 @@ for (const ruleset of RULESETS) {
     app at all — a number and an absence, both decided by hand.
   */
   const markers = parseMarkers(coreRules.chapters);
+  /*
+    The official FAQ. `SOURCES.json` said this file "feeds the Codex and
+    rules-engine edge cases" while nothing in the tree opened it — a documented
+    role the code did not honour. Several of its answers settle things the app
+    itself has to get right: whether a model is within X" of itself, how a
+    30x60mm base is measured, who rolls an Injury Roll from a non-attack effect.
+  */
+  const commentaries = loadCommentaries();
   if (coreRules.missing.length) {
     throw new Error(
       `rules-build: ${coreRules.missing.length} rulebook section(s) in the table of `
@@ -425,6 +434,15 @@ for (const ruleset of RULESETS) {
      */
     coreRules: coreRules.chapters,
     markers,
+    /**
+     * The official Rules Commentaries — the game's own FAQ, 51 entries.
+     *
+     * Attributed by the label the document puts on every question (`RULES Q1`,
+     * `MISC. Q7`) rather than by which heading it sits under, because heading
+     * detection is where this class of parser goes wrong and a per-entry label
+     * cannot drift from the entry it labels.
+     */
+    commentaries,
     /**
      * The Weather Events table, from the Hell on Earth module.
      *
@@ -1015,6 +1033,8 @@ for (const ruleset of RULESETS) {
         `${m.name} (${m.cap === null ? 'no published cap' : `cap ${m.cap}`}, `
         + `spent by the ${m.spentBy})`).join(', '));
 
+  console.log(`  commentaries: ${dataset.commentaries.length} FAQ entries across `
+            + `${new Set(dataset.commentaries.map((c) => c.section)).size} sections`);
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);

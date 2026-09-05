@@ -61664,6 +61664,365 @@ export const DATASET: Dataset = {
       "rules": "BLESSING MARKERS are similar to BLOOD MARKERS, but specifically aid Success Rolls for the model.\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. When you take a Success Roll for the model, you may choose to spend one or more BLESSING MARKERS to add +1 DICE, and each time an Injury Roll is made for the model you may spend one or more BLESSING MARKERS to add -1 INJURY DICE."
     }
   ],
+  "commentaries": [
+    {
+      "id": "faq-rules1",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q1",
+      "question": "In what order do players apply BLOOD and BLESSING MARKERS to the same roll?",
+      "answer": "If two things happen at the same time, the player who has the Initiative determines the order in which they are performed. (Page 32 of the Trench Crusade Digital Rulebook)."
+    },
+    {
+      "id": "faq-rules2",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q2",
+      "question": "Is ‘Move or Charge or Retreat’ a single ACTION? Or are they each a different type of ACTION (a Move ACTION, a Charge ACTION and a Retreat ACTION)? If the latter is correct, can a model take more than one of them during the same Activation?",
+      "answer": "They are different types of ACTION: a Move ACTION, a Charge ACTION and Retreat ACTION. However, a model cannot take more than one of them during the same Activation. If you want to move a model more than once you must use a Dash ACTION instead."
+    },
+    {
+      "id": "faq-rules3",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q3",
+      "question": "Can you declare a Retreat ACTION for a model even if it is unable to move?",
+      "answer": "Yes. However, even though model cannot move, it is still subject to being attacked as it had Retreated (unless stated otherwise)."
+    },
+    {
+      "id": "faq-rules4",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q4",
+      "question": "How does being placed on the other side of a gap after Jumping Over a Gap work? Can a model with a Movement Characteristic of 6” uses 3” of movement before making a jump of 3”,",
+      "answer": "Any movement required to place the model on the other side of a gap is treated as being ‘free’ movement, as long as the total of the move up to the gap and the distance of the gap itself is less than or equal to the model’s Movement Characteristic. For example, a model with a Movement Characteristic of 6” can use 3” of movement before making a jump of 3”, with the extra movement required to place them and their base on the other side of the gap being ‘free’."
+    },
+    {
+      "id": "faq-rules5",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q5",
+      "question": "When I shoot into a combat that has multiple friendly models and roll the 1-3 result that makes me target a friendly model, can I pick a friendly model that is in that combat but is out of Line of Sight of the shooting model?",
+      "answer": "No. You can only choose a model that can be chosen as a target by the attacking model (i.e. is visible to the attacking model and in range of the weapon being used). If there is no such model, the attack is wasted."
+    },
+    {
+      "id": "faq-rules6",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q6",
+      "question": "Sometimes an ability or special rule will say that an INJURY DICE or INJURY MODIFIER applies “for a model”. For example, Artificial Life for the Lion of Jabir says “Add -1 INJURY DICE to Injury Rolls for a Lion of Jabir”. Does the modifier apply to Injury Rolls made for the model, or to Injury Rolls for attacks made by the model?",
+      "answer": "It applies to Injury Rolls made for the model. It does not apply to Injury Rolls for attacks made by the model."
+    },
+    {
+      "id": "faq-rules7",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q7",
+      "question": "Can a model move through windows in buildings or narrow gaps in general?",
+      "answer": "A model cannot move through any space (e.g. a window, a corridor, a gap between terrain pieces) that is smaller than its base size. If a model has a base with two dimensions (e.g. 30mm by 60mm), use the smaller dimension when determining if it can move through a space."
+    },
+    {
+      "id": "faq-rules8",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q8",
+      "question": "Do all ACTIONS require making Success Rolls or Risky Success Rolls?",
+      "answer": "No, ACTIONS that require Success Rolls are specified in the rule text of the ACTION (or in the Comprehensive Rules section if it is a generic ACTION like Dash, Shoot, Fight, etc.)."
+    },
+    {
+      "id": "faq-rules9",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q9",
+      "question": "When a model takes an Injury Roll from an effect that isn’t an attack, who rolls the dice, and who can spend BLOOD/BLESSING MARKERS?",
+      "answer": "You always roll Injury Rolls for enemy models, spend the BLOOD/INFECTION MARKERS that enemy models have, and spend the BLESSING MARKERS that friendly models have. Likewise, your opponent always makes the Injury Rolls for your models, spends the BLOOD/ INFECTION MARKERS that your models have, and spends the BLESSING MARKERS that their own models have."
+    },
+    {
+      "id": "faq-rules10",
+      "section": "Core & Comprehensive Rules",
+      "label": "RULES Q10",
+      "question": "Is a BLOOD MARKER placed next to a model that is taken Down in ways other than by Injury Rolls (such as the Away, Serpents! power of an Eire Trench Cleric)?",
+      "answer": "Yes. Being “taken Down” is synonymous with “suffer the Down result from the Injury Table”."
+    },
+    {
+      "id": "faq-keywords1",
+      "section": "Keywords",
+      "label": "KEYWORDS Q1",
+      "question": "Can I target the point under a model’s base with a BLAST weapon?",
+      "answer": "No. You can only target a point on the Battlefield that is in the attacking model’s Line of Sight - and the LoS to the ground under the model is blocked by the model’s base."
+    },
+    {
+      "id": "faq-keywords2",
+      "section": "Keywords",
+      "label": "KEYWORDS Q2",
+      "question": "If I Activate a model in a FIRETEAM as an individual model, can I then Activate the second model later in the Turn as a FIRETEAM - therefore gaining a second Activation for the model that Activated first as an individual?",
+      "answer": "No."
+    },
+    {
+      "id": "faq-keywords3",
+      "section": "Keywords",
+      "label": "KEYWORDS Q3",
+      "question": "Do Keywords like IGNORE ARMOUR or IGNORE (MODIFIER) also ignore the Special Rules or Abilities granted by that Armour or the source of the Modifier?",
+      "answer": "No."
+    },
+    {
+      "id": "faq-keywords4",
+      "section": "Keywords",
+      "label": "KEYWORDS Q4",
+      "question": "Do weapons with the PISTOL Keyword with the effects of a type of ammunition (i.e. Incendiary Ammunition, Armour-Piercing Bullets, etc.) gain the benefits of said ammunition when they are used in melee combat?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-keywords5",
+      "section": "Keywords",
+      "label": "KEYWORDS Q5",
+      "question": "How does the TOUGH Keyword interact with other rules that prevent a model from being taken Down?",
+      "answer": "You follow the rules as written, and apply them one after the other in the order they occur. For example, a Lieutenant with the TOUGH Keyword wearing Machine Armour is taken Out of Action for the first time in a game. The TOUGH Keyword meansthat the Out of Action Injury result is treated as a Down Injury result the first time it is rolled, and Machine Armour has the Standfast rule which means that, when a model in Machine Armour suffers a Down result, it is treated as a Minor Wound result instead. This means that the Lieutenant does not suffer the Out of Action result, but instead suffers the Minor Wound result. The next time they suffer an Out of Action result, they are taken Out of Action as the TOUGH Keyword only alters the Injury result the first time it is rolled."
+    },
+    {
+      "id": "faq-keywords6",
+      "section": "Keywords",
+      "label": "KEYWORDS Q6",
+      "question": "If I target an enemy model with a weapon that has the BLAST Keyword, where do I measure the blast radius from on the target model?",
+      "answer": "It is measured from the centre of the model’s base. Note that if an attack scatters and ends up on another model’s base, in this instance the blast radius is instead measured from the point on the new model’s base that the attack scattered to (rather than the centre of the new model’s base)."
+    },
+    {
+      "id": "faq-keywords7",
+      "section": "Keywords",
+      "label": "KEYWORDS Q7",
+      "question": "If I am checking the Line of Sight to a point on the battlefield or terrain piece, can I check the Line of Sight to any part of the 1mm by 1mm point, or must I be able to see the centre of the point? And is the point considered to be 1mm high?",
+      "answer": "You can check the Line of Sight to any part of the point. The point is considered to be 1mm high."
+    },
+    {
+      "id": "faq-keywords8",
+      "section": "Keywords",
+      "label": "KEYWORDS Q8",
+      "question": "If I throw a grenade onto the lip of a trench or a ledge, does the blast hit models that are in the trench or below the ledge?",
+      "answer": "It will hit any model that has a Line of Sight to the target point, and whose base is within the blast radius for the grenade. In the example below, model A would be hit by the grenade, but model B would not be as its base is not within the blast radius of the attack."
+    },
+    {
+      "id": "faq-keywords9",
+      "section": "Keywords",
+      "label": "KEYWORDS Q9",
+      "question": "Model A is in contact with enemy Models X and Y. Enemy model X is hit by a BLAST, but models A and Y are not in the blast radius of the attack. I know that model A is hit by the attack – because it is in contact with model B – but is model Y also hit because it is in contact with model A?",
+      "answer": "No."
+    },
+    {
+      "id": "faq-keywords10",
+      "section": "Keywords",
+      "label": "KEYWORDS Q10",
+      "question": "Can I still charge a model that has the SKIRMISHER Keyword if it moves out of the charging model’s Line of Sight?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-battlekit1",
+      "section": "Battlekit",
+      "label": "BATTLEKIT Q1",
+      "question": "Why do the pieces of Battlekit in the Standard Battlekit and Glory Item sections of the rules not have the stipulations (like Bayonet Lug, Shield-Combo, etc) included in their descriptions, as they are when they appear in the Faction Lists? Is this a mistake?",
+      "answer": "No. The Battlekit in the Standard Battlekit and Glory Item sections can be used by several different Warbands, and sometimes the stipulations for the different Warbands will be different. Because of this we decided not to include the stipulations in the Standard Battlekit and Glory Item sections of the rulebook. For example, the forces of New Antioch are relentlessly drilled in the art of bayonet fighting, granting their Shotguns the Bayonet Lug stipulation. However, the hordes of the Court of the Seven-Headed Serpent see little reason to entertain the mundanities of the bayonet, instead opting for more arcane and brutal weaponry when they face their enemies up close. Therefore, their Shotguns do not have the Bayonet Lug stipulation."
+    },
+    {
+      "id": "faq-battlekit2",
+      "section": "Battlekit",
+      "label": "BATTLEKIT Q2",
+      "question": "Can a model that has the STRONG Keyword use a Shovel as a 1-Handed Melee Weapon?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-starting-a-warband1",
+      "section": "Starting A Warband",
+      "label": "STARTING A WARBAND Q1",
+      "question": "When I have a special rule that allows me to purchase Battlekit from other Factions Armoury Tables, does that Battlekit still come with the stipulations from the other Armoury Table (i.e. ELITE only, Shield Combo, Limit: 1, etc.)?",
+      "answer": "Yes. Battlekit purchased from an Armoury Table always comes with the listed stipulations unless stated otherwise."
+    },
+    {
+      "id": "faq-starting-a-warband2",
+      "section": "Starting A Warband",
+      "label": "STARTING A WARBAND Q2",
+      "question": "Do weapons with dual-types such as Pistols or Halberd-Guns count towards both limits of Ranged and Melee weapons that a model can have?",
+      "answer": "No. Weapons count towards the limit of the same type they are purchased from on an Armoury Table. For example, a Pistol counts as one 1-handed Ranged Weapon, whereas a Halberd-Gun counts as one 2-Handed Melee Weapon."
+    },
+    {
+      "id": "faq-starting-a-warband3",
+      "section": "Starting A Warband",
+      "label": "STARTING A WARBAND Q3",
+      "question": "If I have a Shield, can I have a 1-Handed Melee Weapon AND a 1-Handed Ranged Weapon?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-trench-pilgrims1",
+      "section": "Trench Pilgrims",
+      "label": "TRENCH PILGRIMS Q1",
+      "question": "Can I resurrect a Trench Pilgrim that died as a result of being Broken on the Wheel as a Martyr Penitent?",
+      "answer": "No. Though the knowledge of their sacrifice is a reward unto itself, they have not earned their martyrdom."
+    },
+    {
+      "id": "faq-heretic-legions1",
+      "section": "Heretic Legions",
+      "label": "HERETIC LEGIONS Q1",
+      "question": "Does the special rule that allows a Knights of Avarice Warband to purchase a Goetic Warlock Mercenary for 👑 stop me from being able to recruit a Goetic Warlock as a Mercenary for Glory?",
+      "answer": "No. This rule allows you to have two Goetic Warlocks in a Knights of Avarice Warband."
+    },
+    {
+      "id": "faq-heretic-legions2",
+      "section": "Heretic Legions",
+      "label": "HERETIC LEGIONS Q2",
+      "question": "Does the Death Commando’s Stealth Generator ability affect Blast attacks?",
+      "answer": "Only if the attack targets the Death Commando directly. It has no effect on a Blast that targets a point on the ground."
+    },
+    {
+      "id": "faq-black-grail1",
+      "section": "Black Grail",
+      "label": "BLACK GRAIL Q1",
+      "question": "Can a Lord of Tumours make a Crushing Blows attack if it has no Melee Weapons and/or if it has a Shield?",
+      "answer": "Yes to both questions."
+    },
+    {
+      "id": "faq-the-court1",
+      "section": "The Court",
+      "label": "THE COURT Q1",
+      "question": "Can my Sorcerer make a cast spell ACTION to use the Burning Inferno Ranged Attack and make a Shoot ACTION to make another Ranged Attack in the same Activation?",
+      "answer": "Yes. Ranged (and Melee) Attacks are not ACTIONS, and it is only ACTIONS that are limited to once per type of ACTION per Activation unless stated otherwise."
+    },
+    {
+      "id": "faq-the-court2",
+      "section": "The Court",
+      "label": "THE COURT Q2",
+      "question": "Can the Greed Goetic Power Black Heart be used multiple times per Activation?",
+      "answer": "No, as you cannot cast the same spell more than once per Activation. You can, however, use the Black Heart spell whenever you take a Success Roll or Risky Success Roll outside of your Activation."
+    },
+    {
+      "id": "faq-the-court3",
+      "section": "The Court",
+      "label": "THE COURT Q3",
+      "question": "Can a friendly model with the Slavemaster Spell use it to Carry out Commands using enemy Yoke Fiends within 18” of the spellcaster? If so, can I use this to make an enemy Yoke Fiend kill itself using the Sacrifice Command?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-mercenaries1",
+      "section": "Mercenaries",
+      "label": "MERCENARIES Q1",
+      "question": "Can a Mercy Dog drag a Downed model?",
+      "answer": "Yes. The rule specifically states that the Mercy Dog can move a model that is Down."
+    },
+    {
+      "id": "faq-campaigns1",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q1",
+      "question": "Do you HAVE to make Promotion Rolls and/or assign Promotion Dice?",
+      "answer": "Yes. When your Patron or your High Command deems it right to promote a member of your Warband, it would be unwise to refuse."
+    },
+    {
+      "id": "faq-campaigns2",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q2",
+      "question": "Does the Gunslinger skill from the Ranged Skills table in the Campaign Rules allow a model armed with a pair of automatic pistols to make two attacks with each pistol?",
+      "answer": "Yes. Make two attacks one after the other with the first pistol using its AUTOMATIC 2 Keyword, and then use the Gunslinger skill to use the second pistol to make two more attacks one after the other."
+    },
+    {
+      "id": "faq-campaigns3",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q3",
+      "question": "Do Trench Dogs count towards the number of models in the Warband for Maximum Field Strength?",
+      "answer": "Yes. It is only not counted as a model in the Warband for the purposes of Morale Checks."
+    },
+    {
+      "id": "faq-campaigns4",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q4",
+      "question": "Do Skills that increase the Limits for things that can be taken by certain models in the Warband (e.g. Logistical Skills, Sultan’s Favour) apply to models in Variant Warbands (such as the Holy Warriors in a Expeditionary Forces of Abyssinia Warband)?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-campaigns5",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q5",
+      "question": "When a Warband has the chance to choose between two different Exploration Tables during the Exploration & Looting Step, is the table chosen before or after rolling?",
+      "answer": "Before."
+    },
+    {
+      "id": "faq-campaigns6",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q6",
+      "question": "Can a model with the Gunslinger Skill and two Pistols swap one of the Pistols with a Melee Weapon when it takes a Fight ACTION? If it can and the Pistol is used to make the second Melee attack, does the IGNORE OFF-HAND WEAPON keyword apply to the attack?",
+      "answer": "Yes to both questions."
+    },
+    {
+      "id": "faq-campaigns7",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q7",
+      "question": "Which modifiers apply to an attack made with the Point Blank Skill?",
+      "answer": "Use the modifiers that apply to a Melee Attack."
+    },
+    {
+      "id": "faq-campaigns8",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q8",
+      "question": "Are the Glory Items in the Campaign Rules section considered to be Battlekit?",
+      "answer": "Yes."
+    },
+    {
+      "id": "faq-campaigns9",
+      "section": "Campaigns",
+      "label": "CAMPAIGNS Q9",
+      "question": "Are pieces of Battlekit that cost Glory Points in an Faction List’s Armoury Table or the special rules for a Variant Warband (e.g. the Troop Flag or the Field Shrine), considered Glory Items for the purposes of Exploration Tables?",
+      "answer": "No."
+    },
+    {
+      "id": "faq-scenarios1",
+      "section": "Scenarios",
+      "label": "SCENARIOS Q1",
+      "question": "Some Glorious Deeds require that an enemy is taken Out of Action with a Ranged Attack that uses the Long Range and Cover modifiers. Can I carry out these deeds if the attack has the IGNORE LONG RANGE or IGNORE COVER Keywords?",
+      "answer": "No."
+    },
+    {
+      "id": "faq-scenarios2",
+      "section": "Scenarios",
+      "label": "SCENARIOS Q2",
+      "question": "It is possible for both players to complete the King of the Hill Glorious Deed in the Armoured Train scenario at the same time. How is this resolved?",
+      "answer": "The player with the initiative decides who completed the deed first (see the box out on page 32 of the Digital Rulebook)."
+    },
+    {
+      "id": "faq-misc-1",
+      "section": "Miscellaneous",
+      "label": "MISC. Q1",
+      "question": "Some models have a Base size of 30x60mm. How does this work for rules that give different effects depending on Base size (i.e. smaller or larger than 40mm)",
+      "answer": "Models with Bases of different dimensions (e.g. 30x60mm) count their Base size as the larger dimension (e.g. 60mm) for the purposes of rules that refer to Base sizes."
+    },
+    {
+      "id": "faq-misc-2",
+      "section": "Miscellaneous",
+      "label": "MISC. Q2",
+      "question": "Does a rule that affects ‘friendly models within X”’ also affect the model with that rule? For example, can the owner of a Musical Instrument benefit from its effects?",
+      "answer": "Yes. A model is considered to be within X” of itself unless otherwise stated."
+    },
+    {
+      "id": "faq-misc-3",
+      "section": "Miscellaneous",
+      "label": "MISC. Q3",
+      "question": "I have some models in my collection that carry some items of battlekit that the rules don’t allow them to use, just because I think they look great modelled that way. For example, I’ve made one of my models with a rifle slung on its back, holding a pistol in one hand and a trench club in the other. By the letter of the rules this model can’t be used, because it has a 2-Handed Ranged Weapon (the rifle) and a 1-Handed Ranged Weapon (the pistol). Is it okay for me to use the model if I don’t use the rifle during the game? If the answer is yes, do I have to pay the cost of the rifle even though I won’t use it?",
+      "answer": "It is definitely okay to use your model in a game - the rule of cool takes precedence in this case. If you do, any extra Battlekit that you add is considered to be purely decorative, and you cannot use it and do not have to pay its cost in ducats. It is also ignored when working out the range or Line of Sight to or from the model. However, if you use a model like this in a game, you must tell your opponent which Battlekit is decorative at the start of the game, before either side deploys."
+    },
+    {
+      "id": "faq-misc-4",
+      "section": "Miscellaneous",
+      "label": "MISC. Q4",
+      "question": "Do the Corrupt Merchants and Weapon Collections special rules only allow me to purchase one of each piece of Battlekit that I choose, or can I purchase multiple copies of the same Battlekit?",
+      "answer": "You can only purchase one of each piece of Battlekit."
+    },
+    {
+      "id": "faq-misc-5",
+      "section": "Miscellaneous",
+      "label": "MISC. Q5",
+      "question": "I’ve been told that scenarios must be played on boards that are 3’ by 3’. Does this mean that I can’t use the 4’ by 4’ board I have made?",
+      "answer": "Don’t worry, you can use your 4’ by 4’ board for ALL of the scenarios in the Trench Crusade Rulebook. The scenarios are designed so that almost all of them can be played on a surface that is at least 30” across. Some require larger playing areas, but when this is the case it is clearly indicated in the instructions for the scenario. So, you can use any sized board as long as it is 30” across or larger. This means you can use a 4’ by 4’ board, a 6’ by 4’ board, or even a 10’ by 5’ board."
+    },
+    {
+      "id": "faq-misc-6",
+      "section": "Miscellaneous",
+      "label": "MISC. Q6",
+      "question": "Can we use the Glory Items in the Campaign Rules section of the Trench Crusade Rulebook in one-off games?",
+      "answer": "By the letter of the rules, Glory Items in the Campaign Rules can only be taken in campaigns (see Glory Items in the Trench Crusade Digital Rulebook). However, like anything else, if you and your opponent consent to the use of certain Glory Items in a one-off game, please feel free to do so. As long as everyone at the table agrees with what is happening, there is no wrong way to play Trench Crusade!"
+    },
+    {
+      "id": "faq-misc-7",
+      "section": "Miscellaneous",
+      "label": "MISC. Q7",
+      "question": "Does a model have a Line of Sight to itself?",
+      "answer": "Yes."
+    }
+  ],
   "weather": {
     "procedure": "All of Creation reels and rends in response to the Great War, and even the weather is endowed with divine or devilish power. To represent this in your games of Trench Crusade, you and your opponent(s) may choose to influence your battles by generating a Weather Event. After the battlefield has been set up but before players have Deployed any models, each player rolls 2D6 on the Weather Event Table below. In a campaign, the player with the fewest Campaign Victory Points decides which of the rolled Weather Events to apply for the remainder of the battle. If all players have the same number of Campaign Victory Points, or you are playing a one-off game, simply roll-off, with the winner deciding which rolled Weather Event to apply for the battle.",
     "events": [

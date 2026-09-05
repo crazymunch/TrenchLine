@@ -126,7 +126,7 @@ All five committed:
 | `warbands-of-trench-crusade.pdf` | 186 | **The statline authority.** 48 warband entries, each with recruitment limits, Ducat cost, full statline, keywords and abilities. Machine-parseable — see below. |
 | `trench-crusade-digital-rulebook.pdf` | 197 | Core + Comprehensive rules, keyword glossary, D66 trauma/exploration/skills tables, scenarios. |
 | `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — a record of what changed from 1.0.1, **not** a delta to apply. The digital rulebook above is already 1.0.2 and carries every rewrite it lists, so nothing transcribes it to a layer. Kept as evidence: it is where the Keyword completeness check reads the expected list from. |
-| `rules-commentaries-1.0.2.pdf` | 8 | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
+| `rules-commentaries-1.0.2.pdf` | 8 | **Official FAQ**, 51 entries. Not layer material: it answers questions about the rules rather than changing them. Parsed by `scripts/lib/parse-commentaries.mjs` into `dataset.commentaries` and shown in the Codex under **Rules FAQ**. |
 | `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
 
 ### The Warbands book is parseable, not just searchable
@@ -200,6 +200,38 @@ bottom-to-top). The current `scripts/extract-pdf.mjs` output does not have this
 problem on these documents — the Warbands book parses cleanly. Verification
 still treats an `unconfirmed` result as non-fatal, because prose sections of the
 Digital Rulebook are less regular than the warband entry tables.
+
+### Reading the Rules Commentaries
+
+Attribution is the document's own. Every question opens with a label —
+`RULES Q1`, `KEYWORDS Q4`, `MISC. Q7` — and that label IS the section, so the
+parser detects no headings at all.
+
+That matters because heading detection is where this class of parser goes
+wrong. In this document headings **stack**: `Faction Lists Questions` sits above
+`Trench Pilgrims`, which sits above the section's first question. And the
+running head `Rules Commentaries 1.0.2` looks like a heading on every page. A
+label the document repeats on every single entry cannot drift from the entry it
+labels.
+
+Two failures the parser is built against, both of which happened while writing
+it:
+
+- **`MISC.` has a full stop in its label.** A character class without one
+  matches 44 of the 51 questions and reports no error — the silent
+  under-read that is worse than a crash.
+- **A section heading sits between one section's last answer and the next
+  section's first question.** An answer that keeps reading swallows it, and
+  ships "It has no effect on a Blast that targets a point on the ground. The
+  Cult of the Black Grail" as the official answer. That is the sidebar bleed
+  the D66 tables had, in a different document — so the same shape check backs
+  it up: a short capitalised fragment dangling after the answer's last full
+  stop throws, without consulting any list of heading names.
+
+The parser also refuses a near-empty read, throws on a question with no answer,
+and throws when two answers run together. Extraction spacing is tidied — the
+PDF's justified text leaves `itself ?` and a stray full stop — which changes no
+word.
 
 ## 3. Trench Dispatch — the patch layer
 
