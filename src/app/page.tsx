@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Shield, Swords, Flag, Users, BookOpen, ArrowRight, LogIn, Check,
@@ -22,6 +23,27 @@ import {
  * is React #418 and a bug this app has already been bitten by twice. "Warband
  * Roster" goes straight to whichever warband is active, which is the same
  * answer without the mismatch.
+ *
+ * ## Who actually sees it
+ *
+ * A front door is for people who have not been inside. A signed-in visitor is
+ * sent on to `/roster` — they have already read this page, and making them
+ * click past it every launch is a toll on the people who use the app most.
+ *
+ * Signed-OUT visitors always get the landing page, including ones with
+ * warbands saved in this browser. That is deliberate: local-only play is
+ * supported and the page says so, but it is also the one moment where the
+ * offer to sign in is in front of someone who has something to lose.
+ *
+ * The redirect runs in an effect rather than during render, so the landing
+ * page paints first and is replaced once the session resolves. That flash is
+ * the price of keeping `/` a static document: deciding before paint means
+ * either reading auth state during render (the React #418 mismatch above) or
+ * a `middleware.ts`, which makes `/` an edge invocation on every visit —
+ * slower for exactly the new visitors this page exists for.
+ *
+ * `?stay=1` suppresses the redirect, so the landing page can be opened and
+ * reviewed without signing out.
  */
 
 const SECTIONS = [
@@ -76,8 +98,41 @@ const SIGNED_IN_GIVES = [
   'Your roster visible in a campaign’s directory',
 ];
 
+/** The query flag that suppresses the signed-in redirect. */
+const STAY = 'stay';
+
 export default function Home() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+  const [staying, setStaying] = useState(false);
+
+  useEffect(() => {
+    // `status` is 'loading' until the session request lands; only
+    // 'authenticated' is a decision. Read the query off `window` rather than
+    // `useSearchParams`, which would force this page into a Suspense boundary
+    // and out of static rendering for the sake of a flag almost nobody sets.
+    if (status !== 'authenticated') return;
+    if (new URLSearchParams(window.location.search).has(STAY)) {
+      setStaying(true);
+      return;
+    }
+    router.replace('/roster');
+  }, [status, router]);
+
+  if (status === 'authenticated' && !staying) {
+    /*
+      Not the landing page. By here the answer is known and the navigation is
+      already queued — one frame of the front door on the way past reads as a
+      sign-out.
+    */
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-theme-base p-6 text-theme-text">
+        <p className="font-mono text-sm text-theme-muted" role="status">
+          Taking you to your warbands&hellip;
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-dvh bg-theme-base text-theme-text">
