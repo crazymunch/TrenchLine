@@ -65,6 +65,38 @@ same lapis as its `#76D6D5`, and Hell's `#73215F` is the Tyrian purple the Court
 of the Seven-Headed Serpent is named for. Hue, not just value, has to separate
 them — four of the six would otherwise have been reds and browns.
 
+## Brand, which is not an accent
+
+The landing page at `/` is the one screen that renders before any warband
+exists, so it has no faction — and `--accent-paper` is overridden by all six
+themes above, so a front door built on it would greet a visitor in whichever
+faction they last looked at. It uses a separate, fixed set:
+
+| token | value | what it is for |
+|---|---|---|
+| `--brand-oxblood` | `#8C201B` | Rules and fills: the 3px card top rules, the primary button, Glory costs on cream |
+| `--brand-oxblood-lit` | `#A32A24` | That button's hover |
+| `--brand-oxblood-ink` | `#C08A84` | Oxblood's **voice on dark** |
+| `--brand-gold` | `#C59B27` | The eyebrow, taken from the banner wordmark |
+
+Plus eight greys — `--brand-ground`, `-ground-2`, `-hover`, `-line`, `-line-2`,
+`-body`, `-lede`, `-plate` — for the values the theme tokens do not already
+carry. Six of the design's values turned out to be tokens the app has:
+`#16181C` is `--bg-base`, `#1E2127` is `--bg-surface`, `#1A1D22` is
+`--bg-elevated`, `#2A2E36` is `--color-border`, `#E9E4D7` is `--color-text`,
+`#7A8290` is `--color-muted`. Those are used as tokens.
+
+**Measured, and one result is a rule.** Oxblood on the iron ground is
+**1.98:1** — so it is never a letterform there, only a rule or a fill, and
+`--brand-oxblood-ink` (6.10:1) is what carries oxblood's meaning in text. On
+the banded row it is 6.38:1, which is why Glory costs on cream can be oxblood
+itself. Gold on the hero ground is 7.49:1.
+
+The page carries no hex of its own; a test asserts it
+(`src/components/landing/__tests__/previews.test.ts`). The one exception is
+`GoogleMark`, whose four hexes are Google's trademark colours and must not be
+tokenised or themed.
+
 ## The rules
 
 **Flat and square.** Zero border radius, no shadows, no glow. A thing is
@@ -125,4 +157,6 @@ pipeline, the validation engine, the store, or what any button does.
 
 - [`MOBILE.md`](MOBILE.md) — the three formats and the definition of done.
 - `src/app/globals.css` — the token layer, with the reasoning inline.
+- `src/components/landing/Landing.tsx` — the front door, and why it is ordered
+  the way it is rather than in nav order.
 - `src/components/ui/ViewMasthead.tsx` — the shared masthead.

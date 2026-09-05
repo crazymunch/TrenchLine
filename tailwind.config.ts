@@ -32,6 +32,24 @@ const config: Config = {
         "status-error": "rgb(var(--status-error) / <alpha-value>)",
         "status-warning": "rgb(var(--status-warning) / <alpha-value>)",
         "status-legal": "rgb(var(--status-legal) / <alpha-value>)",
+        /*
+          Brand, also fixed, and for the landing page — which renders before a
+          warband exists and so has no faction to take an accent from. Never
+          `text-brand-oxblood` on the iron ground: that pair is 1.98:1, and
+          `text-brand-oxblood-ink` is the 6.10:1 that says the same thing.
+        */
+        "brand-oxblood": "rgb(var(--brand-oxblood) / <alpha-value>)",
+        "brand-oxblood-lit": "rgb(var(--brand-oxblood-lit) / <alpha-value>)",
+        "brand-oxblood-ink": "rgb(var(--brand-oxblood-ink) / <alpha-value>)",
+        "brand-gold": "rgb(var(--brand-gold) / <alpha-value>)",
+        "brand-ground": "rgb(var(--brand-ground) / <alpha-value>)",
+        "brand-ground-2": "rgb(var(--brand-ground-2) / <alpha-value>)",
+        "brand-hover": "rgb(var(--brand-hover) / <alpha-value>)",
+        "brand-line": "rgb(var(--brand-line) / <alpha-value>)",
+        "brand-line-2": "rgb(var(--brand-line-2) / <alpha-value>)",
+        "brand-body": "rgb(var(--brand-body) / <alpha-value>)",
+        "brand-lede": "rgb(var(--brand-lede) / <alpha-value>)",
+        "brand-plate": "rgb(var(--brand-plate) / <alpha-value>)",
       },
     },
   },
