@@ -63,6 +63,56 @@ conditional modifiers.
 `npm run rules:verify` reports what changed. Bumping the pinned SHA is a
 deliberate, reviewed commit.
 
+### What `rules:crosscheck` reports, and what each line means
+
+`npm run rules:crosscheck` compares every unit in the generated dataset against
+these catalogues on Movement / Ranged / Melee / Armour. Its buckets are not
+interchangeable, and the distinction is the whole value of the report:
+
+| line | means |
+|---|---|
+| `MISMATCHED` | The catalogue and the app disagree, and no layer says why. A defect. |
+| `explained by a layer` | They disagree because an erratum or the Carcass Front layer changed it on purpose. Listed apart so an intentional change is never re-investigated as drift. |
+| `unmatched` | The app says a unit came from a named `.cat` and that file has no such entry. Also a defect: a wrong name, or an entry that has gone. |
+| `outside the catalogue` | The unit came from a book BattleScribe does not carry. A fact about coverage, named per source and per unit. |
+| `no source recorded` | Nothing says where the unit came from. The state the pipeline exists to end. |
+
+**Exit code:** 0 for a statline disagreement — deciding one needs the book, and
+that gate is `rules:verify`'s, per the restructure plan. Non-zero for
+`unmatched` or `no source recorded`, which are not questions about the game but
+about the app's own bookkeeping, are answerable without opening a rulebook, and
+are both currently zero. Not wired into CI here: which checks gate the build is
+a policy decision the plan assigns to `rules:verify`.
+
+**`unmatched` and `outside the catalogue` used to be one bucket**, and that hid
+things in both directions. Fifteen Carcass Front models sat under "no catalogue
+entry of this name" as if the app had invented them, while a genuine naming
+error would have been the sixteenth line in that list. Splitting them on the
+unit's own `sourceFile` — the pipeline already records it — took `unmatched` to
+0 and made the nine genuinely uncovered models visible **by name**, which is
+what lets a reader spot one the catalogue does in fact carry.
+
+Two matching rules, both narrower than they look:
+
+- **Five Carcass Front models are aliased to their catalogue entries.** The
+  book reprints models the catalogues already have under its own warband's
+  names — a Procession of the Sacred Affliction `Lazarist Castigator` is the
+  Trench Pilgrims `Castigator`. The pairing is asserted only where the two
+  statlines were confirmed identical at the four compared fields; if the book
+  ever restates one differently, the check reports a mismatch, which is the
+  signal wanted. No parent-faction relationship is assumed — the Carcass Front
+  parser records none, and inferring one from overlapping models would be a
+  claim the source does not make.
+- **A name-only fallback may now match several agreeing candidates.** It used
+  to demand a globally unique name, because "Guard Dog" exists in both
+  `Mercenaries.cat` and `New Antioch.cat` with different statlines and picking
+  blind reported four mismatches that were the check's own bookkeeping. But
+  uniqueness is stricter than its reason: candidates that agree on every
+  compared field offer nothing to choose wrongly. `Wretched` is the case —
+  identical profiles in `Heretic Legion.cat` and `Court of the Seven-Headed
+  Serpent.cat`, and the app's copy went unchecked against both for want of a
+  tie-break that was never needed.
+
 ## 2. Official rulebooks — cross-check and prose
 
 **Source:** <https://www.trenchcrusade.com/rules/> (all PDFs linked there)
