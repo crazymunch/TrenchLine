@@ -968,16 +968,6 @@ export const DATASET: Dataset = {
           "description": "An Amalgam can take a Trample ACTION. If it does so, it can make a Melee Attack that must target an enemy model that is Down. A Trample Melee Attack does not use a Melee Weapon and has the IGNORE ARMOUR Keyword"
         },
         {
-          "id": "7d24-3042-d6c2-f5bc",
-          "name": "Six-armed Monstrosity",
-          "description": "The rules for making more than one Ranged or Melee Attack do not apply to an Amalgam. Instead an Amalgam can take 1 Shoot ACTION per Activation with each Ranged Weapon it is equipped with, and can take 1 Fight ACTION per Activation with each Melee Weapon it is equipped with. The Off-Hand Weapon modifier does not apply to any of its Melee Attacks"
-        },
-        {
-          "id": "a01c-f868-09d3-8cb7",
-          "name": "Strong-ish",
-          "description": "Two of the arms of the Amalgam have the Keyword STRONG. It can wield any two HEAVY weapons of its choice, each using one hand regardless of the weapon rules."
-        },
-        {
           "name": "Absorb",
           "description": "When a model (friend or foe) within 1” of an Amalgam is taken Out of Action, you may remove a BLOOD MARKER from the Amalgam’s model. If the model that is taken Out of Action is mounted on a base that is 40mm or larger and the Amalgam’s TOUGH Keyword has been used, the Amalgam no longer counts as having used the TOUGH Keyword and may use it again the next time it is taken Out of Action."
         },
@@ -986,7 +976,19 @@ export const DATASET: Dataset = {
           "description": "If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have to 0-2, and immediately recruit an Amalgam at no cost."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "dispatch01-vile-corpus-bombardment-horde",
+          "name": "Bombardment Horde",
+          "group": "Vile Corpus",
+          "cost": {
+            "ducats": 20,
+            "glory": 0
+          },
+          "constraints": [],
+          "description": "An Amalgam with this Vile Corpus has a Ranged Characteristic of +1 DICE and a Melee Characteristic of +0 DICE. In addition, when this model takes a Shoot ACTION with its Gluttonous Arsenal, you can replace the AUTOMATIC 3 Keyword with the BLAST 3” and SCATTER Keywords."
+        }
+      ],
       "battlekit": [],
       "constraints": [
         {

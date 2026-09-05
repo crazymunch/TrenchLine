@@ -1,0 +1,31 @@
+{
+  "_comment": [
+    "The Trench Dispatch, held as a GitHub release asset rather than in git history.",
+    "Fetch it with: npm run rules:pdfs",
+    "The PDF is gitignored; its extracted text is committed, and that text is what",
+    "the pipeline reads. The sha256 is the release asset digest.",
+    "",
+    "One thing the extract CANNOT carry: the currency glyphs. The Dispatch draws",
+    "them from a Type3 font and they are not in the PDF's text stream at all, so",
+    "every extractor yields a bare number — pdf-parse and PyMuPDF alike. A cost in",
+    "this document therefore has to be read from the RENDERED page: a crown in a",
+    "filled disc is Ducats, an eight-pointed sun in an outlined disc is Glory. Ops",
+    "whose currency was read that way say so in _costCurrencyConfirmed."
+  ],
+  "release": {
+    "repo": "crazymunch/TrenchLine",
+    "tag": "assets",
+    "note": "Private repo — the public releases/download URL 404s. Fetch via the authenticated api.github.com asset endpoint; see scripts/rules-fetch-pdfs.mjs."
+  },
+  "assets": [
+    {
+      "file": "trench-dispatch.pdf",
+      "assetId": 536111699,
+      "bytes": 25185286,
+      "sha256": "13f41d095789a81cc2abca27d680d47c208e19bfe2683e2f152df81cedffe43b",
+      "extract": "trench-dispatch-01-april-2026.txt",
+      "committed": false,
+      "role": "Trench Dispatch 01 (April 2026): errata, the Grail Strains and Amalgam rewrite, the Vile Corpus, two new Glory Items and the Mercenary section. Mostly Public Beta."
+    }
+  ]
+}

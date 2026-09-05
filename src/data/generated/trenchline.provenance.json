@@ -544,8 +544,8 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
-      "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "battlekit": {
       "layer": "base",

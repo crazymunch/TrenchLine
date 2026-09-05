@@ -41,6 +41,7 @@ data-sources/rulebook/warbands-of-trench-crusade.pdf
 data-sources/rulebook/trench-crusade-digital-rulebook.pdf
 data-sources/carcass-front/carcass-front-book.pdf
 data-sources/carcass-front/vision-cards.pdf
+data-sources/dispatch/trench-dispatch.pdf
 
 # Pipeline scratch
 *.tmp.mjs

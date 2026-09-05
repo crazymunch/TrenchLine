@@ -262,6 +262,36 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
         break;
       }
 
+      /*
+        Take an ability off an entry.
+
+        The counterpart to `addAbility`, and it exists because of one verified
+        case rather than for symmetry. The Dispatch's Amalgam page was read at
+        the printed page: it lists exactly five abilities and four Keywords,
+        and the catalogue's `Six-armed Monstrosity` and `Strong-ish` are not
+        among them. "Replace the … Warband Entries with the following" is
+        literal.
+
+        Keeping them was the conservative choice while the list could not be
+        confirmed, and it produced an entry that contradicted itself — it
+        cannot have any Battlekit but its Gluttonous Arsenal, while
+        `Strong-ish` let it wield two HEAVY weapons and asserted a STRONG
+        Keyword the same layer removes.
+
+        Unresolved rather than silent when the ability is not there: an errata
+        that removes something already gone has rotted, and that is worth
+        knowing.
+      */
+      case 'removeAbility': {
+        target.abilities ??= [];
+        const i = target.abilities.findIndex(
+          (a) => a.name?.toLowerCase() === op.name.toLowerCase());
+        if (i < 0) { unresolved.push({ op, why: `no ability named ${op.name}` }); break; }
+        target.abilities.splice(i, 1);
+        stamp(op.target, 'abilities', target);
+        break;
+      }
+
       case 'replaceAbility': {
         target.abilities ??= [];
         const i = target.abilities.findIndex(

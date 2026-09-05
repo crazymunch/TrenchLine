@@ -39,7 +39,7 @@ roster.
 | Hand/slot capacity (1H/2H, shield combo) | 🟡 | Partial, hand-rolled |
 | **Roster legality summary** | ✅ | `LegalityStrip` renders the verdict, each violation naming the rule that produced it |
 | Per-model wargear costs rolled into total | ✅ | |
-| **Glory Items / per-model upgrades** | 🟡 | `UnitOption` exists and the Grail Strains are derived onto the Thrall; the Dispatch's two new Glory Items are stocked and priced. Goetic Powers are not modelled, and the Vile Corpus is blocked on the printed page — the extraction yields one entry where the rules require several (RESTRUCTURE-PLAN 1.7) |
+| **Glory Items / per-model upgrades** | 🟡 | `UnitOption` exists; the Grail Strains and the Vile Corpus are derived onto their entries, and the Dispatch's two new Glory Items are stocked and priced. Goetic Powers are still not modelled |
 | Import from NewRecruit / BattleScribe | 🟡 | JSON/XML/text, resolved against the generated dataset. An entry it cannot match is now **reported, not invented** — it used to become a 35-Ducat Trooper with a made-up statline. Equipment is still not carried across from the export |
 | Export roster (print / text) | ✅ | `ExportModal` with real print styles |
 | Export to shareable file | 🟡 | `ExportModal` writes a file; a roster now also has a URL (`/roster/[id]`), though it is device-local until the owner is signed in |

@@ -956,6 +956,47 @@
       "_src": "p.8 — 'dd the following entry to the SULTANATE Glory Items Table: Regimental Kaşık | Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1 | 4'",
       "_costCurrencyDerived": "Glory. The Dispatch prints the currency as a glyph and the text extraction drops it, leaving a bare number — the same problem the Grail Strain costs had. This one needs no maintainer ruling because the row is being added to a table the base rulebook already prints, and every one of the 51 priced rows in the rulebook's Glory Items Tables is in Glory, with no exceptions. The currency is read off the table the row joins, not inferred from the item.",
       "_sectionNote": "Type row reads 'Equipment', so it is stocked as Equipment."
+    },
+    {
+      "op": "removeAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "name": "Six-armed Monstrosity",
+      "_src": "p.4 '0-1 Amalgam' — the Abilities block lists Absorb, Corpulent, Curse on Creation, Trample ACTION, Unstoppable, and nothing else",
+      "_note": "Confirmed at the printed page, not inferred from the extracted text. The rendered page shows the complete entry — heading, statline table, Battlekit, five abilities, the Keyword row and the Gluttonous Arsenal box — with nothing truncated. This ability let an Amalgam take one ACTION per weapon equipped, and the replacement's Battlekit line says it cannot have any Battlekit but its Gluttonous Arsenal and up to one Vile Corpus."
+    },
+    {
+      "op": "removeAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "name": "Strong-ish",
+      "_src": "p.4 '0-1 Amalgam' — not in the Abilities block; the Keyword row reads BLACK GRAIL, FEAR, NEGATE GAS, TOUGH",
+      "_note": "The one that made the shipped entry self-contradictory: its text is 'Two of the arms of the Amalgam have the Keyword STRONG. It can wield any two HEAVY weapons of its choice', while this same layer removes STRONG from the Keyword row because the printed row omits it."
+    },
+    {
+      "op": "addOption",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "option": {
+        "id": "dispatch01-vile-corpus-bombardment-horde",
+        "name": "Bombardment Horde",
+        "group": "Vile Corpus",
+        "cost": {
+          "ducats": 20,
+          "glory": 0
+        },
+        "constraints": [],
+        "description": "An Amalgam with this Vile Corpus has a Ranged Characteristic of +1 DICE and a Melee Characteristic of +0 DICE. In addition, when this model takes a Shoot ACTION with its Gluttonous Arsenal, you can replace the AUTOMATIC 3 Keyword with the BLAST 3” and SCATTER Keywords."
+      },
+      "_src": "p.5 Vile Corpus Abilities — '✥ Bombardment Horde (20 [crown]): …'",
+      "_costCurrencyConfirmed": "Read from the printed page. The Dispatch's cost glyphs are drawn from a Type3 font and are not in the PDF's text stream at all, so no extractor recovers them — pdf-parse and PyMuPDF both yield a bare number. The page was rendered at 130-500 dpi and the glyph read directly: a CROWN in a filled disc is Ducats, an eight-pointed sun in an outlined disc is Glory.",
+      "_note": "The ONLY Vile Corpus the Dispatch prints. The rendered page shows one bullet in the Vile Corpus Abilities box and then the next section, so this is the published list and not a truncated read of it — an earlier note in this repository claimed the extraction had dropped entries, reasoning from 'each Amalgam in a Warband must have a different Vile Corpus'. That rule is satisfiable trivially while only one exists, and it reads as forward-looking in a Public Beta section."
     }
   ]
 }

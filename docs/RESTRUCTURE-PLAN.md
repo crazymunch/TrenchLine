@@ -185,61 +185,37 @@ All are covered by regression tests.
   rows in the rulebook's Glory Items Tables are in Glory with no exceptions —
   so the currency is read off the table the row joins.
 
-- **The Vile Corpus cannot be transcribed from the source we have.** The
-  extracted Dispatch text carries the section heading (*Vile Corpus
-  Abilities*), the rule that governs them — *"each Amalgam in a Warband must
-  have a different Vile Corpus"* — and then exactly **one** entry, *Bombardment
-  Horde (20)*. A rule requiring each Amalgam to have a different one cannot be
-  satisfied by a list of one, so the extraction has dropped entries; this is
-  the same class of PDF defect as the sidebar bleed and column scrambling
-  documented in DATA-SOURCES.
+  **The Amalgam ability list is settled, at the printed page.** This was
+  recorded as an open decision — the Dispatch's list omits `Six-armed
+  Monstrosity` and `Strong-ish`, and dropping them meant asserting the PDF
+  extraction had captured a complete list. It had. The Dispatch PDF is a
+  release asset (`data-sources/dispatch/SOURCES.json`); it was fetched,
+  rendered and read. The page shows the complete entry — heading, statline
+  table, Battlekit, five abilities, the Keyword row and the Gluttonous Arsenal
+  box — and neither ability is on it, nor is STRONG in the Keyword row.
 
-  Transcribing what survives would put a partial list in the app with nothing
-  to say it was partial, which is worse than the gap. **It needs the printed
-  page**: either the missing Vile Corpus entries supplied by the maintainer, or
-  a re-extraction of pp.5-6 of the Dispatch. Its cost also has the dropped-glyph
-  problem and, unlike the Glory Items, no table to read the currency off — the
-  Strains in the same section were confirmed as Ducats by the maintainer, and
-  this would need the same.
+  Both are removed now, by a new `removeAbility` op. Keeping them had produced
+  an entry that contradicted itself: the Amalgam may carry nothing but its
+  Gluttonous Arsenal and one Vile Corpus, while `Strong-ish` let it wield two
+  HEAVY weapons and asserted a Keyword the same layer removes.
 
-  One decision is recorded rather than taken, in the layer's own note: the
-  Dispatch's Amalgam ability list omits `Six-armed Monstrosity` and
-  `Strong-ish`, which the catalogue has. Taken literally a full entry
-  replacement drops both. They are NOT removed, because asserting the removal
-  means asserting the PDF extraction captured a complete list, and an ability
-  wrongly deleted is harder to notice than one wrongly kept. Confirm against
-  the printed page.
+  **The Vile Corpus is transcribed, and there is only one of it.** An earlier
+  note here claimed the extraction had dropped entries, reasoning from *"each
+  Amalgam in a Warband must have a different Vile Corpus"* — a rule requiring
+  difference cannot be met by a list of one. **That reasoning was wrong.** The
+  rendered page shows a single bullet in the Vile Corpus Abilities box and then
+  the next section; the rule is satisfiable while only one exists, and reads as
+  forward-looking in a Public Beta. `Bombardment Horde`, 20 Ducats, is now an
+  option on the Amalgam.
 
-  **That decision now has evidence on both sides, and the entry contradicts
-  itself in the meantime.** Against keeping them:
+  **Costs in the Dispatch have to be read from the rendered page.** The
+  currency glyphs are drawn from a Type3 font and are not in the PDF's text
+  stream at all, so no extractor recovers them — pdf-parse and PyMuPDF both
+  yield a bare number, and this is not a defect in either. A crown in a filled
+  disc is Ducats; an eight-pointed sun in an outlined disc is Glory. That is
+  how the Vile Corpus cost was confirmed, and it independently confirms the two
+  Glory Items, whose currency had been derived from the tables they join.
 
-  - The layer already drops **STRONG** from the Amalgam's Keywords, because
-    the Dispatch's printed row has four where the catalogue has five. But
-    `Strong-ish` reads *"Two of the arms of the Amalgam have the Keyword
-    STRONG. It can wield any two HEAVY weapons of its choice"* — so the
-    shipped entry both does and does not have the Keyword. The build now
-    reports this class of contradiction on every run rather than leaving it to
-    a note nobody re-reads.
-  - Both retained abilities are about wielding SEVERAL weapons, and the
-    Dispatch rewrites the Amalgam to have exactly one: *"An Amalgam always has
-    a Gluttonous Arsenal … It cannot have any other Battlekit, but it can have
-    up to 1 Vile Corpus."* `Six-armed Monstrosity` grants an ACTION per weapon
-    equipped; `Strong-ish` says it may wield two HEAVY weapons. Neither can be
-    exercised by a model that may carry nothing else.
-  - The Dispatch's five abilities run Absorb → Corpulent → Curse on Creation →
-    Trample → Unstoppable: an unbroken alphabetical sequence, with the two
-    disputed names falling exactly in the gap between *Curse on Creation* and
-    *Trample* where nothing is missing.
-
-  For keeping them: the SAME TWO PAGES of that document demonstrably lost
-  content — the Vile Corpus list survives as one entry under a rule requiring
-  each Amalgam to have a different one (above). So the extraction being
-  complete for the Amalgam cannot be asserted from the document alone, which is
-  the whole basis of the original decision.
-
-  **This needs the printed page**, and it is now a rules question rather than a
-  transcription one: does the Dispatch's Amalgam keep six arms, or is it the
-  one-weapon model its Battlekit line describes?
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.
