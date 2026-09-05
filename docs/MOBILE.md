@@ -161,6 +161,28 @@ of its own.
 more controls in it has a computed `overflow-x` of `auto` or `scroll` unless it
 wraps a table.
 
+### 6b. One home for a setting
+
+The theme switcher, the bug reporter and the ruleset selector each existed in
+three places: the desktop top bar, the desktop sidebar's footer, and the phone
+account menu. Three copies of one control is two of them drifting, and it was
+already happening — the top bar's ruleset select carried a 96px width budget
+the sidebar's had never heard of.
+
+They live in the **account menu in the top bar**, at every width. That menu
+opens signed out as well: none of the three is an account feature, and
+local-only play is supported everywhere else in the app.
+
+The same rule settled the warband pill. The top bar showed the active
+warband's name, Ducats and Glory; at `lg:` the sidebar appears and already
+carries the faction, a selector naming the warband and a Ducat meter. The pill
+is now `lg:hidden` — it stays below `lg:`, where there is no sidebar — and
+Glory moved into the sidebar, because it was the one figure the pill had that
+the sidebar did not.
+
+`e2e/mobile.spec.ts` holds both: exactly one ruleset select exists anywhere on
+the page, and the budget is stated once at each width.
+
 ### 7. Modals become sheets
 
 Thirty modals hand-roll `fixed inset-0 flex items-center justify-center p-4`.

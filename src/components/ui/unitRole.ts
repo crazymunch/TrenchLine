@@ -94,3 +94,40 @@ export const ROLE_STYLES: Record<UnitCategory, RoleStyle> = {
  */
 export const roleStyle = (category: string): RoleStyle =>
   ROLE_STYLES[category as UnitCategory] ?? ROLE_STYLES.Trooper;
+
+/**
+ * The order a roster reads in: Leader, Elite, Trooper, Mercenary.
+ *
+ * The same order the recruit sheet already groups its entries in, and the
+ * order the books list a warband's models in — the Leader is the model
+ * everything else is built around, and a Mercenary is hired rather than
+ * mustered. A roster in recruit order put the Leader wherever it happened to
+ * be added and moved nothing when a model was promoted.
+ */
+const RANK: Record<UnitCategory, number> = {
+  Leader: 0,
+  Elite: 1,
+  Trooper: 2,
+  Mercenary: 3,
+};
+
+/**
+ * Sort models by rank, keeping recruit order within each.
+ *
+ * A NEW ARRAY: `Array.prototype.sort` is in place, and sorting the store's own
+ * `units` would reorder the saved roster as a side effect of rendering it.
+ *
+ * `Array.prototype.sort` is stable, which is the half of this that matters as
+ * much as the ranking: two Troopers keep the order they were recruited in, so
+ * promoting one model moves that model and nothing else. An unstable sort
+ * would reshuffle the whole roster on every render and there would be no way
+ * to tell it apart from a bug.
+ *
+ * A category outside the four sorts last rather than throwing — see
+ * `roleStyle` for why one can arrive at all.
+ */
+export const byRank = <T extends { profileSnapshot?: { category?: string } }>(units: T[]): T[] =>
+  [...units].sort((a, b) => rankOf(a) - rankOf(b));
+
+const rankOf = (u: { profileSnapshot?: { category?: string } }) =>
+  RANK[u.profileSnapshot?.category as UnitCategory] ?? Object.keys(RANK).length;

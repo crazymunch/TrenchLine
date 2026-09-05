@@ -113,9 +113,20 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. Middle: Active Warband Pill (When Selected) */}
+            {/*
+              2. Middle: Active Warband Pill — tablet only.
+
+              `lg:hidden` because at `lg:` the sidebar appears, and it already
+              carries the faction, a selector naming the warband, the Ducat
+              figure and a meter for it. Two copies of one number on one screen
+              is one of them going stale in a future nobody plans for.
+
+              It stays below `lg:`, where there is no sidebar: a tablet at a
+              table would otherwise have nothing on screen saying which warband
+              is active or what it has spent.
+            */}
             {activeWarband && (
-              <div className="hidden sm:flex items-center space-x-2.5 bg-theme-surface px-2 sm:px-3 py-1.5 rounded border border-theme-border text-xs font-mono min-w-0 shrink">
+              <div className="hidden sm:flex lg:hidden items-center space-x-2.5 bg-theme-surface px-2 sm:px-3 py-1.5 rounded border border-theme-border text-xs font-mono min-w-0 shrink">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
@@ -168,67 +179,6 @@ export const Navbar: React.FC = () => {
               <span className="flex md:hidden"><SyncStatus compact /></span>
 
               
-              {/*
-                Ruleset switcher: desktop only.
-
-                On a phone it lives in the account menu instead. It is a
-                setting, not a control you reach for mid-task, and it was
-                taking 96px of a 375px bar — which is the width that made the
-                nav labels clip in the first place.
-              */}
-              <div className="relative hidden lg:block">
-                <select
-                  value={rulesetVersion}
-                  onChange={(e) => setRulesetVersion(e.target.value as RulesetVersion)}
-                  title="Active Ruleset Version"
-                  aria-label="Active Ruleset Version"
-                  /*
-                    A width BUDGET, not a preference. This group is
-                    `flex-shrink-0` on purpose — see the note above it — so the
-                    select is the only part of it that can give, and the number
-                    is what makes the whole cluster fit 375px.
-
-                    It was 104px, measured against the system font the browser
-                    was falling back to while the three faces were fetched from
-                    Google at runtime. Self-hosting them meant the real Archivo
-                    actually rendered, which is wider, and the cluster went 6px
-                    past the right edge. The E2E overflow check is what catches
-                    the next drift; it is why this is 96 and not a guess.
-                  */
-                  className="max-w-[96px] sm:max-w-none px-2 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-theme-primary text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-theme-primary"
-                >
-                  <option value="1.0">v1.0 Core</option>
-                  <option value="1.0.2">v1.0.2 Errata</option>
-                  <option value="1.0.2TD">v1.0.2TD Dispatch</option>
-                </select>
-              </div>
-
-              {/* Bug Report Trigger */}
-              <button
-                onClick={() => setIsBugReportOpen(true)}
-                title="Report a Bug / Feedback"
-                className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-accent/60 hover:border-theme-accent text-status-error text-xs font-mono transition-colors"
-              >
-                <Bug className="w-3.5 h-3.5" />
-                <span className="hidden md:inline text-xs sm:text-[11px] font-bold">Bug Report</span>
-              </button>
-
-              {/* Theme Trigger */}
-              <button
-                onClick={() => setIsThemeModalOpen(true)}
-                title={`Theme: ${activeThemeObj.name}`}
-                className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-xs font-mono transition-colors"
-              >
-                <div 
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: activeThemeObj.primaryColor }}
-                />
-                <Palette className="w-3.5 h-3.5 text-theme-muted" />
-                <span className="hidden sm:inline text-xs sm:text-[11px] font-bold" style={{ color: activeThemeObj.primaryColor }}>
-                  {activeThemeObj.name.split(' ')[0]}
-                </span>
-              </button>
-
               {/* User Profile / Auth Button */}
               <div className="relative flex-shrink-0">
                 {session?.user ? (
@@ -308,8 +258,17 @@ export const Navbar: React.FC = () => {
                       </button>
                     )}
 
-                    {/* Phone only: these keep their own controls on a desktop. */}
-                    <div className="lg:hidden border-t border-theme-border pt-1 mt-1">
+                    {/*
+                      The settings, at every width.
+
+                      They were three buttons in the top bar on a desktop and
+                      the same three in here on a phone, which is two designs
+                      to keep in step and one of them always the poor relation.
+                      Now there is one. They are settings rather than places:
+                      you set a theme once and a ruleset per campaign, and
+                      neither is worth 200px of a bar you look at constantly.
+                    */}
+                    <div className="border-t border-theme-border pt-1 mt-1">
                       <label className="block px-3 pt-1 pb-1 text-xs sm:text-[11px] font-mono uppercase tracking-wider text-theme-muted">
                         Ruleset
                       </label>

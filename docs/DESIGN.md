@@ -111,6 +111,19 @@ every colour is a token, and `e2e/roles.spec.ts` reads the painted colours off a
 **production build**, because a class Tailwind never compiled is invisible to
 anything static — the element simply has no background and it looks deliberate.
 
+### The order a roster reads in
+
+Leader, then every Elite, then every Trooper, then every Mercenary — the same
+order the recruit sheet groups its entries in. It is **derived on render**
+(`byRank` in `ui/unitRole.ts`), not stored, so promoting a Trooper moves its
+card the moment the change lands; a stored order needs a re-sort somebody has
+to remember to trigger.
+
+The sort is stable, which matters as much as the ranking: two Troopers keep the
+order they were recruited in, so a promotion moves one card and disturbs
+nothing else. And it copies the array first — sorting the store's own `units`
+would reorder the saved roster as a side effect of drawing it.
+
 ## Brand, which is not an accent
 
 The landing page at `/` is the one screen that renders before any warband

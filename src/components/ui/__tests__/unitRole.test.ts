@@ -18,7 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect } from 'vitest';
-import { ROLE_STYLES, roleStyle } from '../unitRole';
+import { ROLE_STYLES, roleStyle, byRank } from '../unitRole';
 import type { UnitCategory } from '@/types/rules';
 
 const ROLES = Object.keys(ROLE_STYLES) as UnitCategory[];
@@ -105,5 +105,56 @@ describe('the classes are ones Tailwind will compile', () => {
       expect(token, `${c} is not a theme-*, status-* or role-* token`)
         .toMatch(/-(theme|status|brand|role)-/);
     }
+  });
+});
+
+describe('a roster reads in rank order', () => {
+  const u = (category: string, id: string) => ({ id, profileSnapshot: { category } });
+
+  it('puts the Leader first and the Mercenaries last', () => {
+    const roster = [
+      u('Mercenary', 'm1'), u('Trooper', 't1'), u('Leader', 'l'), u('Elite', 'e1'),
+    ];
+    expect(byRank(roster).map((x) => x.id)).toEqual(['l', 'e1', 't1', 'm1']);
+  });
+
+  it('keeps recruit order within a rank', () => {
+    /*
+      The half that matters as much as the ranking. `Array.prototype.sort` is
+      stable, so two Troopers stay in the order they were recruited and
+      promoting one model moves that model alone. An unstable sort would
+      reshuffle the roster on every render, and nothing on screen would
+      distinguish that from a bug.
+    */
+    const roster = [u('Trooper', 't1'), u('Trooper', 't2'), u('Trooper', 't3')];
+    expect(byRank(roster).map((x) => x.id)).toEqual(['t1', 't2', 't3']);
+  });
+
+  it('moves a model the moment its role changes, and moves nothing else', () => {
+    const before = [u('Trooper', 'a'), u('Trooper', 'b'), u('Trooper', 'c')];
+    expect(byRank(before).map((x) => x.id)).toEqual(['a', 'b', 'c']);
+
+    const promoted = before.map((x) => (x.id === 'b' ? u('Leader', 'b') : x));
+    expect(byRank(promoted).map((x) => x.id)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('does not reorder the array it was given', () => {
+    // The store's `units` is what gets passed in. Sorting in place would
+    // reorder the saved roster as a side effect of rendering it.
+    const roster = [u('Mercenary', 'm'), u('Leader', 'l')];
+    byRank(roster);
+    expect(roster.map((x) => x.id)).toEqual(['m', 'l']);
+  });
+
+  it('sorts an unknown role last rather than throwing', () => {
+    const roster = [u('Champion', 'x'), u('Trooper', 't'), u('Leader', 'l')];
+    expect(byRank(roster).map((x) => x.id)).toEqual(['l', 't', 'x']);
+  });
+
+  it('covers every category the four styles do', () => {
+    // A fifth role added to `ROLE_STYLES` and not to `RANK` would sort last
+    // and look like a bug in the roster rather than an omission here.
+    const ranked = byRank(ROLES.map((r) => u(r, r)));
+    expect(ranked.map((x) => x.id)).toEqual(['Leader', 'Elite', 'Trooper', 'Mercenary']);
   });
 });

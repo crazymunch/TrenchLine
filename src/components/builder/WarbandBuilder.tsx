@@ -40,6 +40,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
+import { byRank } from '../ui/unitRole';
 
 export const WarbandBuilder: React.FC = () => {
   const { 
@@ -148,10 +149,17 @@ export const WarbandBuilder: React.FC = () => {
   const trooperCount = warband.units.filter((u) => u.profileSnapshot.category === 'Trooper').length;
   const mercenaryCount = warband.units.filter((u) => u.profileSnapshot.category === 'Mercenary').length;
 
-  const filteredUnits = warband.units.filter((u) => {
+  /*
+    Filtered, then ranked. Leader, Elite, Trooper, Mercenary — the order the
+    recruit sheet already groups in, rather than the order models happened to
+    be added in. It is derived on every render rather than stored, so
+    promoting a Trooper to Leader moves its card the moment the change lands;
+    a stored order would need a re-sort nobody would remember to trigger.
+  */
+  const filteredUnits = byRank(warband.units.filter((u) => {
     if (activeCategoryFilter === 'All') return true;
     return u.profileSnapshot.category === activeCategoryFilter;
-  });
+  }));
 
   const handleOpenBudgetModal = () => {
     setEditLimit(warband.ducatLimit);

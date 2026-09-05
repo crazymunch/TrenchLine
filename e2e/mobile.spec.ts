@@ -198,17 +198,25 @@ test('the bottom bar is five destinations, none of them clipped', async ({ page 
 });
 
 /**
- * And what the bar gave up is reachable, not gone.
+ * The settings live in the account menu, at every width.
  *
- * The theme switcher, the bug reporter and the ruleset selector moved into the
- * account menu. That menu opens signed OUT as well: none of the three is an
- * account feature, and local-only play is supported everywhere else in the app.
+ * They started as three buttons in the desktop top bar and the same three in
+ * this menu on a phone — two designs to keep in step, one of them always the
+ * poor relation. There is one now. The menu opens signed OUT as well: none of
+ * the three is an account feature, and local-only play is supported everywhere
+ * else in the app.
+ *
+ * Not skipped off the phone any more, which is the point of the change.
  */
-test('the account menu carries the settings the bar gave up', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'phone', 'this is the phone layout');
-
+test('the account menu carries the settings', async ({ page }) => {
   await openApp(page, '/roster');
-  await page.getByRole('button', { name: /login/i }).first().click();
+  /*
+    The header's Login, specifically. The desktop sidebar has one of its own
+    that opens the sign-in sheet directly, and it comes first in the DOM — an
+    unscoped `.first()` opens that instead and this reads as "the menu never
+    appeared".
+  */
+  await page.locator('header').getByRole('button', { name: /login/i }).first().click();
 
   const menu = page.locator('[role="menu"]');
   await expect(menu).toBeVisible();
@@ -216,8 +224,60 @@ test('the account menu carries the settings the bar gave up', async ({ page }, t
   await expect(menu.getByText('Report a bug')).toBeVisible();
   await expect(menu.getByLabel('Active Ruleset Version')).toBeVisible();
 
+  /*
+    And nowhere else. A duplicate left behind in the top bar is the exact
+    failure this consolidation exists to end, and it would be invisible on a
+    phone — where the old buttons were already hidden — so it is checked
+    rather than left to the eye.
+
+    Counted across the whole page, not "not in the header": the menu itself
+    renders inside `<header>`, so a header-scoped search finds the one copy
+    that is supposed to be there and proves nothing.
+  */
+  await expect(page.locator('select[aria-label="Active Ruleset Version"]'))
+    .toHaveCount(1);
+  await expect(page.getByRole('button', { name: /^bug report$/i })).toHaveCount(0);
+
   /* 16px on the select, or iOS zooms the whole page when it takes focus. */
   const fontSize = await menu.getByLabel('Active Ruleset Version')
     .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
   expect(fontSize, 'the ruleset select will make iOS zoom').toBeGreaterThanOrEqual(16);
+});
+
+/**
+ * One copy of the budget on a desktop, not two.
+ *
+ * The top bar carried a pill with the warband's name, its Ducats and its
+ * Glory. At `lg:` the sidebar appears and already carries the faction, a
+ * selector naming the warband, the Ducat figure and a meter — so the pill was
+ * the same numbers twice, which is one of them going stale eventually.
+ *
+ * The pill stays below `lg:`, where there is no sidebar. Glory moved INTO the
+ * sidebar, because it was the one figure the pill had that the sidebar did
+ * not, and removing the pill would otherwise have quietly removed it.
+ */
+test('the desktop chrome states the budget once', async ({ page }, testInfo) => {
+  await openApp(page, '/roster');
+
+  const header = page.locator('header');
+  const sidebar = page.locator('aside');
+  const budget = /\d+\s*\/\s*\d+\s*D/;
+
+  /*
+    `toBeHidden`, not `toHaveCount(0)`. The pill is hidden with `lg:hidden`,
+    so at 1440 it is still in the DOM and a count would find it — and
+    `toBeHidden` passes for an element that is absent as well as one that is
+    display:none, which is the claim either way: nobody sees two budgets.
+  */
+  if (testInfo.project.name === 'desktop') {
+    await expect(sidebar).toBeVisible();
+    await expect(sidebar.getByText(budget).first()).toBeVisible();
+    await expect(header.getByText(budget).first()).toBeHidden();
+  } else {
+    // No sidebar here, so the pill is the only thing that would say it.
+    await expect(sidebar).toBeHidden();
+    if (testInfo.project.name === 'tablet') {
+      await expect(header.getByText(budget).first()).toBeVisible();
+    }
+  }
 });
