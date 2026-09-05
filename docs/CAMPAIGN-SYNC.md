@@ -217,6 +217,53 @@ breaking them: dropping the owner check makes the 409 leak Alice's campaign to
 Bob, and minting the id after the response instead of before fails three tests
 at once.
 
+### Spending the code (SYNC-4)
+
+The invite code has had a generator worth guessing at, a preview endpoint and a
+rate limit since AUTH-3, and until now **nothing that consumed it**. An
+organiser could publish a campaign and hand out a code that did nothing — half
+a feature, and the half that looks finished from the outside.
+
+`POST /api/campaigns` with `action: 'join'` takes the code, a warband, and
+optionally a display name.
+
+| comes from | field | why |
+|---|---|---|
+| the body | `inviteCode`, `warbandId` | the caller's to choose; both are checked before anything is written |
+| the body | `playerName` (optional) | a label on the caller's OWN membership row and nowhere else — people use a nickname at a table. Not the same as `claim_territory`'s old bug, where the body named who an *action* was attributed to |
+| the warband row | `warbandName`, `factionId` | read after ownership is verified. A member who could type these could field a Heretic Legions roster listed in the standings as New Antioch |
+| the session | `userId` | never from the request, as everywhere else |
+
+Four refusals, each with a reason of its own:
+
+- **Not signed in** → 401.
+- **Unknown code** → 404 with *the same sentence the preview gives*. A join
+  that failed differently for "no such code" and "code exists, something else
+  went wrong" answers the prober's question for them.
+- **Not your warband** → 403, from `requireOwnedWarband`. Not 404: the
+  404-not-403 rule elsewhere exists because an invite *code* is short enough
+  to guess, and a warband id is a cuid the caller can only have got from their
+  own client.
+- **A second warband from the same player** → 409. One player, one warband in
+  a campaign; adding a second row quietly is how the standings list somebody
+  twice.
+
+The **same** warband joining twice is not a refusal: it is the retry, and it
+returns the campaign exactly as a first success does rather than letting the
+`[campaignId, warbandId]` constraint produce a 500.
+
+Rate-limited on the `invite` bucket **and keyed by the caller**, because a join
+is a code guess with a side effect and must not be the cheaper way to walk 75
+bits.
+
+**What it does not do, and the client says so.** The membership is real and the
+organiser sees it. The campaign does not appear on the joiner's device: sync is
+push-only — `syncCampaignWithCloud` sends an outbox and reads back a version —
+and nothing pulls a campaign down onto a device that does not already have it.
+That is SYNC-5. `JoinCampaignModal` states it in the confirmation panel rather
+than closing on a tick and leaving the player hunting for a campaign that never
+arrives.
+
 ## Authority: who owns which field
 
 From SYNC-1, and unchanged by the above.
