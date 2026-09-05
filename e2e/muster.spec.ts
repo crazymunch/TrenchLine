@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { openApp } from './helpers';
+import { openApp, expectReachable } from './helpers';
 
 /**
  * Mustering a Warband.
@@ -84,9 +84,13 @@ test('a Variant with many rules still leaves the muster button reachable', async
   const box = await toggle.boundingBox();
   expect(box!.height, 'the disclosure is under the 44px touch floor').toBeGreaterThanOrEqual(44);
 
-  // The button that accepts the choice is reachable with the Variant chosen.
+  /*
+    Reachable, not merely visible. This assertion used to be `toBeVisible()`,
+    which a button clipped by `overflow: hidden` satisfies — and that is how
+    the dialog shipped with no way to scroll to it at all.
+  */
   const submit = page.getByRole('button', { name: /muster roster/i });
-  await expect(submit).toBeVisible();
+  await expectReachable(submit, 'the Muster Roster button');
 
   // Expanded, the rules scroll INSIDE their own container rather than growing
   // the dialog. `clientHeight` is what the reader sees; `scrollHeight` is the
@@ -98,5 +102,5 @@ test('a Variant with many rules still leaves the muster button reachable', async
   expect(scrollH, 'the Procession should print more rules than fit').toBeGreaterThan(clientH);
   expect(clientH, 'the rules block is not bounded').toBeLessThan(page.viewportSize()!.height);
 
-  await expect(submit).toBeVisible();
+  await expectReachable(submit, 'the Muster Roster button, with the rules expanded');
 });

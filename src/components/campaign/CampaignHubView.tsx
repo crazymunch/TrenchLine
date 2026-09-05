@@ -485,9 +485,9 @@ export const CampaignHubView: React.FC = () => {
       {/* New Campaign Modal */}
       {isNewCampaignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
             
-            <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
+            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-2">
                 <Trophy className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-gothic font-bold text-lg text-theme-text">CREATE CRUSADE CAMPAIGN</h3>
@@ -500,7 +500,7 @@ export const CampaignHubView: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleCreateCampaignSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleCreateCampaignSubmit} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
               <div>
                 <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
                   Campaign Title

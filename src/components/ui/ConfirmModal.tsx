@@ -28,10 +28,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-theme-surface border-2 border-status-error w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
+      <div className="bg-theme-surface border-2 border-status-error w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container max-h-[90dvh]">
         
         {/* Header */}
-        <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
+        <div className="flex-shrink-0 p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded bg-status-error/20 border border-status-error flex items-center justify-center">
               <AlertTriangle className="w-4 h-4 text-status-error" />
@@ -49,7 +49,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-5 space-y-3 font-mono text-xs text-theme-text">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 space-y-3 font-mono text-xs text-theme-text">
           <p className="leading-relaxed whitespace-pre-line">
             {message}
           </p>

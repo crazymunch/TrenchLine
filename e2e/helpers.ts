@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 /**
  * Open the app and wait for it to stop moving.
@@ -164,4 +164,47 @@ export async function expectNoZoomingInputs(page: Page) {
       .filter((el) => parseFloat(getComputedStyle(el).fontSize) < 16)
       .map((el) => `<${el.tagName.toLowerCase()}>`));
   expect(small, 'form controls under 16px').toEqual([]);
+}
+
+/**
+ * The control can actually be reached, not merely rendered.
+ *
+ * `toBeVisible()` means "in the DOM, displayed, and has a box". A button
+ * clipped by an ancestor's `overflow: hidden` has all three and is still
+ * unreachable — which is exactly how the muster dialog shipped a form a player
+ * on a phone could fill in and not submit. The existing test for that button
+ * asserted `toBeVisible()` and passed throughout.
+ *
+ * Reachable means one of two things, and nothing else:
+ *
+ *   it is already inside the viewport, or
+ *   some ancestor is USER-scrollable — `overflow-y: auto|scroll` and actually
+ *   overflowing — so a finger can bring it in.
+ *
+ * Deliberately not `scrollIntoViewIfNeeded()`: `overflow: hidden` still scrolls
+ * programmatically, so that would report success on the very layout a person
+ * is stuck in. The scroll-locked body is handled by the same rule for free —
+ * its `overflow-y` is `hidden` while an overlay is open, so it cannot be the
+ * ancestor that saves a clipped control.
+ */
+export async function expectReachable(locator: Locator, what: string) {
+  const verdict = await locator.evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    if (box.top >= 0 && box.bottom <= window.innerHeight
+      && box.left >= 0 && box.right <= window.innerWidth) {
+      return { ok: true, why: 'in the viewport' };
+    }
+    for (let n = el.parentElement; n; n = n.parentElement) {
+      const overflowY = getComputedStyle(n).overflowY;
+      if (/auto|scroll/.test(overflowY) && n.scrollHeight > n.clientHeight + 1) {
+        return { ok: true, why: `scrollable <${n.tagName.toLowerCase()}>` };
+      }
+    }
+    return {
+      ok: false,
+      why: `bottom at ${Math.round(box.bottom)}px of a ${window.innerHeight}px `
+         + 'viewport, and no ancestor scrolls',
+    };
+  });
+  expect(verdict.ok, `${what} cannot be reached: ${verdict.why}`).toBe(true);
 }

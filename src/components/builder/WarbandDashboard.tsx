@@ -289,9 +289,19 @@ export const WarbandDashboard: React.FC = () => {
       {/* Create Warband Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container">
-            
-            <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
+          {/*
+            `max-h-[90dvh]` and a column, because this panel had neither and a
+            player on a phone could not finish mustering: the form is taller
+            than a 667px screen, `overflow-hidden` clipped the rest, and
+            "Muster Roster" sat below the cut with nothing to scroll.
+
+            dvh rather than vh — iOS resolves vh against the LARGE viewport, so
+            90vh puts the footer under the collapsing toolbar, which is the
+            same button unreachable a different way.
+          */}
+          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
+
+            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-2">
                 <Skull className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-gothic font-bold text-lg text-theme-text">MUSTER NEW WARBAND</h3>
@@ -304,7 +314,11 @@ export const WarbandDashboard: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="p-6 space-y-4">
+            {/* `min-h-0`: a flex child will not shrink below its content
+                without it, so the body would push the panel past its own
+                max-height and nothing would scroll after all. */}
+            <form onSubmit={handleCreate} className="flex-1 min-h-0 flex flex-col">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
               <div>
                 <label htmlFor="muster-name" className="block text-xs font-mono uppercase text-theme-muted mb-1">
                   Warband Title
@@ -533,7 +547,11 @@ export const WarbandDashboard: React.FC = () => {
                 </label>
               </div>
 
-              <div className="pt-4 border-t border-theme-border flex items-center justify-end space-x-3">
+              </div>
+
+              {/* Pinned, not scrolled past: the action that accepts the form
+                  stays put while the fields move under it. */}
+              <div className="flex-shrink-0 p-4 pb-safe sm:pb-4 border-t border-theme-border bg-theme-elevated flex items-center justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
