@@ -211,19 +211,33 @@ launcher with TrenchLine as the only square tile in a grid of circles.
 
 Two rules follow, and `scripts/__tests__/appIcons.test.mjs` holds both:
 
-- **No border, no margin, no backdrop.** The outer edge must be artwork —
-  light, and continuous with the pixels behind it. Anything the author treats
-  as margin is something the launcher may treat as the icon.
+- **No border, no margin, no backdrop.** The outer edge must be artwork.
+  Anything the author treats as margin is something the launcher may treat as
+  the icon.
 - **The mark clears the safe CIRCLE, not the safe square.** A wordmark sized
   to fit the square still loses its corners to a circular mask, which is how
   `T✝C` comes out as `✝`.
+- **The ground reaches the edges.** The artwork immediately around the mark
+  must be the artwork at the edge — a mark sitting on its own little field is
+  the reported bug itself, and a launcher masks to the field rather than to
+  the icon.
 
-`npm run icons:build` regenerates the maskable and Apple icons from
-`public/icons/icon-512.png`: it lifts the mark off its badge, extends the
-badge's own gradient to the edges, and re-places the mark at a size whose
-bounding circle clears the safe zone. Derived rather than hand-drawn, so the
-icons can be rebuilt when the artwork changes rather than being binaries
-nobody can regenerate.
+That third rule is what the first two miss, and the test says so at the point
+it matters. The check was once "the edge is lighter than luminance 120", which
+was true of the silver badge it was written beside and is not a property of a
+maskable icon: the mark now is gold on a dark ground, the inverse, and equally
+correct. Replacing it with "the edge is continuous with what is behind it"
+sounded like the general form and is not either — a flat field is perfectly
+continuous at its edge, and sabotaging the icon that way passed. Each of the
+three rules has been proved to fail on the bug it exists for.
+
+`npm run icons:build` regenerates every icon and the masthead from
+`public/brand/mark.svg`, which is the app's OWN mark: it renders the vector,
+measures where the ink actually is, and places it on a full-bleed gradient at
+a size whose bounding circle clears the safe zone. Derived rather than
+hand-drawn, so the icons can be rebuilt when the artwork changes rather than
+being binaries nobody can regenerate — and swapping in different art is
+editing one SVG and re-running one command.
 
 ## Component priorities
 
