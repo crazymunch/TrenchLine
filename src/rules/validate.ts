@@ -13,9 +13,9 @@ import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp 
 import type { Roster } from './costs';
 import { budgetState, unitCost } from './costs';
 import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
-import { armouryFor, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
+import { armouryFor, offersOf, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
-import { stockedAnywhere, variantArmoury } from './variantArmoury';
+import { stockedAnywhere, variantArmoury, withinGrants, type GrantUsage } from './variantArmoury';
 import { thirdPartyGate } from './thirdParty';
 import { variantLocks, unlockedBy } from './variantLocks';
 import { battlekitBreaches } from './battlekitLimits';
@@ -39,6 +39,7 @@ export interface Violation {
     | 'unknown-profile'
     | 'faction-rule'
     | 'wargear-not-stocked'
+    | 'variant-grant-exceeded'
     | 'force-over-threshold'
     | 'force-over-field-strength'
     | 'unparsed-restriction'
@@ -563,6 +564,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkFactionRules(roster, faction, variant));
   violations.push(...checkThirdParty(roster, profiles));
   violations.push(...checkVariantLocks(roster, dataset, variant));
+  violations.push(...checkVariantGrants(roster, dataset, variant, weapons));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
@@ -571,6 +573,84 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * How much a variant's cross-faction grant actually allows.
+ *
+ * `variantArmoury` has read these since it was written and nothing counted
+ * them. The House of Wisdom's *Weapon Collections* says "you can purchase 1
+ * piece of Battlekit from the New Antioch Armoury, and 1 piece of Battlekit
+ * from the Trench Pilgrims Armoury"; `stockedAnywhere` answered "yes, that is
+ * stocked somewhere you can reach" and a roster with five New Antioch items
+ * validated clean. The rule was half-applied, which is the worst of the three
+ * states — the app looked like it was checking.
+ *
+ * Only items reachable ONLY through a grant are counted. Something the
+ * faction's own armoury stocks is not spending the allowance, whichever other
+ * table also happens to carry it.
+ *
+ * An error rather than a warning: the count comes from the rule's own sentence
+ * and the catalogue's own FAQ, with nothing inferred. Where the number is what
+ * cannot be read — a grant whose rule states no count — `withinGrants` treats
+ * it as unbounded and says nothing, which is this codebase's standing answer
+ * to a rule it cannot read.
+ */
+function checkVariantGrants(
+  roster: Roster,
+  dataset: Dataset,
+  variant: WarbandVariant | undefined,
+  weapons: Map<string, { id: string; name: string }>,
+): Violation[] {
+  if (!variant) return [];
+
+  const known = (dataset.armouries ?? []).map((a) => a.factionId);
+  const { grants } = variantArmoury(variant, roster.factionId, known);
+  if (!grants.length) return [];
+
+  const own = armouryFor(dataset, roster.factionId);
+  const usage: GrantUsage[] = [];
+
+  for (const u of roster.units) {
+    for (const item of [...u.items, ...u.options]) {
+      const w = item.weaponId ? weapons.get(item.weaponId) : undefined;
+      const ref = w ?? (item.name ? { name: item.name } : undefined);
+      if (!ref) continue;
+
+      // Stocked at home: not spending anybody's allowance.
+      if (own && offersOf(own, ref).length) continue;
+
+      const via = grants.filter((g) => offersOf(armouryFor(dataset, g.factionId), ref).length);
+      if (!via.length) continue;   // `wargear-not-stocked` has this one.
+
+      /* Per COPY, not per name. MISC. Q4 in the catalogue's FAQ: "You can only
+         purchase one of each piece of Battlekit." A second copy of the chosen
+         piece is a second piece. */
+      for (let n = 0; n < (item.quantity ?? 1); n += 1) usage.push({ item: ref, via });
+    }
+  }
+
+  if (!usage.length) return [];
+
+  const fits = withinGrants(usage);
+  /* `null` is the search giving up, which is neither answer. Saying nothing
+     beats reporting a roster illegal on the strength of not having finished
+     looking. */
+  if (fits !== false) return [];
+
+  const byRule = [...new Set(grants.map((g) => g.rule))].join(' and ');
+  const allowance = grants
+    .map((g) => `${g.limit ?? 'any number'} from ${armouryFor(dataset, g.factionId)?.faction ?? g.factionId}`)
+    .join(', ');
+
+  return [err({
+    code: 'variant-grant-exceeded',
+    message:
+      `${usage.length} pieces of Battlekit come from armouries only `
+      + `${byRule} reaches: ${[...new Set(usage.map((x) => x.item.name))].join(', ')}. `
+      + `The allowance is ${allowance}.`,
+    rule: `${variant.name} — ${byRule}.`,
+  })];
 }
 
 /**

@@ -108,6 +108,84 @@ export function variantArmoury(
 }
 
 /**
+ * How many pieces a grant allows, where the roster has taken more.
+ *
+ * The grants were READ and never COUNTED. `stockedAnywhere` answers "is this
+ * stocked somewhere I can reach", which makes a granted item legal — and then
+ * nothing looked at how many had been taken. The House of Wisdom's *Weapon
+ * Collections* says "you can purchase **1** piece of Battlekit from the New
+ * Antioch Armoury, and **1** piece of Battlekit from the Trench Pilgrims
+ * Armoury"; a roster with five New Antioch items validated clean.
+ *
+ * The catalogue's own FAQ settles the reading that the sentence leaves open —
+ * MISC. Q4, in `dataset.faq`:
+ *
+ *   Q: "Do the Corrupt Merchants and Weapon Collections special rules only
+ *      allow me to purchase one of each piece of Battlekit that I choose, or
+ *      can I purchase multiple copies of the same Battlekit?"
+ *   A: "You can only purchase one of each piece of Battlekit."
+ *
+ * So the allowance is one PIECE per named armoury, and a second copy of the
+ * chosen piece is a second piece. Counting copies rather than distinct names
+ * is therefore correct, and is not this file's invention.
+ *
+ * ## Why an assignment rather than a count
+ *
+ * An item can be stocked by more than one granted armoury — the Sword/Axe is
+ * in most of them — so "three grant-only items against two grants of one"
+ * cannot be decided by tallying per armoury: each item has to be attributed to
+ * exactly one grant that actually stocks it, and the roster is legal if ANY
+ * such attribution fits. Tallying greedily reports a legal roster as illegal
+ * whenever the first item happens to consume the only grant a later one had.
+ *
+ * Exhaustive, because it can be: a variant states two grants at most and the
+ * items reachable only through them are a handful. Bounded anyway, and the
+ * bound refuses rather than guessing — see `withinGrants`.
+ */
+export interface GrantUsage {
+  /** The item, and every grant whose armoury stocks it. */
+  item: { name: string };
+  via: CrossFactionGrant[];
+}
+
+/** The most attribution attempts before this stops trying. */
+const MAX_SEARCH = 20_000;
+
+/**
+ * Can every grant-only item be attributed to a grant that stocks it, without
+ * any grant exceeding its stated limit?
+ *
+ * `null` where the search was abandoned as too large — reported by the caller
+ * as unknown rather than as either answer. A limit of `null` on a grant means
+ * the rule stated no number, and an unstated number is not a licence for any
+ * count: such a grant is treated as unbounded here and the rule is surfaced,
+ * which is this file's standing policy on what it cannot read.
+ */
+export function withinGrants(usage: GrantUsage[]): boolean | null {
+  const unbounded = (g: CrossFactionGrant) => g.limit === null;
+  let steps = 0;
+
+  const used = new Map<CrossFactionGrant, number>();
+
+  const search = (i: number): boolean | null => {
+    if (steps++ > MAX_SEARCH) return null;
+    if (i === usage.length) return true;
+
+    for (const grant of usage[i].via) {
+      const spent = used.get(grant) ?? 0;
+      if (!unbounded(grant) && spent >= (grant.limit as number)) continue;
+      used.set(grant, spent + 1);
+      const rest = search(i + 1);
+      if (rest !== false) return rest;      // true, or null for "gave up"
+      used.set(grant, spent);
+    }
+    return false;
+  };
+
+  return search(0);
+}
+
+/**
  * Does any armoury this warband may shop from stock the item?
  *
  * Checks the faction's own table first, then each armoury a variant grants
