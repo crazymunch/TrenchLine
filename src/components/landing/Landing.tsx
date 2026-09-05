@@ -494,12 +494,38 @@ export const Landing: React.FC<{ previews: LandingPreviews }> = ({ previews }) =
             height={40}
             className="h-10 w-10 flex-shrink-0 opacity-75"
           />
-          <p className="max-w-[760px] text-[13px] leading-[1.65] text-theme-muted">
-            TrenchLine is an unofficial companion. Trench Crusade is the work of
-            its creators. The rules and statlines here are read from the
-            published catalogues and rulebooks rather than reproduced by hand,
-            and anything the sources do not state is left blank.
-          </p>
+          <div className="max-w-[760px]">
+            <p className="text-[13px] leading-[1.65] text-theme-muted">
+              TrenchLine is an unofficial companion. Trench Crusade is the work of
+              its creators. The rules and statlines here are read from the
+              published catalogues and rulebooks rather than reproduced by hand,
+              and anything the sources do not state is left blank.
+            </p>
+            {/*
+              Who runs it, what it keeps, and the rules of the road.
+
+              Not decoration and not compliance theatre: a site with a password
+              field, a Google button and no answer to "who are you" is the exact
+              shape Safe Browsing flags, which is what happened here. These are
+              the answer, and they have to be reachable from the one page a
+              signed-out visitor sees. Stacked on a phone, in a row from `sm:`,
+              with 44px targets either way.
+            */}
+            <nav
+              aria-label="Site information"
+              className="mt-5 flex flex-col gap-1 font-mono text-[12px] uppercase tracking-[0.14em] sm:flex-row sm:gap-7"
+            >
+              <Link href="/about" className="inline-flex min-h-[44px] items-center text-theme-muted hover:text-brand-gold">
+                About
+              </Link>
+              <Link href="/privacy" className="inline-flex min-h-[44px] items-center text-theme-muted hover:text-brand-gold">
+                Privacy
+              </Link>
+              <Link href="/terms" className="inline-flex min-h-[44px] items-center text-theme-muted hover:text-brand-gold">
+                Terms
+              </Link>
+            </nav>
+          </div>
         </footer>
       </main>
     </div>

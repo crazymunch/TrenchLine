@@ -19,12 +19,18 @@ import { siteUrl } from '@/lib/siteUrl';
  * warband — it is the published rules, searchable — so it is genuinely useful
  * to land on from a search, and it is the app's honest answer to somebody
  * looking up a keyword.
+ *
+ * `/about`, `/privacy` and `/terms` are allowed for a different reason: they
+ * are how an automated reviewer — Safe Browsing among them — finds out who
+ * runs this site and what it does with an address. A site whose only crawlable
+ * pages are a sign-in form and a rules index looks like exactly what this one
+ * was mistakenly flagged as. They must stay crawlable.
  */
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
-      allow: ['/', '/codex'],
+      allow: ['/', '/codex', '/about', '/privacy', '/terms'],
       disallow: [
         '/api/',
         // The tool, with somebody's data in it.
