@@ -39,6 +39,7 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
 
 export const WarbandBuilder: React.FC = () => {
   const { 
@@ -83,6 +84,17 @@ export const WarbandBuilder: React.FC = () => {
 
   // Budget & Limit Edit Modal State
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlay below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const budgetRef = useOverlay(isBudgetModalOpen, () => setIsBudgetModalOpen(false));
   const [editLimit, setEditLimit] = useState<number>(warband?.ducatLimit || 700);
   const [editTreasury, setEditTreasury] = useState<number>(warband?.treasuryDucats || 0);
   const [editGlory, setEditGlory] = useState<number>(warband?.gloryPoints || 0);
@@ -655,7 +667,7 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* EDIT WARBAND BUDGET & STATS MODAL */}
       {isBudgetModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+        <div ref={budgetRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col max-h-[90dvh]">
             
             {/* Header */}
