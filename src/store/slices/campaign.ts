@@ -87,7 +87,7 @@ function queuedState(campaign: Campaign, current: CampaignSyncState): { campaign
   return count ? { campaignSync: { kind: 'pending', count } } : {};
 }
 
-export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'publishCampaignToCloud' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -224,6 +224,85 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           : pending
             ? { kind: 'pending', count: pending }
             : { kind: 'synced', at: new Date().toISOString() },
+      });
+    },
+
+    /**
+     * Give this campaign a cloud identity.
+     *
+     * The one call that turns a local campaign into one the server has heard
+     * of. Everything after it is an operation against that id.
+     *
+     * **The id is minted and SAVED before the request goes out.** If the
+     * response is lost — the tab closes, the signal drops after the write
+     * lands — the next attempt names the same campaign and the server answers
+     * `alreadyPublished` rather than creating a second one. Minting it after a
+     * successful response would make every failure ambiguous: the client would
+     * have no way to ask "did that land?", only to try again and hope.
+     *
+     * Saving an unconfirmed `cloudId` has a cost, and it is the smaller one:
+     * until the publish succeeds the outbox may queue operations against an id
+     * the server has not got yet, and they will fail as `server` errors and
+     * stay queued — which is what the outbox is for. The alternative is a
+     * duplicate campaign, which nothing can repair.
+     */
+    publishCampaignToCloud: async () => {
+      const campaign = get().campaign;
+      if (campaign.cloudId) {
+        /* Already has one. Not an error and not a no-op: push whatever the
+           outbox is holding, which is what the caller wanted. */
+        await get().syncCampaignWithCloud();
+        return;
+      }
+
+      /*
+        `crypto.randomUUID` needs a secure context, which every browser this
+        app runs in has — and the failure is loud rather than a weaker id: a
+        campaign published under something guessable is a campaign whose row
+        another client can aim at.
+      */
+      if (typeof crypto?.randomUUID !== 'function') {
+        set({ campaignSync: {
+          kind: 'error', reason: 'server',
+          detail: 'This browser cannot mint a secure campaign id.',
+          pending: 0,
+        } });
+        return;
+      }
+
+      const cloudId = crypto.randomUUID();
+      set({ campaignSync: { kind: 'publishing' } });
+
+      // Saved BEFORE the request — see above.
+      const claimed = { ...campaign, cloudId };
+      storage.saveCampaign(claimed);
+      set({ campaign: claimed });
+
+      const result = await storage.publishCampaignToCloud(campaign, cloudId);
+
+      if (!result.ok) {
+        /*
+          The `cloudId` STAYS. It is this device's claim on that row, and
+          dropping it on a failure is what would let a retry mint a second
+          campaign. The publish is retried by pressing again; `syncCampaign`
+          also reaches the same endpoint once an id exists.
+        */
+        set({ campaignSync: {
+          kind: 'error', reason: result.reason, detail: result.detail, pending: 0,
+        } });
+        return;
+      }
+
+      /*
+        The invite code is the server's to issue — see the authority table in
+        docs/CAMPAIGN-SYNC.md — so it is taken from the response rather than
+        kept from whatever the local campaign had.
+      */
+      const published = { ...claimed, cloudId: result.data.id, inviteCode: result.data.inviteCode };
+      storage.saveCampaign(published);
+      set({
+        campaign: published,
+        campaignSync: { kind: 'synced', at: new Date().toISOString() },
       });
     },
 

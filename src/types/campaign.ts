@@ -150,12 +150,11 @@ export interface Campaign {
    * the server can find, so they are queued only for a campaign that has one
    * of these, and a campaign without one is local and says so.
    *
-   * Nothing sets it yet. `POST /api/campaigns` creates a campaign with four
-   * fixed territories of its own and no framework, so it cannot yet represent
-   * a campaign this app made — see the "first sync" section of
-   * `docs/CAMPAIGN-SYNC.md` for what that needs. This field exists so the gap
-   * is visible in the type rather than showing up as every campaign failing
-   * to sync against an id the server never issued.
+   * Set by `publishCampaignToCloud`, which mints it — a `crypto.randomUUID`
+   * saved BEFORE the request goes out, so a lost response is retried under the
+   * same id rather than producing a second campaign. Absent means the campaign
+   * is local, which is a supported way to play and what the indicator says.
+   * See "First publish" in `docs/CAMPAIGN-SYNC.md`.
    */
   cloudId?: string;
   name: string;

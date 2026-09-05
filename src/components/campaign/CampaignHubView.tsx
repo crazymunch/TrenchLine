@@ -31,9 +31,10 @@ export const CampaignHubView: React.FC = () => {
 
   /*
     Reconcile on arrival. A campaign with no cloud copy resolves to
-    "On this device" without a request, so this costs nothing for the local
-    case — which today is every case, since nothing yet gives a campaign a
-    `cloudId`. See the "first sync" section of `docs/CAMPAIGN-SYNC.md`.
+    "On this device" without a request, so this costs nothing for a local
+    campaign — and publishing one is an explicit press on the indicator rather
+    than something this effect does. See "First publish" in
+    `docs/CAMPAIGN-SYNC.md`.
   */
   React.useEffect(() => { void syncCampaign(); }, [syncCampaign, campaign.cloudId]);
 

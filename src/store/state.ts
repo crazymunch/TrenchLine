@@ -126,6 +126,22 @@ export interface AppState {
    * not offered until there is a screen that says whose change it overwrites.
    */
   discardCampaignConflicts: () => void;
+  /**
+   * Give this campaign a cloud identity, so it can sync at all.
+   *
+   * Until this runs a campaign is local — `createCampaign` mints
+   * `camp-<timestamp>`, which is not an id the API would recognise — so the
+   * outbox has nowhere to push and the indicator says "On this device"
+   * forever. Publishing sends the campaign and its whole map once, under an id
+   * this device mints; everything after it is an operation.
+   *
+   * Deliberately an explicit act rather than something the first edit does
+   * quietly. Publishing mints an invite code and puts a group's map on a
+   * server, and local-only play is supported everywhere else in this app — so
+   * it is a decision the organiser makes, not a side effect of typing a
+   * campaign name.
+   */
+  publishCampaignToCloud: () => Promise<void>;
 
   // Warband Management
   warbands: Warband[];

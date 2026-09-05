@@ -271,9 +271,29 @@ model MatchRecord {
 }
 
 model TerritoryNode {
+  /// Minted by the CLIENT when a campaign is published, not by the database.
+  ///
+  /// Publishing has to be idempotent: the client sends the whole map in one
+  /// request, and if the response is lost the retry must not produce a second
+  /// copy of the campaign. That is the same property `CampaignSyncOp.opId`
+  /// buys, bought the same way — the primary key is the idempotency, so a
+  /// repeat is a constraint violation rather than a second write.
+  ///
+  /// `@default(cuid())` stays for the four starting territories the API still
+  /// creates for a campaign made server-side.
   id                     String   @id @default(cuid())
   campaignId             String
   campaign               Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  /// The id this territory has on the device: `wt-*`, `th-*`, `cf-<slug>`.
+  ///
+  /// Stable and meaningful — `cf-<slug>` is derived from the published zone
+  /// name — but NOT unique across campaigns, which is why it cannot be the
+  /// primary key. It is carried so the client can join a server row back to
+  /// its own without holding a mapping, and the constraint below is what makes
+  /// that join single-valued.
+  ///
+  /// Null on a territory the API created for itself.
+  localId                String?
   name                   String
   type                   String
   controlledByWarbandId  String?
@@ -289,6 +309,14 @@ model TerritoryNode {
   description            String   @db.Text
   /// Monotonic, bumped on every accepted write. See `Campaign.version`.
   version                Int      @default(1)
+
+  /// One row per local id per campaign.
+  ///
+  /// Not merely an index. Without it a retried publish that somehow reached
+  /// the create path twice would produce two rows the client cannot tell
+  /// apart, and every later `territory.perk` operation would update whichever
+  /// the query happened to return first.
+  @@unique([campaignId, localId])
 }
 
 /// A bug report.
