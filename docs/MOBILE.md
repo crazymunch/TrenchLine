@@ -173,13 +173,39 @@ raw `<img>` tags.
 
 ### 9. PWA
 
-`public/manifest.json` exists, is never linked from `layout.tsx`, and declares
-2.5 MB design mockups as its 192/512 icons. For a table-side companion,
-install-to-home-screen is the single highest-value mobile feature.
+**Done.** `public/manifest.json` is linked from `layout.tsx`, declares icons at
+192/512 in both `any` and `maskable`, an `apple-touch-icon`, a `theme-color`,
+and `display: standalone` with `orientation: any` (players hold tablets both
+ways). Install-to-home-screen is the highest-value mobile feature for a
+table-side companion, and it works.
 
-Fix: link the manifest, generate real maskable icons at 192/512, add
-`apple-touch-icon` and `theme-color`, and set `display: standalone` with
-`orientation: any` (players hold tablets both ways).
+**The home-screen icon is full bleed.** A maskable icon is cropped by the
+launcher to a shape the app does not choose — a circle on a Pixel, a squircle
+on Samsung, a rounded rect on iOS — so *every pixel is artwork* and the mark
+sits inside the guaranteed safe circle (80% of the width).
+
+This was got wrong once, and the failure is worth remembering because the
+manifest was correct throughout: it declared `purpose: "maskable"` from the
+start, while the artwork was a small silver badge floating on a near-black
+ground. Masked to a circle that is a dark disc with a little square inside it;
+letterboxed instead, a dark square. The app's owner sent a screenshot of his
+launcher with TrenchLine as the only square tile in a grid of circles.
+
+Two rules follow, and `scripts/__tests__/appIcons.test.mjs` holds both:
+
+- **No border, no margin, no backdrop.** The outer edge must be artwork —
+  light, and continuous with the pixels behind it. Anything the author treats
+  as margin is something the launcher may treat as the icon.
+- **The mark clears the safe CIRCLE, not the safe square.** A wordmark sized
+  to fit the square still loses its corners to a circular mask, which is how
+  `T✝C` comes out as `✝`.
+
+`npm run icons:build` regenerates the maskable and Apple icons from
+`public/icons/icon-512.png`: it lifts the mark off its badge, extends the
+badge's own gradient to the edges, and re-places the mark at a size whose
+bounding circle clears the safe zone. Derived rather than hand-drawn, so the
+icons can be rebuilt when the artwork changes rather than being binaries
+nobody can regenerate.
 
 ## Component priorities
 
