@@ -15,7 +15,7 @@ const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
  * codebase actually needs an opinion on, and each says why — a rule turned off
  * without a reason is how a config stops meaning anything.
  */
-export default [
+const config = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     ignores: [
@@ -42,6 +42,17 @@ export default [
         full of it — but it is a migration, not a build blocker. Warn so it is
         visible and countable; do not fail CI on a debt that predates the
         config.
+
+        Countable is now enforced. `npm run lint` passes `--max-warnings` with
+        the current total, so the number can go DOWN in a commit that lowers
+        it and cannot go up at all. A warning that nothing counts is a warning
+        nobody reads: the first pass under this rule left 89 of them sitting
+        untouched for weeks, and the cap is what turns "we should get to that"
+        into a build failure the next time somebody adds one.
+
+        Lowering the cap is a one-line diff in package.json, deliberately: it
+        belongs in the same commit as the fixes that earned it, where a
+        reviewer can see both.
       */
       '@typescript-eslint/no-explicit-any': 'warn',
 
@@ -93,7 +104,10 @@ export default [
 
     They are warning-free as of the security milestone. This keeps them that
     way: a new `any` in a route handler or in the auth module fails the build,
-    while the ~85 warnings elsewhere stay warnings and come down over time.
+    while the warnings elsewhere stay warnings and come down under the cap
+    above — 89 at the first count, 42 now, the largest single bite being
+    `newRecruitImporter.ts`, which had 41 of them in the module that turns
+    somebody else's file into a warband.
   */
   {
     files: [
@@ -108,3 +122,5 @@ export default [
     },
   },
 ];
+
+export default config;

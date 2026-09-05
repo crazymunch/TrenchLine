@@ -42,7 +42,7 @@ independently reviewable releases.
 | OPS-01 — no dependable dependency gate | **Closed** | Production high/critical advisories fail CI. Draft PR #27 improves outage classification and retries transient audit-endpoint failures without treating them as passes. |
 | OPS-02 — missing response hardening headers | **Closed with accepted limitation** | CSP, framing, MIME, referrer, and permissions policies are configured. The CSP permits inline Next.js bootstrap scripts; tightening it requires a nonce/dynamic-rendering decision. |
 | A11Y-01 — incomplete combobox semantics | **Closed** | Active option linkage, keyboard behavior, and touch target were added. |
-| MAINT-01 — broad `any` use and weak lint enforcement | **Partially closed** | Boundary code treats explicit `any` as an error. Older UI code remains warning-level debt and should be reduced by ratchet, not a repository-wide rewrite. |
+| MAINT-01 — broad `any` use and weak lint enforcement | **Partially closed, now ratcheted** | Boundary code treats explicit `any` as an error. Elsewhere it is a warning, and `npm run lint` now passes `--max-warnings` with the current total, so the count can go down in a commit that lowers it and cannot go up at all — a warning nothing counts is a warning nobody reads, and the first 89 sat untouched. 89 → 42 in the first pass: `newRecruitImporter.ts` (41 of them, in the module that turns somebody else's file into a warband), `types/diff.ts`, and the two config files. |
 | PERF-01 — unbounded directory query | **Closed** | The public directory is cursor-paginated with a deterministic order. |
 
 ## Delivery order

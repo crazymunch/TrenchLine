@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=42",
     "rules:fetch": "node scripts/rules-fetch.mjs",
     "rules:pdfs": "node scripts/rules-fetch-pdfs.mjs",
     "rules:crosscheck": "node scripts/rules-crosscheck.mjs",
@@ -25,7 +25,7 @@
     "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs",
     "test:e2e": "playwright test",
     "test:e2e:phone": "playwright test --project=phone",
-    "lint:fix": "eslint . --fix",
+    "lint:fix": "eslint . --fix --max-warnings=42",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:verify": "prisma migrate diff --from-migrations prisma/migrations --to-schema-datamodel prisma/schema.prisma --shadow-database-url \"$DATABASE_URL\" --exit-code"
