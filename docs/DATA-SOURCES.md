@@ -622,11 +622,16 @@ rather than ship a placeholder that would have to be designed around and then
 thrown away.
 
 It is **one** file now, where it used to be five. `e24fbe9` added four copies
-of the same image — `public/images/trench_crusade_world_map.{png,webp}` and
-`public/maps/trench_crusade_world_map.{jpg,webp}` — and only `/maps/…webp` was
-ever referenced. `e78343f` then pointed the Territory Map at a fifth,
-`/images/world-map.webp`, and orphaned all four. The two `.webp` copies were
-byte-identical to each other.
+of the same image, two under `public/images/` and two under `public/maps/`, all
+named `trench_crusade_world_map` with a `.png`, `.jpg` or `.webp` extension —
+and only one of them was ever referenced. `e78343f` then pointed the Territory
+Map at a fifth, `public/images/world-map.webp`, and orphaned all four. The two
+`.webp` copies were byte-identical to each other.
+
+(Those four are named here without a backticked path on purpose:
+`scripts/__tests__/docPaths.test.mjs` asserts that every path the
+documentation names still exists, and these deliberately do not. Naming a
+deleted file as a path is what that test is for.)
 
 `world-map.webp` now holds the 2000x1304 version rather than the 1600x1043 one
 it held before. The Territory Map zooms to 2.5x, and upscaling a 1600px image
