@@ -28,6 +28,9 @@ const allowance = by('Takwin Homunculus');
 
 const ctx = (traits: string[]): CarrierContext => ({ dataset: d, traits });
 const item = (name: string): Carried => ({ name });
+/* The engine's own canonicalisation, so a test cannot disagree with it about
+   whether `Shield` and `Shields` are the same section. */
+const sectionKey = (x: string) => x.trim().toLowerCase().replace(/s$/, '');
 
 describe('the allowance the book states for a Homunculus', () => {
   it('is read from the book, with its condition named by the sentence itself', () => {
@@ -97,6 +100,88 @@ describe('a Homunculus with Human Hands and an Additional Arm', () => {
     const breaches = battlekitBreaches(
       [item('Sword/Axe'), item('Great Sword/Axe'), item('Fire Shield')], ctx(traits));
     expect(breaches.some((b) => b.section === 'Melee Weapons')).toBe(true);
+  });
+});
+
+describe('a Homunculus that is also STRONG', () => {
+  /*
+    Reported by the app's owner, and the same model as above one Formula
+    later: Third Arm and Human Hands give it three melee hands, and Inhuman
+    Strength gives it STRONG — "it can equip and use one 2-Handed Melee Weapon
+    as if it were a 1-Handed Melee Weapon". So a Zulfiqar, a Great Sword and a
+    Shield is three 1-Handed Melee Weapons with the Shield taking one of them:
+    three used of three, legal.
+
+    The engine had both halves and never let them meet. The STRONG conversion
+    lived inside the chapter's hand arithmetic, and a model whose own entry
+    states an allowance never reaches that branch — `battlekitBreaches`
+    `continue`s past it. The entry's allowance is the reason the conversion
+    matters most, since it is the entry that hands the model a third hand.
+  */
+  const traits = ['Human Hands', 'Additional Arm', 'Inhuman Strength'];
+  const strong = (): CarrierContext => ({ dataset: d, traits, keywords: ['STRONG'] });
+  const notStrong = (): CarrierContext => ({ dataset: d, traits });
+
+  const melee = (ctx: CarrierContext) => battlekitBreaches(
+    [item('Sword/Axe'), item('Great Sword/Axe'), item('Fire Shield')], ctx)
+    .filter((b) => b.section === 'Melee Weapons');
+
+  it('carries a 1-Handed, a 2-Handed and a Shield, which without STRONG it could not', () => {
+    expect(melee(strong())).toEqual([]);
+    // The other side of the same claim: drop the Keyword and it is over again,
+    // so this is not the check having been switched off.
+    expect(melee(notStrong()).length).toBe(1);
+  });
+
+  it('converts ONE 2-Handed weapon, not every one', () => {
+    /*
+      Two Great Swords is legal and worth saying why: the entry allows "one
+      1-Handed Melee Weapon and one 2-Handed Melee Weapon", and STRONG lets
+      one of the pair be used as the 1-Handed. Three is where it runs out —
+      one converted leaves two 2-Handed, and no branch allows that.
+    */
+    const two = battlekitBreaches(
+      [item('Great Sword/Axe'), item('Great Sword/Axe')], strong())
+      .filter((b) => b.section === 'Melee Weapons');
+    expect(two).toEqual([]);
+
+    const three = battlekitBreaches(
+      [item('Great Sword/Axe'), item('Great Sword/Axe'), item('Great Sword/Axe')], strong())
+      .filter((b) => b.section === 'Melee Weapons');
+    expect(three.length).toBe(1);
+  });
+
+  it('does not convert a CUMBERSOME weapon', () => {
+    /*
+      "Weapons with this Keyword require two hands to use, EVEN IF the model
+      has the STRONG Keyword." Found in the catalogue rather than named here,
+      so this tests the rule and not a fixture — and found through the
+      Battlekit chapter's own section, because a weapon the chapter does not
+      place is not counted in any section at all.
+    */
+    const inMelee = new Set(
+      (d.battlekit ?? [])
+        .filter((b) => sectionKey(b.section ?? '') === sectionKey('Melee Weapons'))
+        .map((b) => b.name));
+    const cumbersome = (d.weapons ?? []).find(
+      (w) => inMelee.has(w.name)
+          && /2-Handed/i.test(w.type ?? '')
+          && (w.keywords ?? []).some((k) => /^CUMBERSOME$/i.test(k.trim())));
+    expect(cumbersome, 'no 2-Handed CUMBERSOME Melee Weapon in the catalogue').toBeDefined();
+
+    const breaches = battlekitBreaches(
+      [item('Sword/Axe'), item(cumbersome!.name), item('Fire Shield')], strong())
+      .filter((b) => b.section === 'Melee Weapons');
+    expect(breaches.length).toBe(1);
+  });
+
+  it('leaves the Ranged section alone — the conversion is Melee only', () => {
+    // "one 2-Handed MELEE Weapon". Two 2-Handed Ranged weapons is over the
+    // entry's Ranged branch whether or not the model is STRONG.
+    const breaches = battlekitBreaches(
+      [item('Siege Jezzail'), item('Siege Jezzail')], strong())
+      .filter((b) => b.section === 'Ranged Weapons');
+    expect(breaches.length).toBe(1);
   });
 });
 

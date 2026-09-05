@@ -219,34 +219,58 @@ describe('a real warband', () => {
     asks for is one this model is explicitly forbidden to use, so demanding it
     demands the impossible.
 
-    The melee count is still over, and now says so against the model's own
-    entry rather than the chapter's: a Shield, a 1-Handed and a 2-Handed is one
-    more than either branch allows, because the Shield takes one of the melee
-    slots. That one is real.
+    The melee count then read as one over — a Shield, a 1-Handed and a
+    2-Handed against branches of three items — and this file pinned that as
+    the one real violation. It was not real either, for a reason the pin was
+    in no position to notice: Al-Masyukh also has Inhuman Strength, so it is
+    STRONG, and "it can equip and use one 2-Handed Melee Weapon as if it were
+    a 1-Handed Melee Weapon". Great Sword, Sword and a Shield is three
+    1-Handed Melee Weapons with the Shield taking one of the three. Legal.
 
-    Still pinned exactly. If it moves, something has changed about what the
-    engine can see, and that is worth failing over — which is how the wrong
-    one was found.
+    The engine had the allowance and had the conversion and never let them
+    meet: the STRONG conversion lived inside the chapter's hand arithmetic,
+    and a model whose own entry states an allowance never reaches that branch.
+    Reported by the app's owner about this exact model. `effectiveHands` now
+    applies it in one place that both branches read.
+
+    So the answer is zero, and it is pinned as zero rather than dropped:
+    a warband from the seed with nothing wrong in it is the thing this file
+    is here to keep true.
   */
-  it('raises exactly the one Battlekit violation the books call for', () => {
+  it('raises no Battlekit violation, because there is none to raise', () => {
     const { roster } = toRoster(defaultSultanateWarband, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
-    expect(v.map((x) => x.message).sort()).toEqual([
-      "Takwin Homunculus: Great Sword/Axe, Sword/Axe with a Shield is more Melee Weapons "
-      + "than Takwin Homunculus's own entry allows.",
-    ]);
+    expect(v.map((x) => x.message).sort()).toEqual([]);
   });
 
   it('no longer calls the Homunculus’s 2-Handed RANGED weapon illegal', () => {
-    // The reported bug, pinned in its own right so it cannot come back quietly.
+    // The first reported bug, pinned in its own right so it cannot come back quietly.
     const { roster } = toRoster(defaultSultanateWarband, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
     expect(v.map((x) => x.message).join(' | ')).not.toMatch(/Siege Jezzail/);
   });
 
-  it('and none of them are about the other eight models', () => {
+  it('is still looking: take STRONG away and the melee count is over again', () => {
+    /*
+      A green result proves nothing on its own — the same zero comes back if
+      the check stops running. So: the same roster, the same model, with the
+      Keyword removed. One violation, on that model, about Melee Weapons.
+
+      Removing the Keyword rather than the Formula, deliberately: the Formula
+      also grants nothing else here, but the Keyword is what the carrying rule
+      keys on, and this is the wire that was cut.
+    */
     const { roster } = toRoster(defaultSultanateWarband, d);
-    const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
+    const weakened = {
+      ...roster,
+      units: roster.units.map((u) => ({
+        ...u,
+        keywords: (u.keywords ?? []).filter((k) => k.trim().toUpperCase() !== 'STRONG'),
+      })),
+    };
+    const v = validateRoster(weakened, d).violations.filter((x) => x.code === 'battlekit-limit');
+    expect(v.length).toBe(1);
+    expect(v[0].message).toMatch(/Melee Weapons/);
     expect(new Set(v.map((x) => x.unitId)).size).toBe(1);
   });
 });
