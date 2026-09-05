@@ -15,7 +15,7 @@
  * 2,000 lines of *behaviour*, not of the type.
  */
 import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
-import { Campaign, CampaignFramework, CasualtyRecord, TerritoryNode } from '../types/campaign';
+import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
 import type { Dataset, BattleMarker } from '../types/catalogue';
@@ -251,6 +251,15 @@ export interface AppState {
    * wrote, so a caller can say why nothing happened.
    */
   setTerritoryPerk: (territoryId: string, perk: string) => boolean;
+  /**
+   * Record a house rule the organiser has chosen for this campaign.
+   *
+   * Returns false where there is no campaign to write to, the same shape as
+   * `setTerritoryPerk`. Every rule it can set is a documented deviation from
+   * a published one — see `CampaignHouseRules`.
+   */
+  setCampaignHouseRule: <K extends keyof CampaignHouseRules>(
+    rule: K, value: CampaignHouseRules[K]) => boolean;
   logCampaignMatch: (
     p1WarbandId: string,
     p2WarbandId: string,

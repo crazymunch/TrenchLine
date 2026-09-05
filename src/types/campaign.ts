@@ -117,6 +117,27 @@ export interface TerritoryNode {
   scenario?: string;
 }
 
+/**
+ * The deviations a campaign has chosen, one field per rule.
+ *
+ * Deliberately not a free-text bag: a house rule the app ACTS on has to be
+ * something the app can read, and a rule it merely displays belongs in the
+ * chronicle. Each field names the published rule it relaxes.
+ */
+export interface CampaignHouseRules {
+  /**
+   * Taking Reinforcements does not cost this campaign its Exploration and
+   * Quartermaster Steps.
+   *
+   * The book states the cost unconditionally — *"if you do so you will not be
+   * able to Explore or visit the Quartermaster, so it is not a decision to be
+   * taken lightly"* — and the app lets a player through either way. This only
+   * decides whether the wizard presents that as a rule being set aside or as
+   * the way this group plays.
+   */
+  reinforcementsKeepExploration?: boolean;
+}
+
 export interface Campaign {
   id: string;
   name: string;
@@ -138,6 +159,15 @@ export interface Campaign {
   currentGame?: number;
   /** Set only where a campaign deviates from the published Threshold Table. */
   thresholdOverride?: number;
+  /**
+   * Where this group deliberately plays something differently from the book.
+   *
+   * Set by the organiser, and labelled as theirs wherever it changes what the
+   * app says — the same distinction territory perks draw between a rule the
+   * books publish and one the campaign wrote. Absent on every campaign that
+   * plays it straight, which is most of them.
+   */
+  houseRules?: CampaignHouseRules;
   maxWarbandDucats: number;
   gloryVictoryThreshold: number;
   members: CampaignMember[];

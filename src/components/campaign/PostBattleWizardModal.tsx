@@ -24,7 +24,9 @@ interface PostBattleWizardModalProps {
 }
 
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
-  const { getActiveWarband, applyPostBattleResults, campaign } = useStore();
+  const {
+    getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
+  } = useStore();
 
   const warband = getActiveWarband();
 
@@ -39,7 +41,46 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     : DEFAULT_RULESET_ID;
   const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
 
+  /*
+    The steps, in the book's order.
+
+    The Campaign Phase is SIX steps and this wizard covered four of them, with
+    no Reinforcements Step at all — so a player who called for reinforcements
+    was still offered an Exploration roll they are not entitled to. The names
+    of the book's steps come from `dataset.campaign.phaseSteps`, parsed out of
+    the rulebook, rather than being retyped here.
+
+    Two are deliberately NOT in the wizard. The Quartermaster Step (recruit,
+    hire, buy, sell, reallocate) and the Roster Step are what the roster
+    builder already is, and duplicating them here would give a player two
+    places to spend the same Ducats.
+  */
+  const bookStep = (name: string) =>
+    dataset?.campaign?.phaseSteps?.find((s) => s.name.startsWith(name));
+
+  const STEPS = [
+    /* Not a step the book prints: the app has to know which scenario was
+       fought and how it went before it can run any of the others. */
+    { key: 'result', label: 'Scenario & Result', book: undefined },
+    { key: 'trauma', label: 'Trauma', book: bookStep('Trauma') },
+    { key: 'promotions', label: 'Promotions', book: bookStep('Promotions') },
+    { key: 'reinforcements', label: 'Reinforcements', book: bookStep('Reinforcements') },
+    { key: 'exploration', label: 'Exploration', book: bookStep('Exploration') },
+  ] as const;
+  const LAST = STEPS.length;
+
   const [step, setStep] = useState<number>(1);
+  /*
+    The Reinforcements Step is optional, and taking it costs the Exploration
+    and Quartermaster Steps. The app WARNS and lets the player through rather
+    than blocking: the maintainer's group plays the campaign loosely, and a
+    wizard that refuses to continue is a wizard people abandon halfway. What it
+    will not do is stay silent about it.
+  */
+  const [tookReinforcements, setTookReinforcements] = useState(false);
+  const houseRuleKeepsExploration =
+    campaign?.houseRules?.reinforcementsKeepExploration === true;
+  const explorationForfeited = tookReinforcements && !houseRuleKeepsExploration;
   // Empty until the dataset loads; `scenario` below falls back to the first.
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
@@ -240,7 +281,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       onClose={onClose}
       size="xl"
       title="POST-BATTLE SEQUENCE"
-      subtitle={`Step ${step} of 4: Trauma, Experience, Scavenge & Chronicle`}
+      subtitle={`Step ${step} of ${LAST}: ${STEPS[step - 1].label}`}
       footer={<div className="flex items-center justify-between w-full gap-3">
             {step > 1 ? (
               <button
@@ -252,7 +293,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
               </button>
             ) : <div />}
     
-            {step < 4 ? (
+            {step < LAST ? (
               <button
                 onClick={() => setStep(step + 1)}
                 className="flex items-center space-x-1 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base text-xs font-bold uppercase rounded shadow"
@@ -276,19 +317,20 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
           fixed footer leaves about a third of the screen for the
           step you are actually filling in. */}
         {/* Step Tabs */}
-        <div className="grid grid-cols-4 border-b border-theme-border bg-theme-surface text-center text-xs">
-          <div className={`py-2.5 ${step === 1 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
-            1. Scenario & Result
-          </div>
-          <div className={`py-2.5 ${step === 2 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
-            2. Trauma Table ({ooaUnits.length})
-          </div>
-          <div className={`py-2.5 ${step === 3 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
-            3. Promotions & Skills
-          </div>
-          <div className={`py-2.5 ${step === 4 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}>
-            4. Exploration & Report
-          </div>
+        {/* `grid-cols-5` is a literal: a templated `grid-cols-${n}` does not
+            compile, which is the mistake MobileNav is a monument to
+            (docs/MOBILE.md §5). */}
+        <div className="grid grid-cols-5 border-b border-theme-border bg-theme-surface text-center text-xs">
+          {STEPS.map((s, i) => (
+            <div
+              key={s.key}
+              className={`py-2.5 ${step === i + 1 ? 'bg-theme-elevated text-theme-primary font-bold border-b-2 border-theme-primary' : 'text-theme-muted'}`}
+            >
+              {i + 1}. {s.label}
+              {s.key === 'trauma' ? ` (${ooaUnits.length})` : ''}
+              {s.key === 'exploration' && explorationForfeited ? ' —' : ''}
+            </div>
+          ))}
         </div>
           
           {/* STEP 1: OUTCOME & SCENARIO */}
@@ -538,11 +580,145 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             </div>
           )}
 
-          {/* STEP 4: EXPLORATION TABLES & BATTLE CHRONICLE */}
+          {/* STEP 4: REINFORCEMENTS STEP (OPTIONAL) */}
           {step === 4 && (
             <div className="space-y-4">
+              <div>
+                <h3 className="font-gothic font-bold text-base text-theme-text">
+                  {STEPS[3].book?.name ?? 'Reinforcements Step (Optional)'}
+                </h3>
+                {/* The book's own sentence, not a paraphrase of it. */}
+                <p className="mt-1 text-xs sm:text-[13px] text-theme-muted leading-relaxed">
+                  {STEPS[3].book?.description
+                    ?? 'If your Warband has suffered heavy losses, you can call for '
+                     + 'reinforcements. However, if you do so you will not be able to '
+                     + 'Explore or visit the Quartermaster, so it is not a decision to '
+                     + 'be taken lightly.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {([
+                  { taken: false, label: 'Skip reinforcements',
+                    note: 'Explore and visit the Quartermaster as usual.' },
+                  { taken: true, label: 'Call for reinforcements',
+                    note: 'Recruit in the roster builder after this phase.' },
+                ] as const).map((choice) => (
+                  <button
+                    key={String(choice.taken)}
+                    type="button"
+                    onClick={() => setTookReinforcements(choice.taken)}
+                    aria-pressed={tookReinforcements === choice.taken}
+                    className={`tap w-full text-left p-3.5 rounded border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary ${
+                      tookReinforcements === choice.taken
+                        ? 'border-theme-primary bg-theme-primary/10 ring-1 ring-theme-primary'
+                        : 'border-theme-border bg-theme-base hover:border-theme-primary'
+                    }`}
+                  >
+                    <span className="block font-bold text-xs uppercase text-theme-text">
+                      {choice.label}
+                    </span>
+                    <span className="block mt-1 text-xs sm:text-[11px] text-theme-muted">
+                      {choice.note}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/*
+                Warned, never blocked — and the wording distinguishes the two
+                cases, because "you are breaking a rule" and "your group plays
+                it this way" are different things to tell a player.
+              */}
+              {tookReinforcements && !houseRuleKeepsExploration && (
+                <div className="p-3.5 rounded border border-status-warning bg-status-warning/10 text-xs leading-relaxed">
+                  <p className="font-bold text-status-warning uppercase">
+                    This costs you the Exploration and Quartermaster Steps
+                  </p>
+                  <p className="mt-1 text-theme-text">
+                    The Exploration Step is skipped on the next screen. You can
+                    still continue — the app does not stop you — but the printed
+                    rule is that calling for reinforcements gives both up.
+                  </p>
+                </div>
+              )}
+              {tookReinforcements && houseRuleKeepsExploration && (
+                <div className="p-3.5 rounded border border-theme-primary bg-theme-primary/5 text-xs leading-relaxed">
+                  <p className="font-bold text-theme-primary uppercase">
+                    House rule (set by this campaign)
+                  </p>
+                  <p className="mt-1 text-theme-text">
+                    Reinforcements does not cost this campaign its Exploration
+                    and Quartermaster Steps, so Exploration is still available.
+                    The book gives both up.
+                  </p>
+                </div>
+              )}
+
+              {/*
+                The organiser's override.
+
+                Not gated on "am I the admin": nothing in this client can
+                answer that question — `adminName` is a string it displays, and
+                the real check lives on the campaign API. A checkbox that
+                pretended to enforce it would be theatre, so it is labelled for
+                whoever is running the campaign instead, and it writes to the
+                chronicle so the group can see when it changed.
+              */}
+              {campaign?.id && (
+                <label className="tap flex items-start gap-2.5 p-3 rounded border border-theme-border bg-theme-base cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={houseRuleKeepsExploration}
+                    onChange={(e) =>
+                      setCampaignHouseRule('reinforcementsKeepExploration', e.target.checked || undefined)}
+                    className="mt-0.5 w-5 h-5 flex-shrink-0 accent-theme-primary"
+                  />
+                  <span className="text-xs leading-relaxed">
+                    <span className="block font-bold uppercase text-theme-text">
+                      Campaign house rule: Reinforcements keeps Exploration
+                    </span>
+                    <span className="block mt-0.5 text-theme-muted">
+                      For the organiser. Applies to the whole campaign, is
+                      recorded in the chronicle, and is shown as this
+                      campaign&apos;s rule rather than as the book&apos;s.
+                    </span>
+                  </span>
+                </label>
+              )}
+            </div>
+          )}
+
+          {/* STEP 5: EXPLORATION STEP & BATTLE CHRONICLE */}
+          {step === 5 && (
+            <div className="space-y-4">
               
-              {/* Exploration Section */}
+              {/*
+                Exploration, unless it was given up.
+
+                Rendered as a notice rather than a disabled panel: a greyed-out
+                roll button invites a player to keep trying it, and the thing
+                worth showing here is the REASON, which is a decision they made
+                one screen ago and can still go back and change.
+              */}
+              {explorationForfeited ? (
+                <div className="p-4 bg-theme-elevated border border-status-warning rounded space-y-2 text-xs leading-relaxed">
+                  <p className="font-gothic font-bold text-sm text-status-warning">
+                    EXPLORATION — GIVEN UP
+                  </p>
+                  <p className="text-theme-text">
+                    You called for reinforcements, and the book gives up both
+                    the Exploration and the Quartermaster Steps for it.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStep(4)}
+                    className="tap mt-1 text-theme-primary underline underline-offset-2 font-bold uppercase text-xs"
+                  >
+                    Go back and change it
+                  </button>
+                </div>
+              ) : (
               <div className="p-4 bg-theme-elevated border border-theme-border rounded space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center space-x-2">
@@ -623,6 +799,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                   </div>
                 )}
               </div>
+              )}
 
               {/* Payout Summary */}
               <div className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-2 text-xs">

@@ -11,7 +11,7 @@ import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warb
 import type { InitialState } from '../init';
 import { persistWarbands } from '../persist';
 
-export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -386,6 +386,50 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
               text: text
                 ? `House rule set on ${target.name}: ${text}`
                 : `House rule cleared on ${target.name}`,
+              category: 'territory' as const,
+            },
+            ...state.campaign.chronicleLogs,
+          ],
+        };
+
+        storage.saveCampaign(updatedCampaign);
+        return { campaign: updatedCampaign };
+      });
+      return true;
+    },
+
+    /*
+      A house rule the organiser has chosen.
+
+      Written to the chronicle like a territory perk, and for the same reason:
+      a group that changes a published rule mid-campaign should be able to see
+      WHEN, and a player who is surprised by the app's behaviour should be able
+      to find out why it behaves that way.
+    */
+    setCampaignHouseRule: (rule, value) => {
+      const campaign = get().campaign;
+      if (!campaign?.id) return false;
+
+      const current = campaign.houseRules?.[rule];
+      if (current === value) return true;
+
+      set((state) => {
+        const houseRules = { ...state.campaign.houseRules, [rule]: value };
+        /* Dropped rather than left as `false`, so a campaign that turned a
+           rule on and off again is indistinguishable from one that never
+           touched it. */
+        if (!value) delete houseRules[rule];
+
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          houseRules: Object.keys(houseRules).length ? houseRules : undefined,
+          chronicleLogs: [
+            {
+              id: `c-${Date.now()}`,
+              timestamp: 'Just now',
+              text: value
+                ? `House rule set: Reinforcements no longer costs this campaign its Exploration and Quartermaster Steps.`
+                : `House rule cleared: Reinforcements costs its Exploration and Quartermaster Steps again, as printed.`,
               category: 'territory' as const,
             },
             ...state.campaign.chronicleLogs,
