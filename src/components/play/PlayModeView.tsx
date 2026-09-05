@@ -61,6 +61,7 @@ import {
   Crown
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 export const PlayModeView: React.FC = () => {
   const { 
@@ -1461,7 +1462,7 @@ export const PlayModeView: React.FC = () => {
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARM</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">SAVE</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
@@ -1644,7 +1645,9 @@ export const PlayModeView: React.FC = () => {
                           <span className="text-xs sm:text-[10px] text-theme-muted">{u.profileSnapshot.name}</span>
                         </div>
                       </div>
-                      <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
+                      <span className="text-xs font-bold text-theme-primary whitespace-nowrap">
+                        {formatUnitCost(u.totalCost, unitGlory(u))}
+                      </span>
                     </div>
                   );
                 })}

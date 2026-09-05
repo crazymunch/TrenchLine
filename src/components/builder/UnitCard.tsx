@@ -10,6 +10,7 @@ import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
+import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -81,6 +82,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
+  const glory = unitGlory(unit);
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);
@@ -237,11 +239,19 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
 
           {/* Header Right: Rating Badge & 3-Dots Action Menu */}
           <div className="flex items-center space-x-2 flex-shrink-0 order-2 ml-auto">
-            {/* Cost Badge */}
-            <div className={`font-mono text-sm tabular-nums ${
+            {/*
+              Cost badge — both currencies, because the app prices in two.
+
+              It printed `{unit.totalCost} D` and nothing else, so a Mercenary
+              hired for 4 Glory and no Ducats read `0 D`: a free model, on a
+              card that gives no other hint it cost anything. See
+              `rules/savedGlory.ts` for why the Glory is added up separately
+              rather than folded into `totalCost`.
+            */}
+            <div className={`font-mono text-sm tabular-nums whitespace-nowrap ${
               isLeader ? 'text-theme-base' : 'text-theme-text'
             }`}>
-              {unit.totalCost} D
+              {formatUnitCost(unit.totalCost, glory)}
             </div>
 
             {/* Collapse toggle, beside the cost: the cost is the other thing
@@ -420,7 +430,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                 unit.profileSnapshot.stats.movementType],
               ['RNG', unit.profileSnapshot.stats.ranged, undefined],
               ['MELEE', unit.profileSnapshot.stats.melee, undefined],
-              ['ARM', unit.profileSnapshot.stats.armour, undefined],
+              ['SAVE', unit.profileSnapshot.stats.armour, undefined],
             ] as const).map(([label, value, sub]) => (
               <div key={label} className="min-w-0 px-1 py-1.5 text-center">
                 <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">
@@ -539,7 +549,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                       </div>
                     </div>
                     <div className="flex items-center space-x-2 flex-shrink-0">
-                      <span className="text-xs sm:text-[10px] font-mono text-theme-primary">{wep.cost} D</span>
+                      <span className="text-xs sm:text-[10px] font-mono text-theme-primary whitespace-nowrap">
+                        {formatUnitCost(wep.cost, wep.gloryCost ?? 0)}
+                      </span>
                       <button
                         onClick={() => removeWeapon(warbandId, unit.id, wep.instanceId)}
                         className="tap text-theme-muted hover:text-status-error"
@@ -616,7 +628,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                     title={eq.effect}
                     className="inline-flex items-center space-x-1 text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"
                   >
-                    <span>{eq.name} ({eq.cost} D)</span>
+                    <span>{eq.name} ({formatUnitCost(eq.cost, eq.gloryCost ?? 0)})</span>
                     <button
                       onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
                       className="tap text-theme-muted hover:text-status-error ml-1"

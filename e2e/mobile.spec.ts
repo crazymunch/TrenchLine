@@ -108,9 +108,15 @@ test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
  * wrap without becoming unreadable, and `overflow-x: hidden` on the page is
  * never the fix (docs/MOBILE.md).
  */
-test('no row of controls scrolls sideways on a phone', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'phone', 'this is a phone rule');
+test('no row of controls scrolls sideways', async ({ page }) => {
+  /*
+    Not a phone rule, though that is where it was reported.
 
+    The same builder toolbar scrolled sideways at 1440 too — nine buttons on
+    one line is wider than a sidebar at any viewport — and a scroller on a
+    desktop is worse, not better: there is no swipe, so the contents past the
+    edge are reached by dragging a 4px bar, or not at all.
+  */
   for (const path of ['/roster', '/play', '/campaign', '/codex', '/directory']) {
     await openApp(page, path);
     await page.waitForTimeout(600);

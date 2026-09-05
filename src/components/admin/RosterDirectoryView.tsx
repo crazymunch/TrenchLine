@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
 import { useOverlay } from '../ui/useOverlay';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 export const RosterDirectoryView: React.FC = () => {
   const { 
@@ -557,7 +558,9 @@ export const RosterDirectoryView: React.FC = () => {
                             {u.profileSnapshot.name} ({u.profileSnapshot.category})
                           </span>
                         </div>
-                        <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
+                        <span className="text-xs font-bold text-theme-primary whitespace-nowrap">
+                          {formatUnitCost(u.totalCost, unitGlory(u))}
+                        </span>
                       </div>
 
                       {/* Statline */}
@@ -565,7 +568,7 @@ export const RosterDirectoryView: React.FC = () => {
                         <div className="min-w-0 truncate">MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movementInches ? `${u.profileSnapshot.stats.movementInches}"` : u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-theme-text">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-theme-text">{u.profileSnapshot.stats.melee}</strong></div>
-                        <div>ARM: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
+                        <div>SAVE: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
                       </div>
 
                       {/* Wargear */}

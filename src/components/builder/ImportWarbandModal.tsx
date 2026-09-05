@@ -7,6 +7,7 @@ import {
   UploadCloud, 
   AlertCircle 
 } from 'lucide-react';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 interface ImportWarbandModalProps {
   onClose: () => void;
@@ -217,7 +218,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
               {parsedWarband.units.map((u, i) => (
                 <div key={i} className="flex justify-between items-center text-xs font-mono bg-theme-surface px-2.5 py-1 rounded border border-theme-border">
                   <span className="text-theme-text font-semibold">{u.customName}</span>
-                  <span className="text-theme-primary">{u.totalCost} D</span>
+                  <span className="text-theme-primary whitespace-nowrap">{formatUnitCost(u.totalCost, unitGlory(u))}</span>
                 </div>
               ))}
             </div>

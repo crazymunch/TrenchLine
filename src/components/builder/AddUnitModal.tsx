@@ -32,6 +32,7 @@ import {
   Trash2,
   UserPlus,
 } from 'lucide-react';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 interface AddUnitModalProps {
   warbandId: string;
@@ -249,7 +250,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                           <span>•</span>
                           <span>XP: <strong className="text-theme-primary">{fav.xp || 0} XP</strong></span>
                           <span>•</span>
-                          <span>Rating: <strong className="text-theme-primary">{fav.totalCost} D</strong></span>
+                          <span>Rating: <strong className="text-theme-primary whitespace-nowrap">{formatUnitCost(fav.totalCost, unitGlory(fav))}</strong></span>
                         </div>
 
                         {/* Wargear Summary */}
@@ -393,7 +394,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <span className="font-mono text-xs text-theme-muted tabular-nums truncate
                                        inline-block w-fit max-w-full rounded-sm
                                        bg-theme-base/70 border border-theme-border/60 px-1.5 py-0.5">
-                        {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · A {unit.stats.armour}
+                        {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · S {unit.stats.armour}
                         {isMercenary && <span className="text-status-legal"> · Merc</span>}
                         {/* On the collapsed row, not only in the expanded panel:
                             an entry that is not official has to be readable as
