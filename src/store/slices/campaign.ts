@@ -10,6 +10,23 @@ import type { Campaign, MatchRecord, CampaignMember } from '../../types/campaign
 import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
 import type { InitialState } from '../init';
 import { persistWarbands } from '../persist';
+import { campaignOutbox, newOpId } from '../../services/campaignSync';
+
+/**
+ * Queue one operation for the cloud, if this campaign has a cloud identity.
+ *
+ * A local-only campaign has no `id` the server would recognise, and queueing
+ * for it would fill the outbox with operations that can never be acknowledged.
+ * Anonymous local use is supported everywhere it was; it simply does not sync.
+ *
+ * The version stated is the one this device last knew about — an operation
+ * declares what it was made AGAINST, so the server can tell a stale edit from
+ * a concurrent one rather than taking whichever arrived last.
+ */
+function queueOp(campaign: Campaign, op: Parameters<typeof campaignOutbox.add>[0]): void {
+  if (!campaign.id) return;
+  campaignOutbox.add(op);
+}
 
 export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
@@ -339,6 +356,17 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           chronicleLogs: [newLog, ...state.campaign.chronicleLogs]
         };
 
+        /* `playerName` is not sent: the server reads it from the membership it
+           has already verified, so a claim cannot be attributed to anyone. */
+        queueOp(updatedCampaign, {
+          kind: 'territory.claim',
+          opId: newOpId(),
+          campaignId: updatedCampaign.id,
+          entityId: territoryId,
+          baseVersion: state.campaign.territories.find((t) => t.id === territoryId)?.version ?? 1,
+          data: { warbandId },
+        });
+
         storage.saveCampaign(updatedCampaign);
         return { campaign: updatedCampaign };
       });
@@ -392,6 +420,15 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           ],
         };
 
+        queueOp(updatedCampaign, {
+          kind: 'territory.perk',
+          opId: newOpId(),
+          campaignId: updatedCampaign.id,
+          entityId: territoryId,
+          baseVersion: target.version ?? 1,
+          data: { perk: text },
+        });
+
         storage.saveCampaign(updatedCampaign);
         return { campaign: updatedCampaign };
       });
@@ -435,6 +472,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             ...state.campaign.chronicleLogs,
           ],
         };
+
+        queueOp(updatedCampaign, {
+          kind: 'campaign.settings',
+          opId: newOpId(),
+          campaignId: updatedCampaign.id,
+          baseVersion: updatedCampaign.version ?? 1,
+          data: { houseRules: updatedCampaign.houseRules ?? {} },
+        });
 
         storage.saveCampaign(updatedCampaign);
         return { campaign: updatedCampaign };

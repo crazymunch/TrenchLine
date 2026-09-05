@@ -81,6 +81,8 @@ export interface TerritoryNode {
   id: string;
   name: string;
   type: string;
+  /** The server version this copy was last known to match — see `Campaign.version`. */
+  version?: number;
   controlledByWarbandId?: string;
   controlledByPlayerName?: string;
   /**
@@ -168,6 +170,14 @@ export interface Campaign {
    * plays it straight, which is most of them.
    */
   houseRules?: CampaignHouseRules;
+  /**
+   * The server version this copy was last known to match.
+   *
+   * A sync operation states the version it was made AGAINST, so the client has
+   * to remember one. Absent on a campaign that has never been pushed, which is
+   * the same as 1: that is where a server row starts.
+   */
+  version?: number;
   maxWarbandDucats: number;
   gloryVictoryThreshold: number;
   members: CampaignMember[];
