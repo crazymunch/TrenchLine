@@ -142,6 +142,22 @@ export interface CampaignHouseRules {
 
 export interface Campaign {
   id: string;
+  /**
+   * The id the SERVER knows this campaign by, once it knows it at all.
+   *
+   * `id` is minted locally — `camp-<timestamp>` — and always has been, so it
+   * is not something the API would recognise. Sync operations name a campaign
+   * the server can find, so they are queued only for a campaign that has one
+   * of these, and a campaign without one is local and says so.
+   *
+   * Nothing sets it yet. `POST /api/campaigns` creates a campaign with four
+   * fixed territories of its own and no framework, so it cannot yet represent
+   * a campaign this app made — see the "first sync" section of
+   * `docs/CAMPAIGN-SYNC.md` for what that needs. This field exists so the gap
+   * is visible in the type rather than showing up as every campaign failing
+   * to sync against an id the server never issued.
+   */
+  cloudId?: string;
   name: string;
   inviteCode: string;
   adminName: string;

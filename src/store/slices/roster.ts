@@ -316,7 +316,6 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         };
 
         storage.saveCampaign(updatedCampaign);
-        storage.syncCampaignToCloud(updatedCampaign);
         return { campaign: updatedCampaign };
       });
     },
@@ -328,7 +327,6 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           members: state.campaign.members.filter((m) => m.warbandId !== warbandId)
         };
         storage.saveCampaign(updatedCampaign);
-        storage.syncCampaignToCloud(updatedCampaign);
         return { campaign: updatedCampaign };
       });
     },

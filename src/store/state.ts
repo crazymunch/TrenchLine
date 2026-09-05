@@ -21,6 +21,7 @@ import { RuleDiffItem } from '../types/diff';
 import type { Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
+import type { CampaignSyncState } from '../services/campaignSync';
 
 export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
 
@@ -99,6 +100,32 @@ export interface AppState {
    * `services/sync.ts`.
    */
   sync: SyncState;
+
+  /**
+   * What the CAMPAIGN's cloud copy is doing. Same idea as `sync` above, one
+   * state richer: a campaign is pushed as operations against a version, so
+   * "the server moved on under this edit" is an outcome a warband push cannot
+   * produce. See `services/campaignSync.ts`.
+   */
+  campaignSync: CampaignSyncState;
+  /**
+   * Fetch the campaign, then push everything queued for it.
+   *
+   * In that order, and it stops if the fetch fails: an offline device that
+   * pushes blind overwrites a newer cloud copy with an older one, and a fetch
+   * that cannot be made is not permission to write.
+   */
+  syncCampaignWithCloud: () => Promise<void>;
+  /**
+   * Take the campaign's copy for every conflicting edit this device made.
+   *
+   * The one resolution the app offers, and deliberately the one that cannot
+   * invent anything: the server's value is adopted locally and the operation
+   * leaves the queue. "Keep mine" would mean re-issuing the edit over somebody
+   * else's, which is a decision with a person on the other end of it, so it is
+   * not offered until there is a screen that says whose change it overwrites.
+   */
+  discardCampaignConflicts: () => void;
 
   // Warband Management
   warbands: Warband[];

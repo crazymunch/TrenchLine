@@ -18,7 +18,7 @@ import type { Campaign, TerritoryNode } from '@/types/campaign';
 
 vi.mock('@/services/storage', async (orig) => {
   const actual = await orig<typeof import('@/services/storage')>();
-  return { ...actual, storage: { ...actual.storage, saveCampaign: vi.fn(), syncCampaignToCloud: vi.fn() } };
+  return { ...actual, storage: { ...actual.storage, saveCampaign: vi.fn() } };
 });
 
 const memoryStorage = () => {
@@ -42,11 +42,13 @@ const PUBLISHED: TerritoryNode = {
   perkSource: 'published', description: 'A published zone.', version: 2,
 };
 
-const seed = (id: string) => {
+const seed = (cloudId: string) => {
   useStore.setState((s) => ({
+    campaignSync: { kind: 'local-only' },
     campaign: {
       ...s.campaign,
-      id, name: 'Sync Crusade', version: 7,
+      id: 'camp-local', cloudId: cloudId || undefined,
+      name: 'Sync Crusade', version: 7,
       houseRules: undefined,
       territories: [TERRITORY, PUBLISHED],
       chronicleLogs: [],
@@ -73,6 +75,8 @@ describe('a campaign edit with a cloud identity', () => {
     expect(queued()).toHaveLength(1);
     const op = queued()[0];
     expect(op.kind).toBe('territory.perk');
+    /* The CLOUD id, not the local one. `id` is minted `camp-<timestamp>` and
+       is not something the server would recognise. */
     expect(op.campaignId).toBe('camp-1');
     /* The territory's version, not the campaign's — they move independently,
        and using the wrong one turns every edit into a conflict. */
@@ -100,11 +104,26 @@ describe('a campaign edit with a cloud identity', () => {
     expect(op.data.houseRules).toEqual({ reinforcementsKeepExploration: true });
   });
 
-  it('queues two edits to one territory as two operations', () => {
+  it('queues two edits to one territory as two operations, chained', () => {
     useStore.getState().setTerritoryPerk('terr-1', 'First');
     useStore.getState().setTerritoryPerk('terr-1', 'Second');
     expect(queued()).toHaveLength(2);
     expect(new Set(queued().map((o) => o.opId)).size).toBe(2);
+
+    /*
+      The second states the version the first will leave behind. An applied
+      operation puts the entity at exactly `baseVersion + 1` — that is the
+      update's own `where` — so if both claimed 4 the second would conflict
+      with the first: this device disagreeing with itself over an edit nobody
+      else touched.
+    */
+    expect(queued().map((o) => o.baseVersion)).toEqual([4, 5]);
+    expect(useStore.getState().campaign.territories[0].version).toBe(6);
+  });
+
+  it('shows the queue on the indicator without waiting for a push', () => {
+    useStore.getState().setTerritoryPerk('terr-1', 'Ours by right');
+    expect(useStore.getState().campaignSync).toEqual({ kind: 'pending', count: 1 });
   });
 
   it('queues nothing for a refused edit', () => {
@@ -120,6 +139,11 @@ describe('a campaign edit with a cloud identity', () => {
 
 describe('a campaign with no cloud identity', () => {
   beforeEach(() => { seed(''); });
+
+  it('leaves the indicator saying so', () => {
+    useStore.getState().setTerritoryPerk('terr-1', 'Local only');
+    expect(useStore.getState().campaignSync).toEqual({ kind: 'local-only' });
+  });
 
   it('changes locally and queues nothing', () => {
     useStore.getState().setTerritoryPerk('terr-1', 'Local only');

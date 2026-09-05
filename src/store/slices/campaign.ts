@@ -10,28 +10,223 @@ import type { Campaign, MatchRecord, CampaignMember } from '../../types/campaign
 import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
 import type { InitialState } from '../init';
 import { persistWarbands } from '../persist';
-import { campaignOutbox, newOpId } from '../../services/campaignSync';
+import {
+  campaignOutbox, newOpId, pushCampaignOps, serverCampaign, serverTerritory,
+  type CampaignOp, type CampaignSyncState,
+} from '../../services/campaignSync';
+
+/* `Omit` over a union collapses it to the keys they share, which would lose
+   `entityId` from the two territory operations. Distributed, it does not. */
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 /**
- * Queue one operation for the cloud, if this campaign has a cloud identity.
+ * An operation as a mutation states it: everything but which campaign.
  *
- * A local-only campaign has no `id` the server would recognise, and queueing
- * for it would fill the outbox with operations that can never be acknowledged.
- * Anonymous local use is supported everywhere it was; it simply does not sync.
- *
- * The version stated is the one this device last knew about — an operation
- * declares what it was made AGAINST, so the server can tell a stale edit from
- * a concurrent one rather than taking whichever arrived last.
+ * `queueOp` fills that in from `cloudId`, so a call site cannot name a
+ * campaign the server has never heard of — the one case that would put an
+ * un-acknowledgeable operation in the queue.
  */
-function queueOp(campaign: Campaign, op: Parameters<typeof campaignOutbox.add>[0]): void {
-  if (!campaign.id) return;
-  campaignOutbox.add(op);
+type PendingOp = DistributiveOmit<CampaignOp, 'campaignId'>;
+
+/**
+ * Queue one operation for the cloud, and advance the local version it leaves
+ * behind. Returns the campaign to save.
+ *
+ * A campaign with no `cloudId` is one the server has never heard of — `id` is
+ * minted locally and is not something the API would recognise — and queueing
+ * for it would fill the outbox with operations that can never be acknowledged,
+ * so the queue would grow for the life of the install and never drain. Local
+ * play is supported everywhere it was; it simply does not sync, so such a
+ * campaign is handed straight back unchanged.
+ *
+ * The version stated is what this device believes the server holds — an
+ * operation declares what it was made AGAINST, so the server can tell a stale
+ * edit from a concurrent one rather than taking whichever arrived last.
+ *
+ * **Which is why the local version moves here and not on acknowledgement.**
+ * An applied operation leaves the entity at exactly `baseVersion + 1`: that is
+ * the update's own `where`, so it is not a guess. Two edits to one territory
+ * made before either is pushed are two operations, and if both claimed the
+ * same base the second would be a conflict against the first — this device
+ * disagreeing with itself over an edit nobody else touched. Chaining them
+ * costs nothing when the first applies, and when it does NOT apply the second
+ * conflicts too, which is correct: it was made on top of something that never
+ * happened, and `docs/CAMPAIGN-SYNC.md` has the app show conflicts rather than
+ * resolve them.
+ */
+function queueOp(campaign: Campaign, op: PendingOp): Campaign {
+  const campaignId = campaign.cloudId;
+  if (!campaignId) return campaign;
+  campaignOutbox.add({ ...op, campaignId } as CampaignOp);
+
+  const next = op.baseVersion + 1;
+  if (op.kind === 'campaign.settings') return { ...campaign, version: next };
+  return {
+    ...campaign,
+    territories: campaign.territories.map((t) => (t.id === op.entityId ? { ...t, version: next } : t)),
+  };
 }
 
-export type CampaignSlice = Pick<AppState, 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+/**
+ * What the indicator should say once an edit has been queued.
+ *
+ * An edit that is saved here and not yet in the cloud is `pending`, which is
+ * not an error: editing a campaign at a table with no signal is the normal
+ * case, and colouring it as a failure teaches people to ignore the indicator.
+ *
+ * A conflict or a failure already on screen is left alone. Both say WHY the
+ * queue is not draining — a question the player has to answer, or a server
+ * that could not be reached — and "2 to upload" in their place says the upload
+ * is merely waiting when the app knows better. The operations behind them stay
+ * queued and stay counted in any later push, so nothing is lost by leaving the
+ * more specific message up.
+ */
+function queuedState(campaign: Campaign, current: CampaignSyncState): { campaignSync: CampaignSyncState } | Record<string, never> {
+  if (!campaign.cloudId || current.kind === 'conflict' || current.kind === 'error') return {};
+  const count = campaignOutbox.forCampaign(campaign.cloudId).length;
+  return count ? { campaignSync: { kind: 'pending', count } } : {};
+}
+
+export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
+    campaignSync: { kind: 'local-only' },
+
+    /**
+     * Reconcile the campaign with the cloud.
+     *
+     * Fetch first, and if the fetch fails, STOP — the same order the warband
+     * sync uses and for the same reason: a device that pushes without having
+     * read overwrites a newer copy with an older one, and a fetch that cannot
+     * be made is not permission to write.
+     *
+     * Then push what the outbox holds. Applied and skipped both clear it —
+     * `skipped` is the server saying it already had that operation, which is
+     * the retry working. Conflicts stay queued and are handed to the player:
+     * `docs/CAMPAIGN-SYNC.md`'s rule is that merging two people's edits
+     * without asking is a wrong answer nobody sees.
+     */
+    syncCampaignWithCloud: async () => {
+      const campaignId = get().campaign.cloudId;
+      /* Not a failure. A campaign the server has never heard of is a campaign
+         played on this device, which is a supported way to play — and saying
+         so beats a spinner that never resolves. */
+      if (!campaignId) {
+        set({ campaignSync: { kind: 'local-only' } });
+        return;
+      }
+
+      const pendingNow = () => campaignOutbox.forCampaign(campaignId).length;
+      set({ campaignSync: { kind: 'syncing' } });
+
+      const fetched = await storage.fetchCampaignFromCloud(campaignId);
+      if (!fetched.ok) {
+        set({ campaignSync: { kind: 'error', reason: fetched.reason, detail: fetched.detail, pending: pendingNow() } });
+        return;
+      }
+
+      const res = await pushCampaignOps(campaignId, { fetched: true });
+      if (!res.ok) {
+        set({
+          campaignSync: {
+            kind: 'error',
+            /* The push says `auth`; the indicator, shared in wording with the
+               warband one, says `unauthenticated`. One name for it. */
+            reason: res.reason === 'auth' ? 'unauthenticated' : res.reason,
+            detail: res.detail,
+            pending: pendingNow(),
+          },
+        });
+        return;
+      }
+
+      const pending = pendingNow();
+      if (res.conflicts.length) {
+        set({ campaignSync: { kind: 'conflict', conflicts: res.conflicts, pending } });
+        return;
+      }
+      /* Queued while this request was in flight, or left over from a batch the
+         server only partly answered. Either way it is work still to do. */
+      if (pending) {
+        set({ campaignSync: { kind: 'pending', count: pending } });
+        return;
+      }
+      set({ campaignSync: { kind: 'synced', at: new Date().toISOString() } });
+    },
+
+    /**
+     * Resolve conflicts by taking the campaign's copy.
+     *
+     * Two things have to happen together, and doing only one is a bug either
+     * way: the operation leaves the queue, AND this device adopts the value
+     * the server showed it. Dropping the operation alone would leave the
+     * player looking at their own text with nothing queued to send it — a
+     * silent divergence, which is the failure mode this whole protocol exists
+     * to remove.
+     *
+     * A payload this version cannot read resolves nothing. It stays queued and
+     * stays in the conflict list, because clearing it would drop the edit
+     * without adopting anything in its place.
+     */
+    discardCampaignConflicts: () => {
+      const state = get();
+      const cloudId = state.campaign.cloudId;
+      if (state.campaignSync.kind !== 'conflict' || !cloudId) return;
+
+      const queuedOps = new Map(campaignOutbox.forCampaign(cloudId).map((o) => [o.opId, o]));
+      const resolved: string[] = [];
+      const unresolved: typeof state.campaignSync.conflicts = [];
+      let campaign = state.campaign;
+
+      for (const conflict of state.campaignSync.conflicts) {
+        const op = queuedOps.get(conflict.opId);
+        /* Already gone — a second device, or a push that landed between the
+           conflict and this click. Nothing to adopt and nothing to clear. */
+        if (!op) { resolved.push(conflict.opId); continue; }
+
+        if (op.kind === 'campaign.settings') {
+          const theirs = serverCampaign(conflict.server);
+          if (!theirs) { unresolved.push(conflict); continue; }
+          campaign = {
+            ...campaign,
+            version: theirs.version,
+            name: theirs.name,
+            currentTurn: theirs.currentTurn,
+            houseRules: theirs.houseRules ?? undefined,
+          };
+        } else {
+          const theirs = serverTerritory(conflict.server);
+          if (!theirs) { unresolved.push(conflict); continue; }
+          campaign = {
+            ...campaign,
+            territories: campaign.territories.map((t) => (t.id === op.entityId ? {
+              ...t,
+              version: theirs.version,
+              perk: theirs.perk,
+              perkSource: theirs.perkSource ?? undefined,
+              controlledByWarbandId: theirs.controlledByWarbandId ?? undefined,
+              controlledByPlayerName: theirs.controlledByPlayerName ?? undefined,
+            } : t)),
+          };
+        }
+        resolved.push(conflict.opId);
+      }
+
+      campaignOutbox.clear(resolved);
+      storage.saveCampaign(campaign);
+
+      const pending = campaignOutbox.forCampaign(cloudId).length;
+      set({
+        campaign,
+        campaignSync: unresolved.length
+          ? { kind: 'conflict', conflicts: unresolved, pending }
+          : pending
+            ? { kind: 'pending', count: pending }
+            : { kind: 'synced', at: new Date().toISOString() },
+      });
+    },
+
     isPostBattleOpen: false,
     setIsPostBattleOpen: (open) => set({ isPostBattleOpen: open }),
     applyPostBattleResults: (
@@ -255,7 +450,6 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       };
 
       storage.saveCampaign(updatedCampaign);
-      storage.syncCampaignToCloud(updatedCampaign);
 
       set({
         warbands: updatedWarbands,
@@ -329,7 +523,6 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       };
 
       storage.saveCampaign(newCampaign);
-      storage.syncCampaignToCloud(newCampaign);
       set({ campaign: newCampaign });
     },
 
@@ -358,17 +551,16 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
         /* `playerName` is not sent: the server reads it from the membership it
            has already verified, so a claim cannot be attributed to anyone. */
-        queueOp(updatedCampaign, {
+        const queued = queueOp(updatedCampaign, {
           kind: 'territory.claim',
           opId: newOpId(),
-          campaignId: updatedCampaign.id,
           entityId: territoryId,
           baseVersion: state.campaign.territories.find((t) => t.id === territoryId)?.version ?? 1,
           data: { warbandId },
         });
 
-        storage.saveCampaign(updatedCampaign);
-        return { campaign: updatedCampaign };
+        storage.saveCampaign(queued);
+        return { campaign: queued, ...queuedState(queued, state.campaignSync) };
       });
     },
 
@@ -420,17 +612,20 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           ],
         };
 
-        queueOp(updatedCampaign, {
+        const queued = queueOp(updatedCampaign, {
           kind: 'territory.perk',
           opId: newOpId(),
-          campaignId: updatedCampaign.id,
           entityId: territoryId,
-          baseVersion: target.version ?? 1,
+          /* The territory's own version, not the campaign's: they move
+             independently, and using the wrong one makes every edit a
+             conflict. Re-read from state rather than from the `target`
+             captured above, which is a copy from before this mutation. */
+          baseVersion: state.campaign.territories.find((t) => t.id === territoryId)?.version ?? 1,
           data: { perk: text },
         });
 
-        storage.saveCampaign(updatedCampaign);
-        return { campaign: updatedCampaign };
+        storage.saveCampaign(queued);
+        return { campaign: queued, ...queuedState(queued, state.campaignSync) };
       });
       return true;
     },
@@ -473,16 +668,15 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           ],
         };
 
-        queueOp(updatedCampaign, {
+        const queued = queueOp(updatedCampaign, {
           kind: 'campaign.settings',
           opId: newOpId(),
-          campaignId: updatedCampaign.id,
-          baseVersion: updatedCampaign.version ?? 1,
+          baseVersion: state.campaign.version ?? 1,
           data: { houseRules: updatedCampaign.houseRules ?? {} },
         });
 
-        storage.saveCampaign(updatedCampaign);
-        return { campaign: updatedCampaign };
+        storage.saveCampaign(queued);
+        return { campaign: queued, ...queuedState(queued, state.campaignSync) };
       });
       return true;
     },
@@ -571,7 +765,6 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         };
 
         storage.saveCampaign(updatedCampaign);
-        storage.syncCampaignToCloud(updatedCampaign);
         return { campaign: updatedCampaign };
       });
     },
@@ -595,7 +788,6 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         };
 
         storage.saveCampaign(updatedCampaign);
-        storage.syncCampaignToCloud(updatedCampaign);
         return { campaign: updatedCampaign };
       });
     },

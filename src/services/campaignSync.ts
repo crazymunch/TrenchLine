@@ -55,6 +55,69 @@ export interface SyncConflict {
 }
 
 /**
+ * The server's copy of a territory, as a conflict carries it.
+ *
+ * Read through a guard rather than cast. It is our own endpoint's payload, but
+ * it has been over the wire, and a cast that turns out to be wrong would show
+ * the player `undefined` where the campaign's real value should be — the one
+ * thing a conflict panel exists to get right.
+ */
+export interface ServerTerritory {
+  version: number;
+  perk: string;
+  perkSource: 'published' | 'campaign' | null;
+  controlledByWarbandId: string | null;
+  controlledByPlayerName: string | null;
+}
+
+/** The server's copy of the campaign's settings, as a conflict carries it. */
+export interface ServerCampaign {
+  version: number;
+  name: string;
+  currentTurn: number;
+  houseRules: CampaignHouseRules | null;
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null;
+
+const strOrNull = (v: unknown): v is string | null => typeof v === 'string' || v === null;
+
+/**
+ * Read a conflicting territory, or `null` if the payload is not one.
+ *
+ * Strict: every field must be the type it is declared as, and there are no
+ * defaults. `null` here means "the server sent something this version does not
+ * understand", which the panel says out loud while showing the raw payload —
+ * useless, but true. A defaulted object would be an invented campaign state
+ * presented to the group as theirs.
+ */
+export function serverTerritory(v: unknown): ServerTerritory | null {
+  if (!isRecord(v)) return null;
+  const { version, perk, perkSource, controlledByWarbandId, controlledByPlayerName } = v;
+  if (typeof version !== 'number' || typeof perk !== 'string') return null;
+  if (!(perkSource === 'published' || perkSource === 'campaign' || perkSource === null)) return null;
+  if (!strOrNull(controlledByWarbandId) || !strOrNull(controlledByPlayerName)) return null;
+  return { version, perk, perkSource, controlledByWarbandId, controlledByPlayerName };
+}
+
+/** As above, for a `campaign.settings` conflict. */
+export function serverCampaign(v: unknown): ServerCampaign | null {
+  if (!isRecord(v)) return null;
+  const { version, name, currentTurn, houseRules } = v;
+  if (typeof version !== 'number' || typeof name !== 'string' || typeof currentTurn !== 'number') return null;
+  if (houseRules !== null && !isRecord(houseRules)) return null;
+  return {
+    version,
+    name,
+    currentTurn,
+    houseRules: houseRules === null
+      ? null
+      : { reinforcementsKeepExploration: houseRules.reinforcementsKeepExploration === true },
+  };
+}
+
+/**
  * `v1` in the key, like the warband outbox.
  *
  * A queue whose shape changes under a client that still has entries in it is a
@@ -213,3 +276,30 @@ export async function pushCampaignOps(
   campaignOutbox.clear([...applied, ...skipped]);
   return { ok: true, applied, skipped, conflicts };
 }
+
+/**
+ * What the campaign's cloud copy is doing, as a value the UI can render.
+ *
+ * Deliberately the same five states as the warband indicator (`SyncState` in
+ * `services/sync.ts`), plus one the warband queue cannot produce.
+ *
+ * A warband is pushed WHOLE, so there is nothing to conflict about: the last
+ * writer wins by design and the merge decides on `editedAt`. A campaign is
+ * edited by several people at once and pushed as operations, each stating the
+ * version it was made against — so "the server moved on under this edit" is a
+ * real outcome, and it is neither a failure nor a success. It is a question
+ * for the player, which is why it is its own state rather than an `error`
+ * with a special `reason`: colouring a conflict red says the app broke, and
+ * hiding it inside `pending` says nothing happened.
+ */
+export type CampaignSyncState =
+  /** No cloud identity — a local campaign, which is a supported way to play. */
+  | { kind: 'local-only' }
+  | { kind: 'syncing' }
+  /** Everything this device did is in the cloud. */
+  | { kind: 'synced'; at: string }
+  /** Edits are held here and will go up when the server can be reached. */
+  | { kind: 'pending'; count: number }
+  /** The server had a newer copy of something this device edited. */
+  | { kind: 'conflict'; conflicts: SyncConflict[]; pending: number }
+  | { kind: 'error'; reason: 'offline' | 'unauthenticated' | 'server'; detail: string; pending: number };

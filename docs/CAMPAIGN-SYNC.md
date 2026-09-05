@@ -1,14 +1,21 @@
 # Campaign sync — design
 
 SYNC-1 in [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) says
-"design before implementation". This is that design, and it stops short of
-code deliberately: it turned up a model mismatch the package did not anticipate,
-and that has to be decided before a line of protocol is worth writing.
+"design before implementation". This is that design, and it stopped short of
+code until a model mismatch the package did not anticipate had been decided —
+that decision is recorded below, and the code followed it.
 
-**Status: not implemented.** `storage.syncCampaignToCloud` returns
-`{ ok: false, reason: 'server', detail: 'Campaign cloud sync is not
-implemented.' }`, truthfully. The deleted fire-and-forget create calls are not
-coming back.
+**Status: built, with one gap.** The protocol, the endpoint, both queues, the
+store wiring and the indicator are done and tested. What is missing is a way
+for a campaign to acquire a cloud identity in the first place — see
+[The gap](#the-gap-nothing-gives-a-campaign-a-cloud-identity) below.
+
+`storage.syncCampaignToCloud` is gone. It returned `{ ok: false, reason:
+'server', detail: 'Campaign cloud sync is not implemented.' }` from six
+fire-and-forget call sites that ignored the answer, and now that there is an
+update path those calls are gone rather than pointed at it. Its replacement is
+`storage.fetchCampaignFromCloud`, which is the fetch-before-push gate and
+nothing else.
 
 ## The blocker: two campaign models share one table
 
@@ -111,10 +118,62 @@ the request is even made.
 - A failed request clears nothing: "the server said no" and "the server was not
   reached" are different, and only the first is an answer.
 
-Still to build: wiring the store's campaign mutations to enqueue operations,
-and the browser test of the pending / synced / conflict / failed states. The
-protocol and both queues are done; what remains is the app calling them and
-showing the result.
+The store's campaign mutations enqueue operations, and the campaign hub shows
+the result — `components/campaign/CampaignSyncStatus.tsx`, which is the warband
+indicator's five states plus `conflict`. A warband is pushed WHOLE, so the last
+writer wins by design and there is nothing to conflict about; a campaign is
+pushed as operations against a version, so "somebody else changed this first"
+is a real outcome that is neither a success nor a failure.
+
+Three things about the client that are easy to get wrong, and are tested:
+
+- **The local version moves when an operation is QUEUED, not when it is
+  acknowledged.** An applied operation leaves the entity at exactly
+  `baseVersion + 1` — that is the update's own `where` — so two edits to one
+  territory made before either is pushed can state 4 and 5 rather than 4 and 4.
+  Without that, the second conflicts with the first: the device disagreeing
+  with itself over an edit nobody else touched.
+- **`pending` never covers a conflict or a failure.** Both say WHY the queue is
+  not draining, and "2 to upload" in their place says the upload is merely
+  waiting when the app already knows better.
+- **Resolving a conflict adopts the server's value AND clears the operation, or
+  does neither.** Dropping the operation alone would leave the player looking
+  at their own text with nothing queued to send it — a silent divergence, which
+  is what this protocol exists to remove. A payload the client cannot parse
+  resolves nothing and stays on screen.
+
+The only resolution offered is *take the campaign's copy*. "Keep mine" means
+re-issuing an edit over somebody else's, which is a decision with a person on
+the other end of it, and it is not offered until there is a screen that says
+whose change it overwrites.
+
+### The gap: nothing gives a campaign a cloud identity
+
+`createCampaign` mints `camp-<timestamp>` locally, and always has. That is not
+an id the API would recognise, so **no campaign in the app can sync today** —
+every one of them is local, and the indicator says "On this device".
+
+The type says so rather than leaving it to be discovered: `Campaign.cloudId` is
+the id the server knows a campaign by, operations are queued only for a
+campaign that has one, and nothing sets it yet. Without that field the app
+would push against ids the server never issued and show every campaign as
+failing to sync.
+
+Closing it is the "first sync creates the cloud campaign" half of Option 1
+above, and it is not a small piece:
+
+- `POST /api/campaigns` creates four fixed territories of its own and takes no
+  `framework`, no house rules and no territory list. It cannot yet represent a
+  campaign this app made.
+- Territory ids are the harder half. Local ids are `wt-*`, `th-*` and
+  `cf-<slug>` — stable, meaningful, and **not unique across campaigns**, while
+  `TerritoryNode.id` is a global primary key. So either the server keeps its
+  own ids and the client holds a mapping, or the rows carry the local id in a
+  second column with a per-campaign unique constraint. That is a schema
+  decision, and it should be made once rather than guessed at here.
+
+Until then the protocol, both queues, the endpoint and the indicator are real
+and tested; what they have no supply of is a campaign the server has heard of.
 
 ## Authority: who owns which field
 
@@ -187,14 +246,29 @@ From SYNC-1, and none of them optional:
 - a fetch that fails before a push — nothing is written;
 - a non-member, a removed member, a wrong warband, and an organiser-only change
   attempted by a member;
-- a browser test showing the pending, synced, conflict and failed states.
+- a browser test showing the pending, synced, conflict and failed states —
+  `e2e/campaignSync.spec.ts`, all three viewports.
+
+All of these now exist. The endpoint's are integration tests against a real
+database (`src/app/api/campaigns/__tests__/sync.integration.test.ts`), the
+queue's and the store's are unit tests (`services/__tests__/campaignSync.test.ts`,
+`store/__tests__/campaignOutboxWiring.test.ts`,
+`store/__tests__/campaignSyncStates.test.ts`), and the browser test mocks the
+server at the network boundary — it is a test of what the app does with each
+answer, and the answers themselves are pinned by the integration tests.
 
 **Acceptance:** one logical campaign has one cloud identity; retries duplicate
 neither rows nor match records; no acknowledged local edit is lost.
 
-## Why this stops here
+## Why the design came first
 
-Everything above is derivable from the package and the code. The model
-mismatch is not: it needs a product decision about existing data, and building
-a protocol on top of an undecided data model would mean writing the migration
-twice — the second time with real campaigns in it.
+The protocol above is derivable from the package and the code. The model
+mismatch was not: it needed a product decision about existing data, and
+building on an undecided data model would have meant writing the migration
+twice — the second time with real campaigns in it. The answer came back
+"discard, they are example data", and everything since has been built on it.
+
+The same reasoning is why the cloud-identity gap is written down rather than
+guessed at. Territory ids are a schema decision with a migration behind it, and
+a client that assumed one shape would have to be rewritten when the other was
+chosen.

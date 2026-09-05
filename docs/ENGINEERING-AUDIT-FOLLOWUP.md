@@ -188,16 +188,27 @@ and tune false positives without reading secrets or message bodies.
 
 **Priority:** medium-high product work  
 **Dependency:** AUD-0; can run independently of AUTH packages  
-**Status:** designed in [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md); **blocked on one
-decision**. The design turned up something this package did not anticipate: the
+**Status:** built, with one gap, per [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md).
+
+The design turned up something this package did not anticipate: the
 `Campaign`/`TerritoryNode` tables model a campaign the app no longer creates —
 four fixed territories against the store's twelve theatres or thirty-two
-Carcass Front zones, with no concept of a framework or of perk provenance. A
-protocol built on an undecided data model means writing the migration twice,
-the second time with real campaigns in it. The question is in that document.
+Carcass Front zones, with no concept of a framework or of perk provenance. That
+was put to the maintainer rather than guessed at, the answer was "the rows are
+example data, discard them", and the protocol, the endpoint, both queues, the
+store wiring and the campaign indicator followed. Every test this section
+required now exists, including the browser test of the pending / synced /
+conflict / failed states.
 
-`src/services/storage.ts` truthfully returns “not implemented.” Do not restore
-the deleted fire-and-forget create calls.
+**The gap:** nothing gives a campaign a cloud identity. `createCampaign` mints
+`camp-<timestamp>` locally, which is not an id the API would recognise, so no
+campaign in the app syncs today — each one is local and the indicator says so.
+Closing it needs `POST /api/campaigns` to be able to represent a campaign this
+app made, and a decision about territory ids, which are meaningful and stable
+locally but not unique across campaigns. Both are written up in that document.
+
+`storage.syncCampaignToCloud` is gone, along with the six fire-and-forget call
+sites that ignored its answer. Do not restore the deleted create calls.
 
 Design before implementation:
 
@@ -306,7 +317,9 @@ These are not silent omissions:
 - **HSTS:** controlled at the TLS terminator, not asserted by application code.
 - **Anonymous local use:** supported; it conveys no cloud identity or write
   permission.
-- **Campaign cloud sync:** unavailable until SYNC-1 meets its data-loss tests.
+- **Campaign cloud sync:** the protocol meets its data-loss tests; it has no
+  supply of campaigns until a campaign can acquire a cloud identity (SYNC-1's
+  remaining gap).
 - **Live match sync:** separate product work, not a shortcut through campaign
   persistence.
 - **Email verification and recovery:** unavailable until AUTH-2 has a mail
