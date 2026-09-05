@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireActor } from '@/lib/api/policy';
 import { abort, badRequest, handle } from '@/lib/api/http';
 import { readJson } from '@/lib/api/parse';
+import { CONFIRMATION, type DeletionSummary } from '@/lib/accountDeletion';
 
 /**
  * Deleting your own account.
@@ -57,19 +58,6 @@ import { readJson } from '@/lib/api/parse';
  * client-side is a courtesy, not the control.
  */
 
-/** What `DELETE` would destroy, for the confirmation screen. */
-export interface DeletionSummary {
-  email: string | null;
-  warbands: number;
-  /** Campaigns this account ADMINISTERS. These are destroyed with it. */
-  administeredCampaigns: { name: string; otherMembers: number }[];
-  /** Campaigns this account merely plays in. Only the membership is removed. */
-  memberships: number;
-  customRules: number;
-  /** Reports that stay, unlinked. Named so the summary is not a half-truth. */
-  bugReportsKeptAnonymously: number;
-}
-
 async function summarise(userId: string, email: string | null): Promise<DeletionSummary> {
   const [warbands, administered, memberships, customRules, bugReports] = await Promise.all([
     prisma.warband.count({ where: { userId } }),
@@ -103,16 +91,6 @@ export async function GET() {
     return NextResponse.json({ summary: await summarise(actor.userId, actor.email) });
   });
 }
-
-/**
- * The word the caller types to confirm.
- *
- * A typed word rather than a checkbox: this is the one irreversible action in
- * the application, and a click is something a thumb does by accident on a
- * phone. Compared case-sensitively — "delete" is what you type when you are
- * dismissing a dialog, "DELETE" is what you type when you mean it.
- */
-export const CONFIRMATION = 'DELETE';
 
 export async function DELETE(req: NextRequest) {
   return handle('account:delete', async () => {

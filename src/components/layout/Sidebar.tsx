@@ -4,19 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { useStore, AppView } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
-import { AuthModal } from '../auth/AuthModal';
 import { 
   Shield, 
   Swords, 
   Flag, 
   BookOpen, 
   SlidersHorizontal, 
-  User,
   ChevronLeft,
   ChevronRight,
   Users,
-  Crown,
-  LogIn,
   Sparkles
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
@@ -35,7 +31,6 @@ export const Sidebar: React.FC = () => {
 
   const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const isAdmin = sessionIsAdmin(session);
 
@@ -246,85 +241,43 @@ export const Sidebar: React.FC = () => {
         </nav>
 
         {/*
-          4. Bottom Footer: the signed-in identity and the expand toggle.
+          4. Bottom Footer: the expand toggle, and nothing else.
 
-          It carried a Theme button and a Report a Bug button too — the third
-          copy of each, after the top bar's and the phone account menu's. All
-          three now live in one place, the account menu in the top bar, which
-          is open at every width. Three copies of a setting is two of them
-          drifting.
+          It carried a Theme button and a Report a Bug button — the third copy
+          of each, after the top bar's and the phone account menu's — and then
+          an account block: a Login button when signed out, and when signed in
+          the name, the admin crown and a button opening the same AuthModal.
+
+          Every one of those was a second copy of something the account menu in
+          the top bar already had, and that bar renders directly beside this
+          sidebar at every width this sidebar is visible at. Two Login buttons
+          on one screen is not a convenience; it is two things to keep in step,
+          and the reader has to work out whether they do the same thing.
+
+          So the account lives in exactly one place. Three copies of a setting
+          is two of them drifting, and two copies of an identity is one of them
+          being wrong after a sign-out.
         */}
-        <div className="p-3 border-t border-theme-border space-y-2 bg-theme-base">
-
-          {/* User Auth Profile */}
-          {session?.user ? (
-            <div className={`flex items-center rounded bg-theme-surface border border-theme-border text-xs font-mono ${
-              isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 justify-between'
-            }`}>
-              <div className="flex items-center space-x-2 truncate">
-                {sessionIsAdmin(session) ? (
-                  <Crown className="w-4 h-4 text-theme-primary flex-shrink-0" />
-                ) : (
-                  <User className="w-4 h-4 text-theme-muted flex-shrink-0" />
-                )}
-                {!isCollapsed && (
-                  <div className="truncate flex flex-col">
-                    <span className="font-bold text-theme-text truncate text-xs sm:text-[11px]">
-                      {session.user.name || session.user.email?.split('@')[0]}
-                    </span>
-                    {sessionIsAdmin(session) && (
-                      <span className="text-[8px] text-theme-primary font-bold uppercase leading-none">
-                        CRUSADE ADMIN
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {!isCollapsed && (
-                <button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="tap text-theme-muted hover:text-theme-text p-1"
-                  title="Account Details"
-                >
-                  <User className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              className={`w-full flex items-center rounded font-mono text-xs font-bold uppercase transition-colors shadow ${
-                isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2'
-              }`}
-              style={{ backgroundColor: activeThemeObj.primaryColor, color: '#000000' }}
-              title="Login / Authenticate"
-            >
-              <LogIn className="w-4 h-4 flex-shrink-0" />
-              {!isCollapsed && <span>Login</span>}
-            </button>
-          )}
-
-          {/* Expand Toggle when Collapsed */}
-          {isCollapsed && (
+        {/*
+          Rendered only when collapsed, because the expand toggle is the only
+          thing left in it. An always-present footer would draw a horizontal
+          rule across the bottom of an expanded sidebar with nothing under it —
+          a border marking off empty space, which reads as something failing to
+          load rather than as a divider.
+        */}
+        {isCollapsed && (
+          <div className="p-3 border-t border-theme-border bg-theme-base">
             <button
               onClick={toggleCollapse}
-              className="w-full flex justify-center p-2 rounded hover:bg-theme-elevated text-theme-muted hover:text-theme-text transition-colors"
+              className="w-full flex justify-center min-h-[44px] items-center rounded hover:bg-theme-elevated text-theme-muted hover:text-theme-text transition-colors"
               title="Expand Sidebar"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-          )}
-
-        </div>
+          </div>
+        )}
 
       </aside>
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
 
     </>
   );

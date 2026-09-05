@@ -27,7 +27,8 @@ interface TestUser { id?: string; email: string; isAdmin?: boolean }
 let session: { user: TestUser } | null = null;
 const as = (user: TestUser | null) => { session = user ? { user } : null; };
 
-const { GET, DELETE, CONFIRMATION } = await import('../route');
+const { GET, DELETE } = await import('../route');
+const { CONFIRMATION } = await import('@/lib/accountDeletion');
 
 const DOMAIN = '@deletion.test';
 

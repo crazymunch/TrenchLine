@@ -20,19 +20,9 @@ import React, { useEffect, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Sheet } from '../ui/Sheet';
-
-/** Mirrors `DeletionSummary` in the route. */
-interface Summary {
-  email: string | null;
-  warbands: number;
-  administeredCampaigns: { name: string; otherMembers: number }[];
-  memberships: number;
-  customRules: number;
-  bugReportsKeptAnonymously: number;
-}
-
-/** The word the route requires. Kept in step by a test, not by memory. */
-export const CONFIRMATION = 'DELETE';
+// The same literal the route compares against, not a copy of it. See the note
+// in that file for why it cannot live in `route.ts`.
+import { CONFIRMATION, type DeletionSummary } from '@/lib/accountDeletion';
 
 const Row: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
   <div className="flex items-baseline justify-between gap-3 border-b border-theme-border py-2 last:border-b-0">
@@ -44,7 +34,7 @@ const Row: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value
 export const DeleteAccountModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen, onClose,
 }) => {
-  const [summary, setSummary] = useState<Summary | null>(null);
+  const [summary, setSummary] = useState<DeletionSummary | null>(null);
   const [typed, setTyped] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -60,7 +50,7 @@ export const DeleteAccountModal: React.FC<{ isOpen: boolean; onClose: () => void
       .then(async (res) => {
         const body = await res.json().catch(() => null);
         if (!res.ok) throw new Error(body?.error ?? 'Could not read this account.');
-        return body.summary as Summary;
+        return body.summary as DeletionSummary;
       })
       .then((s) => { if (live) setSummary(s); })
       /*

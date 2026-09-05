@@ -58,6 +58,8 @@ test('the recruit sheet', async ({ page }) => {
  * what makes it reachable from these tests at all.
  */
 async function openAccountMenu(page: Page) {
+  // Unscoped and unqualified: since UI-9 removed the sidebar's own Login there
+  // is exactly one on the page, and `mobile.spec.ts` asserts that count.
   await page.getByRole('button', { name: /^Login$/i }).click();
   await expect(page.getByRole('menu')).toBeVisible();
 }

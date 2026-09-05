@@ -211,12 +211,18 @@ test('the bottom bar is five destinations, none of them clipped', async ({ page 
 test('the account menu carries the settings', async ({ page }) => {
   await openApp(page, '/roster');
   /*
-    The header's Login, specifically. The desktop sidebar has one of its own
-    that opens the sign-in sheet directly, and it comes first in the DOM — an
-    unscoped `.first()` opens that instead and this reads as "the menu never
-    appeared".
+    Exactly one Login on the page, and it is the header's.
+
+    This used to need `page.locator('header')` to disambiguate: the desktop
+    sidebar carried a second Login that opened the sign-in sheet directly, and
+    it came first in the DOM, so an unscoped `.first()` opened that one and
+    the failure read as "the menu never appeared". The sidebar's copy is gone
+    (UI-9), so the count is now the assertion rather than a workaround — a
+    reintroduced duplicate fails here instead of quietly shadowing the menu.
   */
-  await page.locator('header').getByRole('button', { name: /login/i }).first().click();
+  const login = page.getByRole('button', { name: /^login$/i });
+  await expect(login, 'more than one Login on the page').toHaveCount(1);
+  await login.click();
 
   const menu = page.locator('[role="menu"]');
   await expect(menu).toBeVisible();
