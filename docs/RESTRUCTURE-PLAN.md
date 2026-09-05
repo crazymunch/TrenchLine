@@ -209,6 +209,37 @@ All are covered by regression tests.
   means asserting the PDF extraction captured a complete list, and an ability
   wrongly deleted is harder to notice than one wrongly kept. Confirm against
   the printed page.
+
+  **That decision now has evidence on both sides, and the entry contradicts
+  itself in the meantime.** Against keeping them:
+
+  - The layer already drops **STRONG** from the Amalgam's Keywords, because
+    the Dispatch's printed row has four where the catalogue has five. But
+    `Strong-ish` reads *"Two of the arms of the Amalgam have the Keyword
+    STRONG. It can wield any two HEAVY weapons of its choice"* — so the
+    shipped entry both does and does not have the Keyword. The build now
+    reports this class of contradiction on every run rather than leaving it to
+    a note nobody re-reads.
+  - Both retained abilities are about wielding SEVERAL weapons, and the
+    Dispatch rewrites the Amalgam to have exactly one: *"An Amalgam always has
+    a Gluttonous Arsenal … It cannot have any other Battlekit, but it can have
+    up to 1 Vile Corpus."* `Six-armed Monstrosity` grants an ACTION per weapon
+    equipped; `Strong-ish` says it may wield two HEAVY weapons. Neither can be
+    exercised by a model that may carry nothing else.
+  - The Dispatch's five abilities run Absorb → Corpulent → Curse on Creation →
+    Trample → Unstoppable: an unbroken alphabetical sequence, with the two
+    disputed names falling exactly in the gap between *Curse on Creation* and
+    *Trample* where nothing is missing.
+
+  For keeping them: the SAME TWO PAGES of that document demonstrably lost
+  content — the Vile Corpus list survives as one entry under a rule requiring
+  each Amalgam to have a different one (above). So the extraction being
+  complete for the Amalgam cannot be asserted from the document alone, which is
+  the whole basis of the original decision.
+
+  **This needs the printed page**, and it is now a rules question rather than a
+  transcription one: does the Dispatch's Amalgam keep six arms, or is it the
+  one-weapon model its Battlekit line describes?
 - **Three Dispatch ops cannot be applied**: `Demonic Aura Grenade`, `Holy
   Grenade` and `Parasite Grenades` do not exist in the catalogues under any
   name. Reported, not dropped — this is the catalogue lag the design predicted.

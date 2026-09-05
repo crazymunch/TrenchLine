@@ -69,6 +69,11 @@ function stampLeaves(provenance, kind, id, obj, info, prefix = '') {
 }
 
 /** Write `value` at a dotted path, creating intermediate objects. */
+/** The value at a dotted path, or undefined. */
+function getPath(obj, dotted) {
+  return String(dotted).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+
 function setPath(obj, dotted, value) {
   const parts = dotted.split('.');
   let cur = obj;
@@ -85,7 +90,7 @@ function setPath(obj, dotted, value) {
  * errata line the catalogues have since caught up with, say. Optional, so the
  * caller that does not care need not pass one.
  */
-export function applyLayer(dataset, layer, provenance, notes = [], deferred = []) {
+export function applyLayer(dataset, layer, provenance, notes = [], deferred = [], removals = []) {
   const unresolved = [];
   const source = `${layer.id}:${layer.sourceRef ?? ''}`;
 
@@ -180,10 +185,34 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
     if (!target) { unresolved.push({ op, why: `target not found: ${op.target?.kind}/${op.target?.id}` }); continue; }
 
     switch (op.op) {
-      case 'set':
+      case 'set': {
+        /*
+          A `set` that REMOVES a keyword is worth saying out loud.
+
+          The Dispatch replaces the Amalgam's entry and its keyword row prints
+          four where the catalogue carries five, so the layer correctly drops
+          STRONG. The catalogue's `Strong-ish` ability survives, and its text
+          is "Two of the arms of the Amalgam have the Keyword STRONG" — so the
+          shipped entry both does and does not have the keyword.
+
+          Reported rather than resolved: an ability that contradicts its own
+          entry needs the printed page, and the alternative to reporting it is
+          that nobody notices for another year. See `keywordRemovals` in the
+          build.
+        */
+        const before = op.field === 'keywords' || op.field?.endsWith('.keywords')
+          ? getPath(target, op.field) : undefined;
         setPath(target, op.field, op.value);
+        if (Array.isArray(before)) {
+          const now = new Set((op.value ?? []).map((k) => String(k).toUpperCase()));
+          const gone = before
+            .map((k) => String(k).toUpperCase())
+            .filter((k) => !now.has(k));
+          if (gone.length) removals.push({ target, entity: target.name, removed: gone, op });
+        }
         stamp(op.target, op.field, target);
         break;
+      }
 
       case 'replace':
         for (const [k, v] of Object.entries(op.entity)) {
@@ -274,7 +303,7 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
 }
 
 /** Apply an ordered list of layers, honouring the ruleset's beta preference. */
-export function applyLayers(dataset, layers, provenance, { includeBeta = true, deferred = [] } = {}) {
+export function applyLayers(dataset, layers, provenance, { includeBeta = true, deferred = [], removals = [] } = {}) {
   const report = [];
   for (const layer of layers) {
     if (!includeBeta && layer.status === 'public-beta') {
@@ -288,7 +317,7 @@ export function applyLayers(dataset, layers, provenance, { includeBeta = true, d
       continue;
     }
     const notes = [];
-    const unresolved = applyLayer(dataset, layer, provenance, notes, deferred);
+    const unresolved = applyLayer(dataset, layer, provenance, notes, deferred, removals);
     report.push({ layer: layer.id, ops: layer.ops.length, unresolved, notes });
   }
   return report;

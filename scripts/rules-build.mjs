@@ -592,10 +592,41 @@ for (const ruleset of RULESETS) {
     fall between the two.
   */
   const deferredOps = [];
+  /* Keywords a layer took OFF an entry — see the cross-check below. */
+  const keywordRemovals = [];
   const layerReport = applyLayers(dataset, layers, provenance, {
     includeBeta: ruleset.includeBeta,
     deferred: deferredOps,
+    removals: keywordRemovals,
   });
+
+  /*
+    An entry that both does and does not have a keyword.
+
+    When a layer replaces an entry it sets the keyword row the new page
+    prints, which can REMOVE one — the Dispatch's Amalgam row prints four
+    where the catalogue carries five, so STRONG goes. The catalogue's
+    abilities are kept, deliberately: dropping an ability asserts that the PDF
+    extraction captured a complete list, and an ability wrongly deleted is
+    harder to notice than one wrongly kept.
+
+    That reasoning assumed a wrongly-kept ability is inert. It is not always:
+    the Amalgam keeps `Strong-ish`, whose text is "Two of the arms of the
+    Amalgam have the Keyword STRONG", so the shipped entry contradicts itself.
+
+    Reported, not resolved — resolving it means deleting a published ability
+    or restoring a keyword the printed row omits, and both need the page.
+  */
+  for (const r of keywordRemovals) {
+    const contradicts = (r.target.abilities ?? []).filter((a) =>
+      r.removed.some((k) => new RegExp(`\\b${k}\\b`).test(a.description ?? '')));
+    if (!contradicts.length) continue;
+    console.log(`  ⚠ ${r.entity}: the layer removed the ${r.removed.join(', ')} `
+      + `Keyword${r.removed.length > 1 ? 's' : ''}, but ${contradicts.length} retained `
+      + `ability still names ${r.removed.length > 1 ? 'one' : 'it'}: `
+      + `${contradicts.map((a) => a.name).join(', ')}. The entry contradicts itself; `
+      + 'confirm against the printed page.');
+  }
 
   // ------------------------------------------------------------- armouries
   //
