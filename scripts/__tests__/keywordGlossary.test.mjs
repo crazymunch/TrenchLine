@@ -18,6 +18,7 @@ import { changelogKeywords, bareName } from '../lib/changelog-keywords.mjs';
 
 const CHANGELOG = 'data-sources/rulebook/extracted/changelog-1.0.2.txt';
 const GENERATED = 'src/data/generated/trenchline.generated.ts';
+const RULEBOOK = 'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
 
 /** The shipped glossary, which is the `keywords` block of the dataset. */
 function glossary() {
@@ -28,6 +29,32 @@ function glossary() {
   expect(to, 'the keywords block has no end').toBeGreaterThan(from);
   return new Set([...gen.slice(from, to).matchAll(/"name": "([^"]+)"/g)].map((m) => bareName(m[1])));
 }
+
+describe('the base rulebook', () => {
+  it('is version 1.0.2, which is why no changelog layer exists', () => {
+    /*
+      The premise the rest of this rests on, and the one thing here that could
+      go silently false.
+
+      The digital rulebook the pipeline derives from IS 1.0.2 — its cover reads
+      `1`0`2`, with the PDF's own glyph substitution for the dots — so the
+      changelog is a record of what changed BETWEEN versions, not a delta to
+      apply on top. Every rewrite it lists was checked and is already in the
+      book: `STRONG`'s second sentence, `RISKY`'s last, `SKIRMISHER`'s evade,
+      `MINED`'s detonation, and each of the terrain Keywords.
+
+      Where the two differ it is wording, not rules — the book's `CLEAVE (X)`
+      reads "take a Fight ACTION and choose a Weapon with this Keyword" where
+      the changelog reads "with a Weapon that has this Keyword" — and the book
+      is the later, refined artefact, so the app derives from it.
+
+      Swap in a 1.0.1 rulebook and all of that quietly stops being true, with
+      nothing else in the build to notice. Hence this line.
+    */
+    const cover = fs.readFileSync(RULEBOOK, 'utf8').slice(0, 200);
+    expect(cover.replace(/[`’'·]/g, '.')).toMatch(/1\.0\.2/);
+  });
+});
 
 describe('reading the Keywords out of the changelog', () => {
   const named = changelogKeywords(fs.readFileSync(CHANGELOG, 'utf8'));

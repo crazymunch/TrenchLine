@@ -172,7 +172,7 @@ this table by being checked, not by looking fine.
 | Scenarios | Core Rulebook + All Out War | ✅ Checked |
 | Unit statlines | BattleScribe + Warbands book | ✅ Checked both ways — `rules:crosscheck` reports 0 mismatched over 96 units, `rules:threeway` reports 0 app-vs-rulebook disagreements over 42 |
 | Keyword glossary | 1.0.2 Changelog | ✅ Checked. The 7 gaps §1.3a found — `CLEAVE (X)`, `DEADLY`, the three terrain Keywords, `REGENERATE (X)`, `SKIRMISHER` — are closed. All **17** Keywords the changelog names are present, and `scripts/__tests__/keywordGlossary.test.mjs` re-checks it |
-| Injury/Down/Out of Action rules | 1.0.2 Changelog | ⛔ **Not checked** |
+| Injury/Down/Out of Action rules | 1.0.2 Changelog | ✅ Checked. Nothing to apply: the digital rulebook the app derives from **is** 1.0.2 and already carries the changelog's rewrites — see below |
 | FAQ / edge cases | Rules Commentaries 1.0.2 | ⛔ **Not checked** |
 
 Five of these sat here as "needs checking" after they had been checked and
@@ -180,6 +180,30 @@ fixed, in a document whose own tables above said so. That is the failure AUD-1
 was about, three sections apart in one file: a queue that does not empty stops
 being read, and then the entries that ARE still outstanding — the two at the
 bottom — are invisible for the same reason.
+
+**The changelog is not a layer, and never needed to be.** The digital rulebook
+in `data-sources/rulebook/` is version 1.0.2 — its cover reads `1`0`2`, the
+PDF's own glyph substitution for the dots — so the changelog records what
+changed from 1.0.1 rather than a delta to apply on top of it. Every rewrite it
+lists was checked against the book and is already there: `STRONG`'s second
+sentence, `RISKY`'s last, `SKIRMISHER`'s evade, `MINED`'s detonation, the
+Bloodbath Roll, the added line under Injury Rolls, and each of the three
+terrain Keywords. No layer transcribes the changelog, none should, and
+`data-sources/rulebook/SOURCES.json` said otherwise until this was checked.
+
+Where the two differ it is wording, not rules, and the book reads as the later
+refinement in each case — its `CLEAVE (X)` is "take a Fight ACTION **and choose
+a Weapon with this Keyword** to make a Melee Attack" where the changelog has
+"with a Weapon that has this Keyword"; `AUTOMATIC (X)` differs the same way;
+`SKIRMISHER` says "a model with this Keyword" where the changelog says "a
+friendly model"; and the Comprehensive-rules Down Results bullet on p49 keeps
+"cannot **be moved** for any reason", matching its Core-rules twin on p20,
+where the changelog's p49 entry alone says "cannot **move**". The app carries
+the book's wording, which is right: the book is what a player owns.
+
+That whole chain rests on one fact that could go silently false — swap in a
+1.0.1 rulebook and none of it holds, with nothing else in the build to notice
+— so `scripts/__tests__/keywordGlossary.test.mjs` asserts the extract's version.
 
 The Keyword row is the sharpest case, because it was stale in the direction
 that matters least to notice and most to fix. It read "7 gaps already

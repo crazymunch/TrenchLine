@@ -125,7 +125,7 @@ All five committed:
 |---|---|---|
 | `warbands-of-trench-crusade.pdf` | 186 | **The statline authority.** 48 warband entries, each with recruitment limits, Ducat cost, full statline, keywords and abilities. Machine-parseable — see below. |
 | `trench-crusade-digital-rulebook.pdf` | 197 | Core + Comprehensive rules, keyword glossary, D66 trauma/exploration/skills tables, scenarios. |
-| `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — transcribes directly to a layer. Defines 12 keywords and rewrites core rules (Retreat, Line of Sight, Terrain Types, Model Placement). |
+| `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — a record of what changed from 1.0.1, **not** a delta to apply. The digital rulebook above is already 1.0.2 and carries every rewrite it lists, so nothing transcribes it to a layer. Kept as evidence: it is where the Keyword completeness check reads the expected list from. |
 | `rules-commentaries-1.0.2.pdf` | 8 | Official FAQ. Not layer material — feeds the Codex and resolves rules-engine edge cases. |
 | `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
 
