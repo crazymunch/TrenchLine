@@ -76,6 +76,33 @@ npm run rules:extract     # PDF -> text
   `scripts/extract-pdf.mjs`. The system Python's `cryptography` module is broken,
   so Python PDF libraries do not work here.
 
+## Standing authorisation: applying migrations to production
+
+**Applying PENDING migrations to the production database is pre-authorised.**
+Do it as part of merging a PR that adds one, rather than asking each time:
+
+```bash
+node scripts/apply-migrations-http.mjs        # report
+node scripts/apply-migrations-http.mjs --yes  # apply
+```
+
+`DATABASE_URL` in this environment points at production Neon. TCP 5432 is
+blocked here, but Neon's HTTPS SQL endpoint is not — see
+[`docs/DATABASE.md`](docs/DATABASE.md). The script refuses on its own when the
+state is not the one it expects: a migration edited after being applied, a
+database recording migrations this checkout does not have, or a non-Neon host.
+
+Then say what `_prisma_migrations` reads back. A migration applied and not
+reported is the same failure mode as one never applied.
+
+**This grant covers pending migrations and nothing else.** Still ask first for
+anything that changes or destroys existing production DATA — a backfill, a
+delete, a column drop, `scripts/clear-example-campaigns.mjs`. The distinction
+is that a pending migration is already written down, reviewed and merged; a
+data change is a decision being made at the keyboard.
+
+Never `prisma db push`. Never edit a migration that has been applied.
+
 ## Gotchas
 
 - `next build` fails with `<Html> should not be imported outside of

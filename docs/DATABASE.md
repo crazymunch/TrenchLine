@@ -111,11 +111,47 @@ select migration_name, finished_at from _prisma_migrations order by started_at;
 against `ls prisma/migrations/`. If the lists differ, the deployed app is
 running on a schema it was not written for.
 
-### When the only door is a SQL console
+### When 5432 is blocked but HTTPS is not
 
-`migrate deploy` needs a direct TCP connection on 5432. Somewhere that has only
-HTTPS — a sandbox behind a proxy, a locked-down runner — cannot run it, and the
-temptation is to paste the migration's DDL into Neon's SQL editor instead.
+`migrate deploy` needs a direct TCP connection on 5432, and the agent sandbox
+does not have one — the proxy passes HTTPS and nothing else. **Neon also serves
+SQL over HTTPS**, at `https://<host>/sql`, taking the connection string as a
+`Neon-Connection-String` header. That endpoint is reachable from the sandbox,
+and it is how the three-migrations-behind diagnosis above was made.
+
+```bash
+node scripts/apply-migrations-http.mjs           # report what is pending
+node scripts/apply-migrations-http.mjs --yes     # apply it
+```
+
+Each migration goes up as ONE transaction carrying its statements and the
+`_prisma_migrations` row that records it, so the trap below cannot be sprung.
+It reports by default and writes only with `--yes`, and it refuses rather than
+guessing when a migration was edited after being applied (`migrate deploy`
+calls that MODIFIED and stops too), when the database records a migration this
+checkout does not have, or when `DATABASE_URL` names something that is not a
+Neon host.
+
+Statements are split by a scanner that tracks quoting rather than by
+`split(';')`, because a semicolon inside a string literal, a quoted identifier,
+a comment or a dollar-quoted body is not a boundary — `DEFAULT 'a;b'` is
+ordinary SQL and would be cut in half.
+`scripts/__tests__/applyMigrationsHttp.test.mjs` covers all five cases and
+needs no database.
+
+**This was available the whole time three migrations were being pasted into
+Neon's web console by hand.** The endpoint had already been used to READ
+`_prisma_migrations` during that incident, and nobody thought to write through
+it. Recorded because a capability nobody remembers is the same as one nobody
+has.
+
+`migrate deploy` from somewhere with a real connection is still the way. This
+is what to do when that somewhere does not exist.
+
+### The trap under any hand-applied migration
+
+Where neither door is open, the temptation is to paste the migration's DDL into
+Neon's SQL editor.
 
 **That works and leaves a trap.** The DDL changes the schema and tells Prisma
 nothing, so `_prisma_migrations` still lists the migration as pending. The next
@@ -134,7 +170,8 @@ deploy` report the migration as MODIFIED, which is louder but still a failure.
 The algorithm was verified against an already-applied row before it was
 trusted.
 
-This is a fallback, not a policy. `migrate deploy` is the way.
+`apply-migrations-http.mjs` does the same thing without the copy-paste, and
+should be preferred where the host is Neon. Both are fallbacks, not policy.
 
 ## Expand, migrate, contract
 
