@@ -25,6 +25,7 @@ import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseCampaignPhaseSteps } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
+import { parseMarkers } from './lib/parse-markers.mjs';
 import { parseKeywords } from './lib/parse-keywords.mjs';
 import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
@@ -298,6 +299,12 @@ for (const ruleset of RULESETS) {
   const visionCards = parseVisionCards();
 
   const coreRules = parseCoreRules();
+  /*
+    The two battle marker pools. Read from the sections above, because the
+    cap was a literal `6` in the store and Blessing Markers were not in the
+    app at all — a number and an absence, both decided by hand.
+  */
+  const markers = parseMarkers(coreRules.chapters);
   if (coreRules.missing.length) {
     throw new Error(
       `rules-build: ${coreRules.missing.length} rulebook section(s) in the table of `
@@ -417,6 +424,7 @@ for (const ruleset of RULESETS) {
      * when they cannot check the book.
      */
     coreRules: coreRules.chapters,
+    markers,
     /**
      * The Weather Events table, from the Hell on Earth module.
      *
@@ -940,6 +948,11 @@ for (const ruleset of RULESETS) {
       `${g.battlefield.rows.length} archetypes, ${g.deployment.rules.length} deployments, ` +
       `${g.victory.rules.length} victory conditions, ${deeds} Glorious Deeds`);
   }
+  console.log('  battle markers: '
+    + (dataset.markers ?? []).map((m) =>
+        `${m.name} (${m.cap === null ? 'no published cap' : `cap ${m.cap}`}, `
+        + `spent by the ${m.spentBy})`).join(', '));
+
   const coreChapters = dataset.coreRules.filter((c) => c.category === 'Core Rules').length;
   console.log(`  core rules: ${dataset.coreRules.length} sections `
             + `(${coreChapters} Core, ${dataset.coreRules.length - coreChapters} Comprehensive)`);

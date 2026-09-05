@@ -65,7 +65,7 @@ the execution is the problem.
 |---|---|---|
 | Wound / status steppers | ✅ | Active / Downed / Out of Action |
 | **Blood Marker pool** | ✅ | 6-marker cap enforced |
-| Blessing markers | 🟡 | Less complete than Blood |
+| Blessing markers | ✅ | Uncapped, as the book prints them — see below |
 | Activation tracking (acted this turn) | ✅ | `toggleUnitActed` |
 | Turn/phase counter | ✅ | |
 | Dice roller (D6 / 2D6 / D66) | ✅ | `DiceRoller.tsx`, 523 lines |
@@ -76,6 +76,21 @@ the execution is the problem.
 | Dice probability tool | ✅ | |
 | Scenario reference + map lightbox | ✅ | Real official maps |
 | **Live multi-device match sync** | ❌ | Honestly labelled "Coming Soon" in-app |
+
+**The marker pools are not mirror images.** The row above used to read 🟡
+"Less complete than Blood", which was generous: Blessing Markers had no state
+in the app at all. They do now, and the two pools differ in both ways the book
+states — Blood is capped at 6 and spent by your *opponent*; Blessing has no
+printed cap and is spent by *you*. A Blessing pool written as a copy of the
+Blood pool caps at six and then cannot record a seventh blessing, which is a
+legal board state.
+
+Both caps come from `dataset.markers`, read out of the rulebook by
+`scripts/lib/parse-markers.mjs`. The store used to clamp Blood with a literal
+`Math.min(6, …)` under a comment reading "Official Rulebook Cap" — the cap is
+a rule, and rules are derived (CLAUDE.md rule 1). Where the book prints no cap
+the app enforces none, and where the dataset has not loaded yet it enforces
+none either, rather than falling back to a number the code remembers.
 
 ### Campaign
 

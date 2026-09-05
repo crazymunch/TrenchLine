@@ -936,6 +936,19 @@ export interface TraumaRow {
  * (1 is not a result on 2D6), and read Morale off "50% of starting models"
  * rather than the book's "half the models in your Warband, rounded up".
  */
+export interface BattleMarker {
+  /** `BLOOD MARKERS`, as the book sets it. */
+  name: string;
+  id: string;
+  /** The printed limit, or `null` where the book states none. */
+  cap: number | null;
+  /** Who may spend them — the book states this, and the two pools differ. */
+  spentBy: 'opponent' | 'controller';
+  page: number;
+  /** The published section, quoted rather than paraphrased. */
+  rules: string;
+}
+
 export interface CoreRuleSection {
   /** Slugified title, stable across builds. */
   id: string;
@@ -1130,6 +1143,16 @@ export interface Dataset {
   scenarioGenerator?: ScenarioGenerator;
   /** The Core Rules and Comprehensive Rules chapters, in the book's order. */
   coreRules: CoreRuleSection[];
+  /**
+   * The battle marker pools — BLOOD and BLESSING.
+   *
+   * Play Mode capped Blood with a literal `Math.min(6, …)` in the store and
+   * had no Blessing pool at all. The two are not mirror images and the book
+   * says so: Blood is capped at 6 and spent by your OPPONENT, Blessing has no
+   * printed cap and is spent by YOU. `cap: null` means the book states none,
+   * which is a fact about the game rather than a gap in the reading.
+   */
+  markers?: BattleMarker[];
   /**
    * Hell on Earth: the Weather Events table, and the procedure for using it.
    *

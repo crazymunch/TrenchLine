@@ -61646,6 +61646,24 @@ export const DATASET: Dataset = {
       }
     }
   ],
+  "markers": [
+    {
+      "name": "BLOOD MARKERS",
+      "id": "blood-markers",
+      "cap": 6,
+      "spentBy": "opponent",
+      "page": 19,
+      "rules": "During a battle your warriors can be wounded. Wounds are tracked with BLOOD MARKERS. A model cannot have more than 6 BLOOD MARKERS at any one time. We recommend using a red dice to keep track of the number of BLOOD MARKERS on a model.\n\nEach time one of your models suffers a wound, place a BLOOD MARKER next to it. When you make a Success Roll for the model, your opponent may choose to spend one or more BLOOD MARKERS to add -1 DICE.\n\nIn addition, each time your opponent makes an Injury Roll for the model, they may choose to spend one or more BLOOD MARKERS to add +1 INJURY DICE, making a serious injury far more likely."
+    },
+    {
+      "name": "BLESSING MARKERS",
+      "id": "blessing-markers",
+      "cap": null,
+      "spentBy": "controller",
+      "page": 20,
+      "rules": "BLESSING MARKERS are similar to BLOOD MARKERS, but specifically aid Success Rolls for the model.\n\nEach time one of your models receives a blessing, place a BLESSING MARKER next to it. When you take a Success Roll for the model, you may choose to spend one or more BLESSING MARKERS to add +1 DICE, and each time an Injury Roll is made for the model you may spend one or more BLESSING MARKERS to add -1 INJURY DICE."
+    }
+  ],
   "weather": {
     "procedure": "All of Creation reels and rends in response to the Great War, and even the weather is endowed with divine or devilish power. To represent this in your games of Trench Crusade, you and your opponent(s) may choose to influence your battles by generating a Weather Event. After the battlefield has been set up but before players have Deployed any models, each player rolls 2D6 on the Weather Event Table below. In a campaign, the player with the fewest Campaign Victory Points decides which of the rolled Weather Events to apply for the remainder of the battle. If all players have the same number of Campaign Victory Points, or you are playing a one-off game, simply roll-off, with the winner deciding which rolled Weather Event to apply for the battle.",
     "events": [

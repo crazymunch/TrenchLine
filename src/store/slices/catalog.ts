@@ -15,10 +15,11 @@ import { recruitable } from '../../rules/recruitable';
 import { factionOf } from '../../rules/variants';
 import type { InitialState } from '../init';
 
-export type CatalogSlice = Pick<AppState, 'factions' | 'units' | 'weapons' | 'armour' | 'equipment' | 'catalogsLoaded' | 'catalogsError' | 'gloryPriced' | 'hydrateCatalogs' | 'customUnits' | 'customWeapons' | 'customArmour' | 'customEquipment' | 'favouriteUnits' | 'saveCustomUnit' | 'deleteCustomUnit' | 'saveCustomWeapon' | 'deleteCustomWeapon' | 'saveCustomArmour' | 'deleteCustomArmour' | 'saveCustomEquipment' | 'deleteCustomEquipment'>;
+export type CatalogSlice = Pick<AppState, 'markers' | 'factions' | 'units' | 'weapons' | 'armour' | 'equipment' | 'catalogsLoaded' | 'catalogsError' | 'gloryPriced' | 'hydrateCatalogs' | 'customUnits' | 'customWeapons' | 'customArmour' | 'customEquipment' | 'favouriteUnits' | 'saveCustomUnit' | 'deleteCustomUnit' | 'saveCustomWeapon' | 'deleteCustomWeapon' | 'saveCustomArmour' | 'deleteCustomArmour' | 'saveCustomEquipment' | 'deleteCustomEquipment'>;
 
 export const createCatalogSlice = (init: InitialState): StateCreator<AppState, [], [], CatalogSlice> =>
   (set, get) => ({
+    markers: [],
     factions: FACTIONS,
     units: [...init.customUnits],
     weapons: [...init.customWeapons],
@@ -33,6 +34,13 @@ export const createCatalogSlice = (init: InitialState): StateCreator<AppState, [
       // actually contains and what each entry is called — see `recruitable`.
       const r = recruitable(dataset, factionId, get().factions.map((f) => f.id), variantId);
       set((s) => ({
+        /*
+          The battle marker pools, so the match slice clamps to the cap the
+          book prints rather than to a literal. Empty until now, which is why
+          a cap is not enforced before the dataset has loaded rather than
+          being guessed at.
+        */
+        markers: dataset.markers ?? [],
         /*
           The faction's special rules, from the books.
 

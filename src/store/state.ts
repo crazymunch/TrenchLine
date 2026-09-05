@@ -18,7 +18,7 @@ import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
 import { Campaign, CampaignFramework, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import type { Dataset } from '../types/catalogue';
+import type { Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
 
@@ -186,6 +186,16 @@ export interface AppState {
   resetMatchState: () => void;
   updateUnitWounds: (warbandId: string, unitId: string, delta: number) => void;
   updateUnitBloodMarkers: (warbandId: string, unitId: string, delta: number) => void;
+  updateUnitBlessingMarkers: (warbandId: string, unitId: string, delta: number) => void;
+  /**
+   * The battle marker pools, from the rulebook.
+   *
+   * Empty until `hydrateCatalogs` runs, like the catalogs above and for the
+   * same reason: the cap used to be a literal `6` in the match slice, so a
+   * rule the book states was a number in the app's source. Empty means "not
+   * loaded", and an unloaded cap is not enforced rather than guessed at.
+   */
+  markers: BattleMarker[];
   setUnitStatus: (warbandId: string, unitId: string, status: 'Active' | 'Downed' | 'Out of Action') => void;
   toggleUnitActed: (warbandId: string, unitId: string) => void;
 

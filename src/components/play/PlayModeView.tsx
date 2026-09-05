@@ -70,6 +70,8 @@ export const PlayModeView: React.FC = () => {
     resetMatchState,
     updateUnitWounds, 
     updateUnitBloodMarkers, 
+    updateUnitBlessingMarkers, 
+    markers, 
     setUnitStatus, 
     toggleUnitActed,
     isPostBattleOpen,
@@ -1465,30 +1467,55 @@ export const PlayModeView: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Blood Markers (Capped at 6) */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1.5 text-theme-text">
-                          <Droplet className="w-4 h-4 text-status-error fill-status-error" />
-                          <span className="font-bold">BLOOD MARKERS:</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, -1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
-                          >
-                            -
-                          </button>
-                          <span className="font-bold text-sm sm:text-base text-status-error min-w-[24px] text-center">
-                            {unit.bloodMarkers} / 6
-                          </span>
-                          <button
-                            onClick={() => updateUnitBloodMarkers(viewingWarband.id, unit.id, 1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
+                      {/*
+                        The two marker pools.
+
+                        The count reads `n / cap` only where the book prints a
+                        cap. It used to read `{unit.bloodMarkers} / 6` with the
+                        6 typed in; Blessing Markers have no printed limit, so
+                        showing them as "/ 6" would state a rule the book does
+                        not, and showing them at all is new — the app had no
+                        way to record a blessing.
+                      */}
+                      {([
+                        { id: 'blood-markers', label: 'BLOOD MARKERS', value: unit.bloodMarkers,
+                          tone: 'text-status-error',
+                          icon: <Droplet className="w-4 h-4 text-status-error fill-status-error" />,
+                          step: updateUnitBloodMarkers },
+                        { id: 'blessing-markers', label: 'BLESSING MARKERS', value: unit.blessingMarkers ?? 0,
+                          tone: 'text-theme-primary',
+                          icon: <Sparkles className="w-4 h-4 text-theme-primary" />,
+                          step: updateUnitBlessingMarkers },
+                      ] as const).map((pool) => {
+                        const cap = markers.find((m) => m.id === pool.id)?.cap ?? null;
+                        return (
+                          <div key={pool.id} className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1.5 text-theme-text">
+                              {pool.icon}
+                              <span className="font-bold">{pool.label}:</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <button
+                                aria-label={`Remove one ${pool.label.toLowerCase()} from ${unit.customName}`}
+                                onClick={() => pool.step(viewingWarband.id, unit.id, -1)}
+                                className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                              >
+                                -
+                              </button>
+                              <span className={`font-bold text-sm sm:text-base ${pool.tone} min-w-[24px] text-center`}>
+                                {pool.value}{cap === null ? '' : ` / ${cap}`}
+                              </span>
+                              <button
+                                aria-label={`Add one ${pool.label.toLowerCase()} to ${unit.customName}`}
+                                onClick={() => pool.step(viewingWarband.id, unit.id, 1)}
+                                className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-theme-surface hover:bg-theme-border text-theme-text border border-theme-border flex items-center justify-center font-bold text-sm select-none active:scale-95 transition-transform"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
 
                     </div>
 
