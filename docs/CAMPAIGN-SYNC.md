@@ -97,8 +97,24 @@ are not:
   client's retry, after merging, would then be skipped as a duplicate and the
   merged edit lost silently. That is the worst failure this protocol can have.
 
-Still to build: the client outbox keyed by operation, and the browser test of
-the pending / synced / conflict / failed states.
+`src/services/campaignSync.ts` is the client half. It is a queue of
+**operations**, not of entities: the warband outbox holds one entry per
+warband id because a warband is pushed whole and only its last state matters,
+and a campaign cannot work that way — two edits to one territory are two facts,
+and an entity-keyed queue collapses them into a last-writer-wins blob before
+the request is even made.
+
+- The `opId` is minted once, when the edit is made, and reused on every retry.
+  An id per attempt makes each retry a new operation, which is the bug.
+- `applied` and `skipped` both clear the queue. `skipped` is the retry working.
+- **Conflicts stay queued** and are handed back for the app to show.
+- A failed request clears nothing: "the server said no" and "the server was not
+  reached" are different, and only the first is an answer.
+
+Still to build: wiring the store's campaign mutations to enqueue operations,
+and the browser test of the pending / synced / conflict / failed states. The
+protocol and both queues are done; what remains is the app calling them and
+showing the result.
 
 ## Authority: who owns which field
 
