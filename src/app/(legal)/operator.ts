@@ -31,7 +31,13 @@ export const CONTACT = 'admin@trenchline.app';
 /**
  * The operator's name or handle, or null if they would rather not be named.
  *
- * Null is a supported state and not a defect — see the note above.
+ * Null is a supported state and not a defect — see the note above, and it is
+ * the deliberate setting here. Nothing requires a legal name: Australia's
+ * Privacy Act binds "APP entities", which a non-commercial project with no
+ * turnover is not, and the GDPR's identity requirement is satisfied in
+ * practice by a contact that reaches the controller — which `CONTACT` does.
+ * A pseudonym or handle is a supported middle ground: set it here and the
+ * pages name it.
  */
 export const NAME: string | null = null;
 
@@ -42,7 +48,7 @@ export const NAME: string | null = null;
  * complaint goes to. Both sentences are omitted when it is null, because a
  * guessed jurisdiction is worse than a silent one.
  */
-export const COUNTRY: string | null = null;
+export const COUNTRY: string | null = 'Australia';
 
 /** The day the current text took effect. Bump it when the wording changes. */
 export const EFFECTIVE = '5 September 2026';
