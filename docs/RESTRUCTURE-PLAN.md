@@ -363,17 +363,32 @@ be the worse error.
 
 ### Also outstanding in Phase 2
 
-- **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
-  Collections* extends the faction armoury; nothing reads the grant yet, so
-  `wargear-not-stocked` is advisory rather than blocking (2.4).
+- ✅ **Variant armoury grants.** Done, and this entry was wrong about what was
+  left — worth recording, because it is the same failure as the DATA-02 row in
+  [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md): a plan
+  describing work that had already happened.
 
-  The rule itself is now **read and shown**. It had been missing from the app
+  The rule itself is **read and shown**. It had been missing from the app
   entirely — the book prints eight special rules for The House of Wisdom and
   the app carried seven — because a rule the catalogue also models
   mechanically gets a `selectionEntryGroup` of its own and its Ability profile
   goes on the group rather than on the Variant entry. The Kingdom of Alba's
-  *Cold Steel* was missing for the same reason. Both are read now; what
-  remains is the grant's *effect* on the armoury, which is the 2.4 item above.
+  *Cold Steel* was missing for the same reason.
+
+  This entry then said "what remains is the grant's *effect* on the armoury".
+  That was already false: `variantArmoury` had read cross-faction grants since
+  it was written, and *Weapon Collections* was among them. What was actually
+  missing was the **number** — `stockedAnywhere` answered "yes, that is stocked
+  somewhere you can reach", which correctly makes a granted item legal, and
+  then nothing counted how many had been taken. A House of Wisdom roster with
+  five New Antioch items validated clean.
+
+  `withinGrants` in `src/rules/variantArmoury.ts` now counts them, per copy —
+  the catalogue's own MISC. Q4 settles that reading, and a test cites it rather
+  than paraphrasing it. It is a bounded backtracking search and not a tally,
+  because an item stocked by *both* granted armouries has to be attributed to
+  one that actually stocks it, and a greedy count calls a legal roster illegal
+  whenever the first item consumes the only grant a later one had.
 ### 2.5 — the campaign economy
 
 "Budget presets" was the wrong name for this. The rulebook keeps **three**

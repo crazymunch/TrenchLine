@@ -27,18 +27,29 @@ no design documentation at all.
 
 ## The one-paragraph version
 
-The app's UI shell is largely sound and the feature ideas are good. Two things
-are badly broken. **First, the game data is invented** — it was written from an
-LLM's recollection of Trench Crusade rather than derived from any source, and 97%
-of the unit statlines that can be checked against the official BattleScribe
-catalogues are wrong. **Second, the mobile and tablet layouts are unusable**,
+*What the audit found, in the present tense it was written in — and where each
+finding stands now. Read this as history plus a status column, not as a
+description of the app today.*
+
+The app's UI shell was largely sound and the feature ideas were good. Two things
+were badly broken. **First, the game data was invented** — written from an LLM's
+recollection of Trench Crusade rather than derived from any source, and 97% of
+the unit statlines that could be checked against the official BattleScribe
+catalogues were wrong. **Second, the mobile and tablet layouts were unusable**,
 with one outright bug (a Tailwind class that never compiles) collapsing the
 mobile navigation bar over the whole screen.
 
-The fix is to stop hand-writing game data. Data becomes a **generated artefact**
+The fix was to stop hand-writing game data. Data is now a **generated artefact**
 built from real sources by a checked-in pipeline, with every value carrying
 provenance and a verification pass that fails the build when a number has no
-source. Layout is then rebuilt mobile-first on top of correct data.
+source. Layout was then rebuilt mobile-first on top of correct data.
+
+**Both are addressed.** The pipeline is in `scripts/` and `src/data/*.generated.ts`
+is its output; `npm run rules:crosscheck` reports drift. `MobileNav` is fixed —
+a flex row of `flex-1` buttons that takes any number of items without naming a
+column count — and the file carries a comment saying why it is written that way.
+The rules they came from are the four non-negotiables below, and those stand
+whatever the status of any individual finding.
 
 ## Non-negotiables
 
@@ -56,5 +67,5 @@ These exist because the original codebase violated all four.
    or the source list updates the relevant document in the same commit.
 
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — what the environment must provide, and which layer enforces rate limiting.
-- [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md) — the design for campaign cloud sync, and the model decision it is waiting on.
+- [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md) — the design for campaign cloud sync, the model decision behind it, and the authority table the code follows.
 - [`LEGAL.md`](LEGAL.md) — the `/about`, `/privacy` and `/terms` pages: why they exist, which claims are checkable and where, and what is left to lift the Safe Browsing flag.

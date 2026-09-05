@@ -64,11 +64,23 @@ rather than decaying into a defect.
 
 **`CONTACT` must be a mailbox that accepts mail before this is worth anything.**
 An address in a privacy policy that bounces is worse than no policy, to a reader
-and to a reviewer alike. `trenchline.app` was bought through Vercel, which
-registers domains but does not run mailboxes: an email host has to be pointed at
-the domain with MX records (a full mailbox from Fastmail, Zoho or Google
-Workspace; or forwarding-only from a service that just relays to an existing
-inbox). Until that is done, `/about` promises a reply that cannot arrive.
+and to a reviewer alike, and until one exists `/about` promises a reply that
+cannot arrive.
+
+`trenchline.app` is registered at **Cloudflare**, so its DNS is already there
+and **Email Routing** covers this at no cost: it adds the MX and SPF records
+itself, and forwards `admin@trenchline.app` to a destination address that has
+been verified by clicking a link in a confirmation mail.
+
+The limitation to know before choosing it is that Email Routing **receives
+only** — Cloudflare provides no mailbox and no outbound SMTP. Replies from the
+destination inbox therefore go out as that inbox's own address, not as
+`admin@trenchline.app`, and Gmail's "Send mail as" cannot close the gap on its
+own because it wants an SMTP server for the domain. That is a fair trade for a
+contact address that mostly receives; a real mailbox (Fastmail, Zoho, Migadu,
+Google Workspace) is what buys sending, and with it the SPF and DKIM that
+matter if TrenchLine ever sends verification mail itself — see the note on
+`MAIL_TRANSPORT` below.
 
 ## What keeps them true
 
