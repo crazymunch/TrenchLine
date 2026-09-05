@@ -597,7 +597,7 @@ the app ships its own.
 | `src/components/brand/GoogleMark.tsx` | **Not ours** — Google's mark, as Google draws it, vendored rather than hotlinked because `next.config.mjs` sets `img-src 'self' data: blob:` and loosening a content policy for a logo is a bad trade. Never recoloured, redrawn, or themed. |
 | `public/brand/icon.png` | Ours: a raster export of `icon.svg`. Nothing reads it, and it can drift from the SVG — it is kept as the delivered original, not as a source. |
 | `public/icons/*`, `public/logo.*` | Derived from `icon.svg` by `npm run icons:build`. |
-| `public/images/world-map.webp` | **Not ours** — still the publisher's. See below. |
+| `public/images/world-map.webp` | **Not ours** — still the publisher's. Flagged for future replacement, kept for now. See below. |
 | `public/maps/*` | Scenario deployment maps, drawn in vector by the pipeline from the scenarios' own text. |
 
 A placeholder mark sat here briefly, drawn from primitives while the real
@@ -616,8 +616,23 @@ the theatre list without a background behind it. Recorded here rather than
 quietly left, because it is the same issue as the icon and only the icon has
 been fixed.
 
-Two unreferenced copies sit beside it — `trench_crusade_world_map.png` (6.1 MB)
-and `.webp` (1.1 MB). No component loads either.
+**Deliberately kept for now**, and flagged as a likely future removal. The
+decision was to keep the real map while the campaign views are being built,
+rather than ship a placeholder that would have to be designed around and then
+thrown away.
+
+It is **one** file now, where it used to be five. `e24fbe9` added four copies
+of the same image — `public/images/trench_crusade_world_map.{png,webp}` and
+`public/maps/trench_crusade_world_map.{jpg,webp}` — and only `/maps/…webp` was
+ever referenced. `e78343f` then pointed the Territory Map at a fifth,
+`/images/world-map.webp`, and orphaned all four. The two `.webp` copies were
+byte-identical to each other.
+
+`world-map.webp` now holds the 2000x1304 version rather than the 1600x1043 one
+it held before. The Territory Map zooms to 2.5x, and upscaling a 1600px image
+that far is visibly soft; the higher-resolution copy was sitting unused beside
+it. Same artwork, same filename, nothing else changed — and `public/` carries
+1.1 MB of map instead of 10.6 MB.
 
 ## Licensing
 
