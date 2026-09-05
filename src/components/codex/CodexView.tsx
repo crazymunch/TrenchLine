@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { buildArsenal, groupOf, offersDiffer, type ArsenalItem } from '../../rules/arsenal';
 import { Sheet } from '../ui/Sheet';
 import { useDataset } from '../../rules/useDataset';
+import { useScenarios } from '../../rules/useScenarios';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { AVAILABLE_RULESETS } from '../../data/rulesets';
 import { soundEffects } from '../../services/soundEffects';
@@ -37,6 +38,18 @@ import {
   CheckCircle2,
   HelpCircle
 } from 'lucide-react';
+
+/**
+ * Which book a scenario is from, for the ones that are not the core rulebook.
+ *
+ * Both supplements number their scenarios from I, as the rulebook numbers its
+ * twelve, so "I." in a single list says nothing about which game a player is
+ * agreeing to play.
+ */
+const SOURCE_LABEL: Record<string, string> = {
+  'carcass-front': 'Carcass Front',
+  'all-out-war': 'All Out War',
+};
 
 export const CodexView: React.FC = () => {
   const { rulesetVersion, setRulesetVersion } = useStore();
@@ -193,15 +206,28 @@ export const CodexView: React.FC = () => {
   const filteredArmour = arsenal.filter((i) => groupOf(i) !== 'weapons' && matchesArsenal(i));
 
   /**
-   * The scenarios, derived: the rulebook's twelve and Carcass Front's five.
+   * Every scenario the app can offer, through the one list that knows about
+   * all of them.
    *
-   * The hand-written set had the wrong game length for **all twelve**, inverted
+   * This read `codexDataset.scenarios` directly, which is the DERIVED set —
+   * the rulebook's twelve and Carcass Front's five — so the three All Out War
+   * scenarios were in the app and absent from the Codex. Play Mode, the quick
+   * search, Log Match, the post-battle wizard and the mission generator all
+   * call `useScenarios()`; the Codex was the one screen that did not, and it
+   * is the screen a player opens to look a scenario up.
+   *
+   * The derived twelve had the wrong game length for **all twelve**, inverted
    * Claim No Man's Land's Infiltrator rule (the book says they must deploy
    * normally; the app said they need not), and invented 32 of its 46 Glorious
-   * Deeds. A player following it plays a different game from the one their
-   * opponent is playing out of the book.
+   * Deeds before they were derived — which is why `useScenarios()` marks what
+   * came from the pipeline and what did not, and why the card below says so
+   * on the ones that did not.
    */
-  const scenarios = codexDataset?.scenarios ?? [];
+  const { scenarios: scenarioChoices } = useScenarios(codexRulesetId);
+  const scenarios = useMemo(
+    () => scenarioChoices.flatMap((s) => (s.entry ? [s.entry] : [])),
+    [scenarioChoices],
+  );
 
   /**
    * Terrain pieces with rules of their own — the Levant Hedgehog and the
@@ -642,8 +668,24 @@ export const CodexView: React.FC = () => {
                           as "I. Claim No Man's Land" and the numeral alone
                           says nothing about which one a player is agreeing to.
                         */}
-                        {scen.source === 'carcass-front' && (
-                          <span className="eyebrow accent mt-1 inline-block">Carcass Front</span>
+                        {scen.source && (
+                          <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="eyebrow accent inline-block">
+                              {SOURCE_LABEL[scen.source] ?? scen.source}
+                            </span>
+                            {/*
+                              Said on the card, not only in a comment. These
+                              three are transcribed by hand rather than read
+                              out of the catalogue, and a reference screen that
+                              does not distinguish the two is how a player ends
+                              up trusting the wrong line.
+                            */}
+                            {scen.source === 'all-out-war' && (
+                              <span className="eyebrow inline-block text-theme-muted">
+                                Transcribed, not derived
+                              </span>
+                            )}
+                          </span>
                         )}
                       </div>
                     </div>
