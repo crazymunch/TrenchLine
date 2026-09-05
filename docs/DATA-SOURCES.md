@@ -591,7 +591,7 @@ the app ships its own.
 | | provenance |
 |---|---|
 | `public/brand/icon.svg` | **Ours** — the app owner's own artwork. The single source of every icon, the favicon and the masthead. |
-| `public/brand/banner.png`, `bannercode.html` | Ours, same origin. The README's hero image; not wired into the app itself. |
+| `public/brand/banner.svg`, `banner.png` | Ours. The brand lockup, built by `npm run brand:banner`, which inlines `icon.svg` rather than repeating its paths — two copies of a logo is how one of them drifts. The README's hero image; not wired into the app itself. |
 | `data-sources/photography/duellists.jpg` | **Ours** — the app owner's own photograph of their own painted models. A source, not an asset: nothing references it and the 2.1 MB original never reaches a visitor. |
 | `public/brand/hero-wide.webp`, `hero-tall.webp` | Derived from that photograph by `node scripts/build-hero-image.mjs` — graded and cropped at build time so no CSS `filter` runs on a hero-sized image on a phone. |
 | `src/components/brand/GoogleMark.tsx` | **Not ours** — Google's mark, as Google draws it, vendored rather than hotlinked because `next.config.mjs` sets `img-src 'self' data: blob:` and loosening a content policy for a logo is a bad trade. Never recoloured, redrawn, or themed. |
@@ -599,6 +599,18 @@ the app ships its own.
 | `public/icons/*`, `public/logo.*` | Derived from `icon.svg` by `npm run icons:build`. |
 | `public/images/world-map.webp` | **Not ours** — still the publisher's. Flagged for future replacement, kept for now. See below. |
 | `public/maps/*` | Scenario deployment maps, drawn in vector by the pipeline from the scenarios' own text. |
+
+`bannercode.html`, the delivered original, is gone with the redraw. It was
+drawn with a burnished-gold rim gradient, a steel-plate gradient, `rx="2"`
+corners and a system-sans 900 wordmark — all four things the Iron Ledger
+removes — and it carried its own hand-drawn copy of the mark. Unlike
+`icon.png`, which is kept as a delivered original nothing reads, it was in
+`public/` and therefore SERVED, so keeping a draft that contradicts the design
+had a cost beyond the confusion. Git has it.
+
+The mark itself keeps its gradients inside the banner. The Iron Ledger is about
+the app's chrome; the mark is artwork, and flattening someone's artwork to
+satisfy a rule about buttons would be reading the rule past its purpose.
 
 A placeholder mark sat here briefly, drawn from primitives while the real
 artwork was being made; it is gone. Until that change the masthead and every

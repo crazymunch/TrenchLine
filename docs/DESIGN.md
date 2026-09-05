@@ -159,4 +159,9 @@ pipeline, the validation engine, the store, or what any button does.
 - `src/app/globals.css` — the token layer, with the reasoning inline.
 - `src/components/landing/Landing.tsx` — the front door, and why it is ordered
   the way it is rather than in nav order.
+- `scripts/build-brand-banner.mjs` — the lockup, drawn to these rules: no
+  gradient on the ground, no plate behind the mark, no rim frame, no radius, no
+  shadow, one hairline at one weight, and Archivo for the wordmark. It fails
+  rather than substituting a face, because fontconfig will quietly hand back
+  DejaVu and a wordmark in the wrong typeface renders without error.
 - `src/components/ui/ViewMasthead.tsx` — the shared masthead.
