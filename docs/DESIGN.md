@@ -65,6 +65,52 @@ same lapis as its `#76D6D5`, and Hell's `#73215F` is the Tyrian purple the Court
 of the Seven-Headed Serpent is named for. Hue, not just value, has to separate
 them — four of the six would otherwise have been reds and browns.
 
+## Role, which is also not an accent
+
+A Leader has always been marked — a solid header in the faction's colour, the
+card's border in the same, a crown beside the word — and the other three roles
+were not marked at all. So a roster of nine read as one important model and
+eight identical ones, when three of the eight were an Elite and a pair of
+Mercenaries with quite different jobs.
+
+Elite and Mercenary now get the same treatment one step quieter: the header
+tinted to 15% rather than filled, a 2px left rule in the full colour, and an
+icon where the Leader has its crown. A **Trooper stays unmarked**, and that is
+the load-bearing part — mark all four and none of them reads.
+
+| role | colour | mark |
+|---|---|---|
+| Leader | `--color-primary` — the faction's | Solid header, inverted text, crown |
+| Elite | `--role-elite` `#2E3A6B` | 15% header, indigo left rule, chevrons |
+| Mercenary | `--role-mercenary` = `--status-legal` `#2C6152` | 15% header, green left rule, coins |
+| Trooper | none | The baseline |
+
+**Fixed across all six themes**, for the reason the accents make plain: inside
+`.sheet` both `--color-primary` and `--color-accent` resolve to
+`--accent-paper`, so a role drawn from either would *be* the Leader's colour —
+and in the Sultanate theme it would also be the teal that theme paints
+everything else with. A role has to be the same colour in every theme or it is
+not a language.
+
+Measured on `--paper-2` like everything else: elite **7.71:1**, mercenary
+**5.07:1**. Elite is indigo rather than the obvious brass because brass came in
+at 3.59:1 — under the 4.5 floor — and sat beside the Black Grail's brown accent
+besides.
+
+`--role-mercenary` is an **alias** of `--status-legal` rather than a copy of its
+value. The recruit sheet has marked a Mercenary entry with that green since it
+was written, and two screens disagreeing about what colour a Mercenary is would
+be worse than neither marking one. The alias exists so the card can say what it
+means; if the two ever need to part, that is the line that parts them.
+
+The whole table lives in `src/components/ui/unitRole.ts` as **literal class
+strings** — `bg-role-elite/15`, never `` bg-${token}/15 ``, which compiles to
+nothing at all (§ the rules, below). Two tests hold it:
+`src/components/ui/__tests__/unitRole.test.ts` asserts the four are distinct and
+every colour is a token, and `e2e/roles.spec.ts` reads the painted colours off a
+**production build**, because a class Tailwind never compiled is invisible to
+anything static — the element simply has no background and it looks deliberate.
+
 ## Brand, which is not an accent
 
 The landing page at `/` is the one screen that renders before any warband

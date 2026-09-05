@@ -113,6 +113,43 @@
 
   /*
     ------------------------------------------------------------------------
+    Roles, on a warrior card.
+
+    The Leader is marked in the FACTION's colour — `--color-primary`, a solid
+    header and the card's border — and nothing else was marked at all, so a
+    roster of nine read as one important model and eight identical ones. Elite
+    and Mercenary now get the same treatment one step quieter.
+
+    Fixed across all six themes, like the status colours and unlike the
+    accents, for a reason the accents make plain: inside `.sheet` both
+    `--color-primary` and `--color-accent` resolve to `--accent-paper`, so a
+    role drawn from either would be the Leader's own colour, and in the
+    Sultanate theme it would also be the teal that theme paints everything
+    else. A role has to be the same colour in every theme or it is not a
+    language.
+
+    Contrast measured against `--paper-2`, the banded row, which is where a
+    card header sits:
+
+      role-elite      #2E3A6B  7.71:1   indigo, and no faction's colour
+      role-mercenary  #2C6152  5.07:1   the green the recruit sheet already uses
+
+    Elite is indigo rather than the obvious brass because brass measured
+    3.59:1 on this ground — under the 4.5 floor — and sat next to the Black
+    Grail's brown accent besides.
+
+    `--role-mercenary` IS `--status-legal`, aliased rather than copied:
+    `AddUnitModal` has marked a Mercenary entry with it since the recruit
+    sheet was written, and two screens disagreeing about what colour a
+    Mercenary is would be worse than neither marking one. The alias is here so
+    the card can say what it means; if the two ever need to part, this is the
+    line that parts them.
+  */
+  --role-elite: 46 58 107;
+  --role-mercenary: var(--status-legal);
+
+  /*
+    ------------------------------------------------------------------------
     Brand. Fixed across every theme, and deliberately not an accent.
 
     The landing page renders before any warband is active, so there is no

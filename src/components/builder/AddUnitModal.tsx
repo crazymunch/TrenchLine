@@ -395,7 +395,8 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                                        inline-block w-fit max-w-full rounded-sm
                                        bg-theme-base/70 border border-theme-border/60 px-1.5 py-0.5">
                         {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · S {unit.stats.armour}
-                        {isMercenary && <span className="text-status-legal"> · Merc</span>}
+                        {/* The same colour the card gives a Mercenary — `ui/unitRole.ts`. */}
+                        {isMercenary && <span className="text-role-mercenary"> · Merc</span>}
                         {/* On the collapsed row, not only in the expanded panel:
                             an entry that is not official has to be readable as
                             such without opening it. */}

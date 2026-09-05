@@ -11,6 +11,7 @@ import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
+import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -82,6 +83,8 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
+  const role = roleStyle(unit.profileSnapshot.category);
+  const RoleIcon = role.icon;
   const glory = unitGlory(unit);
 
   const handleSaveName = () => {
@@ -141,11 +144,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   return (
     <>
       <div 
-        className={`bg-theme-surface border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${
-          isLeader 
-            ? 'border-theme-primary'
-            : 'border-theme-border hover:border-theme-muted'
-        }`}
+        className={`bg-theme-surface border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${role.card}`}
       >
         
         {/* Card Header: Spacious, No Truncation, Clean 3-Dots Menu */}
@@ -155,25 +154,25 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             about 90px in a three-column grid and wrapped a word per line.
             `contents` promotes the badge and the name to direct flex children
             so `order` and `basis-full` can place them without moving the JSX. */}
-        <div className={`px-3 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 ${
-          isLeader
-            ? 'bg-theme-primary text-theme-base'
-            : 'bg-theme-elevated border-b border-theme-border'
-        }`}>
+        {/* `data-role` is for `e2e/roles.spec.ts`, which reads the painted
+            colours off a production build to prove the classes compiled. The
+            role word itself is uppercased by CSS, so matching on it means
+            matching rendered text — which is exactly the kind of coupling that
+            makes a layout test fail for a copy change. */}
+        <div
+          data-role={unit.profileSnapshot.category}
+          className={`px-3 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 ${role.header}`}
+        >
           <div className="contents">
             
             {/* Interactive Category Badge / Dropdown */}
             <div className="relative flex-shrink-0 order-1">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className={`tap text-xs sm:text-[10px] font-mono tracking-[0.11em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
-                  isLeader
-                    ? 'text-theme-base font-semibold'
-                    : 'text-theme-muted hover:text-theme-text'
-                }`}
+                className={`tap text-xs sm:text-[10px] font-mono tracking-[0.11em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${role.label}`}
                 title="Click to change unit role"
               >
-                {isLeader && <Crown className="w-2.5 h-2.5" />}
+                {RoleIcon && <RoleIcon className="w-2.5 h-2.5" />}
                 <span>{unit.profileSnapshot.category}</span>
                 <ChevronDown className="w-2.5 h-2.5 opacity-70" />
               </button>
@@ -181,18 +180,27 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               {/* Role Dropdown Menu */}
               {isCategoryMenuOpen && (
                 <div className="absolute left-0 top-full mt-1 w-36 bg-theme-surface border border-theme-border rounded-md shadow-2xl z-30 py-1 font-mono text-xs">
-                  {(['Leader', 'Elite', 'Trooper', 'Mercenary'] as UnitCategory[]).map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategorySelect(cat)}
-                      className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 hover:bg-theme-elevated transition-colors ${
-                        unit.profileSnapshot.category === cat ? 'text-theme-primary font-bold' : 'text-theme-text'
-                      }`}
-                    >
-                      {cat === 'Leader' && <Crown className="w-3 h-3 text-theme-primary" />}
-                      <span>{cat}</span>
-                    </button>
-                  ))}
+                  {/* Each role with the mark it wears on the card, so the
+                      language is learnt where the choice is made. A Trooper
+                      has none, which is the whole reason the other three
+                      read; the spacer keeps the four words in one column. */}
+                  {(['Leader', 'Elite', 'Trooper', 'Mercenary'] as UnitCategory[]).map((cat) => {
+                    const CatIcon = ROLE_STYLES[cat].icon;
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => handleCategorySelect(cat)}
+                        className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 hover:bg-theme-elevated transition-colors ${
+                          unit.profileSnapshot.category === cat ? 'text-theme-primary font-bold' : 'text-theme-text'
+                        }`}
+                      >
+                        {CatIcon
+                          ? <CatIcon className={`w-3 h-3 ${ROLE_STYLES[cat].iconOffCard}`} />
+                          : <span className="w-3 h-3" aria-hidden />}
+                        <span>{cat}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -222,7 +230,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               >
                 <div className="flex items-center space-x-1.5">
                   <h3 className={`font-bold text-sm sm:text-base leading-snug break-words transition-colors ${
-                    isLeader ? 'text-theme-base' : 'text-theme-text group-hover:text-theme-primary'
+                    role.filled ? 'text-theme-base' : 'text-theme-text group-hover:text-theme-primary'
                   }`}>
                     {fullDisplayName}
                   </h3>
@@ -249,7 +257,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               rather than folded into `totalCost`.
             */}
             <div className={`font-mono text-sm tabular-nums whitespace-nowrap ${
-              isLeader ? 'text-theme-base' : 'text-theme-text'
+              role.filled ? 'text-theme-base' : 'text-theme-text'
             }`}>
               {formatUnitCost(unit.totalCost, glory)}
             </div>
@@ -261,7 +269,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               onClick={() => setCollapsed((c) => !c)}
               aria-expanded={!collapsed}
               className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
-                isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+                role.filled ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
               }`}
               title={collapsed ? 'Show the full warrior card' : 'Collapse to summary'}
             >
@@ -273,7 +281,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               <button
                 onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
                 className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
-                  isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+                  role.filled ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
                 }`}
                 title="Warrior Actions & Options"
               >
