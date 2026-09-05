@@ -203,34 +203,28 @@ jobs:
 
           echo "No high or critical advisories in production dependencies."
 
-  # What a pull request ADDS, as opposed to what the tree already carries.
+  # NOTE: `actions/dependency-review-action` is deliberately NOT here, and
+  # enabling the Dependency graph is NOT enough to change that.
   #
-  # This sat commented out for a while: the action needs the Dependency graph
-  # enabled on the repository, and without it the job failed with "Dependency
-  # review is not supported on this repository" on every single run. A check
-  # that is red for a reason no pull request can fix teaches people to ignore
-  # red checks, which costs more than the job is worth. The graph is on now,
-  # confirmed against the repository's own SBOM endpoint before this was added
-  # back.
+  # It was added back once, on the strength of the repository's SBOM endpoint
+  # answering 200 — which proves the graph is on, and proves nothing about
+  # this action. The job failed on its first run with the same error it always
+  # gave:
   #
-  # It complements the `dependencies` job above rather than repeating it. That
-  # one audits the whole production tree against the advisory database and can
-  # fail because an external endpoint was unreachable; this one reads the diff
-  # and calls no endpoint of its own, so the two fail for different reasons.
+  #   Dependency review is not supported on this repository. Please ensure
+  #   that Dependency graph is enabled along with GitHub Advanced Security
   #
-  # `pull_request` only: there is no base to diff a push against, and the
-  # action errors rather than skipping.
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      # The action reads the graph for this repository and posts nothing.
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
-        with:
-          # High and critical fail; moderate and below are reported and pass.
-          # The same line the audit job draws, so a dependency does not clear
-          # one gate and trip the other.
-          fail-on-severity: high
+  # The requirement is BOTH, and on a private repository — which this is —
+  # Advanced Security is a paid add-on. The graph alone buys the SBOM endpoint
+  # and `npm audit`; it does not buy dependency review.
+  #
+  # A check that is red for a reason no pull request can fix teaches people to
+  # ignore red checks, which costs more than the job is worth. The `dependencies`
+  # job above already audits the production tree against the advisory database
+  # and needs neither.
+  #
+  # To turn it on: enable GitHub Advanced Security under Settings -> Code
+  # security (or make the repository public, where dependency review needs only
+  # the graph), then add a job running `actions/dependency-review-action@v4`
+  # with `fail-on-severity: high`, gated on `pull_request` — there is no base
+  # to diff a push against and the action errors rather than skipping.
