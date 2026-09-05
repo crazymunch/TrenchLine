@@ -321,8 +321,16 @@ be the worse error.
 ### Also outstanding in Phase 2
 
 - **Variant armoury grants are not modelled.** The House of Wisdom's *Weapon
-  Collections* extends the faction armoury; nothing reads that yet, so
+  Collections* extends the faction armoury; nothing reads the grant yet, so
   `wargear-not-stocked` is advisory rather than blocking (2.4).
+
+  The rule itself is now **read and shown**. It had been missing from the app
+  entirely — the book prints eight special rules for The House of Wisdom and
+  the app carried seven — because a rule the catalogue also models
+  mechanically gets a `selectionEntryGroup` of its own and its Ability profile
+  goes on the group rather than on the Variant entry. The Kingdom of Alba's
+  *Cold Steel* was missing for the same reason. Both are read now; what
+  remains is the grant's *effect* on the armoury, which is the 2.4 item above.
 ### 2.5 — the campaign economy
 
 "Budget presets" was the wrong name for this. The rulebook keeps **three**

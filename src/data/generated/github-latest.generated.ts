@@ -68755,6 +68755,10 @@ export const DATASET: Dataset = {
         {
           "name": "Tawkin Homunculus",
           "description": "A House of Wisdom Warband can include one Takwin Homunculus for each Jabirean Alchemist in the Warband. Each Takwin Homunculus must be associated with a Jabirean Alchemist when it is added to the Warband. An Alchemist can only have a single Takwin Homunculus associated with it and vice versa. If a Takwin Homunculus associated Alchemist is killed during the campaign, it cannot be deployed during a game, its Battlekit cannot be changed, and no Alchemical Formulas can be applied to it. If you add a new Jabirean Alchemist to your Warband and it has any unassociated Takwin Homunculi, you must associate one of them with the new Alchemist."
+        },
+        {
+          "name": "Weapon Collections",
+          "description": "When you create your starting Warband, you can purchase 1 piece of Battlekit from the New Antioch Armoury, and 1 piece of Battlekit from the Trench Pilgrims Armoury. Any stipulations that apply to it are followed (so there is little point in taking Battlekit that can only be used by models from the other Warbands). You can repurchase the Battlekit later during the campaign if it is lost for any reason."
         }
       ],
       "ops": [
@@ -69578,6 +69582,10 @@ export const DATASET: Dataset = {
         {
           "name": "Dum-Dum Ammunition",
           "description": "Models in a Kingdom of Alba Assault Detachment Warband can have Dum-Dum Bullets (▶ see Battlekit in the Trench Crusade Digital Rulebook) at a cost of 5 ducats each. The Dum-Dum Bullets have the Limit: 3 stipulation."
+        },
+        {
+          "name": "Cold Steel",
+          "description": "Halve the cost of a Melee Weapon the first time that is purchased for a Kingdom of Alba Assault Detachment Warband. For example, the first Sword/Axe purchased for a Warband would cost 2 ducats while any further Swords/Axes would cost 4 ducats each."
         }
       ],
       "ops": [
