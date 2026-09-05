@@ -1,4 +1,4 @@
-import { parseRulesProse } from '../codex/rulesProse';
+import { parseRulesProse } from '@/rules/rulesProse';
 
 export type Deed = { title: string; desc: string };
 

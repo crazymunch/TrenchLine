@@ -20,6 +20,21 @@
  * Anything it does not recognise is rendered as its own text. It never drops
  * input.
  */
+/*
+  ## Why this lives in `src/rules/` and not beside the component
+
+  It used to be `src/components/codex/rulesProse.ts`, one letter of case away
+  from `RulesProse.tsx` in the same directory — and `RulesProse.tsx` imported
+  `'./rulesProse'`. On a case-insensitive filesystem, which is the default on
+  macOS and on Windows, that specifier can resolve to `RulesProse.tsx` itself:
+  a module importing itself, with `parseRulesProse` undefined. It built on
+  Linux CI and failed on a Mac, and no tool caught it because the FILENAMES do
+  not collide — only the specifiers do, so `git ls-files` and every
+  case-sensitivity check pass.
+
+  Moving it also puts it where it belongs. This is a parser, not a component,
+  and `src/rules/` is where the app's pure modules already are.
+*/
 
 export type Block =
   | { kind: 'h'; level: 2 | 3; text: string }
