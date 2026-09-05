@@ -101,7 +101,7 @@ none either, rather than falling back to a number the code remembers.
 | Shared campaign invite codes | ✅ | |
 | Territory map with node claiming | ✅ | |
 | Narrative chronicle feed | ✅ | |
-| **Post-battle sequence wizard** | 🟡 | Its D66 tables are now verified and fixed. The **sequence itself is still wrong**: the book prints **six** Campaign Phase Steps in a stated order and the wizard has four, two named things the book does not use (`Scavenge`, `Chronicle`), omitting Reinforcements and Quartermaster. The six are derived into `dataset.campaign.phaseSteps` and shown in the Codex; rebuilding the wizard on them is a product change and is not done |
+| **Post-battle sequence wizard** | ✅ | **Rebuilt on the book's sequence.** It ran four steps, two of them named things the book does not use (`Scavenge`, `Chronicle`), and had no Reinforcements Step — so a player who called for reinforcements was still offered an Exploration roll they are not entitled to. It now runs the book's steps in the book's order, their names read from `dataset.campaign.phaseSteps` rather than retyped, plus one the app needs first (which scenario was fought, and how it went). The Quartermaster and Roster Steps are deliberately not in it: they are what the roster builder already is, and duplicating them would give a player two places to spend the same Ducats. Taking Reinforcements **warns and lets the player through** rather than blocking, and a campaign house rule (`reinforcementsKeepExploration`) makes it not a deviation for groups that play it that way — see `docs/CAMPAIGN-SYNC.md` for how that setting syncs |
 | D66 Trauma / injury rolls | ✅ | **Verified against the rulebook.** 22 rows, derived. Two were wrong: `12 Captured` was cut at a comma and lost the clause saying a paid ransom counts as a Full Recovery, and `65 Bitter Lessons` had run on into `66 Prominent Scar` and showed a player 66's rule. Both fixed and pinned; the build now fails on a rule that stops mid-sentence or carries another row's heading |
 | XP & advancement | ✅ | `UnitAdvancementModal`, 681 lines |
 | Exploration (No Man's Land) | ✅ | **Verified against the rulebook.** Three rows carried page furniture: `9 Survivor` and `20 Warband Strongbox` ended in the sidebar's `Glory Item Tables`, and `36 Fruit from the Tree…` in a stray `VM` mark. Fixed and pinned |
@@ -161,14 +161,31 @@ verified individually rather than deleted wholesale.
 
 ## Verification queue
 
-Each needs checking against the now-committed PDFs before it can be trusted:
+What has been read against the committed PDFs, and what has not. A row leaves
+this table by being checked, not by looking fine.
 
-| Data | Source to check against |
-|---|---|
-| Keyword glossary | 1.0.2 Changelog ✅ available — **7 gaps already confirmed** |
-| D66 Trauma table | Core Rulebook |
-| Exploration tables | Core Rulebook |
-| Skills tables | Core Rulebook |
-| Scenarios | Core Rulebook + All Out War ✅ |
-| Injury/Down/Out of Action rules | 1.0.2 Changelog ✅ available |
-| FAQ / edge cases | Rules Commentaries 1.0.2 ✅ available |
+| Data | Source | State |
+|---|---|---|
+| D66 Trauma table | Core Rulebook | ✅ Checked. Two rows wrong; both fixed and pinned |
+| Exploration tables | Core Rulebook | ✅ Checked. Three rows carried page furniture; fixed and pinned |
+| Skills tables | Core Rulebook | ✅ Checked. The Patron Skill row in all four tables carried page furniture; fixed and pinned |
+| Scenarios | Core Rulebook + All Out War | ✅ Checked |
+| Unit statlines | BattleScribe + Warbands book | ✅ Checked both ways — `rules:crosscheck` reports 0 mismatched over 96 units, `rules:threeway` reports 0 app-vs-rulebook disagreements over 42 |
+| Keyword glossary | 1.0.2 Changelog | ✅ Checked. The 7 gaps §1.3a found — `CLEAVE (X)`, `DEADLY`, the three terrain Keywords, `REGENERATE (X)`, `SKIRMISHER` — are closed. All **17** Keywords the changelog names are present, and `scripts/__tests__/keywordGlossary.test.mjs` re-checks it |
+| Injury/Down/Out of Action rules | 1.0.2 Changelog | ⛔ **Not checked** |
+| FAQ / edge cases | Rules Commentaries 1.0.2 | ⛔ **Not checked** |
+
+Five of these sat here as "needs checking" after they had been checked and
+fixed, in a document whose own tables above said so. That is the failure AUD-1
+was about, three sections apart in one file: a queue that does not empty stops
+being read, and then the entries that ARE still outstanding — the two at the
+bottom — are invisible for the same reason.
+
+The Keyword row is the sharpest case, because it was stale in the direction
+that matters least to notice and most to fix. It read "7 gaps already
+confirmed" long after all seven had been closed; reading the changelog back
+out and comparing found **nothing** missing, from a list of 17 that is wider
+than the 12 the audit measured against. The audit called this failure mode "a
+claim of completeness that the code does not honour" — so the claim is now a
+test rather than a sentence, and it fails if a Keyword the changelog names
+leaves the glossary.
