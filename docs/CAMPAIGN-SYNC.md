@@ -5,10 +5,10 @@ SYNC-1 in [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) says
 code until a model mismatch the package did not anticipate had been decided —
 that decision is recorded below, and the code followed it.
 
-**Status: built, with one gap.** The protocol, the endpoint, both queues, the
-store wiring and the indicator are done and tested. What is missing is a way
-for a campaign to acquire a cloud identity in the first place — see
-[The gap](#the-gap-nothing-gives-a-campaign-a-cloud-identity) below.
+**Status: built.** The protocol, the endpoint, both queues, the store wiring,
+the indicator, and — as of SYNC-2 — the way a campaign acquires a cloud
+identity in the first place. See
+[First publish](#first-publish-an-id-the-client-mints) below.
 
 `storage.syncCampaignToCloud` is gone. It returned `{ ok: false, reason:
 'server', detail: 'Campaign cloud sync is not implemented.' }` from six
@@ -147,33 +147,75 @@ re-issuing an edit over somebody else's, which is a decision with a person on
 the other end of it, and it is not offered until there is a screen that says
 whose change it overwrites.
 
-### The gap: nothing gives a campaign a cloud identity
+### First publish: an id the client mints
 
 `createCampaign` mints `camp-<timestamp>` locally, and always has. That is not
-an id the API would recognise, so **no campaign in the app can sync today** —
-every one of them is local, and the indicator says "On this device".
+an id the API would recognise, so before SYNC-2 **no campaign in the app could
+sync**: every one was local, the outbox had nowhere to push, and the indicator
+said "On this device" forever.
 
-The type says so rather than leaving it to be discovered: `Campaign.cloudId` is
-the id the server knows a campaign by, operations are queued only for a
-campaign that has one, and nothing sets it yet. Without that field the app
-would push against ids the server never issued and show every campaign as
-failing to sync.
+`POST /api/campaigns` with `action: 'publish'` closes it. One request carries
+the campaign and its whole map — twelve theatres or 32 published Carcass Front
+zones — and everything after it is an operation.
 
-Closing it is the "first sync creates the cloud campaign" half of Option 1
-above, and it is not a small piece:
+**The id comes from the client.** That is the decision, and it follows from the
+same property `opId` already turns on: publishing has to be idempotent. If the
+response is lost — the tab closes, the signal drops after the write lands — the
+retry must name the same campaign or it makes a second one. A server-assigned
+id cannot give that, because the client has nothing to retry *with*; and
+"upsert by name" is how two devices editing one campaign produced two.
 
-- `POST /api/campaigns` creates four fixed territories of its own and takes no
-  `framework`, no house rules and no territory list. It cannot yet represent a
-  campaign this app made.
-- Territory ids are the harder half. Local ids are `wt-*`, `th-*` and
-  `cf-<slug>` — stable, meaningful, and **not unique across campaigns**, while
-  `TerritoryNode.id` is a global primary key. So either the server keeps its
-  own ids and the client holds a mapping, or the rows carry the local id in a
-  second column with a per-campaign unique constraint. That is a schema
-  decision, and it should be made once rather than guessed at here.
+So `Campaign.id` is a `crypto.randomUUID` the device mints, and it is **saved
+before the request goes out**. Minting it after a successful response would
+make every failure ambiguous: the client could not ask "did that land?", only
+try again and hope. The cost is that an unconfirmed `cloudId` may briefly queue
+operations against a row the server has not got yet — they fail as `server`
+errors and stay queued, which is what the outbox is for. The alternative is a
+duplicate campaign, which nothing can repair.
 
-Until then the protocol, both queues, the endpoint and the indicator are real
-and tested; what they have no supply of is a campaign the server has heard of.
+A uuid rather than free text, because a client-supplied primary key can always
+be aimed at a row that already exists. Doing so gets a **409 and nothing else**:
+not the campaign's name, not its size, not a 403-versus-404 distinction, since
+any of those would turn a guessed id into a membership oracle. When the id IS
+the caller's own, the existing campaign comes back untouched with
+`alreadyPublished: true` — a retry that re-wrote the row would undo every edit
+made between the two attempts, which is "last writer wins" arriving through the
+one door the protocol had not guarded.
+
+**Territory ids are minted the same way, and carry the local id beside them.**
+`TerritoryNode.id` is a client-minted uuid; `TerritoryNode.localId` holds the
+`wt-*`, `th-*` or `cf-<slug>` the device knows it by, under
+`@@unique([campaignId, localId])`. The local ids are stable and meaningful —
+`cf-<slug>` is derived from the published zone name — but they are the same
+string in every campaign that uses that map, so they cannot be the primary key.
+Carrying both is what lets a later `territory.perk` operation name a territory
+without the client keeping a server-id mapping, and the constraint is what
+makes that join single-valued rather than merely likely.
+
+The map is stored **as the client holds it**. Not merged with the four fixed
+`STARTING_TERRITORIES` the `create` action still builds, and not topped up to a
+minimum: a campaign that has been played on a device has the map it has, and
+adding territories nobody put there would be the app inventing part of
+somebody's campaign.
+
+`perkSource: 'published'` is accepted here and nowhere else. The authority
+table below says a published perk is writable by nobody and the sync route
+refuses one — but a Carcass Front map legitimately arrives carrying the book's
+own Outpost Bonuses, and this is the single moment they are written. Refusing
+them here would mean publishing that campaign silently dropped half its map.
+
+**Publishing is an explicit press**, offered by the indicator while a campaign
+is local, not something the first edit does quietly. It mints an invite code
+and puts a group's map on a server, and local-only play is supported everywhere
+else in this app — so it is the organiser's decision rather than a side effect
+of naming a campaign.
+
+Tested in `src/app/api/campaigns/__tests__/publish.integration.test.ts` against
+a real migrated Postgres, and in `src/store/__tests__/campaignPublish.test.ts`
+for the client half. The two properties that matter were each proved by
+breaking them: dropping the owner check makes the 409 leak Alice's campaign to
+Bob, and minting the id after the response instead of before fails three tests
+at once.
 
 ## Authority: who owns which field
 

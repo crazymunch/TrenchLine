@@ -295,6 +295,17 @@ export async function pushCampaignOps(
 export type CampaignSyncState =
   /** No cloud identity — a local campaign, which is a supported way to play. */
   | { kind: 'local-only' }
+  /**
+   * Acquiring a cloud identity for the first time.
+   *
+   * Its own state rather than `syncing`, because it is a different act and it
+   * takes visibly longer: publishing sends the campaign AND its whole map —
+   * twelve theatres, or 32 published Carcass Front zones — in one request,
+   * where a sync sends the operations queued since the last one. Calling both
+   * "Syncing" would leave a player watching a spinner with no idea whether the
+   * thing they just decided to do had started.
+   */
+  | { kind: 'publishing' }
   | { kind: 'syncing' }
   /** Everything this device did is in the cloud. */
   | { kind: 'synced'; at: string }

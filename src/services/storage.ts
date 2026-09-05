@@ -196,6 +196,79 @@ export const storage = {
    * update path it lacked is now `POST /api/campaigns/sync`, and the
    * fire-and-forget calls are gone rather than pointed at it.
    */
+  /**
+   * Give a campaign a cloud identity, under an id this device minted.
+   *
+   * The gap SYNC-2 closes. `createCampaign` mints `camp-<timestamp>` locally
+   * and always has, which is not an id the API would recognise — so every
+   * campaign in the app was local, the outbox never had anywhere to push, and
+   * the indicator said "On this device" forever.
+   *
+   * **The id is minted here, before the request goes out**, and the caller
+   * saves it before awaiting. Publishing sends the whole map in one POST; if
+   * the response is lost the retry has to name the same campaign or it makes a
+   * second one, and a server-assigned id gives the client nothing to retry
+   * with. `crypto.randomUUID` rather than a counter or a timestamp: it has to
+   * be unguessable, because a client-supplied primary key can always be aimed
+   * at a row that already exists — the route answers a miss with 409 and
+   * nothing else.
+   *
+   * `alreadyPublished` comes back true when the server recognised the id as
+   * this account's own campaign. That is the retry working, and the server
+   * copy is returned untouched rather than overwritten: a retry that rewrote
+   * the campaign would undo every edit made between the two attempts.
+   */
+  async publishCampaignToCloud(
+    campaign: Campaign,
+    cloudId: string,
+  ): Promise<CloudResult<{ id: string; inviteCode: string; alreadyPublished: boolean }>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+
+    return request('/api/campaigns', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'publish',
+        cloudId,
+        name: campaign.name,
+        framework: campaign.framework,
+        houseRules: campaign.houseRules,
+        currentTurn: campaign.currentTurn,
+        maxWarbandDucats: campaign.maxWarbandDucats,
+        gloryVictoryThreshold: campaign.gloryVictoryThreshold,
+        /*
+          The map as this device holds it, each territory carrying the id it
+          has here. The server stores that as `localId` beside a primary key
+          of its own, which is what lets a later `territory.perk` operation
+          name a territory without this device keeping a mapping.
+        */
+        territories: campaign.territories.map((t) => ({
+          localId: t.id,
+          name: t.name,
+          type: t.type,
+          perk: t.perk ?? '',
+          perkSource: t.perkSource,
+          description: t.description ?? '',
+        })),
+      }),
+    }, (data) => {
+      const c = data?.campaign;
+      /* Thrown, not defaulted: `request` turns it into a `server` failure. A
+         campaign the server did not return is not a campaign at some id we
+         made up, and storing a `cloudId` the server never confirmed would
+         point every later push at a row that does not exist. */
+      if (!c?.id) throw new Error('The server returned no campaign.');
+      if (typeof c.inviteCode !== 'string') {
+        throw new Error('The campaign came back without an invite code.');
+      }
+      return {
+        id: String(c.id),
+        inviteCode: c.inviteCode,
+        alreadyPublished: Boolean(data?.alreadyPublished),
+      };
+    });
+  },
+
   async fetchCampaignFromCloud(campaignId: string): Promise<CloudResult<{ id: string; version: number }>> {
     if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
     return request(`/api/campaigns?id=${encodeURIComponent(campaignId)}`, {}, (data) => {

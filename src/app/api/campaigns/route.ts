@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { limitAccountRoute } from '@/lib/api/rateLimit';
-import { badRequest, handle, notFound } from '@/lib/api/http';
-import { readAndParse, id, text, count } from '@/lib/api/parse';
+import { badRequest, conflict, handle, notFound } from '@/lib/api/http';
+import { readAndParse, id, text, count, boundedJson } from '@/lib/api/parse';
 import {
   requireActor, requireCampaignAccess, requireCampaignWarband,
 } from '@/lib/api/policy';
@@ -168,6 +169,75 @@ const CreateCampaign = z.object({
   gloryVictoryThreshold: count(1_000).optional(),
 }).strict();
 
+/**
+ * The largest map this will accept.
+ *
+ * Not a round number picked for comfort. The biggest map the app can build is
+ * the published Carcass Front campaign's 32 Special Zones; its own classic map
+ * is twelve theatres. 64 leaves room for a supplement twice the size of the
+ * largest one printed, and still refuses a client that has decided to send
+ * ten thousand rows.
+ */
+const MAX_TERRITORIES = 64;
+
+const PublishTerritory = z.object({
+  /*
+    The id this territory has on the device — `wt-*`, `th-*`, `cf-<slug>`.
+    Stable and meaningful, and NOT unique across campaigns, which is why it is
+    carried beside the primary key rather than as it.
+  */
+  localId: id(),
+  name: text(120).trim().min(1),
+  type: text(60).trim().min(1),
+  perk: text(2_000),
+  /*
+    `published` is accepted HERE and nowhere else.
+
+    The authority table in docs/CAMPAIGN-SYNC.md says a published perk is
+    writable by nobody, and `territory.perk` in the sync route refuses one. But
+    a Carcass Front map legitimately arrives carrying the book's own Outpost
+    Bonuses, and this is the single moment they are written — after which they
+    are frozen. Refusing them here would mean publishing a Carcass Front
+    campaign silently dropped the rules half of its map.
+  */
+  perkSource: z.enum(['published', 'campaign']).optional(),
+  description: text(2_000),
+}).strict();
+
+/**
+ * Publish a campaign this app made, under an id the CLIENT minted.
+ *
+ * `POST /api/campaigns` with `action: 'create'` builds a campaign of the
+ * server's own: four fixed territories, no framework, no house rules. A
+ * campaign in this app has never been that campaign — twelve theatres or 32
+ * published zones, a framework fixed at creation, and perks that know whether
+ * a book or the organiser wrote them — so nothing the app made could be
+ * represented in the database at all. That is the gap SYNC-2 closes.
+ *
+ * **The id comes from the client, and that is the point.** Publishing sends
+ * the whole map in one request; if the response is lost, the retry must not
+ * produce a second campaign. A server-assigned id cannot give that — the
+ * client has nothing to retry WITH — and "upsert by name" is how two devices
+ * editing one campaign produced two. So the primary key is the idempotency,
+ * exactly as `CampaignSyncOp.opId` already is.
+ *
+ * A uuid rather than free text: it is what the client can mint offline without
+ * coordinating, and it is unguessable, which matters because a client-supplied
+ * primary key can always be aimed at a row that already exists. Aiming it at
+ * someone else's campaign gets a 409 and nothing else — see the handler.
+ */
+const PublishCampaign = z.object({
+  action: z.literal('publish'),
+  cloudId: z.string().uuid(),
+  name: text(120).trim().min(1),
+  framework: z.enum(['classic', 'carcass-front']).optional(),
+  houseRules: boundedJson(8 * 1024).optional(),
+  currentTurn: count(1_000).optional(),
+  maxWarbandDucats: count(100_000).optional(),
+  gloryVictoryThreshold: count(1_000).optional(),
+  territories: z.array(PublishTerritory).max(MAX_TERRITORIES),
+}).strict();
+
 const ClaimTerritory = z.object({
   action: z.literal('claim_territory'),
   territoryId: id(),
@@ -179,7 +249,7 @@ const ClaimTerritory = z.object({
   */
 }).strict();
 
-const Body = z.discriminatedUnion('action', [CreateCampaign, ClaimTerritory]);
+const Body = z.discriminatedUnion('action', [CreateCampaign, PublishCampaign, ClaimTerritory]);
 
 export async function POST(req: NextRequest) {
   return handle('campaigns.POST', async () => {
@@ -199,6 +269,78 @@ export async function POST(req: NextRequest) {
         include: FULL,
       });
       return NextResponse.json({ campaign }, { status: 201 });
+    }
+
+    if (body.action === 'publish') {
+      const actor = await requireActor();
+
+      /*
+        Already published, or aimed at somebody else's row.
+
+        A client-supplied primary key can always name a row that exists, so
+        this is checked before anything is written rather than left to the
+        insert to discover. Two outcomes, and they are different:
+
+        - It is the caller's own campaign. This is the retry the id exists to
+          make safe — the first attempt landed and the response was lost — so
+          the existing campaign is returned unchanged. NOT re-created and not
+          re-written: a retry that overwrote the server copy would undo every
+          edit made between the two attempts, which is the "last writer wins"
+          failure the whole protocol is built to avoid.
+        - It is not. 409, with a message that says only that the id is taken.
+          Confirming whose it is would turn a guessed uuid into a membership
+          oracle, and the campaign routes already answer "not yours" with 404
+          for the same reason.
+      */
+      const existing = await prisma.campaign.findUnique({
+        where: { id: body.cloudId },
+        select: { id: true, adminId: true },
+      });
+      if (existing) {
+        if (existing.adminId !== actor.userId) {
+          return conflict('That campaign id is already in use.');
+        }
+        const campaign = await prisma.campaign.findUnique({
+          where: { id: body.cloudId },
+          include: FULL,
+        });
+        return NextResponse.json({ campaign, alreadyPublished: true });
+      }
+
+      /*
+        One local id per campaign, checked here as well as by the constraint.
+
+        The unique index is the real guarantee; this exists so a map with a
+        duplicate in it comes back as a 400 naming the problem, rather than as
+        a 500 from a constraint the caller cannot see.
+      */
+      const localIds = body.territories.map((t) => t.localId);
+      if (new Set(localIds).size !== localIds.length) {
+        return badRequest('Two territories in that map share a local id.');
+      }
+
+      const campaign = await prisma.campaign.create({
+        data: {
+          id: body.cloudId,
+          name: body.name,
+          inviteCode: inviteCode(),
+          adminId: actor.userId,
+          framework: body.framework,
+          houseRules: (body.houseRules ?? undefined) as Prisma.InputJsonValue | undefined,
+          currentTurn: body.currentTurn ?? 1,
+          maxWarbandDucats: body.maxWarbandDucats ?? 700,
+          gloryVictoryThreshold: body.gloryVictoryThreshold ?? 25,
+          /*
+            The client's map, verbatim. Not merged with STARTING_TERRITORIES
+            and not topped up to a minimum: a campaign that has been played on
+            a device has the map it has, and adding four territories nobody
+            put there would be the app inventing part of someone's campaign.
+          */
+          territories: { create: body.territories },
+        },
+        include: FULL,
+      });
+      return NextResponse.json({ campaign, alreadyPublished: false }, { status: 201 });
     }
 
     /*

@@ -27,6 +27,7 @@ export const CampaignSyncStatus: React.FC = () => {
   const sync = useStore((s) => s.campaignSync);
   const syncNow = useStore((s) => s.syncCampaignWithCloud);
   const discard = useStore((s) => s.discardCampaignConflicts);
+  const publish = useStore((s) => s.publishCampaignToCloud);
 
   const view = (() => {
     switch (sync.kind) {
@@ -35,6 +36,14 @@ export const CampaignSyncStatus: React.FC = () => {
           icon: <HardDrive className="w-3.5 h-3.5" />,
           label: 'On this device',
           title: 'This campaign is saved in this browser only. It has no cloud copy yet.',
+          tone: 'text-theme-muted',
+          retry: false,
+        };
+      case 'publishing':
+        return {
+          icon: <RefreshCw className="w-3.5 h-3.5 animate-spin" />,
+          label: 'Publishing',
+          title: 'Sending this campaign and its map to the server for the first time.',
           tone: 'text-theme-muted',
           retry: false,
         };
@@ -101,6 +110,29 @@ export const CampaignSyncStatus: React.FC = () => {
           {view.icon}
           <span>{view.label}</span>
         </span>
+
+        {/*
+          Publishing is offered only while the campaign is local, and it is a
+          deliberate press rather than something the first edit does quietly.
+          It mints an invite code and puts a group's map on a server, and
+          local-only play is supported everywhere else in this app — so it is
+          the organiser's decision, not a side effect of naming a campaign.
+
+          Signing in is not checked here. The route answers a signed-out
+          publish with 401 and the indicator already has words for that
+          ("Sign in to sync"), which is better than a button that is disabled
+          for a reason the user has to guess.
+        */}
+        {sync.kind === 'local-only' && (
+          <button
+            type="button"
+            onClick={() => { void publish(); }}
+            title="Give this campaign a cloud copy, so other devices and other players can reach it."
+            className="min-h-[44px] px-3 font-mono text-xs uppercase tracking-wide border border-theme-primary/60 rounded-md text-theme-primary hover:bg-theme-surface active:bg-theme-surface"
+          >
+            Back up to the cloud
+          </button>
+        )}
 
         {view.retry && (
           /* 44px, because this is pressed at a table one-handed. */
