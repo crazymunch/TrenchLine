@@ -85,7 +85,8 @@ npm run rules:extract     # PDF -> text
   It is not a code error, and `rm -rf .next` does **not** fix it. Build with:
 
   ```bash
-  NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... npx next build
+  NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... \
+    NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3210 npx next build
   ```
 - `src/store/useStore.ts` **was** 2,364 lines covering every domain. Phase 4.2
   split it into seven slices under `src/store/slices/`; the entry point is now

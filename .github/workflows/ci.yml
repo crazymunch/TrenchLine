@@ -41,6 +41,11 @@ jobs:
       # set here rather than discovered by a red build.
       DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
       NEXTAUTH_SECRET: ci-placeholder
+      # robots.txt and sitemap.xml name an absolute origin, and `siteUrl()`
+      # throws rather than default to one — a sitemap full of localhost is a
+      # sitemap Google believes. CI's build is not a deployment, so it gets the
+      # E2E server's origin rather than the production domain.
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3210
 
     steps:
       - uses: actions/checkout@v4

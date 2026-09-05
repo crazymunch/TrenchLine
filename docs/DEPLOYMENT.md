@@ -9,7 +9,8 @@ What the running environment has to provide, and which layer enforces what.
 | `DATABASE_URL` | **yes** | Prisma cannot connect; every cloud route fails. Local-only use still works. On Neon this must be the **pooled** endpoint — see below. |
 | `DIRECT_DATABASE_URL` | for migrations | `prisma migrate`, `diff` and `studio` refuse to run. `prisma generate` does not need it, so a deployment that forgets it still **builds and serves** — only schema changes fail. Same value as `DATABASE_URL` wherever there is no pooler. |
 | `NEXTAUTH_SECRET` | **yes** | The server **fails closed** at request time. There is no fallback: the constant that used to be one is in this repository's history, so any deployment reaching it would have signed sessions with a published key. |
-| `NEXTAUTH_URL` | yes in production | The links in verification and reset mail are built from it. |
+| `NEXTAUTH_URL` | yes in production | The links in verification and reset mail are built from it. **Also the fallback origin for `robots.txt` and `sitemap.xml`** — see the row below. |
+| `NEXT_PUBLIC_SITE_URL` | no, but read the row | The public origin `robots.txt` and `sitemap.xml` name. `lib/siteUrl.ts` reads this, then `NEXTAUTH_URL`, then Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, and **throws at build time if none is set** — so a deployment with none of the three fails to build rather than publishing a sitemap that names the wrong origin. There is no default on purpose: a sitemap saying `http://localhost:3000` is not a broken sitemap, it is one a search engine fetches and believes. Set this only when the canonical public origin differs from where auth runs. Deliberately NOT `VERCEL_URL`, which is the per-deployment preview host. |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | no | The Google button is not offered. Credentials sign-in is unaffected. |
 | `TRENCHLINE_ADMIN_EMAILS` | no | Nobody is an administrator by address. Persisted grants still work — see [`DATABASE.md`](DATABASE.md#the-administrator-role). Being able to drop this is the point of AUTH-1. |
 | `MAIL_TRANSPORT` | no, but read the row | `log` or `none`. Unset means no mail **and no verification requirement** — see below. |
@@ -28,6 +29,7 @@ fail in ways that look like something else:
 |---|---|---|
 | Vercel → Domains | `trenchline.app` serving, `www` redirecting to it | a 308 loop, or the wrong host in the address bar |
 | Vercel → env → `NEXTAUTH_URL` | `https://trenchline.app` | sign-in appears to work; **verification and reset mail links point at the old host**, because `lib/accountMail.ts` builds every link from this |
+| Vercel → env → `NEXT_PUBLIC_SITE_URL` (or `NEXTAUTH_URL`, which it falls back to) | `https://trenchline.app` | `sitemap.xml` and the `Sitemap:` line in `robots.txt` name the wrong host, and Search Console reports URLs that do not resolve. With none of the three set, the build fails instead — which is the intended behaviour |
 | Google Cloud → OAuth client | origin `https://trenchline.app`, redirect `https://trenchline.app/api/auth/callback/google` | `redirect_uri_mismatch` at the moment of sign-in, and only for Google |
 
 The redirect URI must match character for character — scheme, host, path, no
