@@ -60824,6 +60824,26 @@ export const DATASET: Dataset = {
       "sourceFile": "Trench Pilgrims.cat"
     },
     {
+      "id": "dispatch01-glory-blessings-of-beelzebub",
+      "name": "Blessings of Beelzebub",
+      "type": "Special",
+      "range": "-",
+      "keywords": [],
+      "rules": "Favoured Strain: At the start of each game, choose 1 Strain. Friendly models that have the chosen Strain gain the additional Favoured effects listed below for the rest of the game. Bolgias Gut Favoured: Burst ACTIONS taken by model with the Bolgias Gut Strain do not have the -1 INJURY DICE Keyword. Hellfly Host Favoured: A model with the Hellfly Host Strain gains the Undead Fortitude ability. Leech Grip Favoured: Place D3 BLOOD MARKERS next to any enemy model that takes a Retreat ACTION while within 1” of a model with the Leech Grip Strain instead of 1 BLOOD MARKER. Tapeworm Throng Favoured: The Long Range modifier for Ranged Attacks that target a model with the Tapeworm Throng Strain is -2 DICE instead of -1 DICE.",
+      "description": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
+    },
+    {
+      "id": "dispatch01-glory-regimental-kasik",
+      "name": "Regimental Kaşık",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [
+        "LEADER"
+      ],
+      "rules": "Brotherhood of the Spoon: Do not count friendly Janissaries that are Down or have been taken Out of Action in the Morale Phase whilst there is a friendly Janissary with a Regimental Kaşık on the battlefield. In addition, this counts as a Musical Instrument for the purposes of the Mehterân ability.",
+      "description": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
+    },
+    {
       "id": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
       "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-bells-of-warding",
       "name": "Bells of Warding",
@@ -70245,6 +70265,17 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Limit: 2"
           ]
+        },
+        {
+          "name": "Regimental Kaşık",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1"
+          ]
         }
       ]
     },
@@ -70924,6 +70955,17 @@ export const DATASET: Dataset = {
           },
           "restrictions": [
             "Headgear"
+          ]
+        },
+        {
+          "name": "Blessings of Beelzebub",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 9
+          },
+          "restrictions": [
+            "Lord of Tumours only, Limit: 1"
           ]
         }
       ]

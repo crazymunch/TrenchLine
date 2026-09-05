@@ -163,8 +163,44 @@ All are covered by regression tests.
   `UnitOption` **is** wired through the build now, so the Strains arrived with
   it: 18 Strain options across the Black Grail entries. The Amalgam and Grail
   Thrall replacements are transcribed too, and all three units are in the
-  dataset. What is genuinely still to transcribe is the **Vile Corpus**, the
-  **Mercenary keyword rewrites** and the **new Glory Items**.
+  dataset.
+
+  The **Mercenary keyword rewrites** are done and this line was stale: the
+  layer carries 11 Mercenary ops — the MERCENARY glossary entry, the keyword
+  rewrites, two cost changes, three statline corrections and the ability
+  replacements.
+
+  The **new Glory Items** are done: *Blessings of Beelzebub* (Black Grail,
+  9 Glory, Lord of Tumours only) and *Regimental Kaşık* (Sultanate, 4 Glory).
+  Each needed a profile AND an armoury row, and the layer format could only do
+  the first — `add` writes a top-level collection and an armoury row is nested
+  inside `armouries[].rows` — so there is now an `addArmouryRow` op, applied in
+  a second pass because `dataset.armouries` does not exist when the layers run.
+  Ops deferred to that pass are counted, and the build throws if one is lost
+  between the two.
+
+  Their **currency** did not need a maintainer ruling, unlike the Grail Strain
+  costs. The Dispatch prints the glyph and the extraction drops it, but these
+  rows are added to tables the base rulebook already prints, and all 51 priced
+  rows in the rulebook's Glory Items Tables are in Glory with no exceptions —
+  so the currency is read off the table the row joins.
+
+- **The Vile Corpus cannot be transcribed from the source we have.** The
+  extracted Dispatch text carries the section heading (*Vile Corpus
+  Abilities*), the rule that governs them — *"each Amalgam in a Warband must
+  have a different Vile Corpus"* — and then exactly **one** entry, *Bombardment
+  Horde (20)*. A rule requiring each Amalgam to have a different one cannot be
+  satisfied by a list of one, so the extraction has dropped entries; this is
+  the same class of PDF defect as the sidebar bleed and column scrambling
+  documented in DATA-SOURCES.
+
+  Transcribing what survives would put a partial list in the app with nothing
+  to say it was partial, which is worse than the gap. **It needs the printed
+  page**: either the missing Vile Corpus entries supplied by the maintainer, or
+  a re-extraction of pp.5-6 of the Dispatch. Its cost also has the dropped-glyph
+  problem and, unlike the Glory Items, no table to read the currency off — the
+  Strains in the same section were confirmed as Ducats by the maintainer, and
+  this would need the same.
 
   One decision is recorded rather than taken, in the layer's own note: the
   Dispatch's Amalgam ability list omits `Six-armed Monstrosity` and

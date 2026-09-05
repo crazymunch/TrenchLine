@@ -889,6 +889,73 @@
         "Trench Pilgrims"
       ],
       "_src": "trench-dispatch-01-april-2026.txt L824 — 'A Witchburner is Faithful and can be recruited as a Mercenary by NEW ANTIOCH and PILGRIM Warbands.'"
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-glory-blessings-of-beelzebub",
+        "name": "Blessings of Beelzebub",
+        "type": "Special",
+        "range": "-",
+        "keywords": [],
+        "rules": "Favoured Strain: At the start of each game, choose 1 Strain. Friendly models that have the chosen Strain gain the additional Favoured effects listed below for the rest of the game. Bolgias Gut Favoured: Burst ACTIONS taken by model with the Bolgias Gut Strain do not have the -1 INJURY DICE Keyword. Hellfly Host Favoured: A model with the Hellfly Host Strain gains the Undead Fortitude ability. Leech Grip Favoured: Place D3 BLOOD MARKERS next to any enemy model that takes a Retreat ACTION while within 1” of a model with the Leech Grip Strain instead of 1 BLOOD MARKER. Tapeworm Throng Favoured: The Long Range modifier for Ranged Attacks that target a model with the Tapeworm Throng Strain is -2 DICE instead of -1 DICE.",
+        "description": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
+      },
+      "_src": "p.6 The Cult of the Black Grail Glory Items — 'Add the following Glory Item:' Blessings of Beelzebub",
+      "_note": "The extracted text prints one bullet as 'Leech Grip Favourede'. Transcribed as 'Leech Grip Favoured' to match the other three bullets and the Strain's own name; the trailing 'e' is an extraction artefact, not a different rule."
+    },
+    {
+      "op": "addArmouryRow",
+      "factionId": "cult-of-the-black-grail",
+      "row": {
+        "name": "Blessings of Beelzebub",
+        "section": "Equipment",
+        "cost": {
+          "ducats": 0,
+          "glory": 9
+        },
+        "restrictions": [
+          "Lord of Tumours only, Limit: 1"
+        ]
+      },
+      "_src": "p.6 — 'Add the following entry to the BLACK GRAIL Glory Items Table: Blessings of Beelzebub | Lord of Tumours only, Limit: 1 | 9'",
+      "_costCurrencyDerived": "Glory. The Dispatch prints the currency as a glyph and the text extraction drops it, leaving a bare number — the same problem the Grail Strain costs had. This one needs no maintainer ruling because the row is being added to a table the base rulebook already prints, and every one of the 51 priced rows in the rulebook's Glory Items Tables is in Glory, with no exceptions. The currency is read off the table the row joins, not inferred from the item.",
+      "_sectionNote": "The rulebook's Glory Items are stocked under the section of the KIND of thing they are (Equipment, Melee Weapons, Shields …), not under a 'Glory Items' section — all 30 Glory-priced rows already in the dataset follow that. This item's Type row reads 'Special' with no Range and no Keywords, which is not a weapon or a suit of armour, so it is stocked as Equipment."
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-glory-regimental-kasik",
+        "name": "Regimental Kaşık",
+        "type": "Equipment",
+        "range": "-",
+        "keywords": [
+          "LEADER"
+        ],
+        "rules": "Brotherhood of the Spoon: Do not count friendly Janissaries that are Down or have been taken Out of Action in the Morale Phase whilst there is a friendly Janissary with a Regimental Kaşık on the battlefield. In addition, this counts as a Musical Instrument for the purposes of the Mehterân ability.",
+        "description": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
+      },
+      "_src": "p.8 The Sultanate of the Iron Wall Glory Items — 'Add the following Glory Item:' Regimental Kaşık"
+    },
+    {
+      "op": "addArmouryRow",
+      "factionId": "iron-sultanate",
+      "row": {
+        "name": "Regimental Kaşık",
+        "section": "Equipment",
+        "cost": {
+          "ducats": 0,
+          "glory": 4
+        },
+        "restrictions": [
+          "Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1"
+        ]
+      },
+      "_src": "p.8 — 'dd the following entry to the SULTANATE Glory Items Table: Regimental Kaşık | Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1 | 4'",
+      "_costCurrencyDerived": "Glory. The Dispatch prints the currency as a glyph and the text extraction drops it, leaving a bare number — the same problem the Grail Strain costs had. This one needs no maintainer ruling because the row is being added to a table the base rulebook already prints, and every one of the 51 priced rows in the rulebook's Glory Items Tables is in Glory, with no exceptions. The currency is read off the table the row joins, not inferred from the item.",
+      "_sectionNote": "Type row reads 'Equipment', so it is stocked as Equipment."
     }
   ]
 }

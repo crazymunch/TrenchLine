@@ -39,7 +39,7 @@ import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
-import { createProvenance, applyLayers, stampBase } from './lib/layers.mjs';
+import { createProvenance, applyLayers, applyArmouryRowOps, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
 
@@ -585,8 +585,16 @@ for (const ruleset of RULESETS) {
 
   // 2. layer
   const layers = ruleset.layers.map(loadLayer);
+  /*
+    Ops that need `dataset.armouries`, which does not exist yet — the
+    armouries are assembled below, out of the catalogues, after the layers
+    have run. They are applied in a second pass and counted, so one cannot
+    fall between the two.
+  */
+  const deferredOps = [];
   const layerReport = applyLayers(dataset, layers, provenance, {
     includeBeta: ruleset.includeBeta,
+    deferred: deferredOps,
   });
 
   // ------------------------------------------------------------- armouries
@@ -653,6 +661,29 @@ for (const ruleset of RULESETS) {
       });
     }
   }
+
+  /*
+    The second layer pass: rows a layer adds to a faction's Armoury Table.
+
+    The Dispatch's two new Glory Items arrive here. Without it they would have
+    profiles in the Codex and no price and no faction stocking them — readable
+    by a player and takeable by nobody.
+
+    Every op deferred by the first pass must be accounted for by this one. A
+    layer op that quietly disappears between two passes is a published rule the
+    app does not have and nobody is told about, which is the failure this
+    pipeline exists to prevent.
+  */
+  const armouryOps = applyArmouryRowOps(dataset, deferredOps);
+  if (armouryOps.applied + armouryOps.unresolved.length + armouryOps.notes.length
+      !== deferredOps.length) {
+    throw new Error(
+      `rules-build: ${deferredOps.length} layer op(s) were deferred to the armoury `
+      + `pass but only ${armouryOps.applied + armouryOps.unresolved.length
+         + armouryOps.notes.length} were accounted for. An op has been lost `
+      + 'between the two passes.');
+  }
+
 
   // The weapon keeps the union of every armoury's restrictions as a quick
   // "this is restricted somewhere" signal, stamped so it can say where from.
@@ -1031,7 +1062,24 @@ for (const ruleset of RULESETS) {
     for (const a of res.applied) console.log(`    ${a}`);
   }
   console.log(`    CONFLICTS   ${v.conflicts.length}`);
-  if (unresolvedOps.length) console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+  unresolvedOps.push(...armouryOps.unresolved);
+  if (armouryOps.applied) {
+    console.log(`  armoury rows added by layers: ${armouryOps.applied}`);
+  }
+  if (unresolvedOps.length) {
+    console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+    /*
+      And WHY. The count alone sent me looking in the wrong place: two
+      `addArmouryRow` ops were being reported as a number with no reason, and
+      a layer op that cannot be applied is a published rule the app does not
+      have — the one thing this pipeline exists to make visible.
+    */
+    for (const u of unresolvedOps) {
+      console.log(`    ${u.op?.op ?? '?'} ${u.op?.collection ?? u.op?.factionId ?? ''}`
+        + `${u.op?.row?.name ? `/${u.op.row.name}` : ''}`
+        + `${u.op?.entity?.name ? `/${u.op.entity.name}` : ''}: ${u.why}`);
+    }
+  }
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
   if (reprints.agreed.length || reprints.disagreed.length) {
     console.log(`  reprinted entries cross-checked: ${reprints.agreed.length} field(s) agree` +
