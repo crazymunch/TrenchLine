@@ -43,6 +43,38 @@ Option 1 is the recommendation. It needs one answer from the maintainer: **are
 there real cloud campaigns in production to preserve, or can those rows be
 discarded?**
 
+**Answered (Sep 2026): discarded.** No campaign is running; the rows are
+example data. Option 1 it is, and the model mismatch is no longer a blocker.
+
+### What that decision has built so far
+
+`20260905021934_campaign_sync_expand`, purely additive, so old code serving a
+request mid-rollout ignores columns it does not select:
+
+| | | |
+|---|---|---|
+| `Campaign.framework` | nullable | `classic` or `carcass-front`; the database had no concept of one |
+| `Campaign.houseRules` | nullable JSON | mirrors the client's `CampaignHouseRules` |
+| `Campaign.version` | default 1 | monotonic; conflicts compare the version an edit was MADE against |
+| `TerritoryNode.perkSource` | nullable | `published` / `campaign`; a published perk is writable by nobody |
+| `TerritoryNode.version` | default 1 | as above |
+| `CampaignSyncOp` | new table | `opId` is the primary key, so a repeat is a constraint violation rather than a second write |
+
+**The discard is a script, not a migration.** `scripts/clear-example-campaigns.mjs`
+reports by default and deletes only with `--yes`. A migration runs on every
+deploy, in every environment, with nobody watching, and "these rows are example
+data" is a fact about one database at one moment — so the schema change ships
+alone and discarding data stays a deliberate act somebody reads the output of.
+
+The script will not delete a campaign that has been **played**, whatever its
+territories look like: the example shape is necessary but not sufficient, and a
+match record means someone used it. That rule is tested rather than trusted to
+the maintainer's confirmation staying true —
+`scripts/__tests__/clearExampleCampaigns.test.mjs`.
+
+Still to build: the `/api/campaigns/sync` endpoint below, and the client outbox
+keyed by operation.
+
 ## Authority: who owns which field
 
 From SYNC-1, and unchanged by the above.

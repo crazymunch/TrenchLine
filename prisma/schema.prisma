@@ -175,11 +175,47 @@ model Campaign {
   maxWarbandDucats      Int              @default(700)
   gloryVictoryThreshold Int              @default(25)
   chronicleLogs         Json             @default("[]")
+  /// Which rules this campaign is played under — `classic` or `carcass-front`.
+  /// The database had no concept of one, which is half of why a campaign in
+  /// the app was never the campaign in the database (docs/CAMPAIGN-SYNC.md).
+  framework             String?
+  /// House rules this campaign has chosen, one key per relaxed rule. Mirrors
+  /// `Campaign.houseRules` in the client; see `CampaignHouseRules`.
+  houseRules            Json?
+  /// Monotonic, bumped on every accepted write.
+  ///
+  /// Conflicts are decided on the version an edit was MADE against, not on
+  /// when it arrived: receipt order is a property of the network rather than
+  /// of the work, so two devices on one flaky connection would otherwise have
+  /// the slower one silently win.
+  version               Int              @default(1)
   members               CampaignMember[]
   matches               MatchRecord[]
   territories           TerritoryNode[]
+  syncOps               CampaignSyncOp[]
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
+}
+
+/// One applied sync operation, remembered so a repeat is skipped.
+///
+/// This is the property the deleted fire-and-forget code lacked: it called
+/// create on every attempt, which is how one campaign became several. A retry
+/// is only safe if the server can recognise it, so the client generates the
+/// `opId` and the server records it.
+model CampaignSyncOp {
+  /// Client-generated. The primary key IS the idempotency: a second insert of
+  /// the same operation is a constraint violation rather than a second write.
+  opId       String   @id
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  /// What it did, for an operator reading the table after an incident.
+  kind       String
+  /// Who the server attributed it to — never taken from the request body.
+  actorId    String
+  appliedAt  DateTime @default(now())
+
+  @@index([campaignId, appliedAt])
 }
 
 model CampaignMember {
@@ -226,7 +262,16 @@ model TerritoryNode {
   controlledByWarbandId  String?
   controlledByPlayerName String?
   perk                   String
+  /// `published`, `campaign`, or absent.
+  ///
+  /// The difference between a rule the books state and one this group wrote,
+  /// which the app has drawn since the sixteen invented perks came out of
+  /// `seed.ts` and the database has not. A published perk is writable by
+  /// nobody — see the authority table in docs/CAMPAIGN-SYNC.md.
+  perkSource             String?
   description            String   @db.Text
+  /// Monotonic, bumped on every accepted write. See `Campaign.version`.
+  version                Int      @default(1)
 }
 
 /// A bug report.
