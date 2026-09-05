@@ -418,7 +418,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Player Selector Bar */}
-              <div className="flex space-x-2 border-b border-theme-border pb-3 overflow-x-auto">
+              <div className="flex flex-wrap gap-2 border-b border-theme-border pb-3">
                 {players.map((p, idx) => (
                   <button
                     key={p.warbandId}

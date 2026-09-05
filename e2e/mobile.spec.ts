@@ -94,3 +94,124 @@ test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
       .map((l) => `${l.text} (${l.slack}px of room)`));
   expect(tight, 'a bottom-nav label has no room to spare').toEqual([]);
 });
+
+/**
+ * Nothing a player has to READ or TAP scrolls sideways.
+ *
+ * The rule, asked for directly: horizontal scrolling is not an acceptable way
+ * to carry controls on a phone. A row of buttons that runs off the edge hides
+ * its own contents — the warband toolbar had nine and showed five, and the
+ * only thing advertising the rest was a cut-off button, which reads as a
+ * layout bug about as often as it reads as an affordance.
+ *
+ * Tables are the exception and keep their own scroller. A statline grid cannot
+ * wrap without becoming unreadable, and `overflow-x: hidden` on the page is
+ * never the fix (docs/MOBILE.md).
+ */
+test('no row of controls scrolls sideways on a phone', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'this is a phone rule');
+
+  for (const path of ['/roster', '/play', '/campaign', '/codex', '/directory']) {
+    await openApp(page, path);
+    await page.waitForTimeout(600);
+
+    const offenders = await page.evaluate(() => {
+      const bad: string[] = [];
+      for (const el of document.querySelectorAll<HTMLElement>('*')) {
+        if (el.scrollWidth <= el.clientWidth + 1) continue;
+
+        /*
+          Actually SCROLLABLE, not merely overflowing.
+
+          `.tap` gives a small control its 44px target as an invisible absolute
+          overlay rather than as height (globals.css), and that overlay bleeds
+          past the row it sits in — so the warband card's action row reports
+          `scrollWidth > clientWidth` while painting nothing outside itself and
+          scrolling nowhere. Flagging that would have this test demanding a fix
+          for something no player can see, and the usual fix reached for is
+          `overflow-x: hidden`, which docs/MOBILE.md forbids for good reason.
+
+          What the rule is about is a row the user has to DRAG, and a row can
+          only be dragged if its own `overflow-x` says so.
+        */
+        const overflowX = getComputedStyle(el).overflowX;
+        if (overflowX !== 'auto' && overflowX !== 'scroll') continue;
+
+        // A table (or a `pre`) inside is the sanctioned reason to scroll.
+        if (el.querySelector('table, pre, thead')) continue;
+        // Only rows that carry controls; prose and images are not the rule.
+        const controls = el.querySelectorAll('button, a, select, [role="tab"]').length;
+        if (controls < 2) continue;
+        bad.push(`${el.tagName.toLowerCase()}.${el.className}`.slice(0, 120));
+      }
+      return bad;
+    });
+
+    expect(offenders, `${path} has a control row that scrolls sideways`).toEqual([]);
+  }
+});
+
+/**
+ * The bottom bar carries five destinations, at a size a thumb can find.
+ *
+ * It used to carry the theme switcher, the bug reporter and the admin ruleset
+ * differ too — seven or eight items in 375px, with every label one font metric
+ * from clipping, and two that had already clipped in CI while passing locally.
+ * Those three are settings rather than places and moved to the account menu.
+ */
+test('the bottom bar is five destinations, none of them clipped', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'the bottom bar is phone-only');
+
+  await openApp(page, '/roster');
+  const nav = page.locator('nav.fixed.bottom-0');
+  await expect(nav).toBeVisible();
+
+  const items = nav.locator('button');
+  await expect(items).toHaveCount(5);
+
+  for (const label of ['Roster', 'Play', 'Crusade', 'Players', 'Codex']) {
+    await expect(nav.getByText(label, { exact: true }), `${label} is missing`).toBeVisible();
+  }
+
+  /* Not clipped: a label whose text is wider than its box is showing an
+     ellipsis, which is what "Campaig…" looked like before. */
+  const clipped = await nav.evaluate((el) =>
+    [...el.querySelectorAll('span')]
+      .filter((s) => s.scrollWidth > s.clientWidth + 1)
+      .map((s) => s.textContent ?? ''));
+  expect(clipped, 'a destination label is clipped').toEqual([]);
+
+  /* And bigger than it was: 52px of bar, 14px labels. Asserted as floors so
+     the numbers can grow without the test becoming a nuisance. */
+  const box = await items.first().boundingBox();
+  expect(box!.height, 'the bar shrank below its 52px target').toBeGreaterThanOrEqual(52);
+
+  const size = await nav.locator('span').first().evaluate((s) =>
+    parseFloat(getComputedStyle(s).fontSize));
+  expect(size, 'the labels shrank below 14px').toBeGreaterThanOrEqual(14);
+});
+
+/**
+ * And what the bar gave up is reachable, not gone.
+ *
+ * The theme switcher, the bug reporter and the ruleset selector moved into the
+ * account menu. That menu opens signed OUT as well: none of the three is an
+ * account feature, and local-only play is supported everywhere else in the app.
+ */
+test('the account menu carries the settings the bar gave up', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'this is the phone layout');
+
+  await openApp(page, '/roster');
+  await page.getByRole('button', { name: /login/i }).first().click();
+
+  const menu = page.locator('[role="menu"]');
+  await expect(menu).toBeVisible();
+  await expect(menu.getByText(/Theme —/)).toBeVisible();
+  await expect(menu.getByText('Report a bug')).toBeVisible();
+  await expect(menu.getByLabel('Active Ruleset Version')).toBeVisible();
+
+  /* 16px on the select, or iOS zooms the whole page when it takes focus. */
+  const fontSize = await menu.getByLabel('Active Ruleset Version')
+    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(fontSize, 'the ruleset select will make iOS zoom').toBeGreaterThanOrEqual(16);
+});

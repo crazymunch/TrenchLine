@@ -199,7 +199,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
           Sheet's header is sticky, and a second sticky bar costs a
           quarter of a phone screen before a single result is shown. */}
     {/* Filter Tabs */}
-    <div className="flex items-center space-x-2 pb-3 mb-3 border-b border-theme-border overflow-x-auto">
+    <div className="flex flex-wrap items-center gap-2 pb-3 mb-3 border-b border-theme-border">
       {categories.map((cat) => (
         <button
           key={cat}

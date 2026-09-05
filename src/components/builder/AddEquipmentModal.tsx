@@ -458,7 +458,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           
           {/* Sub-Category Pills for Weapons */}
           {tab === 'weapons' && (
-            <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
               <button
                 onClick={() => setWeaponSubCategory('all')}
                 className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${
@@ -504,7 +504,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
           {/* Sub-Category Pills for Equipment */}
           {tab === 'equipment' && (
-            <div className="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
               <button
                 onClick={() => setEquipmentSubCategory('all')}
                 className={`px-2.5 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 lg:py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors ${

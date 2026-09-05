@@ -214,7 +214,7 @@ export const CampaignHubView: React.FC = () => {
         )}
 
         {/* Campaign Navigation Tabs */}
-        <div className="flex items-center space-x-2 border-t border-theme-border pt-4 overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-2 border-t border-theme-border pt-4">
           {[
             { id: 'leaderboard', label: 'Crusade Standings', icon: <Trophy className="w-4 h-4" /> },
             { id: 'chronicle', label: 'Narrative Chronicle', icon: <Scroll className="w-4 h-4" /> },

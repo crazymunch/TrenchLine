@@ -243,15 +243,24 @@ export const WarbandBuilder: React.FC = () => {
         </div>
 
         {/*
-          Toolbar rail.
+          Toolbar.
 
-          One primary action and six secondary ones. `overflow-x-auto` with a
-          `min-w-max` track is the sanctioned way to carry a wide row on a
-          narrow screen (docs/MOBILE.md) — the alternative is wrapping, and a
-          wrapping toolbar is a toolbar whose buttons move.
+          One primary action and eight secondary ones, WRAPPED rather than
+          scrolled sideways.
 
-          The negative margins let the strip bleed to the container edge so the
-          last button is visibly cut off, which is what tells you it scrolls.
+          This used to be an `overflow-x-auto` rail with a `min-w-max` track,
+          on the reasoning that a wrapping toolbar is a toolbar whose buttons
+          move. That is true and it is the smaller problem. The larger one is
+          that a horizontal scroller hides its own contents: on a 375px screen
+          four of the nine buttons were off the edge, and the only thing
+          advertising them was a cut-off eighth button — which reads as a
+          layout bug at least as often as it reads as an affordance. Stash and
+          Chronicle were reachable; Export and Notes were not, unless you
+          happened to drag.
+
+          The buttons do move as the label lengths change — History and Stash
+          both carry counts. That is the accepted cost of every one of them
+          being visible without a gesture.
         */}
         <div className="border-t border-theme-border p-4 sm:p-6 space-y-3">
           <button
@@ -262,8 +271,8 @@ export const WarbandBuilder: React.FC = () => {
             <span>Recruit Warrior</span>
           </button>
 
-          <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto">
-            <div className="flex items-center gap-2 min-w-max">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setIsChronicleOpen(true)}
                 className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-primary border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
@@ -570,7 +579,7 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* Category Filter Pills, and the roster-wide collapse. */}
       <div className="flex items-center gap-2">
-      <div className="flex items-center space-x-2 overflow-x-auto pb-1 min-w-0">
+      <div className="flex flex-wrap items-center gap-2 pb-1 min-w-0">
         {['All', 'Leader', 'Elite', 'Trooper', 'Mercenary'].map((cat) => (
           <button
             key={cat}

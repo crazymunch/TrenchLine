@@ -1153,7 +1153,7 @@ export const PlayModeView: React.FC = () => {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex items-center space-x-2 border-t border-theme-border pt-3 overflow-x-auto">
+            <div className="flex flex-wrap items-center gap-2 border-t border-theme-border pt-3">
               {['All', 'Active', 'Downed', 'Out of Action'].map((st) => (
                 <button
                   key={st}

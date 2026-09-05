@@ -839,7 +839,7 @@ export const CodexView: React.FC = () => {
           </div>
 
           {/* Category Bar */}
-          <div className="flex space-x-2 font-mono text-xs border-b border-theme-border pb-3 overflow-x-auto">
+          <div className="flex flex-wrap gap-2 font-mono text-xs border-b border-theme-border pb-3">
             {[
               { id: 'melee', label: '1. Melee & Strength Skills' },
               { id: 'ranged', label: '2. Ranged & Marksmanship' },

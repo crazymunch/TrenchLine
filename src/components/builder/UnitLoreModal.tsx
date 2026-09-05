@@ -140,7 +140,7 @@ export const UnitLoreModal: React.FC<UnitLoreModalProps> = ({ warbandId, unit, o
       subtitle={`Base Profile: <strong className="text-theme-text">${unit.profileSnapshot.name}</strong> • Titles, Heroic Feats & Dossier`}
     >
       {/* Tab Navigation */}
-      <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
+      <div className="flex flex-wrap items-center gap-1 px-4 pt-3 border-b border-theme-border bg-theme-surface">
         <button
           onClick={() => setActiveTab('titles')}
           className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors ${
