@@ -128,8 +128,6 @@ async function setPerk(page: Page, text: string) {
   await expect(page.getByRole('dialog')).toBeHidden();
 }
 
-const status = (page: Page) => page.getByRole('status').filter({ hasText: /device|Sync|Backed|upload|Offline|decision|failed/ });
-
 test('a campaign says whether the cloud has what this device did', async ({ page }) => {
   const answer: { current: PushAnswer } = { current: { kind: 'applied' } };
   await mockCloud(page, answer);
