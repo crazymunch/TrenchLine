@@ -10,6 +10,8 @@ import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
+import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
+import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -81,6 +83,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
   const isLeader = unit.profileSnapshot.category === 'Leader';
+  const role = roleStyle(unit.profileSnapshot.category);
+  const RoleIcon = role.icon;
+  const glory = unitGlory(unit);
 
   const handleSaveName = () => {
     updateUnitName(warbandId, unit.id, nameVal);
@@ -139,11 +144,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   return (
     <>
       <div 
-        className={`bg-theme-surface border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${
-          isLeader 
-            ? 'border-theme-primary'
-            : 'border-theme-border hover:border-theme-muted'
-        }`}
+        className={`bg-theme-surface border rounded-md overflow-hidden shadow-lg transition-all flex flex-col justify-between bevel-container ${role.card}`}
       >
         
         {/* Card Header: Spacious, No Truncation, Clean 3-Dots Menu */}
@@ -153,25 +154,25 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             about 90px in a three-column grid and wrapped a word per line.
             `contents` promotes the badge and the name to direct flex children
             so `order` and `basis-full` can place them without moving the JSX. */}
-        <div className={`px-3 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 ${
-          isLeader
-            ? 'bg-theme-primary text-theme-base'
-            : 'bg-theme-elevated border-b border-theme-border'
-        }`}>
+        {/* `data-role` is for `e2e/roles.spec.ts`, which reads the painted
+            colours off a production build to prove the classes compiled. The
+            role word itself is uppercased by CSS, so matching on it means
+            matching rendered text — which is exactly the kind of coupling that
+            makes a layout test fail for a copy change. */}
+        <div
+          data-role={unit.profileSnapshot.category}
+          className={`px-3 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 ${role.header}`}
+        >
           <div className="contents">
             
             {/* Interactive Category Badge / Dropdown */}
             <div className="relative flex-shrink-0 order-1">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className={`tap text-xs sm:text-[10px] font-mono tracking-[0.11em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
-                  isLeader
-                    ? 'text-theme-base font-semibold'
-                    : 'text-theme-muted hover:text-theme-text'
-                }`}
+                className={`tap text-xs sm:text-[10px] font-mono tracking-[0.11em] uppercase flex items-center gap-1 cursor-pointer transition-colors ${role.label}`}
                 title="Click to change unit role"
               >
-                {isLeader && <Crown className="w-2.5 h-2.5" />}
+                {RoleIcon && <RoleIcon className="w-2.5 h-2.5" />}
                 <span>{unit.profileSnapshot.category}</span>
                 <ChevronDown className="w-2.5 h-2.5 opacity-70" />
               </button>
@@ -179,18 +180,27 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               {/* Role Dropdown Menu */}
               {isCategoryMenuOpen && (
                 <div className="absolute left-0 top-full mt-1 w-36 bg-theme-surface border border-theme-border rounded-md shadow-2xl z-30 py-1 font-mono text-xs">
-                  {(['Leader', 'Elite', 'Trooper', 'Mercenary'] as UnitCategory[]).map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategorySelect(cat)}
-                      className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 hover:bg-theme-elevated transition-colors ${
-                        unit.profileSnapshot.category === cat ? 'text-theme-primary font-bold' : 'text-theme-text'
-                      }`}
-                    >
-                      {cat === 'Leader' && <Crown className="w-3 h-3 text-theme-primary" />}
-                      <span>{cat}</span>
-                    </button>
-                  ))}
+                  {/* Each role with the mark it wears on the card, so the
+                      language is learnt where the choice is made. A Trooper
+                      has none, which is the whole reason the other three
+                      read; the spacer keeps the four words in one column. */}
+                  {(['Leader', 'Elite', 'Trooper', 'Mercenary'] as UnitCategory[]).map((cat) => {
+                    const CatIcon = ROLE_STYLES[cat].icon;
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => handleCategorySelect(cat)}
+                        className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 hover:bg-theme-elevated transition-colors ${
+                          unit.profileSnapshot.category === cat ? 'text-theme-primary font-bold' : 'text-theme-text'
+                        }`}
+                      >
+                        {CatIcon
+                          ? <CatIcon className={`w-3 h-3 ${ROLE_STYLES[cat].iconOffCard}`} />
+                          : <span className="w-3 h-3" aria-hidden />}
+                        <span>{cat}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -220,7 +230,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               >
                 <div className="flex items-center space-x-1.5">
                   <h3 className={`font-bold text-sm sm:text-base leading-snug break-words transition-colors ${
-                    isLeader ? 'text-theme-base' : 'text-theme-text group-hover:text-theme-primary'
+                    role.filled ? 'text-theme-base' : 'text-theme-text group-hover:text-theme-primary'
                   }`}>
                     {fullDisplayName}
                   </h3>
@@ -237,11 +247,19 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
 
           {/* Header Right: Rating Badge & 3-Dots Action Menu */}
           <div className="flex items-center space-x-2 flex-shrink-0 order-2 ml-auto">
-            {/* Cost Badge */}
-            <div className={`font-mono text-sm tabular-nums ${
-              isLeader ? 'text-theme-base' : 'text-theme-text'
+            {/*
+              Cost badge — both currencies, because the app prices in two.
+
+              It printed `{unit.totalCost} D` and nothing else, so a Mercenary
+              hired for 4 Glory and no Ducats read `0 D`: a free model, on a
+              card that gives no other hint it cost anything. See
+              `rules/savedGlory.ts` for why the Glory is added up separately
+              rather than folded into `totalCost`.
+            */}
+            <div className={`font-mono text-sm tabular-nums whitespace-nowrap ${
+              role.filled ? 'text-theme-base' : 'text-theme-text'
             }`}>
-              {unit.totalCost} D
+              {formatUnitCost(unit.totalCost, glory)}
             </div>
 
             {/* Collapse toggle, beside the cost: the cost is the other thing
@@ -251,7 +269,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               onClick={() => setCollapsed((c) => !c)}
               aria-expanded={!collapsed}
               className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
-                isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+                role.filled ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
               }`}
               title={collapsed ? 'Show the full warrior card' : 'Collapse to summary'}
             >
@@ -263,7 +281,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               <button
                 onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
                 className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
-                  isLeader ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
+                  role.filled ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
                 }`}
                 title="Warrior Actions & Options"
               >
@@ -420,7 +438,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                 unit.profileSnapshot.stats.movementType],
               ['RNG', unit.profileSnapshot.stats.ranged, undefined],
               ['MELEE', unit.profileSnapshot.stats.melee, undefined],
-              ['ARM', unit.profileSnapshot.stats.armour, undefined],
+              ['SAVE', unit.profileSnapshot.stats.armour, undefined],
             ] as const).map(([label, value, sub]) => (
               <div key={label} className="min-w-0 px-1 py-1.5 text-center">
                 <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">
@@ -539,7 +557,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                       </div>
                     </div>
                     <div className="flex items-center space-x-2 flex-shrink-0">
-                      <span className="text-xs sm:text-[10px] font-mono text-theme-primary">{wep.cost} D</span>
+                      <span className="text-xs sm:text-[10px] font-mono text-theme-primary whitespace-nowrap">
+                        {formatUnitCost(wep.cost, wep.gloryCost ?? 0)}
+                      </span>
                       <button
                         onClick={() => removeWeapon(warbandId, unit.id, wep.instanceId)}
                         className="tap text-theme-muted hover:text-status-error"
@@ -616,7 +636,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                     title={eq.effect}
                     className="inline-flex items-center space-x-1 text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"
                   >
-                    <span>{eq.name} ({eq.cost} D)</span>
+                    <span>{eq.name} ({formatUnitCost(eq.cost, eq.gloryCost ?? 0)})</span>
                     <button
                       onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
                       className="tap text-theme-muted hover:text-status-error ml-1"

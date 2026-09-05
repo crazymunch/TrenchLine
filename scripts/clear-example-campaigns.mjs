@@ -4,6 +4,7 @@
  *
  *   node scripts/clear-example-campaigns.mjs             # report only
  *   node scripts/clear-example-campaigns.mjs --yes       # actually delete
+ *   node scripts/clear-example-campaigns.mjs --http      # over 443, not 5432
  *
  * ## Why this is a script and not a migration
  *
@@ -80,8 +81,77 @@ export function classifyCampaigns(campaigns) {
   return { disposable, keep };
 }
 
+/**
+ * The same rows, over Neon's HTTP SQL endpoint instead of port 5432.
+ *
+ * Some environments can reach the database host on 443 and not on 5432 — a
+ * sandbox behind an HTTPS proxy is the case this was written for, where
+ * `prisma.campaign.findMany()` fails with "Can't reach database server" while
+ * `https://<host>/sql` answers fine.
+ *
+ * Behind an explicit `--http` flag rather than a fallback on connection
+ * error. A transport that silently changes under you is how you end up unsure
+ * which database you just deleted rows from, and this script deletes rows.
+ *
+ * It returns the SAME SHAPE `findMany` returns, so `classifyCampaigns` — the
+ * one place the rule lives — does not know or care which path fetched them.
+ */
+async function fetchOverHttp(sql, params = []) {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error('DATABASE_URL is not set.');
+  const host = new URL(url.replace(/^postgres(ql)?:/, 'https:')).host;
+
+  const res = await fetch(`https://${host}/sql`, {
+    method: 'POST',
+    headers: { 'Neon-Connection-String': url, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: sql, params }),
+  });
+  if (!res.ok) {
+    // Loudly. A cleanup that cannot read must not go on to decide what to keep.
+    throw new Error(`Neon HTTP endpoint returned ${res.status}: ${await res.text()}`);
+  }
+  return (await res.json()).rows;
+}
+
+async function campaignsOverHttp() {
+  const rows = await fetchOverHttp(`
+    select c.id,
+           c.name,
+           c."createdAt",
+           coalesce(t.names, '{}') as territory_names,
+           coalesce(m.n, 0)       as match_count,
+           coalesce(p.n, 0)       as member_count
+      from "Campaign" c
+      left join (select "campaignId", array_agg(name) as names
+                   from "TerritoryNode" group by "campaignId") t
+             on t."campaignId" = c.id
+      left join (select "campaignId", count(*)::int as n
+                   from "MatchRecord" group by "campaignId") m
+             on m."campaignId" = c.id
+      left join (select "campaignId", count(*)::int as n
+                   from "CampaignMember" group by "campaignId") p
+             on p."campaignId" = c.id
+     order by c."createdAt" asc
+  `);
+
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    createdAt: new Date(r.createdAt),
+    territories: (r.territory_names ?? []).map((name) => ({ name })),
+    _count: { matches: Number(r.match_count), members: Number(r.member_count) },
+  }));
+}
+
+async function deleteOverHttp(ids) {
+  // Cascades from `Campaign` take the territories, members and sync ops.
+  await fetchOverHttp('delete from "Campaign" where id = any($1::text[])', [ids]);
+}
+
+const overHttp = process.argv.includes('--http');
+
 async function main() {
-  const campaigns = await prisma.campaign.findMany({
+  const campaigns = overHttp ? await campaignsOverHttp() : await prisma.campaign.findMany({
     include: {
       territories: { select: { name: true } },
       _count: { select: { matches: true, members: true } },
@@ -123,9 +193,14 @@ async function main() {
     return;
   }
 
-  const { count } = await prisma.campaign.deleteMany({
-    where: { id: { in: disposable.map((c) => c.id) } },
-  });
+  const ids = disposable.map((c) => c.id);
+  if (overHttp) {
+    await deleteOverHttp(ids);
+    console.log(`Deleted ${ids.length} campaign(s).`);
+    return;
+  }
+
+  const { count } = await prisma.campaign.deleteMany({ where: { id: { in: ids } } });
   console.log(`Deleted ${count} campaign(s).`);
 }
 

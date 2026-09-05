@@ -11,6 +11,7 @@ import {
   Shield, 
   Clock
 } from 'lucide-react';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 interface WarbandChangelogModalProps {
   warband: Warband;
@@ -296,7 +297,9 @@ export const WarbandChangelogModal: React.FC<WarbandChangelogModalProps> = ({ wa
                                     {unit.profileSnapshot.name} • {unit.profileSnapshot.category}
                                   </span>
                                 </div>
-                                <span className="font-bold text-theme-primary text-xs">{unit.totalCost} D</span>
+                                <span className="font-bold text-theme-primary text-xs whitespace-nowrap">
+                                  {formatUnitCost(unit.totalCost, unitGlory(unit))}
+                                </span>
                               </div>
 
                               {/* Weapons */}

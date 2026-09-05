@@ -25,6 +25,7 @@ import {
   Bug
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
+import type { RulesetVersion } from '../../types/rules';
 
 export const Navbar: React.FC = () => {
   const { 
@@ -112,9 +113,20 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. Middle: Active Warband Pill (When Selected) */}
+            {/*
+              2. Middle: Active Warband Pill — tablet only.
+
+              `lg:hidden` because at `lg:` the sidebar appears, and it already
+              carries the faction, a selector naming the warband, the Ducat
+              figure and a meter for it. Two copies of one number on one screen
+              is one of them going stale in a future nobody plans for.
+
+              It stays below `lg:`, where there is no sidebar: a tablet at a
+              table would otherwise have nothing on screen saying which warband
+              is active or what it has spent.
+            */}
             {activeWarband && (
-              <div className="hidden sm:flex items-center space-x-2.5 bg-theme-surface px-2 sm:px-3 py-1.5 rounded border border-theme-border text-xs font-mono min-w-0 shrink">
+              <div className="hidden sm:flex lg:hidden items-center space-x-2.5 bg-theme-surface px-2 sm:px-3 py-1.5 rounded border border-theme-border text-xs font-mono min-w-0 shrink">
                 <span 
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: currentFaction?.color || activeThemeObj.primaryColor }}
@@ -167,60 +179,6 @@ export const Navbar: React.FC = () => {
               <span className="flex md:hidden"><SyncStatus compact /></span>
 
               
-              {/* Ruleset Version Switcher */}
-              <div className="relative">
-                <select
-                  value={rulesetVersion}
-                  onChange={(e) => setRulesetVersion(e.target.value as any)}
-                  title="Active Ruleset Version"
-                  aria-label="Active Ruleset Version"
-                  /*
-                    A width BUDGET, not a preference. This group is
-                    `flex-shrink-0` on purpose — see the note above it — so the
-                    select is the only part of it that can give, and the number
-                    is what makes the whole cluster fit 375px.
-
-                    It was 104px, measured against the system font the browser
-                    was falling back to while the three faces were fetched from
-                    Google at runtime. Self-hosting them meant the real Archivo
-                    actually rendered, which is wider, and the cluster went 6px
-                    past the right edge. The E2E overflow check is what catches
-                    the next drift; it is why this is 96 and not a guess.
-                  */
-                  className="max-w-[96px] sm:max-w-none px-2 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-theme-primary text-xs font-mono font-bold cursor-pointer focus:outline-none focus:border-theme-primary"
-                >
-                  <option value="1.0">v1.0 Core</option>
-                  <option value="1.0.2">v1.0.2 Errata</option>
-                  <option value="1.0.2TD">v1.0.2TD Dispatch</option>
-                </select>
-              </div>
-
-              {/* Bug Report Trigger */}
-              <button
-                onClick={() => setIsBugReportOpen(true)}
-                title="Report a Bug / Feedback"
-                className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-accent/60 hover:border-theme-accent text-status-error text-xs font-mono transition-colors"
-              >
-                <Bug className="w-3.5 h-3.5" />
-                <span className="hidden md:inline text-xs sm:text-[11px] font-bold">Bug Report</span>
-              </button>
-
-              {/* Theme Trigger */}
-              <button
-                onClick={() => setIsThemeModalOpen(true)}
-                title={`Theme: ${activeThemeObj.name}`}
-                className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 bg-theme-surface hover:bg-theme-elevated rounded border border-theme-border text-xs font-mono transition-colors"
-              >
-                <div 
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: activeThemeObj.primaryColor }}
-                />
-                <Palette className="w-3.5 h-3.5 text-theme-muted" />
-                <span className="hidden sm:inline text-xs sm:text-[11px] font-bold" style={{ color: activeThemeObj.primaryColor }}>
-                  {activeThemeObj.name.split(' ')[0]}
-                </span>
-              </button>
-
               {/* User Profile / Auth Button */}
               <div className="relative flex-shrink-0">
                 {session?.user ? (
@@ -244,7 +202,9 @@ export const Navbar: React.FC = () => {
                   </button>
                 ) : (
                   <button
-                    onClick={() => setIsAuthModalOpen(true)}
+                    onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
+                    aria-haspopup="menu"
+                    aria-expanded={isAuthMenuOpen}
                     className="flex items-center space-x-1 px-2.5 py-1.5 text-theme-base font-mono text-xs font-bold uppercase rounded shadow transition-colors"
                     style={{ backgroundColor: activeThemeObj.primaryColor }}
                   >
@@ -253,19 +213,106 @@ export const Navbar: React.FC = () => {
                   </button>
                 )}
 
-                {/* Dropdown Menu */}
-                {isAuthMenuOpen && session?.user && (
-                  <div className="absolute right-0 mt-2 w-48 bg-theme-surface border border-theme-border rounded-md shadow-2xl py-1 z-50">
-                    <div className="px-3 py-2 border-b border-theme-border text-xs font-mono text-theme-muted">
-                      Signed in as <strong className="text-theme-text block truncate">{session.user.email}</strong>
+                {/*
+                  The account menu, and on a phone the settings drawer too.
+
+                  The bottom bar used to carry the theme switcher, the bug
+                  reporter and — for an admin — the ruleset differ, alongside
+                  five destinations. Seven or eight items in a 375px bar is why
+                  every label was one font-metric away from clipping. They are
+                  settings and utilities rather than places, so they moved
+                  here; the bar keeps the five destinations and got bigger.
+
+                  It opens when signed OUT as well. Those utilities are not an
+                  account feature, and a visitor using the app locally — which
+                  is supported everywhere else — must not lose the theme
+                  switcher and the way to report a bug for want of signing in.
+                */}
+                {isAuthMenuOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 mt-2 w-60 bg-theme-surface border border-theme-border rounded-md shadow-2xl py-1 z-50"
+                  >
+                    {session?.user ? (
+                      <>
+                        <div className="px-3 py-2 border-b border-theme-border text-xs font-mono text-theme-muted">
+                          Signed in as <strong className="text-theme-text block truncate">{session.user.email}</strong>
+                        </div>
+                        <button
+                          role="menuitem"
+                          onClick={() => { setIsAuthMenuOpen(false); signOut(); }}
+                          className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-status-error hover:bg-theme-elevated flex items-center space-x-2"
+                        >
+                          <LogOut className="w-3.5 h-3.5" />
+                          <span>Sign Out</span>
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        role="menuitem"
+                        onClick={() => { setIsAuthMenuOpen(false); setIsAuthModalOpen(true); }}
+                        className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-theme-text hover:bg-theme-elevated flex items-center space-x-2"
+                      >
+                        <LogIn className="w-3.5 h-3.5 text-theme-primary" />
+                        <span className="font-bold">Sign in</span>
+                      </button>
+                    )}
+
+                    {/*
+                      The settings, at every width.
+
+                      They were three buttons in the top bar on a desktop and
+                      the same three in here on a phone, which is two designs
+                      to keep in step and one of them always the poor relation.
+                      Now there is one. They are settings rather than places:
+                      you set a theme once and a ruleset per campaign, and
+                      neither is worth 200px of a bar you look at constantly.
+                    */}
+                    <div className="border-t border-theme-border pt-1 mt-1">
+                      <label className="block px-3 pt-1 pb-1 text-xs sm:text-[11px] font-mono uppercase tracking-wider text-theme-muted">
+                        Ruleset
+                      </label>
+                      <select
+                        value={rulesetVersion}
+                        onChange={(e) => setRulesetVersion(e.target.value as RulesetVersion)}
+                        aria-label="Active Ruleset Version"
+                        /* 16px: anything smaller and iOS zooms the page on focus. */
+                        className="mx-3 mb-1 w-[calc(100%-1.5rem)] min-h-[44px] px-2 bg-theme-base border border-theme-border rounded text-theme-primary text-base font-mono font-bold focus:outline-none focus:border-theme-primary"
+                      >
+                        <option value="1.0">v1.0 Core</option>
+                        <option value="1.0.2">v1.0.2 Errata</option>
+                        <option value="1.0.2TD">v1.0.2TD Dispatch</option>
+                      </select>
+
+                      <button
+                        role="menuitem"
+                        onClick={() => { setIsAuthMenuOpen(false); setIsThemeModalOpen(true); }}
+                        className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-theme-text hover:bg-theme-elevated flex items-center space-x-2"
+                      >
+                        <Palette className="w-3.5 h-3.5" style={{ color: activeThemeObj.primaryColor }} />
+                        <span>Theme — {activeThemeObj.name}</span>
+                      </button>
+
+                      {sessionIsAdmin(session) && (
+                        <button
+                          role="menuitem"
+                          onClick={() => { setIsAuthMenuOpen(false); setCurrentView('customizer'); }}
+                          className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-theme-text hover:bg-theme-elevated flex items-center space-x-2"
+                        >
+                          <SlidersHorizontal className="w-3.5 h-3.5 text-theme-primary" />
+                          <span>Ruleset differ</span>
+                        </button>
+                      )}
+
+                      <button
+                        role="menuitem"
+                        onClick={() => { setIsAuthMenuOpen(false); setIsBugReportOpen(true); }}
+                        className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-status-error hover:bg-theme-elevated flex items-center space-x-2"
+                      >
+                        <Bug className="w-3.5 h-3.5" />
+                        <span>Report a bug</span>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => signOut()}
-                      className="w-full px-3 py-2 text-left text-xs font-mono text-status-error hover:bg-theme-elevated flex items-center space-x-2"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>Sign Out</span>
-                    </button>
                   </div>
                 )}
               </div>

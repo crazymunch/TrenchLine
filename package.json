@@ -19,6 +19,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "rules:extract": "node scripts/extract-pdf.mjs",
+    "brand:banner": "node scripts/build-brand-banner.mjs",
     "icons:build": "node scripts/build-app-icons.mjs",
     "postinstall": "prisma generate",
     "rules:audit:campaign": "node scripts/rules-audit-campaign.mjs",

@@ -27,6 +27,8 @@ import {
   Lock 
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
+import { useOverlay } from '../ui/useOverlay';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 export const RosterDirectoryView: React.FC = () => {
   const { 
@@ -65,6 +67,18 @@ export const RosterDirectoryView: React.FC = () => {
   const [changelogWarband, setChangelogWarband] = useState<Warband | null>(null);
   const [isLoadingCloud, setIsLoadingCloud] = useState(false);
   const [isBugListOpen, setIsBugListOpen] = useState(false);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlays below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const inspectRef = useOverlay(Boolean(inspectingWarband), () => setInspectingWarband(null));
+  const bugListRef = useOverlay(isBugListOpen, () => setIsBugListOpen(false));
   const [bugTickets, setBugTickets] = useState<any[]>([]);
   const [isCopiedAll, setIsCopiedAll] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -458,7 +472,7 @@ export const RosterDirectoryView: React.FC = () => {
 
       {/* Detailed Warband Inspection Modal */}
       {inspectingWarband && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+        <div ref={inspectRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[90dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
             
             {/* Modal Header */}
@@ -544,7 +558,9 @@ export const RosterDirectoryView: React.FC = () => {
                             {u.profileSnapshot.name} ({u.profileSnapshot.category})
                           </span>
                         </div>
-                        <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
+                        <span className="text-xs font-bold text-theme-primary whitespace-nowrap">
+                          {formatUnitCost(u.totalCost, unitGlory(u))}
+                        </span>
                       </div>
 
                       {/* Statline */}
@@ -552,7 +568,7 @@ export const RosterDirectoryView: React.FC = () => {
                         <div className="min-w-0 truncate">MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movementInches ? `${u.profileSnapshot.stats.movementInches}"` : u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-theme-text">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-theme-text">{u.profileSnapshot.stats.melee}</strong></div>
-                        <div>ARM: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
+                        <div>SAVE: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
                       </div>
 
                       {/* Wargear */}
@@ -602,7 +618,7 @@ export const RosterDirectoryView: React.FC = () => {
 
       {/* Bug Reports / Feedback Log Modal (Admin) */}
       {isBugListOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+        <div ref={bugListRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-3xl max-h-[90dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Header */}
             <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">

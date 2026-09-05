@@ -22,6 +22,7 @@ import {
   X,
   Swords
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
 
 export const CampaignHubView: React.FC = () => {
   const { campaign, factions, createCampaign, getActiveWarband } = useStore();
@@ -49,6 +50,17 @@ export const CampaignHubView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'chronicle' | 'territory' | 'matches'>('leaderboard');
   const [copied, setCopied] = useState(false);
   const [isNewCampaignModalOpen, setIsNewCampaignModalOpen] = useState(false);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlay below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const newCampaignRef = useOverlay(isNewCampaignModalOpen, () => setIsNewCampaignModalOpen(false));
   const [isLogMatchOpen, setIsLogMatchOpen] = useState(false);
   const [expandedMatchIds, setExpandedMatchIds] = useState<string[]>(['match-hist-1']);
   const [newCampaignName, setNewCampaignName] = useState('');
@@ -202,7 +214,7 @@ export const CampaignHubView: React.FC = () => {
         )}
 
         {/* Campaign Navigation Tabs */}
-        <div className="flex items-center space-x-2 border-t border-theme-border pt-4 overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-2 border-t border-theme-border pt-4">
           {[
             { id: 'leaderboard', label: 'Crusade Standings', icon: <Trophy className="w-4 h-4" /> },
             { id: 'chronicle', label: 'Narrative Chronicle', icon: <Scroll className="w-4 h-4" /> },
@@ -484,7 +496,7 @@ export const CampaignHubView: React.FC = () => {
 
       {/* New Campaign Modal */}
       {isNewCampaignModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <div ref={newCampaignRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-theme-surface border-2 border-theme-border w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
             
             <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">

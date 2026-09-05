@@ -253,7 +253,7 @@ export const CustomizerView: React.FC = () => {
         )}
 
         {/* Tab Navigation */}
-        <div className="flex border-t border-theme-border pt-4 gap-2 overflow-x-auto">
+        <div className="flex flex-wrap border-t border-theme-border pt-4 gap-2">
           {[
             { id: 'units', label: `Unit Profiles (${units.length})`, icon: <Sparkles className="w-3.5 h-3.5" /> },
             { id: 'weapons', label: `Weapons & Ballistics (${weapons.length})`, icon: <Swords className="w-3.5 h-3.5" /> },

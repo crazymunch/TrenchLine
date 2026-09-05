@@ -32,6 +32,10 @@ const config: Config = {
         "status-error": "rgb(var(--status-error) / <alpha-value>)",
         "status-warning": "rgb(var(--status-warning) / <alpha-value>)",
         "status-legal": "rgb(var(--status-legal) / <alpha-value>)",
+
+        /* Role, on a warrior card. Fixed across themes — see globals.css. */
+        "role-elite": "rgb(var(--role-elite) / <alpha-value>)",
+        "role-mercenary": "rgb(var(--role-mercenary) / <alpha-value>)",
         /*
           Brand, also fixed, and for the landing page — which renders before a
           warband exists and so has no faction to take an accent from. Never

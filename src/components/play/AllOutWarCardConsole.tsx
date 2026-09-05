@@ -29,6 +29,7 @@ import {
   DollarSign,
   ArrowRight
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
 
 interface AllOutWarCardConsoleProps {
   warbands: Warband[];
@@ -46,6 +47,14 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
   onAdjustVp,
   onClose
 }) => {
+  /*
+    Open whenever this renders: Play Mode mounts the console only while it is
+    showing. `useOverlay` gives it the scroll lock, Escape and the focus trap —
+    it is a full-screen console over a live board, and Tab walking out of it
+    onto the board behind is how a player loses their place mid-game.
+  */
+  const overlayRef = useOverlay(true, onClose);
+
   // 52-Card Deck State
   const [deck, setDeck] = useState<PlayingCard[]>(() => generateStandard52Deck());
   const [discardPile, setDiscardPile] = useState<PlayingCard[]>([]);
@@ -216,7 +225,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
   const selectedPlayer = players[selectedPlayerIdx] || players[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono text-xs">
+    <div ref={overlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono text-xs">
       <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-5xl max-h-[92dvh] rounded-md shadow-2xl flex flex-col overflow-hidden bevel-container">
         
         {/* Header */}
@@ -409,7 +418,7 @@ export const AllOutWarCardConsole: React.FC<AllOutWarCardConsoleProps> = ({
               </div>
 
               {/* Player Selector Bar */}
-              <div className="flex space-x-2 border-b border-theme-border pb-3 overflow-x-auto">
+              <div className="flex flex-wrap gap-2 border-b border-theme-border pb-3">
                 {players.map((p, idx) => (
                   <button
                     key={p.warbandId}

@@ -4,11 +4,9 @@ import {
   clientFieldsOf,
   metadataOf,
 } from '@/lib/api/warbandMetadata';
-import { getServerSession } from 'next-auth';
-import { authOptions, isUserAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { handle } from '@/lib/api/http';
-import { currentActor } from '@/lib/api/policy';
+import { abort, badRequest, forbidden, handle } from '@/lib/api/http';
+import { currentActor, requireActor } from '@/lib/api/policy';
 
 /**
  * What the public Warband Directory is allowed to say about a roster.
@@ -197,11 +195,33 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as { id?: string } | undefined)?.id;
-    const userEmail = session?.user?.email?.toLowerCase().trim();
-    const isAdmin = isUserAdmin(userEmail);
+  return handle('warbands.POST', async () => {
+    /*
+      `requireActor()`, not the session read this used to do.
+
+      Two holes closed at once, and both were in the identity rather than in
+      the ownership check below.
+
+      **A revoked session was resurrected by address.** The `jwt` callback
+      revokes a session by deleting `token.sub` when `User.sessionEpoch` no
+      longer matches — that is what makes a password reset actually remove
+      whoever else was in the account. But `session.user.email` survives that,
+      and this handler used to `upsert` a user from the email when the id was
+      missing. So the revocation removed the identity and the next request
+      minted it back, and could mint an account that had never existed.
+
+      **A demoted administrator was still an administrator.** `isAdmin` came
+      from `isUserAdmin(email)` — the legacy `TRENCHLINE_ADMIN_EMAILS` list —
+      so an explicit revocation in `User.role` did nothing here. That made the
+      persisted grant decorative on the two routes that write and delete other
+      people's rosters. `adminRole.ts` is the one place that decides, and
+      `requireActor()` is how a route asks it.
+
+      `GET` above was migrated when `policy.ts` was written; these two were
+      not, which is the worst state for a file to be in because it reads as
+      finished.
+    */
+    const actor = await requireActor();
     const body = await req.json();
 
     /*
@@ -249,26 +269,6 @@ export async function POST(req: NextRequest) {
       every anonymous warband under it, so unrelated visitors accumulated in one
       bucket and, with the old GET, read each other's rosters back out.
     */
-    let effectiveUserId = userId;
-    if (!effectiveUserId && userEmail) {
-      const user = await prisma.user.upsert({
-        where: { email: userEmail },
-        update: {},
-        create: {
-          email: userEmail,
-          name: session?.user?.name || userEmail.split('@')[0],
-        }
-      });
-      effectiveUserId = user.id;
-    }
-
-    if (!effectiveUserId) {
-      return NextResponse.json(
-        { error: 'Sign in to sync a warband to the cloud. Your roster is saved on this device either way.' },
-        { status: 401 }
-      );
-    }
-
     const warbandId = id || `wb-${Date.now()}`;
 
     // Check existing warband ownership if updating
@@ -276,7 +276,7 @@ export async function POST(req: NextRequest) {
       where: { id: warbandId }
     });
 
-    if (existingWarband && existingWarband.userId && existingWarband.userId !== effectiveUserId && !isAdmin) {
+    if (existingWarband && existingWarband.userId && existingWarband.userId !== actor.userId && !actor.isAdmin) {
       return NextResponse.json(
         { error: 'Unauthorized: You can only edit and update your own warbands.' },
         { status: 403 }
@@ -321,7 +321,7 @@ export async function POST(req: NextRequest) {
         armoryStash: armoryStash || [],
         notes: metadataPayload,
         ...(visibility === undefined ? {} : { visibility }),
-        userId: existingWarband ? existingWarband.userId : effectiveUserId,
+        userId: existingWarband ? existingWarband.userId : actor.userId,
       },
       create: {
         id: warbandId,
@@ -335,68 +335,41 @@ export async function POST(req: NextRequest) {
         notes: metadataPayload,
         // Absent on create means the schema's PRIVATE default applies.
         ...(visibility === undefined ? {} : { visibility }),
-        userId: effectiveUserId,
+        userId: actor.userId,
       },
     });
 
     return NextResponse.json({ warband });
-  } catch (err: unknown) {
-    /*
-      Logged, never returned. `err.message` from Prisma names tables, columns
-      and constraints, so a caller who can provoke a query error was getting a
-      free description of the schema.
-    */
-    console.error('[api] warbands.POST', err);
-    return NextResponse.json({ error: 'Failed to save warband' }, { status: 500 });
-  }
+  });
 }
 
 export async function DELETE(req: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    let userId = (session?.user as { id?: string } | undefined)?.id;
-    const userEmail = session?.user?.email?.toLowerCase().trim();
-    const isAdmin = isUserAdmin(userEmail);
+  return handle('warbands.DELETE', async () => {
+    // `requireActor()` for the reasons set out on POST above. This handler
+    // carried the same two holes: it resolved a revoked session's identity by
+    // looking the address up, and it read admin from the legacy email list.
+    const actor = await requireActor();
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
+    if (!id) return abort(badRequest('Name the warband to delete.'));
 
-    if (!id) {
-      return NextResponse.json({ error: 'Missing warband id parameter' }, { status: 400 });
-    }
-
-    // Resolve userId if needed
-    if (!userId && userEmail) {
-      const dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
-      if (dbUser) userId = dbUser.id;
-    }
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Sign in to delete a warband from the cloud.' },
-        { status: 401 }
-      );
-    }
-
-    const existingWarband = await prisma.warband.findUnique({ where: { id } });
-    if (!existingWarband) {
-      return NextResponse.json({ success: true, deletedId: id });
-    }
-
-    if (existingWarband.userId && existingWarband.userId !== userId && !isAdmin) {
-      return NextResponse.json(
-        { error: 'Unauthorized: You can only delete your own warbands.' },
-        { status: 403 }
-      );
-    }
-
-    await prisma.warband.delete({
-      where: { id },
+    /*
+      A warband that is not there is a delete that already happened. Answering
+      404 would make a client that retried a dropped request report a failure
+      for work that is done — and this is exactly the request most likely to be
+      retried, because it is sent when a phone is putting a roster away.
+    */
+    const existing = await prisma.warband.findUnique({
+      where: { id }, select: { id: true, userId: true },
     });
+    if (!existing) return NextResponse.json({ success: true, deletedId: id });
 
+    if (existing.userId && existing.userId !== actor.userId && !actor.isAdmin) {
+      return abort(forbidden('You can only delete your own warbands.'));
+    }
+
+    await prisma.warband.delete({ where: { id } });
     return NextResponse.json({ success: true, deletedId: id });
-  } catch (err: unknown) {
-    console.error('Error deleting warband:', err);
-    return NextResponse.json({ error: 'Failed to delete warband' }, { status: 500 });
-  }
+  });
 }

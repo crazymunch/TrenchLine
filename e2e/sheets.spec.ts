@@ -46,17 +46,35 @@ test('the recruit sheet', async ({ page }) => {
   });
 });
 
+/**
+ * Open the account menu in the top bar.
+ *
+ * On a phone the theme switcher and the bug reporter are behind it. They used
+ * to be buttons in the bottom bar, next to the five destinations; seven items
+ * in a 375px bar is why every label sat one font-metric away from clipping,
+ * so the settings moved up here and the bar's targets grew.
+ *
+ * The menu opens signed out as well — nothing here needs an account — which is
+ * what makes it reachable from these tests at all.
+ */
+async function openAccountMenu(page: Page) {
+  await page.getByRole('button', { name: /^Login$/i }).click();
+  await expect(page.getByRole('menu')).toBeVisible();
+}
+
 test('the theme switcher', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'phone', 'the trigger is in the phone nav');
+  test.skip(testInfo.project.name !== 'phone', 'the trigger is in the phone account menu');
   await assertSheet(page, async () => {
-    await page.getByRole('button', { name: 'Change theme' }).click();
+    await openAccountMenu(page);
+    await page.getByRole('menuitem', { name: /^Theme —/ }).click();
   });
 });
 
 test('the bug reporter', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'phone', 'the trigger is in the phone nav');
+  test.skip(testInfo.project.name !== 'phone', 'the trigger is in the phone account menu');
   await assertSheet(page, async () => {
-    await page.getByRole('button', { name: 'Report a bug' }).click();
+    await openAccountMenu(page);
+    await page.getByRole('menuitem', { name: 'Report a bug' }).click();
   });
 });
 

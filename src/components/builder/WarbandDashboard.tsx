@@ -22,6 +22,7 @@ import {
   Swords
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
+import { useOverlay } from '../ui/useOverlay';
 
 export const WarbandDashboard: React.FC = () => {
   const { 
@@ -55,6 +56,17 @@ export const WarbandDashboard: React.FC = () => {
   };
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlay below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const createRef = useOverlay(isCreateModalOpen, () => setIsCreateModalOpen(false));
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState(false);
   const [newWarbandName, setNewWarbandName] = useState('');
@@ -288,7 +300,7 @@ export const WarbandDashboard: React.FC = () => {
 
       {/* Create Warband Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <div ref={createRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
           {/*
             `max-h-[90dvh]` and a column, because this panel had neither and a
             player on a phone could not finish mustering: the form is taller

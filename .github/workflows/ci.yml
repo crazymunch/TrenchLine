@@ -41,6 +41,11 @@ jobs:
       # set here rather than discovered by a red build.
       DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
       NEXTAUTH_SECRET: ci-placeholder
+      # robots.txt and sitemap.xml name an absolute origin, and `siteUrl()`
+      # throws rather than default to one — a sitemap full of localhost is a
+      # sitemap Google believes. CI's build is not a deployment, so it gets the
+      # E2E server's origin rather than the production domain.
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3210
 
     steps:
       - uses: actions/checkout@v4
@@ -203,15 +208,28 @@ jobs:
 
           echo "No high or critical advisories in production dependencies."
 
-  # NOTE: `actions/dependency-review-action` is deliberately NOT here.
+  # NOTE: `actions/dependency-review-action` is deliberately NOT here, and
+  # enabling the Dependency graph is NOT enough to change that.
   #
-  # It needs the Dependency graph and GitHub Advanced Security enabled on the
-  # repository, which this one does not have — the job fails with "Dependency
-  # review is not supported on this repository" on every run. A check that is
-  # red for a reason no pull request can fix teaches people to ignore red
-  # checks, which costs more than the job was worth.
+  # It was added back once, on the strength of the repository's SBOM endpoint
+  # answering 200 — which proves the graph is on, and proves nothing about
+  # this action. The job failed on its first run with the same error it always
+  # gave:
   #
-  # To turn it on: enable Dependency graph under Settings -> Code security,
-  # then add back a job running `actions/dependency-review-action@v4` with
-  # `fail-on-severity: high`. It reviews what a PR ADDS and needs no external
-  # endpoint, so it cannot fail the way the audit job above can.
+  #   Dependency review is not supported on this repository. Please ensure
+  #   that Dependency graph is enabled along with GitHub Advanced Security
+  #
+  # The requirement is BOTH, and on a private repository — which this is —
+  # Advanced Security is a paid add-on. The graph alone buys the SBOM endpoint
+  # and `npm audit`; it does not buy dependency review.
+  #
+  # A check that is red for a reason no pull request can fix teaches people to
+  # ignore red checks, which costs more than the job is worth. The `dependencies`
+  # job above already audits the production tree against the advisory database
+  # and needs neither.
+  #
+  # To turn it on: enable GitHub Advanced Security under Settings -> Code
+  # security (or make the repository public, where dependency review needs only
+  # the graph), then add a job running `actions/dependency-review-action@v4`
+  # with `fail-on-severity: high`, gated on `pull_request` — there is no base
+  # to diff a push against and the action errors rather than skipping.

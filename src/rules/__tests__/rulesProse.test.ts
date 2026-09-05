@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseRulesProse } from './rulesProse';
+import { parseRulesProse } from '@/rules/rulesProse';
 
 /**
  * Every input in this file is real: each one is a verbatim fragment of

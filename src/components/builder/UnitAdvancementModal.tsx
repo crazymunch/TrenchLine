@@ -217,7 +217,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     >
 
         {/* Tab Navigation */}
-        <div className="flex items-center space-x-1 px-4 pt-3 border-b border-theme-border bg-theme-surface overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-1 px-4 pt-3 border-b border-theme-border bg-theme-surface">
           
           {isHomunculus && (
             <button

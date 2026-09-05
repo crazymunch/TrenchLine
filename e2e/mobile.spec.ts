@@ -94,3 +94,190 @@ test('the bottom nav labels are not clipped', async ({ page }, testInfo) => {
       .map((l) => `${l.text} (${l.slack}px of room)`));
   expect(tight, 'a bottom-nav label has no room to spare').toEqual([]);
 });
+
+/**
+ * Nothing a player has to READ or TAP scrolls sideways.
+ *
+ * The rule, asked for directly: horizontal scrolling is not an acceptable way
+ * to carry controls on a phone. A row of buttons that runs off the edge hides
+ * its own contents — the warband toolbar had nine and showed five, and the
+ * only thing advertising the rest was a cut-off button, which reads as a
+ * layout bug about as often as it reads as an affordance.
+ *
+ * Tables are the exception and keep their own scroller. A statline grid cannot
+ * wrap without becoming unreadable, and `overflow-x: hidden` on the page is
+ * never the fix (docs/MOBILE.md).
+ */
+test('no row of controls scrolls sideways', async ({ page }) => {
+  /*
+    Not a phone rule, though that is where it was reported.
+
+    The same builder toolbar scrolled sideways at 1440 too — nine buttons on
+    one line is wider than a sidebar at any viewport — and a scroller on a
+    desktop is worse, not better: there is no swipe, so the contents past the
+    edge are reached by dragging a 4px bar, or not at all.
+  */
+  for (const path of ['/roster', '/play', '/campaign', '/codex', '/directory']) {
+    await openApp(page, path);
+    await page.waitForTimeout(600);
+
+    const offenders = await page.evaluate(() => {
+      const bad: string[] = [];
+      for (const el of document.querySelectorAll<HTMLElement>('*')) {
+        if (el.scrollWidth <= el.clientWidth + 1) continue;
+
+        /*
+          Actually SCROLLABLE, not merely overflowing.
+
+          `.tap` gives a small control its 44px target as an invisible absolute
+          overlay rather than as height (globals.css), and that overlay bleeds
+          past the row it sits in — so the warband card's action row reports
+          `scrollWidth > clientWidth` while painting nothing outside itself and
+          scrolling nowhere. Flagging that would have this test demanding a fix
+          for something no player can see, and the usual fix reached for is
+          `overflow-x: hidden`, which docs/MOBILE.md forbids for good reason.
+
+          What the rule is about is a row the user has to DRAG, and a row can
+          only be dragged if its own `overflow-x` says so.
+        */
+        const overflowX = getComputedStyle(el).overflowX;
+        if (overflowX !== 'auto' && overflowX !== 'scroll') continue;
+
+        // A table (or a `pre`) inside is the sanctioned reason to scroll.
+        if (el.querySelector('table, pre, thead')) continue;
+        // Only rows that carry controls; prose and images are not the rule.
+        const controls = el.querySelectorAll('button, a, select, [role="tab"]').length;
+        if (controls < 2) continue;
+        bad.push(`${el.tagName.toLowerCase()}.${el.className}`.slice(0, 120));
+      }
+      return bad;
+    });
+
+    expect(offenders, `${path} has a control row that scrolls sideways`).toEqual([]);
+  }
+});
+
+/**
+ * The bottom bar carries five destinations, at a size a thumb can find.
+ *
+ * It used to carry the theme switcher, the bug reporter and the admin ruleset
+ * differ too — seven or eight items in 375px, with every label one font metric
+ * from clipping, and two that had already clipped in CI while passing locally.
+ * Those three are settings rather than places and moved to the account menu.
+ */
+test('the bottom bar is five destinations, none of them clipped', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'the bottom bar is phone-only');
+
+  await openApp(page, '/roster');
+  const nav = page.locator('nav.fixed.bottom-0');
+  await expect(nav).toBeVisible();
+
+  const items = nav.locator('button');
+  await expect(items).toHaveCount(5);
+
+  for (const label of ['Roster', 'Play', 'Crusade', 'Players', 'Codex']) {
+    await expect(nav.getByText(label, { exact: true }), `${label} is missing`).toBeVisible();
+  }
+
+  /* Not clipped: a label whose text is wider than its box is showing an
+     ellipsis, which is what "Campaig…" looked like before. */
+  const clipped = await nav.evaluate((el) =>
+    [...el.querySelectorAll('span')]
+      .filter((s) => s.scrollWidth > s.clientWidth + 1)
+      .map((s) => s.textContent ?? ''));
+  expect(clipped, 'a destination label is clipped').toEqual([]);
+
+  /* And bigger than it was: 52px of bar, 14px labels. Asserted as floors so
+     the numbers can grow without the test becoming a nuisance. */
+  const box = await items.first().boundingBox();
+  expect(box!.height, 'the bar shrank below its 52px target').toBeGreaterThanOrEqual(52);
+
+  const size = await nav.locator('span').first().evaluate((s) =>
+    parseFloat(getComputedStyle(s).fontSize));
+  expect(size, 'the labels shrank below 14px').toBeGreaterThanOrEqual(14);
+});
+
+/**
+ * The settings live in the account menu, at every width.
+ *
+ * They started as three buttons in the desktop top bar and the same three in
+ * this menu on a phone — two designs to keep in step, one of them always the
+ * poor relation. There is one now. The menu opens signed OUT as well: none of
+ * the three is an account feature, and local-only play is supported everywhere
+ * else in the app.
+ *
+ * Not skipped off the phone any more, which is the point of the change.
+ */
+test('the account menu carries the settings', async ({ page }) => {
+  await openApp(page, '/roster');
+  /*
+    The header's Login, specifically. The desktop sidebar has one of its own
+    that opens the sign-in sheet directly, and it comes first in the DOM — an
+    unscoped `.first()` opens that instead and this reads as "the menu never
+    appeared".
+  */
+  await page.locator('header').getByRole('button', { name: /login/i }).first().click();
+
+  const menu = page.locator('[role="menu"]');
+  await expect(menu).toBeVisible();
+  await expect(menu.getByText(/Theme —/)).toBeVisible();
+  await expect(menu.getByText('Report a bug')).toBeVisible();
+  await expect(menu.getByLabel('Active Ruleset Version')).toBeVisible();
+
+  /*
+    And nowhere else. A duplicate left behind in the top bar is the exact
+    failure this consolidation exists to end, and it would be invisible on a
+    phone — where the old buttons were already hidden — so it is checked
+    rather than left to the eye.
+
+    Counted across the whole page, not "not in the header": the menu itself
+    renders inside `<header>`, so a header-scoped search finds the one copy
+    that is supposed to be there and proves nothing.
+  */
+  await expect(page.locator('select[aria-label="Active Ruleset Version"]'))
+    .toHaveCount(1);
+  await expect(page.getByRole('button', { name: /^bug report$/i })).toHaveCount(0);
+
+  /* 16px on the select, or iOS zooms the whole page when it takes focus. */
+  const fontSize = await menu.getByLabel('Active Ruleset Version')
+    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(fontSize, 'the ruleset select will make iOS zoom').toBeGreaterThanOrEqual(16);
+});
+
+/**
+ * One copy of the budget on a desktop, not two.
+ *
+ * The top bar carried a pill with the warband's name, its Ducats and its
+ * Glory. At `lg:` the sidebar appears and already carries the faction, a
+ * selector naming the warband, the Ducat figure and a meter — so the pill was
+ * the same numbers twice, which is one of them going stale eventually.
+ *
+ * The pill stays below `lg:`, where there is no sidebar. Glory moved INTO the
+ * sidebar, because it was the one figure the pill had that the sidebar did
+ * not, and removing the pill would otherwise have quietly removed it.
+ */
+test('the desktop chrome states the budget once', async ({ page }, testInfo) => {
+  await openApp(page, '/roster');
+
+  const header = page.locator('header');
+  const sidebar = page.locator('aside');
+  const budget = /\d+\s*\/\s*\d+\s*D/;
+
+  /*
+    `toBeHidden`, not `toHaveCount(0)`. The pill is hidden with `lg:hidden`,
+    so at 1440 it is still in the DOM and a count would find it — and
+    `toBeHidden` passes for an element that is absent as well as one that is
+    display:none, which is the claim either way: nobody sees two budgets.
+  */
+  if (testInfo.project.name === 'desktop') {
+    await expect(sidebar).toBeVisible();
+    await expect(sidebar.getByText(budget).first()).toBeVisible();
+    await expect(header.getByText(budget).first()).toBeHidden();
+  } else {
+    // No sidebar here, so the pill is the only thing that would say it.
+    await expect(sidebar).toBeHidden();
+    if (testInfo.project.name === 'tablet') {
+      await expect(header.getByText(budget).first()).toBeVisible();
+    }
+  }
+});

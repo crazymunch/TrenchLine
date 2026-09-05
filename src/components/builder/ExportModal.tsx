@@ -3,6 +3,7 @@ import { Sheet } from '../ui/Sheet';
 import { Warband } from '../../types/warband';
 import { Faction } from '../../types/rules';
 import { Printer, Copy, Download, Check, Share2 } from 'lucide-react';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 interface ExportModalProps {
   warband: Warband;
@@ -25,8 +26,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
 
     warband.units.forEach((u, i) => {
       text += `[${i + 1}] ${u.customName} (${u.profileSnapshot.category})\n`;
-      text += `    Base: ${u.profileSnapshot.name} | Total Cost: ${u.totalCost} D\n`;
-      text += `    Stats: MOV ${u.profileSnapshot.stats.movement} | RNG ${u.profileSnapshot.stats.ranged} | MELEE ${u.profileSnapshot.stats.melee} | ARMOUR ${u.profileSnapshot.stats.armour}\n`;
+      text += `    Base: ${u.profileSnapshot.name} | Total Cost: ${formatUnitCost(u.totalCost, unitGlory(u))}\n`;
+      text += `    Stats: MOV ${u.profileSnapshot.stats.movement} | RNG ${u.profileSnapshot.stats.ranged} | MELEE ${u.profileSnapshot.stats.melee} | SAVE ${u.profileSnapshot.stats.armour}\n`;
       
       if (u.equippedWeapons.length > 0) {
         text += `    Weapons: ${u.equippedWeapons.map(w => `${w.name} (${w.range}, Mod: ${w.modifiers}, ${w.damage})`).join(', ')}\n`;
@@ -51,8 +52,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
     text += `> **Ducats:** \`${totalCost} / ${warband.ducatLimit} D\` | **Glory:** \`${warband.gloryPoints}\`\n\n`;
 
     warband.units.forEach((u) => {
-      text += `• **${u.customName}** (*${u.profileSnapshot.category}*) — \`${u.totalCost} D\`\n`;
-      text += `  └ *Stats:* MOV \`${u.profileSnapshot.stats.movement}\` | RNG \`${u.profileSnapshot.stats.ranged}\` | MELEE \`${u.profileSnapshot.stats.melee}\` | ARMOUR \`${u.profileSnapshot.stats.armour}\`\n`;
+      text += `• **${u.customName}** (*${u.profileSnapshot.category}*) — \`${formatUnitCost(u.totalCost, unitGlory(u))}\`\n`;
+      text += `  └ *Stats:* MOV \`${u.profileSnapshot.stats.movement}\` | RNG \`${u.profileSnapshot.stats.ranged}\` | MELEE \`${u.profileSnapshot.stats.melee}\` | SAVE \`${u.profileSnapshot.stats.armour}\`\n`;
       if (u.equippedWeapons.length > 0) {
         text += `  └ *Weapons:* ${u.equippedWeapons.map(w => `**${w.name}** (\`${w.range}\`, \`${w.damage}\`)`).join(', ')}\n`;
       }

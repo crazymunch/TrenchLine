@@ -1055,6 +1055,24 @@ the glossary's own shape (`STRONG (Effect):`) and not by where it falls, because
 the book prints two worked example entries *before* the glossary: by position
 the glossary sits inside an entry and belongs to none of it.
 
+**A Keyword that changes how many hands a weapon needs applies here too.**
+An entry's allowance replaces the chapter's *rule*; it does not put the model
+outside the Keyword Glossary. STRONG — *"it can equip and use one 2-Handed
+Melee Weapon as if it were a 1-Handed Melee Weapon"* — and CUMBERSOME, which
+opts a weapon back out of it, are read from `battlekitLimits.byKeyword` and
+applied by `effectiveHands` **before** either branch counts anything.
+
+This was the second bug reported on the same model. The conversion originally
+lived inside the chapter's hand arithmetic, and a model whose entry states an
+allowance never reaches that branch — so a Takwin Homunculus with Human Hands,
+an Additional Arm and Inhuman Strength was told a Zulfiqar, a Great Sword and a
+Shield was more Melee Weapons than its entry allows. Its entry allows three
+1-Handed Melee Weapons with the Shield taking one of them, and STRONG makes the
+Great Sword one of them: three of three, legal. The app had the allowance, had
+the conversion, and applied them in two places that never met. Anything that
+changes what a weapon *is* has to be resolved once, before the counting, or the
+next branch added will miss it the same way.
+
 **Modality: a ceiling is enforced, a floor is recorded.** The three entries do
 different things with the combinations they name:
 

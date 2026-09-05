@@ -141,6 +141,48 @@ Wide content — stat tables, the territory map, scenario diagrams — scrolls
 inside its own `overflow-x-auto` container. The page body never scrolls
 sideways.
 
+**Nor does a row of controls, at any width.** This rule was written about the
+page and got obeyed literally: the builder toolbar, the codex filters, the
+category chips and eight other rows each became their own `overflow-x-auto`
+rail with a `min-w-max` track, which keeps the page honest and hides the
+controls. On a 375px screen four of the toolbar's nine buttons were off the
+edge and the only thing advertising them was a cut-off eighth. It was no
+better at 1440: there is no swipe on a desktop, so what is past the edge is
+reached by dragging a 4px bar, or not reached.
+
+A row of buttons **wraps** — `flex flex-wrap`, or a grid when the labels change
+length as they are pressed and a wrapping row would move its neighbours. The
+cost is that buttons carrying a count move as the count changes; that is worth
+paying, and it is why the highest-consequence controls get their own row rather
+than a place in the wrap. Only a `<table>` or a `<pre>` scrolls in a container
+of its own.
+
+`e2e/mobile.spec.ts` holds it: on every top-level view, no element with two or
+more controls in it has a computed `overflow-x` of `auto` or `scroll` unless it
+wraps a table.
+
+### 6b. One home for a setting
+
+The theme switcher, the bug reporter and the ruleset selector each existed in
+three places: the desktop top bar, the desktop sidebar's footer, and the phone
+account menu. Three copies of one control is two of them drifting, and it was
+already happening — the top bar's ruleset select carried a 96px width budget
+the sidebar's had never heard of.
+
+They live in the **account menu in the top bar**, at every width. That menu
+opens signed out as well: none of the three is an account feature, and
+local-only play is supported everywhere else in the app.
+
+The same rule settled the warband pill. The top bar showed the active
+warband's name, Ducats and Glory; at `lg:` the sidebar appears and already
+carries the faction, a selector naming the warband and a Ducat meter. The pill
+is now `lg:hidden` — it stays below `lg:`, where there is no sidebar — and
+Glory moved into the sidebar, because it was the one figure the pill had that
+the sidebar did not.
+
+`e2e/mobile.spec.ts` holds both: exactly one ruleset select exists anywhere on
+the page, and the budget is stated once at each width.
+
 ### 7. Modals become sheets
 
 Thirty modals hand-roll `fixed inset-0 flex items-center justify-center p-4`.

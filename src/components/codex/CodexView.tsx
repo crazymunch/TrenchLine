@@ -38,6 +38,7 @@ import {
   CheckCircle2,
   HelpCircle
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
 
 /**
  * Which book a scenario is from, for the ones that are not the core rulebook.
@@ -132,6 +133,18 @@ export const CodexView: React.FC = () => {
   } | null>(null);
   const [selectedWargearItem, setSelectedWargearItem] = useState<ArsenalItem | null>(null);
   const [lightboxMap, setLightboxMap] = useState<{ src: string; name: string; tableSize?: string } | null>(null);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlays below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const skillRef = useOverlay(Boolean(selectedSkillModal), () => setSelectedSkillModal(null));
+  const lightboxRef = useOverlay(Boolean(lightboxMap), () => setLightboxMap(null));
 
   const filterText = searchQuery.toLowerCase().trim();
 
@@ -826,7 +839,7 @@ export const CodexView: React.FC = () => {
           </div>
 
           {/* Category Bar */}
-          <div className="flex space-x-2 font-mono text-xs border-b border-theme-border pb-3 overflow-x-auto">
+          <div className="flex flex-wrap gap-2 font-mono text-xs border-b border-theme-border pb-3">
             {[
               { id: 'melee', label: '1. Melee & Strength Skills' },
               { id: 'ranged', label: '2. Ranged & Marksmanship' },
@@ -935,7 +948,7 @@ export const CodexView: React.FC = () => {
 
           {/* Skill Detail Popover Modal */}
           {selectedSkillModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
+            <div ref={skillRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
               <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container space-y-4 p-6">
                 <div className="flex items-center justify-between border-b border-theme-border pb-3">
                   <div className="flex items-center space-x-2">
@@ -1627,7 +1640,7 @@ export const CodexView: React.FC = () => {
 
       {/* Fullscreen Scenario Map Lightbox Modal */}
       {lightboxMap && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+        <div ref={lightboxRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Header */}
             <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">

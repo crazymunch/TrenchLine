@@ -126,6 +126,103 @@ describeDb('campaign sync, against a migrated database', () => {
     });
   });
 
+  describe('an operation id already used by a different campaign', () => {
+    /*
+      `CampaignSyncOp.opId` is the primary key GLOBALLY, not per campaign, and
+      the route used to answer `skipped` to every violation of it without
+      looking at what it collided with. So an id spent in one campaign made the
+      next campaign's operation report as an already-applied retry.
+
+      That is not a cosmetic wrong answer. `skipped` clears the client's outbox
+      exactly as `applied` does (`campaignSync.ts`), so the edit was dropped on
+      the device as well as never written on the server, and the sync reported
+      success. Found by the Codex review.
+    */
+    const secondCampaign = async () => {
+      const c = await prisma.campaign.create({
+        data: {
+          name: 'Other Crusade',
+          inviteCode: `TRENCH-OTHER${Date.now()}`,
+          adminId: organiser.id,
+          territories: {
+            create: [{ name: 'Other Ridge', type: "No Man's Land", perk: '', description: 'X.' }],
+          },
+        },
+      });
+      return c.id;
+    };
+
+    it('is a conflict, not a skip, and the edit is not lost', async () => {
+      as(organiser);
+      const reused = opId();
+
+      const first = await sync({
+        campaignId,
+        ops: [{ kind: 'campaign.settings', opId: reused, baseVersion: 1, data: { name: 'First' } }],
+      });
+      expect(first.body.applied).toEqual([reused]);
+
+      const other = await secondCampaign();
+      const second = await sync({
+        campaignId: other,
+        ops: [{ kind: 'campaign.settings', opId: reused, baseVersion: 1, data: { name: 'Second' } }],
+      });
+
+      // Not acknowledged as done.
+      expect(second.body.skipped).toEqual([]);
+      expect(second.body.applied).toEqual([]);
+      expect(second.body.conflicts).toHaveLength(1);
+      expect(second.body.conflicts[0].opId).toBe(reused);
+      expect(second.body.conflicts[0].reason).toBe('op-id-reused');
+
+      // And nothing was written to the campaign that asked.
+      const after = await prisma.campaign.findUnique({ where: { id: other } });
+      expect(after!.name).toBe('Other Crusade');
+      expect(after!.version).toBe(1);
+
+      // The first campaign is untouched by the second attempt.
+      expect((await prisma.campaign.findUnique({ where: { id: campaignId } }))!.name)
+        .toBe('First');
+    });
+
+    it('still treats a genuine retry as a skip', async () => {
+      // The behaviour the check must not break: same campaign, same kind, same
+      // actor is a redelivery, and redelivery is what the primary key is for.
+      as(organiser);
+      const op = {
+        kind: 'campaign.settings', opId: opId(), baseVersion: 1, data: { name: 'Once' },
+      };
+      expect((await sync({ campaignId, ops: [op] })).body.applied).toEqual([op.opId]);
+      const again = await sync({ campaignId, ops: [op] });
+      expect(again.body.skipped).toEqual([op.opId]);
+      expect(again.body.conflicts).toEqual([]);
+    });
+
+    it('is a conflict when another member reuses the id', async () => {
+      // A different actor sending the same id is never a redelivery.
+      as(organiser);
+      const reused = opId();
+      await sync({
+        campaignId,
+        ops: [{ kind: 'campaign.settings', opId: reused, baseVersion: 1, data: { name: 'First' } }],
+      });
+
+      as(member);
+      const theirs = await sync({
+        campaignId,
+        ops: [{
+          kind: 'territory.claim', opId: reused, entityId: territoryId, baseVersion: 1,
+          data: { warbandId: memberWarband },
+        }],
+      });
+      expect(theirs.body.skipped).toEqual([]);
+      expect(theirs.body.conflicts[0]?.reason).toBe('op-id-reused');
+
+      const t = await prisma.territoryNode.findUnique({ where: { id: territoryId } });
+      expect(t!.controlledByWarbandId).toBeNull();
+    });
+  });
+
   describe('two devices editing the same field', () => {
     it('refuses the second and hands back the server’s copy', async () => {
       as(organiser);

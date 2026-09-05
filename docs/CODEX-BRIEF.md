@@ -53,7 +53,8 @@ npx tsc --noEmit
 pages/_document` unless `NODE_ENV=production`. Build with:
 
 ```bash
-NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... npx next build
+NODE_ENV=production DATABASE_URL=... NEXTAUTH_SECRET=... \
+  NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3210 npx next build
 ```
 
 ### What a useful finding looks like here

@@ -39,6 +39,8 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
+import { byRank } from '../ui/unitRole';
 
 export const WarbandBuilder: React.FC = () => {
   const { 
@@ -83,6 +85,17 @@ export const WarbandBuilder: React.FC = () => {
 
   // Budget & Limit Edit Modal State
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+
+  /*
+    Scroll lock, Escape and a focus trap for the overlay below.
+
+    `useOverlay` rather than a move to `Sheet`: the behaviour is what was
+    missing and it does not have to wait for the JSX surgery (see the hook's
+    own note). Without it the page behind scrolls under your finger, the
+    overlay cannot be closed from the keyboard, and Tab walks out into the
+    view underneath.
+  */
+  const budgetRef = useOverlay(isBudgetModalOpen, () => setIsBudgetModalOpen(false));
   const [editLimit, setEditLimit] = useState<number>(warband?.ducatLimit || 700);
   const [editTreasury, setEditTreasury] = useState<number>(warband?.treasuryDucats || 0);
   const [editGlory, setEditGlory] = useState<number>(warband?.gloryPoints || 0);
@@ -136,10 +149,17 @@ export const WarbandBuilder: React.FC = () => {
   const trooperCount = warband.units.filter((u) => u.profileSnapshot.category === 'Trooper').length;
   const mercenaryCount = warband.units.filter((u) => u.profileSnapshot.category === 'Mercenary').length;
 
-  const filteredUnits = warband.units.filter((u) => {
+  /*
+    Filtered, then ranked. Leader, Elite, Trooper, Mercenary — the order the
+    recruit sheet already groups in, rather than the order models happened to
+    be added in. It is derived on every render rather than stored, so
+    promoting a Trooper to Leader moves its card the moment the change lands;
+    a stored order would need a re-sort nobody would remember to trigger.
+  */
+  const filteredUnits = byRank(warband.units.filter((u) => {
     if (activeCategoryFilter === 'All') return true;
     return u.profileSnapshot.category === activeCategoryFilter;
-  });
+  }));
 
   const handleOpenBudgetModal = () => {
     setEditLimit(warband.ducatLimit);
@@ -231,15 +251,24 @@ export const WarbandBuilder: React.FC = () => {
         </div>
 
         {/*
-          Toolbar rail.
+          Toolbar. Four rows, in descending order of consequence: recruit, the
+          Variant, the two table agreements, then the utilities.
 
-          One primary action and six secondary ones. `overflow-x-auto` with a
-          `min-w-max` track is the sanctioned way to carry a wide row on a
-          narrow screen (docs/MOBILE.md) — the alternative is wrapping, and a
-          wrapping toolbar is a toolbar whose buttons move.
+          It used to be one `overflow-x-auto` rail with a `min-w-max` track of
+          nine buttons, on the reasoning that a wrapping toolbar is a toolbar
+          whose buttons move. That is true and it is the smaller problem. The
+          larger one is that a horizontal scroller hides its own contents: at
+          375px four of the nine were off the edge, and the only thing
+          advertising them was a cut-off eighth button — which reads as a
+          layout bug at least as often as it reads as an affordance. It was no
+          better at 1440, where there is no swipe at all and what is past the
+          edge is reached by dragging a 4px bar, or not reached.
 
-          The negative margins let the strip bleed to the container edge so the
-          last button is visibly cut off, which is what tells you it scrolls.
+          Wrapping alone fixed the hiding and left everything an equal: the
+          Variant, which decides what this roster is checked against and locks
+          once the warband has fought, sat between Stash and Export and moved
+          whenever History's count grew. Hence the rows. Only the bottom one
+          wraps, so only the utilities move.
         */}
         <div className="border-t border-theme-border p-4 sm:p-6 space-y-3">
           <button
@@ -250,8 +279,81 @@ export const WarbandBuilder: React.FC = () => {
             <span>Recruit Warrior</span>
           </button>
 
-          <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto">
-            <div className="flex items-center gap-2 min-w-max">
+          <button
+            onClick={() => setIsVariantOpen(true)}
+            disabled={!dataset || !variantEditable}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title={variantByOverride
+              ? 'Locked for a player — the Variant is a founding decision and this Warband '
+                + 'has fought. Open to you as an admin.'
+              : variantUndeclared
+                ? 'No Variant is declared. Declaring one is what stops this roster being '
+                  + 'checked against the standard list — and it locks once set.'
+                : variantEditable
+                  ? 'Which Warband Variant this warband is built as'
+                  : 'Locked: the Variant is a founding decision and this Warband has fought'}
+          >
+            <Flag className="w-4 h-4 text-theme-primary flex-shrink-0" />
+            {/* Labelled, not just valued. On the old row it read "Standard
+                list" beside a flag, which says nothing about what it sets —
+                the only control here that needed its tooltip to be legible. */}
+            <span className="eyebrow flex-shrink-0">Variant</span>
+            <span className="flex-1 min-w-0 truncate font-mono text-xs font-bold uppercase tracking-wide">
+              {activeVariant?.name ?? 'Standard list'}
+            </span>
+            {/* Says which of the two states an unset Variant is in: a
+                deliberate standard list, or a declaration never made. */}
+            {variantUndeclared && (
+              <span className="text-status-warning flex-shrink-0" title="No Variant declared">•</span>
+            )}
+            {variantByOverride && (
+              <ShieldCheck className="w-3.5 h-3.5 text-status-warning flex-shrink-0" aria-label="Unlocked as admin" />
+            )}
+            {!variantEditable && <Lock className="w-3.5 h-3.5 text-theme-muted flex-shrink-0" />}
+          </button>
+
+          {/*
+            The two table agreements. Neither is a founding decision and both
+            change what the app will OFFER you, which is why they sit together
+            above the utilities rather than among them.
+
+            A grid, not a wrapping flex row: both labels change length as they
+            are pressed — "3rd party off" to "on", "TrenchLine Rules" to
+            "Latest GitHub Rules" — and in a wrapping row each would move the
+            other every time you used it.
+          */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {/* The catalogues' own roster option, and unlike the Variant it is
+                not a founding decision — it is a table agreement, and the
+                table can change its mind between games. */}
+            <button
+              onClick={() => setWarbandAllowThirdParty(warband.id, !warband.allowThirdParty)}
+              aria-pressed={!!warband.allowThirdParty}
+              className={`w-full flex items-center gap-2 px-3 py-2.5 border font-mono text-xs font-bold uppercase transition-colors ${
+                warband.allowThirdParty
+                  ? 'bg-status-warning/15 text-status-warning border-status-warning/50'
+                  : 'bg-theme-base hover:bg-theme-elevated text-theme-text border-theme-border hover:border-theme-primary'
+              }`}
+              title={warband.allowThirdParty
+                ? 'Third-party entries are being offered to this Warband'
+                : 'Third-party entries are hidden, which is the catalogue default'}
+            >
+              <FlaskConical className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">3rd party {warband.allowThirdParty ? 'on' : 'off'}</span>
+            </button>
+
+            <button
+              onClick={() => setIsRulesetOpen(true)}
+              className="w-full flex items-center gap-2 px-3 py-2.5 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+              title="Which rules this warband is built and checked against"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-status-legal flex-shrink-0" />
+              <span className="truncate">{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
+            </button>
+          </div>
+
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setIsChronicleOpen(true)}
                 className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-primary border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
@@ -277,61 +379,6 @@ export const WarbandBuilder: React.FC = () => {
               >
                 <Archive className="w-4 h-4" />
                 <span>Stash ({totalStashItems})</span>
-              </button>
-
-              <button
-                onClick={() => setIsRulesetOpen(true)}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
-                title="Which rules this warband is built and checked against"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-status-legal" />
-                <span>{rulesetInfo(rulesetId)?.name ?? rulesetId}</span>
-              </button>
-
-              <button
-                onClick={() => setIsVariantOpen(true)}
-                disabled={!dataset || !variantEditable}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                title={variantByOverride
-                  ? 'Locked for a player — the Variant is a founding decision and this Warband '
-                    + 'has fought. Open to you as an admin.'
-                  : variantUndeclared
-                    ? 'No Variant is declared. Declaring one is what stops this roster being '
-                      + 'checked against the standard list — and it locks once set.'
-                    : variantEditable
-                      ? 'Which Warband Variant this warband is built as'
-                      : 'Locked: the Variant is a founding decision and this Warband has fought'}
-              >
-                <Flag className="w-4 h-4" />
-                <span>{activeVariant?.name ?? 'Standard list'}</span>
-                {/* Says which of the two states an unset Variant is in: a
-                    deliberate standard list, or a declaration never made. */}
-                {variantUndeclared && (
-                  <span className="text-status-warning" title="No Variant declared">•</span>
-                )}
-                {variantByOverride && (
-                  <ShieldCheck className="w-3 h-3 text-status-warning" aria-label="Unlocked as admin" />
-                )}
-                {!variantEditable && <Lock className="w-3 h-3 text-theme-muted" />}
-              </button>
-
-              {/* The catalogues' own roster option, and unlike the Variant it is
-                  not a founding decision — it is a table agreement, and the
-                  table can change its mind between games. */}
-              <button
-                onClick={() => setWarbandAllowThirdParty(warband.id, !warband.allowThirdParty)}
-                aria-pressed={!!warband.allowThirdParty}
-                className={`flex items-center space-x-1.5 px-3 py-2 border font-mono text-xs font-bold uppercase transition-colors ${
-                  warband.allowThirdParty
-                    ? 'bg-status-warning/15 text-status-warning border-status-warning/50'
-                    : 'bg-theme-base hover:bg-theme-elevated text-theme-text border-theme-border hover:border-theme-primary'
-                }`}
-                title={warband.allowThirdParty
-                  ? 'Third-party entries are being offered to this Warband'
-                  : 'Third-party entries are hidden, which is the catalogue default'}
-              >
-                <FlaskConical className="w-4 h-4" />
-                <span>3rd party {warband.allowThirdParty ? 'on' : 'off'}</span>
               </button>
 
               <button
@@ -558,7 +605,7 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* Category Filter Pills, and the roster-wide collapse. */}
       <div className="flex items-center gap-2">
-      <div className="flex items-center space-x-2 overflow-x-auto pb-1 min-w-0">
+      <div className="flex flex-wrap items-center gap-2 pb-1 min-w-0">
         {['All', 'Leader', 'Elite', 'Trooper', 'Mercenary'].map((cat) => (
           <button
             key={cat}
@@ -655,7 +702,7 @@ export const WarbandBuilder: React.FC = () => {
 
       {/* EDIT WARBAND BUDGET & STATS MODAL */}
       {isBudgetModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+        <div ref={budgetRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col max-h-[90dvh]">
             
             {/* Header */}

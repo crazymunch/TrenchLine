@@ -23,11 +23,39 @@ vi.mock('next-auth', () => ({ getServerSession: () => session }));
 
 process.env.NEXTAUTH_SECRET = 'test-secret';
 
-let session: { user: { id: string; email: string } } | null = null;
-const as = (user: { id: string; email: string } | null) => { session = user ? { user } : null; };
+/**
+ * The session, as `getServerSession` would hand it over.
+ *
+ * `id` is optional and `isAdmin` is separate from the address on purpose:
+ * those are the two shapes the warband routes used to get wrong. The `jwt`
+ * callback revokes a session by deleting `token.sub`, which leaves a session
+ * object carrying an email and no id; and it resolves `isAdmin` from
+ * `User.role`, which can disagree with `TRENCHLINE_ADMIN_EMAILS`.
+ */
+interface TestUser { id?: string; email: string; isAdmin?: boolean }
+let session: { user: TestUser } | null = null;
+const as = (user: TestUser | null) => { session = user ? { user } : null; };
 
 const { GET: campaignsGET, POST: campaignsPOST } = await import('../campaigns/route');
 const { POST: rulesPOST, DELETE: rulesDELETE } = await import('../custom-rules/route');
+const { POST: warbandsPOST, DELETE: warbandsDELETE } = await import('../warbands/route');
+
+const deleteWarband = async (id: string) => {
+  const res = await warbandsDELETE({ url: `http://localhost/api/warbands?id=${id}` } as never);
+  return { status: res.status, body: await res.json() };
+};
+
+/*
+  The warband route reads its body with `req.json()`, where the campaign and
+  custom-rule routes go through `parse.ts` and read `req.text()`. Hence a
+  second helper rather than reusing `post` above — handing the warband handler
+  a request with only `text()` on it makes every assertion a 500, which looks
+  like a failing authorization check and is not one.
+*/
+const saveWarband = async (body: unknown) => {
+  const res = await warbandsPOST({ json: async () => body } as never);
+  return { status: res.status, body: await res.json() };
+};
 
 const post = async (handler: (r: never) => Promise<Response>, body: unknown) => {
   const res = await handler({
@@ -75,6 +103,94 @@ describeDb('ownership, against a migrated database', () => {
     bobWarband = (await prisma.warband.create({
       data: { name: 'Bob Warband', factionId: 'heretic-legion', userId: bob.id },
     })).id;
+  });
+
+  /**
+   * The two holes Codex found in `POST` and `DELETE /api/warbands`.
+   *
+   * `GET` was migrated onto `policy.ts` when that module was written; these
+   * two were not, and kept the pre-AUTH-1 code. Both tests fail against it —
+   * the first with a 200 and a deleted roster, the second with a 200 and
+   * somebody else's roster deleted.
+   */
+  describe('a session the server has already revoked', () => {
+    /*
+      What revocation looks like from a handler's side.
+
+      `jwt` deletes `token.sub` when `User.sessionEpoch` no longer matches,
+      which is what makes a password reset actually remove whoever else was in
+      the account. The email is NOT deleted with it — nothing needs it to be,
+      because an id is what identifies a caller. The old handlers looked the
+      address up and put the identity back.
+    */
+    const revoked = (user: { email: string }) => as({ email: user.email });
+
+    it('cannot delete a roster', async () => {
+      revoked(alice);
+      expect((await deleteWarband(aliceWarband)).status).toBe(401);
+      expect(await prisma.warband.findUnique({ where: { id: aliceWarband } })).not.toBeNull();
+    });
+
+    it('cannot save a roster', async () => {
+      revoked(alice);
+      const { status } = await saveWarband({
+        id: aliceWarband, name: 'Renamed', factionId: 'new-antioch',
+      });
+      expect(status).toBe(401);
+    });
+
+    it('cannot mint an account for an address that has none', async () => {
+      /*
+        The worse half. `POST` did not merely look the address up — it
+        `upsert`ed, so a session carrying an address with no user behind it
+        created one and filed a roster under it.
+      */
+      as({ email: 'ghost@ownership.test' });
+      const { status } = await saveWarband({
+        name: 'Ghost Warband', factionId: 'new-antioch',
+      });
+      expect(status).toBe(401);
+      expect(await prisma.user.findUnique({ where: { email: 'ghost@ownership.test' } }))
+        .toBeNull();
+    });
+  });
+
+  describe('an administrator whose grant was revoked', () => {
+    /*
+      `adminRole.ts` is the one place that decides, and an explicit
+      `roleGrantedAt` beats the configured email list — that is the whole point
+      of persisting the grant. The old handlers asked `isUserAdmin(email)`
+      instead, so a demotion did nothing on the two routes that write and
+      delete other people's rosters, and the persisted grant was decorative
+      exactly where it mattered.
+
+      The session below says what the `jwt` callback would say about a demoted
+      user: `isAdmin: false`. The address is still listed.
+    */
+    beforeEach(() => { process.env.TRENCHLINE_ADMIN_EMAILS = 'alice@ownership.test'; });
+    afterAll(() => { delete process.env.TRENCHLINE_ADMIN_EMAILS; });
+
+    it('cannot delete another player’s roster', async () => {
+      as({ id: alice.id, email: alice.email, isAdmin: false });
+      expect((await deleteWarband(bobWarband)).status).toBe(403);
+      expect(await prisma.warband.findUnique({ where: { id: bobWarband } })).not.toBeNull();
+    });
+
+    it('cannot overwrite another player’s roster', async () => {
+      as({ id: alice.id, email: alice.email, isAdmin: false });
+      const { status } = await saveWarband({
+        id: bobWarband, name: 'Taken', factionId: 'new-antioch',
+      });
+      expect(status).toBe(403);
+      expect((await prisma.warband.findUnique({ where: { id: bobWarband } }))?.name)
+        .toBe('Bob Warband');
+    });
+
+    it('still reaches its own', async () => {
+      // The demotion removes borrowed authority, not the account.
+      as({ id: alice.id, email: alice.email, isAdmin: false });
+      expect((await deleteWarband(aliceWarband)).status).toBe(200);
+    });
   });
 
   describe('campaigns', () => {

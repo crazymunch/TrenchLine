@@ -1,70 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore, AppView } from '../../store/useStore';
-import { useSession } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
-import { ThemeSwitcherModal } from './ThemeSwitcherModal';
-import { BugReportModal } from '../feedback/BugReportModal';
-import { Shield, Swords, Flag, BookOpen, SlidersHorizontal, Palette, Users, Bug } from 'lucide-react';
-import { sessionIsAdmin } from '../../lib/session';
+import { Shield, Swords, Flag, BookOpen, Users } from 'lucide-react';
 
+/**
+ * The bottom bar: five destinations, and only destinations.
+ *
+ * It used to carry the theme switcher, the bug reporter and — for an admin —
+ * the ruleset differ as well, which is seven or eight items in 375px. Every
+ * label was one font metric away from clipping, and two of them had already
+ * clipped in CI while passing locally. The notes below record how much was
+ * shaved to keep "Crusade" and "Players" whole: horizontal padding, then the
+ * utilities down to 32px, then their labels removed entirely.
+ *
+ * That was the wrong thing to economise on. Those three are SETTINGS, not
+ * places you navigate to, and they now live in the account menu in the top
+ * right (`Navbar`). Five destinations split 375px into 75px each — enough for
+ * any label here — and the room bought back went into size: 20px icons rather
+ * than 16, 14px labels rather than 12, and a 52px bar rather than 44.
+ */
 export const MobileNav: React.FC = () => {
   const { currentView, setCurrentView, currentTheme } = useStore();
-  const { data: session } = useSession();
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
   const activeThemeObj = THEMES.find(t => t.id === currentTheme) || THEMES[0];
 
-  const isAdmin = sessionIsAdmin(session);
-
   const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
-    { id: 'builder', label: 'Roster', icon: <Shield className="w-4 h-4" /> },
-    { id: 'play', label: 'Play', icon: <Swords className="w-4 h-4" />, badge: 'LIVE' },
+    { id: 'builder', label: 'Roster', icon: <Shield className="w-5 h-5" /> },
+    { id: 'play', label: 'Play', icon: <Swords className="w-5 h-5" />, badge: 'LIVE' },
     // "Crusade", not "Campaign": at 12px in a 375px bar the longer word clips
     // to "Campaig…", and this is what the view calls itself anyway — the
     // sidebar reads "Crusade Campaign" and the header "CRUSADE CAMPAIGN HUB".
-    { id: 'campaign', label: 'Crusade', icon: <Flag className="w-4 h-4" /> },
+    { id: 'campaign', label: 'Crusade', icon: <Flag className="w-5 h-5" /> },
     // "Players", not "Directory": nine characters do not fit in the ~53px a
     // five-way split of a 375px bar gives each label, and whether they *appear*
     // to fit depends on the platform font — it passed locally and clipped on
     // CI's. "Crusade" is seven and fits on both, so seven is the safe width.
     // The icon here is already `Users`, and this is other players' warbands as
     // against your own roster in the first slot.
-    { id: 'directory', label: 'Players', icon: <Users className="w-4 h-4" /> },
-    { id: 'codex', label: 'Codex', icon: <BookOpen className="w-4 h-4" /> },
-    ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Diff', icon: <SlidersHorizontal className="w-4 h-4" /> }] : [])
+    { id: 'directory', label: 'Players', icon: <Users className="w-5 h-5" /> },
+    { id: 'codex', label: 'Codex', icon: <BookOpen className="w-5 h-5" /> },
   ];
 
   return (
-    <>
-      <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-theme-base/95 backdrop-blur border-t border-theme-border px-1 pt-1 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-theme-base/95 backdrop-blur border-t border-theme-border px-1 pt-1.5 pb-safe">
         {/*
-          Flex, not grid: the item count varies with the admin flag, and a
-          template-literal `grid-cols-${n}` is never compiled by Tailwind's
-          static scanner — which silently collapsed this nav to one column.
-          `flex-1` needs no class per count and cannot fail the same way.
-        */}
-        {/*
-          Five destinations that carry a label, two utilities that do not.
+          Flex, not grid.
 
-          The margins here are small and have been measured twice. The Iron
-          Ledger pass moved the whole app onto Archivo, which is wider than the
-          stack it replaced, and "Crusade" came back down to 3px of slack —
-          close enough that a different font on a different device clips it,
-          which is exactly how "Directory" failed on CI and passed locally. The
-          horizontal padding on each destination is gone and the two utility
-          buttons are 32px rather than 36px, which buys the labels back about
-          6px each. Their touch targets are unaffected: `.tap` gives both
-          utilities a 44px overlay regardless of their drawn width.
-
-          3.4 raised every sub-12px string in the app to 12px, and at 12px
-          "Campaign" and "Directory" clipped to "Campai…" in a seven-way split
-          of a 375px screen — a clipped label is worse than the 10px one it
-          replaced, so the nav had to give the destinations more room rather
-          than the type less size. Theme and the bug reporter are utilities, not
-          places you navigate to; their icons are unambiguous and they now take
-          a fixed 44px each instead of a seventh of the bar.
+          The count is a fixed five now that the admin-only differ has moved to
+          the account menu, so `grid-cols-5` would compile. It stays flex
+          anyway: a template-literal `grid-cols-${n}` is never seen by
+          Tailwind's static scanner, which once silently collapsed this nav to
+          one column, and the next person to make the count conditional again
+          should not have to rediscover that. `flex-1` needs no class per count
+          and cannot fail the same way (docs/MOBILE.md §5).
         */}
         <div className="flex items-stretch gap-px">
           {navItems.map((item) => {
@@ -73,7 +62,7 @@ export const MobileNav: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setCurrentView(item.id)}
-                className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[44px] py-1.5 px-0 rounded transition-colors relative ${
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center min-h-[52px] py-2 px-0.5 rounded transition-colors relative ${
                   isActive ? 'bg-theme-surface' : 'text-theme-muted hover:text-theme-text'
                 }`}
                 style={{
@@ -86,42 +75,12 @@ export const MobileNav: React.FC = () => {
                     <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-status-error animate-ping" />
                   )}
                 </div>
-                <span className="text-xs sm:text-[10px] mt-0.5 font-semibold tracking-tighter truncate max-w-full leading-tight">{item.label}</span>
+                <span className="text-sm mt-1 font-semibold tracking-tight truncate max-w-full leading-tight">{item.label}</span>
               </button>
             );
           })}
 
-          {/* Theme switcher button on mobile */}
-          <button
-            onClick={() => setIsThemeModalOpen(true)}
-            aria-label="Change theme"
-            title="Change theme"
-            className="tap flex-none w-8 flex items-center justify-center min-h-[44px] rounded transition-colors text-theme-muted hover:text-theme-text"
-          >
-            <Palette className="w-5 h-5" style={{ color: activeThemeObj.primaryColor }} />
-          </button>
-
-          {/* Bug report button on mobile */}
-          <button
-            onClick={() => setIsBugReportOpen(true)}
-            aria-label="Report a bug"
-            title="Report a bug"
-            className="tap flex-none w-8 flex items-center justify-center min-h-[44px] rounded transition-colors text-status-error/80 hover:text-status-error"
-          >
-            <Bug className="w-5 h-5 text-status-error" />
-          </button>
         </div>
-      </nav>
-
-      <ThemeSwitcherModal 
-        isOpen={isThemeModalOpen} 
-        onClose={() => setIsThemeModalOpen(false)} 
-      />
-
-      <BugReportModal
-        isOpen={isBugReportOpen}
-        onClose={() => setIsBugReportOpen(false)}
-      />
-    </>
+    </nav>
   );
 };

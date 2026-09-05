@@ -4,9 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore, AppView } from '../../store/useStore';
 import { useSession } from 'next-auth/react';
 import { THEMES } from '../../types/theme';
-import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { AuthModal } from '../auth/AuthModal';
-import { BugReportModal } from '../feedback/BugReportModal';
 import { 
   Shield, 
   Swords, 
@@ -14,13 +12,12 @@ import {
   BookOpen, 
   SlidersHorizontal, 
   User,
-  Palette,
   ChevronLeft,
   ChevronRight,
   Users,
   Crown,
   LogIn,
-  Bug
+  Sparkles
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
 
@@ -38,9 +35,7 @@ export const Sidebar: React.FC = () => {
 
   const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
 
   const isAdmin = sessionIsAdmin(session);
 
@@ -160,8 +155,25 @@ export const Sidebar: React.FC = () => {
                 />
                 <span className="truncate">{currentFaction?.name || 'Active Roster'}</span>
               </span>
-              <span className="font-bold text-theme-primary whitespace-nowrap flex-shrink-0 ml-1">
-                {totalCost}/{activeWarband.ducatLimit} D
+              {/*
+                Glory beside the Ducats, because this is now the only place on
+                a desktop that carries either.
+
+                The top bar used to show a pill with the name, the budget AND
+                the Glory; it duplicated this widget everywhere except Glory,
+                so removing it as redundant would have taken the one figure
+                that was not. `tabular-nums` and `whitespace-nowrap` for the
+                same reason the old pill had them: a budget that wraps reads
+                as a different number.
+              */}
+              <span className="flex items-center gap-2 flex-shrink-0 ml-1 tabular-nums whitespace-nowrap">
+                <span className="font-bold text-theme-primary">
+                  {totalCost}/{activeWarband.ducatLimit} D
+                </span>
+                <span className="flex items-center gap-1 text-theme-primary">
+                  <Sparkles className="w-3 h-3" />
+                  {activeWarband.gloryPoints}
+                </span>
               </span>
             </div>
 
@@ -233,40 +245,16 @@ export const Sidebar: React.FC = () => {
           })}
         </nav>
 
-        {/* 4. Bottom Footer: Theme Switcher, User Profile & Expand Toggle */}
-        <div className="p-3 border-t border-theme-border space-y-2 bg-theme-base">
-          
-          {/* Theme Switcher Button */}
-          <button
-            onClick={() => setIsThemeModalOpen(true)}
-            className={`w-full flex items-center rounded bg-theme-surface hover:bg-theme-elevated border border-theme-border text-xs font-mono transition-colors ${
-              isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2.5'
-            }`}
-            title="Switch Visual Theme"
-          >
-            <Palette className="w-4 h-4 flex-shrink-0" style={{ color: activeThemeObj.primaryColor }} />
-            {!isCollapsed && (
-              <span className="truncate flex-1 text-left text-theme-text">
-            Theme: <strong style={{ color: activeThemeObj.primaryColor }}>{activeThemeObj.name.split(' ')[0]}</strong>
-              </span>
-            )}
-          </button>
+        {/*
+          4. Bottom Footer: the signed-in identity and the expand toggle.
 
-          {/* Bug Report Trigger */}
-          <button
-            onClick={() => setIsBugReportOpen(true)}
-            className={`w-full flex items-center rounded border border-theme-accent/60 hover:border-theme-accent bg-theme-surface hover:bg-theme-elevated text-xs font-mono text-status-error transition-colors ${
-              isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2 space-x-2.5'
-            }`}
-            title="Report a Bug / Feedback"
-          >
-            <Bug className="w-4 h-4 text-status-error flex-shrink-0" />
-            {!isCollapsed && (
-              <span className="font-bold tracking-wider uppercase text-xs sm:text-[11px]">
-                Report a Bug
-              </span>
-            )}
-          </button>
+          It carried a Theme button and a Report a Bug button too — the third
+          copy of each, after the top bar's and the phone account menu's. All
+          three now live in one place, the account menu in the top bar, which
+          is open at every width. Three copies of a setting is two of them
+          drifting.
+        */}
+        <div className="p-3 border-t border-theme-border space-y-2 bg-theme-base">
 
           {/* User Auth Profile */}
           {session?.user ? (
@@ -338,17 +326,6 @@ export const Sidebar: React.FC = () => {
         onClose={() => setIsAuthModalOpen(false)}
       />
 
-      {/* Theme Switcher Modal */}
-      <ThemeSwitcherModal 
-        isOpen={isThemeModalOpen} 
-        onClose={() => setIsThemeModalOpen(false)} 
-      />
-
-      {/* Bug Report Modal */}
-      <BugReportModal 
-        isOpen={isBugReportOpen} 
-        onClose={() => setIsBugReportOpen(false)} 
-      />
     </>
   );
 };

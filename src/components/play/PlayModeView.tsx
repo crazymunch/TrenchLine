@@ -60,6 +60,8 @@ import {
   TrendingUp,
   Crown
 } from 'lucide-react';
+import { useOverlay } from '../ui/useOverlay';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 export const PlayModeView: React.FC = () => {
   const { 
@@ -162,6 +164,31 @@ export const PlayModeView: React.FC = () => {
   const { dataset: playDataset } = useDataset();
   const weatherTable = playDataset?.weather ?? null;
 
+  /*
+    Above the `!viewingWarband` early return, because hooks are.
+
+    `selectedScenario` comes up here with them: it is read from `scenarios` and
+    `selectedScenarioId` and does not depend on a warband being selected, so
+    there is nothing to compute below the return that these need.
+  */
+  const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
+
+  /*
+    Scroll lock, Escape and a focus trap for the squad picker and the map
+    lightbox. `useOverlay` rather than a move to `Sheet`: the behaviour is what
+    was missing and it does not have to wait for the JSX surgery.
+
+    The lightbox condition repeats the render guard rather than reading
+    `isMapLightboxOpen` alone. A scroll lock held for an overlay that is not on
+    screen — a scenario with no map — is a page that cannot be scrolled and
+    nothing visible to explain why.
+  */
+  const squadRef = useOverlay(isSquadSelectOpen, () => setIsSquadSelectOpen(false));
+  const mapRef = useOverlay(
+    Boolean(isMapLightboxOpen && selectedScenario?.mapImage),
+    () => setIsMapLightboxOpen(false),
+  );
+
   if (!viewingWarband) {
     return (
       <div className="p-8 text-center space-y-4 max-w-lg mx-auto">
@@ -184,7 +211,6 @@ export const PlayModeView: React.FC = () => {
     return u.status === filterStatus;
   });
 
-  const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
 
   /**
    * Whether the card, betrayal and alliance console applies.
@@ -1128,7 +1154,7 @@ export const PlayModeView: React.FC = () => {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex items-center space-x-2 border-t border-theme-border pt-3 overflow-x-auto">
+            <div className="flex flex-wrap items-center gap-2 border-t border-theme-border pt-3">
               {['All', 'Active', 'Downed', 'Out of Action'].map((st) => (
                 <button
                   key={st}
@@ -1436,7 +1462,7 @@ export const PlayModeView: React.FC = () => {
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARM</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">SAVE</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
@@ -1562,7 +1588,7 @@ export const PlayModeView: React.FC = () => {
 
       {/* SQUAD / ACTIVE DEPLOYMENT SELECTION MODAL */}
       {isSquadSelectOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
+        <div ref={squadRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85dvh]">
             
             <div className="p-4 bg-theme-elevated border-b border-theme-border flex items-center justify-between">
@@ -1619,7 +1645,9 @@ export const PlayModeView: React.FC = () => {
                           <span className="text-xs sm:text-[10px] text-theme-muted">{u.profileSnapshot.name}</span>
                         </div>
                       </div>
-                      <span className="text-xs font-bold text-theme-primary">{u.totalCost} D</span>
+                      <span className="text-xs font-bold text-theme-primary whitespace-nowrap">
+                        {formatUnitCost(u.totalCost, unitGlory(u))}
+                      </span>
                     </div>
                   );
                 })}
@@ -1686,7 +1714,7 @@ export const PlayModeView: React.FC = () => {
 
       {/* FULLSCREEN SCENARIO MAP LIGHTBOX MODAL (WORKS IN BOTH LOBBY & COMBAT) */}
       {isMapLightboxOpen && selectedScenario?.mapImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
+        <div ref={mapRef} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md animate-fade-in font-mono">
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-4xl max-h-[95dvh] rounded-lg shadow-2xl overflow-hidden flex flex-col bevel-container">
             {/* Modal Header */}
             <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">

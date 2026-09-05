@@ -249,6 +249,57 @@ function statedAllowance(ctx: CarrierContext) {
 }
 
 /**
+ * The hands each item needs, after any Keyword that changes the number.
+ *
+ * STRONG is the only one the book states: "it can equip and use ONE 2-Handed
+ * Melee Weapon as if it were a 1-Handed Melee Weapon" — one, in the Melee
+ * section — and CUMBERSOME opts a weapon back out of it: "require two hands to
+ * use, EVEN IF the model has the STRONG Keyword". Both are read from
+ * `limits.byKeyword`; nothing about either is written here.
+ *
+ * Applied ONCE, in one place, because it was applied in only one of the two
+ * that need it. The conversion lived inside the chapter's hand arithmetic, and
+ * an entry that states its own allowance `continue`s past that branch — so a
+ * Takwin Homunculus with Human Hands, an Additional Arm and Inhuman Strength
+ * was told that a Zulfiqar, a Great Sword and a Shield is more Melee Weapons
+ * than its entry allows. Its entry allows three 1-Handed Melee Weapons with a
+ * Shield replacing one of them, and STRONG makes the Great Sword one of them:
+ * three hands, three used, legal. The engine had the allowance and had the
+ * conversion, and never let them meet.
+ *
+ * Greedy in the order carried, which is safe: the conversion is stated as a
+ * count of weapons rather than as a choice between them, so any eligible
+ * 2-Handed weapon converts to the same number of hands as any other.
+ */
+function effectiveHands(
+  carried: Carried[],
+  ctx: CarrierContext,
+  limits: BattlekitLimits,
+  section: string,
+): (number | undefined)[] {
+  const convert = keywordRules(limits).find(
+    (k) => k.converts
+        && (ctx.keywords ?? []).some((w) => w.trim().toUpperCase() === k.keyword)
+        && sectionKey(k.converts.section) === sectionKey(section));
+  const exempts = keywordRules(limits).filter(
+    (k) => k.fixedHands && k.overrides === convert?.keyword);
+  let conversionsLeft = convert?.converts?.count ?? 0;
+
+  return carried.map((c) => {
+    const hands = handsOf(c, ctx);
+    if (hands === undefined) return undefined;   // Unknown kind: never counted.
+    if (convert?.converts
+        && hands === convert.converts.from
+        && conversionsLeft > 0
+        && !exempts.some((e) => carries(c, e.keyword, ctx))) {
+      conversionsLeft--;
+      return convert.converts.to;
+    }
+    return hands;
+  });
+}
+
+/**
  * Do these weapons fit any combination the entry allows?
  *
  * Combinations, not hand arithmetic: the book says "three 1-Handed, or one
@@ -261,13 +312,12 @@ function statedAllowance(ctx: CarrierContext) {
  */
 function fitsAllowance(
   combos: Record<string, number>[],
-  carried: Carried[],
-  ctx: CarrierContext,
+  /** One entry per carried item, from `effectiveHands`. */
+  hands: (number | undefined)[],
   spend: number,
 ): boolean {
   const have = new Map<number, number>();
-  for (const c of carried) {
-    const h = handsOf(c, ctx);
+  for (const h of hands) {
     if (h === undefined) continue;      // Unknown kind: never counted.
     have.set(h, (have.get(h) ?? 0) + 1);
   }
@@ -379,7 +429,8 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
     const combos = stated?.bySection[section];
     if (combos?.length) {
       const spend = stated!.shieldReplaces === section ? shields.length : 0;
-      if (!fitsAllowance(combos, carried, ctx, spend) && !oneStatedLoadout(carried)) {
+      const hands = effectiveHands(carried, ctx, limits, section);
+      if (!fitsAllowance(combos, hands, spend) && !oneStatedLoadout(carried)) {
         out.push({
           section, raw: stated!.raw,
           message: `${carried.map((c) => c.name).join(', ')}`
@@ -397,41 +448,25 @@ export function battlekitBreaches(items: Carried[], ctx: CarrierContext): Battle
         const slots = ctx.extraLimb ? capacity + 1 : capacity;
 
         /*
-          STRONG: "it can equip and use ONE 2-Handed Melee Weapon as if it were
-          a 1-Handed Melee Weapon." One, in the Melee section, and CUMBERSOME
-          exists to opt a weapon out of exactly this: "require two hands to
-          use, EVEN IF the model has the STRONG Keyword."
-
-          The equip modal's version applied the conversion to every 2-Handed
-          melee weapon and read CUMBERSOME not at all, so a STRONG model could
-          carry two greatswords in two hands.
+          STRONG and CUMBERSOME are applied by `effectiveHands`, which the
+          entry's own stated allowance above uses too. The equip modal's old
+          version applied the conversion to every 2-Handed melee weapon and
+          read CUMBERSOME not at all, so a STRONG model could carry two
+          greatswords in two hands.
         */
-        const convert = keywordRules(limits).find(
-          (k) => k.converts
-              && (ctx.keywords ?? []).some((w) => w.trim().toUpperCase() === k.keyword)
-              && sectionKey(k.converts.section) === sectionKey(section));
-        const exempts = keywordRules(limits).filter(
-          (k) => k.fixedHands && k.overrides === convert?.keyword);
-        let conversionsLeft = convert?.converts?.count ?? 0;
+        const hands = effectiveHands(carried, ctx, limits, section);
 
         let used = 0;
         const counted: string[] = [];
         const countedItems: Carried[] = [];
-        for (const c of carried) {
-          let hands = handsOf(c, ctx);
-          if (hands === undefined) continue;
-          if (convert?.converts
-              && hands === convert.converts.from
-              && conversionsLeft > 0
-              && !exempts.some((e) => carries(c, e.keyword, ctx))) {
-            hands = convert.converts.to;
-            conversionsLeft--;
-          }
-          const allowed = perHand(hands);
-          used += allowed ? capacity / allowed : hands;
+        carried.forEach((c, i) => {
+          const h = hands[i];
+          if (h === undefined) return;
+          const allowed = perHand(h);
+          used += allowed ? capacity / allowed : h;
           counted.push(c.name);
           countedItems.push(c);
-        }
+        });
         if (used > slots && !oneStatedLoadout(countedItems)) {
           out.push({
             section, raw: rule.raw,

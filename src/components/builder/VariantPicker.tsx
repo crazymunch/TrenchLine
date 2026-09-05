@@ -91,6 +91,25 @@ export const VariantPicker: React.FC<Props> = ({
   );
 };
 
+/**
+ * One variant, collapsed.
+ *
+ * Every card used to render its lore and its full special-rules list at once.
+ * The Iron Sultanate has seventeen variants and some carry four rules apiece,
+ * so choosing between them meant scrolling a wall of prose in which the names
+ * — the only thing you are actually choosing between — were the smallest part.
+ *
+ * So the closed card is the name, its badges and how many rules it enforces,
+ * which is enough to pick from; the lore and the rules are one press away. The
+ * count stays on the closed card deliberately: "4 rules enforced" is a fact
+ * about the choice, and hiding it would leave the card saying nothing about
+ * what taking this variant costs.
+ *
+ * Two buttons rather than one, because the outer element used to be a
+ * `<button>` and a toggle nested inside one is invalid HTML that browsers
+ * resolve by dropping the inner control. The card is a `<div>`; selecting and
+ * expanding are separate presses that do separate things.
+ */
 const Choice: React.FC<{
   name: string;
   description?: string;
@@ -99,45 +118,85 @@ const Choice: React.FC<{
   thirdParty?: boolean;
   selected: boolean;
   onSelect: () => void;
-}> = ({ name, description, rules, opCount = 0, thirdParty, selected, onSelect }) => (
-  <button
-    onClick={onSelect}
-    className={`w-full text-left p-3 rounded-sm border transition-colors min-h-[44px] ${
-      selected
-        ? 'border-theme-primary bg-theme-elevated'
-        : 'border-theme-border hover:border-theme-primary/50'
-    }`}
-  >
-    <div className="flex items-center gap-2">
-      {selected && <Check className="w-4 h-4 text-theme-primary flex-shrink-0" />}
-      <span className="font-gothic font-bold text-sm text-theme-text">{name}</span>
-      {thirdParty && (
-        <span className="eyebrow px-1.5 py-0.5 rounded font-bold bg-status-warning/15 text-status-warning border border-status-warning/40">
-          Third party
-        </span>
-      )}
-      {opCount > 0 && (
-        <span className="ml-auto text-xs sm:text-[9px] font-mono text-theme-muted flex-shrink-0">
-          {opCount} rule{opCount === 1 ? '' : 's'} enforced
-        </span>
+}> = ({ name, description, rules, opCount = 0, thirdParty, selected, onSelect }) => {
+  const [open, setOpen] = React.useState(false);
+  const detailId = React.useId();
+  const hasDetail = Boolean(description) || (rules?.length ?? 0) > 0;
+
+  return (
+    <div
+      className={`rounded-sm border transition-colors ${
+        selected
+          ? 'border-theme-primary bg-theme-elevated'
+          : 'border-theme-border hover:border-theme-primary/50'
+      }`}
+    >
+      <button
+        onClick={onSelect}
+        aria-pressed={selected}
+        className="w-full text-left p-3 min-h-[44px] flex items-center gap-2"
+      >
+        {selected && <Check className="w-4 h-4 text-theme-primary flex-shrink-0" />}
+        <span className="font-gothic font-bold text-sm text-theme-text">{name}</span>
+        {thirdParty && (
+          <span className="eyebrow px-1.5 py-0.5 rounded font-bold bg-status-warning/15 text-status-warning border border-status-warning/40">
+            Third party
+          </span>
+        )}
+        {opCount > 0 && (
+          <span className="ml-auto text-xs sm:text-[9px] font-mono text-theme-muted flex-shrink-0">
+            {opCount} rule{opCount === 1 ? '' : 's'} enforced
+          </span>
+        )}
+      </button>
+
+      {hasDetail && (
+        <>
+          {/*
+            The same words the muster screen uses for the same act, so the two
+            places a variant is chosen do not describe themselves differently.
+          */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls={detailId}
+            className="w-full min-h-[44px] flex items-center justify-between gap-2 px-3 pb-2 text-left text-xs font-mono font-bold text-theme-primary"
+          >
+            <span>
+              {rules?.length
+                ? `${rules.length} special rule${rules.length === 1 ? '' : 's'}`
+                : 'Details'}
+            </span>
+            <span aria-hidden="true" className="text-theme-muted">{open ? 'Hide' : 'Show'}</span>
+          </button>
+
+          {/*
+            `hidden`, not a conditional render: the panel keeps its identity
+            across toggles, so `aria-controls` always points at an element that
+            exists. Bounded in `dvh` and scrolled in place — a phone's toolbars
+            change the viewport height, and `vh` would size this to a window
+            that is not there.
+          */}
+          <div
+            id={detailId}
+            hidden={!open}
+            className="max-h-[40dvh] overflow-y-auto px-3 pb-3 space-y-1.5"
+          >
+            {description && (
+              <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">{description}</p>
+            )}
+            {rules?.map((r, i) => (
+              <div key={i} className="p-2 rounded-sm bg-theme-base border border-theme-border">
+                <div className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary">{r.name}</div>
+                <p className="text-xs sm:text-[10px] text-theme-muted mt-0.5 leading-relaxed">{r.description}</p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
-
-    {description && (
-      <p className="text-xs sm:text-[11px] text-theme-muted mt-1.5 leading-relaxed">{description}</p>
-    )}
-
-    {rules && rules.length > 0 && (
-      <div className="mt-2 space-y-1.5">
-        {rules.map((r, i) => (
-          <div key={i} className="p-2 rounded-sm bg-theme-base border border-theme-border">
-            <div className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary">{r.name}</div>
-            <p className="text-xs sm:text-[10px] text-theme-muted mt-0.5 leading-relaxed">{r.description}</p>
-          </div>
-        ))}
-      </div>
-    )}
-  </button>
-);
+  );
+};
 
 export default VariantPicker;

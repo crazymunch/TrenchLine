@@ -32,6 +32,7 @@ import {
   Trash2,
   UserPlus,
 } from 'lucide-react';
+import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 
 interface AddUnitModalProps {
   warbandId: string;
@@ -199,7 +200,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
           Sheet's header is sticky, and a second sticky bar costs a
           quarter of a phone screen before a single result is shown. */}
     {/* Filter Tabs */}
-    <div className="flex items-center space-x-2 pb-3 mb-3 border-b border-theme-border overflow-x-auto">
+    <div className="flex flex-wrap items-center gap-2 pb-3 mb-3 border-b border-theme-border">
       {categories.map((cat) => (
         <button
           key={cat}
@@ -249,7 +250,7 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                           <span>•</span>
                           <span>XP: <strong className="text-theme-primary">{fav.xp || 0} XP</strong></span>
                           <span>•</span>
-                          <span>Rating: <strong className="text-theme-primary">{fav.totalCost} D</strong></span>
+                          <span>Rating: <strong className="text-theme-primary whitespace-nowrap">{formatUnitCost(fav.totalCost, unitGlory(fav))}</strong></span>
                         </div>
 
                         {/* Wargear Summary */}
@@ -393,8 +394,9 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                       <span className="font-mono text-xs text-theme-muted tabular-nums truncate
                                        inline-block w-fit max-w-full rounded-sm
                                        bg-theme-base/70 border border-theme-border/60 px-1.5 py-0.5">
-                        {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · A {unit.stats.armour}
-                        {isMercenary && <span className="text-status-legal"> · Merc</span>}
+                        {unit.stats.movement} · R {unit.stats.ranged} · M {unit.stats.melee} · S {unit.stats.armour}
+                        {/* The same colour the card gives a Mercenary — `ui/unitRole.ts`. */}
+                        {isMercenary && <span className="text-role-mercenary"> · Merc</span>}
                         {/* On the collapsed row, not only in the expanded panel:
                             an entry that is not official has to be readable as
                             such without opening it. */}
