@@ -217,27 +217,37 @@ Two rules follow, and `scripts/__tests__/appIcons.test.mjs` holds both:
 - **The mark clears the safe CIRCLE, not the safe square.** A wordmark sized
   to fit the square still loses its corners to a circular mask, which is how
   `T✝C` comes out as `✝`.
-- **The ground reaches the edges.** The artwork immediately around the mark
-  must be the artwork at the edge — a mark sitting on its own little field is
-  the reported bug itself, and a launcher masks to the field rather than to
-  the icon.
+- **Any hard boundary in the artwork lies outside the safe circle.** This is
+  the reported bug stated exactly: a badge with its own field, ending partway
+  in, means the mask crops the surround rather than the icon.
+- **Content past the safe circle goes all the way round, or is not there.** A
+  rim is drawn at the edge on purpose and may be shaved; a wordmark that
+  overflows at a few angles gets a bite taken out of it, which is how `T✝C`
+  came out as `✝`.
 
-That third rule is what the first two miss, and the test says so at the point
-it matters. The check was once "the edge is lighter than luminance 120", which
-was true of the silver badge it was written beside and is not a property of a
-maskable icon: the mark now is gold on a dark ground, the inverse, and equally
-correct. Replacing it with "the edge is continuous with what is behind it"
-sounded like the general form and is not either — a flat field is perfectly
-continuous at its edge, and sabotaging the icon that way passed. Each of the
-three rules has been proved to fail on the bug it exists for.
+These checks have been wrong twice, in opposite directions, and the file says
+so where it matters. First they encoded a PALETTE — the edge had to be lighter
+than luminance 120, and the mark was found by being darker than the ground —
+both true of the silver badge they were written beside and neither a property
+of a maskable icon. Then they encoded a COMPOSITION: a small mark centred on a
+ground running edge to edge. That is one good way to draw an icon and not the
+only one; the artwork now is a disc that fills the frame, and all three checks
+rejected it.
 
-`npm run icons:build` regenerates every icon and the masthead from
-`public/brand/mark.svg`, which is the app's OWN mark: it renders the vector,
-measures where the ink actually is, and places it on a full-bleed gradient at
-a size whose bounding circle clears the safe zone. Derived rather than
-hand-drawn, so the icons can be rebuilt when the artwork changes rather than
-being binaries nobody can regenerate — and swapping in different art is
-editing one SVG and re-running one command.
+What they assert now is neither. Each has been proved to fail on the bug it
+exists for — the artwork shrunk into a field of its own, a wordmark overflowing
+the circle, and transparent corners — and to pass on artwork that is simply
+composed differently.
+
+`npm run icons:build` regenerates every icon, both favicons and the masthead
+from `public/brand/icon.svg`, the app's own artwork. It renders and nothing
+else: the source is drawn FOR the frame — the disc reaches 95.5% of the
+half-width and the lettering stops 0.8px inside the safe circle — so there is
+nothing to fit, and sizing artwork that is already the right size can only make
+it wrong. Two variants come out of the one file: full bleed for the home-screen
+icons, and the same file with its background rect removed for the browser tab
+and the in-app masthead, where a dark square inside dark chrome draws a box
+around nothing.
 
 ## Component priorities
 

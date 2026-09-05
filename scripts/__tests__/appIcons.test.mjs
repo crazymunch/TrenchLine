@@ -1,48 +1,64 @@
 /**
- * The home-screen icons are full bleed, and the mark clears the safe zone.
+ * The home-screen icons survive being cropped to a shape nobody here chooses.
  *
- * The app's owner sent a screenshot of his launcher with TrenchLine as the
- * only square tile in a grid of circles. The manifest was right — it declared
+ * The app's owner sent a screenshot of his launcher with TrenchLine as the only
+ * square tile in a grid of circles. The manifest was right — it declared
  * `purpose: "maskable"` — and the ARTWORK was wrong: a small silver badge
- * floating on a near-black ground, which a circular mask turns into a dark
- * disc with a little square in the middle of it.
+ * floating on a near-black ground, which a circular mask turns into a dark disc
+ * with a little square in the middle of it.
  *
- * Two properties make that impossible to reintroduce, and neither of them is
- * "the file has not changed":
+ * ## These checks have been wrong twice, in opposite directions
  *
- *  1. The corners are artwork, not a border. A maskable icon is cropped by
- *     the launcher to a shape nobody here chooses, so any pixel the author
- *     treats as margin is a pixel the launcher may treat as the icon.
- *  2. Nothing that reads as the mark lies outside the guaranteed safe circle
- *     (80% of the icon's width). A mark that merely fits the safe SQUARE
- *     still loses its corners to a circular mask.
+ * First they encoded a palette: the edge had to be LIGHTER than luminance 120,
+ * and the mark was found by being DARKER than the ground. Both were true of the
+ * silver badge they were written beside and neither is a property of a maskable
+ * icon.
  *
- * ## Both checks were once written against one palette
+ * Then they encoded a COMPOSITION: a small mark centred on a ground that runs
+ * edge to edge. That is one good way to draw an icon and not the only one. The
+ * artwork now is the other way — a disc that fills the frame, with its own rim
+ * at 95% of the half-width — and all three checks rejected it. A rim outside
+ * the safe circle is not a mark being clipped; it is a rim, and being shaved by
+ * an aggressive mask is what a rim is for.
  *
- * They were: the edge had to be LIGHTER than luminance 120, and the mark was
- * found by being DARKER than the ground. Both were true of the silver badge
- * this replaced and neither is a property of a maskable icon — the app's own
- * mark is gold on a dark ground, which is the inverse of both, and it is
- * perfectly valid. A test that encodes the artwork it was written beside
- * fails the next piece of art rather than the next bug.
+ * So what is asserted here is neither colour nor composition. It is the two
+ * things that actually decide whether a mask ruins the icon:
  *
- * Replacing them took two goes. "The edge is continuous with what is behind
- * it" sounded like the general form of the same rule and is not: a small badge
- * floating in a flat black field is perfectly continuous AT the edge, because
- * the field is flat — the step is in the middle, around the badge. Sabotaging
- * the icon that way passed, which is how the weakening was caught.
- *
- * The property that separates all three — the silver badge this replaced, the
- * gold mark that replaced it, and a badge deliberately floated on black — is
- * that **the artwork immediately around the mark is the artwork at the edge**.
- * A ground that reaches the edges satisfies it whatever colour it is; a mark
- * sitting on its own little field does not, because that field's colour is not
- * the edge's.
+ *  1. **Every pixel is artwork.** A maskable icon is cropped to a shape the
+ *     launcher picks, so anything the author treats as margin is something the
+ *     launcher may treat as the icon.
+ *  2. **Any hard boundary in the artwork lies OUTSIDE the safe circle.** This
+ *     is the badge bug stated exactly. A mark on a ground that runs to the edge
+ *     has no such boundary and passes. A disc that fills the frame has one, at
+ *     the frame, and passes. A badge floating in a field has one partway in,
+ *     and the mask cuts the field rather than the icon — which is the failure.
+ *  3. **Nothing inside that boundary reaches past the safe circle**, so the
+ *     lettering is not clipped. `T✝C` came out as `✝` this way.
  */
 import { describe, it, expect } from 'vitest';
 import sharp from 'sharp';
 
 const MASKABLE = ['public/icons/icon-maskable-512.png', 'public/icons/icon-maskable-192.png'];
+
+/**
+ * The circle the maskable spec guarantees: 80% of the WIDTH, so 0.40 × width.
+ *
+ * Everything below works in pixels. An earlier version mixed fractions of the
+ * width with fractions of the half-width and compared 0.94 against 0.40 as
+ * though they were the same unit; both readings were plausible and the test
+ * silently measured nothing. Radii are px, and the conversion happens once.
+ */
+const safeRadius = (size) => size * 0.40;
+
+/**
+ * How far past the safe circle content may sit before it counts as clipped.
+ *
+ * The lettering in this artwork is drawn to 204.0px of a 204.8px safe radius —
+ * 0.8px of margin, deliberately. At 192 that margin is 0.3px, which is smaller
+ * than the difference between two rasterisations of the same geometry. The
+ * tolerance is for the renderer, not for the design.
+ */
+const RASTER_SLACK = 1.015;
 
 async function pixels(file) {
   const { data, info } = await sharp(file).ensureAlpha()
@@ -55,113 +71,115 @@ async function pixels(file) {
 }
 
 const luminance = ([r, g, b]) => (r + g + b) / 3;
+const apart = (a, b) => Math.max(...[0, 1, 2].map((k) => Math.abs(a[k] - b[k])));
+
+/** Mean luminance at each radius, from the centre out to the frame edge. */
+function radialProfile({ at, size }, bins = 64) {
+  const c = (size - 1) / 2;
+  const sum = new Array(bins).fill(0);
+  const count = new Array(bins).fill(0);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const bin = Math.floor((Math.hypot(x - c, y - c) / (size / 2)) * bins);
+      if (bin >= bins) continue;
+      sum[bin] += luminance(at(x, y));
+      count[bin] += 1;
+    }
+  }
+  return sum.map((s, i) => (count[i] ? s / count[i] : 0));
+}
+
+/**
+ * Where the artwork stops, in pixels of radius.
+ *
+ * The OUTERMOST step in the radial profile, not the largest. The largest, in
+ * this artwork, is the red dot at the very centre against the white rhombus
+ * behind it — interior detail beats the disc's own edge comfortably, so a
+ * "biggest jump" reading finds the middle of the icon and calls it the border.
+ *
+ * A badge on a ground has its step partway in; a disc filling the frame has one
+ * at the frame; a mark on a ground that runs to the edge has none outside its
+ * own mark. Returns the inner side of the step, so a rim drawn ON the boundary
+ * falls outside it and counts as edge treatment rather than as clipped content.
+ */
+function outermostEdge(profile, size, jump = 40) {
+  const binWidth = (size / 2) / profile.length;
+  for (let i = profile.length - 1; i > 0; i--) {
+    if (Math.abs(profile[i] - profile[i - 1]) > jump) return (i - 1) * binWidth;
+  }
+  return null;
+}
 
 describe.each(MASKABLE)('%s', (file) => {
-  it('is square, and bleeds artwork to every edge', async () => {
+  it('is square, and every pixel is artwork', async () => {
     const { at, size, height } = await pixels(file);
     expect(size).toBe(height);
-
-    /*
-      Necessary but NOT sufficient, and the comment says so because the gap is
-      where the weakened version of this test lived: a flat field is
-      continuous at its edge, so this alone passes an icon whose artwork is a
-      badge floating in the middle of one. The test below is what closes that.
-
-      Checked against the pixels just INSIDE the edge rather than the opposite
-      corner: the ground is a ramp, so corners legitimately differ and a test
-      comparing them would only measure the gradient.
-    */
-    const inset = Math.round(size * 0.08);
     for (let i = 0; i < size; i++) {
-      for (const [x, y, ix, iy] of [
-        [i, 0, i, inset],                          // top
-        [i, size - 1, i, size - 1 - inset],        // bottom
-        [0, i, inset, i],                          // left
-        [size - 1, i, size - 1 - inset, i],        // right
-      ]) {
-        const edge = at(x, y);
-        expect(edge[3], `edge pixel ${x},${y} is transparent`).toBe(255);
-        expect(Math.abs(luminance(edge) - luminance(at(ix, iy))),
-          `a step at ${x},${y}: the edge is not the same artwork as what is behind it`)
-          .toBeLessThan(25);
+      for (const [x, y] of [[i, 0], [i, size - 1], [0, i], [size - 1, i]]) {
+        expect(at(x, y)[3], `edge pixel ${x},${y} is transparent`).toBe(255);
       }
     }
   });
 
-  it('has a ground that reaches the edges, not a mark on its own field', async () => {
+  it('has no hard boundary inside the circle the spec guarantees', async () => {
     /*
-      The one that catches the reported bug, and the reason the two above are
-      not enough on their own.
+      The badge bug, stated exactly. The old artwork's field ended around
+      halfway out, so a circular mask cut the black surround and showed a small
+      light square inside a dark disc. Wherever the artwork changes field, that
+      change has to happen at or beyond the safe circle — otherwise the mask
+      crops the surround instead of the icon.
+    */
+    const px = await pixels(file);
+    const edge = outermostEdge(radialProfile(px), px.size);
+    if (edge === null) return; // a ground that runs to the edge: nothing to cut
+    expect(edge,
+      `the artwork stops at ${edge.toFixed(0)}px, inside the ${safeRadius(px.size).toFixed(0)}px `
+      + 'safe radius: a mask will crop the surround rather than the icon')
+      .toBeGreaterThanOrEqual(safeRadius(px.size));
+  });
 
-      The mark is located by SATURATION. That is what tells a mark from a
-      ground in both the artwork this replaced (a red cross on silver) and the
-      artwork now (gold on near-neutral dark), and unlike brightness it does
-      not assume which way the contrast runs. Then the ring of pixels just
-      outside the mark is compared with the icon's edge: if the mark is
-      sitting on its own little field, that ring is the field's colour and the
-      edge is something else.
+  it('lets a rim run past the safe circle, but not the lettering', async () => {
+    /*
+      Content outside the safe circle is only a problem if it is CONTENT.
 
-      Its limit, stated rather than discovered later: a mark with no colour at
-      all — white on grey — would not be found this way, so the test fails
-      loudly instead of passing quietly when it cannot locate one.
+      A rim is drawn at the edge on purpose and appears at every angle; an
+      aggressive mask shaving it costs nothing, which is what a rim is for. A
+      wordmark that overflows appears at a few angles only, and the mask takes
+      a bite out of it — `T✝C` came out as `✝` this way.
+
+      So the test is angular coverage, which needs no boundary detection at all.
+      Trying to find one is what the previous two versions of this got wrong:
+      the largest step in the radial profile is the red dot at the centre, and
+      the outermost step is the rim's OUTER edge, which still leaves the rim's
+      own 12px stroke counting as content.
+
+      Either nothing is out there, or it goes all the way round. Anything in
+      between is a piece of the icon about to be cut off.
     */
     const { at, size } = await pixels(file);
-    const saturation = (p) => Math.max(...p.slice(0, 3)) - Math.min(...p.slice(0, 3));
-
-    let x0 = size, y0 = size, x1 = -1, y1 = -1;
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (saturation(at(x, y)) <= 40) continue;
-        if (x < x0) x0 = x; if (x > x1) x1 = x;
-        if (y < y0) y0 = y; if (y > y1) y1 = y;
-      }
-    }
-    expect(x1, 'no coloured mark could be found, so this check cannot run').toBeGreaterThan(-1);
-
-    /* A few pixels clear of the mark's own antialiasing, and clamped so a
-       mark near the edge does not read the edge as its own surroundings. */
-    const pad = Math.round(size * 0.03);
-    const ring = [];
-    for (let x = Math.max(0, x0 - pad); x <= Math.min(size - 1, x1 + pad); x++) {
-      if (y0 - pad >= 0) ring.push(at(x, y0 - pad));
-      if (y1 + pad < size) ring.push(at(x, y1 + pad));
-    }
-    const edge = [at(0, 0), at(size - 1, 0), at(0, size - 1), at(size - 1, size - 1)];
-    const mean = (rows) => [0, 1, 2].map((k) => rows.reduce((t, p) => t + p[k], 0) / rows.length);
-
-    const around = mean(ring);
-    const border = mean(edge);
-    const apart = Math.max(...[0, 1, 2].map((k) => Math.abs(around[k] - border[k])));
-    expect(apart,
-      `the artwork around the mark (${around.map(Math.round)}) is not the artwork at the edge `
-      + `(${border.map(Math.round)}): the mark is on its own field, and a launcher will mask to `
-      + 'the field rather than to the icon')
-      .toBeLessThan(60);
-  });
-
-  it('keeps the mark inside the circle the spec guarantees', async () => {
-    const { at, size } = await pixels(file);
-    const safe = size * 0.40;
     const c = (size - 1) / 2;
+    const safe = safeRadius(size);
+    /* The corners are the one place guaranteed to be outside every mask, so
+       whatever colour they are is what "nothing is here" looks like. */
+    const corner = [at(0, 0), at(size - 1, 0), at(0, size - 1), at(size - 1, size - 1)];
+    const nothing = [0, 1, 2].map((k) => corner.reduce((t, p) => t + p[k], 0) / 4);
 
-    let outside = 0;
+    const BINS = 120;
+    const covered = new Array(BINS).fill(false);
     for (let y = 0; y < size; y++) {
-      /*
-        The ground on this row, read from the far left, where no mark reaches.
-        Per row rather than once for the icon, so a ramp is not mistaken for
-        the thing it sits behind.
-      */
-      const ground = at(2, y);
       for (let x = 0; x < size; x++) {
-        const p = at(x, y);
-        /* Either direction, and saturation as well as brightness: the mark
-           this was written for was dark on light, the mark now is light on
-           dark, and a neutral one would be caught by neither on its own. */
-        const contrast = Math.abs(luminance(p) - luminance(ground));
-        const saturation = Math.max(...p.slice(0, 3)) - Math.min(...p.slice(0, 3));
-        if ((contrast > 70 || saturation > 60) && Math.hypot(x - c, y - c) > safe) outside++;
+        const r = Math.hypot(x - c, y - c);
+        if (r <= safe * RASTER_SLACK || r > size / 2) continue;
+        if (apart(at(x, y), nothing) <= 60) continue;
+        covered[Math.floor(((Math.atan2(y - c, x - c) + Math.PI) / (2 * Math.PI)) * BINS) % BINS] = true;
       }
     }
-    expect(outside, `${outside} mark pixels fall outside the 80% safe circle`).toBe(0);
+
+    const angles = covered.filter(Boolean).length / BINS;
+    const verdict = angles < 0.05 || angles > 0.90;
+    expect(verdict,
+      `artwork past the safe circle covers ${(angles * 100).toFixed(0)}% of the angles. `
+      + 'A rim covers them all and may be shaved; anything less is content the mask will clip')
+      .toBe(true);
   });
 });

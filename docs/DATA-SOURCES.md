@@ -590,13 +590,16 @@ the app ships its own.
 
 | | provenance |
 |---|---|
-| `public/brand/mark.svg` | **Ours.** Original, drawn from primitives: a cross, and a crenellated line for a fire trench in plan view. The source of every icon and the masthead. |
-| `public/icons/*`, `public/logo.*` | Derived from the mark above by `npm run icons:build`. |
+| `public/brand/icon.svg` | **Ours** — the app owner's own artwork. The single source of every icon, the favicon and the masthead. |
+| `public/brand/banner.png`, `bannercode.html` | Ours, same origin. Not wired into anything yet. |
+| `public/brand/icon.png` | Ours: a raster export of `icon.svg`. Nothing reads it, and it can drift from the SVG — it is kept as the delivered original, not as a source. |
+| `public/icons/*`, `public/logo.*` | Derived from `icon.svg` by `npm run icons:build`. |
 | `public/images/world-map.webp` | **Not ours** — still the publisher's. See below. |
 | `public/maps/*` | Scenario deployment maps, drawn in vector by the pipeline from the scenarios' own text. |
 
-Until this change the masthead and every home-screen icon were the Trench
-Crusade badge. That is two problems, not one: copyright in the artwork, and
+A placeholder mark sat here briefly, drawn from primitives while the real
+artwork was being made; it is gone. Until that change the masthead and every
+home-screen icon were the Trench Crusade badge. That is two problems, not one: copyright in the artwork, and
 trademark — an unofficial companion using the publisher's logo as its own
 identity reads as endorsement, which the footer disclaimer softens but does not
 cure while the logo IS the identity. The rulebook's own notice is explicit:

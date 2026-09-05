@@ -51,7 +51,16 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
   },
   icons: {
+    /*
+      Smallest first: browsers take the best match for the tab strip, and the
+      two favicons are the CUT-OUT variant — the mark is a disc, and a dark
+      square around it on a tab strip draws a box around nothing. The 192 and
+      512 stay full-bleed because they are also the PWA icons, where every
+      pixel has to be artwork.
+    */
     icon: [
+      { url: '/icons/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
