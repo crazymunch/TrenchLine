@@ -1,6 +1,23 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
+  // The POOLED connection, used by the running app.
+  //
+  // Every serverless invocation opens its own connection, so a direct endpoint
+  // means a fresh Postgres backend per request. Neon's pooler (`-pooler` in the
+  // host) hands out a pooled one instead. `pgbouncer=true` belongs on this URL:
+  // the pooler runs PgBouncer in TRANSACTION mode, which returns the connection
+  // after each transaction and so cannot keep prepared statements alive.
+  url = env("DATABASE_URL")
+
+  // The DIRECT connection, used by migrate, diff and studio.
+  //
+  // Not a duplicate of the above and not optional. A migration takes
+  // session-level locks and sets session state, and both are exactly what
+  // transaction-mode pooling throws away — run through the pooler they fail,
+  // intermittently and confusingly. Set it to the same value as `url` wherever
+  // there is no pooler at all, which is every local and CI database.
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 generator client {
