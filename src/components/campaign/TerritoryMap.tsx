@@ -468,9 +468,9 @@ export const TerritoryMap: React.FC = () => {
           aria-labelledby="territory-dossier-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs"
         >
-          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden bevel-container">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
             
-            <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
+            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-2">
                 <Globe className="w-5 h-5 text-theme-primary" />
                 <h3 id="territory-dossier-title" className="font-gothic font-bold text-lg text-theme-text">STRATEGIC THEATER DOSSIER</h3>
@@ -483,7 +483,7 @@ export const TerritoryMap: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="text-xs sm:text-[10px] text-theme-primary uppercase font-bold px-2 py-0.5 rounded bg-theme-elevated border border-theme-primary/30">

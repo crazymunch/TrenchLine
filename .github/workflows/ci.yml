@@ -35,6 +35,11 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
+      # The same value: this Postgres has no pooler in front of it. The schema
+      # declares `directUrl` because production runs through Neon's, and
+      # `prisma migrate` fails outright when the variable is unset — so it is
+      # set here rather than discovered by a red build.
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
       NEXTAUTH_SECRET: ci-placeholder
 
     steps:

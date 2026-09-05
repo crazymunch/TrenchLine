@@ -656,10 +656,10 @@ export const WarbandBuilder: React.FC = () => {
       {/* EDIT WARBAND BUDGET & STATS MODAL */}
       {isBudgetModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
-          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col">
+          <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-lg rounded-md shadow-2xl overflow-hidden bevel-container flex flex-col max-h-[90dvh]">
             
             {/* Header */}
-            <div className="p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
+            <div className="flex-shrink-0 p-4 bg-theme-base border-b border-theme-border flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Coins className="w-5 h-5 text-theme-primary" />
                 <h3 className="font-gothic font-bold text-base text-theme-text">
@@ -675,7 +675,7 @@ export const WarbandBuilder: React.FC = () => {
             </div>
 
             {/* Body */}
-            <div className="p-5 space-y-5">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 space-y-5">
               
               {/* Ducat Limit Control */}
               <div className="space-y-2">

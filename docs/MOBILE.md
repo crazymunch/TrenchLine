@@ -211,19 +211,43 @@ launcher with TrenchLine as the only square tile in a grid of circles.
 
 Two rules follow, and `scripts/__tests__/appIcons.test.mjs` holds both:
 
-- **No border, no margin, no backdrop.** The outer edge must be artwork —
-  light, and continuous with the pixels behind it. Anything the author treats
-  as margin is something the launcher may treat as the icon.
+- **No border, no margin, no backdrop.** The outer edge must be artwork.
+  Anything the author treats as margin is something the launcher may treat as
+  the icon.
 - **The mark clears the safe CIRCLE, not the safe square.** A wordmark sized
   to fit the square still loses its corners to a circular mask, which is how
   `T✝C` comes out as `✝`.
+- **Any hard boundary in the artwork lies outside the safe circle.** This is
+  the reported bug stated exactly: a badge with its own field, ending partway
+  in, means the mask crops the surround rather than the icon.
+- **Content past the safe circle goes all the way round, or is not there.** A
+  rim is drawn at the edge on purpose and may be shaved; a wordmark that
+  overflows at a few angles gets a bite taken out of it, which is how `T✝C`
+  came out as `✝`.
 
-`npm run icons:build` regenerates the maskable and Apple icons from
-`public/icons/icon-512.png`: it lifts the mark off its badge, extends the
-badge's own gradient to the edges, and re-places the mark at a size whose
-bounding circle clears the safe zone. Derived rather than hand-drawn, so the
-icons can be rebuilt when the artwork changes rather than being binaries
-nobody can regenerate.
+These checks have been wrong twice, in opposite directions, and the file says
+so where it matters. First they encoded a PALETTE — the edge had to be lighter
+than luminance 120, and the mark was found by being darker than the ground —
+both true of the silver badge they were written beside and neither a property
+of a maskable icon. Then they encoded a COMPOSITION: a small mark centred on a
+ground running edge to edge. That is one good way to draw an icon and not the
+only one; the artwork now is a disc that fills the frame, and all three checks
+rejected it.
+
+What they assert now is neither. Each has been proved to fail on the bug it
+exists for — the artwork shrunk into a field of its own, a wordmark overflowing
+the circle, and transparent corners — and to pass on artwork that is simply
+composed differently.
+
+`npm run icons:build` regenerates every icon, both favicons and the masthead
+from `public/brand/icon.svg`, the app's own artwork. It renders and nothing
+else: the source is drawn FOR the frame — the disc reaches 95.5% of the
+half-width and the lettering stops 0.8px inside the safe circle — so there is
+nothing to fit, and sizing artwork that is already the right size can only make
+it wrong. Two variants come out of the one file: full bleed for the home-screen
+icons, and the same file with its background rect removed for the browser tab
+and the in-app masthead, where a dark square inside dark chrome draws a box
+around nothing.
 
 ## Component priorities
 

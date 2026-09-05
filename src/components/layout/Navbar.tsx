@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
                 className="w-8 h-8 rounded bg-theme-surface border flex items-center justify-center shadow-lg p-0.5"
                 style={{ borderColor: activeThemeObj.primaryColor }}
               >
-                <img src="/logo.webp" alt="Trench Crusade" className="w-full h-full object-contain" />
+                <img src="/logo.webp" alt="TrenchLine" className="w-full h-full object-contain" />
               </div>
               <span 
                 className="font-gothic font-bold text-base tracking-wider"

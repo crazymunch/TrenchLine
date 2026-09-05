@@ -11,7 +11,7 @@ export const KeywordPopover: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in">
-      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-md rounded-md p-5 shadow-2xl space-y-3">
+      <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-md rounded-md p-5 shadow-2xl space-y-3 max-h-[90dvh] overflow-y-auto overscroll-contain">
         
         <div className="flex items-center justify-between border-b border-theme-border pb-2">
           <div className="flex items-center space-x-2">

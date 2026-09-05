@@ -581,6 +581,41 @@ Plan: promote the good extractions into `data-sources/rulebook/extracted/`,
 replace the 40 one-off scripts with the handful in `scripts/`, and leave
 `scratch/` ignored for genuinely throwaway work.
 
+## Artwork the app ships
+
+Distinct from the rules data above, and governed by a different rule: rules and
+statlines are DERIVED from the publisher's documents and cited, which is what
+the whole pipeline exists to do. Artwork is not derived, it is *copied* — so
+the app ships its own.
+
+| | provenance |
+|---|---|
+| `public/brand/icon.svg` | **Ours** — the app owner's own artwork. The single source of every icon, the favicon and the masthead. |
+| `public/brand/banner.png`, `bannercode.html` | Ours, same origin. Not wired into anything yet. |
+| `public/brand/icon.png` | Ours: a raster export of `icon.svg`. Nothing reads it, and it can drift from the SVG — it is kept as the delivered original, not as a source. |
+| `public/icons/*`, `public/logo.*` | Derived from `icon.svg` by `npm run icons:build`. |
+| `public/images/world-map.webp` | **Not ours** — still the publisher's. See below. |
+| `public/maps/*` | Scenario deployment maps, drawn in vector by the pipeline from the scenarios' own text. |
+
+A placeholder mark sat here briefly, drawn from primitives while the real
+artwork was being made; it is gone. Until that change the masthead and every
+home-screen icon were the Trench Crusade badge. That is two problems, not one: copyright in the artwork, and
+trademark — an unofficial companion using the publisher's logo as its own
+identity reads as endorsement, which the footer disclaimer softens but does not
+cure while the logo IS the identity. The rulebook's own notice is explicit:
+*"All trademarks, service marks, product names, and logos appearing in this
+publication are the property of Factory Fortress Inc."*
+
+**Still outstanding: the campaign world map.** `public/images/world-map.webp`
+is the publisher's, and the Territory Map renders it. Unlike a logo it cannot
+be replaced by a geometry exercise — it needs a map drawn for the purpose, or
+the theatre list without a background behind it. Recorded here rather than
+quietly left, because it is the same issue as the icon and only the icon has
+been fixed.
+
+Two unreferenced copies sit beside it — `trench_crusade_world_map.png` (6.1 MB)
+and `.webp` (1.1 MB). No component loads either.
+
 ## Licensing
 
 **Decided (Aug 2026): not a blocker.** The repository already contains

@@ -1,4 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<!--
+  The TrenchLine icon. The app's own artwork, by its owner, and the single
+  source for everything in `public/icons/` and `public/logo.*` — regenerate
+  with `npm run icons:build`.
+
+  It replaced a mark derived from the Trench Crusade badge, which was two
+  problems rather than one: copyright in the artwork, and trademark, since an
+  unofficial companion using the publisher's logo as its own identity reads as
+  endorsement whatever a footer disclaimer says.
+
+  ## It is already composed for the frame, and that is not an accident
+
+  A maskable icon is cropped by the launcher to a shape nobody here chooses,
+  and only the inner circle of 80% diameter is guaranteed. Measured against a
+  512 canvas, where that circle has radius 204.8:
+
+    disc outer edge   244.4   95.5% of the half-width — it fills the frame, so
+                              a circular mask crops to the disc itself rather
+                              than to a badge floating in a field
+    gold rim          244.0   deliberately OUTSIDE the safe circle. It is a
+                              rim: an aggressive mask may shave it and nothing
+                              is lost, which is what a rim is for
+    T and L letters   204.0   inside 204.8, with 0.8px to spare
+
+  So nothing here is scaled or re-fitted by the build. Moving any of it inward
+  to "be safe" would put a dark ring around a small badge, which is the exact
+  bug this artwork was drawn to fix.
+
+  `id="canvas"` on the background rect is the one edit made to the delivered
+  file. The build strips that element to produce the transparent variants —
+  the browser-tab favicon and the in-app masthead, where a dark square inside
+  dark chrome draws a box around nothing — and keeps it for the home-screen
+  icons, which must be full bleed.
+-->
   <defs>
     <radialGradient id="bucklerFieldOpt3" cx="50%" cy="46%" r="68%">
       <stop offset="0%" stop-color="#FFFFFF"/>
@@ -13,7 +47,7 @@
   </defs>
 
   <!-- Dark background canvas -->
-  <rect width="512" height="512" fill="#0C0D10"/>
+  <rect id="canvas" width="512" height="512" fill="#0C0D10"/>
 
   <!-- Clean single-perimeter buckler shield disk -->
   <circle cx="256" cy="256" r="238" fill="url(#bucklerFieldOpt3)" stroke="url(#bronzeRimOpt3)" stroke-width="12"/>

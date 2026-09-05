@@ -1,26 +1,38 @@
 /**
- * The home-screen icons, derived from the app's own artwork.
+ * The home-screen icons, the browser-tab favicon and the in-app masthead, all
+ * from one file: `public/brand/icon.svg`.
  *
- * Reported by the app's owner with a screenshot of his launcher: TrenchLine
- * was the only square tile in a grid of circles.
+ * ## This script used to do far more, and should not
  *
- * The cause is in the artwork rather than in the manifest, which declared
- * `purpose: "maskable"` correctly all along. Both icons are a light silver
- * BADGE floating on a near-black ground — so a launcher that masks the icon
- * to a circle produces a dark disc with a small light square inside it, and
- * one that letterboxes it instead produces a dark square. Neither looks like
- * the other icons on the screen, and shrinking the badge further (which is
- * what `icon-maskable-512.png` did) makes it worse, not better.
+ * It once read the Trench Crusade badge, fitted a bilinear gradient to it,
+ * keyed the mark off that gradient by colour distance, un-premultiplied the
+ * result, and re-composited it at a size whose bounding circle cleared the
+ * maskable safe zone. Every one of those steps existed to rescue a raster
+ * somebody else had drawn and which was never composed to be an app icon.
  *
- * A maskable icon has to be FULL BLEED: every pixel is artwork, the launcher
- * cuts whatever shape it wants out of it, and the mark sits inside the safe
- * zone so no shape can clip it. That is what this builds — the badge's own
- * gradient extended to the edges, with the mark lifted off it and re-placed
- * at a size that fits the safe circle.
+ * The source is now vector, ours, and drawn FOR the frame — the disc reaches
+ * 95.5% of the half-width and the lettering stops 0.8px inside the safe
+ * circle. So there is nothing to measure and nothing to fit: rendering it is
+ * the whole job. Sizing artwork that is already the right size can only make
+ * it wrong.
  *
- * Derived rather than hand-drawn, and committed as a script, so the icons can
- * be rebuilt when the artwork changes instead of being binaries nobody can
- * regenerate.
+ * What guards the properties the fitting used to enforce is
+ * `scripts/__tests__/appIcons.test.mjs`, which checks the rendered icons
+ * rather than trusting the renderer. That is the better place for it: a check
+ * that runs against the output catches a bad SOURCE too.
+ *
+ * ## Two variants, and the reason each exists
+ *
+ *   full bleed     the home-screen icons. A maskable icon is cropped to a
+ *                  shape nobody here chooses, so every pixel must be artwork —
+ *                  anything the author treats as margin is something the
+ *                  launcher may treat as the icon.
+ *   transparent    the browser tab and the in-app masthead. The artwork is a
+ *                  disc; on a tab strip or inside dark chrome, a dark square
+ *                  around it draws a box around nothing.
+ *
+ * The transparent variant is the same file with its background rect removed,
+ * so the two can never drift apart.
  *
  *   node scripts/build-app-icons.mjs
  */
@@ -28,194 +40,68 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 
+const SOURCE = 'public/brand/icon.svg';
 const ICONS = 'public/icons';
-const SOURCE = path.join(ICONS, 'icon-512.png');
 
 /**
- * The maskable safe zone.
+ * The background rect, by id.
  *
- * The spec guarantees only a circle of 80% of the icon's width; everything
- * outside it may be cut. The mark is sized so its BOUNDING CIRCLE fits inside
- * that, with a margin — a mark that merely fits the safe square still loses
- * its corners to a circular mask, which is how "T✝C" would come out as "✝".
+ * Removed rather than made transparent: `fill="none"` on a rect that carries
+ * the canvas would still be laid out, and some renderers keep its bounds. And
+ * matched on the id rather than on the colour or on "the first rect", so that
+ * re-colouring the background — or adding another rect to the artwork — does
+ * not silently produce icons with a hole in them.
  */
-const SAFE_RADIUS = 0.40;
-const MARGIN = 0.94;
+const CANVAS = /\s*<rect\s+id="canvas"[^>]*\/>/;
 
-/**
- * Where the mark begins and where it is fully opaque, as a distance from the
- * fitted background.
- *
- * The FLOOR is not optional. The badge's gradient is not exactly bilinear, so
- * the fit leaves a few counts of error everywhere — and keying straight from
- * zero turns that error into a film of 5-10% alpha across the whole crop,
- * which lands on the new background as a visible rectangle around the mark.
- * Below the floor is background; above it, alpha ramps to opaque so the
- * mark's own antialiasing survives.
- */
-const KEY_FLOOR = 48;
-const KEY_DISTANCE = 120;
-
-const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
-
-async function raw(file) {
-  const { data, info } = await sharp(file).ensureAlpha()
-    .raw().toBuffer({ resolveWithObject: true });
-  return { data, w: info.width, h: info.height, channels: info.channels };
-}
-
-const at = (img, x, y) => {
-  const i = (y * img.w + x) * img.channels;
-  return [img.data[i], img.data[i + 1], img.data[i + 2]];
-};
-const luminance = ([r, g, b]) => (r + g + b) / 3;
-
-/** The light badge inside the dark ground. */
-function badgeBounds(img) {
-  let x0 = img.w, y0 = img.h, x1 = -1, y1 = -1;
-  for (let y = 0; y < img.h; y++) {
-    for (let x = 0; x < img.w; x++) {
-      if (luminance(at(img, x, y)) <= 100) continue;
-      if (x < x0) x0 = x; if (x > x1) x1 = x;
-      if (y < y0) y0 = y; if (y > y1) y1 = y;
-    }
+/** Full bleed and cut-out, from one source. */
+function variants() {
+  const svg = fs.readFileSync(SOURCE, 'utf8');
+  if (!CANVAS.test(svg)) {
+    throw new Error(
+      `${SOURCE} has no <rect id="canvas">. The transparent favicon and masthead `
+      + 'are made by removing it, and an icon silently shipped with its dark '
+      + 'canvas into a dark navbar is the bug this exists to prevent.');
   }
-  if (x1 < 0) throw new Error(`${SOURCE}: no light badge found — the artwork is not what this reader expects.`);
-  return { x0, y0, x1, y1, w: x1 - x0 + 1, h: y1 - y0 + 1 };
-}
-
-/**
- * The badge's gradient, as the four corners of a bilinear surface.
- *
- * Sampled a little inside the badge's edge, where the mark never reaches.
- * Read as a surface rather than copied as pixels so it can be EXTENDED past
- * the badge to fill the whole canvas — which is the point of the exercise.
- */
-function gradientOf(img, b) {
-  const inset = Math.round(b.w * 0.02);
-  const corner = (x, y) => at(img, x, y);
-  return {
-    tl: corner(b.x0 + inset, b.y0 + inset),
-    tr: corner(b.x1 - inset, b.y0 + inset),
-    bl: corner(b.x0 + inset, b.y1 - inset),
-    br: corner(b.x1 - inset, b.y1 - inset),
-  };
-}
-
-/** The gradient at (u, v), both 0..1 across the badge. */
-function sample(g, u, v) {
-  const mix = (a, c, t) => a + (c - a) * t;
-  return [0, 1, 2].map((k) => mix(
-    mix(g.tl[k], g.tr[k], u),
-    mix(g.bl[k], g.br[k], u), v));
-}
-
-/**
- * The mark, lifted off its background.
- *
- * Keyed on distance from the fitted gradient rather than on a fixed colour:
- * the mark is black and red over a silver ramp that runs from 189 to 254, so
- * no single threshold separates them everywhere on the badge. The colour is
- * un-premultiplied against the background it was sitting on, which is what
- * keeps a light halo from appearing once it is placed on a different one.
- */
-function liftMark(img, b, g) {
-  const out = Buffer.alloc(b.w * b.h * 4);
-  let x0 = b.w, y0 = b.h, x1 = -1, y1 = -1;
-
-  for (let y = 0; y < b.h; y++) {
-    for (let x = 0; x < b.w; x++) {
-      const pixel = at(img, b.x0 + x, b.y0 + y);
-      const bg = sample(g, x / (b.w - 1), y / (b.h - 1));
-      const distance = Math.max(...[0, 1, 2].map((k) => Math.abs(pixel[k] - bg[k])));
-      const alpha = clamp((distance - KEY_FLOOR) / (KEY_DISTANCE - KEY_FLOOR), 0, 1);
-
-      const i = (y * b.w + x) * 4;
-      for (let k = 0; k < 3; k++) {
-        const unmixed = alpha > 0.02
-          ? (pixel[k] - bg[k] * (1 - alpha)) / alpha
-          : pixel[k];
-        out[i + k] = clamp(Math.round(unmixed), 0, 255);
-      }
-      out[i + 3] = Math.round(alpha * 255);
-
-      if (alpha > 0.35) {
-        if (x < x0) x0 = x; if (x > x1) x1 = x;
-        if (y < y0) y0 = y; if (y > y1) y1 = y;
-      }
-    }
-  }
-  if (x1 < 0) throw new Error('No mark could be lifted off the badge.');
-  return { buffer: out, w: b.w, h: b.h, box: { x0, y0, w: x1 - x0 + 1, h: y1 - y0 + 1 } };
-}
-
-/** The gradient, extended over a whole square canvas. */
-function ground(g, size) {
-  const out = Buffer.alloc(size * size * 4);
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      const c = sample(g, x / (size - 1), y / (size - 1));
-      const i = (y * size + x) * 4;
-      for (let k = 0; k < 3; k++) out[i + k] = clamp(Math.round(c[k]), 0, 255);
-      out[i + 3] = 255;
-    }
-  }
-  return out;
+  return { full: Buffer.from(svg), cut: Buffer.from(svg.replace(CANVAS, '')) };
 }
 
 async function build() {
-  if (!fs.existsSync(SOURCE)) throw new Error(`${SOURCE} is missing.`);
-  const img = await raw(SOURCE);
-  const b = badgeBounds(img);
-  const g = gradientOf(img, b);
-  const mark = liftMark(img, b, g);
-
-  const SIZE = 512;
-  /*
-    Scale so the mark's bounding CIRCLE clears the safe zone. The mark is much
-    wider than it is tall, so sizing it by width alone would push its corners
-    out past the mask.
-  */
-  const half = Math.hypot(mark.box.w, mark.box.h) / 2;
-  const scale = (SAFE_RADIUS * MARGIN * SIZE) / half;
-  const w = Math.max(1, Math.round(mark.box.w * scale));
-  const h = Math.max(1, Math.round(mark.box.h * scale));
-
-  const cropped = await sharp(mark.buffer, {
-    raw: { width: mark.w, height: mark.h, channels: 4 },
-  })
-    .extract({ left: mark.box.x0, top: mark.box.y0, width: mark.box.w, height: mark.box.h })
-    .resize(w, h, { fit: 'fill' })
-    .png().toBuffer();
-
-  const full = await sharp(ground(g, SIZE), {
-    raw: { width: SIZE, height: SIZE, channels: 4 },
-  })
-    .composite([{
-      input: cropped,
-      left: Math.round((SIZE - w) / 2),
-      top: Math.round((SIZE - h) / 2),
-    }])
-    .png().toBuffer();
-
-  const written = [];
-  for (const [name, size] of [
-    ['icon-maskable-512.png', 512],
-    ['icon-maskable-192.png', 192],
-    /* iOS does not mask, it rounds — full bleed is right there too, and the
-       old apple-touch-icon had the same dark border round a small badge. */
-    ['apple-touch-icon.png', 180],
-  ]) {
-    const file = path.join(ICONS, name);
-    await sharp(full).resize(size, size).png({ compressionLevel: 9 }).toFile(file);
-    written.push(`${name} (${size}px)`);
+  if (!fs.existsSync(SOURCE)) {
+    throw new Error(`${SOURCE} is missing. Every icon is derived from it; there is no fallback artwork.`);
   }
+  const { full, cut } = variants();
+  fs.mkdirSync(ICONS, { recursive: true });
 
-  console.log(`badge ${b.w}x${b.h} at (${b.x0},${b.y0}); `
-    + `mark ${mark.box.w}x${mark.box.h} placed at ${w}x${h} `
-    + `(bounding circle ${(half * scale / SIZE * 2 * 100).toFixed(1)}% of the icon, `
-    + `safe zone ${(SAFE_RADIUS * 200).toFixed(0)}%)`);
-  console.log(`  wrote ${written.join(', ')}`);
+  const render = (svg, size, file) =>
+    sharp(svg).resize(size, size).png().toFile(file);
+
+  /*
+    The same full-bleed art for `any` and `maskable` alike. A separate padded
+    version for `any` would be a second thing to keep in step, and a launcher
+    that does not mask simply shows the square the artwork already is.
+  */
+  const bleed = [
+    ['icon-512.png', 512], ['icon-192.png', 192],
+    ['icon-maskable-512.png', 512], ['icon-maskable-192.png', 192],
+    /* iOS applies its own rounded rect and composites transparency onto black,
+       so the full-bleed square is both what it wants and what it would get. */
+    ['apple-touch-icon.png', 180],
+  ];
+  for (const [name, size] of bleed) await render(full, size, path.join(ICONS, name));
+
+  /* The browser tab, at the two sizes browsers actually ask for. */
+  const tab = [['favicon-32.png', 32], ['favicon-16.png', 16]];
+  for (const [name, size] of tab) await render(cut, size, path.join(ICONS, name));
+
+  /* The masthead, on the app's own chrome. */
+  const logo = await sharp(cut).resize(500, 500).png().toBuffer();
+  await sharp(logo).png().toFile('public/logo.png');
+  await sharp(logo).webp({ lossless: true }).toFile('public/logo.webp');
+
+  console.log(`icons from ${SOURCE}`);
+  for (const [name] of [...bleed, ...tab]) console.log(`  ${path.join(ICONS, name)}`);
+  console.log('  public/logo.png\n  public/logo.webp');
 }
 
 build().catch((e) => { console.error(e.message); process.exit(1); });
