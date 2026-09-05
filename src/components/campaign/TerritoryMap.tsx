@@ -6,6 +6,7 @@ import { TerritoryNode } from '../../types/campaign';
 import { frameworkOf } from '@/rules/campaignFramework';
 import { Warband } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
+import { useOverlay } from '../ui/useOverlay';
 import { 
   Shield, 
   MapPin, 
@@ -92,6 +93,16 @@ export const TerritoryMap: React.FC = () => {
     setEditingPerk(false);
     setSelectedTerritory(node);
   };
+
+  /*
+    Escape, the focus trap and the scroll lock for the dossier. Declared with
+    a stable closer so the hook is not re-armed on every render.
+  */
+  const closeDossier = React.useCallback(() => {
+    setEditingPerk(false);
+    setSelectedTerritory(null);
+  }, []);
+  const dossier = useOverlay(!!selectedTerritory, closeDossier);
 
   const handleEditPerk = () => {
     if (!selectedTerritory) return;
@@ -279,10 +290,23 @@ export const TerritoryMap: React.FC = () => {
               const isClaimedByOther = node.controlledByWarbandId && !isClaimedByActive;
 
               return (
-                <div
+                <button
                   key={node.id}
+                  type="button"
                   onClick={() => selectTerritory(node)}
-                  className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group z-20"
+                  /*
+                    A button, not a div with an onClick. The pin was reachable
+                    only with a pointer: no focus, no Enter or Space, and
+                    nothing to announce it as something you could press. A
+                    button gives all three without a keydown handler of our own.
+
+                    `tap` because the marker itself is 24px, under the 44px
+                    floor (docs/MOBILE.md §3) — it widens the hit area without
+                    changing what is drawn.
+                  */
+                  aria-label={`${node.name} — ${node.controlledByPlayerName
+                    ? `held by ${node.controlledByPlayerName}` : 'unclaimed'}`}
+                  className="tap absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group z-20 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary focus-visible:ring-offset-2 focus-visible:ring-offset-theme-base"
                   style={{
                     left: `${node.x}%`,
                     top: `${node.y}%`
@@ -319,7 +343,7 @@ export const TerritoryMap: React.FC = () => {
                       </span>
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -334,10 +358,17 @@ export const TerritoryMap: React.FC = () => {
             const isContested = !!node.controlledByWarbandId;
 
             return (
-              <div
+              <button
                 key={node.id}
+                type="button"
                 onClick={() => selectTerritory(node)}
-                className={`p-4 bg-theme-base border rounded-md transition-all cursor-pointer flex flex-col justify-between hover:border-theme-primary ${
+                /*
+                  `w-full text-left` because a button centres its text and
+                  shrinks to its content, and this card is a left-aligned block
+                  that fills its grid cell. Everything else about it is
+                  unchanged — the point is the semantics, not the look.
+                */
+                className={`w-full text-left p-4 bg-theme-base border rounded-md transition-all cursor-pointer flex flex-col justify-between hover:border-theme-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary ${
                   isControlledByMe
                     ? 'border-status-legal bg-status-legal/5 ring-1 ring-status-legal'
                     : isContested
@@ -413,21 +444,36 @@ export const TerritoryMap: React.FC = () => {
                   </div>
                 </div>
 
-              </div>
+              </button>
             );
           })}
         </div>
       )}
 
-      {/* Strategic Theater Dossier Modal */}
+      {/*
+        The dossier.
+
+        `useOverlay` gives it the three things every overlay owes the user and
+        this one had none of: Escape, a focus trap, and a body scroll lock —
+        so it could not be closed from a keyboard, Tab walked out into the map
+        behind it, and the page scrolled under a finger on the panel. The hook
+        was extracted from `Sheet` for exactly this, and nothing outside
+        `Sheet` had adopted it yet.
+      */}
       {selectedTerritory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs">
+        <div
+          ref={dossier}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="territory-dossier-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in font-mono text-xs"
+        >
           <div className="bg-theme-surface border-2 border-theme-primary w-full max-w-xl rounded-md shadow-2xl overflow-hidden bevel-container">
             
             <div className="flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
               <div className="flex items-center space-x-2">
                 <Globe className="w-5 h-5 text-theme-primary" />
-                <h3 className="font-gothic font-bold text-lg text-theme-text">STRATEGIC THEATER DOSSIER</h3>
+                <h3 id="territory-dossier-title" className="font-gothic font-bold text-lg text-theme-text">STRATEGIC THEATER DOSSIER</h3>
               </div>
               <button
                 onClick={() => selectTerritory(null)}

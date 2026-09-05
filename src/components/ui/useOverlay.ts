@@ -18,6 +18,8 @@
  *     return <div ref={ref} className="fixed inset-0 …">…</div>;
  *
  * A component that has moved to `Sheet` does not call this — `Sheet` does.
+ *
+ * First adopter: `TerritoryMap`'s dossier.
  */
 import { useCallback, useEffect, useRef } from 'react';
 

@@ -68,3 +68,40 @@ test('a campaign writes its own territory house rule, labelled as theirs', async
   await expect(page.getByText('House rule (set by this campaign):')).toHaveCount(0);
   await expect(page.getByText(/No published rule attaches an effect/)).toBeVisible();
 });
+
+/**
+ * The map is reachable without a pointer.
+ *
+ * Both the pins and the theatre cards were `<div onClick>`: no focus, no
+ * Enter or Space, and nothing announcing them as pressable. The dossier they
+ * open had no Escape, no focus trap and no scroll lock either — `useOverlay`
+ * was extracted from `Sheet` so a component rendering its own overlay could
+ * have all three, and nothing outside `Sheet` had adopted it.
+ */
+test('a territory opens, and closes, from the keyboard alone', async ({ page }) => {
+  await openApp(page);
+  await goTo(page, 'Crusade');
+  await page.getByRole('button', { name: 'CAMPAIGN WORLD MAP' }).click();
+  await page.getByRole('button', { name: 'Theaters Grid' }).click();
+
+  /*
+    Focused rather than clicked: a div with an onClick cannot be focused at
+    all, so this fails outright on the shape this test exists to prevent.
+  */
+  const card = page.getByRole('button', { name: /The Great Iron Wall & New Antioch/ }).first();
+  await expect(card).toBeVisible();
+  await card.focus();
+  await expect(card).toBeFocused();
+
+  await page.keyboard.press('Enter');
+
+  const dossier = page.getByRole('dialog');
+  await expect(dossier).toBeVisible();
+  await expect(dossier).toHaveAttribute('aria-modal', 'true');
+
+  // Focus moved into the dossier rather than staying on the card behind it.
+  await expect(card).not.toBeFocused();
+
+  await page.keyboard.press('Escape');
+  await expect(dossier).toHaveCount(0);
+});

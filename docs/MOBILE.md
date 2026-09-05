@@ -155,6 +155,24 @@ Replace all of them with one primitive:
 The primitive owns body scroll lock, focus trap, `Escape`, and the safe-area and
 `dvh` handling — so those are fixed once rather than thirty times.
 
+**Until a modal has moved, it calls `useOverlay`.** Migrating thirty modals to
+`Sheet` structurally is a lot of JSX surgery, and the behaviour does not have to
+wait for it: `src/components/ui/useOverlay.ts` is the implementation `Sheet`
+uses, extracted so a component still rendering its own overlay gets the scroll
+lock, the focus trap and `Escape` from one call. A component that has moved to
+`Sheet` does not call it — `Sheet` does.
+
+`TerritoryMap`'s dossier is the first adopter: it had none of the three, so it
+could not be closed from a keyboard, Tab walked out into the map behind it, and
+the page scrolled under a finger on the panel.
+
+**A thing you can click is a `<button>`.** Not a `<div>` with an `onClick` —
+that has no focus, no Enter or Space, and nothing announcing it as pressable, so
+it is unreachable without a pointer. The territory pins and theatre cards were
+both written that way; making them buttons is what gives them all three, with no
+`onKeyDown` of our own. Where the drawn control is smaller than the touch floor
+(the map pin is 24px), `tap` widens the hit area without changing what is drawn.
+
 `headerAside` pins a live figure to the top-right of the sticky header, left of
 the close button. The recruit sheet uses it for Ducats remaining: on a phone the
 budget is otherwise a scroll away on the view behind, so it was only ever
