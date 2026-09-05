@@ -9,7 +9,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
-import { variantArmoury, stockedAnywhere } from '../variantArmoury';
+import { variantArmoury, stockedAnywhere, withinGrants } from '../variantArmoury';
 
 /** The factions that actually publish an Armoury Table. */
 const KNOWN = DATASET.armouries.map((a) => a.factionId);
@@ -95,5 +95,131 @@ describe('stockedAnywhere', () => {
   it('still reports an item no reachable armoury stocks', () => {
     const r = stockedAnywhere(DATASET, 'iron-sultanate', undefined, { name: 'Entrenching Shovel' });
     expect(r.stocked).toBe(false);
+  });
+});
+
+describe('withinGrants — how much a grant actually allows', () => {
+  /*
+    The half of the rule that was read and never counted. `stockedAnywhere`
+    answers "is this stocked somewhere you can reach", which makes a granted
+    item legal; nothing then looked at HOW MANY had been taken, so a House of
+    Wisdom roster with five New Antioch items validated clean against a rule
+    that says one.
+
+    The allowance is per COPY, which is not this file's reading — MISC. Q4 in
+    the catalogue's own FAQ settles it: "You can only purchase one of each
+    piece of Battlekit."
+  */
+  const g = (factionId: string, limit: number | null, rule = 'Weapon Collections') =>
+    ({ factionId, limit, rule });
+
+  const na = g('new-antioch', 1);
+  const tp = g('trench-pilgrims', 1);
+
+  it('allows exactly what the rule states', () => {
+    expect(withinGrants([
+      { item: { name: 'A' }, via: [na] },
+      { item: { name: 'B' }, via: [tp] },
+    ])).toBe(true);
+  });
+
+  it('refuses one more than the rule states', () => {
+    expect(withinGrants([
+      { item: { name: 'A' }, via: [na] },
+      { item: { name: 'B' }, via: [na] },
+    ])).toBe(false);
+  });
+
+  it('counts a second copy of one piece as a second piece', () => {
+    // The FAQ's answer, stated as a test: two copies of the same item is two.
+    expect(withinGrants([
+      { item: { name: 'A' }, via: [na] },
+      { item: { name: 'A' }, via: [na] },
+    ])).toBe(false);
+  });
+
+  it('assigns rather than tallies, so a legal roster is not called illegal', () => {
+    /*
+      The reason this is a search. An item stocked by BOTH granted armouries —
+      the Sword/Axe is in most of them — must not be counted against a
+      particular one just because it was seen first. Here a greedy tally puts
+      both items on New Antioch and reports two-over-one; the correct answer is
+      that the shared item goes to Trench Pilgrims.
+    */
+    expect(withinGrants([
+      { item: { name: 'shared' }, via: [na, tp] },
+      { item: { name: 'na-only' }, via: [na] },
+    ])).toBe(true);
+  });
+
+  it('backtracks when the first assignment is the wrong one', () => {
+    // Order chosen so the naive first pick fails and a retry succeeds.
+    expect(withinGrants([
+      { item: { name: 'shared-1' }, via: [na, tp] },
+      { item: { name: 'shared-2' }, via: [na, tp] },
+      { item: { name: 'na-only' }, via: [na] },
+    ])).toBe(false);
+
+    expect(withinGrants([
+      { item: { name: 'shared-1' }, via: [na, tp] },
+      { item: { name: 'na-only' }, via: [na] },
+    ])).toBe(true);
+  });
+
+  it('treats a grant with no stated number as unbounded', () => {
+    /*
+      `limit: null` means the rule stated no count. An unstated number is not a
+      licence to invent one, and it is not a reason to refuse either — the
+      standing policy in this file is to surface what cannot be read and
+      enforce only what can.
+    */
+    const open = g('new-antioch', null, 'Some Rule');
+    expect(withinGrants(Array.from({ length: 50 }, (_, i) => (
+      { item: { name: `item-${i}` }, via: [open] }
+    )))).toBe(true);
+  });
+
+  it('is vacuously satisfied by an empty roster', () => {
+    expect(withinGrants([])).toBe(true);
+  });
+});
+
+describe('the grant limit, against the real House of Wisdom rule', () => {
+  const v = byName('The House of Wisdom');
+  const { grants } = variantArmoury(v, v.factionId, KNOWN);
+
+  it('reads one piece from each of two armouries', () => {
+    // "you can purchase 1 piece of Battlekit from the New Antioch Armoury, and
+    //  1 piece of Battlekit from the Trench Pilgrims Armoury"
+    expect(grants.map((x) => x.factionId).sort()).toEqual(['new-antioch', 'trench-pilgrims']);
+    expect(grants.every((x) => x.limit === 1)).toBe(true);
+  });
+
+  it('permits two granted pieces and refuses three', () => {
+    const one = grants.find((x) => x.factionId === 'new-antioch')!;
+    const two = grants.find((x) => x.factionId === 'trench-pilgrims')!;
+    expect(withinGrants([
+      { item: { name: 'a' }, via: [one] },
+      { item: { name: 'b' }, via: [two] },
+    ])).toBe(true);
+    expect(withinGrants([
+      { item: { name: 'a' }, via: [one] },
+      { item: { name: 'b' }, via: [two] },
+      { item: { name: 'c' }, via: [one] },
+    ])).toBe(false);
+  });
+
+  it('the ruling that settles the per-copy reading is in the dataset', () => {
+    /*
+      Cited rather than paraphrased. The count is the catalogue's, not ours —
+      so if the pipeline ever stops carrying this entry, the reading above is
+      no longer sourced and this fails, which is the point.
+
+      It lives in `commentaries`, the parsed rules Q&A, as MISC. Q4.
+    */
+    const ruling = (DATASET.commentaries ?? []).find((c) =>
+      /Corrupt Merchants and Weapon Collections/i.test(c.question));
+    expect(ruling, 'MISC. Q4 is not in the dataset').toBeDefined();
+    expect(ruling!.answer).toMatch(/one of each piece of Battlekit/i);
   });
 });

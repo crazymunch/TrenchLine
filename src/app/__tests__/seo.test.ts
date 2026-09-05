@@ -43,6 +43,24 @@ describe('robots.txt', () => {
     }
   });
 
+  it('leaves the documents crawlable', () => {
+    /*
+      The reason these three are ALLOWED rather than merely not disallowed.
+
+      trenchline.app was flagged as a deceptive page. Nothing was compromised;
+      what the site had was the profile — a new domain, a password form, a
+      Google button, and no crawlable page saying who ran it. Disallowing
+      /privacy to tidy up the sitemap would recreate exactly that, so the
+      allowance is asserted rather than assumed.
+    */
+    const disallowed = asList(rules().disallow);
+    const allowed = asList(rules().allow);
+    for (const path of ['/about', '/privacy', '/terms']) {
+      expect(disallowed, `${path} is blocked from crawlers`).not.toContain(path);
+      expect(allowed, `${path} is not explicitly allowed`).toContain(path);
+    }
+  });
+
   it('points at a sitemap on this origin', () => {
     expect(robots().sitemap).toBe(`${ORIGIN}/sitemap.xml`);
   });
@@ -51,6 +69,13 @@ describe('robots.txt', () => {
 describe('sitemap.xml', () => {
   it('lists the front door', () => {
     expect(sitemap().map((e) => e.url)).toContain(ORIGIN);
+  });
+
+  it('lists the three documents', () => {
+    const urls = sitemap().map((e) => e.url);
+    for (const path of ['/about', '/privacy', '/terms']) {
+      expect(urls, `${path} is missing from the sitemap`).toContain(`${ORIGIN}${path}`);
+    }
   });
 
   it('lists nothing robots.txt disallows', () => {
