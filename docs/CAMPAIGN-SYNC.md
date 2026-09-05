@@ -192,6 +192,25 @@ From SYNC-1, and unchanged by the above.
 speak wins and silently discards whatever the other one did. Each mutation is
 an operation with a stable, client-generated `opId`.
 
+**Idempotent, and a violation of the key is read rather than assumed.** The
+server records applied `opId`s and skips a repeat.
+
+`opId` is the primary key GLOBALLY, not per campaign, and the route originally
+answered `skipped` to every violation of it without looking at what it had
+collided with. So an id already spent in one campaign made the next campaign's
+operation report as an already-applied retry — and `skipped` clears the
+client's outbox exactly as `applied` does, so the edit was dropped on the
+device as well as never written on the server, and the sync reported success.
+It is the same failure the version-conflict path is careful to avoid, arriving
+by a different door. Found by the Codex reviewer, in September 2026.
+
+The prior record is now read and compared: **same campaign, same kind, same
+actor** is a redelivery and is skipped. Anything else is an id that has been
+reused, which the server cannot repair — so it comes back as a **conflict**
+with `reason: 'op-id-reused'`, because conflicts are the outcome the client
+does NOT clear from its outbox. `server` is null on that conflict: there is no
+server copy of the entity to merge against, because the operation never ran.
+
 **Idempotent.** The server records applied `opId`s and skips a repeat. This is
 what makes a retry safe, and it is the property the deleted code lacked — it
 called create on every attempt, which is how one campaign became several.
@@ -221,7 +240,8 @@ door: the same `requireCampaignAccess` a normal route uses, per operation.
 POST /api/campaigns/sync
   { campaignId, ops: [ { opId, kind, entityId, baseVersion, data } ] }
 
-200 { applied: [opId], skipped: [opId], conflicts: [ { opId, server } ] }
+200 { applied: [opId], skipped: [opId],
+      conflicts: [ { opId, server, reason? } ] }
 409                        the campaign itself moved on; fetch and retry
 ```
 

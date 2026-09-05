@@ -100,7 +100,7 @@ type Op = z.infer<typeof Body>['ops'][number];
 type Outcome =
   | { opId: string; state: 'applied' }
   | { opId: string; state: 'skipped' }
-  | { opId: string; state: 'conflict'; server: unknown };
+  | { opId: string; state: 'conflict'; server: unknown; reason?: 'op-id-reused' };
 
 /** Postgres' unique violation, which here means "already applied". */
 const isDuplicate = (e: unknown) =>
@@ -209,11 +209,51 @@ async function applyOp(op: Op, access: CampaignAccess): Promise<Outcome> {
     });
   } catch (e) {
     if (e instanceof Conflict) return e.outcome;
-    /* Two deliveries of one operation racing each other. The loser did not
-       apply anything, and "already applied" is exactly right. */
-    if (isDuplicate(e)) return { opId: op.opId, state: 'skipped' };
+    if (isDuplicate(e)) return await duplicateOutcome(op, access);
     throw e;
   }
+}
+
+/**
+ * What a primary-key violation on `CampaignSyncOp` actually means.
+ *
+ * Usually: two deliveries of one operation racing each other. The loser
+ * applied nothing and "already applied" is exactly right.
+ *
+ * But `opId` is the primary key GLOBALLY, not per campaign, and the route used
+ * to answer `skipped` to every violation without looking. So an id already
+ * used in ANOTHER campaign was acknowledged as a successful retry of an
+ * operation this campaign had never seen — and `skipped` clears the client's
+ * outbox exactly as `applied` does (`campaignSync.ts`), so the edit was
+ * dropped on both sides and reported as a success. That is the failure the
+ * `Conflict` class below exists to prevent, arriving by a different door.
+ *
+ * So the prior record is read and compared. Same campaign, same kind, same
+ * actor is a retry. Anything else is an id that has been reused, which is a
+ * client fault this cannot repair — and the one thing it must not do is
+ * pretend the edit landed.
+ *
+ * It comes back as a CONFLICT rather than a fourth outcome because of what the
+ * client does with each: `applied` and `skipped` clear the outbox, conflicts
+ * do not. A conflict keeps the operation, which is the only correct answer
+ * when nothing was written. `server` is null — there is no server copy of this
+ * entity to merge against, the operation simply did not run — and the guards
+ * on the client already return null rather than defaulting when a payload is
+ * not the shape they expect.
+ */
+async function duplicateOutcome(op: Op, access: CampaignAccess): Promise<Outcome> {
+  const prior = await prisma.campaignSyncOp.findUnique({
+    where: { opId: op.opId },
+    select: { campaignId: true, kind: true, actorId: true },
+  });
+
+  const isRetry = prior
+    && prior.campaignId === access.campaignId
+    && prior.kind === op.kind
+    && prior.actorId === access.actor.userId;
+
+  if (isRetry) return { opId: op.opId, state: 'skipped' };
+  return { opId: op.opId, state: 'conflict', server: null, reason: 'op-id-reused' };
 }
 
 /**
