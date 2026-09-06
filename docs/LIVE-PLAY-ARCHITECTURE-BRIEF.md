@@ -426,3 +426,133 @@ Claude: challenge the concrete projection of an overdrawn observation; propose c
 This round supersedes the disputed rules/authority/cost recommendations without editing Claude's review. Companion [export review](EXPORT-CODEX-REVIEW.md) shares the immutable roster snapshot/provenance boundary; native roster import must not grant live authority or replay campaign rewards.
 
 Verification: read Claude's two documents and relevant generated marker/import/export/type sources at the pinned branch revision. Design review only; no prototype, app test, deployment, billing change, new processor or live-game benchmark performed.
+
+## 11. Round 3 — owner rulings
+
+Date: 6 September 2026. Recorded by Claude from the owner's decisions in
+conversation, in response to the questions [round 2](#108-next-decisions-for-owner-and-claude)
+put to them. §§1–9 remain history; §10 stands except where a ruling below
+settles a question it left open.
+
+**Attribution matters here.** The three rulings are the owner's. The
+refinements under each are mine, offered as consequences of the ruling and open
+to challenge; where I have narrowed or widened what was said, it is marked.
+
+### 11.1 Strict mode: the app can referee, if you ask it to
+
+**Ruling.** A match starts in scorekeeper behaviour. A player may switch on a
+**strict mode** that gives rules guidance — for a new player who wants it — and
+in strict mode an action the rules disallow can still be **overridden and
+recorded, with a flag.**
+
+This settles §10.8's request to "specify the source-derived entitlement plus
+manual override boundary": strict mode *is* that boundary, and it is a user
+choice rather than a fixed line in the protocol.
+
+**Refinement (mine): strict mode is a per-DEVICE setting, not a per-match one.**
+
+The owner did not specify the scope. Per-match is the tempting reading and I
+think it is wrong:
+
+- Both players would have to agree, and the new player wanting guidance is
+  usually one person at the table. Their opponent should not have to play in
+  training wheels.
+- A strict player and a lenient player would disagree about what is legal, so
+  the server would have to pick a side — and now there are two protocols.
+- Per-device keeps the server protocol **identical in both modes**. Strict mode
+  becomes a client-side pre-tap check over rules data already derived (marker
+  `spentBy` and caps, Battlekit limits, carrying allowances). No new server
+  work, no migration, and it can ship after the core.
+
+**Strict mode never blocks; it interrupts.** "The rules say this model has no
+markers left — record anyway?" The player taps through and the entry is
+recorded carrying `overrode: true`, which is the owner's "record and flag".
+
+One consequence worth stating: the flag is only meaningful where a warning
+happened. A player in scorekeeper mode doing the same thing produces no flag,
+because nothing ever claimed the action was legal. That is correct, not a gap.
+
+### 11.2 Disagreement is editing, not a workflow
+
+**Ruling.** When the app and the table disagree in scorekeeper mode, **nothing
+special happens — you update the app.** In strict mode you override and it is
+recorded.
+
+**This supersedes the disputed-projection machinery I proposed** in
+`LIVE-PLAY-CLAUDE-REVIEW.md` D2 and that §10.3 elaborated. I had invented a
+state machine for something that is ordinary editing. The app is a tracker; if
+its number is wrong, you change it.
+
+What survives, and only this:
+
+- every entry is **attributed**, so "who set this to 3" is answerable;
+- a correction is a **new entry** referencing what it corrects, never a silent
+  overwrite, so history stays honest;
+- if a projection would go impossible — a count below zero — show a quiet
+  badge. A badge, not a modal, and not a workflow.
+
+§10.3's insistence that an overdrawn observation must not be silently clamped
+to zero still holds: the entry is kept and the projection is visibly wrong
+rather than quietly plausible. What is dropped is the dispute *state machine*
+around it.
+
+### 11.3 Disconnection falls back to GM Mode
+
+**Ruling.** If a phone drops out, the match **falls back to GM Mode** — the
+remaining device carries on as sole controller — and when the player reconnects
+it **returns to two-way**.
+
+This answers §10.8's offline-alpha question, and it is better than the "pause on
+disconnect" I recommended in the review, which I withdraw. Pausing stops a game
+that the table is still playing; failover matches what actually happens when
+someone's phone dies.
+
+**It also unifies the three modes into one mechanism.** The authority epoch
+§10.3 already requires is the whole story:
+
+| Mode | What it is |
+|---|---|
+| Single Device | No epoch needed; local writer |
+| GM Mode | An epoch with **one** writer |
+| Live Play | An epoch with **two** |
+| Failover | Issue a new epoch with one |
+
+**Refinement (mine): down is automatic, up is a handshake.**
+
+- **Down.** The remaining device sees no heartbeat for a bounded interval and
+  *offers* sole control. Accepting mints a new epoch. A phone that is actually
+  alive on a bad connection is then fenced out — writes carrying the old epoch
+  are rejected, which is the same fencing that stops a second tab on one
+  account becoming a competing writer.
+- **Up.** The returning player sees that control was taken and **requests** to
+  rejoin. The controller accepts, and a new epoch restores two writers.
+
+Handshake on the way back but not on the way down, because on the way down
+there is nobody to ask — that is the whole problem. On the way back there is.
+
+**Refinement (mine): discard the disconnected player's unsent taps, and say
+so.** Show them as a list — "3 actions could not be sent" — that the player can
+redo if still relevant. Replaying them is unsafe for exactly the reason §10.4
+gives: the round may have advanced, and a round-3 activation applied into round
+4 is worse than a lost tap. The player is sitting at the table and can redo the
+two that mattered. This is the narrower of the two readings of the ruling and I
+have taken it deliberately; the owner said "or is that too hard?", and the
+epochs are not hard — the merge semantics would have been.
+
+### 11.4 Still open
+
+Unchanged from §10.8, and not settled by the above:
+
+- Whether the alpha permits **two authenticated editing seats** only, or more.
+- Whether the **observed polling delay** is acceptable for Live Play, as
+  distinct from GM Mode where §10.2 notes the owner may accept slower.
+- Guests versus accounts; spectator privacy; shared digital dice; maximum
+  player count; any paid budget ceiling.
+- All vendor and processing decisions remain blocked behind SB-1b (§10.6).
+
+### 11.5 What these rulings change about sequencing
+
+Nothing. The extraction of match state out of roster units — accepted by both
+rounds — remains first, and none of the above depends on a transport choice.
+Strict mode is additive and can follow the core. The epoch is needed for the
+two-tab problem regardless of whether failover ships with the alpha.
