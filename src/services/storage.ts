@@ -13,6 +13,16 @@ const CUSTOM_WEAPONS_KEY = 'tc_custom_weapons_v1';
 
 const isBrowser = typeof window !== 'undefined';
 
+/** One live match, as the campaign's listing shows it. Never a board. */
+export interface LiveMatchSummary {
+  id: string;
+  hostId: string;
+  hostName: string | null;
+  revision: number;
+  startedAt: string;
+  updatedAt: string;
+}
+
 /** What an invite code shows someone who is not in the campaign yet. */
 export interface CampaignInvitePreview {
   id: string;
@@ -374,6 +384,103 @@ export const storage = {
       `/api/campaigns?id=${encodeURIComponent(campaignId)}`,
       {},
       (data) => parseCampaign(data?.campaign),
+    );
+  },
+
+  /**
+   * Push the board, as this device holds it.
+   *
+   * LIVE-1. A SNAPSHOT, not a stream of operations — see `docs/LIVE-MODE.md`
+   * and the route. The caller coalesces: this is cheap but it is not free, and
+   * a write per wound stepper tap is a write per keystroke.
+   */
+  async pushLiveMatch(
+    matchId: string,
+    campaignId: string,
+    state: unknown,
+  ): Promise<CloudResult<{ revision: number }>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request('/api/campaigns/live', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matchId, campaignId, state }),
+    }, (data) => {
+      const r = data?.match?.revision;
+      /* Thrown rather than defaulted: a revision the server did not send is
+         not revision 1, and storing one would make the next poll think it
+         already had the newest board. */
+      if (typeof r !== 'number') throw new Error('The server returned no revision.');
+      return { revision: r };
+    });
+  },
+
+  /**
+   * Read the board, cheaply.
+   *
+   * `knownRevision` becomes `If-None-Match`, and a 304 comes back as
+   * `unchanged` — which is the normal answer while nobody is moving, and the
+   * reason a two-second poll is affordable at all. It is a SUCCESS, not a
+   * failure: a watcher that treated it as an error would show a spinner over
+   * a board that is simply still.
+   */
+  async pollLiveMatch(
+    matchId: string,
+    knownRevision?: number,
+  ): Promise<CloudResult<{ unchanged: true } | { unchanged: false; revision: number; state: unknown }>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+
+    const headers: Record<string, string> = {};
+    if (knownRevision !== undefined) headers['If-None-Match'] = `W/"${knownRevision}"`;
+
+    let res: Response;
+    try {
+      res = await fetch(`/api/campaigns/live?id=${encodeURIComponent(matchId)}`, { headers });
+    } catch (e) {
+      return { ok: false, reason: 'offline', detail: e instanceof Error ? e.message : String(e) };
+    }
+    /* Handled here rather than in `request`, because 304 is not a body this
+       can parse and not an error either. */
+    if (res.status === 304) return { ok: true, data: { unchanged: true } };
+    if (res.status === 401 || res.status === 403) {
+      return { ok: false, reason: 'unauthenticated', detail: `HTTP ${res.status}` };
+    }
+    if (!res.ok) {
+      const message = await res.json()
+        .then((b) => (typeof b?.error === 'string' ? b.error : null))
+        .catch(() => null);
+      return { ok: false, reason: 'server', detail: message ?? `HTTP ${res.status}` };
+    }
+
+    try {
+      const data = await res.json();
+      const m = data?.match;
+      if (typeof m?.revision !== 'number') throw new Error('The match came back without a revision.');
+      return { ok: true, data: { unchanged: false, revision: m.revision, state: m.state } };
+    } catch (e) {
+      return { ok: false, reason: 'server', detail: e instanceof Error ? e.message : String(e) };
+    }
+  },
+
+  /** What is live in a campaign right now. A name and a clock, never a board. */
+  async listLiveMatches(campaignId: string): Promise<CloudResult<LiveMatchSummary[]>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request(
+      `/api/campaigns/live?campaignId=${encodeURIComponent(campaignId)}`,
+      {},
+      (data) => {
+        if (!Array.isArray(data?.matches)) throw new Error('The server returned no matches.');
+        return data.matches as LiveMatchSummary[];
+      },
+    );
+  },
+
+  /** End the match. The host's to call, and the server enforces that. */
+  async endLiveMatch(matchId: string): Promise<CloudResult<void>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request(
+      `/api/campaigns/live?id=${encodeURIComponent(matchId)}`,
+      { method: 'DELETE' },
+      () => undefined,
     );
   },
 

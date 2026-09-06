@@ -93,6 +93,7 @@ model User {
   createdCampaigns Campaign[]           @relation("CreatedCampaigns")
   customRules      CustomRuleOverride[]
   bugReports       BugReport[]
+  hostedMatches    LiveMatch[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
 }
@@ -210,6 +211,7 @@ model Campaign {
   matches               MatchRecord[]
   territories           TerritoryNode[]
   syncOps               CampaignSyncOp[]
+  liveMatches           LiveMatch[]
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 }
@@ -233,6 +235,44 @@ model CampaignSyncOp {
   appliedAt  DateTime @default(now())
 
   @@index([campaignId, appliedAt])
+}
+
+/// A game in progress, as ONE device holds it.
+///
+/// LIVE-1, and the shape is the whole design — see docs/LIVE-MODE.md. This is
+/// a SNAPSHOT, not a stream of operations, and that is what makes it small:
+/// a watcher does not need to know how the board reached its state, only what
+/// it is, so a dropped update is repaired by the next one and the ordering,
+/// replay and idempotency machinery `CampaignSyncOp` exists for never arises.
+///
+/// It is deliberately NOT modelled on campaign sync. That protocol resolves a
+/// conflict by asking a human, which is not an answer mid-activation, and it
+/// is tuned for a handful of edits an evening rather than dozens a minute.
+model LiveMatch {
+  /// Client-minted, like a campaign's cloud id and for the same reason: the
+  /// host writes before it knows the server has heard, so a lost response must
+  /// be retried under an id the client already holds rather than producing a
+  /// second match.
+  id         String   @id
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  /// The one account whose device is authoritative. Nobody else may write, and
+  /// this is the whole authority model — see the table in docs/CAMPAIGN-SYNC.md.
+  hostId     String
+  host       User     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  /// Bumped on every accepted write. Served as the ETag, so a watcher polling
+  /// a quiet table costs a 304 rather than a snapshot.
+  revision   Int      @default(1)
+  /// The board: per-model wounds, status, markers and whether it has acted,
+  /// plus the turn. Bounded by the route, not by this column.
+  state      Json
+  startedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  /// Which games are live in a campaign, newest first. More than one may be:
+  /// two pairs of players at one club night are two matches, each with its own
+  /// host, and a single-match-per-campaign key would have made them collide.
+  @@index([campaignId, updatedAt])
 }
 
 model CampaignMember {
