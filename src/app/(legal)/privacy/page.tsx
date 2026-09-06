@@ -196,7 +196,7 @@ export default function PrivacyPage() {
 
       <H2 id="others">Who else can see it</H2>
       <P>
-        Three companies, each because the site cannot run without them, and each
+        Four companies, each because the site cannot run without them, and each
         seeing only what that role requires:
       </P>
       <UL>
@@ -208,6 +208,14 @@ export default function PrivacyPage() {
         <LI>
           <Term>Neon</Term> — hosts the database, so it holds the account and
           sync data described above, encrypted in transit.
+        </LI>
+        <LI>
+          <Term>Cloudflare</Term> — runs the domain&rsquo;s DNS, and forwards
+          mail sent to the address below to the operator&rsquo;s inbox. So if
+          you write in, Cloudflare handles that message in passing, the way any
+          mail relay does. Cloudflare does <strong>not</strong> sit in front of
+          the site: page requests go straight to Vercel, and Cloudflare sees
+          none of them.
         </LI>
         <LI>
           <Term>Google</Term> — only if you choose Google sign-in, and only for
