@@ -230,6 +230,36 @@ to be excellent, and needs print to be reachable but not optimised.
 
 1–4 are independent of 5 and of each other after 1.
 
+## 6a. What has landed, and where the decisions went
+
+*Added after the fact. The proposal above is left as written; this records what
+was built against it and which of Codex's replacements were taken.*
+
+| Package | State | Note |
+|---|---|---|
+| 1 — versioned envelope | **Landed** | `services/rosterFile.ts`, `docs/ROSTER-FILE.md`, a v0 fixture. Codex's E2 and E9 taken: an ordered rules manifest rather than `rulesetId` + `baseCommit` alone, a durable projection whose every field is classified in a `Record<keyof T, …>`, a v0 reader that never stamps today's ruleset, and import-as-new separated from restore |
+| 2 — text presets | **Landed** | `services/rosterText.ts`. Summary / Roster / Full, plain or Discord as a rendering. E5 taken in full, including the sharing axis: lore, quotes and notes are their own opt-in, default off |
+| 3 — print Plain and Pretty | **Landed, unverified on paper** | `RosterPrintSheet.tsx` and the `PRINT` block in `globals.css`. E6's replacement pagination taken — a repeated table header, not `break-inside: avoid`. A 22mm notes box. **No printer has been run** |
+| 4 — note cards | Open | The Pretty sheet already carries the notes box; what is left is the per-model card layout, and it needs A4 and Letter checked at 100% scale on real paper before it is worth building |
+| 5 — NewRecruit `.ros` | Open, gated | E3/E4 stand: an `entryId` count is not evidence of interoperability. The gate is open, check every model/loadout/cost, edit a selection, save, reopen without losing purchases |
+
+E1's structural replacement was taken over §1's claim: the text and print
+renderers share one resolved projection (`services/rosterPresentation.ts`)
+rather than being separate pipelines. §1 was right that interchange and
+presentation are different products with different tests; it was wrong that
+they should share no code, and duplicating totals across two renderers is
+exactly the drift the brief was worried about elsewhere.
+
+The two entries with no `entryId` are still `Blessings of Beelzebub` and
+`Regimental Kaşık`, both Dispatch-layer records.
+
+**Owner decisions still open** are the ones §8 lists, unchanged: whether
+NewRecruit export is required at all, whether "pretty" should match a template
+the owner supplies, and whether the pre-envelope files must keep importing
+forever. The last is answered provisionally in `docs/ROSTER-FILE.md` under
+*Compatibility policy* — v0 is read on a named basis rather than "best effort" —
+and can be narrowed if the owner would rather it were.
+
 ## 7. Explicit non-goals
 
 - No campaign or multi-warband export.
