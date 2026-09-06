@@ -997,6 +997,252 @@
       "_src": "p.5 Vile Corpus Abilities — '✥ Bombardment Horde (20 [crown]): …'",
       "_costCurrencyConfirmed": "Read from the printed page. The Dispatch's cost glyphs are drawn from a Type3 font and are not in the PDF's text stream at all, so no extractor recovers them — pdf-parse and PyMuPDF both yield a bare number. The page was rendered at 130-500 dpi and the glyph read directly: a CROWN in a filled disc is Ducats, an eight-pointed sun in an outlined disc is Glory.",
       "_note": "The ONLY Vile Corpus the Dispatch prints. The rendered page shows one bullet in the Vile Corpus Abilities box and then the next section, so this is the published list and not a truncated read of it — an earlier note in this repository claimed the extraction had dropped entries, reasoning from 'each Amalgam in a Warband must have a different Vile Corpus'. That rule is satisfiable trivially while only one exists, and it reads as forward-looking in a Public Beta section."
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-gluttonous-arsenal",
+        "name": "Gluttonous Arsenal",
+        "type": "Special",
+        "range": "Melee/16”",
+        "keywords": [
+          "ASSAULT",
+          "AUTOMATIC 3",
+          "CLEAVE 3"
+        ],
+        "rules": "✥ Putrid Spray: ACTION: Melee Attacks made with a Gluttonous Arsenal have the INFECTION MARKERS Keyword.",
+        "description": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
+      },
+      "_src": "p.5 — Amalgam > Gluttonous Arsenal (D:249-255)",
+      "_note": "RC-10. Bombardment Horde's option text already referred to this weapon ('replace the AUTOMATIC 3 Keyword with BLAST 3” and SCATTER'), so the app sent a player to a profile it did not have."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "battlekitNote",
+      "value": "An Amalgam always has a Gluttonous Arsenal. This weapon is part of the Amalgam and cannot be removed or lost throughout the campaign for any reason. It cannot have any other Battlekit, but it can have up to 1 Vile Corpus.",
+      "_src": "p.5 — Amalgam > Battlekit (D:222-224)",
+      "_note": "RC-10. The Battlekit LINE, not an ability. The printed page shows the entry as heading, statline, Battlekit, five abilities, the Keyword row and the Gluttonous Arsenal box — and `dispatchAmalgam.test.ts` pins those five, having been settled by rendering the PDF. Adding this as a sixth ability broke that test, correctly: `battlekitNote` is where the books' prose Battlekit sentences live. The 'up to 1 Vile Corpus' limit is RC-07 and still unenforced."
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-al-inbiq-kit",
+        "name": "Al-inbīq Kit",
+        "type": "Equipment",
+        "range": "-",
+        "keywords": [],
+        "rules": "✥ 'Ilm al-Mīzān ACTION: A model with an Al-inbīq Kit can take an 'Ilm al-Mīzān ACTION if it is not within 1” of any enemy models. If it does so, make a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model with the ARTIFICIAL Keyword within 6” and in Line of Sight of the Jabirean Alchemist. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model.",
+        "description": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
+      },
+      "_src": "p.6 — Iron Sultanate Battlekit (D:331-343)",
+      "_note": "RC-11."
+    },
+    {
+      "op": "addArmouryRow",
+      "factionId": "iron-sultanate",
+      "row": {
+        "name": "Al-inbīq Kit",
+        "section": "Equipment",
+        "cost": {
+          "ducats": 15,
+          "glory": 0
+        },
+        "restrictions": [
+          "Jabirean Alchemist only"
+        ]
+      },
+      "_src": "p.6 — 'Al-inbīq Kit | 15 | Jabirean Alchemist only'",
+      "_costCurrencyDerived": "Ducats. The Dispatch announces these under 'Add/replace the following entries in the Iron Sultanate Battlekit', and elsewhere announces Glory rows under 'Add the following entry to the SULTANATE Glory Items Table' — it names its destination table, and the two tables differ in currency. Checkable in-repo against those two sentences."
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-alchemical-fire",
+        "name": "Alchemical Fire",
+        "type": "Equipment",
+        "range": "-",
+        "keywords": [],
+        "rules": "✥ Unfettered Flame: Injury Rolls caused by Ranged Attacks made by a model with Alchemical Fire are unaffected by the NEGATE FIRE Keyword.",
+        "description": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
+      },
+      "_src": "p.6 — Iron Sultanate Battlekit (D:357-364)",
+      "_note": "RC-11. Distinct from the existing Alchemical Ammunition, and from the Flame Cannon lore that mentions alchemical fire in passing."
+    },
+    {
+      "op": "addArmouryRow",
+      "factionId": "iron-sultanate",
+      "row": {
+        "name": "Alchemical Fire",
+        "section": "Equipment",
+        "cost": {
+          "ducats": 10,
+          "glory": 0
+        },
+        "restrictions": [
+          "ELITE only, Limit: 3"
+        ]
+      },
+      "_src": "p.6 — 'Alchemical Fire | 10 | ELITE only, Limit: 3'",
+      "_costCurrencyDerived": "Ducats. The Dispatch announces these under 'Add/replace the following entries in the Iron Sultanate Battlekit', and elsewhere announces Glory rows under 'Add the following entry to the SULTANATE Glory Items Table' — it names its destination table, and the two tables differ in currency. Checkable in-repo against those two sentences."
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-corrosive-ammunition",
+        "name": "Corrosive Ammunition",
+        "type": "Equipment",
+        "range": "12”",
+        "keywords": [
+          "AMMUNITION (ARMOUR PIERCING)"
+        ],
+        "rules": "✥ Volatile Concoction: Corrosive Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail, or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Corrosive Ammunition to another model.",
+        "description": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
+      },
+      "_src": "p.6 — Iron Sultanate Battlekit (D:365-375)",
+      "_note": "RC-11."
+    },
+    {
+      "op": "addArmouryRow",
+      "factionId": "iron-sultanate",
+      "row": {
+        "name": "Corrosive Ammunition",
+        "section": "Equipment",
+        "cost": {
+          "ducats": 10,
+          "glory": 0
+        },
+        "restrictions": [
+          "Limit: 5"
+        ]
+      },
+      "_src": "p.6 — 'Corrosive Ammunition | 10 | Limit: 5'",
+      "_costCurrencyDerived": "Ducats. The Dispatch announces these under 'Add/replace the following entries in the Iron Sultanate Battlekit', and elsewhere announces Glory rows under 'Add the following entry to the SULTANATE Glory Items Table' — it names its destination table, and the two tables differ in currency. Checkable in-repo against those two sentences."
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Janissary"
+      },
+      "name": "Counter-Charge",
+      "ability": {
+        "id": "dispatch01-janissary-mehteran",
+        "name": "Mehterân",
+        "description": "Add +1 DICE to Risky Success Rolls for a Janissary that is taking a Dash ACTION and is within 4” of a friendly model with a Musical Instrument (for a total of +2 DICE including the Musical Instrument’s Fanfare special rule)."
+      },
+      "_src": "p.8 — Janissaries: 'Replace the Counter Charge ability with the following ability' (D:442-445)",
+      "_note": "RC-12. The ABILITY only. The catalogue also carries a 'Counter-Charge' training OPTION, which this sentence does not mention; replacing that as well would be going past what the Dispatch says. Flagged for a maintainer: an option that grants a superseded ability is a loose end the source does not resolve."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Yüzbaşı Captain"
+      },
+      "ability": {
+        "id": "dispatch01-yuzbasi-janissary-veteran",
+        "name": "Janissary Veteran",
+        "description": "You can make the Yüzbaşı a Janissary Veteran with the Janissary Mehterân ability at a cost of +5 [currency unreadable in the extracted source] ."
+      },
+      "_src": "p.9 — Yüzbaşı > Abilities (D:481-482)",
+      "_costCurrencyUnresolved": "The Dispatch prints the cost as a glyph and the text extraction drops it, leaving a bare number. NOT asserted here: unlike the Glory Items rows, this sentence names no table whose currency could settle it, so recording a currency would be inventing one. The rule ships as the source prints it, with the gap marked, and a maintainer who can read the page should resolve it in data-sources/resolutions.json.",
+      "_note": "RC-12, and the missing half of RC-06: the Regimental Kaşık is restricted to 'Janissaries & Yüzbaşı with Janissary Veteran only', a condition that could not be satisfied because this option did not exist."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Yüzbaşı Captain"
+      },
+      "ability": {
+        "id": "dispatch01-yuzbasi-mehteran",
+        "name": "Mehterân (Janissary Veterans only)",
+        "description": "Add +1 DICE to Risky Success Rolls for a Yüzbaşı that is taking a Dash ACTION and is within 4” of a friendly model with a Musical Instrument (for a total of +2 DICE including the Musical Instrument’s Fanfare special rule)."
+      },
+      "_src": "p.9 — Yüzbaşı > Abilities (D:485-487)",
+      "_note": "RC-12."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Lion of Jabir"
+      },
+      "ability": {
+        "id": "dispatch01-lion-ferocious-claws",
+        "name": "Ferocious Claws",
+        "description": "Lions of Jabir models can add the CLEAVE 2 Keyword to their Melee Attacks at a cost of +5 [currency unreadable in the extracted source] each."
+      },
+      "_src": "p.8 — Lions of Jabir: 'Add the following ability' (D:455-457)",
+      "_costCurrencyUnresolved": "The Dispatch prints the cost as a glyph and the text extraction drops it, leaving a bare number. NOT asserted here: unlike the Glory Items rows, this sentence names no table whose currency could settle it, so recording a currency would be inventing one. The rule ships as the source prints it, with the gap marked, and a maintainer who can read the page should resolve it in data-sources/resolutions.json.",
+      "_note": "RC-12."
+    },
+    {
+      "op": "setSpecialRule",
+      "target": {
+        "kind": "variant",
+        "id": "stosstruppenofthefreestateofprussia"
+      },
+      "name": "Masters of the Grenade",
+      "rule": {
+        "name": "Masters of the Grenade",
+        "description": "Add 4” to the Range of all Grenades used by models from a Stosstruppen of the Free State of Prussia Warband. However, if the range to the target is more than 8”, add -1 DICE to the Success Roll for the attack."
+      },
+      "_src": "p.2 — 'Change Masters of the Grenade to:' (D:68-72)",
+      "_note": "RC-13. The app printed the benefit and not the qualification, on the screen a player reads before choosing the Variant.",
+      "_targetNote": "Addressed by the variant's generated id. The Dispatch prints the name 'Stosstruppen of the Free State of Prussia' with a plain ss and the Warbands book uses 'Stoßtruppen' with an eszett, so a name match on the Dispatch's spelling would not resolve."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Goetic Warlock"
+      },
+      "ability": {
+        "id": "dispatch01-warlock-powers",
+        "name": "Powers",
+        "description": "Goetic Warlocks use Goetic Powers (see Goetic Powers in The Court’s Special Rules). However, a Goetic Warlock can only remove BLOOD MARKERS from enemy models, or friendly Wretched models when paying the Cost to cast a Goetic Spell. A Goetic Warlock always has the Goetic Portal and Necrotic Gaze Goetic Powers."
+      },
+      "_src": "p.16 — Goetic Warlock > Powers (D:787-789)",
+      "_note": "RC-14. The Warlock's four named powers were present; this restriction on what may be spent to cast them was not. Carried as an ability because that is where a unit's prose lives — the Dispatch prints it under its own 'Powers' heading."
+    },
+    {
+      "op": "addSpecialRule",
+      "target": {
+        "kind": "faction",
+        "id": "court-of-the-seven-headed-serpent"
+      },
+      "rule": {
+        "name": "Goetic Powers — purchasing",
+        "description": "Goetic Powers can be purchased for a model when it is recruited, or during the Quartermaster Step. However, you must pay 1 [currency unreadable in the extracted source] for each model that you wish to purchase a Goetic Power in the Quartermaster Step, representing the effort needed to learn a new power."
+      },
+      "_src": "p.17 — 'Add the following sentence to the Goetic Powers special rule' (D:873-875)",
+      "_costCurrencyUnresolved": "The Dispatch prints the cost as a glyph and the text extraction drops it, leaving a bare number. NOT asserted here: unlike the Glory Items rows, this sentence names no table whose currency could settle it, so recording a currency would be inventing one. The rule ships as the source prints it, with the gap marked, and a maintainer who can read the page should resolve it in data-sources/resolutions.json.",
+      "_note": "RC-15. The Court's specialRules was empty, so there was nowhere this obligation was stated.",
+      "_targetNote": "The faction id has no leading 'the-'."
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "Hell Knight"
+      },
+      "ability": {
+        "id": "dispatch01-hell-knight-corpse-candles",
+        "name": "Corpse Candles",
+        "description": "A Hell Knight can have an Unholy Relic at a modified cost of 5 [currency unreadable in the extracted source] each."
+      },
+      "_src": "p.18 — Hell Knights: 'Add the following ability' (D:900-901)",
+      "_costCurrencyUnresolved": "The Dispatch prints the cost as a glyph and the text extraction drops it, leaving a bare number. NOT asserted here: unlike the Glory Items rows, this sentence names no table whose currency could settle it, so recording a currency would be inventing one. The rule ships as the source prints it, with the gap marked, and a maintainer who can read the page should resolve it in data-sources/resolutions.json.",
+      "_note": "RC-16."
     }
   ]
 }

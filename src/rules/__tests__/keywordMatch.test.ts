@@ -59,14 +59,31 @@ describe('every Keyword the dataset prints', () => {
     expect(unresolved.sort()).toEqual([...KNOWN_UNLINKABLE].sort());
   });
 
-  it('resolves 84 of the 89 strings in use', () => {
-    // Named so a regression shows as a number, not as a silently duller UI.
-    // The failure mode this guards is invisible: a Keyword that does not match
-    // is simply not highlighted, and the player cannot tell that from "this
-    // word has no rule".
+  it('resolves 86 of the 91 strings in use', () => {
+    /*
+      Named so a regression shows as a number, not as a silently duller UI. The
+      failure mode this guards is invisible: a Keyword that does not match is
+      simply not highlighted, and the player cannot tell that from "this word
+      has no rule".
+
+      Was 84 of 89. The Dispatch content that RC-10 and RC-11 restored brought
+      two more strings with it — `CLEAVE 3` on the Gluttonous Arsenal and
+      `AMMUNITION (ARMOUR PIERCING)` on Corrosive Ammunition — and this test
+      failing on the count is exactly what it is for: new Keyword spellings
+      arriving with new data is the moment to check they resolve, not to
+      discover later that two profiles went unlinked.
+    */
     const all = printed();
-    expect(all.length).toBe(89);
-    expect(all.filter((k) => resolveKeyword(k, GLOSSARY)).length).toBe(84);
+    expect(all.length).toBe(91);
+    expect(all.filter((k) => resolveKeyword(k, GLOSSARY)).length).toBe(86);
+  });
+
+  it('resolves the two spellings the restored Dispatch entries brought', () => {
+    // `AMMUNITION (ARMOUR-PIERCING)` with a hyphen was already in use; the new
+    // entry prints it with a space, and both are the same family.
+    expect(resolveKeyword('CLEAVE 3', GLOSSARY)?.name).toBe('CLEAVE (X)');
+    expect(resolveKeyword('AMMUNITION (ARMOUR PIERCING)', GLOSSARY)?.name)
+      .toBe('AMMUNITION (KEYWORD)');
   });
 
   it('sends each parameterised spelling to the family it belongs to', () => {

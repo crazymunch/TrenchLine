@@ -35,6 +35,14 @@ const COLLECTIONS = {
   weapon: 'weapons',
   faction: 'factions',
   keyword: 'keywords',
+  /*
+    A Warband Variant. Added because the Dispatch amends one directly — it
+    rewrites the Stoßtruppen's `Masters of the Grenade` to add a penalty past
+    8" — and with no way to address a variant that clause had nowhere to go.
+    The app went on printing the benefit without its condition
+    (docs/RULES-COVERAGE-AUDIT.md RC-13).
+  */
+  variant: 'variants',
 };
 
 function findTarget(dataset, ref) {
@@ -181,6 +189,20 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
     */
     if (op.op === 'addArmouryRow') { deferred.push({ op, layer: layer.id, source }); continue; }
 
+    /*
+      A Warband Variant is applied LATER, for the same reason.
+
+      `dataset.variants` is assembled well after the layers run, so an op that
+      amends one finds nothing here and reports itself unresolved — which is
+      what the Dispatch's `Masters of the Grenade` rewrite did the first time
+      it was written. Deferred to `applyVariantOps`, and the caller checks that
+      everything deferred here was accounted for there.
+    */
+    if (op.target?.kind === 'variant') {
+      deferred.push({ op, layer: layer.id, source });
+      continue;
+    }
+
     const target = findTarget(dataset, op.target);
     if (!target) { unresolved.push({ op, why: `target not found: ${op.target?.kind}/${op.target?.id}` }); continue; }
 
@@ -302,6 +324,52 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
         break;
       }
 
+      /*
+        A named rule in a faction's or variant's `specialRules` prose.
+
+        `set` cannot reach these: they are an array of `{name, description}`
+        and a dotted path has no way to say "the one called Masters of the
+        Grenade". Two ops rather than one, because amending a rule that is not
+        there and adding one that already exists are different mistakes and
+        should fail differently.
+      */
+      case 'setSpecialRule': {
+        const rules = target.specialRules;
+        if (!Array.isArray(rules)) {
+          unresolved.push({ op, why: `${target.name} has no specialRules to amend` });
+          break;
+        }
+        const i = rules.findIndex(
+          (r) => r.name?.toLowerCase() === op.name.toLowerCase());
+        if (i < 0) {
+          unresolved.push({ op, why: `no special rule named ${op.name} on ${target.name}` });
+          break;
+        }
+        rules[i] = { ...rules[i], ...op.rule };
+        stamp(op.target, 'specialRules', target);
+        break;
+      }
+
+      case 'addSpecialRule': {
+        target.specialRules ??= [];
+        const i = target.specialRules.findIndex(
+          (r) => r.name?.toLowerCase() === op.rule?.name?.toLowerCase());
+        if (i >= 0) {
+          /* Same reasoning as `addAbility`: the source has caught up, so the
+             layer's text supersedes rather than appending a duplicate rule. */
+          target.specialRules[i] = op.rule;
+          notes.push({
+            op,
+            why: `addSpecialRule '${op.rule.name}' on ${target.name}: already `
+               + 'present, so the op superseded in place rather than appending',
+          });
+        } else {
+          target.specialRules.push(op.rule);
+        }
+        stamp(op.target, 'specialRules', target);
+        break;
+      }
+
       case 'addOption': {
         target.options ??= [];
         const i = target.options.findIndex(
@@ -371,6 +439,8 @@ export function applyArmouryRowOps(dataset, deferred) {
   let applied = 0;
 
   for (const { op } of deferred) {
+    /* Variant ops share this pass; they are handled by `applyVariantOps`. */
+    if (op.target?.kind === 'variant') continue;
     if (op.op !== 'addArmouryRow') {
       unresolved.push({ op, why: `deferred op ${op.op} has no second-pass handler` });
       continue;
@@ -397,6 +467,61 @@ export function applyArmouryRowOps(dataset, deferred) {
     }
     (armoury.rows ??= []).push(op.row);
     applied++;
+  }
+
+  return { applied, unresolved, notes };
+}
+
+/**
+ * Layer ops that amend a Warband Variant, once the variants exist.
+ *
+ * The Dispatch rewrites the Stoßtruppen's `Masters of the Grenade` to add a
+ * penalty past 8", and until this existed there was nowhere to put it: the app
+ * printed the benefit — "Add 4 inches to the Range of all Grenades" — on the
+ * screen a player reads before choosing the Variant, without the sentence that
+ * qualifies it. `docs/RULES-COVERAGE-AUDIT.md` RC-13.
+ *
+ * Kept apart from the armoury pass rather than folded into it, because the two
+ * fail differently: an armoury row that is already stocked is a reprint and
+ * fine, while a special rule that is not there is an errata pointing at
+ * something that has moved, and that must be loud.
+ */
+export function applyVariantOps(dataset, deferred) {
+  const unresolved = [];
+  const notes = [];
+  let applied = 0;
+
+  for (const { op } of deferred) {
+    if (op.target?.kind !== 'variant') continue;
+
+    const variant = (dataset.variants ?? []).find(
+      (v) => v.id === op.target.id
+          || v.name?.toLowerCase() === String(op.target.id).toLowerCase());
+    if (!variant) {
+      unresolved.push({ op, why: `variant not found: ${op.target.id}` });
+      continue;
+    }
+
+    if (op.op === 'setSpecialRule') {
+      const rules = variant.specialRules;
+      if (!Array.isArray(rules)) {
+        unresolved.push({ op, why: `${variant.name} has no specialRules to amend` });
+        continue;
+      }
+      const i = rules.findIndex((r) => r.name?.toLowerCase() === op.name.toLowerCase());
+      if (i < 0) {
+        unresolved.push({
+          op,
+          why: `no special rule named ${op.name} on ${variant.name}`,
+        });
+        continue;
+      }
+      rules[i] = { ...rules[i], ...op.rule };
+      applied++;
+      continue;
+    }
+
+    unresolved.push({ op, why: `variant op ${op.op} has no second-pass handler` });
   }
 
   return { applied, unresolved, notes };

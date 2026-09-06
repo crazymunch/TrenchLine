@@ -558,6 +558,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:aca1-8c2f-0a00-ee49": {
@@ -1386,8 +1390,8 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -3336,8 +3340,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -3808,8 +3812,8 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -45412,6 +45416,116 @@
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-gluttonous-arsenal": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-al-inbiq-kit": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-alchemical-fire": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-corrosive-ammunition": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "description": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "faction:court-of-the-seven-headed-serpent": {
+    "specialRules": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }

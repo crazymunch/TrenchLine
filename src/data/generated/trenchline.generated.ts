@@ -1043,7 +1043,8 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "battlekitNote": "An Amalgam always has a Gluttonous Arsenal. This weapon is part of the Amalgam and cannot be removed or lost throughout the campaign for any reason. It cannot have any other Battlekit, but it can have up to 1 Vile Corpus."
     },
     {
       "id": "aca1-8c2f-0a00-ee49",
@@ -5257,7 +5258,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 3,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "dispatch01-hell-knight-corpse-candles",
+          "name": "Corpse Candles",
+          "description": "A Hell Knight can have an Unholy Relic at a modified cost of 5 [currency unreadable in the extracted source] each."
+        }
+      ],
       "options": [
         {
           "id": "1234-6514-2ff2-5b93",
@@ -14458,9 +14465,9 @@ export const DATASET: Dataset = {
           "description": "The ritual Dance of the Dervishes is hypnotic to witness, and it is as graceful as it is deadly. All Ranged attacks against Dervishes suffer -1 DICE penalty. Dervishes do not suffer the normal -1 DICE to hit for fighting with an Off-Hand weapon."
         },
         {
-          "id": "1061-0baf-c232-c9a3",
-          "name": "Counter-Charge",
-          "description": "If the first ACTION a Janissary makes during their Activation is a Charge, they can add +1 DICE to their subsequent Melee Attack ACTIONS during this Activation"
+          "id": "dispatch01-janissary-mehteran",
+          "name": "Mehterân",
+          "description": "Add +1 DICE to Risky Success Rolls for a Janissary that is taking a Dash ACTION and is within 4” of a friendly model with a Musical Instrument (for a total of +2 DICE including the Musical Instrument’s Fanfare special rule)."
         }
       ],
       "options": [
@@ -16110,6 +16117,16 @@ export const DATASET: Dataset = {
           "id": "dispatch01-mubarizun",
           "name": "Mubarizun",
           "description": "A Yüzbaşı is expected to face the mightiest of their enemies in personal combat, inspiring the troops to victory with their personal prowess. Add +1 INJURY DICE for attacks made by a Yüzbaşı if the target model has the TOUGH Keyword."
+        },
+        {
+          "id": "dispatch01-yuzbasi-janissary-veteran",
+          "name": "Janissary Veteran",
+          "description": "You can make the Yüzbaşı a Janissary Veteran with the Janissary Mehterân ability at a cost of +5 [currency unreadable in the extracted source] ."
+        },
+        {
+          "id": "dispatch01-yuzbasi-mehteran",
+          "name": "Mehterân (Janissary Veterans only)",
+          "description": "Add +1 DICE to Risky Success Rolls for a Yüzbaşı that is taking a Dash ACTION and is within 4” of a friendly model with a Musical Instrument (for a total of +2 DICE including the Musical Instrument’s Fanfare special rule)."
         }
       ],
       "options": [
@@ -17109,6 +17126,11 @@ export const DATASET: Dataset = {
           "id": "364b-3951-419e-544e",
           "name": "Teeth and Claws",
           "description": "A Lion of Jabir can make a Melee Attack even though it does not have any Melee Weapons."
+        },
+        {
+          "id": "dispatch01-lion-ferocious-claws",
+          "name": "Ferocious Claws",
+          "description": "Lions of Jabir models can add the CLEAVE 2 Keyword to their Melee Attacks at a cost of +5 [currency unreadable in the extracted source] each."
         }
       ],
       "options": [],
@@ -20629,6 +20651,11 @@ export const DATASET: Dataset = {
         {
           "name": "Disturbing Presence",
           "description": "Your opponent cannot remove BLOOD MARKERS from models they own whilst they are within 1” of a Goetic Warlock."
+        },
+        {
+          "id": "dispatch01-warlock-powers",
+          "name": "Powers",
+          "description": "Goetic Warlocks use Goetic Powers (see Goetic Powers in The Court’s Special Rules). However, a Goetic Warlock can only remove BLOOD MARKERS from enemy models, or friendly Wretched models when paying the Cost to cast a Goetic Spell. A Goetic Warlock always has the Goetic Portal and Necrotic Gaze Goetic Powers."
         }
       ],
       "options": [],
@@ -60854,6 +60881,48 @@ export const DATASET: Dataset = {
       "description": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
     },
     {
+      "id": "dispatch01-gluttonous-arsenal",
+      "name": "Gluttonous Arsenal",
+      "type": "Special",
+      "range": "Melee/16”",
+      "keywords": [
+        "ASSAULT",
+        "AUTOMATIC 3",
+        "CLEAVE 3"
+      ],
+      "rules": "✥ Putrid Spray: ACTION: Melee Attacks made with a Gluttonous Arsenal have the INFECTION MARKERS Keyword.",
+      "description": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
+    },
+    {
+      "id": "dispatch01-al-inbiq-kit",
+      "name": "Al-inbīq Kit",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "✥ 'Ilm al-Mīzān ACTION: A model with an Al-inbīq Kit can take an 'Ilm al-Mīzān ACTION if it is not within 1” of any enemy models. If it does so, make a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model with the ARTIFICIAL Keyword within 6” and in Line of Sight of the Jabirean Alchemist. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model.",
+      "description": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
+    },
+    {
+      "id": "dispatch01-alchemical-fire",
+      "name": "Alchemical Fire",
+      "type": "Equipment",
+      "range": "-",
+      "keywords": [],
+      "rules": "✥ Unfettered Flame: Injury Rolls caused by Ranged Attacks made by a model with Alchemical Fire are unaffected by the NEGATE FIRE Keyword.",
+      "description": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
+    },
+    {
+      "id": "dispatch01-corrosive-ammunition",
+      "name": "Corrosive Ammunition",
+      "type": "Equipment",
+      "range": "12”",
+      "keywords": [
+        "AMMUNITION (ARMOUR PIERCING)"
+      ],
+      "rules": "✥ Volatile Concoction: Corrosive Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail, or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Corrosive Ammunition to another model.",
+      "description": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
+    },
+    {
       "id": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",
       "entryId": "cf-weapon-entry-procession-of-the-sacred-affliction-bells-of-warding",
       "name": "Bells of Warding",
@@ -61278,7 +61347,12 @@ export const DATASET: Dataset = {
         "ducats": 700,
         "glory": 0
       },
-      "specialRules": [],
+      "specialRules": [
+        {
+          "name": "Goetic Powers — purchasing",
+          "description": "Goetic Powers can be purchased for a model when it is recruited, or during the Quartermaster Step. However, you must pay 1 [currency unreadable in the extracted source] for each model that you wish to purchase a Goetic Power in the Quartermaster Step, representing the effort needed to learn a new power."
+        }
+      ],
       "noSpecialRules": false
     },
     {
@@ -70718,6 +70792,39 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1"
           ]
+        },
+        {
+          "name": "Al-inbīq Kit",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Jabirean Alchemist only"
+          ]
+        },
+        {
+          "name": "Alchemical Fire",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Corrosive Ammunition",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 5"
+          ]
         }
       ]
     },
@@ -74882,7 +74989,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Masters of the Grenade",
-          "description": "Add 4\" to the Range of all Grenades used by models from a Stosstruppen of the Free State of Prussia Warband."
+          "description": "Add 4” to the Range of all Grenades used by models from a Stosstruppen of the Free State of Prussia Warband. However, if the range to the target is more than 8”, add -1 DICE to the Success Roll for the attack."
         },
         {
           "name": "Rapid Assault",

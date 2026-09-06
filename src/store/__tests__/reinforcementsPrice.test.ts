@@ -59,6 +59,8 @@ const apply = (tookReinforcements: boolean) =>
   );
 
 const after = () => useStore.getState().warbands.find((w) => w.id === WB)!;
+/** The snapshot this submission wrote. Non-null by construction: every submit appends one. */
+const lastSnapshot = () => after().snapshots!.at(-1)!;
 
 describe('a post-battle submission WITHOUT Reinforcements', () => {
   beforeEach(() => {
@@ -98,7 +100,7 @@ describe('a post-battle submission WITH Reinforcements', () => {
 
   it('says in the chronicle what was given up, with the numbers', () => {
     apply(true);
-    const summary = after().snapshots.at(-1)!.changesSummary.join(' | ');
+    const summary = lastSnapshot().changesSummary.join(' | ');
     expect(summary).toContain('Called for Reinforcements');
     expect(summary).toContain('2 item(s)');
     expect(summary).toContain('420 Ducats');
@@ -111,7 +113,7 @@ describe('a post-battle submission WITH Reinforcements', () => {
       lie as not charging for it, moved one screen along.
     */
     apply(true);
-    const snap = after().snapshots.at(-1)!;
+    const snap = lastSnapshot();
     expect(snap.treasuryDucats).toBe(0);
     expect(snap.armoryStash).toEqual([]);
   });
