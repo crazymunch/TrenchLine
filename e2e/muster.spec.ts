@@ -104,3 +104,54 @@ test('a Variant with many rules still leaves the muster button reachable', async
 
   await expectReachable(submit, 'the Muster Roster button, with the rules expanded');
 });
+
+/**
+ * The Papal States Intervention Force musters on its own economy.
+ *
+ * Player report: "you gotta adjust the starting settings for papal states —
+ * they start with 500 ducats an 11 glory instead of 700 ducats." He was right.
+ * The screen printed the Specialist Force rule saying 500 and 11 while handing
+ * out 700 and 0, so this walks the whole muster rather than asserting on the
+ * rules layer, which is where the two halves were disagreeing.
+ */
+test('a Papal States muster starts on the Ducats and Glory its rule states', async ({ page }) => {
+  await openMuster(page);
+
+  // The blurb quotes the standard purse until a Variant that changes it is
+  // picked — that is the number the player is promised.
+  const budgetPanel = page.getByRole('button', { name: /Campaign Force/ });
+  await expect(budgetPanel).toContainText('700 Ducats and 0 Glory');
+
+  // By value, which is the Variant's dataset id — the same string the muster
+  // stores on the Warband and `variantById` later resolves it from.
+  const variant = page.getByLabel(/warband variant/i);
+  await variant.selectOption('papalstatesinterventionforce');
+  await expect(variant).toHaveValue('papalstatesinterventionforce');
+
+  // …and it changes with the Variant, rather than staying at a literal 700.
+  await expect(budgetPanel).toContainText('500 Ducats and 11 Glory');
+
+  await page.getByLabel(/warband title/i).fill('Swiss Guard Detachment');
+  const muster = page.getByRole('button', { name: /Muster Roster/ });
+  await expectReachable(muster, 'the Muster button');
+  await muster.click();
+
+  /*
+    Then check what was actually written, not just what was shown. The roster
+    header carries the Ducat limit, and the Glory balance is the half a player
+    would otherwise silently lose — a Papal States list is built with it.
+  */
+  const stored = await page.evaluate(() => {
+    const raw = localStorage.getItem('tc_warbands_v1');
+    const all = JSON.parse(raw ?? '[]') as { name: string; ducatLimit: number; gloryPoints: number;
+                                             variantId?: string; ledger?: { glory: number }[] }[];
+    return all.find((w) => w.name === 'Swiss Guard Detachment') ?? null;
+  });
+
+  expect(stored, 'the Warband was not created').not.toBeNull();
+  expect(stored!.ducatLimit).toBe(500);
+  expect(stored!.gloryPoints).toBe(11);
+  // The founding ledger entry opens the Strongbox, so the Glory has to be in it
+  // too or the balance and its history disagree from the first game.
+  expect(stored!.ledger?.[0]?.glory).toBe(11);
+});

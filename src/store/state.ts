@@ -164,6 +164,13 @@ export interface AppState {
   createWarband: (name: string, factionId: string, ducatLimit?: number,
                   forceMode?: 'campaign' | 'unrestricted',
                   founding?: { variantId?: string; gloryPoints?: number;
+                               /**
+                                * The Variant's *published* starting Glory, from
+                                * `musterBudget` — distinct from `gloryPoints`,
+                                * which is the player's own opening balance and
+                                * is ignored in campaign mode.
+                                */
+                               startingGlory?: number;
                                allowThirdParty?: boolean }) => Warband;
   /**
    * Delete a warband from this device and from the cloud.

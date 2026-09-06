@@ -108,12 +108,19 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
     },
 
     /*
-      `founding` carries the two things that are decided at muster and nowhere
-      else. The Variant changes what the Warband may recruit, so choosing it
-      after the first models are on the roster means recruiting against a list
-      that was not the one in force. Glory is a starting balance an unrestricted
-      Warband sets alongside its Ducats — a campaign Warband starts on zero,
-      which is published, so the field is ignored for one.
+      `founding` carries the things that are decided at muster and nowhere else.
+      The Variant changes what the Warband may recruit, so choosing it after the
+      first models are on the roster means recruiting against a list that was
+      not the one in force.
+
+      The two Glory fields are not the same number and must not be merged.
+      `gloryPoints` is a balance the *player* sets, which only an unrestricted
+      Warband may do. `startingGlory` is *published* — the Papal States
+      Intervention Force musters on 11 ☼ by its Specialist Force rule — so it
+      applies to a campaign Warband, where the player has no say. Almost every
+      Warband's is 0, which is why "a campaign Warband starts on zero" read as
+      a rule here for so long; it was a generalisation from 26 of 27 Variants.
+      The caller resolves it with `musterBudget`, never by typing a number.
     */
     createWarband: (name, factionId, ducatLimit = 700, forceMode = 'campaign', founding) => {
       const foundingSnapshot: WarbandSnapshot = {
@@ -126,7 +133,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         // The founding snapshot records the Warband as it was founded, so a
         // starting Glory balance belongs in it — restoring to the founding
         // state otherwise silently zeroed it.
-        gloryPoints: forceMode === 'unrestricted' ? (founding?.gloryPoints ?? 0) : 0,
+        gloryPoints: forceMode === 'unrestricted'
+          ? (founding?.gloryPoints ?? 0)
+          : (founding?.startingGlory ?? 0),
         unitCount: 0,
         units: [],
         armoryStash: [],
@@ -150,16 +159,19 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
               at: now,
               reason: 'founding' as const,
               ducats: ducatLimit,
-              glory: 0,
+              glory: founding?.startingGlory ?? 0,
               game: 1,
               note: 'Starting allowance.',
             }]
           : [],
         ducatLimit,
         treasuryDucats: 0,
-        // 0 for a campaign Warband: the book starts one on no Glory, and that
-        // is not the player's to set.
-        gloryPoints: forceMode === 'unrestricted' ? (founding?.gloryPoints ?? 0) : 0,
+        // A campaign Warband's starting Glory is published, not the player's to
+        // set: 0 for every Variant but the Papal States Intervention Force,
+        // whose Specialist Force rule musters it on 11 ☼.
+        gloryPoints: forceMode === 'unrestricted'
+          ? (founding?.gloryPoints ?? 0)
+          : (founding?.startingGlory ?? 0),
         units: [],
         armoryStash: [],
         snapshots: [foundingSnapshot],

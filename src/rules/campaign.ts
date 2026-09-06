@@ -29,6 +29,7 @@
 import type {
   Dataset, ExplorationLocation, ExplorationTableName, RollRange,
 } from '@/types/catalogue';
+import { variantById, factionOf } from './variants';
 
 export interface ThresholdRow {
   game: number;
@@ -54,6 +55,51 @@ export function startingBudget(dataset: Dataset): number | null {
 }
 
 /**
+ * What a warband of this faction and variant actually musters on.
+ *
+ * Not always the faction's 700 and no Glory. The Papal States Intervention
+ * Force's "Specialist Force" rule states 500 👑 and 11 ☼ — 1 of 27 variants,
+ * and for a long time the app printed that rule on the muster screen and then
+ * handed the player 700 👑 and nothing anyway.
+ *
+ * A variant's stated purse replaces its faction's rather than adjusting it,
+ * which is how the rule reads: "You have 500 👑 and 11 ☼ to recruit a Papal
+ * State Intervention Force Warband", not "200 fewer than usual".
+ *
+ * Returns null when the dataset states no budget anywhere. That is a broken
+ * dataset, not a warband on 700 — the caller must say so rather than pick a
+ * number, so this never invents one.
+ */
+export function musterBudget(
+  dataset: Dataset,
+  factionId: string,
+  variantId?: string
+): { ducats: number; glory: number } | null {
+  const variant = variantById(dataset, variantId);
+  if (variant?.budget && typeof variant.budget.ducats === 'number') {
+    return { ducats: variant.budget.ducats, glory: variant.budget.glory ?? 0 };
+  }
+
+  const faction = factionOf(dataset, factionId);
+  if (faction?.budget && typeof faction.budget.ducats === 'number') {
+    return { ducats: faction.budget.ducats, glory: faction.budget.glory ?? 0 };
+  }
+
+  const published = startingBudget(dataset);
+  return published === null ? null : { ducats: published, glory: 0 };
+}
+
+/**
+ * Glory a variant collects each time it Calls for Reinforcements, or 0.
+ *
+ * Part of the same Specialist Force rule as the purse: "A Papal States
+ * Intervention Force gains 4 ☼ each time it calls for Reinforcements."
+ */
+export function reinforcementGlory(dataset: Dataset, variantId?: string): number {
+  return variantById(dataset, variantId)?.reinforcementGlory ?? 0;
+}
+
+/**
  * The limits for game `n`.
  *
  * The published table stops at game 12. A longer campaign is a real thing that
@@ -62,16 +108,39 @@ export function startingBudget(dataset: Dataset): number | null {
  * inventing a 13th row would be inventing game data. A campaign that runs long
  * can set its own limits, and the flag is what lets the UI offer that.
  */
-export function forceLimits(dataset: Dataset, game: number): ForceLimits | null {
+export function forceLimits(
+  dataset: Dataset,
+  game: number,
+  variantId?: string
+): ForceLimits | null {
   const rows = rowsOf(dataset);
   if (!rows.length) return null;
 
   const n = Math.max(1, Math.floor(game) || 1);
   const exact = rows.find((r) => r.game === n);
-  if (exact) return { ...exact, extrapolated: false };
+  const base = exact
+    ? { ...exact, extrapolated: false }
+    : (() => {
+        const last = rows[rows.length - 1];
+        return {
+          game: n, threshold: last.threshold,
+          fieldStrength: last.fieldStrength, extrapolated: true,
+        };
+      })();
 
-  const last = rows[rows.length - 1];
-  return { game: n, threshold: last.threshold, fieldStrength: last.fieldStrength, extrapolated: true };
+  /*
+    A variant may shift the whole table. "In a campaign, their Threshold Value
+    is reduced by 200 👑" applies to every row, so it is a delta on the value
+    read out of the table rather than a row of its own — and it belongs here,
+    the one place the Threshold is resolved, so `reinforcementAllowance` and
+    the Force validator both get it without knowing the rule exists.
+
+    Clamped at zero: no published delta comes near the game-1 Threshold of 700,
+    but a negative cap would silently invert the validator's comparison.
+  */
+  const delta = variantById(dataset, variantId)?.thresholdDelta ?? 0;
+  if (!delta) return base;
+  return { ...base, threshold: Math.max(0, base.threshold + delta) };
 }
 
 /**
@@ -91,9 +160,10 @@ export function forceLimits(dataset: Dataset, game: number): ForceLimits | null 
 export function reinforcementAllowance(
   dataset: Dataset,
   nextGame: number,
-  warbandTotalCost: number
+  warbandTotalCost: number,
+  variantId?: string
 ): number | null {
-  const limits = forceLimits(dataset, nextGame);
+  const limits = forceLimits(dataset, nextGame, variantId);
   if (!limits) return null;
   return Math.max(0, limits.threshold - warbandTotalCost);
 }

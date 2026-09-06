@@ -705,9 +705,12 @@ them turned the separator into `''` and produced `FavouredBrazen Bull`.
 ## 7a. Warband Variants
 
 A **Variant** (Papal States Intervention Force, House of Wisdom, Trench Ghosts…)
-is a named modifier a warband selects at creation, on top of its faction. There
-are 14 official ones and the app currently models none — see
-[`AUDIT.md`](AUDIT.md) §1.6a.
+is a named modifier a warband selects at creation, on top of its faction. The
+dataset carries 27, and they are modelled: their ops are derived from the
+catalogues, their special rules are shown on the muster screen, and — since
+RULES-3 — the economy one of them states for itself is enforced rather than
+merely printed. The "models none" this section used to describe was true when
+[`AUDIT.md`](AUDIT.md) §1.6a was written.
 
 Variants need no new machinery: a variant *is* a layer, scoped to one roster
 instead of the dataset.
@@ -720,6 +723,9 @@ interface Variant {
   loreText: string;
   specialRules: FactionSpecialRule[];
   budget?: Partial<Cost>;     // e.g. Papal States: 500 Ducats + 11 Glory
+  thresholdDelta?: number;    // e.g. Papal States: -200 against every table row
+  reinforcementGlory?: number;// e.g. Papal States: 4 per Reinforcements call
+  economyFrom?: string;       // the rule the three above were read from
   ops: LayerOp[];             // applied to the roster's view of the dataset
 }
 ```
@@ -762,8 +768,49 @@ try lists out, has no campaign to stay consistent with, and already owns its
 budget. Its starting **Glory** is set at muster too, beside its Ducats — the
 screen offered one currency, so an unrestricted list could not include anything
 the catalogues price in Glory (a Witch Coven Matriarch is 0 Ducats and 5 Glory).
-A campaign Warband starts on 0 Glory, which is published, so the field is
-ignored for one.
+A campaign Warband's starting Glory is published rather than chosen, so the
+field is ignored for one — but "published" is not the same as "zero", which is
+the assumption the next section exists to correct.
+
+### The economy a Variant states for itself
+
+Almost every warband musters on its faction's 700 👑 and no Glory. One does not.
+The Papal States Intervention Force's **Specialist Force** rule (Warbands p.35,
+as changed by the 1.0.2 errata) states four things, and the app enforced none of
+them until RULES-3 — while displaying the rule that states them on the muster
+screen:
+
+| Book text | Field | Applied in |
+|---|---|---|
+| "You have 500 👑 and 11 ☼ to recruit a … Warband" | `budget` | `musterBudget()` → the muster screen |
+| "its Threshold Value is reduced by 200 👑" | `thresholdDelta` | `forceLimits()`, so the Force validator and `reinforcementAllowance()` both get it |
+| "gains 4 ☼ each time it calls for Reinforcements" | `reinforcementGlory` | the post-battle wizard's Reinforcements Step |
+| "for a one-off game … reduce by 200 👑, increase by 11 ☼" | — | an unrestricted Warband already owns both numbers; the rule tells the player what to agree, and there is nothing for the app to enforce |
+
+All four numbers are **read from the rule's prose** by `parseVariantEconomy()`
+in `scripts/lib/parse-warbands.mjs`, never typed — the catalogues encode no
+budgets at all, so the prose is the only source. Both sources carry the rule in
+different spellings (glyphs in the PDF, words in the catalogue), the parser
+handles both, and `rules-build` requires them to agree: a disagreement means one
+has been errata'd and the other has not, which is a resolution for a maintainer
+rather than a coin-flip for the build.
+
+`thresholdDelta` is a signed **delta**, not a replacement: the published table
+still governs and the rule shifts it, so it applies to every row including the
+held-at-last-row value past game 12.
+
+A survey of every faction and variant across the Warbands book, the digital
+rulebook, the 1.0.2 changelog, the commentaries and the Carcass Front book found
+this is the **only** exception — 1 of 27 variants, 0 of 8 factions. The parser
+does not treat that as licence to assume: a rule that states a purse it cannot
+read throws, because "no economy stated" and "we failed to read the economy" are
+indistinguishable to a caller and the second one musters a warband on the wrong
+money in silence.
+
+One related rule is deliberately **not** modelled here, because it is not a
+starting allowance: the Cavalcade of the Tenth Plague prices Communicants at
+3 ☼ each instead of Ducats ("Stolen Communicants"). That is a per-model cost
+change, and it belongs to the unit's own entry.
 
 ## 7c. Third-party content
 

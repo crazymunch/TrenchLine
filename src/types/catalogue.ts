@@ -341,8 +341,34 @@ export interface WarbandVariant {
   thirdParty?: boolean;
   lore?: string;
   specialRules: FactionSpecialRule[];
-  /** Papal States starts on a different budget, for example. */
+  /*
+    The economy this Variant states for itself, where it states one.
+
+    Only the Papal States Intervention Force does, in its "Specialist Force"
+    rule (Warbands p.35, as changed by the 1.0.2 errata) — 1 of 27 Variants and
+    0 of 8 factions. All four fields are read out of that rule's prose by
+    `parseVariantEconomy`; none is written by hand, and `economyFrom` names the
+    rule they came from so the number can be traced back to the sentence.
+
+    Absent means the Variant musters on its faction's budget, which is what the
+    other 26 do. It never means "we did not look" — a rule that states a purse
+    the parser cannot read fails the build rather than defaulting to 700.
+  */
+  /** The starting purse, replacing the faction's. Papal States: 500 D, 11 Glory. */
   budget?: Partial<Cost>;
+  /**
+   * Ducats added to the Warband Threshold Table's value for this Variant.
+   *
+   * Signed, and a delta rather than a replacement, because the published table
+   * still governs — the rule shifts it. Papal States is -200, so leaving this
+   * unapplied told every Papal States player they were 200 Ducats over the
+   * threshold before they actually were.
+   */
+  thresholdDelta?: number;
+  /** Glory gained each time the Variant calls for Reinforcements. Papal States: 4. */
+  reinforcementGlory?: number;
+  /** The special rule the three above were read from. */
+  economyFrom?: string;
   /** Applied to the roster's view of the dataset, not to the dataset. */
   ops: LayerOp[];
 }

@@ -116,8 +116,11 @@ export const WarbandBuilder: React.FC = () => {
   // Warband Threshold Table for the game being prepared for. Only an
   // unrestricted warband has a number the player owns.
   const isCampaignForce = warband.forceMode !== 'unrestricted';
+  // The Variant is passed because it can shift the whole table: a Papal States
+  // Intervention Force's Threshold Value is 200 Ducats lower than the published
+  // row, so without it the builder called a legal Force over the limit.
   const limits = dataset && isCampaignForce
-    ? forceLimits(dataset, campaignGameOf(warband, campaign))
+    ? forceLimits(dataset, campaignGameOf(warband, campaign), warband.variantId)
     : null;
   /*
     The Variant is a founding decision. Once a game has been played, changing it

@@ -7,6 +7,7 @@ import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
 import {
   explorationDice, explorationTables, resolveExploration, campaignGameOf,
+  reinforcementGlory,
 } from '../../rules/campaign';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
@@ -81,6 +82,18 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const houseRuleKeepsExploration =
     campaign?.houseRules?.reinforcementsKeepExploration === true;
   const explorationForfeited = tookReinforcements && !houseRuleKeepsExploration;
+
+  /*
+    Glory the Warband's Variant is paid for calling Reinforcements.
+
+    "A Papal States Intervention Force gains 4 ☼ each time it calls for
+    Reinforcements" — the same Specialist Force rule that gives them a smaller
+    purse gives some of it back here. 0 for every other Variant, and read from
+    the dataset rather than keyed off a faction name.
+  */
+  const variantReinforcementGlory =
+    dataset ? reinforcementGlory(dataset, warband?.variantId) : 0;
+  const reinforcementBonus = tookReinforcements ? variantReinforcementGlory : 0;
   // Empty until the dataset loads; `scenario` below falls back to the first.
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
@@ -235,7 +248,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       scenario.id,
       scenario.name,
       outcome,
-      gloryGained,
+      // The Variant's Reinforcements payout is published, so it is added to
+      // what the player recorded rather than expected to be typed in.
+      gloryGained + reinforcementBonus,
       ducatsGained,
       casualties,
       advancements,
@@ -806,8 +821,16 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">Post-Battle Payout:</span>
                 <div className="flex justify-between text-sm">
                   <span>Glory Points Gained:</span>
-                  <strong className="text-theme-primary">+{gloryGained} Glory</strong>
+                  <strong className="text-theme-primary">+{gloryGained + reinforcementBonus} Glory</strong>
                 </div>
+                {/* Named, not folded in silently: a player who sees a number
+                    they did not enter needs to know which rule produced it. */}
+                {reinforcementBonus > 0 && (
+                  <div className="flex justify-between text-xs text-theme-muted">
+                    <span>&nbsp;&nbsp;including Reinforcements payout:</span>
+                    <span>+{reinforcementBonus} Glory</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span>Total Ducats Deposited into Treasury:</span>
                   <strong className="text-theme-primary">+{ducatsGained} Ducats</strong>
