@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { consumeToken } from '@/lib/authTokens';
 import { limitAccountRoute } from '@/lib/api/rateLimit';
+import { handle } from '@/lib/api/http';
+import { readJson } from '@/lib/api/parse';
 
 /**
  * Confirm an address from the link in a verification mail.
@@ -10,12 +12,15 @@ import { limitAccountRoute } from '@/lib/api/rateLimit';
  * no session, and the token names the user rather than the caller doing so.
  */
 export async function POST(req: NextRequest) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Expected a JSON body.' }, { status: 400 });
-  }
+  /*
+    The bounded reader, and `handle` so its refusal is a response. See the note
+    on `auth/register`: `req.json()` parses before anyone can object to the
+    size, and `readJson` measures first. `handle` turns `readJson`'s thrown
+    refusal into a 413 rather than an unhandled 500, and retires the
+    hand-written try/catch.
+  */
+  return handle('auth.verify', async () => {
+  const body = await readJson(req);
 
   const token = (body as { token?: unknown })?.token;
   if (typeof token !== 'string' || !token) {
@@ -52,4 +57,5 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({ ok: true }, { status: 200 });
+  });
 }

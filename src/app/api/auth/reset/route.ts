@@ -5,6 +5,8 @@ import { consumeToken } from '@/lib/authTokens';
 import { sendPasswordReset } from '@/lib/accountMail';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
 import { limitAccountRoute } from '@/lib/api/rateLimit';
+import { handle } from '@/lib/api/http';
+import { readJson } from '@/lib/api/parse';
 
 /**
  * Password reset, both halves.
@@ -24,12 +26,15 @@ const REQUESTED =
   'If that address has an account with a password, a reset link is on its way.';
 
 export async function POST(req: NextRequest) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Expected a JSON body.' }, { status: 400 });
-  }
+  /*
+    The bounded reader, and `handle` so its refusal is a response. See the note
+    on `auth/register`: `req.json()` parses before anyone can object to the
+    size, and `readJson` measures first. `handle` turns `readJson`'s thrown
+    refusal into a 413 rather than an unhandled 500, and retires the
+    hand-written try/catch.
+  */
+  return handle('auth.reset', async () => {
+  const body = await readJson(req);
   if (typeof body !== 'object' || body === null) {
     return NextResponse.json({ error: 'Expected a JSON object.' }, { status: 400 });
   }
@@ -122,4 +127,5 @@ export async function POST(req: NextRequest) {
   if (user?.password) await sendPasswordReset(user.id, email);
 
   return NextResponse.json({ ok: true, message: REQUESTED }, { status: 202 });
+  });
 }

@@ -46,14 +46,21 @@ const deleteWarband = async (id: string) => {
 };
 
 /*
-  The warband route reads its body with `req.json()`, where the campaign and
-  custom-rule routes go through `parse.ts` and read `req.text()`. Hence a
-  second helper rather than reusing `post` above — handing the warband handler
-  a request with only `text()` on it makes every assertion a 500, which looks
-  like a failing authorization check and is not one.
+  Identical in shape to `post` now, and kept only because the warband handler
+  takes no query string.
+
+  It used to differ: the warband route read its body with `req.json()` while
+  the campaign and custom-rule routes went through `parse.ts` and read
+  `req.text()` — so this fixture offered `json()` and that one offered
+  `text()`. That inconsistency WAS the defect: `req.json()` parses before
+  anyone can object to the size, so the 512 KB cap every other write path
+  enforces did not apply to a roster, whose `units` and `armoryStash` are Json
+  columns with no ceiling of their own. Both go through `readJson` now.
 */
 const saveWarband = async (body: unknown) => {
-  const res = await warbandsPOST({ json: async () => body } as never);
+  const res = await warbandsPOST({
+    headers: { get: () => null }, text: async () => JSON.stringify(body),
+  } as never);
   return { status: res.status, body: await res.json() };
 };
 
@@ -267,6 +274,23 @@ describeDb('ownership, against a migrated database', () => {
       expect(after?.controlledByWarbandId).toBe(bobWarband);
       // Attributed from the membership row, not from anything the caller sent.
       expect(after?.controlledByPlayerName).toBe('Bob');
+    });
+
+    /*
+      The roster body cap.
+
+      `units` and `armoryStash` are Json columns with no ceiling of their own,
+      so until this route went through `readJson` the only bound on a roster
+      body was the host's. A field-level limit would not have helped: those run
+      after the parse, and the parse is the work being bounded.
+    */
+    it('refuses an oversized roster before parsing it', async () => {
+      as(alice);
+      const res = await saveWarband({
+        name: 'Too Much', factionId: 'new-antioch',
+        units: [{ lore: 'x'.repeat(600 * 1024) }],
+      });
+      expect(res.status).toBe(413);
     });
 
     it('issues invite codes that are unique in the database', async () => {

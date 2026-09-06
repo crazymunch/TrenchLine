@@ -68,4 +68,5 @@ These exist because the original codebase violated all four.
 
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — what the environment must provide, and which layer enforces rate limiting.
 - [`CAMPAIGN-SYNC.md`](CAMPAIGN-SYNC.md) — the design for campaign cloud sync, the model decision behind it, and the authority table the code follows.
+- [`LIVE-MODE.md`](LIVE-MODE.md) — the last unbuilt feature, scoped in two stages: a read-only mirror that needs no new infrastructure, and what a full two-way version would actually cost.
 - [`LEGAL.md`](LEGAL.md) — the `/about`, `/privacy` and `/terms` pages: why they exist, which claims are checkable and where, and what is left to lift the Safe Browsing flag.

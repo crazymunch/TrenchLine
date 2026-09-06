@@ -4,9 +4,11 @@ import {
   clientFieldsOf,
   metadataOf,
 } from '@/lib/api/warbandMetadata';
+import { Prisma, WarbandVisibility } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { abort, badRequest, forbidden, handle } from '@/lib/api/http';
 import { currentActor, requireActor } from '@/lib/api/policy';
+import { readJson } from '@/lib/api/parse';
 
 /**
  * What the public Warband Directory is allowed to say about a roster.
@@ -222,7 +224,25 @@ export async function POST(req: NextRequest) {
       finished.
     */
     const actor = await requireActor();
-    const body = await req.json();
+    /*
+      Through the bounded reader, not `req.json()`.
+
+      This route was the last write path where a caller chose the size of the
+      work: `units` and `armoryStash` are Json columns with no ceiling of their
+      own, so a roster body was bounded by the host and nothing else.
+      `readJson` measures before it parses — `content-length` first, then the
+      text it actually received, because the header is a claim rather than a
+      fact — and refuses past `MAX_BODY_BYTES`.
+
+      NOT `readAndParse` with a schema, and that is deliberate. The body
+      carries client-owned fields on purpose: `clientMetadata` reads them off
+      it using the single list in `CLIENT_OWNED`, which is what makes adding
+      one a one-line change rather than an edit in two files that drift. A
+      `.strict()` schema here would have to repeat that list and would reject
+      every field the next version of the client sends. The cap is the property
+      that was missing; the pass-through is a design, not an oversight.
+    */
+    const body = await readJson(req) as Record<string, unknown>;
 
     /*
       The columns this route writes. The CLIENT-OWNED fields are deliberately
@@ -230,17 +250,24 @@ export async function POST(req: NextRequest) {
       CLIENT_OWNED, so adding one there makes it round-trip with no second edit
       here. Listing them twice is the drift that lost six of them.
     */
-    const {
-      id,
-      name,
-      factionId,
-      ducatLimit,
-      treasuryDucats,
-      gloryPoints,
-      units,
-      armoryStash,
-      visibility
-    } = body;
+    const { id, ducatLimit, treasuryDucats, gloryPoints, units, armoryStash } = body;
+
+    /*
+      Typed, because `req.json()` returned `any` and these five went into
+      Prisma unchecked.
+
+      That is the same shape of defect the `types/diff.ts` sweep found: `any`
+      let a value of the wrong kind reach a column and surface later as data
+      nobody could account for. `name` and `factionId` are columns of type
+      String, `visibility` is an enum, and until now a client could have sent
+      a number or an object for any of them — the guard below tested
+      truthiness, which an object passes.
+    */
+    const name = typeof body.name === 'string' ? body.name : undefined;
+    const factionId = typeof body.factionId === 'string' ? body.factionId : undefined;
+    const visibility = body.visibility === undefined
+      ? undefined
+      : typeof body.visibility === 'string' ? body.visibility : null;
 
     if (!name || !factionId) {
       return NextResponse.json({ error: 'Missing required fields: name and factionId are required' }, { status: 400 });
@@ -256,7 +283,9 @@ export async function POST(req: NextRequest) {
       choice somebody makes and not one made for them.
     */
     const VISIBILITIES = ['PRIVATE', 'UNLISTED', 'PUBLIC'];
-    if (visibility !== undefined && !VISIBILITIES.includes(visibility)) {
+    // `null` here means "sent, but not a string" — rejected by the same branch
+    // as an unrecognised string, since neither is one of the three values.
+    if (visibility !== undefined && (visibility === null || !VISIBILITIES.includes(visibility))) {
       return NextResponse.json(
         { error: `visibility must be one of ${VISIBILITIES.join(', ')}.` }, { status: 400 });
     }
@@ -269,7 +298,7 @@ export async function POST(req: NextRequest) {
       every anonymous warband under it, so unrelated visitors accumulated in one
       bucket and, with the old GET, read each other's rosters back out.
     */
-    const warbandId = id || `wb-${Date.now()}`;
+    const warbandId = typeof id === 'string' && id ? id : `wb-${Date.now()}`;
 
     // Check existing warband ownership if updating
     const existingWarband = await prisma.warband.findUnique({
@@ -302,6 +331,18 @@ export async function POST(req: NextRequest) {
       If it ever needs to be indexed, add the column then and backfill from
       here. Doing it now buys nothing and costs a migration window.
     */
+    /*
+      The two Json columns, narrowed to what they are.
+
+      A roster's models and stash are arrays; anything else is a client that
+      does not agree with this one about the shape, and writing it would put a
+      value in the column that every reader then has to guard against.
+      Undefined leaves the column alone, which is what an update that does not
+      mention them should do.
+    */
+    const unitsJson = Array.isArray(units) ? units as Prisma.InputJsonValue : undefined;
+    const stashJson = Array.isArray(armoryStash) ? armoryStash as Prisma.InputJsonValue : undefined;
+
     const metadataPayload = clientMetadata(body);
 
     const warband = await prisma.warband.upsert({
@@ -317,10 +358,10 @@ export async function POST(req: NextRequest) {
         ducatLimit: Number.isFinite(Number(ducatLimit)) ? Number(ducatLimit) : 700,
         treasuryDucats: Number.isFinite(Number(treasuryDucats)) ? Number(treasuryDucats) : 0,
         gloryPoints: Number.isFinite(Number(gloryPoints)) ? Number(gloryPoints) : 0,
-        units: units || [],
-        armoryStash: armoryStash || [],
+        units: unitsJson ?? [],
+        armoryStash: stashJson ?? [],
         notes: metadataPayload,
-        ...(visibility === undefined ? {} : { visibility }),
+        ...(visibility === undefined ? {} : { visibility: visibility as WarbandVisibility }),
         userId: existingWarband ? existingWarband.userId : actor.userId,
       },
       create: {
@@ -330,11 +371,11 @@ export async function POST(req: NextRequest) {
         ducatLimit: Number.isFinite(Number(ducatLimit)) ? Number(ducatLimit) : 700,
         treasuryDucats: Number.isFinite(Number(treasuryDucats)) ? Number(treasuryDucats) : 0,
         gloryPoints: Number.isFinite(Number(gloryPoints)) ? Number(gloryPoints) : 0,
-        units: units || [],
-        armoryStash: armoryStash || [],
+        units: unitsJson ?? [],
+        armoryStash: stashJson ?? [],
         notes: metadataPayload,
         // Absent on create means the schema's PRIVATE default applies.
-        ...(visibility === undefined ? {} : { visibility }),
+        ...(visibility === undefined ? {} : { visibility: visibility as WarbandVisibility }),
         userId: actor.userId,
       },
     });
