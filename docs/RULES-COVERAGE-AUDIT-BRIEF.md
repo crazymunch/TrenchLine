@@ -155,9 +155,13 @@ than a claim of completeness. Partial coverage, honestly bounded, is fine.
 
 ## 9. Suggested output
 
-`docs/RULES-COVERAGE-AUDIT.md`, with a findings table ordered by severity and a
-short statement of method and coverage. If the audit is long, split by source
-document rather than truncating.
+A new `RULES-COVERAGE-AUDIT.md` in the `docs/` directory, with a findings table
+ordered by severity and a short statement of method and coverage. If the audit
+is long, split by source document rather than truncating.
+
+(Written without the directory prefix on purpose: `scripts/__tests__/docPaths.test.mjs`
+requires every repository path a document names to exist, and this one does not
+exist yet. That guard caught the first draft of this brief.)
 
 ## 10. Known-answer calibration
 
