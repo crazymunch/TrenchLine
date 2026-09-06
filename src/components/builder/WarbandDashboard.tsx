@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { variantsForFaction } from '../../rules/variants';
+import { musterBudget } from '../../rules/campaign';
 import { WarbandBuilder } from './WarbandBuilder';
 import { ImportWarbandModal } from './ImportWarbandModal';
 import { WarbandComparatorModal } from './WarbandComparatorModal';
@@ -123,17 +124,37 @@ export const WarbandDashboard: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newAllowThirdParty]);
 
+  /*
+    What this muster actually starts on.
+
+    Read from the dataset per faction *and* Variant, because it is not always
+    700 and 0: the Papal States Intervention Force's Specialist Force rule
+    states 500 👑 and 11 ☼. This screen used to pass a literal 700 while
+    displaying that rule to the player two panels up.
+
+    `musterBudget` returns null only when the dataset carries no budget at all,
+    which is a broken dataset rather than a 700-Ducat warband — so the muster
+    is refused rather than guessed (rule 2).
+  */
+  const muster = dataset ? musterBudget(dataset, newFactionId, newVariantId) : null;
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newWarbandName.trim()) return;
+    if (newForceMode === 'campaign' && !muster) return;
     createWarband(
       newWarbandName.trim(),
       newFactionId,
-      // A campaign warband always starts on the book's allowance; the field is
-      // only the player's to set in unrestricted mode.
-      newForceMode === 'campaign' ? 700 : newDucatLimit,
+      // A campaign warband always starts on the published allowance; the field
+      // is only the player's to set in unrestricted mode.
+      newForceMode === 'campaign' ? muster!.ducats : newDucatLimit,
       newForceMode,
-      { variantId: newVariantId, gloryPoints: newGlory, allowThirdParty: newAllowThirdParty },
+      {
+        variantId: newVariantId,
+        gloryPoints: newGlory,
+        startingGlory: muster?.glory ?? 0,
+        allowThirdParty: newAllowThirdParty,
+      },
     );
     setNewWarbandName('');
     setNewVariantId(undefined);
@@ -463,8 +484,17 @@ export const WarbandDashboard: React.FC = () => {
                 </label>
                 <div className="space-y-2">
                   {([
+                    /*
+                      The blurb quotes the real number rather than a typed 700.
+                      A Papal States player was being told "Starts on 700 Ducats
+                      and 0 Glory" on the same screen that printed their
+                      Specialist Force rule saying 500 and 11.
+                    */
                     { id: 'campaign' as const, name: 'Campaign Force',
-                      blurb: "The published economy. Starts on 700 Ducats and 0 Glory; the per-game limit comes from the Warband Threshold Table and is not edited by hand." },
+                      blurb: muster
+                        ? `The published economy. Starts on ${muster.ducats} Ducats and ${muster.glory} Glory; `
+                          + 'the per-game limit comes from the Warband Threshold Table and is not edited by hand.'
+                        : 'The published economy — unavailable: this ruleset states no starting allowance.' },
                     { id: 'unrestricted' as const, name: 'Unrestricted',
                       blurb: 'You set the Ducats and Glory. For one-off games, imports, and trying a list out.' },
                   ]).map((m) => (
@@ -573,7 +603,10 @@ export const WarbandDashboard: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
+                  /* A campaign muster with no published allowance to muster on
+                     is refused, not defaulted — see `muster` above. */
+                  disabled={newForceMode === 'campaign' && !muster}
+                  className="px-4 py-2 min-h-[44px] bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Muster Roster
                 </button>

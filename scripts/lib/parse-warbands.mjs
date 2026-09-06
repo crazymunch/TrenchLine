@@ -276,3 +276,90 @@ export function parseFactionRules(src = WARBANDS_TXT) {
     return true;
   });
 }
+
+/**
+ * The economy a Warband Variant states for itself, read out of its rule prose.
+ *
+ * Almost every warband musters on its faction's 700 👑 and no Glory. One does
+ * not: the Papal States Intervention Force's "Specialist Force" rule (Warbands
+ * p.35, as changed by the 1.0.2 errata) states a different starting purse, a
+ * Threshold Value shifted against the standard table, and Glory paid out at
+ * Reinforcements. A player was mustering Papal States on 700 👑 because none of
+ * that was data — the app printed the rule and then ignored it.
+ *
+ * The numbers are read, not typed. Both sources are supported because they
+ * spell the currencies differently and neither is authoritative alone:
+ *
+ *   Warbands PDF   "You have 500 👑  and 11 ☼ to recruit a … Warband"
+ *   catalogue      "You have 500 Ducats and 11 Glory to recruit a … Warband"
+ *
+ * Returns `null` when a rule set states no economy at all, which is the case
+ * for 26 of the 27 variants and is not a parse failure. A rule that states one
+ * and cannot be read is a different thing entirely, and throws: a variant
+ * silently mustering on the standard purse is the bug this exists to stop.
+ */
+const DUCATS = '(?:👑|Ducats?)';
+const GLORY = '(?:☼|Glory(?:\\s+Points?)?)';
+
+export function parseVariantEconomy(specialRules = []) {
+  const economy = {};
+  let statedIn = null;
+
+  for (const rule of specialRules) {
+    const text = String(rule?.description ?? '').replace(/ /g, ' ').replace(/\s+/g, ' ');
+
+    // "You have 500 👑 and 11 ☼ to recruit a … Warband for a campaign".
+    // The Glory half is optional: a variant could state a purse in Ducats only.
+    const purse = text.match(
+      new RegExp(`You have\\s+([\\d,]+)\\s*${DUCATS}\\s*(?:and\\s+([\\d,]+)\\s*${GLORY}\\s*)?to recruit`, 'i'));
+    if (purse) {
+      economy.budget = {
+        ducats: Number(purse[1].replace(/,/g, '')),
+        glory: purse[2] ? Number(purse[2].replace(/,/g, '')) : 0,
+      };
+      statedIn = rule.name;
+    }
+
+    // "In a campaign, its Threshold Value is reduced by 200 👑". Stored as a
+    // signed delta against the Warband Threshold Table rather than a replacement
+    // value, because the table itself still governs — the rule shifts it.
+    const threshold = text.match(
+      new RegExp(`Threshold Value is (reduced|increased) by\\s+([\\d,]+)\\s*${DUCATS}`, 'i'));
+    if (threshold) {
+      const magnitude = Number(threshold[2].replace(/,/g, ''));
+      economy.thresholdDelta = /reduced/i.test(threshold[1]) ? -magnitude : magnitude;
+      statedIn = statedIn ?? rule.name;
+    }
+
+    // "gains 4 ☼ each time it calls for Reinforcements".
+    const reinforcement = text.match(
+      new RegExp(`gains?\\s+([\\d,]+)\\s*${GLORY}\\s*each time it calls for Reinforcements`, 'i'));
+    if (reinforcement) {
+      economy.reinforcementGlory = Number(reinforcement[1].replace(/,/g, ''));
+      statedIn = statedIn ?? rule.name;
+    }
+  }
+
+  if (!statedIn) {
+    /*
+      Nothing was read. Before concluding "this variant uses the standard
+      economy", check that no rule was *trying* to state one — a wording the
+      patterns above do not cover would otherwise pass as silence, and silence
+      here means the app musters the warband on the wrong purse without a word.
+    */
+    const suspicious = specialRules.find((rule) => {
+      const text = String(rule?.description ?? '').replace(/\s+/g, ' ');
+      return new RegExp(`You have\\s+[\\d,]+\\s*${DUCATS}|Threshold Value is`, 'i').test(text);
+    });
+    if (suspicious) {
+      throw new Error(
+        `parseVariantEconomy: '${suspicious.name}' states a starting purse or a `
+        + 'Threshold Value but no pattern here could read it. Read it or widen the '
+        + `pattern — do not ship the variant on the standard 700: ${
+          String(suspicious.description).replace(/\s+/g, ' ').slice(0, 200)}`);
+    }
+    return null;
+  }
+
+  return { ...economy, statedIn };
+}

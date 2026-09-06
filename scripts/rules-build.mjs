@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
-import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules } from './lib/parse-warbands.mjs';
+import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules, parseVariantEconomy } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable,
          parseCampaignPhaseSteps } from './lib/parse-campaign.mjs';
@@ -812,8 +812,41 @@ for (const ruleset of RULESETS) {
   };
   const bookFor = (name) => variants.find((v) => sameVariant(v.name, name));
 
+  /*
+    A variant that musters on its own economy.
+
+    "Specialist Force: You have 500 👑 and 11 ☼ to recruit a Papal State
+    Intervention Force Warband for a campaign … its Threshold Value is reduced
+    by 200 👑" is not flavour text: it is the purse, the threshold and the
+    Reinforcements payout, and the app was printing it while mustering the
+    warband on the faction's 700 👑 anyway.
+
+    Both sources carry the rule, in different spellings — glyphs in the PDF,
+    words in the catalogue — so both are read and required to agree. A
+    disagreement means one source has been errata'd and the other has not, and
+    picking either silently would ship a number nobody chose.
+  */
+  const economyFor = (v, book) => {
+    const fromCatalogue = parseVariantEconomy(v.specialRules);
+    const fromBook = book ? parseVariantEconomy(book.specialRules) : null;
+    if (fromCatalogue && fromBook) {
+      const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+      if (!same(fromCatalogue.budget, fromBook.budget)
+        || fromCatalogue.thresholdDelta !== fromBook.thresholdDelta
+        || fromCatalogue.reinforcementGlory !== fromBook.reinforcementGlory) {
+        throw new Error(
+          `rules-build: the catalogue and the Warbands book disagree on the economy `
+          + `'${v.name}' states. catalogue ${JSON.stringify(fromCatalogue)} vs book `
+          + `${JSON.stringify(fromBook)}. One of the two has been errata'd; resolve it `
+          + 'in data-sources/resolutions.json rather than letting the build pick.');
+      }
+    }
+    return fromCatalogue ?? fromBook;
+  };
+
   dataset.variants = base.variantEntries.map((v) => {
     const book = bookFor(v.name);
+    const economy = economyFor(v, book);
     return {
       id: variantKey(v.name),
       entryId: v.id,
@@ -823,6 +856,12 @@ for (const ruleset of RULESETS) {
       ops: opsByVariantId.get(v.id) ?? [],
       sources: book ? ['catalogue', 'rulebook'] : ['catalogue'],
       thirdParty: v.thirdParty || undefined,
+      ...(economy?.budget ? { budget: economy.budget } : {}),
+      ...(economy?.thresholdDelta !== undefined
+        ? { thresholdDelta: economy.thresholdDelta } : {}),
+      ...(economy?.reinforcementGlory !== undefined
+        ? { reinforcementGlory: economy.reinforcementGlory } : {}),
+      ...(economy ? { economyFrom: economy.statedIn } : {}),
     };
   });
 
@@ -831,9 +870,16 @@ for (const ruleset of RULESETS) {
   const bookOnly = variants.filter(
     (v) => !base.variantEntries.some((c) => sameVariant(c.name, v.name)));
   for (const v of bookOnly) {
+    const economy = parseVariantEconomy(v.specialRules);
     dataset.variants.push({
       id: variantKey(v.name), name: v.name, factionId: '',
       specialRules: v.specialRules, ops: [], sources: ['rulebook'],
+      ...(economy?.budget ? { budget: economy.budget } : {}),
+      ...(economy?.thresholdDelta !== undefined
+        ? { thresholdDelta: economy.thresholdDelta } : {}),
+      ...(economy?.reinforcementGlory !== undefined
+        ? { reinforcementGlory: economy.reinforcementGlory } : {}),
+      ...(economy ? { economyFrom: economy.statedIn } : {}),
     });
   }
 

@@ -69785,7 +69785,14 @@ export const DATASET: Dataset = {
       "sources": [
         "catalogue",
         "rulebook"
-      ]
+      ],
+      "budget": {
+        "ducats": 500,
+        "glory": 11
+      },
+      "thresholdDelta": -200,
+      "reinforcementGlory": 4,
+      "economyFrom": "Specialist Force"
     },
     {
       "id": "eirerangers",
