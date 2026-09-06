@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { importNewRecruitRoster } from '../../services/newRecruitImporter';
+import { decodeRosterFile, warbandFromFile } from '../../services/rosterFile';
 import { Warband } from '../../types/warband';
 import { 
   UploadCloud, 
@@ -31,6 +32,45 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     and was wrong from that line on.
   */
   const [unmatched, setUnmatched] = useState<string[]>([]);
+  /*
+    What a TrenchLine roster file could not tell us.
+
+    A v0 file — the raw dump the app used to write — records no ruleset at all,
+    and a v1 file can carry fields a build does not know. Both are shown rather
+    than swallowed: see `services/rosterFile.ts`.
+  */
+  const [fileNotes, setFileNotes] = useState<string[]>([]);
+
+  /**
+   * Read one pasted or uploaded blob.
+   *
+   * A TrenchLine file first, because it is unambiguous — it names its own
+   * format — and because falling through to the NewRecruit parser would answer
+   * "Failed to parse roster data. Ensure it is valid NewRecruit JSON" to a
+   * file this app wrote itself.
+   *
+   * A TrenchLine file that is recognised but REFUSED (a newer schema version,
+   * a hostile shape) reports its own reason and stops there. Retrying it as a
+   * NewRecruit roster would replace an exact answer with a wrong one.
+   */
+  const readRoster = (content: string) => {
+    const looksLikeOurs = content.includes('trenchline.roster');
+    const decoded = decodeRosterFile(content);
+    if (decoded.ok) {
+      setParsedWarband(warbandFromFile(decoded.file, 'clone'));
+      setFileNotes(decoded.warnings);
+      setUnmatched([]);
+      setErrorMsg(null);
+      return true;
+    }
+    if (looksLikeOurs) {
+      setParsedWarband(null);
+      setFileNotes([]);
+      setErrorMsg(decoded.reason);
+      return true;
+    }
+    return false;
+  };
 
   const handleParse = () => {
     if (!inputText.trim()) {
@@ -38,9 +78,12 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       return;
     }
 
+    if (readRoster(inputText)) return;
+
     try {
       const { warband, unmatched } = importNewRecruitRoster(inputText, units);
       setUnmatched(unmatched);
+      setFileNotes([]);
       if (warband.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
         setParsedWarband(null);
@@ -62,6 +105,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     reader.onload = (event) => {
       const content = event.target?.result as string;
       setInputText(content);
+      if (readRoster(content)) return;
       try {
         const { warband, unmatched } = importNewRecruitRoster(content, units);
         setParsedWarband(warband);
@@ -95,7 +139,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       onClose={onClose}
       size="lg"
       title="Import a warband"
-      subtitle="Paste a NewRecruit JSON, BattleScribe XML or plaintext roster"
+      subtitle="Paste a TrenchLine roster file, NewRecruit JSON, BattleScribe XML or plaintext roster"
       /*
         The import had no way to finish.
 
@@ -137,7 +181,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             className="cursor-pointer flex flex-col items-center space-y-1 text-xs font-mono text-theme-muted hover:text-theme-text"
           >
             <UploadCloud className="w-8 h-8 text-theme-primary mb-1" />
-            <span className="font-bold text-theme-text">Click to upload NewRecruit exported file</span>
+            <span className="font-bold text-theme-text">Click to upload a TrenchLine or NewRecruit file</span>
             <span className="text-xs sm:text-[10px] text-theme-muted">Supports .json, .ros, .rosz, .txt</span>
           </label>
         </div>
@@ -184,6 +228,25 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
               {unmatched.map((n, i) => (
                 <li key={i} className="list-disc">{n}</li>
               ))}
+            </ul>
+          </div>
+        )}
+
+        {/*
+          What a TrenchLine file could not tell us.
+
+          Above the preview for the same reason the unmatched list is: "this
+          file records no ruleset" changes what a player should check before
+          importing, and a file from an older build says exactly that.
+        */}
+        {fileNotes.length > 0 && (
+          <div className="border border-theme-border bg-theme-base p-3 space-y-1.5">
+            <span className="eyebrow text-theme-muted flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              About this file
+            </span>
+            <ul className="text-xs text-theme-muted space-y-1 pl-4">
+              {fileNotes.map((n, i) => <li key={i} className="list-disc">{n}</li>)}
             </ul>
           </div>
         )}

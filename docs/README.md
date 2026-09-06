@@ -20,6 +20,7 @@ no design documentation at all.
 | [`DESIGN.md`](DESIGN.md) | The Iron Ledger — the visual language, the two-surface token mechanism, and the type and colour rules. |
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
+| [`ROSTER-FILE.md`](ROSTER-FILE.md) | The roster file TrenchLine writes and reads: the envelope, the field inventory, the round-trip promise and the compatibility policy. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |

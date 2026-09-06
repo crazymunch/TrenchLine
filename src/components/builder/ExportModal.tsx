@@ -4,6 +4,10 @@ import { Warband } from '../../types/warband';
 import { Faction } from '../../types/rules';
 import { Printer, Copy, Download, Check, Share2 } from 'lucide-react';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
+import { encodeRosterFile } from '@/services/rosterFile';
+import { useDataset } from '@/rules/useDataset';
+import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
+import { APP_VERSION } from '@/services/appVersion';
 
 interface ExportModalProps {
   warband: Warband;
@@ -13,6 +17,15 @@ interface ExportModalProps {
 
 export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onClose }) => {
   const [copiedType, setCopiedType] = useState<'plain' | 'discord' | null>(null);
+
+  /*
+    The ruleset this roster is being exported under, for the file's manifest.
+    Read here rather than threaded in, so the export cannot end up describing a
+    different ruleset from the one the builder is using.
+  */
+  const { dataset } = useDataset(
+    (typeof window !== 'undefined'
+      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
 
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
 
@@ -69,11 +82,25 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
     setTimeout(() => setCopiedType(null), 2000);
   };
 
+  /**
+   * The TrenchLine roster file.
+   *
+   * This used to be `JSON.stringify(warband)` — the internal type, with no
+   * version and no record of the ruleset, carrying mid-battle wounds and the
+   * exporter's own account id. Those files are already in users' hands and the
+   * new reader still opens them; what is WRITTEN from here on is the versioned
+   * envelope. See `services/rosterFile.ts`.
+   */
   const handleDownloadJson = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(warband, null, 2));
+    const file = encodeRosterFile(warband, dataset, { exporterVersion: APP_VERSION });
+    const dataStr = 'data:application/json;charset=utf-8,'
+      + encodeURIComponent(JSON.stringify(file, null, 2));
     const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `${warband.name.replace(/\s+/g, '_')}_trenchline.json`);
+    downloadAnchor.setAttribute('href', dataStr);
+    /* Sanitised: a warband name is user text and this becomes a filename. */
+    const safe = warband.name.replace(/[^\p{L}\p{N}]+/gu, '_').replace(/^_+|_+$/g, '')
+      || 'warband';
+    downloadAnchor.setAttribute('download', `${safe}.trenchline.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -85,7 +112,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
       onClose={onClose}
       size="xl"
       title="EXPORT & PRINT DOSSIERS"
-      subtitle="Printable physical tactical cards, Discord markdown, or JSON backup"
+      subtitle="Printable physical tactical cards, Discord markdown, or a TrenchLine roster file"
     >
       {/* Action Bar (Hidden during print) */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3 border-b border-theme-border bg-theme-surface print:hidden">
@@ -119,7 +146,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
             className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
           >
             <Download className="w-4 h-4" />
-            <span>Save JSON</span>
+            <span>Save TrenchLine file</span>
           </button>
         </div>
       </div>
