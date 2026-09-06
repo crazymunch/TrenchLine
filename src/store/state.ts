@@ -142,6 +142,14 @@ export interface AppState {
    * campaign name.
    */
   publishCampaignToCloud: () => Promise<void>;
+  /**
+   * Replace this device's campaign with one the server holds (SYNC-5).
+   *
+   * Returns whether it happened, so a caller can keep its sheet open on a
+   * failure instead of closing on a campaign that never arrived. Destructive
+   * by construction — the store holds one campaign — so the caller asks first.
+   */
+  adoptCampaignFromCloud: (cloudId: string) => Promise<boolean>;
 
   // Warband Management
   warbands: Warband[];

@@ -24,22 +24,23 @@
  * open is how somebody enters their half-built test warband. Only synced
  * warbands are offered, because the server can only enrol a roster it has.
  *
- * ## What joining does NOT do yet, and why this says so
+ * ## Downloading it is a second, asked-for step
  *
- * The membership is real: the warband is in the campaign on the server, and
- * the organiser's roll-up will show it. The campaign does not appear on THIS
- * device, because campaign sync is push-only today — `syncCampaignWithCloud`
- * sends an outbox and reads back a version, and there is no path that pulls a
- * campaign down onto a device that does not already have it (SYNC-5).
+ * Joining and adopting are separate because adopting is DESTRUCTIVE: the store
+ * holds one campaign, so pulling this one down replaces whatever is here. The
+ * confirmation panel says which campaign would be replaced and whether it has
+ * unpushed edits, and the player presses the button. A modal that quietly
+ * downloaded over somebody's evening of play would be the worst kind of
+ * helpful.
  *
- * The confirmation panel says that in as many words. A modal that closed with
- * a tick and left the player looking for a campaign that never arrives would
- * be the app implying a feature it does not have, which is the failure this
- * codebase has a rule about.
+ * Where there is nothing to lose — no campaign, or the same one — the wording
+ * says so and the button is the obvious next thing rather than a warning.
  */
 import React, { useEffect, useState } from 'react';
 import { Check, Loader2, Users } from 'lucide-react';
 import { Sheet } from '../ui/Sheet';
+import { useStore } from '../../store/useStore';
+import { campaignOutbox } from '../../services/campaignSync';
 import { storage, type CampaignInvitePreview } from '../../services/storage';
 import type { Warband } from '../../types/warband';
 
@@ -59,12 +60,16 @@ export const JoinCampaignModal: React.FC<JoinCampaignModalProps> = ({
   const [playerName, setPlayerName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [joined, setJoined] = useState<{ name: string; alreadyMember: boolean } | null>(null);
+  const [joined, setJoined] = useState<{ id: string; name: string; alreadyMember: boolean } | null>(null);
+  const [adopted, setAdopted] = useState(false);
+
+  const localCampaign = useStore((s) => s.campaign);
+  const adoptCampaign = useStore((s) => s.adoptCampaignFromCloud);
 
   useEffect(() => {
     if (isOpen) {
       setCode(''); setPreview(null); setWarbandId(''); setPlayerName('');
-      setError(null); setBusy(false); setJoined(null);
+      setError(null); setBusy(false); setJoined(null); setAdopted(false);
     }
   }, [isOpen]);
 
@@ -107,7 +112,38 @@ export const JoinCampaignModal: React.FC<JoinCampaignModalProps> = ({
         : res.detail);
       return;
     }
-    setJoined({ name: preview.name, alreadyMember: res.data.alreadyMember });
+    setJoined({ id: res.data.id, name: preview.name, alreadyMember: res.data.alreadyMember });
+  };
+
+  /*
+    What adopting would cost, named rather than implied.
+
+    `cloudId` matching means this device already holds the campaign being
+    joined, so there is nothing to lose. Otherwise the local campaign is
+    replaced — and its queued operations go with it, which is the part a
+    player cannot see for themselves.
+  */
+  const replacing = joined && localCampaign.cloudId !== joined.id
+    ? {
+        name: localCampaign.name,
+        pending: localCampaign.cloudId
+          ? campaignOutbox.forCampaign(localCampaign.cloudId).length
+          : 0,
+      }
+    : null;
+
+  const adopt = async () => {
+    if (!joined) return;
+    setBusy(true); setError(null);
+    const ok = await adoptCampaign(joined.id);
+    setBusy(false);
+    if (!ok) {
+      // The store recorded the reason on `campaignSync`; say the plain thing
+      // here rather than leaving the sheet looking as though it worked.
+      setError('The campaign could not be downloaded. Nothing on this device was changed.');
+      return;
+    }
+    setAdopted(true);
   };
 
   return (
@@ -119,12 +155,35 @@ export const JoinCampaignModal: React.FC<JoinCampaignModalProps> = ({
       subtitle="With the invite code its organiser gave you."
       footer={
         joined ? (
-          <button
-            onClick={onClose}
-            className="flex-1 min-h-[44px] rounded bg-theme-primary px-4 font-mono text-xs font-bold uppercase text-theme-base transition-all hover:bg-theme-primary-hover"
-          >
-            Done
-          </button>
+          adopted ? (
+            <button
+              onClick={onClose}
+              className="flex-1 min-h-[44px] rounded bg-theme-primary px-4 font-mono text-xs font-bold uppercase text-theme-base transition-all hover:bg-theme-primary-hover"
+            >
+              Done
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={onClose}
+                disabled={busy}
+                className="flex-1 min-h-[44px] rounded bg-theme-elevated px-4 font-mono text-xs font-bold uppercase text-theme-muted transition-all hover:bg-theme-border hover:text-theme-text disabled:opacity-50"
+              >
+                Not now
+              </button>
+              <button
+                onClick={adopt}
+                disabled={busy}
+                className={`flex-1 min-h-[44px] rounded px-4 font-mono text-xs font-bold uppercase transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+                  replacing
+                    ? 'bg-status-error text-white hover:brightness-110'
+                    : 'bg-theme-primary text-theme-base hover:bg-theme-primary-hover'
+                }`}
+              >
+                {busy ? 'Downloading…' : replacing ? 'Replace and download' : 'Download it'}
+              </button>
+            </>
+          )
         ) : preview ? (
           <>
             <button
@@ -169,17 +228,43 @@ export const JoinCampaignModal: React.FC<JoinCampaignModalProps> = ({
                 : <>Your warband is now in <strong>{joined.name}</strong>.</>}
             </span>
           </p>
-          {/*
-            The honest half. See the note at the top of this file: the
-            membership is real and the organiser will see it; the campaign
-            itself does not arrive here, because nothing pulls one down yet.
-          */}
-          <p className="mt-4 border-l-2 border-theme-border pl-3 text-sm leading-[1.6] text-theme-muted">
-            The organiser will see it in their campaign. The campaign will not
-            appear on this device yet — pulling one down onto a device that
-            does not already have it is not built. Ask the organiser for the
-            standings until it is.
-          </p>
+          {adopted ? (
+            <p className="mt-4 border-l-2 border-status-legal pl-3 text-sm leading-[1.6] text-theme-muted">
+              It is on this device now — the map, the standings and the match
+              history. Everything you do in it syncs back the way your warband
+              already does.
+            </p>
+          ) : (
+            <>
+              {/*
+                Adopting is destructive: the store holds ONE campaign. So the
+                cost is named here rather than discovered afterwards, and the
+                player presses the button. Where there is nothing to lose the
+                wording says so instead of manufacturing a warning.
+              */}
+              {replacing ? (
+                <div className="mt-4 border-l-2 border-status-error bg-status-error/10 px-3 py-3">
+                  <p className="text-sm leading-[1.6] text-theme-text">
+                    Downloading it <strong>replaces</strong> the campaign on this
+                    device, <strong>{replacing.name}</strong>. This app holds one
+                    campaign at a time.
+                  </p>
+                  {replacing.pending > 0 && (
+                    <p className="mt-2 text-sm leading-[1.6] text-theme-text">
+                      {replacing.pending} unsynced change
+                      {replacing.pending === 1 ? '' : 's'} to it would be lost. Sync
+                      that campaign first if you want to keep them.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="mt-4 border-l-2 border-theme-border pl-3 text-sm leading-[1.6] text-theme-muted">
+                  Download it to play it on this device — the map, the standings
+                  and the match history. Nothing here would be lost.
+                </p>
+              )}
+            </>
+          )}
         </div>
       ) : (
       <>

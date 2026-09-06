@@ -164,12 +164,31 @@ async function applyOp(op: Op, access: CampaignAccess): Promise<Outcome> {
         throw new Conflict({ opId: op.opId, state: 'conflict', server });
       }
 
+      /*
+        By the primary key OR the local id, and the second half was missing.
+
+        `TerritoryNode.localId` was added in SYNC-2 to let a client "join a
+        server row back to its own without holding a mapping" — and nothing
+        performed the join. This lookup matched `id` only, while the store
+        queues `entityId: territoryId` using the id the territory has ON THE
+        DEVICE (`wt-*`, `th-*`, `cf-<slug>`). For a campaign published through
+        `action: 'publish'`, where the server mints its own primary keys, those
+        two are never the same string: every `territory.perk` and
+        `territory.claim` the organiser's own device sent came back 404.
+
+        The tests did not see it because they push ops using ids read straight
+        out of the database, which is the one case that always matched.
+
+        Both halves stay scoped to THIS campaign. `localId` is unique per
+        campaign (`@@unique([campaignId, localId])`) and NOT globally, so the
+        campaign is what makes this single-valued; and a territory id from
+        another campaign is not-found rather than forbidden, which tells a
+        prober nothing.
+      */
       const territory = await tx.territoryNode.findFirst({
-        where: { id: op.entityId, campaignId },
+        where: { campaignId, OR: [{ id: op.entityId }, { localId: op.entityId }] },
         select: { id: true, version: true, perkSource: true },
       });
-      /* Scoped to THIS campaign: a territory id from another campaign is not
-         found rather than forbidden, which tells a prober nothing. */
       if (!territory) return abort(notFound());
 
       if (op.kind === 'territory.perk' && territory.perkSource === 'published') {
