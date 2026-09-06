@@ -12,25 +12,29 @@
  *
  * Plain or Discord is a RENDERING of the same content, not a fourth level.
  *
- * The one thing that is not a detail level either is privacy. Lore, a model's
- * quote and the player's own notes are personal writing, and "I wanted the full
- * rules detail" is not consent to paste them into a public channel — so they
- * are their own opt-in, default off, at every preset (E5).
+ * The one thing that is not a detail level either is privacy — see
+ * `rosterPresentation.ts`, which applies it, so a second renderer cannot forget.
  *
- * Three things this states that the old string-concatenation did not:
+ * The content itself comes from that shared projection, so this file and the
+ * print sheet cannot drift on a number (E1). What lives here is the shape of
+ * the lines and the escaping.
+ *
+ * Two things this states that the old string-concatenation did not:
  *
  *   - It distinguishes what a roster COSTS from what its Warband HOLDS. The old
  *     header printed `Points: 640 / 1000 Ducats | Glory: 3`, where the Glory
  *     was the Strongbox balance sitting beside a list cost, in one sentence,
  *     with no label to tell them apart.
- *   - It names the ruleset and the Variant. A roster's legality is meaningless
- *     without them and a pasted list is often read by someone else.
  *   - It escapes what the player wrote before putting it in Discord markdown. A
  *     warband called `**The Ninefold**` used to break the formatting of every
  *     line after it, and a model named `@everyone` used to be a mass ping.
  */
-import type { ActiveUnit, Warband } from '../types/warband';
-import { rosterGlory, unitGlory, formatUnitCost } from '../rules/savedGlory';
+import type { Warband } from '../types/warband';
+import { formatUnitCost } from '../rules/savedGlory';
+import {
+  presentRoster, type PresentationContext, type PresentedModel, type PresentedRoster,
+  type PresentedTotals,
+} from './rosterPresentation';
 
 export type TextPreset = 'summary' | 'roster' | 'full';
 export type TextFlavour = 'plain' | 'discord';
@@ -47,49 +51,19 @@ export interface TextOptions {
   includePrivate?: boolean;
 }
 
-export interface TextContext {
-  factionName?: string;
-  variantName?: string;
-  /** Which rules this roster was built under, so a reader can check it. */
-  rulesetId?: string;
-}
+export type TextContext = PresentationContext;
+export type RosterTotals = PresentedTotals;
 
-/* ------------------------------------------------------------- the numbers */
-
-export interface RosterTotals {
-  /** What the models and their gear cost — the list. */
-  listDucats: number;
-  listGlory: number;
-  /** The budget the list is measured against. */
-  ducatLimit: number;
-  /** Ducats in the Strongbox. NOT part of the list cost. */
-  strongbox: number;
-  /** Glory the Warband holds. Also not part of the list cost. */
-  gloryHeld: number;
-  models: number;
-  /** Models on the roster the campaign has killed. */
-  dead: number;
-}
-
-export function rosterTotals(warband: Warband): RosterTotals {
-  const units = warband.units ?? [];
-  return {
-    listDucats: units.reduce((n, u) => n + (u.totalCost ?? 0), 0),
-    listGlory: rosterGlory(units),
-    ducatLimit: warband.ducatLimit ?? 0,
-    strongbox: warband.treasuryDucats ?? 0,
-    gloryHeld: warband.gloryPoints ?? 0,
-    models: units.filter((u) => !u.isDead).length,
-    dead: units.filter((u) => u.isDead).length,
-  };
-}
+/** The totals, for a caller that wants the numbers without the prose. */
+export const rosterTotals = (warband: Warband): RosterTotals =>
+  presentRoster(warband, {}).totals;
 
 /* --------------------------------------------------------------- rendering */
 
 /**
  * Neutralise what the player typed, for the rendering it is going into.
  *
- * Plain text needs nothing. Discord needs the six characters that start a
+ * Plain text needs nothing. Discord needs the characters that start a
  * formatting run escaped — a warband called `**The Ninefold**` otherwise turns
  * everything after it bold — and it needs `@everyone` and `@here` not to be a
  * mass ping in someone else's server. The zero-width space is what stops the
@@ -122,17 +96,21 @@ export function renderRosterText(
   context: TextContext,
   options: TextOptions,
 ): string {
+  const roster = presentRoster(warband, context, { includePrivate: options.includePrivate });
+  return renderPresented(roster, options);
+}
+
+/** The same, from an already-built projection. */
+export function renderPresented(roster: PresentedRoster, options: TextOptions): string {
   const { preset, flavour } = options;
   const esc = (s: string) => escapeFor(flavour, s);
-  const t = rosterTotals(warband);
+  const t = roster.totals;
   const lines: Line[] = [];
 
-  lines.push({ text: bold(flavour, esc(warband.name || 'Unnamed Warband')) });
+  lines.push({ text: bold(flavour, esc(roster.name)) });
   lines.push({
-    text: [
-      esc(context.factionName || warband.factionId || 'Unknown faction'),
-      context.variantName ? esc(context.variantName) : null,
-    ].filter(Boolean).join(' · '),
+    text: [esc(roster.faction), roster.variant ? esc(roster.variant) : null]
+      .filter(Boolean).join(' · '),
   });
 
   /*
@@ -146,30 +124,27 @@ export function renderRosterText(
     text: `${t.models} model${t.models === 1 ? '' : 's'}`
       + (t.dead ? ` · ${t.dead} lost to the campaign` : ''),
   });
-  if (context.rulesetId) lines.push({ text: `Rules: ${esc(context.rulesetId)}` });
+  if (roster.ruleset) lines.push({ text: `Rules: ${esc(roster.ruleset)}` });
   lines.push({ text: '' });
 
-  for (const u of warband.units ?? []) {
-    lines.push(...modelLines(u, options, esc, flavour));
-  }
+  for (const m of roster.models) lines.push(...modelLines(m, options, esc, flavour));
 
-  const stash = warband.armoryStash ?? [];
-  if (preset !== 'summary' && stash.length) {
+  if (preset !== 'summary' && roster.stash.length) {
     lines.push({ text: bold(flavour, 'Arsenal') });
-    for (const s of stash) {
+    for (const s of roster.stash) {
       lines.push({ text: `${esc(s.name)}${s.quantity > 1 ? ` ×${s.quantity}` : ''}`, indent: 1 });
     }
     lines.push({ text: '' });
   }
 
-  if (options.includePrivate && warband.lore) {
+  if (roster.lore) {
     lines.push({ text: bold(flavour, 'Lore') });
-    lines.push({ text: italic(flavour, esc(warband.lore)), indent: 1 });
+    lines.push({ text: italic(flavour, esc(roster.lore)), indent: 1 });
     lines.push({ text: '' });
   }
-  if (options.includePrivate && warband.notes) {
+  if (roster.notes) {
     lines.push({ text: bold(flavour, 'Notes') });
-    lines.push({ text: esc(warband.notes), indent: 1 });
+    lines.push({ text: esc(roster.notes), indent: 1 });
     lines.push({ text: '' });
   }
 
@@ -177,69 +152,48 @@ export function renderRosterText(
 }
 
 function modelLines(
-  u: ActiveUnit,
+  m: PresentedModel,
   options: TextOptions,
   esc: (s: string) => string,
   flavour: TextFlavour,
 ): Line[] {
   const { preset } = options;
   const out: Line[] = [];
-  const glory = unitGlory(u);
-  const profile = u.profileSnapshot;
 
-  const head = `${bold(flavour, esc(u.customName || profile?.name || 'Warrior'))}`
-    + ` — ${esc(profile?.name ?? '')}`
-    + (profile?.category ? ` (${esc(String(profile.category))})` : '')
-    + ` · ${formatUnitCost(u.totalCost ?? 0, glory)}`
-    + (u.isDead ? ' · dead' : '');
-  out.push({ text: head });
+  out.push({
+    text: `${bold(flavour, esc(m.name))} — ${esc(m.profileName)}`
+      + (m.category ? ` (${esc(m.category)})` : '')
+      + ` · ${formatUnitCost(m.ducats, m.glory)}`
+      + (m.dead ? ' · dead' : ''),
+  });
 
   if (preset === 'summary') return out;
 
-  const gear = [
-    ...(u.equippedWeapons ?? []).map((w) => w.name),
-    ...(u.equippedArmour ?? []).map((a) => a.name),
-    ...(u.equippedEquipment ?? []).map((e) => e.name),
-  ].filter(Boolean);
-  if (gear.length) out.push({ text: gear.map((g) => esc(g)).join(', '), indent: 1 });
+  if (m.gear.length) out.push({ text: m.gear.map(esc).join(', '), indent: 1 });
 
   if (preset === 'full') {
-    const s = profile?.stats;
-    if (s) {
+    if (m.stats) {
       out.push({
-        text: `MOV ${s.movement} · RNG ${s.ranged} · MELEE ${s.melee} · SAVE ${s.armour}`,
+        text: `MOV ${m.stats.movement} · RNG ${m.stats.ranged}`
+            + ` · MELEE ${m.stats.melee} · SAVE ${m.stats.armour}`,
         indent: 1,
       });
     }
-    /* The snapshot carries them on `stats`, which is where the recruit path
-       records the catalogue's Keyword row. */
-    const keywords: string[] = profile?.stats?.keywords ?? [];
-    if (keywords.length) {
-      out.push({ text: keywords.map((k) => esc(String(k))).join(', '), indent: 1 });
+    if (m.keywords.length) out.push({ text: m.keywords.map(esc).join(', '), indent: 1 });
+    if (m.xp) out.push({ text: `${m.xp} XP`, indent: 1 });
+    if (m.advancements.length) {
+      out.push({ text: `Advancements: ${m.advancements.map(esc).join('; ')}`, indent: 1 });
     }
-
-    if (u.xp) out.push({ text: `${u.xp} XP`, indent: 1 });
-    if (u.advancements?.length) {
-      out.push({ text: `Advancements: ${u.advancements.map(esc).join('; ')}`, indent: 1 });
+    if (m.skills.length) out.push({ text: `Skills: ${m.skills.map(esc).join('; ')}`, indent: 1 });
+    if (m.injuries.length) {
+      out.push({ text: `Injuries: ${m.injuries.map(esc).join('; ')}`, indent: 1 });
     }
-    if (u.skills?.length) {
-      out.push({ text: `Skills: ${u.skills.map((k) => esc(k.name)).join('; ')}`, indent: 1 });
+    if (m.scars.length) {
+      out.push({ text: `Battle Scars: ${m.scars.map(esc).join('; ')}`, indent: 1 });
     }
-    if (u.injuries?.length) {
-      out.push({ text: `Injuries: ${u.injuries.map(esc).join('; ')}`, indent: 1 });
-    }
-    if (u.scars?.length) {
-      out.push({ text: `Battle Scars: ${u.scars.map((k) => esc(k.name ?? '')).join('; ')}`, indent: 1 });
-    }
-    if (options.includePrivate && u.lore) {
-      out.push({ text: italic(flavour, esc(u.lore)), indent: 1 });
-    }
-    if (options.includePrivate && u.quote) {
-      out.push({ text: italic(flavour, `“${esc(u.quote)}”`), indent: 1 });
-    }
-    if (options.includePrivate && u.notes) {
-      out.push({ text: esc(u.notes), indent: 1 });
-    }
+    if (m.lore) out.push({ text: italic(flavour, esc(m.lore)), indent: 1 });
+    if (m.quote) out.push({ text: italic(flavour, `“${esc(m.quote)}”`), indent: 1 });
+    if (m.notes) out.push({ text: esc(m.notes), indent: 1 });
   }
 
   out.push({ text: '' });

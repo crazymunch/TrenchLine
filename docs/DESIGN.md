@@ -206,6 +206,42 @@ buttons move between visits. Wide rows get `overflow-x-auto` with a `min-w-max`
 track and negative margins so the last button is visibly cut off at the
 container edge — which is what tells you it scrolls.
 
+## Paper
+
+None of the above carries over. `dvh` is meaningless on paper, a 44px touch
+target is meaningless under a pen, and the two-surface tokens are built for a
+lit screen. Print has its own small stylesheet — the `PRINT` block at the end
+of `src/app/globals.css` — and its own rules.
+
+**Physical units.** Points and millimetres, not `rem`. A point is a point on any
+paper; a `rem` is whatever the browser's root font happens to be that day.
+
+**`@page { size: auto; margin: 12mm }`.** A4 and US Letter differ in both
+dimensions, so the page size comes from the printer rather than being named.
+12mm clears the unprintable edge of every common desktop printer and leaves the
+browser's own header and footer somewhere to go.
+
+**Ink, not backlight.** Every colour is restated as black on white. A theme
+built for a screen is not a palette for a photocopier, and a faction accent that
+reads as mid-grey is worse than no accent.
+
+**Pagination is a table header.** Each model is a `<table>` whose `<thead>`
+carries its name, because a browser repeats a table header on every page the
+table continues onto. `break-inside: avoid` is not a pagination algorithm: a
+model with long rules text can exceed a page on its own, and `avoid` then either
+does nothing or emits a blank page. The header gives a continuation page with
+the model's name at the top, no clipping, and no shrinking font.
+
+**Space to write is a measurement.** The notes box on a Pretty sheet is
+`min-height: 22mm` — four comfortable lines of handwriting — because "space for
+handwritten notes mid game" is a physical requirement and not a visual one. A
+box that happens to look right at the author's zoom level is not that.
+
+**Not verified on paper.** Everything above is stated in physical units for
+exactly that reason, but no printer has been run. `docs/EXPORT-CODEX-REVIEW.md`
+E6 is right that browser screenshots are not a substitute, and A4 and Letter at
+100% scale still need checking on a real device.
+
 ## What did not change
 
 Every workflow, every route, every piece of state. This pass moved colour,

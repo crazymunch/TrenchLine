@@ -8,9 +8,10 @@
  * strings with no options at all, a `window.print()` with nothing under it, and
  * a JSON dump of the internal type.
  *
- * Three presets, one rendering toggle and one privacy toggle. The content
- * itself lives in `services/rosterText.ts` so the print renderer can share it
- * rather than growing a third string builder, and the file in
+ * Three presets, one rendering toggle, one privacy toggle and two print modes.
+ * None of the content is built here: the roster is projected once by
+ * `services/rosterPresentation.ts` and read by the text renderer and the print
+ * sheet alike, so the two cannot disagree on a total. The file comes from
  * `services/rosterFile.ts`. A preview, because a player choosing between three
  * levels of detail is choosing by looking.
  *
@@ -21,7 +22,9 @@ import { Sheet } from '../ui/Sheet';
 import { Warband } from '../../types/warband';
 import { Faction } from '../../types/rules';
 import { Printer, Copy, Download, Check, AlertCircle } from 'lucide-react';
-import { renderRosterText, type TextFlavour, type TextPreset } from '@/services/rosterText';
+import { renderPresented, type TextFlavour, type TextPreset } from '@/services/rosterText';
+import { presentRoster } from '@/services/rosterPresentation';
+import { RosterPrintSheet, type PrintMode } from './RosterPrintSheet';
 import { encodeRosterFile } from '@/services/rosterFile';
 import { useDataset } from '@/rules/useDataset';
 import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
@@ -66,6 +69,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
   const [includePrivate, setIncludePrivate] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
+  const [printMode, setPrintMode] = useState<PrintMode>('pretty');
 
   /*
     The ruleset this roster is being exported under, for the text's header and
@@ -79,12 +83,20 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
   const variant = dataset?.variants?.find(
     (v) => v.id === warband.variantId || v.name === warband.variantId);
 
-  const text = useMemo(() => renderRosterText(warband, {
+  /*
+    One projection, two readers. The text below and the print sheet render from
+    the same object, so they cannot disagree on a total — see
+    `services/rosterPresentation.ts`.
+  */
+  const presented = useMemo(() => presentRoster(warband, {
     factionName: faction?.name,
     variantName: variant?.name,
     rulesetId: dataset?.meta?.rulesetId,
-  }, { preset, flavour, includePrivate }),
-  [warband, faction, variant, dataset, preset, flavour, includePrivate]);
+  }, { includePrivate }), [warband, faction, variant, dataset, includePrivate]);
+
+  const text = useMemo(
+    () => renderPresented(presented, { preset, flavour, includePrivate }),
+    [presented, preset, flavour, includePrivate]);
 
   /**
    * Copy, and say so when it does not work.
@@ -217,6 +229,37 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
           </div>
         </div>
 
+        {/*
+          Print, which is a different medium and so a different choice. Plain
+          is one column for a photocopier; Pretty adds statlines, Keywords,
+          abilities, the campaign's history and a ruled box per model for
+          notes taken mid-game.
+        */}
+        <div className="space-y-1.5 print:hidden">
+          <span className="eyebrow text-theme-muted">Printed sheet</span>
+          <div className="flex gap-2">
+            {(['plain', 'pretty'] as PrintMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setPrintMode(m)}
+                aria-pressed={printMode === m}
+                className={`min-h-[44px] flex-1 rounded border px-2 text-xs font-bold uppercase transition-colors ${
+                  printMode === m
+                    ? 'border-theme-primary bg-theme-primary text-theme-base'
+                    : 'border-theme-border bg-theme-elevated text-theme-text'
+                }`}
+              >
+                {m === 'plain' ? 'Plain' : 'Pretty'}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-theme-muted">
+            {printMode === 'plain'
+              ? 'One column, no ornament. Reads on a mono printer.'
+              : 'Statlines, Keywords, abilities and a ruled box for notes on each model.'}
+          </p>
+        </div>
+
         {copyFailed && (
           <p className="flex items-start gap-2 rounded border border-status-warning bg-status-warning/10 p-3 text-xs text-theme-text">
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
@@ -241,9 +284,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
           readOnly
           value={text}
           rows={16}
-          className="w-full resize-y rounded border border-theme-border bg-theme-base p-3 font-mono text-base leading-relaxed text-theme-text sm:text-xs print:border-0 print:bg-white print:text-black"
+          className="w-full resize-y rounded border border-theme-border bg-theme-base p-3 font-mono text-base leading-relaxed text-theme-text sm:text-xs print-hide"
         />
       </div>
+
+      {/*
+        What actually goes on the paper. Hidden on screen entirely — the
+        builder already draws the roster, and a second, worse copy of it below
+        the export controls would be noise.
+      */}
+      <RosterPrintSheet roster={presented} mode={printMode} />
     </Sheet>
   );
 };
