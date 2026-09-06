@@ -226,16 +226,24 @@ export default function PrivacyPage() {
         warband or a campaign in the app and the server copy goes with it.
       </P>
       <P>
-        There is no self-service &ldquo;delete my account&rdquo; button yet —
-        that is a real gap and it is being built. Until it exists, mail{' '}
-        <Mail address={CONTACT} /> from the address on the account and it will
-        be deleted, together with every warband, campaign membership, custom
-        rule and sign-in record attached to it. Expect it done within 30 days,
-        and usually much sooner.
+        <strong>Delete account</strong> is in the account menu, at the top
+        right. It shows you exactly what will be destroyed before you confirm —
+        your warbands, your custom rules, the campaigns you play in, and any
+        campaign you <em>run</em>, which is deleted for every player in it —
+        and then does it immediately. There is no waiting period and no
+        recovery: a warband you had published to the directory leaves it at the
+        same moment.
       </P>
       <P>
-        A warband you had published to the directory is removed at the same
-        time.
+        Bug reports are the one exception, and they survive without you: the
+        report stays so the problem can still be fixed, with the link to your
+        account removed. Nothing in it identifies you unless you typed
+        something identifying into the description.
+      </P>
+      <P>
+        If you would rather not do it yourself, or the button will not work for
+        you, mail <Mail address={CONTACT} /> from the address on the account and
+        it will be done for you.
       </P>
 
       <H2 id="rights">Your rights</H2>

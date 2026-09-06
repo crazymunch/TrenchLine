@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
-import { RuleDiffItem } from '../../types/diff';
+import { RuleDiffItem, RuleFieldValue } from '../../types/diff';
 import { 
   GitCommit, 
   CheckCheck, 
@@ -24,24 +24,52 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
   onClose
 }) => {
   const { resolveDiff, units, saveCustomUnit } = useStore();
+  const [rejected, setRejected] = useState<string | null>(null);
 
+  /*
+    The apply path used to be typed `any` on both sides, which is how it read
+    as correct while being wrong: `baseCost` is a NUMBER and `stats.melee` is a
+    STRING like "+2", and `any` let either value land in either field. A cost
+    of "+2" or a modifier of 40 would have been written to a saved unit and
+    only surfaced later, in a statline, as a value nobody could account for.
+
+    Typing `RuleFieldValue` made the compiler ask the question. These two
+    helpers answer it, and the answer when a value is the wrong shape is to
+    REFUSE THE WHOLE APPLY and say so — not to coerce, and not to skip the
+    field quietly and save the rest. A half-applied upstream unit is the state
+    that is hardest to notice and hardest to undo.
+  */
+  const asNumber = (v: RuleFieldValue, field: string): number => {
+    if (typeof v !== 'number') throw new Error(`${field} is not a number`);
+    return v;
+  };
+  const asString = (v: RuleFieldValue, field: string): string => {
+    if (typeof v !== 'string') throw new Error(`${field} is not a stat value`);
+    return v;
+  };
 
   const handleAcceptUpstream = (diff: RuleDiffItem) => {
-    // Apply upstream changes to the unit
     const targetUnit = units.find((u) => u.id === diff.id);
     if (targetUnit) {
-      const updated = { ...targetUnit };
-      diff.diffFields.forEach((field) => {
-        if (field.fieldName === 'Ducat Cost') {
-          updated.baseCost = field.upstreamValue;
-        } else if (field.fieldName === 'Melee Modifier') {
-          updated.stats.melee = field.upstreamValue;
-        } else if (field.fieldName === 'Ranged Modifier') {
-          updated.stats.ranged = field.upstreamValue;
-        } else if (field.fieldName === 'Armour Stat') {
-          updated.stats.armour = field.upstreamValue;
-        }
-      });
+      const updated = { ...targetUnit, stats: { ...targetUnit.stats } };
+      try {
+        diff.diffFields.forEach((field) => {
+          const v = field.upstreamValue;
+          if (field.fieldName === 'Ducat Cost') {
+            updated.baseCost = asNumber(v, field.fieldName);
+          } else if (field.fieldName === 'Melee Modifier') {
+            updated.stats.melee = asString(v, field.fieldName);
+          } else if (field.fieldName === 'Ranged Modifier') {
+            updated.stats.ranged = asString(v, field.fieldName);
+          } else if (field.fieldName === 'Armour Stat') {
+            updated.stats.armour = asString(v, field.fieldName);
+          }
+        });
+      } catch (e) {
+        setRejected(`${diff.name}: ${(e as Error).message}. Nothing was changed.`);
+        return;
+      }
+      setRejected(null);
       saveCustomUnit(updated);
     }
     resolveDiff(diff.id, 'accept_upstream');
@@ -70,6 +98,15 @@ export const GitHubDiffModal: React.FC<GitHubDiffModalProps> = ({
           {diffs.length} Conflicting Profiles Found
         </div>
       </div>
+      {rejected && (
+        <p
+          role="alert"
+          className="mx-6 mt-4 border-l-2 border-status-error bg-status-error/10 px-3 py-2 font-mono text-xs text-theme-text"
+        >
+          {rejected}
+        </p>
+      )}
+
       {/* Diffs List */}
       <div className="p-6 overflow-y-auto flex-1 space-y-6">
         {diffs.length === 0 ? (

@@ -62,6 +62,15 @@ from the code, and two of them are **nullable with no placeholder**:
 Both branches are asserted by the test suite, so "unset" stays a supported state
 rather than decaying into a defect.
 
+**As configured:** `COUNTRY` is Australia and `NAME` is deliberately null. No
+law in play requires the legal name of a person running a free hobby site.
+Australia's Privacy Act binds "APP entities" — broadly, businesses over a $3M
+turnover threshold — which a non-commercial project with no revenue is not; and
+the GDPR's requirement is that the controller be *identifiable and reachable*,
+which a monitored contact address satisfies. If a name is wanted later, a
+pseudonym or handle is a supported middle ground: set `NAME` and the pages use
+it.
+
 **`CONTACT` must be a mailbox that accepts mail before this is worth anything.**
 An address in a privacy policy that bounces is worse than no policy, to a reader
 and to a reviewer alike, and until one exists `/about` promises a reply that
@@ -127,18 +136,57 @@ change one of these, change the policy in the same commit:
 | a synced warband is private by default | `WarbandVisibility` defaults to `PRIVATE`, and the migration backfilled every existing row to it |
 | the directory publishes exactly nine fields, none of them an address | `PUBLIC_SELECT` and `toPublic` in `src/app/api/warbands/route.ts` |
 | bug reports are attributed from the session, never the body | `model BugReport.reporterId`, and the route that sets it |
+| Delete account removes everything named, immediately | `src/app/api/account/route.ts`, proved against a real Postgres |
 | one cookie, set only after sign-in | `session: { strategy: 'jwt' }` in `src/lib/auth.ts`; theme and settings are `tc_*` keys in local storage |
 | ownership is checked server-side on every call | `src/app/api/__tests__/ownership.integration.test.ts` |
 | account and invite endpoints are rate-limited | `src/lib/api/rateLimit.ts` |
 
-Two claims are deliberately soft because the code is:
+One claim is deliberately soft because the code is:
 
 - **Email we send you.** `MAIL_TRANSPORT` is explicit and may be unset, in which
   case the deployment sends nothing at all (`src/lib/mail.ts`). The policy
   therefore describes what mail is *for* rather than promising it arrives.
-- **Account deletion.** There is no self-service delete yet. The policy says so
-  in as many words and gives the address instead of implying a button exists.
-  Building it is the honest fix; until then the sentence is accurate.
+
+The second one used to be account deletion — "there is no self-service delete
+yet", accurate and describing a gap. It is built: see below.
+
+## Deleting an account
+
+`src/app/api/account/route.ts` and `src/components/account/DeleteAccountModal.tsx`,
+reached from **Delete account** in the top-bar account menu.
+
+**Two calls, not one.** `GET` reports what deletion would destroy; `DELETE`
+performs it. Separate, because the consequences are not guessable from outside
+and a dialog that asks "are you sure?" without saying *what* is not consent to
+anything. The summary is built from the same relations the delete cascades
+through, so it cannot describe a different deletion than the one that runs.
+
+**The campaigns go too, and that is said out loud.** `Campaign.adminId`
+cascades from `User`, so deleting an organiser deletes the campaign, its
+matches, its territory map and every player's membership — other people's
+records, removed by someone else's choice. Refusing outright would be worse:
+there is no hand-over feature, so "you may not delete your account while you
+run a campaign" is a promise the application cannot keep. Instead the summary
+names each campaign and counts the *other* players in it, and `DELETE` refuses
+unless the caller sends that count back. Equality, not truthiness — `true` is
+what a client sends by accident, a matching count is what it sends having been
+told. A campaign is not silently transferred to some remaining member either;
+that is a decision made on the organiser's behalf, and this code does not make
+those.
+
+**Bug reports survive, unlinked.** `BugReport.reporterId` is `onDelete:
+SetNull`. The report is about the software and the maintainer may still be
+working on it; removing the person's link to it is what erasure requires.
+
+**The session needs no cleanup.** The `jwt` callback in `src/lib/auth.ts` looks
+the user up by id on every request and clears `token.sub` when the row is gone,
+so a token outliving its account stops authenticating on its next use. The
+client-side `signOut` is a courtesy.
+
+The suite is `src/app/api/account/__tests__/accountDeletion.integration.test.ts`
+and it needs a real Postgres, because everything worth proving here is
+`onDelete` on seven relations — a mocked Prisma would prove only that the
+handler asks.
 
 ## Getting the flag lifted
 

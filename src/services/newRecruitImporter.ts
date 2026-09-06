@@ -70,9 +70,113 @@ export function importNewRecruitRoster(
   return parseNewRecruitText(trimmed, allUnits);
 }
 
-function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
+/*
+  The shapes this importer reads.
+
+  Every one of these fields used to be `any` — forty-one of them, in the module
+  that turns SOMEBODY ELSE'S FILE into a warband. That is exactly backwards: a
+  parser for untrusted input is where a type earns the most, because it is the
+  one place the program cannot assume the shape it is handed.
+
+  Everything is optional and nothing is asserted, because a roster export
+  genuinely may omit any of it. What the types buy is not trust in the input —
+  it is that `sel.profiles` is known to be a list of profiles rather than a
+  thing with any property at all, so a typo in a member name is a compile error
+  instead of `undefined` flowing into a statline.
+*/
+
+/** A `<cost name="Ducats" value="120"/>` entry, after normalisation. */
+interface NrCost { name?: string; value?: number }
+interface NrCategory { name?: string }
+interface NrCharacteristic { name?: string; $text?: string }
+
+/** A profile block: Unit, Weapon, Battlekit or Ability. */
+interface NrProfile {
+  id?: string;
+  name?: string;
+  typeName?: string;
+  characteristics?: NrCharacteristic[];
+}
+
+/** One line of a roster: a model, a weapon on it, an upgrade, a counter. */
+interface NrSelection {
+  name?: string;
+  customName?: string;
+  type?: string;
+  number?: number;
+  group?: string;
+  costs?: NrCost[];
+  categories?: NrCategory[];
+  profiles?: NrProfile[];
+  selections?: NrSelection[];
+}
+
+interface NrForce {
+  name?: string;
+  customName?: string;
+  catalogueName?: string;
+  selections?: NrSelection[];
+}
+
+/**
+ * A roster is a force with the document-level fields on top.
+ *
+ * Extending `NrForce` is not tidiness: the parser falls back to
+ * `rosterData.forces?.[0] || rosterData`, so the roster is used AS a force
+ * when an export has no `forces` array, and the type has to allow that.
+ */
+interface NrRoster extends NrForce {
+  gameSystemName?: string;
+  costLimits?: NrCost[];
+  costs?: NrCost[];
+  forces?: NrForce[];
+}
+
+/** What `JSON.parse` hands over: either the roster, or a wrapper around one. */
+type NrDocument = NrRoster & { roster?: NrRoster };
+
+/*
+  And the XML side, as fast-xml-parser produces it: attributes prefixed `@_`,
+  repeated children wrapped in a named holder, text content under `#text`.
+  `xmlSelectionToJson` below is the only thing that reads these.
+*/
+interface XmlCost { '@_name'?: string; '@_value'?: string | number }
+interface XmlCategory { '@_name'?: string }
+interface XmlCharacteristic { '@_name'?: string; '#text'?: string }
+interface XmlProfile {
+  '@_id'?: string;
+  '@_name'?: string;
+  '@_typeName'?: string;
+  characteristics?: { characteristic?: XmlCharacteristic | XmlCharacteristic[] };
+}
+interface XmlSelection {
+  '@_name'?: string;
+  '@_customName'?: string;
+  '@_type'?: string;
+  '@_number'?: string | number;
+  '@_group'?: string;
+  costs?: { cost?: XmlCost | XmlCost[] };
+  categories?: { category?: XmlCategory | XmlCategory[] };
+  profiles?: { profile?: XmlProfile | XmlProfile[] };
+  selections?: { selection?: XmlSelection | XmlSelection[] };
+}
+interface XmlForce {
+  '@_name'?: string;
+  '@_catalogueName'?: string;
+  selections?: { selection?: XmlSelection | XmlSelection[] };
+}
+interface XmlRoster {
+  '@_name'?: string;
+  '@_gameSystemName'?: string;
+  costLimits?: { cost?: XmlCost | XmlCost[] };
+  costs?: { cost?: XmlCost | XmlCost[] };
+  forces?: { force?: XmlForce | XmlForce[] };
+  selections?: { selection?: XmlSelection | XmlSelection[] };
+}
+
+function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportResult {
   const rosterData = data.roster || data;
-  const force = rosterData.forces?.[0] || rosterData;
+  const force: NrForce = rosterData.forces?.[0] || rosterData;
   const warbandName = force.customName || rosterData.customName || rosterData.name || 'Imported Warband';
 
   // Faction detection
@@ -85,11 +189,11 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   else if (factionSearchStr.includes('grail')) factionId = 'black-grail';
   else if (factionSearchStr.includes('court') || factionSearchStr.includes('serpent') || factionSearchStr.includes('hell')) factionId = 'court-seven-serpents';
 
-  const ducatsLimit = rosterData.costLimits?.find((c: any) => c.name === 'Ducats')?.value || 
-                      rosterData.costs?.find((c: any) => c.name === 'Ducats')?.value || 700;
-  const gloryPoints = rosterData.costs?.find((c: any) => c.name === 'Glory Points')?.value || 0;
+  const ducatsLimit = rosterData.costLimits?.find((c) => c.name === 'Ducats')?.value || 
+                      rosterData.costs?.find((c) => c.name === 'Ducats')?.value || 700;
+  const gloryPoints = rosterData.costs?.find((c) => c.name === 'Glory Points')?.value || 0;
 
-  const rawSelections = force.selections || rosterData.selections || [];
+  const rawSelections: NrSelection[] = force.selections || rosterData.selections || [];
   const units: ActiveUnit[] = [];
   /** Roster lines with no resolvable statline. Reported, not invented. */
   const unmatched: string[] = [];
@@ -97,21 +201,32 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   /** Named by the export's Warband Variant node; matched by id or name. */
   let variantId: string | undefined;
 
-  rawSelections.forEach((sel: any, idx: number) => {
-    const isConfig = (sel.categories || []).some((c: any) => c.name === 'Configuration');
+  rawSelections.forEach((sel, idx) => {
+    const isConfig = (sel.categories || []).some((c) => c.name === 'Configuration');
     const isPileOfStuff = sel.name === 'Pile of Stuff' || sel.customName === 'Pile of Stuff';
 
     // Parse unassigned storage items into Armory Stash
     if (isPileOfStuff) {
-      (sel.selections || []).forEach((stashSel: any) => {
-        const wepProf = stashSel.profiles?.find((p: any) => p.typeName === 'Weapon');
-        const cost = stashSel.costs?.find((c: any) => c.name === 'Ducats')?.value || 0;
+      (sel.selections || []).forEach((stashSel) => {
+        const wepProf = stashSel.profiles?.find((p) => p.typeName === 'Weapon');
+        const cost = stashSel.costs?.find((c) => c.name === 'Ducats')?.value || 0;
         const group = stashSel.group || '';
+        /*
+          A nameless stash line is not importable and must not become a blank
+          row in somebody's armoury. `any` let `undefined` through into `name`
+          silently; skipping it and reporting it is what the rest of this file
+          already does with a line it cannot resolve.
+        */
+        if (!stashSel.name) {
+          unmatched.push('An unnamed item in the Pile of Stuff');
+          return;
+        }
+        const stashName = stashSel.name;
 
         if (wepProf || group.includes('Weapons')) {
           armoryStash.push({
             id: `stash-${Date.now()}-${Math.random()}`,
-            name: stashSel.name,
+            name: stashName,
             type: 'Weapon',
             cost,
             quantity: stashSel.number || 1
@@ -119,7 +234,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
         } else if (group.includes('Armour') || group.includes('Shield')) {
           armoryStash.push({
             id: `stash-${Date.now()}-${Math.random()}`,
-            name: stashSel.name,
+            name: stashName,
             type: 'Armour',
             cost,
             quantity: stashSel.number || 1
@@ -127,7 +242,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
         } else if (group.includes('Equipment')) {
           armoryStash.push({
             id: `stash-${Date.now()}-${Math.random()}`,
-            name: stashSel.name,
+            name: stashName,
             type: 'Equipment',
             cost,
             quantity: stashSel.number || 1
@@ -152,35 +267,60 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
     }
 
     // Skip Configuration nodes (Campaign Rules, Patron Selection, etc.)
-    if (isConfig && !sel.profiles?.some((p: any) => p.typeName === 'Unit')) {
+    if (isConfig && !sel.profiles?.some((p) => p.typeName === 'Unit')) {
       return;
     }
 
     // Only process real models / units
-    const isModelType = sel.type === 'model' || sel.type === 'unit' || sel.profiles?.some((p: any) => p.typeName === 'Unit');
+    const isModelType = sel.type === 'model' || sel.type === 'unit' || sel.profiles?.some((p) => p.typeName === 'Unit');
     if (!isModelType) {
       return;
     }
 
+    /*
+      A model line with no name is not importable.
+
+      Reported rather than imported blank, for the same reason the statline
+      guard below reports rather than inventing a `6"` movement: a roster row
+      with no name is a row the player cannot identify, and one they can see
+      listed as unmatched is strictly better than one that silently became an
+      anonymous model in their warband. Untyped, this case was invisible.
+    */
+    if (!sel.name) {
+      unmatched.push('An unnamed model');
+      return;
+    }
+    const selectionName = sel.name;
+
     // Extract Unit Characteristic Profile
-    const unitProfile = sel.profiles?.find((p: any) => p.typeName === 'Unit');
+    const unitProfile = sel.profiles?.find((p) => p.typeName === 'Unit');
     const charMap: Record<string, string> = {};
     if (unitProfile?.characteristics) {
-      unitProfile.characteristics.forEach((c: any) => {
-        charMap[c.name] = c.$text || c.name || '';
+      unitProfile.characteristics.forEach((c) => {
+        if (c.name) charMap[c.name] = c.$text || c.name;
       });
     }
 
     // Determine category (Leader, Elite, Trooper, Mercenary)
     let category: 'Leader' | 'Elite' | 'Trooper' | 'Mercenary' = 'Trooper';
-    const catNames = (sel.categories || []).map((c: any) => c.name);
+    const catNames = (sel.categories || [])
+      .map((c) => c.name)
+      // A category with no name is not a keyword; it is a hole in the export.
+      .filter((n): n is string => Boolean(n));
+    /*
+      Once, lower-cased, instead of eleven `selName` calls that
+      each assumed a name is present. An export CAN omit it, and `any` meant
+      the assumption was never stated — the first nameless model would have
+      thrown inside the category test rather than being reported as unmatched.
+    */
+    const selName = selectionName.toLowerCase();
     
-    if (catNames.includes('Leader') || sel.name.toLowerCase().includes('leader') || sel.name.toLowerCase().includes('lieutenant') || sel.name.toLowerCase().includes('prophet') || sel.name.toLowerCase().includes('alchemist')) {
+    if (catNames.includes('Leader') || selName.includes('leader') || selName.includes('lieutenant') || selName.includes('prophet') || selName.includes('alchemist')) {
       category = catNames.includes('Elite') && !catNames.includes('Leader') ? 'Elite' : 'Leader';
     }
-    if (catNames.includes('Elite') || sel.name.toLowerCase().startsWith('favoured')) {
+    if (catNames.includes('Elite') || selName.startsWith('favoured')) {
       category = 'Elite';
-    } else if (catNames.includes('Mercenary') || sel.name.toLowerCase().includes('mamluk') || sel.name.toLowerCase().includes('sin eater') || sel.name.toLowerCase().includes('trench dog')) {
+    } else if (catNames.includes('Mercenary') || selName.includes('mamluk') || selName.includes('sin eater') || selName.includes('trench dog')) {
       category = 'Mercenary';
     } else if (catNames.includes('Troop') || catNames.includes('Trooper')) {
       category = 'Trooper';
@@ -212,7 +352,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
     const injuries: string[] = [];
     let xp = 0;
 
-    function parseSubSelections(subList: any[]) {
+    function parseSubSelections(subList: NrSelection[] | undefined) {
       if (!Array.isArray(subList)) return;
 
       subList.forEach((sub) => {
@@ -236,10 +376,10 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
         }
 
         // Weapon profiles
-        const wepProf = sub.profiles?.find((p: any) => p.typeName === 'Weapon');
+        const wepProf = sub.profiles?.find((p) => p.typeName === 'Weapon');
         if (wepProf || subGroup.includes('Weapons')) {
           const wChars: Record<string, string> = {};
-          (wepProf?.characteristics || []).forEach((c: any) => { wChars[c.name] = c.$text || ''; });
+          (wepProf?.characteristics || []).forEach((c) => { wChars[c.name ?? ''] = c.$text || ''; });
           
           const rawType = wChars['Type'] || '';
           const is2Handed = rawType.toLowerCase().includes('2') || rawType.toLowerCase().includes('two');
@@ -254,23 +394,23 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
             modifiers: wChars['Keywords']?.includes('DICE') ? wChars['Keywords'] : '+0 DICE',
             damage: 'Standard',
             keywords: wChars['Keywords'] ? wChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
-            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             instanceId: `w-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
           });
           return;
         }
 
         // Armour / Shield profiles
-        const bKitProf = sub.profiles?.find((p: any) => p.typeName === 'Battlekit');
-        if (subGroup.includes('Armour') || subGroup.includes('Shields') || bKitProf?.name.toLowerCase().includes('armour') || bKitProf?.name.toLowerCase().includes('shield')) {
+        const bKitProf = sub.profiles?.find((p) => p.typeName === 'Battlekit');
+        if (subGroup.includes('Armour') || subGroup.includes('Shields') || bKitProf?.name?.toLowerCase().includes('armour') || bKitProf?.name?.toLowerCase().includes('shield')) {
           const bChars: Record<string, string> = {};
-          (bKitProf?.characteristics || []).forEach((c: any) => { bChars[c.name] = c.$text || ''; });
+          (bKitProf?.characteristics || []).forEach((c) => { bChars[c.name ?? ''] = c.$text || ''; });
 
           equippedArmour.push({
             id: `a-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
             name: bKitProf?.name || subName,
             armourModifier: bChars['Keywords']?.includes('INJURY MODIFIER') ? bChars['Keywords'] : '-1 Injury Modifier',
-            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
             instanceId: `a-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
           });
@@ -288,13 +428,13 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
           name at all, so requiring one would put every `.ros` import back
           where it started.
         */
-        const abilityProf = sub.profiles?.find((p: any) => p.typeName === 'Ability');
+        const abilityProf = sub.profiles?.find((p) => p.typeName === 'Ability');
         const isWargearGroup = /Weapons|Armour|Shields|Equipment|Battlekit/i.test(subGroup);
         if ((abilityProf && !bKitProf && !isWargearGroup) || OPTION_GROUP.test(subGroup)) {
           specialUpgrades.push({
             id: `su-${subName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
             name: subName,
-            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             // The catalogue's own group name where the export gives one, so
             // the advancement sheet can head these the way it heads the ones
             // bought in the app.
@@ -307,7 +447,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
         // Equipment / Battlekit items
         if (subGroup.includes('Equipment') || bKitProf) {
           const bChars: Record<string, string> = {};
-          (bKitProf?.characteristics || []).forEach((c: any) => { bChars[c.name] = c.$text || ''; });
+          (bKitProf?.characteristics || []).forEach((c) => { bChars[c.name ?? ''] = c.$text || ''; });
 
           equippedEquipment.push({
             id: `e-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
@@ -316,7 +456,7 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
             // this selection, and used to be dropped here. Everything
             // downstream then had to guess from the name.
             group: subGroup || undefined,
-            cost: sub.costs?.find((c: any) => c.name === 'Ducats')?.value || 0,
+            cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             effect: bChars['Rules'] || '',
             keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
             instanceId: `e-inst-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`
@@ -333,14 +473,14 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
     parseSubSelections(sel.selections);
 
     // Compute total cost recursively
-    function getSelectionCost(item: any): number {
+    function getSelectionCost(item: NrSelection): number {
       let sum = 0;
       if (Array.isArray(item.costs)) {
-        const dCost = item.costs.find((c: any) => c.name === 'Ducats');
+        const dCost = item.costs.find((c) => c.name === 'Ducats');
         if (dCost && typeof dCost.value === 'number') sum += dCost.value;
       }
       if (Array.isArray(item.selections)) {
-        item.selections.forEach((sub: any) => { sum += getSelectionCost(sub); });
+        item.selections.forEach((sub) => { sum += getSelectionCost(sub); });
       }
       return sum;
     }
@@ -348,16 +488,16 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
     const totalUnitCost = getSelectionCost(sel);
 
     const isTough = catNames.includes('Tough') || 
-                    unitProfile?.characteristics?.some((c: any) => c.$text?.toLowerCase().includes('tough')) ||
+                    unitProfile?.characteristics?.some((c) => c.$text?.toLowerCase().includes('tough')) ||
                     advancements.some(a => a.toLowerCase().includes('tough'));
     const maxHp = isTough ? 2 : 1;
 
     // Find or create profile snapshot
     const matchedProfile = allUnits.find(
-      (p) => p.name.toLowerCase() === sel.name.toLowerCase() || sel.name.toLowerCase().includes(p.name.toLowerCase())
+      (p) => p.name.toLowerCase() === selName || selName.includes(p.name.toLowerCase())
     );
 
-    const baseProfileName = unitProfile?.name || sel.name;
+    const baseProfileName = unitProfile?.name || selectionName;
     const baseProfileId = (matchedProfile?.id || baseProfileName.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 
     /*
@@ -376,14 +516,14 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
       armour: charMap['Armour'] || matchedProfile?.stats.armour,
     };
     if (!stats.movement || !stats.ranged || !stats.melee || !stats.armour) {
-      unmatched.push(sel.customName || sel.name);
+      unmatched.push(sel.customName || selectionName);
       return;
     }
     const resolvedStats = stats as { movement: string; ranged: string; melee: string; armour: string };
 
     units.push({
       id: `u-imp-${Date.now()}-${idx}`,
-      customName: sel.customName || sel.name,
+      customName: sel.customName || selectionName,
       baseProfileId,
       profileSnapshot: {
         id: baseProfileId,
@@ -392,11 +532,15 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
         category,
         baseCost: totalUnitCost,
         stats: { ...resolvedStats, keywords: catNames },
-        innateAbilities: (sel.profiles || []).filter((p: any) => p.typeName === 'Ability').map((a: any) => ({
-          id: a.id || a.name,
-          name: a.name,
-          description: a.characteristics?.find((c: any) => c.name === 'Description')?.$text || ''
-        }))
+        innateAbilities: (sel.profiles || [])
+          .filter((p) => p.typeName === 'Ability' && Boolean(p.name))
+          .map((a) => ({
+            // `a.name` is non-null by the filter above; the id falls back to it
+            // because a `.ros` export often carries no profile id at all.
+            id: a.id || a.name!,
+            name: a.name!,
+            description: a.characteristics?.find((c) => c.name === 'Description')?.$text || '',
+          }))
       },
       equippedWeapons,
       equippedArmour,
@@ -459,8 +603,10 @@ function parseNewRecruitJson(data: any, allUnits: UnitProfile[]): ImportResult {
   `<selections><selection/></selections>` is `{selections: {selection: [...]}}`.
   Both are undone here.
 */
-function xmlSelectionToJson(node: any): any {
-  const arr = (x: any) => (x == null ? [] : Array.isArray(x) ? x : [x]);
+function xmlSelectionToJson(node: XmlSelection): NrSelection {
+  /** One or many or absent, as a list. fast-xml-parser gives all three. */
+  const arr = <T,>(x: T | T[] | undefined): T[] =>
+    (x == null ? [] : Array.isArray(x) ? x : [x]);
   return {
     name: node['@_name'],
     customName: node['@_customName'],
@@ -472,16 +618,16 @@ function xmlSelectionToJson(node: any): any {
       this is usually absent and the profile type decides instead.
     */
     group: node['@_group'],
-    costs: arr(node.costs?.cost).map((c: any) => ({
+    costs: arr(node.costs?.cost).map((c) => ({
       name: c['@_name'],
       value: Number(c['@_value'] ?? 0),
     })),
-    categories: arr(node.categories?.category).map((c: any) => ({ name: c['@_name'] })),
-    profiles: arr(node.profiles?.profile).map((pr: any) => ({
+    categories: arr(node.categories?.category).map((c) => ({ name: c['@_name'] })),
+    profiles: arr(node.profiles?.profile).map((pr) => ({
       id: pr['@_id'],
       name: pr['@_name'],
       typeName: pr['@_typeName'],
-      characteristics: arr(pr.characteristics?.characteristic).map((ch: any) => ({
+      characteristics: arr(pr.characteristics?.characteristic).map((ch) => ({
         name: ch['@_name'],
         $text: ch['#text'] ?? '',
       })),
@@ -497,8 +643,16 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
     isArray: (name) => ['selection', 'profile', 'cost', 'characteristic', 'category'].includes(name)
   });
 
-  const parsed = parser.parse(xmlContent);
-  const roster = parsed.roster || parsed.gameSystem || parsed;
+  /*
+    The one cast in this file, and it is at the library boundary: XMLParser is
+    declared to return `any`, so something has to say what the document is.
+    Naming the shape here rather than letting `any` spread is the whole point —
+    every field read below is checked against `XmlRoster` from this line on.
+  */
+  const parsed = parser.parse(xmlContent) as {
+    roster?: XmlRoster; gameSystem?: XmlRoster;
+  } & XmlRoster;
+  const roster: XmlRoster = parsed.roster || parsed.gameSystem || parsed;
 
   const forceNode = roster.forces?.force;
   const force = Array.isArray(forceNode) ? forceNode[0] : forceNode;
@@ -517,9 +671,9 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
       name: roster['@_name'] || 'Imported Roster XML',
       gameSystemName: roster['@_gameSystemName'],
       costLimits: (Array.isArray(roster.costLimits?.cost) ? roster.costLimits.cost : [])
-        .map((c: any) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
+        .map((c: XmlCost) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
       costs: (Array.isArray(roster.costs?.cost) ? roster.costs.cost : [])
-        .map((c: any) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
+        .map((c: XmlCost) => ({ name: c['@_name'], value: Number(c['@_value'] ?? 0) })),
       forces: [{
         name: force?.['@_name'],
         catalogueName: force?.['@_catalogueName'],

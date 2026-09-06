@@ -10,6 +10,7 @@ import type { CampaignFramework } from '@/types/campaign';
 import { TerritoryMap } from './TerritoryMap';
 import { CampaignSyncStatus } from './CampaignSyncStatus';
 import { LogMatchModal } from './LogMatchModal';
+import { JoinCampaignModal } from './JoinCampaignModal';
 import { 
   Sparkles, 
   Trophy, 
@@ -20,12 +21,13 @@ import {
   Scroll,
   Plus,
   X,
-  Swords
+  Swords,
+  LogIn
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 
 export const CampaignHubView: React.FC = () => {
-  const { campaign, factions, createCampaign, getActiveWarband } = useStore();
+  const { campaign, factions, createCampaign, getActiveWarband, warbands } = useStore();
   const activeWb = getActiveWarband();
   const syncCampaign = useStore((s) => s.syncCampaignWithCloud);
 
@@ -51,6 +53,7 @@ export const CampaignHubView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'chronicle' | 'territory' | 'matches'>('leaderboard');
   const [copied, setCopied] = useState(false);
   const [isNewCampaignModalOpen, setIsNewCampaignModalOpen] = useState(false);
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
 
   /*
     Scroll lock, Escape and a focus trap for the overlay below.
@@ -168,6 +171,20 @@ export const CampaignHubView: React.FC = () => {
             >
               <Plus className="w-4 h-4 text-theme-primary" />
               <span>New Campaign</span>
+            </button>
+
+            {/*
+              Beside New Campaign, because they are the two ways a player ends
+              up in one and only one of them existed. The invite code has been
+              generated, displayed and copyable since the campaign hub was
+              written; nothing spent it (SYNC-4).
+            */}
+            <button
+              onClick={() => setIsJoinOpen(true)}
+              className="flex items-center space-x-1.5 px-3.5 py-2.5 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+            >
+              <LogIn className="w-4 h-4 text-theme-primary" />
+              <span>Join Campaign</span>
             </button>
           </div>
         </div>
@@ -494,6 +511,12 @@ export const CampaignHubView: React.FC = () => {
           })}
         </div>
       )}
+
+      <JoinCampaignModal
+        isOpen={isJoinOpen}
+        onClose={() => setIsJoinOpen(false)}
+        warbands={warbands}
+      />
 
       {/* New Campaign Modal */}
       {isNewCampaignModalOpen && (

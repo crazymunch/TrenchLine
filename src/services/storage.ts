@@ -12,6 +12,14 @@ const CUSTOM_WEAPONS_KEY = 'tc_custom_weapons_v1';
 
 const isBrowser = typeof window !== 'undefined';
 
+/** What an invite code shows someone who is not in the campaign yet. */
+export interface CampaignInvitePreview {
+  id: string;
+  name: string;
+  memberCount: number;
+  maxWarbandDucats: number;
+}
+
 /**
  * One fetch wrapper, so every cloud call classifies its failure the same way.
  *
@@ -37,7 +45,19 @@ async function request<T>(
     return { ok: false, reason: 'unauthenticated', detail: `HTTP ${res.status}` };
   }
   if (!res.ok) {
-    return { ok: false, reason: 'server', detail: `HTTP ${res.status}` };
+    /*
+      The server's own sentence, when it wrote one.
+
+      `HTTP 409` is not something to show a person who has just typed an invite
+      code — "You already have a warband in that campaign" is, and the route
+      already says exactly that. Every failure from these routes carries an
+      `error` string (see `lib/api/http.ts`), so the status is the fallback
+      rather than the answer.
+    */
+    const message = await res.json()
+      .then((b) => (typeof b?.error === 'string' ? b.error : null))
+      .catch(() => null);
+    return { ok: false, reason: 'server', detail: message ?? `HTTP ${res.status}` };
   }
 
   try {
@@ -266,6 +286,68 @@ export const storage = {
         inviteCode: c.inviteCode,
         alreadyPublished: Boolean(data?.alreadyPublished),
       };
+    });
+  },
+
+  /**
+   * What an invite code names, before spending it.
+   *
+   * A name and a size, which is what the route will give a caller who is not
+   * in the campaign yet: holding a code is not membership, and the code
+   * travels through channels nobody here controls. Enough to tell you that
+   * you have the right campaign and no more.
+   */
+  async previewCampaignInvite(code: string): Promise<CloudResult<CampaignInvitePreview>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request(`/api/campaigns?code=${encodeURIComponent(code)}`, {}, (data) => {
+      const c = data?.campaign;
+      /* Thrown rather than defaulted, per the rule this file lives under: a
+         preview the server did not return is not a campaign called "" with
+         nobody in it. */
+      if (!c?.id || typeof c.name !== 'string') {
+        throw new Error('The server returned no campaign.');
+      }
+      return {
+        id: String(c.id),
+        name: c.name,
+        memberCount: Number(c._count?.members ?? 0),
+        maxWarbandDucats: Number(c.maxWarbandDucats ?? 0),
+      };
+    });
+  },
+
+  /**
+   * Spend the code: put one of your warbands into that campaign.
+   *
+   * `alreadyMember` comes back true when this warband was already in it. That
+   * is the retry working — the first attempt landed and the response was lost
+   * — and it is a success, not a duplicate: the route returns the campaign
+   * either way rather than letting the unique constraint produce a 500.
+   *
+   * Only the code, the warband and an optional display name are sent. The
+   * warband's NAME and FACTION are read off the row by the server; a client
+   * that could state them could enter a Heretic roster in the standings as
+   * New Antioch.
+   */
+  async joinCampaignWithInvite(
+    code: string,
+    warbandId: string,
+    playerName?: string,
+  ): Promise<CloudResult<{ id: string; alreadyMember: boolean }>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request('/api/campaigns', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'join',
+        inviteCode: code,
+        warbandId,
+        ...(playerName ? { playerName } : {}),
+      }),
+    }, (data) => {
+      const c = data?.campaign;
+      if (!c?.id) throw new Error('The server returned no campaign.');
+      return { id: String(c.id), alreadyMember: Boolean(data?.alreadyMember) };
     });
   },
 

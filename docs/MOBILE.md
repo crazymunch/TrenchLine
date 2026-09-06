@@ -180,8 +180,20 @@ is now `lg:hidden` — it stays below `lg:`, where there is no sidebar — and
 Glory moved into the sidebar, because it was the one figure the pill had that
 the sidebar did not.
 
-`e2e/mobile.spec.ts` holds both: exactly one ruleset select exists anywhere on
-the page, and the budget is stated once at each width.
+The account itself was the last one to move. The sidebar's footer carried a
+Login button when signed out, and when signed in the name, the admin crown and
+a button opening the same sign-in sheet — a second copy of what the top bar's
+account menu already had, on a screen showing both at once. Two Login buttons
+is not a convenience: it is two things to keep in step, and a reader has to
+work out whether they do the same thing. The sidebar's footer now holds the
+expand toggle and, when the sidebar is expanded, renders nothing at all — an
+always-present footer would rule a line across the bottom with nothing under
+it, which reads as something failing to load.
+
+`e2e/mobile.spec.ts` holds all three: exactly one ruleset select and exactly
+one Login exist anywhere on the page, and the budget is stated once at each
+width. The Login count replaced a `page.locator('header')` workaround the test
+needed to get past the duplicate — the disambiguation became the assertion.
 
 ### 7. Modals become sheets
 

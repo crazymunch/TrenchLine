@@ -7,6 +7,7 @@ import { THEMES } from '../../types/theme';
 import { ThemeSwitcherModal } from './ThemeSwitcherModal';
 import { AuthModal } from '../auth/AuthModal';
 import { BugReportModal } from '../feedback/BugReportModal';
+import { DeleteAccountModal } from '../account/DeleteAccountModal';
 import { SyncStatus } from './SyncStatus';
 import { 
   User,
@@ -22,7 +23,8 @@ import {
   Users,
   BookOpen,
   SlidersHorizontal,
-  Bug
+  Bug,
+  Trash2
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
 import type { RulesetVersion } from '../../types/rules';
@@ -43,6 +45,7 @@ export const Navbar: React.FC = () => {
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isBugReportOpen, setIsBugReportOpen] = useState(false);
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
 
   const activeWarband = getActiveWarband();
   const currentFaction = factions.find(f => f.id === activeWarband?.factionId);
@@ -246,6 +249,27 @@ export const Navbar: React.FC = () => {
                           <LogOut className="w-3.5 h-3.5" />
                           <span>Sign Out</span>
                         </button>
+                        {/*
+                          Erasure, where the account is — not in an email to
+                          the maintainer.
+
+                          /privacy said there was no self-service delete and
+                          gave an address instead. That sentence was true and
+                          it described a gap: a policy that promises erasure
+                          and an application with no way to perform it leaves
+                          the obligation with one person remembering to run
+                          SQL. It is last in the menu, below Sign Out, because
+                          the two are one slip apart and only one of them is
+                          reversible.
+                        */}
+                        <button
+                          role="menuitem"
+                          onClick={() => { setIsAuthMenuOpen(false); setIsDeleteAccountOpen(true); }}
+                          className="w-full min-h-[44px] px-3 py-2 text-left text-xs font-mono text-theme-muted hover:bg-theme-elevated hover:text-status-error flex items-center space-x-2"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete account</span>
+                        </button>
                       </>
                     ) : (
                       <button
@@ -336,6 +360,11 @@ export const Navbar: React.FC = () => {
       />
 
       {/* Bug Report Modal */}
+      <DeleteAccountModal
+        isOpen={isDeleteAccountOpen}
+        onClose={() => setIsDeleteAccountOpen(false)}
+      />
+
       <BugReportModal
         isOpen={isBugReportOpen}
         onClose={() => setIsBugReportOpen(false)}

@@ -7,7 +7,7 @@ import { limitAccountRoute } from '@/lib/api/rateLimit';
 import { badRequest, conflict, handle, notFound } from '@/lib/api/http';
 import { readAndParse, id, text, count, boundedJson } from '@/lib/api/parse';
 import {
-  requireActor, requireCampaignAccess, requireCampaignWarband,
+  requireActor, requireCampaignAccess, requireCampaignWarband, requireOwnedWarband,
 } from '@/lib/api/policy';
 
 /**
@@ -238,6 +238,33 @@ const PublishCampaign = z.object({
   territories: z.array(PublishTerritory).max(MAX_TERRITORIES),
 }).strict();
 
+/**
+ * Spend an invite code: put one of your warbands into somebody's campaign.
+ *
+ * The code has had a generator worth guessing at, a preview endpoint and a
+ * rate limit since AUTH-3, and nothing that consumed it. An organiser could
+ * publish a campaign and hand out a code that did nothing — half a feature,
+ * and the half that looks finished from the outside.
+ *
+ * **What comes from the body, and what does not.** The code and the warband
+ * are the caller's to choose. `warbandName` and `factionId` are read off the
+ * warband row after ownership is verified, never taken from the request: they
+ * are what the campaign table displays, and a member who could type them could
+ * field a Heretic Legions roster listed as New Antioch.
+ *
+ * `playerName` IS accepted, and that is not the same mistake `claim_territory`
+ * made. There the body named who an ACTION was attributed to, so it could
+ * credit anyone. Here it is a label on the caller's own membership row and
+ * nowhere else — people use a nickname at a table, and the account's display
+ * name is a poor substitute for one. It defaults to the account's name.
+ */
+const JoinCampaign = z.object({
+  action: z.literal('join'),
+  inviteCode: text(64).trim().min(1),
+  warbandId: id(),
+  playerName: text(60).trim().min(1).optional(),
+}).strict();
+
 const ClaimTerritory = z.object({
   action: z.literal('claim_territory'),
   territoryId: id(),
@@ -249,7 +276,8 @@ const ClaimTerritory = z.object({
   */
 }).strict();
 
-const Body = z.discriminatedUnion('action', [CreateCampaign, PublishCampaign, ClaimTerritory]);
+const Body = z.discriminatedUnion('action',
+  [CreateCampaign, PublishCampaign, JoinCampaign, ClaimTerritory]);
 
 export async function POST(req: NextRequest) {
   return handle('campaigns.POST', async () => {
@@ -341,6 +369,95 @@ export async function POST(req: NextRequest) {
         include: FULL,
       });
       return NextResponse.json({ campaign, alreadyPublished: false }, { status: 201 });
+    }
+
+    if (body.action === 'join') {
+      const actor = await requireActor();
+
+      /*
+        Limited on the same bucket as the preview, and by IP.
+
+        A join is a code guess with a side effect, so it must not be the
+        cheaper way to walk the space: 75 bits is only unguessable while
+        somebody has to pay for each attempt.
+      */
+      const limited = limitAccountRoute('invite', req.headers, actor.userId);
+      if (limited) return limited;
+
+      const campaign = await prisma.campaign.findUnique({
+        where: { inviteCode: body.inviteCode },
+        select: { id: true },
+      });
+      /*
+        The same message the preview gives, deliberately. A join that failed
+        differently for "no such code" and "code exists, something else was
+        wrong" would answer the prober's question for them.
+      */
+      if (!campaign) return notFound('No campaign has that invite code.');
+
+      // Ownership before anything is read off the warband.
+      await requireOwnedWarband(body.warbandId, actor);
+      const warband = await prisma.warband.findUnique({
+        where: { id: body.warbandId },
+        select: { name: true, factionId: true },
+      });
+      if (!warband) return notFound();
+
+      /*
+        Already in, two ways, and they are not the same answer.
+
+        The SAME warband is the retry this endpoint has to survive: a lost
+        response must not make a second membership, and the unique constraint
+        on `[campaignId, warbandId]` would turn one into a 500. So it returns
+        the campaign, exactly as a first success does.
+
+        A DIFFERENT warband is a person trying to field two rosters in one
+        campaign. That is a rules question with an answer — one player, one
+        warband — so it is refused with a message that says which, rather than
+        quietly adding a second row nobody would notice until the standings
+        listed them twice.
+      */
+      const mine = await prisma.campaignMember.findFirst({
+        where: { campaignId: campaign.id, userId: actor.userId },
+        select: { warbandId: true },
+      });
+      if (mine && mine.warbandId !== body.warbandId) {
+        return conflict('You already have a warband in that campaign.');
+      }
+
+      if (!mine) {
+        await prisma.campaignMember.create({
+          data: {
+            campaignId: campaign.id,
+            userId: actor.userId,
+            warbandId: body.warbandId,
+            /*
+              The account's name when the caller did not choose one. Not the
+              email address: the campaign table is shown to every other player
+              in it, and an address is not a display name — that is the same
+              leak the warband directory's `creatorName` fallback closed.
+            */
+            playerName: body.playerName ?? actor.email?.split('@')[0] ?? 'Crusade Commander',
+            warbandName: warband.name,
+            factionId: warband.factionId,
+          },
+        });
+      }
+
+      /*
+        The membership is re-checked before the campaign is returned, rather
+        than the write's own result being trusted. The caller is a member now,
+        so `FULL` is theirs to see — and going through the same policy every
+        other read uses means there is no second definition of what a member
+        may see, written here, that could drift from the one in `policy.ts`.
+      */
+      await requireCampaignAccess(campaign.id, 'member');
+      const joined = await prisma.campaign.findUnique({
+        where: { id: campaign.id },
+        include: FULL,
+      });
+      return NextResponse.json({ campaign: joined, alreadyMember: Boolean(mine) },
+        { status: mine ? 200 : 201 });
     }
 
     /*
