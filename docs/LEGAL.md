@@ -140,6 +140,38 @@ change one of these, change the policy in the same commit:
 | one cookie, set only after sign-in | `session: { strategy: 'jwt' }` in `src/lib/auth.ts`; theme and settings are `tc_*` keys in local storage |
 | ownership is checked server-side on every call | `src/app/api/__tests__/ownership.integration.test.ts` |
 | account and invite endpoints are rate-limited | `src/lib/api/rateLimit.ts` |
+| four sub-processors, and Cloudflare is not one of them for page requests | see below — this one is **not** checkable in the repository |
+
+### The one claim that lives outside this repository
+
+`/privacy` names four companies: Vercel (hosting), Neon (the database),
+Cloudflare (DNS and forwarding the contact mailbox) and Google (only if you use
+Google sign-in). Three of those are settled by the code. Cloudflare's role is
+settled by **DNS configuration**, and it can change without a commit — which is
+exactly why it is written down here.
+
+The policy states that Cloudflare *does not sit in front of the site*: page
+requests go straight to Vercel and Cloudflare sees none of them. That is true
+because `trenchline.app` and `www` are **CNAME → Vercel, DNS only** — grey
+cloud, unproxied. Turning the cloud orange would terminate TLS at Cloudflare
+and put every request through them, which would make that sentence false the
+moment it was saved.
+
+So: **proxying the site through Cloudflare is a privacy-policy change, not just
+an infrastructure one.** If it is ever done, that paragraph is rewritten in the
+same change. Two related traps in the same dashboard:
+
+- **Client-side security** (and Zaraz) work by injecting a script. The policy
+  says no third-party script runs on this site. Enabling either makes that
+  false, to monitor scripts this site does not have.
+- **Bot Fight Mode** and **Under Attack Mode** serve challenge interstitials.
+  Aside from the crawler false positives they are known for, an interstitial
+  where a reviewer expected `/privacy` is the opposite of what the pages above
+  are for.
+
+None of them is enabled, and the site needs none of them: Vercel already
+provides the CDN, the TLS and the DDoS absorption that proxying would buy a
+second copy of.
 
 One claim is deliberately soft because the code is:
 
