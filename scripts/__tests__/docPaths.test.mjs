@@ -51,8 +51,29 @@ const CODE_SPAN = /`([^`\s]+)`/g;
 /** Trailing punctuation belongs to the sentence, not to the path. */
 const trim = (p) => p.replace(/[.,;:)]+$/, '');
 
-function pathsIn(doc) {
-  const text = fs.readFileSync(path.join(ROOT, doc), 'utf8');
+/*
+  A line reference names WHERE in the file, not a file called "x:32".
+
+  Written more loosely than it once was. The first version accepted only
+  `:32` and `:32-40` with an ASCII hyphen, and rejected `src/rules/validate.ts:78–111`
+  — an en dash, which is what anything typeset rather than typed produces, and
+  what the rules-coverage audit used throughout. Eight real files were reported
+  missing on that basis alone.
+
+  That is the failure this whole test exists to avoid, inverted: a guard that
+  cries wolf teaches people to work around it, and the way you work around this
+  one is to stop citing lines. Line citations are the most useful thing a doc
+  about code can carry, so accept all three dashes.
+
+  Not a comma-separated list of spans — `CODE_SPAN` above rejects any span
+  containing whitespace, so `foo.ts:98–119, 604–615` is never extracted in the
+  first place. A branch for it here would be unreachable code that reads like a
+  guarantee.
+*/
+const LINE_REF = /:\d+(?:[-–—]\d+)?$/;
+
+/** The repository paths a document names. Exported so the shapes can be tested. */
+export function pathsInText(text) {
   const out = new Set();
   for (const m of text.matchAll(CODE_SPAN)) {
     const raw = trim(m[1]);
@@ -60,8 +81,7 @@ function pathsIn(doc) {
     /* A glob names a shape, and `<NN>` a template. Neither is a file. */
     if (raw.includes('*') || raw.includes('<')) continue;
 
-    /* A path with a line reference names the file, not a file called "x:32". */
-    const file = raw.replace(/:\d+(-\d+)?$/, '');
+    const file = raw.replace(LINE_REF, '');
 
     /*
       Something that names a FILE or is written as a DIRECTORY.
@@ -80,6 +100,8 @@ function pathsIn(doc) {
   return [...out];
 }
 
+const pathsIn = (doc) => pathsInText(fs.readFileSync(path.join(ROOT, doc), 'utf8'));
+
 describe('the paths the documentation names', () => {
   for (const doc of DOCS) {
     it(`all exist — ${doc}`, () => {
@@ -87,4 +109,53 @@ describe('the paths the documentation names', () => {
       expect(missing, `${doc} names paths that are not in the repository`).toEqual([]);
     });
   }
+});
+
+/*
+  The extraction itself, against the shapes people actually write.
+
+  Testing this only through the real docs is not enough: it passes whenever the
+  docs happen not to use a shape, which is exactly how the en dash went
+  unnoticed until an audit written elsewhere arrived using it 8 times.
+*/
+describe('what counts as a path a document names', () => {
+  const only = (text) => pathsInText(text);
+
+  it('reads a bare path', () => {
+    expect(only('see `src/rules/campaign.ts` for it')).toEqual(['src/rules/campaign.ts']);
+  });
+
+  it('drops a line reference in each of the three dashes', () => {
+    for (const dash of ['-', '\u2013', '\u2014']) {
+      expect(only(`\`src/rules/validate.ts:78${dash}111\``), dash)
+        .toEqual(['src/rules/validate.ts']);
+    }
+  });
+
+  it('drops a single line reference', () => {
+    expect(only('`src/rules/arsenal.ts:112`')).toEqual(['src/rules/arsenal.ts']);
+  });
+
+  it('sees nothing at all in a span containing a space', () => {
+    // Not a gap to be fixed here: the narrow span is what stops prose like
+    // `see Success Rolls` being read as a filename. A multi-span citation is
+    // simply invisible to this test, and that is the safe direction.
+    expect(only('`src/rules/arsenal.ts:98\u2013119, 604\u2013615`')).toEqual([]);
+  });
+
+  it('still ignores globs, templates and prose words', () => {
+    expect(only('`src/data/*.generated.ts` and `roster` and `main`')).toEqual([]);
+    expect(only('`prisma/migrations/<NN>_name/migration.sql`')).toEqual([]);
+  });
+
+  it('does not treat a trailing colon or bracket as part of the name', () => {
+    expect(only('in `src/rules/campaign.ts:`')).toEqual(['src/rules/campaign.ts']);
+    expect(only('(`src/rules/campaign.ts:160\u2013168`)')).toEqual(['src/rules/campaign.ts']);
+  });
+
+  it('leaves a version-like suffix that is not a line reference alone', () => {
+    // `:v2` is not a line number, so the name is taken as written and will
+    // fail the existence check — which is the right answer for a typo.
+    expect(only('`src/rules/campaign.ts:v2`')).toEqual(['src/rules/campaign.ts:v2']);
+  });
 });
