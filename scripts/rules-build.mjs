@@ -22,7 +22,8 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules, parseVariantEconomy } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable,
-         parseCampaignPhaseSteps, parseTraumaProcedure } from './lib/parse-campaign.mjs';
+         parseCampaignPhaseSteps, parseTraumaProcedure,
+         parseReinforcementsSequence } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
@@ -750,6 +751,15 @@ for (const ruleset of RULESETS) {
        * docs/RULES-COVERAGE-AUDIT.md RC-01 and RC-05.
        */
       traumaProcedure: parseTraumaProcedure(),
+      /**
+       * What Calling for Reinforcements costs, in the book's six steps.
+       *
+       * The app offered the choice and applied one clause of it — the
+       * forfeiture of Exploration and the Quartermaster — while keeping the
+       * Arsenal and the Strongbox the other five say you give up. See
+       * docs/RULES-COVERAGE-AUDIT.md RC-09.
+       */
+      reinforcements: parseReinforcementsSequence(),
       /**
        * The six Campaign Phase Steps, in the order the book states.
        *

@@ -881,3 +881,116 @@ export function parseTraumaProcedure(src = RULEBOOK_TXT) {
     },
   };
 }
+
+/* ------------------------------------------- the Reinforcements Step sequence */
+
+/**
+ * What Calling for Reinforcements actually costs you.
+ *
+ * The app knew one of the six steps. It warned that taking Reinforcements
+ * forfeits Exploration and the Quartermaster (step 6) and suppressed those
+ * controls — and then applied none of the price the other five state:
+ *
+ *   1. Discard any Battlekit in the Arsenal. The app kept the stash.
+ *   2. Reduce the Strongbox to zero.       The app kept the Ducats.
+ *   3. Total the cost of the Warband.      Never computed.
+ *   4. Threshold minus that = the allowance. `reinforcementAllowance` was
+ *      written for exactly this and then never called from anywhere.
+ *   5. Unspent Ducats are lost, and the Arsenal starts the next game empty.
+ *   6. Forgo Exploration and the Quartermaster.
+ *
+ * So the app offered the one clause that takes something away — the step
+ * choice — while quietly leaving the player richer than the rule allows.
+ * `docs/RULES-COVERAGE-AUDIT.md` RC-09.
+ *
+ * Derived rather than restated because the sequence is game data: a caller that
+ * needs to say "this will empty your Arsenal and your Strongbox" before a
+ * player taps through should be quoting the book, not a paraphrase of it.
+ *
+ * Every clause is read from the numbered list. A missing number throws — five
+ * steps read as six-with-one-silently-absent is precisely the failure this
+ * finding is.
+ */
+export function parseReinforcementsSequence(src = RULEBOOK_TXT) {
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+
+  const at = lines.findIndex((l) => /^REINFORCEMENTS SEQUENCE$/.test(l.trim()));
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: no REINFORCEMENTS SEQUENCE heading in the rulebook. It is '
+      + 'the only statement of what Calling for Reinforcements costs, and every '
+      + 'clause of it takes something away from the player.');
+  }
+
+  /*
+    The list runs `1.` to `6.` with wrapped continuation lines. It ends at the
+    page furniture that follows ("Campaign", "Games") — short Title-Case lines
+    that cannot be mistaken for a numbered clause.
+  */
+  const steps = [];
+  for (let i = at + 1; i < Math.min(at + 40, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    const m = /^(\d)\.\s*(.*)$/.exec(t);
+    if (m) {
+      steps.push({ n: Number(m[1]), parts: [m[2]] });
+      continue;
+    }
+    if (!steps.length) continue;              /* the preamble before step 1 */
+    if (/^[A-Z][A-Za-z]{2,14}$/.test(t)) break; /* page furniture */
+    steps.at(-1).parts.push(t);
+  }
+
+  const out = steps.map((s) => ({
+    step: s.n,
+    text: s.parts.join(' ').replace(/\s+/g, ' ')
+      /* The Ducat glyph survives extraction here; the app has its own mark. */
+      .replace(/\s*👑\s*/g, ' Ducats ')
+      /* The glyph substitution leaves a space before the punctuation after it. */
+      .replace(/\s+([,.)])/g, '$1')
+      .replace(/\(\s+/g, '(')
+      .replace(/\s+/g, ' ')
+      .trim(),
+  }));
+
+  const expected = [1, 2, 3, 4, 5, 6];
+  const got = out.map((s) => s.step);
+  if (got.length !== expected.length || got.some((n, i) => n !== expected[i])) {
+    throw new Error(
+      `parse-campaign: the Reinforcements Sequence read as steps [${got.join(', ')}], `
+      + 'expected 1 to 6. Every clause takes something from the player, so a '
+      + 'step read as absent is one the app would quietly not charge.');
+  }
+
+  /*
+    The two clauses a caller has to ACT on rather than display, checked against
+    the sentence that states them. Named flags rather than a prose match at the
+    call site: a consumer that greps for "Discard" in rules text is a consumer
+    that stops working when the wording changes.
+  */
+  const says = (n, re, what) => {
+    if (!re.test(out[n - 1].text)) {
+      throw new Error(
+        `parse-campaign: Reinforcements step ${n} no longer states ${what}. `
+        + `Read: "${out[n - 1].text.slice(0, 140)}".`);
+    }
+    return true;
+  };
+
+  return {
+    steps: out,
+    /** Step 1: the Arsenal is abandoned when you fall back. */
+    discardsArsenal: says(1, /Discard any Battlekit that you have in the Arsenal/i,
+      'that the Arsenal is discarded'),
+    /** Step 2: the Strongbox pays for favours. */
+    zeroesStrongbox: says(2, /Reduce the number of .*in your Strongbox to zero/i,
+      'that the Strongbox goes to zero'),
+    /** Step 5: what is not spent is gone, and the Arsenal starts empty. */
+    unspentLost: says(5, /you do not spend on reinforcements are lost/i,
+      'that unspent Ducats are lost'),
+    /** Step 6: the choice the app already implements. */
+    forgoesExplorationAndQuartermaster: says(6,
+      /forego the Exploration Step and\s*Quartermaster Step/i,
+      'that Exploration and the Quartermaster are forgone'),
+  };
+}

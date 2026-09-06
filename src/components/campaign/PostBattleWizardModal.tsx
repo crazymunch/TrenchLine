@@ -7,7 +7,7 @@ import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
 import {
   explorationDice, explorationTables, resolveExploration, campaignGameOf,
-  reinforcementGlory,
+  reinforcementGlory, reinforcementCost, reinforcementsSequence,
 } from '../../rules/campaign';
 import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
@@ -263,6 +263,25 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     Computed here so the same answer drives what step 3 shows and what the store
     writes. It used to be `u.xp + 1` in the store, for every unit on the roster.
   */
+  /*
+    What Calling for Reinforcements will actually take.
+
+    Shown before the choice is committed, because two of the six steps empty
+    things the player has been accumulating for a whole campaign — the Arsenal
+    and the Strongbox — and until now the app charged neither. A screen that
+    offers a bail-out has to say what the bail-out costs.
+  */
+  const reinforcements = reinforcementsSequence(dataset);
+  const nextGame = campaignGameOf(warband, campaign) + 1;
+  const cost = dataset
+    ? reinforcementCost(dataset, {
+      units: warband.units,
+      armoryStash: warband.armoryStash,
+      treasuryDucats: warband.treasuryDucats,
+      variantId: warband.variantId,
+    }, nextGame)
+    : null;
+
   const barring = xpBarringInjuries(dataset);
   const experienceFor = (unitId: string) => {
     const u = warband.units.find((x) => x.id === unitId);
@@ -363,10 +382,22 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       // The Variant's Reinforcements payout is published, so it is added to
       // what the player recorded rather than expected to be typed in.
       gloryGained + reinforcementBonus,
-      ducatsGained,
+      /*
+        Exploration loot a player rolled and then walked away from.
+
+        The steps are reachable in any order, so someone could roll Exploration,
+        go back, choose Reinforcements — which forfeits that step — and submit
+        the Ducats anyway. The forfeiture is the book's step 6 and the loot is
+        the Exploration Step's; taking one means not having the other.
+
+        Unless the campaign's house rule keeps Exploration, in which case the
+        organiser has said the two coexist and the loot stands.
+      */
+      explorationForfeited ? 0 : ducatsGained,
       casualties,
       advancements,
       experience,
+      tookReinforcements,
       narrativeLog,
       battleReportText.trim().length > 0 ? battleReportText : undefined,
       mvpUnitName.trim().length > 0 ? mvpUnitName : undefined,
@@ -934,6 +965,61 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                     and Quartermaster Steps, so Exploration is still available.
                     The book gives both up.
                   </p>
+                </div>
+              )}
+
+              {/*
+                The rest of the price, which the app used to charge nothing for.
+
+                Steps 1, 2 and 5 empty the Arsenal and the Strongbox. Both are
+                things a player has been building up all campaign, so the
+                numbers are named before the choice is committed rather than
+                discovered afterwards. The house rule above covers only step 6;
+                it does not make the Arsenal survive.
+              */}
+              {tookReinforcements && cost && (
+                <div className="p-3.5 rounded border border-status-error bg-status-error/5 text-xs leading-relaxed space-y-2">
+                  <p className="font-bold text-status-error uppercase">
+                    You give up your Arsenal and your Strongbox
+                  </p>
+                  <ul className="space-y-1 text-theme-text">
+                    <li>
+                      <strong>{cost.strongboxLost} Ducats</strong> in the Strongbox,
+                      reduced to zero.
+                    </li>
+                    <li>
+                      {cost.arsenalDiscarded.length === 0
+                        ? 'No Battlekit in the Arsenal to discard.'
+                        : <>
+                            <strong>{cost.arsenalDiscarded.length} item(s)</strong> in
+                            the Arsenal, discarded:{' '}
+                            {cost.arsenalDiscarded.map((i) => i.name).join(', ')}.
+                          </>}
+                    </li>
+                    <li>
+                      {cost.allowance === null
+                        ? <span className="text-status-warning">
+                            The next game&rsquo;s Threshold Value could not be read, so
+                            the recruiting allowance is not shown rather than guessed.
+                          </span>
+                        : <>You may then spend up to <strong>{cost.allowance} Ducats</strong>{' '}
+                          recruiting, against game {nextGame}&rsquo;s Threshold — your
+                          Warband costs {cost.warbandTotalCost}. Anything unspent is lost.</>}
+                    </li>
+                  </ul>
+                  {/* The book's own six steps, not a paraphrase of them. */}
+                  {reinforcements && (
+                    <details className="pt-1">
+                      <summary className="tap cursor-pointer font-mono text-xs uppercase text-theme-muted hover:text-theme-text">
+                        The published sequence
+                      </summary>
+                      <ol className="mt-2 space-y-1 pl-4 text-theme-muted list-decimal">
+                        {reinforcements.steps.map((st) => (
+                          <li key={st.step}>{st.text}</li>
+                        ))}
+                      </ol>
+                    </details>
+                  )}
                 </div>
               )}
 

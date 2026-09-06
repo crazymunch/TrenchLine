@@ -1094,6 +1094,27 @@ export interface TraumaProcedure {
   duplicateInjury: { rerollUntilUsable: boolean; text: string };
 }
 
+/**
+ * Calling for Reinforcements, as the rulebook sequences it.
+ *
+ * The prose is carried because a screen about to empty a player's Arsenal and
+ * Strongbox should quote the rule rather than paraphrase it. The four booleans
+ * are the clauses a caller must ACT on, and the build fails if the sentence
+ * behind one stops saying what it says — a consumer that greps rules text for
+ * "Discard" stops working the day the wording changes.
+ */
+export interface ReinforcementsSequence {
+  steps: { step: number; text: string }[];
+  /** Step 1. The Arsenal is abandoned when you fall back. */
+  discardsArsenal: boolean;
+  /** Step 2. The Strongbox pays for favours and goes to zero. */
+  zeroesStrongbox: boolean;
+  /** Step 5. Unspent Ducats are lost; the Arsenal starts the next game empty. */
+  unspentLost: boolean;
+  /** Step 6. The one clause the app already implemented. */
+  forgoesExplorationAndQuartermaster: boolean;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -1334,6 +1355,14 @@ export interface Dataset {
      * D66". See docs/RULES-COVERAGE-AUDIT.md RC-01 and RC-05.
      */
     traumaProcedure?: TraumaProcedure;
+    /**
+     * The Reinforcements Sequence, all six published steps.
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built before
+     * this existed states nothing, and a caller must be able to tell that from
+     * "Reinforcements costs nothing". The app charged nothing for two years.
+     */
+    reinforcements?: ReinforcementsSequence;
   };
   meta: {
     rulesetId: string;

@@ -300,6 +300,19 @@ export interface AppState {
      * common answer: a warband of Troops earns no Experience at all.
      */
     experience: XpAward[],
+    /**
+     * Whether the player Called for Reinforcements, and so pays its price.
+     *
+     * The book's sequence has six steps. This slice applied one of them — the
+     * forfeiture of Exploration and the Quartermaster, which the wizard
+     * enforces by hiding controls — and none of the five that cost anything:
+     * the Arsenal was kept, the Strongbox was kept, and unspent Ducats were
+     * never lost. See `rules/campaign.ts` and RULES-COVERAGE-AUDIT RC-09.
+     *
+     * Required rather than optional. A caller that forgets it would silently
+     * restore exactly the bug this closes.
+     */
+    tookReinforcements: boolean,
     narrative: string,
     narrativeReport?: string,
     mvpUnitName?: string,

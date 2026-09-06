@@ -69254,6 +69254,38 @@ export const DATASET: Dataset = {
         "text": "You must record the injuries and Battle Scars suffered by the models in your Warband on your Warband Roster. Unless stated otherwise a model can only suffer each type of injury once. If a model receives the same injury a second time, make the D66 roll for the model again until you roll a result on the Trauma Table that can be used."
       }
     },
+    "reinforcements": {
+      "steps": [
+        {
+          "step": 1,
+          "text": "Discard any Battlekit that you have in the Arsenal on your Warband Roster. It is abandoned when you fall back."
+        },
+        {
+          "step": 2,
+          "text": "Reduce the number of Ducats in your Strongbox to zero. They are used to pay for favors to ensure that the reinforcements you receive are of the best quality."
+        },
+        {
+          "step": 3,
+          "text": "Once you’ve done this, calculate the total Cost of all the models in your Warband (including their Battlekit and any other upgrades that are paid for in Ducats)."
+        },
+        {
+          "step": 4,
+          "text": "Subtract the Total Cost of your Warband from the Threshold Value of the next game you will play. The difference is the number of Ducats you can spend to recruit new models to your Warband. For example, if the Total Cost of your Warband was 635, and the Threshold Value for the next game was 1,000, you can spend up to 365 Ducats on the reinforcements for your Warband. Reinforcement models are recruited in the same ways as the starting models in your Warband, and can have any Battlekit that they are allowed to take and you can afford to pay for, and can be used to create new Fireteams."
+        },
+        {
+          "step": 5,
+          "text": "Any Ducats you do not spend on reinforcements are lost, and you cannot add any Battlekit to your Warbands Arsenal (both will start the next game empty)."
+        },
+        {
+          "step": 6,
+          "text": "If you Call for Reinforcements, you must forego the Exploration Step and Quartermaster Step completely. Go directly to the Roster Step."
+        }
+      ],
+      "discardsArsenal": true,
+      "zeroesStrongbox": true,
+      "unspentLost": true,
+      "forgoesExplorationAndQuartermaster": true
+    },
     "phaseSteps": [
       {
         "name": "Trauma Step",

@@ -27,6 +27,7 @@
  * Nothing here hard-codes 700.
  */
 import type {
+  ReinforcementsSequence,
   Dataset, ExplorationLocation, ExplorationTableName, RollRange,
 } from '@/types/catalogue';
 import { variantById, factionOf } from './variants';
@@ -166,6 +167,72 @@ export function reinforcementAllowance(
   const limits = forceLimits(dataset, nextGame, variantId);
   if (!limits) return null;
   return Math.max(0, limits.threshold - warbandTotalCost);
+}
+
+/**
+ * The Reinforcements Sequence, or `null` on a ruleset that does not state it.
+ *
+ * `null` rather than a permissive default. A caller that cannot read the
+ * sequence must not conclude that Reinforcements is free — which is exactly
+ * what the app concluded for as long as nothing read this.
+ */
+export const reinforcementsSequence = (
+  dataset: Dataset | null | undefined,
+): ReinforcementsSequence | null => dataset?.campaign?.reinforcements ?? null;
+
+/**
+ * What a warband gives up by Calling for Reinforcements, and what it gets.
+ *
+ * The whole trade in one place, so the screen that warns and the store that
+ * writes cannot disagree about it. `docs/RULES-COVERAGE-AUDIT.md` RC-09: the
+ * app offered the choice, applied only the forfeiture of Exploration and the
+ * Quartermaster, and left the player holding the Arsenal and the Strongbox the
+ * book says they abandon.
+ *
+ * Reports; the caller decides. Nothing here mutates a roster — this is what a
+ * confirmation dialog needs in order to be honest about the price.
+ */
+export interface ReinforcementCost {
+  /** Battlekit abandoned from the Arsenal. Named, because the player is losing them. */
+  arsenalDiscarded: { id: string; name: string }[];
+  /** Ducats emptied out of the Strongbox. */
+  strongboxLost: number;
+  /**
+   * What may be spent recruiting, from the NEXT game's Threshold.
+   *
+   * `null` where the Threshold cannot be resolved — the caller must show that
+   * it does not know rather than offer a number it made up.
+   */
+  allowance: number | null;
+  /** The warband's total cost, which the allowance is measured against. */
+  warbandTotalCost: number;
+}
+
+export function reinforcementCost(
+  dataset: Dataset,
+  warband: {
+    units: { totalCost: number; isDead?: boolean }[];
+    armoryStash?: { id: string; name: string }[];
+    treasuryDucats: number;
+    variantId?: string;
+  },
+  nextGame: number,
+): ReinforcementCost {
+  /*
+    Step 3 — "calculate the total Cost of all the models in your Warband". A
+    model removed from the roster is not in the Warband, so a dead one does not
+    inflate the total and shrink the allowance.
+  */
+  const warbandTotalCost = warband.units
+    .filter((u) => !u.isDead)
+    .reduce((sum, u) => sum + (u.totalCost || 0), 0);
+
+  return {
+    arsenalDiscarded: (warband.armoryStash ?? []).map((i) => ({ id: i.id, name: i.name })),
+    strongboxLost: warband.treasuryDucats,
+    allowance: reinforcementAllowance(dataset, nextGame, warbandTotalCost, warband.variantId),
+    warbandTotalCost,
+  };
 }
 
 /* ------------------------------------------------------------------ ledger */
