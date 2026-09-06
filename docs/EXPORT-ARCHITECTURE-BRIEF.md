@@ -240,8 +240,8 @@ was built against it and which of Codex's replacements were taken.*
 | 1 — versioned envelope | **Landed** | `services/rosterFile.ts`, `docs/ROSTER-FILE.md`, a v0 fixture. Codex's E2 and E9 taken: an ordered rules manifest rather than `rulesetId` + `baseCommit` alone, a durable projection whose every field is classified in a `Record<keyof T, …>`, a v0 reader that never stamps today's ruleset, and import-as-new separated from restore |
 | 2 — text presets | **Landed** | `services/rosterText.ts`. Summary / Roster / Full, plain or Discord as a rendering. E5 taken in full, including the sharing axis: lore, quotes and notes are their own opt-in, default off |
 | 3 — print Plain and Pretty | **Landed, unverified on paper** | `RosterPrintSheet.tsx` and the `PRINT` block in `globals.css`. E6's replacement pagination taken — a repeated table header, not `break-inside: avoid`. A 22mm notes box. **No printer has been run** |
-| 4 — note cards | Open | The Pretty sheet already carries the notes box; what is left is the per-model card layout, and it needs A4 and Letter checked at 100% scale on real paper before it is worth building |
-| 5 — NewRecruit `.ros` | Open, gated | E3/E4 stand: an `entryId` count is not evidence of interoperability. The gate is open, check every model/loadout/cost, edit a selection, save, reopen without losing purchases |
+| 4 — note cards | **Landed, unverified on paper** | `91 x 124mm`, four to a page — two columns and two rows of the area both A4 and Letter can print. A `min-height`, so a card grows rather than clipping, and the overflow policy is a deduplicated appendix: cards name their abilities, the text is printed once for the whole warband |
+| 5 — NewRecruit `.ros` | **Spiked, not built** | [`NEWRECRUIT-SPIKE.md`](NEWRECRUIT-SPIKE.md). The identity rule is now established and validated at 97% against a real exported roster, and the blocker is named: a selection's identity is a link PATH that depends on the model carrying it, and the generated dataset flattens the tree away (`entryId` values containing `::`: 0). The catalogues hold everything needed — 100% of the fixture's path segments — so the next step is to carry the path in the dataset, not to find missing data. E3/E4's acceptance gate is unchanged and still needs a person with the app |
 
 E1's structural replacement was taken over §1's claim: the text and print
 renderers share one resolved projection (`services/rosterPresentation.ts`)
@@ -250,8 +250,11 @@ presentation are different products with different tests; it was wrong that
 they should share no code, and duplicating totals across two renderers is
 exactly the drift the brief was worried about elsewhere.
 
-The two entries with no `entryId` are still `Blessings of Beelzebub` and
-`Regimental Kaşık`, both Dispatch-layer records.
+The entries with no `entryId` are now six rather than two: the Dispatch work in
+#50 added `Gluttonous Arsenal`, `Al-inbīq Kit`, `Alchemical Fire` and
+`Corrosive Ammunition` alongside `Blessings of Beelzebub` and
+`Regimental Kaşık`. They are published rules with no BattleScribe counterpart,
+so this is a class the catalogues do not carry rather than an omission to fix.
 
 **Owner decisions still open** are the ones §8 lists, unchanged: whether
 NewRecruit export is required at all, whether "pretty" should match a template
