@@ -13,6 +13,7 @@ import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
 } from '../../rules/trauma';
+import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
@@ -121,6 +122,18 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const ooaUnits = warband?.units.filter((u) => u.status === 'Out of Action') || [];
   const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, { outcome: string; isDead: boolean }>>({});
   /*
+    Roll 12 Captured is the one result the table does not decide: two players
+    negotiate a ransom, and the model is either bought back or executed. The
+    wizard used to record it as neither — `isDead` was set only where the row's
+    name was exactly `Dead`, so a captured model walked out of the step alive,
+    uninjured and unransomed, which is the more forgiving branch chosen by
+    nobody (RULES-COVERAGE-AUDIT RC-04).
+
+    Held here as an explicit `null` until a player says. Nothing commits while
+    one is outstanding.
+  */
+  const [captures, setCaptures] = useState<Record<string, { resolution: CaptureResolution; ransom: number }>>({});
+  /*
     The player's answer where the roster cannot say whether a model is ELITE.
 
     Only reached for a Mercenary recruited before `profileSnapshot.elite`
@@ -188,6 +201,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       return Number(t.roll) === rollNum;
     });
 
+    /* A fresh result is a fresh question: whatever was settled about the last
+       one is no longer about anything. */
+    setCaptures(({ [unitId]: _dropped, ...rest }) => rest);
     setCasualtyOutcomes((prev) => ({
       ...prev,
       [unitId]: matched
@@ -229,6 +245,46 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     const u = warband.units.find((x) => x.id === unitId);
     return u ? eliteVerdict(u) : { elite: null, basis: 'unknown' as const, needsConfirmation: true };
   };
+
+  /*
+    Captures, and what is still outstanding.
+
+    The rule is found by what the Trauma row SAYS — "Before continuing the
+    Trauma Step" — rather than by the roll 12 or the name "Captured", so a
+    Dispatch that adds or renames one needs no change here. See rules/capture.ts.
+  */
+  const captureRuleFor = (unitId: string) =>
+    captureRuleIn(dataset, casualtyOutcomes[unitId]?.outcome);
+
+  /** The settled outcome for one capture, or `null` while nobody has said. */
+  const captureSettlement = (unitId: string) => {
+    const rule = captureRuleFor(unitId);
+    const chosen = captures[unitId];
+    if (!rule || !chosen?.resolution) return null;
+    try {
+      return captureOutcome(rule, chosen.resolution, chosen.ransom);
+    } catch (e) {
+      /*
+        The table no longer states the branch. Rule 2: say so on the screen
+        that is about to write the result, rather than picking the branch where
+        the model lives.
+      */
+      return { error: e instanceof Error ? e.message : String(e) } as const;
+    }
+  };
+
+  const settled = (unitId: string) => {
+    const out = captureSettlement(unitId);
+    return out && !('error' in out) ? out : null;
+  };
+
+  /** Models whose capture nobody has resolved. Nothing commits while any remain. */
+  const unresolvedCaptures = ooaUnits.filter(
+    (u) => captureRuleFor(u.id) && !settled(u.id));
+
+  /** Death as the step finally leaves it, capture included. */
+  const diedInStep = (unitId: string) =>
+    settled(unitId)?.removed ?? casualtyOutcomes[unitId]?.isDead ?? false;
 
   /** Resolve a Troop's D6 Survival Roll onto the same outcome record. */
   const resolveSurvivalRoll = (unitId: string, roll: number) => {
@@ -291,7 +347,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       : u;
     return earnsExperience(override, {
       tookPart: !satOut[unitId],
-      died: casualtyOutcomes[unitId]?.isDead ?? false,
+      /* An executed captive died; a ransomed one is a Full Recovery and earns
+         its point like any other survivor. */
+      died: diedInStep(unitId),
       xpBarringInjuries: barring,
     });
   };
@@ -347,13 +405,21 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   };
 
   const handleFinalSubmit = () => {
+    /* The button is disabled while a capture is outstanding; this is the same
+       refusal for anything that reaches the handler another way. */
+    if (unresolvedCaptures.length > 0) return;
+
     const casualties: CasualtyRecord[] = Object.entries(casualtyOutcomes).map(([unitId, data]) => {
       const u = warband.units.find((item) => item.id === unitId);
+      const capture = settled(unitId);
       return {
         unitId,
         unitName: u?.customName || 'Unknown Warrior',
-        outcome: data.outcome,
-        isDead: data.isDead
+        /* The row's text, then what the two players did about it. */
+        outcome: capture ? `${data.outcome} ${capture.text}` : data.outcome,
+        isDead: capture ? capture.removed : data.isDead,
+        ...(capture?.fullRecovery ? { fullRecovery: true } : {}),
+        ...(capture && capture.ransom > 0 ? { ransomPaid: capture.ransom } : {}),
       };
     });
 
@@ -463,10 +529,18 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
             ) : (
               <button
                 onClick={handleFinalSubmit}
-                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-status-error text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
+                disabled={unresolvedCaptures.length > 0}
+                title={unresolvedCaptures.length > 0
+                  ? `Resolve the ransom for ${unresolvedCaptures.map((u) => u.customName).join(', ')} first.`
+                  : undefined}
+                className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-status-error disabled:cursor-not-allowed disabled:bg-theme-elevated disabled:text-theme-muted disabled:shadow-none text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
               >
                 <Check className="w-4 h-4" />
-                <span>Commit to Campaign Chronicle</span>
+                <span>
+                  {unresolvedCaptures.length > 0
+                    ? 'Ransom unresolved'
+                    : 'Commit to Campaign Chronicle'}
+                </span>
               </button>
             )}
       </div>}
@@ -791,6 +865,107 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                             </span>
                           </p>
                         )}
+
+                        {/*
+                          Captured: the one result the table does not decide.
+
+                          Two branches, and the app used to take neither — it
+                          recorded the model as an uninjured survivor with the
+                          ransom unpaid, which is not an outcome the rule
+                          reaches. The negotiation happens between two people at
+                          a table and this does not automate it; it refuses to
+                          write down a result nobody has stated (RC-04).
+                        */}
+                        {captureRuleFor(unit.id) && (() => {
+                          const rule = captureRuleFor(unit.id)!;
+                          const chosen = captures[unit.id];
+                          const outcome = captureSettlement(unit.id);
+                          const purse = warband.treasuryDucats ?? 0;
+                          const choose = (resolution: CaptureResolution) =>
+                            setCaptures((prev) => ({
+                              ...prev,
+                              [unit.id]: { ransom: prev[unit.id]?.ransom ?? 0, resolution },
+                            }));
+                          return (
+                            <div className="rounded border border-theme-accent bg-theme-base p-3 space-y-3">
+                              <p className="text-xs text-theme-text">
+                                <strong className="text-theme-accent">
+                                  {rule.name} ({rule.roll}).
+                                </strong>{' '}
+                                {rule.text}
+                              </p>
+
+                              <div className="flex flex-col sm:flex-row gap-2">
+                                <button
+                                  onClick={() => choose('ransomed')}
+                                  aria-pressed={chosen?.resolution === 'ransomed'}
+                                  className={`min-h-[44px] flex-1 rounded border px-3 text-xs font-bold uppercase transition-colors ${
+                                    chosen?.resolution === 'ransomed'
+                                      ? 'border-theme-primary bg-theme-primary text-theme-base'
+                                      : 'border-theme-border bg-theme-elevated text-theme-text'
+                                  }`}
+                                >
+                                  Ransom paid
+                                </button>
+                                <button
+                                  onClick={() => choose('executed')}
+                                  aria-pressed={chosen?.resolution === 'executed'}
+                                  className={`min-h-[44px] flex-1 rounded border px-3 text-xs font-bold uppercase transition-colors ${
+                                    chosen?.resolution === 'executed'
+                                      ? 'border-status-error bg-status-error text-white'
+                                      : 'border-theme-border bg-theme-elevated text-theme-text'
+                                  }`}
+                                >
+                                  Not paid — executed
+                                </button>
+                              </div>
+
+                              {chosen?.resolution === 'ransomed' && (
+                                <label className="flex items-center gap-2 text-xs text-theme-muted">
+                                  <span className="flex-shrink-0">Ransom, in Ducats</span>
+                                  {/*
+                                    Capped at what is in the Strongbox: the rule
+                                    transfers Ducats out of it, and a Strongbox
+                                    cannot go negative. `text-base` because iOS
+                                    zooms a font under 16px on focus.
+                                  */}
+                                  <input
+                                    type="number"
+                                    min={0}
+                                    max={purse}
+                                    inputMode="numeric"
+                                    value={chosen.ransom}
+                                    onChange={(e) => {
+                                      const n = Math.max(0,
+                                        Math.min(purse, Math.floor(Number(e.target.value) || 0)));
+                                      setCaptures((prev) => ({
+                                        ...prev,
+                                        [unit.id]: { resolution: 'ransomed', ransom: n },
+                                      }));
+                                    }}
+                                    aria-label={`Ransom paid for ${unit.customName}, in Ducats`}
+                                    className="min-h-[44px] w-24 rounded border border-theme-border bg-theme-elevated px-2 text-base sm:text-xs text-theme-text"
+                                  />
+                                  <span className="text-theme-muted">of {purse} held</span>
+                                </label>
+                              )}
+
+                              {outcome && 'error' in outcome ? (
+                                <p className="text-xs font-bold text-status-error">
+                                  {outcome.error} Resolve it by hand and record it in the
+                                  chronicle.
+                                </p>
+                              ) : outcome ? (
+                                <p className="text-xs text-theme-primary">{outcome.text}</p>
+                              ) : (
+                                <p className="text-xs font-bold text-status-error">
+                                  Say what the two of you agreed. The step will not commit
+                                  until you do.
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })()}
 
                         {/*
                           A repeat of an injury the model already carries is

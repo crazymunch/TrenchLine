@@ -395,7 +395,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         }));
 
         if (cas) {
-          newInjuries.push(cas.outcome);
+          /*
+            A Full Recovery writes nothing. Roll 12 Captured with the ransom
+            paid says "treat this result as a Full Recovery", and recording it
+            as an injury would mark the model permanently for something it
+            recovered from — and, under the duplicate-injury rule, stop it ever
+            being captured again (RC-04).
+          */
+          if (!cas.fullRecovery) newInjuries.push(cas.outcome);
           if (cas.isDead) isDead = true;
 
           const norm = cas.outcome.toLowerCase();
@@ -536,11 +543,30 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         enforcing it. Charging it here would double-count against the budget the
         builder already checks.
       */
+      /*
+        Ransoms, which leave the Strongbox for the opponent's.
+
+        "If the ransom is paid, transfer the 👑 from your Strongbox to your
+        opponent's" — one direction only; this app holds one player's warband
+        and cannot credit the other side. Capped at what is actually there
+        because a Strongbox cannot go negative; the wizard caps the input at
+        the same number, so reaching the cap here means something else changed
+        the treasury between the two.
+      */
+      const ransomsAgreed = casualties.reduce((n, c) => n + (c.ransomPaid ?? 0), 0);
+      const ransomsPaid = Math.min(ransomsAgreed, activeWb.treasuryDucats);
+
       const reinforcementsTaken = tookReinforcements;
       const strongboxAfter = reinforcementsTaken
         ? 0
-        : activeWb.treasuryDucats + ducatsGained;
+        : Math.max(0, activeWb.treasuryDucats + ducatsGained - ransomsPaid);
       const stashAfter = reinforcementsTaken ? [] : activeWb.armoryStash;
+
+      if (ransomsPaid > 0) {
+        changesSummary.push(
+          `Ransom paid: ${ransomsPaid} Ducats transferred from the Strongbox to the `
+          + 'opponent’s.');
+      }
 
       if (reinforcementsTaken) {
         changesSummary.push(
