@@ -67,9 +67,11 @@ export const Sidebar: React.FC = () => {
   const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
   const totalCost = activeWarband?.units.reduce((sum, u) => sum + u.totalCost, 0) || 0;
 
-  const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
+  // No `badge` — see the note in MobileNav. It said LIVE beside a feature
+  // that is not built, on both this rail and the phone bar.
+  const navItems: { id: AppView; label: string; icon: React.ReactNode }[] = [
     { id: 'builder', label: 'Warband Roster', icon: <Shield className="w-5 h-5" /> },
-    { id: 'play', label: 'Tabletop Combat', icon: <Swords className="w-5 h-5" />, badge: 'LIVE' },
+    { id: 'play', label: 'Tabletop Combat', icon: <Swords className="w-5 h-5" /> },
     { id: 'campaign', label: 'Crusade Campaign', icon: <Flag className="w-5 h-5" /> },
     { id: 'directory', label: 'Roster Directory', icon: <Users className="w-5 h-5" /> },
     { id: 'codex', label: 'Rules Codex', icon: <BookOpen className="w-5 h-5" /> },
@@ -226,14 +228,6 @@ export const Sidebar: React.FC = () => {
 
                 {!isCollapsed && (
                   <span className="truncate flex-1 text-left">{item.label}</span>
-                )}
-
-                {item.badge && (
-                  <span className={`px-1.5 py-0.2 rounded text-xs sm:text-[9px] font-bold uppercase font-mono ${
-                    isCollapsed ? 'absolute top-1 right-1 w-2 h-2 p-0 rounded-full bg-theme-accent' : 'bg-theme-accent text-white'
-                  }`}>
-                    {!isCollapsed && item.badge}
-                  </span>
                 )}
               </button>
             );

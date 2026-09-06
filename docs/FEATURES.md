@@ -75,7 +75,7 @@ the execution is the problem.
 | Range calculator | ✅ | |
 | Dice probability tool | ✅ | |
 | Scenario reference + map lightbox | ✅ | Real official maps |
-| **Live multi-device match sync** | ❌ | Honestly labelled "Coming Soon" in-app |
+| **Live multi-device match sync** | ❌ | The one unbuilt row. Scoped in [`LIVE-MODE.md`](LIVE-MODE.md): stage one is a read-only mirror — one device is the table, others watch — which needs no realtime vendor and no new company in the data path. Two-way editing is stage two and is not designed yet, deliberately. The **LIVE** badge that sat on the Play nav item advertising this is gone: a flashing red dot is the strongest signal in the chrome and it pointed at a "Coming Soon" screen |
 
 **The marker pools are not mirror images.** The row above used to read 🟡
 "Less complete than Blood", which was generous: Blessing Markers had no state
@@ -119,13 +119,13 @@ none either, rather than falling back to a number the code remembers.
 | Scenario compendium + maps | ✅ | |
 | Mission designer / generator | ✅ | |
 | Keyword glossary | ✅ | 61 entries, derived. Was 116 hand-written ones missing 7 of the 12 the 1.0.2 changelog defines; `CLEAVE` and `DEADLY` are both present now (`AUDIT.md` §1.3a) |
-| Armoury / weapon / armour tables | 🟡 | Present, values invented |
+| Armoury / weapon / armour tables | ✅ | **Derived.** This row said "values invented" long after Phase 1 replaced them: weapons and units come from `src/data/generated/trenchline.generated.ts` (2.6 MB, built from the BattleScribe catalogues), and `src/rules/arsenal.ts` and `battlekitLimits.ts` read them from there. Inventing those values is what the pipeline exists to have stopped |
 | Rules customizer (local overrides) | ✅ | |
 | GitHub 3-way diff resolver | ✅ | Wired up and functional |
 | Warband comparator | ✅ | |
 | Roster directory (global registry) | ✅ | |
 | Bug report + diagnostics | ✅ | |
-| Theme switcher (7 faction themes) | 🟡 | Themes defined; components ignore them |
+| Theme switcher (7 faction themes) | ✅ | **Migrated.** ~3,700 hardcoded hex literals became `theme-*` tokens; 12 remain across 7 files, and several of those are correctly fixed rather than themed — Google's own brand colours on the OAuth button, for one. The row described the state before that migration |
 | Auth + cloud sync | ✅ | NextAuth + Prisma |
 
 ---

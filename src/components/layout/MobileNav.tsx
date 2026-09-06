@@ -25,9 +25,17 @@ export const MobileNav: React.FC = () => {
   const { currentView, setCurrentView, currentTheme } = useStore();
   const activeThemeObj = THEMES.find(t => t.id === currentTheme) || THEMES[0];
 
-  const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: string }[] = [
+  /*
+    No `badge`. The Play item carried one — a red `animate-ping` dot here and
+    a "LIVE" pill in the sidebar — and it advertised a feature this app does
+    not have: live multi-device play is the one unbuilt row on the feature
+    checklist, labelled "Coming Soon" inside the view the badge pointed at.
+    A flashing red dot is the strongest attention signal in the whole chrome
+    and it was spent on nothing happening.
+  */
+  const navItems: { id: AppView; label: string; icon: React.ReactNode }[] = [
     { id: 'builder', label: 'Roster', icon: <Shield className="w-5 h-5" /> },
-    { id: 'play', label: 'Play', icon: <Swords className="w-5 h-5" />, badge: 'LIVE' },
+    { id: 'play', label: 'Play', icon: <Swords className="w-5 h-5" /> },
     // "Crusade", not "Campaign": at 12px in a 375px bar the longer word clips
     // to "Campaig…", and this is what the view calls itself anyway — the
     // sidebar reads "Crusade Campaign" and the header "CRUSADE CAMPAIGN HUB".
@@ -69,12 +77,7 @@ export const MobileNav: React.FC = () => {
                   color: isActive ? activeThemeObj.primaryColor : undefined
                 }}
               >
-                <div className="relative">
-                  {item.icon}
-                  {item.badge && (
-                    <span className="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-status-error animate-ping" />
-                  )}
-                </div>
+                {item.icon}
                 <span className="text-sm mt-1 font-semibold tracking-tight truncate max-w-full leading-tight">{item.label}</span>
               </button>
             );
