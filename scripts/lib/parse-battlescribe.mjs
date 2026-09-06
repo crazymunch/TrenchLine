@@ -1069,6 +1069,24 @@ export function parseCatalogues(dir) {
           */
           unlockedBy: revealNames(node, nameOf),
           name: clean(attr(g, 'name')),
+          /*
+            The containing entry's name, when it is not the profile's.
+
+            Usually these agree. Where they do not it is often deliberate — a
+            `Swiss Guard` entry carrying a `Papal Courage` ability profile — but
+            sometimes one of them is a transcription slip in a community
+            catalogue, and the profile is the one this ships: the app carried
+            the rulebook's "Demonic Aura Grenade" as "Demonic Grenade", so the
+            Dispatch's op adding FUMBLE to it found no target and the published
+            keyword never reached the app.
+
+            Recorded rather than resolved here, because the books are what
+            settle it and this parser does not read them. `reconcileGearNames`
+            in rules-build.mjs does.
+          */
+          entryName: clean(attr(node, 'name')) !== clean(attr(g, 'name'))
+            ? clean(attr(node, 'name')) || undefined
+            : undefined,
           type: clean(c.Type) || attr(g, 'typeName'),
           range: clean(c.Range) || '',
           keywords: clean(c.Keywords)

@@ -36083,7 +36083,7 @@ export const DATASET: Dataset = {
         "Equipment Only",
         "Enabled"
       ],
-      "name": "Demonic Grenade",
+      "name": "Demonic Aura Grenade",
       "type": "GRENADE",
       "range": "8\"",
       "keywords": [
@@ -36146,7 +36146,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "profileName": "Demonic Grenade"
     },
     {
       "id": "d31f-9638-3044-4892",
@@ -42185,7 +42186,7 @@ export const DATASET: Dataset = {
         "Sorcerer",
         "Praetor"
       ],
-      "name": "Call of Flesh",
+      "name": "Call of the Flesh",
       "type": "Spell (Cost 2)",
       "range": "-",
       "keywords": [],
@@ -42233,7 +42234,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "profileName": "Call of Flesh"
     },
     {
       "id": "b1e9-f895-8cab-5c0b",
@@ -51870,7 +51872,7 @@ export const DATASET: Dataset = {
     {
       "id": "2d02-94a4-2493-186f",
       "entryId": "3adc-0610-7ec1-9873",
-      "name": "War Cross",
+      "name": "Warcross",
       "type": "Grenade",
       "range": "8\"",
       "keywords": [
@@ -51886,7 +51888,8 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "profileName": "War Cross"
     },
     {
       "id": "b16a-e1fa-433f-efc0",
@@ -66220,7 +66223,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Warcross",
-          "weaponId": null,
+          "weaponId": "2d02-94a4-2493-186f",
           "section": "Grenades",
           "cost": {
             "ducats": 5,

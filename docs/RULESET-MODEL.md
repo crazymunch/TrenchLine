@@ -498,6 +498,53 @@ three outcomes.
 | `unconfirmed` | Extraction could not locate it — not evidence of an error | passes, counted in the report |
 | `conflict` | Rulebook clearly states a different value | **fails** until resolved |
 
+### Names: the books decide
+
+A BattleScribe gear entry carries **two** names — the `selectionEntry`'s and
+its profile's — and this pipeline ships the profile's. Usually they agree.
+Where they do not, it is often deliberate structure: a `Swiss Guard` entry
+holding a `Papal Courage` ability profile, or the Court's `Claimed: Automatic
+Pistol` marking a looted copy of a New Antioch weapon. Sometimes it is a
+transcription slip in a community catalogue, and then the app ships an official
+weapon under a name **no official document prints**.
+
+That is not cosmetic. A layer op targets an entity by name, so a slip makes the
+op miss:
+
+> The Trench Dispatch adds the FUMBLE Keyword to the **Demonic Aura Grenade**.
+> The rulebook prints that name in the Glory Items table and four times in its
+> rules text; the catalogue's own entry agrees; its *profile* says "Demonic
+> Grenade". So the app carried the weapon under the profile's name, the op
+> reported `target not found` on every build, and FUMBLE never reached a
+> player.
+
+`reconcileGearNames` in `scripts/rules-build.mjs` settles it on the project's
+own principle — **the books are the authority, the catalogues are the
+convenience.** A rename happens only when all three hold:
+
+1. the two names are a **spelling slip** — a letter changed (*Catphract*,
+   *Elixer*) or a single word dropped (*Demonic Grenade*, *Call of Flesh*).
+   Character distance alone does not catch the second: "Demonic Grenade" is
+   only 0.75 alike to "Demonic Aura Grenade", below any threshold that does not
+   also sweep in genuinely different entries;
+2. **neither name contains the other**, which is what excludes the deliberate
+   decorations — `Claimed:`, `Stolen:`, `Pilfered:`, `Secrets of`, a Campaign
+   Rules `[9]` roll number. A first pass without this guard renamed 123 entries
+   and would have collapsed entries the game keeps apart;
+3. the books print **exactly one** of the two. Both attested or neither, and
+   nothing is touched — so this can never invent a third spelling or choose
+   between two real ones. A pair where neither is printed is reported.
+
+Three renames result today: *Demonic Grenade* → *Demonic Aura Grenade*, *Call
+of Flesh* → *Call of the Flesh*, *War Cross* → *Warcross*. Each keeps
+`profileName` so the app's name can be traced back to the catalogue's.
+
+**An unresolved layer op now fails the build.** It used to print and carry on,
+under a comment that already said why that was wrong — "a published rule the
+app does not have — the one thing this pipeline exists to make visible" — while
+the build went green. One op sat unresolved for the whole of that time, and the
+line was read as noise on every build.
+
 Conflicts are resolved by hand in `data-sources/resolutions.json`, keyed
 `<Unit Name>.<field>`:
 
