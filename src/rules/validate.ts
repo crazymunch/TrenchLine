@@ -19,6 +19,7 @@ import { stockedAnywhere, variantArmoury, withinGrants, type GrantUsage } from '
 import { thirdPartyGate } from './thirdParty';
 import { variantLocks, unlockedBy } from './variantLocks';
 import { battlekitBreaches } from './battlekitLimits';
+import { groupBreaches } from './optionGroups';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -44,6 +45,8 @@ export interface Violation {
     | 'force-over-field-strength'
     | 'unparsed-restriction'
     | 'restriction-unverified'
+    | 'option-group-max'
+    | 'option-group-distinct'
     | 'third-party-not-allowed'
     | 'variant-locked';
   message: string;
@@ -593,6 +596,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkThirdParty(roster, profiles));
   violations.push(...checkVariantLocks(roster, dataset, variant));
   violations.push(...checkVariantGrants(roster, dataset, variant, weapons));
+  violations.push(...checkOptionGroups(roster, dataset));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
@@ -601,6 +605,32 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * Limits that govern an option group rather than one option.
+ *
+ * The Black Grail's Strains and Vile Corpus shipped as independent toggles with
+ * empty constraints, so a Thrall could hold all four Strains and two Amalgams
+ * could hold the same Corpus (RC-07). The counting is in `rules/optionGroups.ts`
+ * with the rules' own sentences; this turns each breach into a violation that
+ * names the sentence.
+ */
+function checkOptionGroups(roster: Roster, dataset: Dataset): Violation[] {
+  return groupBreaches(dataset, roster).map((b) => (b.kind === 'over-allowance'
+    ? err({
+      code: 'option-group-max',
+      message: `${b.unitName} has ${plural(b.held.length, b.group.replace(/s$/, ''))} `
+             + `(${b.held.join(', ')}); the limit is ${b.max}.`,
+      rule: b.rule,
+      unitId: b.unitId,
+    })
+    : err({
+      code: 'option-group-distinct',
+      message: `${b.unitName} shares its ${b.group} (${b.shared}) with another model.`,
+      rule: b.rule,
+      unitId: b.unitId,
+    })));
 }
 
 /**

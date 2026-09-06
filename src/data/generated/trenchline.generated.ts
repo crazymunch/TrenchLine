@@ -673,7 +673,24 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "battlekitNote": "A Grail Thrall cannot have any Battlekit but can have up to 1 Strain.",
+      "optionGroups": [
+        {
+          "group": "Strains",
+          "max": 1,
+          "bonus": {
+            "max": 1,
+            "otherModelsCostAtLeast": {
+              "ducats": 1000,
+              "glory": 0
+            },
+            "text": "If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, Grail Thralls may have an additional Strain."
+          },
+          "permanent": true,
+          "text": "A Grail Thrall cannot have any Battlekit but can have up to 1 Strain. Strains can be purchased upon recruiting a model or during the Quartermaster Step at the indicated cost. Once a model has a Strain, it cannot be removed or lost for any reason."
+        }
+      ]
     },
     {
       "id": "2055-017b-f08e-aff4",
@@ -1044,7 +1061,16 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Black Grail.cat",
-      "battlekitNote": "An Amalgam always has a Gluttonous Arsenal. This weapon is part of the Amalgam and cannot be removed or lost throughout the campaign for any reason. It cannot have any other Battlekit, but it can have up to 1 Vile Corpus."
+      "battlekitNote": "An Amalgam always has a Gluttonous Arsenal. This weapon is part of the Amalgam and cannot be removed or lost throughout the campaign for any reason. It cannot have any other Battlekit, but it can have up to 1 Vile Corpus.",
+      "optionGroups": [
+        {
+          "group": "Vile Corpus",
+          "max": 1,
+          "permanent": true,
+          "distinctPerRoster": true,
+          "text": "Each Amalgam can have 1 Vile Corpus, which can be purchased when recruiting the model or during the Quartermaster Step at the indicated cost. Once an Amalgam has a Vile Corpus, it cannot be removed or lost for any reason. In addition, each Amalgam in a Warband must have a different Vile Corpus."
+        }
+      ]
     },
     {
       "id": "aca1-8c2f-0a00-ee49",

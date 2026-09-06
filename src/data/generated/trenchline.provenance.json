@@ -279,6 +279,14 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "optionGroups": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:2055-017b-f08e-aff4": {
@@ -560,6 +568,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "optionGroups": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
