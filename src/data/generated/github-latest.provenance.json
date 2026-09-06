@@ -18420,6 +18420,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "profileName": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:d31f-9638-3044-4892": {
@@ -24570,6 +24574,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -35042,6 +35050,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }

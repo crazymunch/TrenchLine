@@ -324,6 +324,130 @@ for (const ruleset of RULESETS) {
   // 1. parse — a fresh copy per ruleset, since layers mutate it
   const base = parseCatalogues(CAT_DIR);
 
+  /*
+    Where the catalogue disagrees with itself about a name, let the books decide.
+
+    A BattleScribe gear entry carries a `selectionEntry` name and a profile
+    name, and this pipeline ships the profile's. Usually they agree. Where they
+    do not, one is sometimes a transcription slip in a community catalogue —
+    and the app then ships an official weapon under a name no official document
+    prints.
+
+    The shipped example: the rulebook prints "Demonic Aura Grenade" in the
+    Glory Items table and four times in its rules text, the catalogue's own
+    entry agrees, and its profile says "Demonic Grenade". So the app carried
+    the weapon under the profile's name, and the Trench Dispatch op adding the
+    FUMBLE Keyword to "Demonic Aura Grenade" found no target. It was reported —
+    `addKeyword: target not found` — and the build went green anyway, which is
+    how a published keyword stayed out of the app.
+
+    The rule here is the project's own: the books are the authority and the
+    catalogues are the convenience. A rename happens only when the books print
+    exactly one of the two names, so this can never invent a third spelling or
+    pick between two attested ones. Everything else is left alone and reported.
+  */
+  const bookText = [
+    'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt',
+    'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt',
+    'data-sources/carcass-front/extracted/carcass-front-book.txt',
+  ].filter((f) => fs.existsSync(f))
+    .map((f) => fs.readFileSync(f, 'utf8'))
+    .join('\n')
+    .replace(/\u00a0/g, ' ')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/\s+/g, ' ');
+
+  const printedInABook = (name) => {
+    const n = String(name ?? '').replace(/[\u2018\u2019]/g, "'").replace(/\s+/g, ' ').trim();
+    if (n.length < 4) return false;
+    return bookText.includes(n);
+  };
+
+  /*
+    Only a SPELLING SLIP is a rename. Two guards, both load-bearing:
+
+    - the names must be near-identical, which excludes an entry whose profile
+      is a different label entirely (a `Melee` group holding a `Knight
+      Companion of the Bladed Fly` profile);
+    - neither may contain the other, which excludes the deliberate decorations
+      the catalogues use — `Claimed: Automatic Pistol` for the Court's looted
+      copy, `Friends in High Places [9]` for a table roll. Stripping those
+      collapses entries the game keeps apart, and a first pass at this renamed
+      123 things for exactly that reason.
+
+    What is left is the real class: Catphract, Elixer, Call of Flesh, Demonic
+    Grenade.
+  */
+  const editDistance = (a, b) => {
+    const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+    for (let i = 1; i <= a.length; i += 1) {
+      let diag = prev[0];
+      prev[0] = i;
+      for (let j = 1; j <= b.length; j += 1) {
+        const tmp = prev[j];
+        prev[j] = Math.min(
+          prev[j] + 1,
+          prev[j - 1] + 1,
+          diag + (a[i - 1] === b[j - 1] ? 0 : 1),
+        );
+        diag = tmp;
+      }
+    }
+    return prev[b.length];
+  };
+  /*
+    Two shapes of slip, because they need different measures.
+
+    A letter dropped or swapped — Catphract, Elixer — is a character-distance
+    match. A word dropped — "Demonic Grenade" for "Demonic Aura Grenade",
+    "Call of Flesh" for "Call of the Flesh" — is not: those are only 0.75 alike
+    by characters, under any threshold that does not also sweep in real pairs.
+    So a one-word omission is matched on the word sequence instead.
+  */
+  const oneWordDropped = (a, b) => {
+    const [short, long] = a.split(' ').length <= b.split(' ').length ? [a, b] : [b, a];
+    const s2 = short.toLowerCase().split(/\s+/);
+    const l2 = long.toLowerCase().split(/\s+/);
+    if (l2.length - s2.length !== 1) return false;
+    // Every word of the short name appears in the long one, in order.
+    let i = 0;
+    for (const w of l2) if (i < s2.length && s2[i] === w) i += 1;
+    return i === s2.length;
+  };
+
+  const nearlyTheSame = (a, b) => {
+    const [x, y] = [a.toLowerCase(), b.toLowerCase()];
+    if (x.includes(y) || y.includes(x)) return false;
+    if (oneWordDropped(a, b)) return true;
+    return 1 - editDistance(x, y) / Math.max(x.length, y.length) >= 0.85;
+  };
+
+  const gearRenames = [];
+  const gearNameStandoffs = [];
+  for (const w of base.weapons ?? []) {
+    if (!w.entryName || w.entryName === w.name) continue;
+    if (!nearlyTheSame(w.name, w.entryName)) continue;
+    const profileInBook = printedInABook(w.name);
+    const entryInBook = printedInABook(w.entryName);
+    // Exactly one attested: that one is the name. Both or neither: leave it.
+    if (entryInBook && !profileInBook) {
+      gearRenames.push({ from: w.name, to: w.entryName });
+      w.profileName = w.name;
+      w.name = w.entryName;
+    } else if (!entryInBook && !profileInBook) {
+      gearNameStandoffs.push(`${w.name} / ${w.entryName} — neither spelling is printed in any book`);
+    }
+  }
+  /*
+    `entryName` is scaffolding for the pass above and nothing in the app reads
+    it, so it does not ship: the dataset is fetched over the wire, and 226 of
+    these is weight every phone pays for on a field only this file used.
+    `profileName` stays on the three that were renamed — that one is provenance,
+    and it is what tells a reader why the app's name differs from the
+    catalogue's.
+  */
+  for (const w of base.weapons ?? []) delete w.entryName;
+
   const kitByName = new Map(battlekit.entries.map((b) => [nameKey(b.name), b]));
   for (const e of warbandsKit.entries) {
     const k = nameKey(e.name);
@@ -1164,7 +1288,22 @@ for (const ruleset of RULESETS) {
     console.log(`  armoury rows added by layers: ${armouryOps.applied}`);
   }
   if (unresolvedOps.length) {
-    console.log(`  unresolved layer ops: ${unresolvedOps.length}`);
+    /*
+      And the build FAILS on one.
+
+      This used to print and carry on, and the comment below already said why
+      that was wrong — "a published rule the app does not have" — while the
+      build went green anyway. One op sat unresolved that whole time: the
+      Dispatch adds FUMBLE to the Demonic Aura Grenade, the catalogue's profile
+      called it a Demonic Grenade, and the keyword never reached the app. The
+      line was printed on every build and read as noise.
+
+      An op that cannot find its target is either a name to reconcile (see
+      `reconcileGearNames` above) or a layer written against an entry that does
+      not exist. Both need a person; neither should ship.
+    */
+    failed = true;
+    console.log(`  unresolved layer ops: ${unresolvedOps.length} — THIS FAILS THE BUILD`);
     /*
       And WHY. The count alone sent me looking in the wrong place: two
       `addArmouryRow` ops were being reported as a number with no reason, and
@@ -1176,6 +1315,14 @@ for (const ruleset of RULESETS) {
         + `${u.op?.row?.name ? `/${u.op.row.name}` : ''}`
         + `${u.op?.entity?.name ? `/${u.op.entity.name}` : ''}: ${u.why}`);
     }
+  }
+  if (gearRenames.length) {
+    console.log(`  gear renamed to the books' spelling: ${gearRenames.length}`);
+    for (const r of gearRenames) console.log(`    ${r.from}  ->  ${r.to}`);
+  }
+  if (gearNameStandoffs.length) {
+    console.log(`  gear whose two catalogue names are both unattested: ${gearNameStandoffs.length}`);
+    for (const r of gearNameStandoffs) console.log(`    ${r}`);
   }
   if (layerNotes.length) console.log(`  layer ops superseded upstream: ${layerNotes.length}`);
   if (reprints.agreed.length || reprints.disagreed.length) {

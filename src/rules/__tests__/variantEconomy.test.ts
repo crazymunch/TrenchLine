@@ -133,3 +133,58 @@ describe('the Reinforcements payout', () => {
     expect(reinforcementAllowance(DATASET, 1, 900, PAPAL)).toBe(0);
   });
 });
+
+/**
+ * Gear ships under the name the books print.
+ *
+ * Separate from the economy above, and here because it is the same class of
+ * failure: a published rule that the pipeline had and the app did not.
+ *
+ * A BattleScribe entry carries two names — the `selectionEntry`'s and its
+ * profile's — and the pipeline ships the profile's. Where a community
+ * catalogue has a transcription slip, the app carried an official weapon under
+ * a name no official document prints, and the Dispatch op written against the
+ * real name found nothing. It reported `target not found` on every build and
+ * the build went green.
+ */
+describe('gear named as the books name it', () => {
+  const weapon = (name: string) => DATASET.weapons.find((w) => w.name === name);
+
+  it('carries the Demonic Aura Grenade under the rulebook’s name', () => {
+    // The rulebook prints "Demonic Aura Grenade" in the Glory Items table and
+    // four times in its rules text; the catalogue profile said "Demonic
+    // Grenade", and that is what shipped.
+    expect(weapon('Demonic Grenade'), 'the catalogue misspelling still ships').toBeUndefined();
+    expect(weapon('Demonic Aura Grenade')).toBeDefined();
+  });
+
+  it('applies the Dispatch’s FUMBLE to it, which the old name silently lost', () => {
+    // This is the whole point. The op could not find its target, so the
+    // published keyword was simply absent.
+    expect(weapon('Demonic Aura Grenade')!.keywords).toContain('FUMBLE');
+  });
+
+  it('carries Call of the Flesh, a Goetic Power, under its book name', () => {
+    expect(weapon('Call of Flesh')).toBeUndefined();
+    expect(weapon('Call of the Flesh')).toBeDefined();
+  });
+
+  it('records what the catalogue called it, so the rename is traceable', () => {
+    const w = weapon('Demonic Aura Grenade') as { profileName?: string };
+    expect(w.profileName).toBe('Demonic Grenade');
+  });
+
+  it('leaves the catalogues’ deliberate decorations alone', () => {
+    // The Court's looted copy is a different entry with its own restrictions.
+    // A first pass at this renamed 123 things and would have collapsed them.
+    expect(weapon('Claimed: Automatic Pistol')).toBeDefined();
+    expect(weapon('Stolen: Sniper Rifle')).toBeDefined();
+  });
+
+  it('does not ship the build’s own scaffolding to every phone', () => {
+    // `entryName` existed on 226 weapons and nothing in the app reads it. The
+    // dataset is fetched over the wire.
+    const leaked = DATASET.weapons.filter((w) => 'entryName' in (w as object));
+    expect(leaked.map((w) => w.name)).toEqual([]);
+  });
+});

@@ -36998,7 +36998,7 @@ export const DATASET: Dataset = {
         "Equipment Only",
         "Enabled"
       ],
-      "name": "Demonic Grenade",
+      "name": "Demonic Aura Grenade",
       "type": "GRENADE",
       "range": "8\"",
       "keywords": [
@@ -37006,7 +37006,8 @@ export const DATASET: Dataset = {
         "BLAST 3\"",
         "IGNORE ARMOUR",
         "IGNORE COVER",
-        "SCATTER"
+        "SCATTER",
+        "FUMBLE"
       ],
       "rules": "Deadly Light: Double the number of BLOOD MARKERS placed next to a model by an Injury Roll for an attack made with a Demonic Aura Grenade. In addition, an Injury Roll is made for all models that are within 3\" of the target point when the Demonic Aura Grenade explodes, even if interposing terrain blocks the line of sight.",
       "cost": {
@@ -37061,7 +37062,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "profileName": "Demonic Grenade"
     },
     {
       "id": "d31f-9638-3044-4892",
@@ -43100,7 +43102,7 @@ export const DATASET: Dataset = {
         "Sorcerer",
         "Praetor"
       ],
-      "name": "Call of Flesh",
+      "name": "Call of the Flesh",
       "type": "Spell (Cost 2)",
       "range": "-",
       "keywords": [],
@@ -43148,7 +43150,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "profileName": "Call of Flesh"
     },
     {
       "id": "b1e9-f895-8cab-5c0b",
@@ -52785,7 +52788,7 @@ export const DATASET: Dataset = {
     {
       "id": "2d02-94a4-2493-186f",
       "entryId": "3adc-0610-7ec1-9873",
-      "name": "War Cross",
+      "name": "Warcross",
       "type": "Grenade",
       "range": "8\"",
       "keywords": [
@@ -52801,7 +52804,8 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "profileName": "War Cross"
     },
     {
       "id": "b16a-e1fa-433f-efc0",
@@ -69941,7 +69945,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Warcross",
-          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+          "weaponId": "2d02-94a4-2493-186f",
           "section": "Grenades",
           "cost": {
             "ducats": 5,
@@ -72000,7 +72004,7 @@ export const DATASET: Dataset = {
         },
         {
           "name": "Warcross",
-          "weaponId": "cf-weapon-procession-of-the-sacred-affliction-warcross",
+          "weaponId": "2d02-94a4-2493-186f",
           "section": "Grenades",
           "cost": {
             "ducats": 5,

@@ -7,11 +7,23 @@ working rather than merely present.
 This document is the checklist. `Status` is what the code genuinely does today,
 verified by reading it, not what the UI or the README claims.
 
-Which means it goes stale, and did: after Phase 2 shipped variants, unit
+Which means it goes stale, and has twice: after Phase 2 shipped variants, unit
 limits, required entries and the legality summary, this file still listed all
-four as ❌ for weeks. A checklist that lags the code is worse than none,
-because it is the file someone reads to decide what to build next. Re-read it
-whenever a phase closes.
+four as ❌ for weeks. Then three more rows drifted the same way — hand/slot
+capacity, importer equipment and the live mirror all described work that had
+since been done. A checklist that lags the code is worse than none, because it
+is the file someone reads to decide what to build next.
+
+A fourth row said the Court's Goetic Powers were not modelled; all 23 are. And
+chasing the one that genuinely looked absent found a real bug — the app was
+shipping it under a misspelling, along with a weapon whose published FUMBLE
+Keyword had never reached a player (see [`RULESET-MODEL.md`](RULESET-MODEL.md)
+§6, "Names: the books decide"). Auditing this file is not busywork.
+
+Every drift has been in the same direction: **understating** what is built.
+So re-read it whenever a phase closes, and verify each non-✅ row against the
+code rather than trusting the note beside it — every one of the six checked in
+September 2026 took a grep to settle, and half of them were wrong.
 
 | Status | Meaning |
 |---|---|
@@ -36,11 +48,11 @@ roster.
 | **Unit min/max limits** (`0-2 Sniper Priests`) | ✅ | Derived per unit, raised or lowered by a variant |
 | **Required entries** (`must include 1 Lieutenant`) | ✅ | `unit-min`, scoped to the roster's own faction, with variant overrides |
 | **Wargear legality** (`ELITE only`, `Limit: 2`) | ✅ | Rule-driven from the armouries, per faction and per variant |
-| Hand/slot capacity (1H/2H, shield combo) | 🟡 | Partial, hand-rolled |
+| Hand/slot capacity (1H/2H, shield combo) | ✅ | `rules/battlekitLimits.ts`. Every number comes from `dataset.battlekitLimits`, parsed off the BATTLEKIT LIMITS page — one 2-Handed or two 1-Handed per section, one Armour, one Shield with its own restrictions, and the STRONG / CUMBERSOME / HEAVY carrying rules. "Hand-rolled" described the name-pattern engine that was deleted |
 | **Roster legality summary** | ✅ | `LegalityStrip` renders the verdict, each violation naming the rule that produced it |
 | Per-model wargear costs rolled into total | ✅ | |
-| **Glory Items / per-model upgrades** | 🟡 | `UnitOption` exists; the Grail Strains and the Vile Corpus are derived onto their entries, and the Dispatch's two new Glory Items are stocked and priced. Goetic Powers are still not modelled |
-| Import from NewRecruit / BattleScribe | 🟡 | JSON/XML/text, resolved against the generated dataset. An entry it cannot match is now **reported, not invented** — it used to become a 35-Ducat Trooper with a made-up statline. Equipment is still not carried across from the export |
+| **Glory Items / per-model upgrades** | ✅ | `UnitOption`; the Grail Strains and the Vile Corpus are derived onto their entries, and the Dispatch's two new Glory Items are stocked and priced. "Goetic Powers are still not modelled" was the fourth stale note here — all 23 the Warbands book prints are in the dataset, 10 as unit options grouped by Deadly Sin and 13 as priced spell profiles, every cost matching the book. Checking the one that looked missing is what found the gear-naming bug: it was shipping as *Call of Flesh* |
+| Import from NewRecruit / BattleScribe | 🟡 | JSON/XML/text, resolved against the generated dataset. An entry it cannot match is **reported, not invented** — it used to become a 35-Ducat Trooper with a made-up statline. Weapons, armour, equipment, Formulae, XP and advancements **are** carried across now, on both the JSON and XML paths: the XML path never read a selection's children, so a `.ros` import arrived as bare profiles and reported success. What is still missing is a matched-entry report the importer shows *before* committing |
 | Export roster (print / text) | ✅ | `ExportModal` with real print styles |
 | Export to shareable file | 🟡 | `ExportModal` writes a file; a roster now also has a URL (`/roster/[id]`), though it is device-local until the owner is signed in |
 | Multiple saved rosters | ✅ | |
@@ -75,7 +87,7 @@ the execution is the problem.
 | Range calculator | ✅ | |
 | Dice probability tool | ✅ | |
 | Scenario reference + map lightbox | ✅ | Real official maps |
-| **Live multi-device match sync** | ❌ | The one unbuilt row. Scoped in [`LIVE-MODE.md`](LIVE-MODE.md): stage one is a read-only mirror — one device is the table, others watch — which needs no realtime vendor and no new company in the data path. Two-way editing is stage two and is not designed yet, deliberately. The **LIVE** badge that sat on the Play nav item advertising this is gone: a flashing red dot is the strongest signal in the chrome and it pointed at a "Coming Soon" screen |
+| **Live multi-device match sync** | 🟡 | **Stage one is built.** A host publishes their board to the campaign every two seconds and anyone in it can open a read-only mirror — `api/campaigns/live`, `services/liveMatch.ts`, `components/play/LiveMirrorPanel.tsx`. No realtime vendor and no new company in the data path, and the board carries seven fields per model so watching a match cannot leak the host's roster. Stage two is two-way editing, still undesigned on purpose — see [`LIVE-MODE.md`](LIVE-MODE.md). The **LIVE** badge that advertised this before it existed is gone |
 
 **The marker pools are not mirror images.** The row above used to read 🟡
 "Less complete than Blood", which was generous: Blessing Markers had no state

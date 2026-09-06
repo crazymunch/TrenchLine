@@ -18413,8 +18413,8 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -18441,6 +18441,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -24593,6 +24597,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -35065,6 +35073,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
