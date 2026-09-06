@@ -1,5 +1,6 @@
 import React from 'react';
 import { parseRulesProse} from '@/rules/rulesProse';
+import { KeywordText } from '@/components/ui/KeywordText';
 
 /**
  * Renders the rulebook prose the pipeline extracts.
@@ -28,22 +29,33 @@ import { parseRulesProse} from '@/rules/rulesProse';
  * Anything it does not recognise is rendered as its own text, never dropped.
  */
 
-/** `**bold**` -> <strong>. Everything else passes through as-is. */
+/**
+ * `**bold**` -> <strong>, and every Keyword -> a tap that shows its rule.
+ *
+ * Both runs go through `KeywordText`, the bold one included: the book sets a
+ * Keyword in bold as often as it shouts it, so linking only the plain text
+ * would leave the Keywords in the most prominent sentences unlinked.
+ *
+ * This is the app's largest body of text and the one a player opens mid-game
+ * precisely because they are unsure — which makes it the place a Keyword
+ * lookup is worth the most.
+ */
 function inline(text: string, keyPrefix: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
   const re = /\*\*(.+?)\*\*/g;
   let last = 0;
   let m: RegExpExecArray | null;
+  const kw = (s: string, k: string) => <KeywordText key={k} inline>{s}</KeywordText>;
   while ((m = re.exec(text)) !== null) {
-    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m.index > last) out.push(kw(text.slice(last, m.index), `${keyPrefix}-t${last}`));
     out.push(
       <strong key={`${keyPrefix}-b${m.index}`} className="font-bold text-theme-text">
-        {m[1]}
+        {kw(m[1], `${keyPrefix}-bt${m.index}`)}
       </strong>,
     );
     last = m.index + m[0].length;
   }
-  if (last < text.length) out.push(text.slice(last));
+  if (last < text.length) out.push(kw(text.slice(last), `${keyPrefix}-t${last}`));
   return out;
 }
 

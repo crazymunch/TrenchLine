@@ -46,13 +46,30 @@ export const KeywordPopover: React.FC = () => {
         </button>
       }
     >
+      {/*
+        Reads `type` and `description`, which is what the pipeline ships.
+
+        It used to read `category`, `summary` and `fullText` — three fields the
+        generated dataset does not have. Against a real Keyword this rendered
+        "undefined Keyword" above two empty paragraphs, which is the proof that
+        it had never once been opened: it was written, committed, recorded in
+        FEATURES.md as working, and never mounted anywhere.
+      */}
       <div className="space-y-3">
-        <span className="inline-block rounded border border-theme-border bg-theme-elevated px-2 py-0.5 font-mono text-xs font-bold uppercase text-theme-primary sm:text-[10px]">
-          {activeKeyword.category} Keyword
-        </span>
-        <p className="font-mono text-xs font-semibold text-theme-text">{activeKeyword.summary}</p>
+        {activeKeyword.type && (
+          <span className="inline-block rounded border border-theme-border bg-theme-elevated px-2 py-0.5 font-mono text-xs font-bold uppercase text-theme-primary sm:text-[10px]">
+            {activeKeyword.type} Keyword
+          </span>
+        )}
         <p className="rounded border border-theme-border bg-theme-base p-3 text-xs leading-relaxed text-theme-muted">
-          {activeKeyword.fullText}
+          {activeKeyword.description ?? activeKeyword.fullText
+            /*
+              No invented text. A Keyword with no rule is a data failure and
+              says so, rather than showing an empty box the player reads as
+              "this Keyword does nothing".
+            */
+            ?? 'No rule text was derived for this Keyword. This is a data bug — '
+             + 'please report it.'}
         </p>
       </div>
     </Sheet>

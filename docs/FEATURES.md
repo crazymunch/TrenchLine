@@ -82,7 +82,7 @@ the execution is the problem.
 | Turn/phase counter | ✅ | |
 | Dice roller (D6 / 2D6 / D66) | ✅ | `DiceRoller.tsx`, 523 lines |
 | Risky Success Roll support | ✅ | |
-| Keyword popovers | ✅ | 61 keywords, derived from the glossary rather than paraphrased |
+| Keyword popovers | ✅ | **The fifth stale row, now true.** The 61 derived glossary entries were real; nothing surfaced them. `KeywordPopover` existed, was never imported anywhere, and nothing ever called `setActiveKeyword` — and it read `category`/`summary`/`fullText` against a dataset that ships `type`/`description`, so mounted as written it would have rendered "undefined Keyword" over two empty paragraphs. It had never been run. Now mounted once in the app shell and fed by `src/components/ui/KeywordText.tsx` from unit cards, the Codex's arsenal and its rules prose. Matching is `src/rules/keywordMatch.ts` and is not a string compare: the sources print **89** distinct Keyword strings and only 41 are a glossary name spelled exactly, so `+2 DICE`, `AUTOMATIC 3`, `BLAST 3''`, `NEGATE GAS`, `IGNORES ARMOUR` and 43 others resolve by shape. 84 of the 89 link; the five that do not are named in the tests and are data gaps, not matcher failures |
 | Attack calculator | ✅ | Reads `profileSnapshot`, so it runs on the derived statlines now |
 | Range calculator | ✅ | |
 | Dice probability tool | ✅ | |

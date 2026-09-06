@@ -15,6 +15,7 @@ import { RulesProse } from './RulesProse';
 import { rollLabel } from '../../rules/campaign';
 import { CampaignsView } from './CampaignsView';
 import { ViewMasthead } from '../ui/ViewMasthead';
+import { KeywordChip } from '../ui/KeywordText';
 import { 
   BookOpen, 
   Search, 
@@ -1265,9 +1266,12 @@ export const CodexView: React.FC = () => {
                   {wep.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-2">
                       {wep.keywords.map((k) => (
-                        <span key={k} className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
-                          {k}
-                        </span>
+                        <KeywordChip
+                          key={k}
+                          name={k}
+                          keywords={codexDataset?.keywords}
+                          className="text-xs sm:text-[9px] font-mono px-1.5 py-0.5 rounded bg-theme-elevated border border-theme-primary/20 font-bold"
+                        />
                       ))}
                     </div>
                   )}
@@ -1314,9 +1318,12 @@ export const CodexView: React.FC = () => {
                   {arm.keywords.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-1.5">
                       {arm.keywords.map((k) => (
-                        <span key={k} className="text-xs sm:text-[9px] font-mono px-1.5 py-0.2 rounded bg-theme-elevated text-theme-primary border border-theme-primary/20 font-bold">
-                          {k}
-                        </span>
+                        <KeywordChip
+                          key={k}
+                          name={k}
+                          keywords={codexDataset?.keywords}
+                          className="text-xs sm:text-[9px] font-mono px-1.5 py-0.5 rounded bg-theme-elevated border border-theme-primary/20 font-bold"
+                        />
                       ))}
                     </div>
                   )}

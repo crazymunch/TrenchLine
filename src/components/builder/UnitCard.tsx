@@ -12,6 +12,7 @@ import { forcedBattlekit } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
+import { KeywordText, KeywordChip } from '../ui/KeywordText';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -469,7 +470,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           {unit.profileSnapshot.battlekitNote && (
             <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed border-l-2 border-theme-accent/40 pl-2">
               <span className="font-semibold text-theme-primary font-mono">BATTLEKIT </span>
-              {unit.profileSnapshot.battlekitNote}
+              <KeywordText inline>{unit.profileSnapshot.battlekitNote}</KeywordText>
             </p>
           )}
 
@@ -491,9 +492,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                       </div>
                     </button>
                     {isExpanded && (
-                      <p className="text-theme-muted text-xs sm:text-[11px] pt-1.5 leading-relaxed border-t border-theme-border/40 mt-1">
+                      /* Keywords in the rule are tappable — see ui/KeywordText. */
+                      <KeywordText className="text-theme-muted text-xs sm:text-[11px] pt-1.5 leading-relaxed border-t border-theme-border/40 mt-1">
                         {ab.description}
-                      </p>
+                      </KeywordText>
                     )}
                   </div>
                 );
@@ -524,8 +526,19 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                   >
                     <span className="font-semibold text-theme-text truncate">{b.name}</span>
                     {b.keywords.length > 0 && (
-                      <span className="text-xs sm:text-[10px] font-mono text-theme-muted truncate flex-shrink-0">
-                        {b.keywords.join(' · ')}
+                      /*
+                        One chip per Keyword rather than a joined string, so
+                        each is its own tap target. `KeywordChip` shows an
+                        unrecognised one plain rather than guessing at it.
+                      */
+                      <span className="flex flex-wrap justify-end gap-1 flex-shrink-0">
+                        {b.keywords.map((k) => (
+                          <KeywordChip
+                            key={k}
+                            name={k}
+                            className="font-mono text-xs sm:text-[10px] rounded px-1"
+                          />
+                        ))}
                       </span>
                     )}
                   </div>
