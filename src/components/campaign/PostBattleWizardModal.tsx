@@ -9,15 +9,22 @@ import {
   explorationDice, explorationTables, resolveExploration, campaignGameOf,
   reinforcementGlory,
 } from '../../rules/campaign';
+import {
+  traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
+  unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
+} from '../../rules/trauma';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
+import type { XpAward } from '../../store/state';
 import { 
   Dices, 
   Check, 
   ArrowRight, 
   ArrowLeft, 
   Award,
+  ShieldAlert,
+  HelpCircle,
 } from 'lucide-react';
 
 interface PostBattleWizardModalProps {
@@ -113,6 +120,22 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   // Casualties from match
   const ooaUnits = warband?.units.filter((u) => u.status === 'Out of Action') || [];
   const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, { outcome: string; isDead: boolean }>>({});
+  /*
+    The player's answer where the roster cannot say whether a model is ELITE.
+
+    Only reached for a Mercenary recruited before `profileSnapshot.elite`
+    existed — some Mercenary entries are ELITE and some are not, and the roster
+    category cannot tell them apart. Asking is the honest move: the alternative
+    is picking a die on a guess, and the die decides whether the model dies.
+  */
+  const [eliteOverrides, setEliteOverrides] = useState<Record<string, boolean>>({});
+  /*
+    Which models sat the game out. Empty by default because the common case is
+    that the whole warband fought, and the app records no participation of its
+    own — so this is the one place a player can say otherwise, and the
+    Experience rule ("took part in a game") needs the answer.
+  */
+  const [satOut, setSatOut] = useState<Record<string, boolean>>({});
 
   // Advancements
   const [unitAdvancements, setUnitAdvancements] = useState<Record<string, string>>({});
@@ -188,6 +211,81 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     resolveTraumaRoll(unitId, rollNum);
   };
 
+  /*
+    Which procedure each casualty takes.
+
+    The book splits the Trauma Step in two and the app did not: every Out of
+    Action model was offered a D66 Trauma roll, so a Troop — who takes one D6
+    and dies on a 1-2 — drew instead from a table with one Dead result in
+    thirty-six. See rules/trauma.ts.
+  */
+  const procedure = traumaProcedure(dataset);
+
+  /** ELITE-ness, with the player's answer taking priority where they gave one. */
+  const eliteOf = (unitId: string) => {
+    if (unitId in eliteOverrides) {
+      return { elite: eliteOverrides[unitId], basis: 'player' as const, needsConfirmation: false };
+    }
+    const u = warband.units.find((x) => x.id === unitId);
+    return u ? eliteVerdict(u) : { elite: null, basis: 'unknown' as const, needsConfirmation: true };
+  };
+
+  /** Resolve a Troop's D6 Survival Roll onto the same outcome record. */
+  const resolveSurvivalRoll = (unitId: string, roll: number) => {
+    if (!procedure) return;
+    let result;
+    try {
+      result = survivalOutcome(procedure, roll);
+    } catch {
+      /* Outside the die: a typed digit. Say so rather than reading it as alive. */
+      setCasualtyOutcomes((prev) => ({
+        ...prev,
+        [unitId]: {
+          outcome: `${roll} is not a result on a ${procedure.troops.die}.`,
+          isDead: false,
+        },
+      }));
+      return;
+    }
+    setCasualtyOutcomes((prev) => ({
+      ...prev,
+      [unitId]: { outcome: result.text, isDead: result.dead },
+    }));
+  };
+
+  const handleRollSurvival = (unitId: string) => {
+    if (procedure) resolveSurvivalRoll(unitId, rollSurvival(procedure));
+  };
+
+  /*
+    The Experience each model earns, and the reason where it earns none.
+
+    Computed here so the same answer drives what step 3 shows and what the store
+    writes. It used to be `u.xp + 1` in the store, for every unit on the roster.
+  */
+  const barring = xpBarringInjuries(dataset);
+  const experienceFor = (unitId: string) => {
+    const u = warband.units.find((x) => x.id === unitId);
+    if (!u) return { earns: false as const, blocked: 'elite-unknown' as const };
+    const override = unitId in eliteOverrides
+      ? { ...u, profileSnapshot: { ...u.profileSnapshot, elite: eliteOverrides[unitId] } }
+      : u;
+    return earnsExperience(override, {
+      tookPart: !satOut[unitId],
+      died: casualtyOutcomes[unitId]?.isDead ?? false,
+      xpBarringInjuries: barring,
+    });
+  };
+
+  /** Why a model earns nothing, in the rule's terms rather than the code's. */
+  const XP_REASON: Record<string, string> = {
+    'not-elite': 'Troops do not gain Experience',
+    'did-not-take-part': 'did not take part in this game',
+    died: 'did not survive the game',
+    'head-wound': 'Head Wound — can no longer gain Experience Points',
+    'elite-unknown': 'ELITE status not recorded — resolve it in the Trauma Step',
+  };
+
   /**
    * Resolve an Exploration Roll.
    *
@@ -244,6 +342,20 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       .filter(([_, adv]) => adv.trim().length > 0)
       .map(([unitId, advancement]) => ({ unitId, advancement }));
 
+    /*
+      Every model gets a row, earning or not, and the ones earning nothing carry
+      the rule that stopped them. The store used to award one point to all of
+      them without asking any of these questions.
+    */
+    const experience: XpAward[] = warband.units.map((u) => {
+      const verdict = experienceFor(u.id);
+      return {
+        unitId: u.id,
+        earns: verdict.earns,
+        ...(verdict.earns ? {} : { reason: XP_REASON[verdict.blocked ?? ''] ?? verdict.blocked }),
+      };
+    });
+
     applyPostBattleResults(
       scenario.id,
       scenario.name,
@@ -254,6 +366,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       ducatsGained,
       casualties,
       advancements,
+      experience,
       narrativeLog,
       battleReportText.trim().length > 0 ? battleReportText : undefined,
       mvpUnitName.trim().length > 0 ? mvpUnitName : undefined,
@@ -466,7 +579,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
           {step === 2 && (
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-theme-base border border-theme-border rounded text-xs text-theme-muted">
-                <span>Roll on the <strong>D66 Trauma Table</strong> for each Out of Action warrior:</span>
+                {/*
+                  Two procedures, not one. The header said "Roll on the D66
+                  Trauma Table" for every casualty; the book gives that table to
+                  ELITE models and gives Troops a single D6.
+                */}
+                <span>
+                  {procedure
+                    ? <>ELITE models roll <strong>D66</strong> on the Trauma Table.
+                        Troops make a <strong>{procedure.troops.die} Survival Roll</strong> —
+                        dead on {procedure.troops.deadUpTo === 1 ? '1' : `1-${procedure.troops.deadUpTo}`},
+                        alive on {procedure.troops.survivesFrom}+.</>
+                    : <>Resolve each Out of Action warrior:</>}
+                </span>
                 
                 {/* Digital vs Physical Roll Toggle */}
                 <div className="flex space-x-1.5 flex-shrink-0">
@@ -497,50 +622,156 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 <div className="space-y-3">
                   {ooaUnits.map((unit) => {
                     const outcomeData = casualtyOutcomes[unit.id];
+                    const { elite } = eliteOf(unit.id);
+                    /* Scars are ELITE-only, and this casualty is about to take one. */
+                    const fate = procedure && elite
+                      ? unfitForDuty(procedure, unit, 1) : null;
                     return (
                       <div
                         key={unit.id}
-                        className="p-3 bg-theme-elevated border border-theme-border rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-3 bg-theme-elevated border border-theme-border rounded space-y-3"
                       >
-                        <div className="flex-1">
-                          <span className="font-gothic font-bold text-sm text-theme-text block">
-                            {unit.customName}
-                          </span>
-                          <span className="text-xs text-theme-muted">
-                            {unit.profileSnapshot.name} ({unit.profileSnapshot.category})
-                          </span>
-                          {outcomeData && (
-                            <p className={`text-xs mt-1 ${outcomeData.isDead ? 'text-status-error font-bold' : 'text-theme-primary'}`}>
-                              {outcomeData.outcome}
-                            </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex-1">
+                            <span className="font-gothic font-bold text-sm text-theme-text block">
+                              {unit.customName}
+                            </span>
+                            <span className="text-xs text-theme-muted">
+                              {unit.profileSnapshot.name} ({unit.profileSnapshot.category})
+                              {elite !== null && (
+                                <span className="ml-1 text-theme-primary">
+                                  · {elite ? 'ELITE' : 'Troop'}
+                                </span>
+                              )}
+                            </span>
+                            {outcomeData && (
+                              <p className={`text-xs mt-1 ${outcomeData.isDead ? 'text-status-error font-bold' : 'text-theme-primary'}`}>
+                                {outcomeData.outcome}
+                              </p>
+                            )}
+                          </div>
+
+                          {/*
+                            Three cases, and the third is the point: where the
+                            roster does not record whether the model is ELITE we
+                            ask, rather than pick a die on a guess. Only reached
+                            for a Mercenary saved before the field existed —
+                            some Mercenary entries are ELITE and some are not.
+                          */}
+                          {elite === null ? null : elite ? (
+                            traumaRollMode === 'digital' ? (
+                              <button
+                                onClick={() => handleRollInjury(unit.id)}
+                                className="flex items-center justify-center space-x-1.5 min-h-[44px] px-3 py-1.5 bg-theme-accent hover:bg-status-error text-white rounded text-xs font-bold uppercase transition-colors flex-shrink-0"
+                              >
+                                <Dices className="w-3.5 h-3.5" />
+                                <span>Roll D66 Trauma</span>
+                              </button>
+                            ) : (
+                              <div className="flex items-center space-x-2 flex-shrink-0">
+                                <span className="text-xs sm:text-[11px] text-theme-muted">D66:</span>
+                                <input
+                                  type="number"
+                                  min={11}
+                                  max={66}
+                                  inputMode="numeric"
+                                  placeholder="D66"
+                                  aria-label={`D66 Trauma roll for ${unit.customName}`}
+                                  onChange={(e) => {
+                                    const n = parseInt(e.target.value, 10);
+                                    if (n >= 11 && n <= 66) resolveTraumaRoll(unit.id, n);
+                                  }}
+                                  className="w-20 min-h-[44px] bg-theme-base border border-theme-border text-theme-primary rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-theme-primary"
+                                />
+                              </div>
+                            )
+                          ) : (
+                            traumaRollMode === 'digital' ? (
+                              <button
+                                onClick={() => handleRollSurvival(unit.id)}
+                                disabled={!procedure}
+                                className="flex items-center justify-center space-x-1.5 min-h-[44px] px-3 py-1.5 bg-theme-accent hover:bg-status-error disabled:opacity-50 text-white rounded text-xs font-bold uppercase transition-colors flex-shrink-0"
+                              >
+                                <Dices className="w-3.5 h-3.5" />
+                                <span>Roll {procedure?.troops.die ?? 'D6'} Survival</span>
+                              </button>
+                            ) : (
+                              <div className="flex items-center space-x-2 flex-shrink-0">
+                                <span className="text-xs sm:text-[11px] text-theme-muted">
+                                  {procedure?.troops.die ?? 'D6'}:
+                                </span>
+                                <input
+                                  type="number"
+                                  min={1}
+                                  max={6}
+                                  inputMode="numeric"
+                                  placeholder={procedure?.troops.die ?? 'D6'}
+                                  aria-label={`Survival Roll for ${unit.customName}`}
+                                  onChange={(e) => {
+                                    const n = parseInt(e.target.value, 10);
+                                    if (Number.isInteger(n)) resolveSurvivalRoll(unit.id, n);
+                                  }}
+                                  className="w-20 min-h-[44px] bg-theme-base border border-theme-border text-theme-primary rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-theme-primary"
+                                />
+                              </div>
+                            )
                           )}
                         </div>
 
-                        {traumaRollMode === 'digital' ? (
-                          <button
-                            onClick={() => handleRollInjury(unit.id)}
-                            className="flex items-center space-x-1.5 px-3 py-1.5 bg-theme-accent hover:bg-status-error text-white rounded text-xs font-bold uppercase transition-colors flex-shrink-0"
-                          >
-                            <Dices className="w-3.5 h-3.5" />
-                            <span>Roll D66 Trauma</span>
-                          </button>
-                        ) : (
-                          <div className="flex items-center space-x-2 flex-shrink-0">
-                            <span className="text-xs sm:text-[11px] text-theme-muted">D66:</span>
-                            <input
-                              type="number"
-                              min={11}
-                              max={66}
-                              inputMode="numeric"
-                              placeholder="D66"
-                              aria-label={`D66 Trauma roll for ${unit.customName}`}
-                              onChange={(e) => {
-                                const n = parseInt(e.target.value, 10);
-                                if (n >= 11 && n <= 66) resolveTraumaRoll(unit.id, n);
-                              }}
-                              className="w-20 min-h-[44px] bg-theme-base border border-theme-border text-theme-primary rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-theme-primary"
-                            />
+                        {elite === null && (
+                          <div className="rounded border border-theme-border bg-theme-base p-3 space-y-2">
+                            <p className="flex items-start gap-2 text-xs text-theme-muted">
+                              <HelpCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-theme-primary" />
+                              <span>
+                                This warband was saved before TrenchLine recorded which
+                                models are ELITE, and a Mercenary can be either. The
+                                answer decides the roll, so it is not guessed here.
+                              </span>
+                            </p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEliteOverrides((p) => ({ ...p, [unit.id]: true }))}
+                                className="flex-1 min-h-[44px] rounded border border-theme-border bg-theme-elevated px-3 font-mono text-xs font-bold uppercase text-theme-text hover:border-theme-primary"
+                              >
+                                ELITE — D66 Trauma
+                              </button>
+                              <button
+                                onClick={() => setEliteOverrides((p) => ({ ...p, [unit.id]: false }))}
+                                className="flex-1 min-h-[44px] rounded border border-theme-border bg-theme-elevated px-3 font-mono text-xs font-bold uppercase text-theme-text hover:border-theme-primary"
+                              >
+                                Troop — {procedure?.troops.die ?? 'D6'} Survival
+                              </button>
+                            </div>
                           </div>
+                        )}
+
+                        {/*
+                          Unfit for Duty. Reported, never applied: "Remove the
+                          model from your Warband Roster" is unambiguous, but a
+                          roster is the player's own record and this is a scar
+                          count the app inferred.
+                        */}
+                        {fate?.unfit && (
+                          <p className="flex items-start gap-2 rounded border border-status-error bg-theme-base p-3 text-xs text-status-error">
+                            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                            <span>
+                              <strong>Unfit for Duty.</strong> This is Battle Scar{' '}
+                              {fate.scars} of {fate.at}. {fate.text}
+                            </span>
+                          </p>
+                        )}
+
+                        {/*
+                          A repeat of an injury the model already carries is
+                          rerolled until a usable result. The app used to append
+                          the same injury string twice and say nothing.
+                        */}
+                        {outcomeData && !outcomeData.isDead
+                          && alreadySuffered(unit, outcomeData.outcome.replace(/^D66: \d+ - /, '').split(':')[0]) && (
+                          <p className="rounded border border-theme-border bg-theme-base p-3 text-xs text-theme-muted">
+                            This warrior already carries that injury. Unless the result
+                            says otherwise, roll again until you get one that can be used.
+                          </p>
                         )}
                       </div>
                     );
@@ -554,16 +785,51 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
           {step === 3 && (
             <div className="space-y-4">
               <div className="p-3 bg-theme-base border border-theme-border rounded text-xs text-theme-muted">
-                Surviving warriors gain Experience Points. Choose promotions or official Skills from Melee, Ranged, Stealth or Wildcard trees.
+                {/*
+                  The book's sentence, not the app's old one. "Surviving warriors
+                  gain Experience Points" was wrong in three ways at once, and the
+                  code behind it was wrong in four: it gave a point to Troops, to
+                  models that sat the game out, to models it had just recorded
+                  dead, and to models carrying the injury that forbids Experience.
+                */}
+                Each <strong>ELITE</strong> model that took part in this game and
+                survived gains 1 Experience Point. Troops gain none. Choose
+                promotions or official Skills from the Melee, Ranged, Stealth or
+                Wildcard trees.
               </div>
 
               <div className="space-y-3">
-                {warband.units.map((unit) => (
+                {warband.units.map((unit) => {
+                  const xp = experienceFor(unit.id);
+                  const reason = xp.earns ? null : (XP_REASON[xp.blocked ?? ''] ?? xp.blocked);
+                  return (
                   <div key={unit.id} className="p-3 bg-theme-elevated border border-theme-border rounded space-y-2">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                       <span className="font-gothic font-bold text-sm text-theme-text">{unit.customName}</span>
-                      <span className="text-xs text-theme-primary">{unit.xp + 1} XP Total</span>
+                      <span className={`text-xs ${xp.earns ? 'text-theme-primary' : 'text-theme-muted'}`}>
+                        {xp.earns ? `${unit.xp} → ${unit.xp + 1} XP` : `${unit.xp} XP · no gain`}
+                      </span>
                     </div>
+                    {/* Why, in the rule's terms. "No XP" beside a Leader's name reads as a bug. */}
+                    {reason && (
+                      <p className="text-xs sm:text-[11px] text-theme-muted">{reason}</p>
+                    )}
+                    {/*
+                      The one condition the app cannot know on its own: it records
+                      no participation, so this is where a player says a model sat
+                      the game out.
+                    */}
+                    {!unit.isDead && (
+                      <label className="flex min-h-[44px] items-center gap-2 text-xs text-theme-muted">
+                        <input
+                          type="checkbox"
+                          checked={!!satOut[unit.id]}
+                          onChange={(e) => setSatOut((p) => ({ ...p, [unit.id]: e.target.checked }))}
+                          className="h-4 w-4 accent-current"
+                        />
+                        <span>Did not take part in this game</span>
+                      </label>
+                    )}
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                       {['+1 Melee', '+1 Ranged', '+1 Armour', '+1" Move', 'Eagle Eye (Skill)', 'Mighty Blow (Skill)', 'Diehard (Skill)', 'Shadow Walker (Skill)'].map((adv) => {
@@ -590,7 +856,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                       })}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

@@ -9,6 +9,7 @@ import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
+import { KeywordPopover } from '@/components/play/KeywordPopover';
 import { ServiceWorker } from '@/components/providers/ServiceWorker';
 import { viewForPath, pathForView } from '@/lib/routes';
 
@@ -153,6 +154,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Bottom Tactical Nav */}
       <MobileNav />
+
+      {/*
+        The Keyword rule, wherever a player taps one.
+
+        Mounted once at the shell rather than per screen: a Keyword is tappable
+        on a unit card, in the Codex and on the battle screen, and three copies
+        of one overlay is three chances for them to drift apart.
+
+        This component was written months ago and never imported anywhere, so
+        nothing ever set `activeKeyword` and the 61 derived glossary entries
+        reached no one. Renders nothing until something does.
+      */}
+      <KeywordPopover />
 
       {/* Renders nothing. Makes the app open at a table with no signal. */}
       <ServiceWorker />

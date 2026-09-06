@@ -370,6 +370,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       ducatsGained,
       casualties,
       advancements,
+      experience,
       narrative,
       narrativeReport,
       mvpUnitName,
@@ -447,7 +448,23 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           }
         }
         const newAdvancements = [...u.advancements];
-        const newXp = u.xp + 1;
+        /*
+          Experience goes to the models the rules entitle to it, not to everyone
+          on the roster.
+
+          This line was `const newXp = u.xp + 1;`. The book says "each ELITE
+          model that took part in a game and survived will gain 1 Experience
+          Point", and Head Wound (Trauma 22) says "This model can no longer gain
+          Experience Points" — a sentence the wizard *displayed* on the very
+          submission that added the point. Troops, absentees and the freshly
+          dead all earned one too.
+
+          Decided in `rules/trauma.ts` and passed in, because it is a rules
+          question and this slice is a writer. A model absent from `experience`
+          gains nothing: that is the answer for every Troop, and a warband of
+          Troops correctly earns no Experience at all.
+        */
+        const newXp = u.xp + (experience.some((x) => x.unitId === u.id && x.earns) ? 1 : 0);
         if (adv) {
           newAdvancements.push(adv.advancement);
         }

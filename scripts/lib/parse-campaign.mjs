@@ -682,3 +682,202 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
 
   return out;
 }
+
+/* ------------------------------------------------- the Trauma Step procedure */
+
+/**
+ * How the Trauma Step is actually run: who rolls what, and what removes a model.
+ *
+ * The Trauma Table above says what injury a 34 is. It does not say who is
+ * entitled to roll on it, and that turns out to be the more important half.
+ *
+ * The app got this wrong in the most expensive way available. Every model taken
+ * Out of Action was offered a D66 Trauma roll, so a Troop — who by the book
+ * takes a single D6 and dies on a 1-2 — instead drew from a table on which
+ * only 1 result in 36 is Dead. The wizard was handing out survival. Nothing in
+ * the dataset contradicted it, because the procedure had never been parsed:
+ * `campaign` carried the table and no rule about who rolls it.
+ *
+ * Codex found it in the rules-coverage audit (docs/RULES-COVERAGE-AUDIT.md
+ * RC-01, RC-05) and it is the class the audit was commissioned to find — a rule
+ * the pipeline never noticed, and so invisible to every value-oriented check we
+ * have. There is no dataset field to compare against a book when the field does
+ * not exist.
+ *
+ * Everything here is one contiguous passage of the Campaign Rules chapter, so
+ * it is read as a block of named sections and each number is pulled from the
+ * sentence that states it. Nothing is defaulted. A sentence that does not parse
+ * throws, because the alternative — shipping a procedure with a plausible
+ * number in it — is how the app came to kill the wrong models in the first
+ * place.
+ *
+ * The extraction repeats this passage twice more as scrambled sidebar copy
+ * (`Unify for Duty`, `unles's`). Only the first, clean occurrence is read.
+ */
+export function parseTraumaProcedure(src = RULEBOOK_TXT) {
+  const lines = fs.readFileSync(src, 'utf8').split('\n');
+
+  /*
+    NOT the first `Trauma Step` line: the phrase is the campaign chapter's
+    running page header and appears 58 times. The passage is found by its
+    opening sentence, and the heading above that sentence is the anchor.
+  */
+  const body = lines.findIndex((l) =>
+    /^In this step of the Campaign Phase you must find out what happened/.test(l.trim()));
+  const at = body > 0 && lines[body - 1].trim() === 'Trauma Step' ? body - 1 : -1;
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: cannot find the Trauma Step passage in the rulebook '
+      + `(opening sentence at line ${body + 1}). This passage is the only `
+      + 'statement of who rolls D6 and who rolls D66, and without it the app '
+      + 'cannot tell a dead Troop from an injured Elite.');
+  }
+
+  /*
+    The passage's own headings, in the order it prints them. Used as section
+    boundaries rather than searched for individually: a heading that stops
+    appearing is then a loud miscount here, not a section that silently reads
+    as empty further down.
+  */
+  const HEADINGS = [
+    'Trauma Step', 'Troops', 'Elite Models', 'Models Killed in Action',
+    'Battle Scars', 'Unfit for Duty', 'Recording Injuries & Battle Scars',
+  ];
+
+  /*
+    What a heading looks like in this extraction: a short line, Title Case, no
+    sentence punctuation. Body lines are long, or wrapped mid-sentence, or carry
+    a comma — none of the passage's own body lines match this.
+
+    It is needed because the passage is followed immediately by a scrambled
+    sidebar reprint whose heading reads `Unify for Duty`. That is not one of our
+    seven, so without this the final section swallowed the entire duplicate,
+    typo and all.
+  */
+  const HEADING_SHAPE = /^[A-Z][A-Za-z’'& ]{2,40}$/;
+
+  const section = {};
+  let current = null;
+  for (let i = at; i < Math.min(at + 60, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    /* `TRAUMA TABLE` in caps starts the table, and the sidebar copy after it. */
+    if (/^TRAUMA TABLE$/.test(t)) break;
+    if (HEADINGS.includes(t)) {
+      if (section[t]) break; /* a repeat means we have walked into the sidebar */
+      current = t;
+      section[t] = [];
+      continue;
+    }
+    /* A heading we do not know is a heading we have walked out of the passage into. */
+    if (HEADING_SHAPE.test(t)) break;
+    if (current) section[current].push(t);
+  }
+
+  const missing = HEADINGS.filter((h) => !section[h]);
+  if (missing.length) {
+    throw new Error(
+      `parse-campaign: the Trauma Step passage is missing ${missing.join(', ')}. `
+      + 'Each names a rule that removes a model from a roster; a section read as '
+      + 'absent would silently become a rule the app does not apply.');
+  }
+
+  const text = (h) => section[h].join(' ').replace(/\s+/g, ' ')
+    .replace(/\s*\(▶[^)]*\)/g, '').trim();
+
+  /** Pull one number out of the sentence that states it, or say which failed. */
+  const number = (heading, re, what) => {
+    const m = re.exec(text(heading));
+    if (!m) {
+      throw new Error(
+        `parse-campaign: cannot read ${what} from the "${heading}" section of `
+        + `the Trauma Step. Read: "${text(heading).slice(0, 160)}". A default `
+        + 'here would be a rule about who dies, invented at the keyboard.');
+    }
+    return Number(m[1]);
+  };
+
+  /*
+    "by rolling a D6. On a roll of 1-2, they are dead ... On a roll of 3 or
+    more, they survived". Both bounds are read, and then checked against each
+    other: the book's two sentences must partition the die with no gap and no
+    overlap, or one of them was misread.
+  */
+  const deadUpTo = number('Troops', /roll of 1\s*[-–]\s*(\d)\s*,\s*they are dead/i,
+    'the roll a Troop dies on');
+  const survivesFrom = number('Troops', /roll of (\d)\s*or more,\s*they survived/i,
+    'the roll a Troop survives on');
+  const die = number('Troops', /rolling a D(\d)\b/i, 'the die a Troop rolls');
+
+  if (survivesFrom !== deadUpTo + 1) {
+    throw new Error(
+      `parse-campaign: the Troop Survival Roll reads dead on 1-${deadUpTo} and `
+      + `survives on ${survivesFrom}+, which leaves the die neither covered nor `
+      + 'exclusive. One of the two sentences was misread.');
+  }
+  if (deadUpTo < 1 || survivesFrom > die) {
+    throw new Error(
+      `parse-campaign: a Survival Roll of dead 1-${deadUpTo}, survives `
+      + `${survivesFrom}+ does not fit on a D${die}.`);
+  }
+
+  /* "each time an ELITE model is taken Out of Action, they receive a Battle Scar" */
+  if (!/each time an ELITE model is taken Out of Action, they\s+receive a Battle Scar/i
+    .test(text('Battle Scars'))) {
+    throw new Error(
+      'parse-campaign: the Battle Scars section no longer states that an ELITE '
+      + 'model taken Out of Action receives one. That sentence is what makes the '
+      + 'third-scar retirement countable.');
+  }
+
+  const unfitAt = (() => {
+    const t = text('Unfit for Duty');
+    const words = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
+    const m = /receives their (\w+) Battle Scar/i.exec(t);
+    if (!m || !(m[1].toLowerCase() in words)) {
+      throw new Error(
+        `parse-campaign: cannot read which Battle Scar retires a model from `
+        + `"${t.slice(0, 160)}". Retiring at the wrong count removes a model `
+        + 'from a roster early or never.');
+    }
+    return words[m[1].toLowerCase()];
+  })();
+
+  return {
+    /** Troops are defined by the absence of a Keyword, not by a roster role. */
+    troops: {
+      definition: text('Troops').split('.')[0] + '.',
+      die: `D${die}`,
+      deadUpTo,
+      survivesFrom,
+      text: text('Troops'),
+    },
+    elite: {
+      die: 'D66',
+      text: text('Elite Models'),
+    },
+    /*
+      Two separate rules that both strip gear, kept apart because they disagree
+      about where it goes: a killed model's Battlekit is lost, a retired model's
+      may be moved to the Arsenal.
+    */
+    killedInAction: { battlekitLost: true, text: text('Models Killed in Action') },
+    battleScars: {
+      /* Only ELITE models accrue them — Troops never survive to carry one. */
+      eliteOnly: true,
+      unfitAt,
+      text: text('Battle Scars'),
+      unfitText: text('Unfit for Duty'),
+    },
+    /*
+      "a model can only suffer each type of injury once. If a model receives the
+      same injury a second time, make the D66 roll for the model again" — a
+      reroll rule, which the app has never had. It currently appends the same
+      injury string twice.
+    */
+    duplicateInjury: {
+      rerollUntilUsable: true,
+      text: text('Recording Injuries & Battle Scars'),
+    },
+  };
+}

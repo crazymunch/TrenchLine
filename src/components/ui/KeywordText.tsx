@@ -1,0 +1,159 @@
+'use client';
+
+/**
+ * Rules text with its Keywords tappable.
+ *
+ * The glossary has been in the dataset for months — 61 entries, derived from
+ * the book rather than paraphrased — and nothing surfaced it. `KeywordPopover`
+ * existed, was never imported anywhere, and nothing ever called
+ * `setActiveKeyword`, so `activeKeyword` was permanently `null`. It also read
+ * fields the pipeline does not ship (`category`, `summary`, `fullText` against
+ * the dataset's `type` and `description`), which is the tell that it had never
+ * been run against real data. `FEATURES.md` recorded the feature as working.
+ *
+ * This is the piece that was missing: one component every screen showing rules
+ * text can use, so a player reading a Keyword on a unit card, in the Codex, or
+ * mid-game on the battle screen can tap it and get the rule — without five
+ * screens each inventing their own idea of what a Keyword looks like.
+ *
+ * Matching lives in `rules/keywordMatch.ts` and is not as simple as it sounds:
+ * only 41 of the 89 Keyword strings the sources print are a glossary name
+ * spelled exactly. See that file.
+ *
+ * Mobile: these meet the 44px floor, and the first version did not.
+ *
+ * I had reasoned that an inline word inside a sentence was exempt — that the
+ * floor is for controls a player hunts for, and that widening a word would
+ * break the line it sits in. `e2e/mobile.spec.ts` disagreed and was right:
+ * `FEAR` came out 44 tall and 41 wide, `HELD` 42. A rule with an exemption
+ * argued in a comment is not a rule, and a three-pixel miss on a word a player
+ * taps mid-game with one hand is exactly the case the floor exists for.
+ *
+ * The fix is `.tap`, the project's own mechanism for it (globals.css, and the
+ * one `e2e/helpers.ts` explicitly measures for): an invisible 44x44 `::after`
+ * centred on the control, so the hit area meets the floor without the word
+ * changing size or the line it sits in growing. It also already stands down
+ * above 1024px, where a pointer does not need it.
+ *
+ * Not `min-width`: that needs `inline-block`, which stops a Keyword wrapping
+ * and — with a matching `min-height` to satisfy the same check — would make
+ * every prose line containing a Keyword 44px tall.
+ */
+import React from 'react';
+
+import { useStore } from '../../store/useStore';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import { compileGlossary, highlightKeywords, resolveKeyword } from '../../rules/keywordMatch';
+import type { Keyword } from '../../types/catalogue';
+
+/**
+ * The glossary, fetched rather than passed down.
+ *
+ * Threading `keywords` through every screen that shows rules text would mean
+ * touching five component trees to add one affordance, and would leave the
+ * ones nobody remembered silently unlinked — which is how the popover came to
+ * exist with nothing mounting it. `useDataset` caches per ruleset and
+ * `compileGlossary` memoises on the array, so the cost is one Map lookup.
+ *
+ * `keywords` stays overridable for a caller that already has a dataset in hand.
+ */
+const useGlossary = (override?: Keyword[]): CompiledSet => {
+  const rulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset } = useDataset(rulesetId);
+  const list = override ?? dataset?.keywords;
+  return list?.length ? compileGlossary(list) : null;
+};
+
+type CompiledSet = ReturnType<typeof compileGlossary> | null;
+
+interface KeywordTextProps {
+  /** The rules text to render. Shown verbatim; only the markup around it changes. */
+  children: string | null | undefined;
+  /** Override the glossary. Normally omitted; it is fetched. */
+  keywords?: Keyword[];
+  className?: string;
+  /**
+   * Render as a `<span>` rather than a `<p>`, for text already inside a
+   * paragraph or a table cell.
+   */
+  inline?: boolean;
+}
+
+export const KeywordText: React.FC<KeywordTextProps> = ({
+  children, keywords, className, inline,
+}) => {
+  const setActiveKeyword = useStore((s) => s.setActiveKeyword);
+  const compiled = useGlossary(keywords);
+
+  const Tag = inline ? 'span' : 'p';
+  const text = children ?? '';
+
+  /* No glossary yet, or nothing to say: the text, unchanged. Never a spinner. */
+  if (!compiled || !text) return <Tag className={className}>{text}</Tag>;
+
+  const segments = highlightKeywords(text, compiled);
+
+  return (
+    <Tag className={className}>
+      {segments.map((seg, i) => (seg.keyword ? (
+        <button
+          key={i}
+          type="button"
+          onClick={() => setActiveKeyword(seg.keyword ?? null)}
+          /* `text-left` so a Keyword that wraps does not centre its second line. */
+          /* `.tap` carries the 44px hit area; the word keeps its own size. */
+          className="tap inline text-left font-semibold text-theme-primary underline decoration-dotted underline-offset-2 transition-colors hover:text-theme-text"
+          aria-label={`${seg.text}: show the Keyword rule`}
+        >
+          {seg.text}
+        </button>
+      ) : (
+        <React.Fragment key={i}>{seg.text}</React.Fragment>
+      )))}
+    </Tag>
+  );
+};
+
+/**
+ * One Keyword on its own, as a chip.
+ *
+ * Separate from the prose path because the whole string is already known to be
+ * a Keyword, so it resolves under the looser rule — `Held` and
+ * `-3 Injury Modifier` link here and would not mid-sentence.
+ *
+ * A chip that resolves to nothing renders as a plain chip rather than
+ * disappearing or linking to a nearest guess. Five real strings have no
+ * glossary entry (`CLERGY`, `LIMITED POTENTIAL`, `MF`, and two that are not one
+ * Keyword), and showing them unlinked is the honest answer.
+ */
+export const KeywordChip: React.FC<{
+  name: string;
+  keywords?: Keyword[];
+  className?: string;
+}> = ({ name, keywords, className }) => {
+  const setActiveKeyword = useStore((s) => s.setActiveKeyword);
+  const compiled = useGlossary(keywords);
+
+  const base = className
+    ?? 'rounded border border-theme-border bg-theme-elevated px-1.5 py-0.5 font-mono text-xs uppercase';
+
+  /* The tested resolver, not a second copy of it: it canonicalises first. */
+  const match = compiled ? resolveKeyword(name, compiled) : null;
+
+  if (!match) return <span className={`${base} text-theme-muted`}>{name}</span>;
+
+  return (
+    <button
+      type="button"
+      onClick={() => setActiveKeyword(match)}
+      /* The same floor, the same way: a chip in a list is squarely MOBILE.md §3. */
+      className={`${base} tap text-theme-primary transition-colors hover:border-theme-primary hover:text-theme-text`}
+      aria-label={`${name}: show the Keyword rule`}
+    >
+      {name}
+    </button>
+  );
+};

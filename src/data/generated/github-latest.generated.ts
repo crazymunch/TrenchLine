@@ -65508,6 +65508,33 @@ export const DATASET: Dataset = {
         "source": "catalogue"
       }
     ],
+    "traumaProcedure": {
+      "troops": {
+        "definition": "Troops are any models in your Warband that do not have the ELITE Keyword.",
+        "die": "D6",
+        "deadUpTo": 2,
+        "survivesFrom": 3,
+        "text": "Troops are any models in your Warband that do not have the ELITE Keyword. You must make a Survival Roll for each Troop model from your Warband that was taken Out of Action during a game by rolling a D6. On a roll of 1-2, they are dead or very badly wounded, and you must remove them from your Warband Roster. On a roll of 3 or more, they survived the battle and can fight on as normal."
+      },
+      "elite": {
+        "die": "D66",
+        "text": "After rolling for any Troops, you must make a D66 roll for any ELITE models from your Warband that were taken Out of Action during the game. A D66 roll is made by rolling two D6s, one after the other, counting the first roll as tens and the second roll as units. For example, if you rolled a 3 followed by a 4, the D66 roll would be 34. Look up the D66 roll on the Trauma Table to see what Injury the model has suffered (if any)."
+      },
+      "killedInAction": {
+        "battlekitLost": true,
+        "text": "When a model is killed all its Battlekit is lost in the ruinous tumult of the battlefield. It is not possible to reallocate fallen warriors’ Battlekit once they die."
+      },
+      "battleScars": {
+        "eliteOnly": true,
+        "unfitAt": 3,
+        "text": "Unless stated otherwise, each time an ELITE model is taken Out of Action, they receive a Battle Scar. Mark the number of Battle Scars a model has received on your Warband Roster.",
+        "unfitText": "When a model receives their third Battle Scar, the cumulative effect of their injuries makes them unfit for further combat duty and they are sent back home. Remove the model from your Warband Roster. You can add their Battlekit and Glory Items to the Arsenal on your Warband Roster, unless it has a rule that says it cannot be removed from the model."
+      },
+      "duplicateInjury": {
+        "rerollUntilUsable": true,
+        "text": "You must record the injuries and Battle Scars suffered by the models in your Warband on your Warband Roster. Unless stated otherwise a model can only suffer each type of injury once. If a model receives the same injury a second time, make the D66 roll for the model again until you roll a result on the Trauma Table that can be used."
+      }
+    },
     "phaseSteps": [
       {
         "name": "Trauma Step",
