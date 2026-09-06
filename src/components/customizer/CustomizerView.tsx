@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { UnitProfile, WeaponProfile, ArmourProfile } from '../../types/rules';
-import { GitHubDiffModal } from './GitHubDiffModal';
-import { fetchLatestRepoCommit } from '../../services/githubSync';
+import { compareToUpstream, type UpstreamFreshness } from '../../services/githubSync';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { soundEffects } from '../../services/soundEffects';
 import { ViewMasthead } from '../ui/ViewMasthead';
 import { 
@@ -30,7 +31,6 @@ export const CustomizerView: React.FC = () => {
     armour,
     saveCustomArmour,
     deleteCustomArmour,
-    pendingDiffs, 
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'units' | 'weapons' | 'armour' | 'sync'>('units');
@@ -69,11 +69,22 @@ export const CustomizerView: React.FC = () => {
 
   // Sync state
   const [isCheckingSync, setIsCheckingSync] = useState(false);
-  const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
-  // Null until a real commit is fetched. This previously held an invented sha
+  // Null until a real comparison runs. This previously held an invented sha
   // and message that were rendered as though upstream had been checked.
-  const [latestCommit, setLatestCommit] = useState<{ sha: string; message: string } | null>(null);
+  const [freshness, setFreshness] = useState<UpstreamFreshness | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
+
+  /*
+    The shipped ruleset, for its pinned commit and file list.
+
+    The check needs to know what this build was made from. Without that it can
+    only report upstream's head, which is what it did — a SHA with nothing to
+    compare it to.
+  */
+  const rulesetId = typeof window !== 'undefined'
+    ? window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID
+    : DEFAULT_RULESET_ID;
+  const { dataset } = useDataset(rulesetId);
 
   const handleSelectUnit = (uId: string) => {
     setSelectedUnitId(uId);
@@ -180,29 +191,30 @@ export const CustomizerView: React.FC = () => {
   };
 
   const handleCheckSync = async () => {
+    if (!dataset) return;
     setIsCheckingSync(true);
     setSyncError(null);
     try {
-      const commit = await fetchLatestRepoCommit();
-      setLatestCommit(
-        commit ? { sha: commit.sha, message: commit.commit.message } : null
-      );
+      setFreshness(await compareToUpstream(dataset.meta.baseCommit, dataset.meta.baseFiles));
     } catch (err) {
-      setLatestCommit(null);
+      // Never fall back to "up to date": a check that could not run must say
+      // so, or it certifies stale rules as current (docs/AUDIT.md 1.8).
+      setFreshness(null);
       setSyncError(err instanceof Error ? err.message : 'Upstream check failed.');
     } finally {
       setIsCheckingSync(false);
     }
 
-    // The diff itself is deliberately not run here.
-    //
-    // It used to build its "upstream" by hand-editing two local units
-    // (na-shocktrooper -> 40 Ducats, na-sniper -> 60) and diffing against that,
-    // presenting invented changes as a real upstream comparison. A diff is only
-    // meaningful once upstream profiles are parsed from the BattleScribe
-    // catalogues — that is Phase 1 of docs/RESTRUCTURE-PLAN.md, and
-    // fetchAndParseAllRemoteCatalogs() in services/githubSync.ts is the
-    // starting point. Until then this reports the upstream commit only.
+    /*
+      Still no per-profile diff, and still for the original reason.
+
+      It used to build its "upstream" by hand-editing two local units
+      (na-shocktrooper -> 40 Ducats, na-sniper -> 60) and diffing against that,
+      presenting invented changes as a real upstream comparison. What this now
+      reports instead is the question that was actually worth asking: whether
+      any catalogue this build is pinned to has moved. `npm run rules:crosscheck`
+      is the tool that answers what changed inside one.
+    */
   };
 
   return (
@@ -238,16 +250,60 @@ export const CustomizerView: React.FC = () => {
           </div>
         )}
 
-        {latestCommit && !syncError && (
-          <div className="p-3 rounded border border-theme-border bg-theme-base space-y-1">
+        {/*
+          The verdict, not the raw SHA.
+
+          "Upstream head is 4f2a91c" was true and unusable: nothing on the screen
+          said which commit this build was pinned to, so a reader could not tell
+          current from a release behind. What matters is whether a catalogue this
+          build actually uses has changed — a README commit upstream is not a
+          stale ruleset.
+        */}
+        {freshness && !syncError && (
+          <div className={`p-3 rounded border space-y-1.5 ${
+            freshness.current
+              ? 'border-theme-border bg-theme-base'
+              : 'border-theme-primary bg-theme-primary/10'
+          }`}>
             <p className="uppercase font-bold text-theme-muted">
-              Upstream head
-              <span className="ml-2 text-theme-primary">{latestCommit.sha.slice(0, 8)}</span>
+              {freshness.current ? 'Rules are current' : 'Rules are behind upstream'}
             </p>
-            <p className="text-theme-text break-words">{latestCommit.message}</p>
-            <p className="text-theme-muted opacity-80">
-              Profile comparison is unavailable until upstream profiles are parsed
-              from the BattleScribe catalogues (Phase 1). This reports the commit only.
+
+            {freshness.current ? (
+              <p className="text-theme-text break-words">
+                Nothing this build is pinned to has changed upstream
+                {freshness.commitsBehind > 0 && (
+                  <> — the repository has {freshness.commitsBehind} newer commit
+                  {freshness.commitsBehind === 1 ? '' : 's'}, none touching the{' '}
+                  {freshness.catalogueFilesChanged.length === 0 && dataset
+                    ? dataset.meta.baseFiles.length : 0} catalogue files it reads</>
+                )}.
+              </p>
+            ) : (
+              <>
+                <p className="text-theme-text break-words">
+                  {freshness.catalogueFilesChanged.length} of the pinned catalogue
+                  files changed upstream, across {freshness.commitsBehind} commit
+                  {freshness.commitsBehind === 1 ? '' : 's'}:
+                </p>
+                <ul className="list-disc list-inside text-theme-text break-words">
+                  {freshness.catalogueFilesChanged.map((f) => <li key={f}>{f}</li>)}
+                </ul>
+                {/* The remedy, so the reader is not left holding a finding. */}
+                <p className="text-theme-muted opacity-80 break-words">
+                  Run <span className="text-theme-primary">npm run rules:fetch</span> to
+                  re-pin, then <span className="text-theme-primary">npm run rules:crosscheck</span> to
+                  see what actually moved. Nothing changes in the app until a new build ships.
+                </p>
+              </>
+            )}
+
+            <p className="text-theme-muted opacity-80 break-words">
+              Built from <span className="text-theme-primary">{freshness.baseCommit.slice(0, 8)}</span>
+              {freshness.headCommit !== freshness.baseCommit && (
+                <> · upstream at <span className="text-theme-primary">{freshness.headCommit.slice(0, 8)}</span></>
+              )}
+              {freshness.headDate && <> · {new Date(freshness.headDate).toLocaleDateString()}</>}
             </p>
           </div>
         )}
@@ -619,15 +675,16 @@ export const CustomizerView: React.FC = () => {
         </div>
       )}
 
-      {/* GitHub Diff Modal — only meaningful once a real commit has been read. */}
-      {isDiffModalOpen && latestCommit && (
-        <GitHubDiffModal
-          diffs={pendingDiffs}
-          commitSha={latestCommit.sha}
-          commitMessage={latestCommit.message}
-          onClose={() => setIsDiffModalOpen(false)}
-        />
-      )}
+      {/*
+        The GitHub diff modal used to render here and has been removed.
+
+        Nothing ever opened it: `setIsDiffModalOpen(true)` was never called and
+        `setPendingDiffs` never invoked, so `pendingDiffs` was permanently empty
+        and the modal unreachable from any state of the app. It is left over
+        from the fabricated-diff era, when "upstream" was two locally edited
+        units. The freshness panel above answers what that screen was reaching
+        for, and `npm run rules:crosscheck` answers the rest.
+      */}
 
     </div>
   );

@@ -422,8 +422,27 @@ for (const ruleset of RULESETS) {
     return 1 - editDistance(x, y) / Math.max(x.length, y.length) >= 0.85;
   };
 
+  /*
+    Where no book can decide, a maintainer does — and it is written down.
+
+    Some gear is not book content at all: the Fireteam formations are community
+    additions, so neither spelling of "Cataphract Formation Alpha" appears in
+    any of the six official documents and the rule above correctly refuses to
+    guess. `_gearNames` in resolutions.json rules on those, with a reason, the
+    same way the file rules on a value two sources disagree about.
+
+    A standoff with no ruling stays reported. Silence would put the app back to
+    shipping whichever name the catalogue happened to put on the profile.
+  */
+  const gearNameRulings = (() => {
+    const f = 'data-sources/resolutions.json';
+    if (!fs.existsSync(f)) return {};
+    return JSON.parse(fs.readFileSync(f, 'utf8'))._gearNames ?? {};
+  })();
+
   const gearRenames = [];
   const gearNameStandoffs = [];
+  const gearNamesRuled = [];
   for (const w of base.weapons ?? []) {
     if (!w.entryName || w.entryName === w.name) continue;
     if (!nearlyTheSame(w.name, w.entryName)) continue;
@@ -435,7 +454,26 @@ for (const ruleset of RULESETS) {
       w.profileName = w.name;
       w.name = w.entryName;
     } else if (!entryInBook && !profileInBook) {
-      gearNameStandoffs.push(`${w.name} / ${w.entryName} — neither spelling is printed in any book`);
+      const ruling = gearNameRulings[w.name];
+      if (!ruling) {
+        gearNameStandoffs.push(`${w.name} / ${w.entryName} — neither spelling is printed in any book`);
+      } else {
+        const want = ruling.use === 'entry' ? w.entryName : w.name;
+        if (ruling.value && ruling.value !== want) {
+          throw new Error(
+            `rules-build: the _gearNames ruling for '${w.name}' says use the `
+            + `${ruling.use} name and states '${ruling.value}', but the ${ruling.use} `
+            + `name is '${want}'. The catalogue has changed under the ruling; `
+            + 're-read it in data-sources/resolutions.json rather than trusting either.');
+        }
+        if (want !== w.name) {
+          gearNamesRuled.push({ from: w.name, to: want, why: ruling.use });
+          w.profileName = w.name;
+          w.name = want;
+        } else {
+          gearNamesRuled.push({ from: w.name, to: want, why: `${ruling.use}, unchanged` });
+        }
+      }
     }
   }
   /*
@@ -718,6 +756,18 @@ for (const ruleset of RULESETS) {
       // can prove the committed data still matches data-sources/. The base
       // commit and the layer list already identify the dataset exactly.
       baseCommit: manifest.commit,
+      /*
+        The catalogue files this dataset was actually built from.
+
+        Shipped so the app can ask a real freshness question — "has anything I
+        am built on changed upstream?" — rather than the one it asked before,
+        which was "what is upstream's latest commit?" with nothing to compare it
+        to. Taken from the manifest, which is what `rules:fetch` pinned, and not
+        from a list in the app: a hand-kept copy in `githubSync.ts` had already
+        drifted, missing `Campaign Rules.cat`, so an upstream change to the
+        injury, skill or exploration tables was invisible to the check.
+      */
+      baseFiles: Object.keys(manifest.files).sort(),
       layers: ruleset.layers,
     },
   };
@@ -1319,6 +1369,10 @@ for (const ruleset of RULESETS) {
   if (gearRenames.length) {
     console.log(`  gear renamed to the books' spelling: ${gearRenames.length}`);
     for (const r of gearRenames) console.log(`    ${r.from}  ->  ${r.to}`);
+  }
+  if (gearNamesRuled.length) {
+    console.log(`  gear names settled by a maintainer ruling: ${gearNamesRuled.length}`);
+    for (const r of gearNamesRuled) console.log(`    ${r.from}  ->  ${r.to}  (${r.why})`);
   }
   if (gearNameStandoffs.length) {
     console.log(`  gear whose two catalogue names are both unattested: ${gearNameStandoffs.length}`);

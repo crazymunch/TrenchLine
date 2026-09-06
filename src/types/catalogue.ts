@@ -1288,6 +1288,15 @@ export interface Dataset {
     rulesetId: string;
     /** The pinned catalogue commit. No build timestamp — output is reproducible. */
     baseCommit: string;
+    /**
+     * The catalogue files pinned into this dataset, from the fetch manifest.
+     *
+     * The freshness check compares these against what changed upstream since
+     * `baseCommit`. Shipped rather than listed in the app because the app's own
+     * copy had drifted: it was missing `Campaign Rules.cat`, so an upstream
+     * change to the injury, skill or exploration tables would not have counted.
+     */
+    baseFiles: string[];
     layers: string[];
   };
 }

@@ -39383,6 +39383,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "profileName": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:f36e-dddb-8a6f-e34b": {
@@ -39439,6 +39443,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41936,6 +41944,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "profileName": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:bd30-a567-830c-3ef6": {
@@ -41992,6 +42004,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "profileName": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }

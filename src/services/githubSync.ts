@@ -151,3 +151,102 @@ export function generateDiffs(
 
   return diffItems;
 }
+
+/**
+ * How far the shipped rules have drifted from upstream.
+ *
+ * The Customizer used to answer a different question. It fetched upstream's
+ * latest commit and printed the SHA and message — true, but useless on its own,
+ * because nothing said whether the app was built from that commit or from one
+ * six months older. A reader could not tell "we are current" from "we are a
+ * release behind" without going and looking.
+ *
+ * `dataset.meta.baseCommit` is what `rules:fetch` pinned, so the comparison is
+ * available and cheap: one call to GitHub's compare API, no re-parsing eleven
+ * catalogues in a phone browser.
+ *
+ * The number that matters is not the commit count. Upstream commits README
+ * edits and roster files like anyone else, so "42 commits behind" says nothing
+ * about whether the *rules* moved. What matters is which of the pinned
+ * catalogue files changed — `dataset.meta.baseFiles`, which is the fetch
+ * manifest's own list rather than a copy kept by hand.
+ */
+export interface UpstreamFreshness {
+  /** The commit the shipped dataset was built from. */
+  baseCommit: string;
+  /** Upstream's current head. */
+  headCommit: string;
+  /** Commits upstream has that the pinned base does not. */
+  commitsBehind: number;
+  /** Pinned catalogue files changed since the base commit. */
+  catalogueFilesChanged: string[];
+  /** Files upstream changed that this dataset does not pin — context, not a prompt. */
+  otherFilesChanged: number;
+  /** When upstream's head was authored. */
+  headDate: string | null;
+  /** True when nothing this dataset is built from has moved. */
+  current: boolean;
+}
+
+/**
+ * Compare the pinned commit against upstream's head.
+ *
+ * Throws on any failure rather than reporting "up to date", which would be the
+ * same lie the fabricated commit told: a check that cannot run must say so, or
+ * it silently certifies stale rules as current (docs/AUDIT.md 1.8).
+ */
+export async function compareToUpstream(
+  baseCommit: string,
+  baseFiles: string[],
+  repo = GITHUB_REPO
+): Promise<UpstreamFreshness> {
+  if (!baseCommit) {
+    throw new Error('This ruleset records no base commit, so it cannot be compared to upstream.');
+  }
+
+  const res = await fetch(`https://api.github.com/repos/${repo}/compare/${baseCommit}...HEAD`);
+  if (!res.ok) {
+    throw new Error(
+      `Could not compare against ${repo} (HTTP ${res.status}). `
+      + 'The rules shipped with this build are unchanged; only the freshness '
+      + 'check failed.'
+    );
+  }
+
+  const body = await res.json() as {
+    ahead_by?: number;
+    commits?: { sha: string; commit?: { author?: { date?: string } } }[];
+    files?: { filename: string }[];
+  };
+
+  /*
+    GitHub caps `files` at 300 per compare and paginates beyond that. A truncated
+    list would under-report changed catalogues, and under-reporting here reads as
+    "your rules are fine" — so it is refused rather than trusted.
+  */
+  const changed = body.files ?? [];
+  if (changed.length >= 300) {
+    throw new Error(
+      `Upstream has changed ${changed.length}+ files since this build, which is `
+      + 'more than the compare API returns in one page. Run `npm run rules:crosscheck` '
+      + 'rather than trusting a partial answer.'
+    );
+  }
+
+  const pinned = new Set(baseFiles);
+  const changedNames = changed.map((f) => f.filename.split('/').pop() ?? f.filename);
+  const catalogueFilesChanged = [...new Set(changedNames.filter((n) => pinned.has(n)))].sort();
+
+  const commits = body.commits ?? [];
+  const head = commits[commits.length - 1];
+
+  return {
+    baseCommit,
+    headCommit: head?.sha ?? baseCommit,
+    commitsBehind: body.ahead_by ?? commits.length,
+    catalogueFilesChanged,
+    otherFilesChanged: changedNames.length - catalogueFilesChanged.length,
+    headDate: head?.commit?.author?.date ?? null,
+    current: catalogueFilesChanged.length === 0,
+  };
+}

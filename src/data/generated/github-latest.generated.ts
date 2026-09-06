@@ -55710,7 +55710,7 @@ export const DATASET: Dataset = {
         "Varangian Warlord",
         "Mechanized Heavy Infantry"
       ],
-      "name": "Catphract Formation Alpha",
+      "name": "Cataphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
       "keywords": [],
@@ -55772,7 +55772,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "profileName": "Catphract Formation Alpha"
     },
     {
       "id": "f36e-dddb-8a6f-e34b",
@@ -55783,7 +55784,7 @@ export const DATASET: Dataset = {
         "Varangian Warlord",
         "Mechanized Heavy Infantry"
       ],
-      "name": "Catphract Formation Beta",
+      "name": "Cataphract Formation Beta",
       "type": "Battlekit",
       "range": "",
       "keywords": [],
@@ -55865,7 +55866,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "profileName": "Catphract Formation Beta"
     },
     {
       "id": "7b83-acba-914a-38c8",
@@ -57676,7 +57678,7 @@ export const DATASET: Dataset = {
         "Varangian Warlord",
         "Mechanized Heavy Infantry"
       ],
-      "name": "Catphract Formation Alpha",
+      "name": "Cataphract Formation Alpha",
       "type": "Battlekit",
       "range": "",
       "keywords": [],
@@ -57738,7 +57740,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "profileName": "Catphract Formation Alpha"
     },
     {
       "id": "bd30-a567-830c-3ef6",
@@ -57749,7 +57752,7 @@ export const DATASET: Dataset = {
         "Varangian Warlord",
         "Mechanized Heavy Infantry"
       ],
-      "name": "Catphract Formation Beta",
+      "name": "Cataphract Formation Beta",
       "type": "Battlekit",
       "range": "",
       "keywords": [],
@@ -57831,7 +57834,8 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "profileName": "Catphract Formation Beta"
     },
     {
       "id": "f580-8b00-a18a-0d48",
@@ -65534,6 +65538,20 @@ export const DATASET: Dataset = {
   "meta": {
     "rulesetId": "github-latest",
     "baseCommit": "1b463a8e2eaafc9d6722ae6eeda93e296fb7012b",
+    "baseFiles": [
+      "Black Grail.cat",
+      "Campaign Rules.cat",
+      "Court of the Seven-Headed Serpent.cat",
+      "Equipment.cat",
+      "Heretic Legion.cat",
+      "Iron Sultanate.cat",
+      "Melee Weapons.cat",
+      "Mercenaries.cat",
+      "New Antioch.cat",
+      "Ranged Weapons.cat",
+      "Trench Crusade.gst",
+      "Trench Pilgrims.cat"
+    ],
     "layers": []
   },
   "armouries": [
