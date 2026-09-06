@@ -34,6 +34,19 @@ export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' |
  */
 export type Navigate = (view: AppView, rosterId?: string) => void;
 
+/**
+ * One model's Experience outcome for a game, with the reason when it is none.
+ *
+ * `reason` is carried so the post-battle summary can say *why* a model got
+ * nothing. "No XP" beside a Leader's name reads as a bug; "no XP — Head Wound"
+ * reads as the rule it is.
+ */
+export interface XpAward {
+  unitId: string;
+  earns: boolean;
+  reason?: string;
+}
+
 export interface AppState {
   currentView: AppView;
   setCurrentView: (view: AppView) => void;
@@ -272,6 +285,21 @@ export interface AppState {
     ducatsGained: number,
     casualties: CasualtyRecord[],
     advancements: { unitId: string; advancement: string }[],
+    /**
+     * Which models earn their Experience Point, decided by the caller.
+     *
+     * Required, and passed in rather than computed here, because it is a rules
+     * question: "each ELITE model that took part in a game and survived will
+     * gain 1 Experience Point", and Head Wound removes the entitlement
+     * permanently. This slice used to run `u.xp + 1` over every unit on the
+     * roster — Troops, models that sat the game out, and models it had just
+     * recorded as dead — on the same submission that displayed the sentence
+     * forbidding it. See `rules/trauma.ts` and RULES-COVERAGE-AUDIT RC-02/03.
+     *
+     * A unit absent from this list earns nothing. An empty array is a valid and
+     * common answer: a warband of Troops earns no Experience at all.
+     */
+    experience: XpAward[],
     narrative: string,
     narrativeReport?: string,
     mvpUnitName?: string,

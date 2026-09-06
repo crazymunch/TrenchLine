@@ -141,6 +141,23 @@ export interface UnitProfile {
    */
   canLead?: boolean;
   /**
+   * Whether the model is ELITE, from the catalogue's role or the books' keyword.
+   *
+   * `category` is not a substitute. It says what a model is *on a roster*, and
+   * `categoryOf` resolves Mercenary before Elite — so the Witchburner, filed
+   * `Mercenary/Elite` and printing the literal ELITE Keyword, categorises as
+   * `Mercenary`.
+   *
+   * The Trauma Step turns on exactly this word: a Troop rolls one D6 and dies
+   * on a 1-2; an ELITE model rolls D66 on the Trauma Table, accrues Battle
+   * Scars, and is the only kind of model that earns Experience. Reading the
+   * category instead would offer an ELITE model a roll it can die on.
+   *
+   * Optional because a warband saved before this field existed has no answer
+   * recorded, and `rules/trauma.ts` must be able to tell that from `false`.
+   */
+  elite?: boolean;
+  /**
    * Content the catalogues mark as third-party: condoned by Factory Fortress
    * but written by other people, with, in the source's own words, "no
    * assurances ... to balance or consistency with rules". Hidden unless the

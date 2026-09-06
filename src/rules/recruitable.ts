@@ -234,6 +234,33 @@ export function recruitable(
         || u.keywords.some((k) => k.trim().toUpperCase() === 'LEADER')
         || undefined,
       /*
+        Whether the model is ELITE. Read the same way as `canLead`, and for the
+        same reason: two sources say it and neither says it everywhere.
+
+        `category` cannot answer this, and the difference is not cosmetic. The
+        Trauma Step turns on this one word — "Troops are any models in your
+        Warband that do not have the ELITE Keyword", who roll one D6 and die on
+        a 1-2, against ELITE models who roll D66 on the Trauma Table. But
+        `categoryOf` above tests Mercenary before Elite, so the Witchburner —
+        filed `Mercenary/Elite`, and one of the eight entries that carries the
+        literal keyword — categorises as `Mercenary`. Keying the Trauma Step on
+        the category would have taken an ELITE model off the injury table and
+        offered it a roll it can die on.
+
+        Both sources are read because 35 entries carry the Elite role and only 8
+        print the keyword; `rules-build.mjs` fails the build if the two ever
+        disagree in the other direction.
+
+        Carried into the roster snapshot deliberately, rather than looked up
+        from the dataset at Trauma time: `baseProfileId` on a saved unit is not
+        reliably a dataset id (it may be a hand-written slug, or a name-derived
+        fallback the importer invented), so a lookup would fail silently on
+        exactly the rosters that have been played the longest.
+      */
+      elite: u.roles.some((r) => r.toLowerCase() === 'elite')
+        || u.keywords.some((k) => k.trim().toUpperCase() === 'ELITE')
+        || undefined,
+      /*
         The "Third Party" profile is a marker, not a rule the model has — its
         text is the catalogue's disclaimer about the entry, which the builder
         shows in its own right as `thirdPartyNotice`. Leaving it in the ability

@@ -1057,6 +1057,43 @@ export interface CarcassFrontMap {
   unreadable: string[];
 }
 
+/**
+ * The Trauma Step's procedure, from the rulebook's own passage.
+ *
+ * Every field is read from the sentence that states it; nothing is defaulted.
+ * The shape deliberately keeps the numbers and the prose together, because a
+ * caller that shows the rule and applies a different number is the exact
+ * failure this was written to end (the app displayed Head Wound's "can no
+ * longer gain Experience Points" on the same submission that added the point).
+ */
+export interface TraumaProcedure {
+  /** Models without ELITE. One D6, dead on `1..deadUpTo`, alive on `survivesFrom+`. */
+  troops: {
+    definition: string;
+    /** `"D6"`. Carried as text because the book names the die, not a number. */
+    die: string;
+    deadUpTo: number;
+    survivesFrom: number;
+    text: string;
+  };
+  /** ELITE models only. The D66 roll on the Trauma Table. */
+  elite: { die: string; text: string };
+  /** A killed model's Battlekit is lost outright, not returned to the Arsenal. */
+  killedInAction: { battlekitLost: boolean; text: string };
+  /**
+   * Battle Scars accrue on ELITE models alone, and the `unfitAt`-th retires
+   * the model — its kit may go to the Arsenal, unlike a killed model's.
+   */
+  battleScars: {
+    eliteOnly: boolean;
+    unfitAt: number;
+    text: string;
+    unfitText: string;
+  };
+  /** A model suffers each injury once; a repeat is rerolled until usable. */
+  duplicateInjury: { rerollUntilUsable: boolean; text: string };
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -1283,6 +1320,20 @@ export interface Dataset {
     skills: Record<SkillsTableName, SkillRow[]>;
     /** The Trauma Table. Sparse only in that 41-63 is one range. */
     trauma: TraumaRow[];
+    /**
+     * How the Trauma Step is run: who rolls what, and what removes a model.
+     *
+     * Separate from `trauma` because the two failed separately. The table was
+     * derived and correct; the procedure had never been parsed at all, so the
+     * post-battle wizard offered a D66 Trauma roll to every casualty — and a
+     * Troop, who by the book takes one D6 and dies on a 1-2, instead drew from
+     * a table on which 1 result in 36 is Dead. It was handing out survival.
+     *
+     * Optional on the type because a ruleset built before this existed has no
+     * procedure, and a caller must be able to tell that from "everyone rolls
+     * D66". See docs/RULES-COVERAGE-AUDIT.md RC-01 and RC-05.
+     */
+    traumaProcedure?: TraumaProcedure;
   };
   meta: {
     rulesetId: string;

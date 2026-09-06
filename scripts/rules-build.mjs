@@ -22,7 +22,7 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules, parseVariantEconomy } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable,
-         parseCampaignPhaseSteps } from './lib/parse-campaign.mjs';
+         parseCampaignPhaseSteps, parseTraumaProcedure } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
@@ -532,6 +532,7 @@ for (const ruleset of RULESETS) {
   }
 
   const allBattlekit = [...kitByName.values()];
+
   const dataset = {
     units: base.units,
     weapons: base.weapons,
@@ -740,6 +741,16 @@ for (const ruleset of RULESETS) {
       skills: parseSkillsTables(),
       trauma: parseTraumaTable(),
       /**
+       * Who is entitled to roll on that table, and what removes a model.
+       *
+       * Shipped separately from the table because they failed separately: the
+       * table was derived and correct while the procedure had never been
+       * parsed at all, so the wizard offered a D66 Trauma roll to a Troop who
+       * by the book takes one D6 and dies on a 1-2. See
+       * docs/RULES-COVERAGE-AUDIT.md RC-01 and RC-05.
+       */
+      traumaProcedure: parseTraumaProcedure(),
+      /**
        * The six Campaign Phase Steps, in the order the book states.
        *
        * The app's post-battle wizard has four, two of them named things the
@@ -819,6 +830,42 @@ for (const ruleset of RULESETS) {
       + `${contradicts.map((a) => a.name).join(', ')}. The entry contradicts itself; `
       + 'confirm against the printed page.');
   }
+
+  /*
+    The two ways a catalogue says ELITE must not disagree.
+
+    The rulebook defines a Troop as "any models in your Warband that do not
+    have the ELITE Keyword", and the Trauma Step turns on that one word: a
+    Troop rolls one D6 and dies on a 1-2, an ELITE model rolls D66 on the
+    Trauma Table. Get it backwards and the app kills the wrong model.
+
+    But the catalogues only print the literal keyword on 8 of 105 entries.
+    They express the same fact structurally, by which selectionEntryGroup an
+    entry sits in — which is what `roles` carries, and 35 entries have it. So
+    `roles` is the signal the app must use, and the keyword is a decoration
+    that happens to be there sometimes.
+
+    That is fine exactly as long as the decoration never contradicts the
+    structure. If an upstream edit ever prints ELITE on an entry filed as a
+    Troop, the app would send it to the wrong table with nothing to say so.
+    This is the check that says so.
+
+    Deliberately one-directional: an Elite-role entry WITHOUT the keyword is
+    the normal case, 27 times over, and is not an error.
+  */
+  const eliteDisagreements = dataset.units.filter((u) =>
+    (u.keywords ?? []).some((k) => k.toUpperCase() === 'ELITE')
+    && !(u.roles ?? []).some((r) => r.toLowerCase() === 'elite'));
+  if (eliteDisagreements.length) {
+    throw new Error(
+      'rules-build: entries carry the ELITE Keyword but are not filed under an '
+      + `Elite role: ${eliteDisagreements.map((u) => `${u.name} (${u.factionId}, `
+      + `roles: ${(u.roles ?? []).join('/') || 'none'})`).join('; ')}. `
+      + 'The Trauma Step reads the role, so these models would take a Troop\'s '
+      + 'D6 Survival Roll instead of a D66 Trauma roll. Resolve which the '
+      + 'catalogue means before shipping.');
+  }
+
 
   // ------------------------------------------------------------- armouries
   //
