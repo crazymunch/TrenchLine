@@ -498,6 +498,25 @@ three outcomes.
 | `unconfirmed` | Extraction could not locate it — not evidence of an error | passes, counted in the report |
 | `conflict` | Rulebook clearly states a different value | **fails** until resolved |
 
+### Freshness: what the app is pinned to
+
+`rules:fetch` pins the catalogues by commit SHA, and the dataset ships that as
+`meta.baseCommit` together with `meta.baseFiles` — the manifest's own list of
+what was pinned. `compareToUpstream` uses both to answer the only question a
+reader can act on: **has anything this build is made of changed upstream?**
+
+Not a commit count. Upstream commits READMEs and roster files like anyone else,
+so "40 commits behind" says nothing about whether the rules moved; what counts
+is which of the pinned catalogue files appear in the compare. The file list is
+shipped rather than kept in the app because the app's copy had already drifted
+— `GITHUB_CATALOG_FILES` in `githubSync.ts` was missing `Campaign Rules.cat`,
+so an upstream change to the injury, skill or exploration tables would not have
+registered.
+
+A failed check **throws**. Reporting "up to date" when the comparison could not
+run is the fabricated-commit failure wearing a different hat, and worse in one
+way: a wrong "current" is exactly what stops someone looking.
+
 ### Names: the books decide
 
 A BattleScribe gear entry carries **two** names — the `selectionEntry`'s and

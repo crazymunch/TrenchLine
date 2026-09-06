@@ -57,7 +57,7 @@ roster.
 | Export to shareable file | 🟡 | `ExportModal` writes a file; a roster now also has a URL (`/roster/[id]`), though it is device-local until the owner is signed in |
 | Multiple saved rosters | ✅ | |
 | Ruleset version selection | ✅ | Two sourced rulesets, SHA-pinned, switchable with reconciliation |
-| Data freshness / upstream sync | 🟡 | `CustomizerView` diffs against GitHub; had a fabricated fallback |
+| Data freshness / upstream sync | ✅ | `compareToUpstream` compares `dataset.meta.baseCommit` against upstream's head and reports **which pinned catalogues changed**, not a commit count — upstream commits READMEs too. The file list is the fetch manifest's (`meta.baseFiles`); the app's own copy had drifted, missing `Campaign Rules.cat`, so an upstream change to the injury, skill or exploration tables did not count. A failed check throws rather than reporting "current" |
 | Offline use | ✅ | Service worker caches the shell and the ruleset; `e2e/offline.spec.ts` cuts the network for real |
 
 **All four of the ❌ rows above are now done.** They were the whole point of

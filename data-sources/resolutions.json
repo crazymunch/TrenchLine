@@ -21,9 +21,15 @@
     "reprints an entry the dataset already carries and the two printings differ,",
     "the build reports it here rather than picking a side. One entry answers",
     "both checks, and each validates it from its own end — the reprint check",
-    "against the supplement, applyResolutions against the dataset and the book."
+    "against the supplement, applyResolutions against the dataset and the book.",
+    "",
+    "Keys beginning with _ are not per-field resolutions. `_gearNames` is read",
+    "by reconcileGearNames in rules-build.mjs and rules on a gear entry whose",
+    "selectionEntry name and profile name differ where NEITHER is printed in any",
+    "book — so the book-authority rule has nothing to decide with. `use` is",
+    "'entry' or 'profile'. A standoff with no ruling here is reported, not",
+    "guessed at."
   ],
-
   "Combat Biologist.cost.ducats": {
     "chose": "battlescribe",
     "value": 0,
@@ -31,7 +37,6 @@
     "reviewed": "2026-09-02",
     "reviewer": "claude, pending maintainer confirmation"
   },
-
   "Combat Biologist.cost.glory": {
     "chose": "battlescribe",
     "value": 3,
@@ -39,7 +44,6 @@
     "reviewed": "2026-09-02",
     "reviewer": "claude, pending maintainer confirmation"
   },
-
   "Scripture Guardian.stats.ranged": {
     "chose": "rulebook",
     "value": "-",
@@ -47,7 +51,6 @@
     "reviewed": "2026-08-30",
     "reviewer": "claude, pending maintainer confirmation"
   },
-
   "Mamluk Faris.stats.armour": {
     "chose": "battlescribe",
     "value": "-2",
@@ -55,12 +58,34 @@
     "reviewed": "2026-08-30",
     "reviewer": "claude, pending maintainer confirmation"
   },
-
   "Combat Medic.cost.ducats": {
     "chose": "rulebook",
     "value": 65,
     "because": "The book prints 'Cost: 65' for the New Antioch Combat Medic; New Antioch.cat prices the same model at 40. The gap is exactly the Battlekit the book says a Medic always has: Standard Armour 15 + Gas Mask 5 + Medi-kit 5 = 25, and 40 + 25 = 65. The catalogue forces those three onto the model (min=1 entryLinks) and hides the matching Armoury rows from it, but leaves all three entryLinks unpriced, so its roster total comes to 40 — the split cost was never charged. The book is authoritative over the community catalogue and its figure is the one a player computes at the table. CAVEAT: nothing yet stops a Medic buying a second Gas Mask or Medi-kit from the New Antioch Armoury, which would double-charge by 10; the catalogue expresses that as a conditional 'hidden' modifier the pipeline does not read. Tracked with the forced-Battlekit gap below.",
     "reviewed": "2026-08-31",
     "reviewer": "claude, pending maintainer confirmation"
+  },
+  "_gearNames": {
+    "Catphract Formation Alpha": {
+      "use": "entry",
+      "value": "Cataphract Formation Alpha",
+      "because": "A transcription slip in the profile, not a naming choice: a cataphract is the Byzantine heavy cavalryman the Remnants of Byzantium Fireteam is named for, and 'catphract' is not a word. The catalogue's own selectionEntry spells it correctly and only the profile drops the 'a'. No book can settle it — the Fireteam formations are community content and the name appears in none of the six official documents — so this is a maintainer ruling rather than a derivation.",
+      "reviewed": "2026-09-06",
+      "reviewer": "claude, pending maintainer confirmation"
+    },
+    "Catphract Formation Beta": {
+      "use": "entry",
+      "value": "Cataphract Formation Beta",
+      "because": "The other half of the same slip — see Catphract Formation Alpha.",
+      "reviewed": "2026-09-06",
+      "reviewer": "claude, pending maintainer confirmation"
+    },
+    "Consumed the Fruit from the Tree of Knowledge of Good and Evil": {
+      "use": "profile",
+      "value": "Consumed the Fruit from the Tree of Knowledge of Good and Evil",
+      "because": "Not a slip at all, which is why it is ruled on rather than left open. The two names describe different things and the catalogue means both: the selectionEntry is the ACTION a roster buys ('Consume the Fruit from the Tree of Knowledge of Good and Evil') and the profile is the STATE it leaves the model in ('Consumed …', typed 'Dietary Supplement'). The app shows what a model is carrying, so the past tense is the correct one and the shipped name stays. Recorded so the pass stops re-reporting a difference that is working as intended.",
+      "reviewed": "2026-09-06",
+      "reviewer": "claude, pending maintainer confirmation"
+    }
   }
 }
