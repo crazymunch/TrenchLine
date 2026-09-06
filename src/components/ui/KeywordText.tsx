@@ -20,13 +20,24 @@
  * only 41 of the 89 Keyword strings the sources print are a glossary name
  * spelled exactly. See that file.
  *
- * Mobile: the tap target is the word itself, which is often narrower than the
- * 44px floor `MOBILE.md` sets. That floor is for controls a player hunts for —
- * a nav item, a button. This is an inline affordance inside a sentence, where
- * making the word 44px wide would break the line it sits in. It is padded
- * vertically to give the touch some height, underlined so it reads as tappable
- * rather than merely coloured, and every one of them is also reachable from the
- * Codex's own Keyword list, which does meet the floor.
+ * Mobile: these meet the 44px floor, and the first version did not.
+ *
+ * I had reasoned that an inline word inside a sentence was exempt — that the
+ * floor is for controls a player hunts for, and that widening a word would
+ * break the line it sits in. `e2e/mobile.spec.ts` disagreed and was right:
+ * `FEAR` came out 44 tall and 41 wide, `HELD` 42. A rule with an exemption
+ * argued in a comment is not a rule, and a three-pixel miss on a word a player
+ * taps mid-game with one hand is exactly the case the floor exists for.
+ *
+ * The fix is `.tap`, the project's own mechanism for it (globals.css, and the
+ * one `e2e/helpers.ts` explicitly measures for): an invisible 44x44 `::after`
+ * centred on the control, so the hit area meets the floor without the word
+ * changing size or the line it sits in growing. It also already stands down
+ * above 1024px, where a pointer does not need it.
+ *
+ * Not `min-width`: that needs `inline-block`, which stops a Keyword wrapping
+ * and — with a matching `min-height` to satisfy the same check — would make
+ * every prose line containing a Keyword 44px tall.
  */
 import React from 'react';
 
@@ -93,7 +104,8 @@ export const KeywordText: React.FC<KeywordTextProps> = ({
           type="button"
           onClick={() => setActiveKeyword(seg.keyword ?? null)}
           /* `text-left` so a Keyword that wraps does not centre its second line. */
-          className="inline py-0.5 text-left font-semibold text-theme-primary underline decoration-dotted underline-offset-2 transition-colors hover:text-theme-text"
+          /* `.tap` carries the 44px hit area; the word keeps its own size. */
+          className="tap inline text-left font-semibold text-theme-primary underline decoration-dotted underline-offset-2 transition-colors hover:text-theme-text"
           aria-label={`${seg.text}: show the Keyword rule`}
         >
           {seg.text}
@@ -137,7 +149,8 @@ export const KeywordChip: React.FC<{
     <button
       type="button"
       onClick={() => setActiveKeyword(match)}
-      className={`${base} min-h-[28px] text-theme-primary transition-colors hover:border-theme-primary hover:text-theme-text`}
+      /* The same floor, the same way: a chip in a list is squarely MOBILE.md §3. */
+      className={`${base} tap text-theme-primary transition-colors hover:border-theme-primary hover:text-theme-text`}
       aria-label={`${name}: show the Keyword rule`}
     >
       {name}
