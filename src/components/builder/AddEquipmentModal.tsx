@@ -7,7 +7,7 @@ import { useStore } from '../../store/useStore';
 import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
-import { traitsOf } from '../../rules/formulae';
+import { traitsOf, chosenBy } from '../../rules/formulae';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
@@ -50,7 +50,7 @@ interface AddEquipmentModalProps {
  * breakpoint above it, and a tablet is still a device held at a table.
  */
 const EquipControl: React.FC<{
-  gate: { allowed: boolean; reason?: string };
+  gate: { allowed: boolean; reason?: string; caveat?: string };
   owned: number;
   onAdd: () => void;
   onRemove: () => void;
@@ -73,8 +73,10 @@ const EquipControl: React.FC<{
         <button
           onClick={onAdd}
           disabled={!gate.allowed}
-          title={gate.reason}
-          aria-label={gate.allowed ? 'Add one more' : gate.reason}
+          title={gate.reason ?? gate.caveat}
+          aria-label={gate.allowed
+            ? (gate.caveat ? `Add one more — ${gate.caveat}` : 'Add one more')
+            : gate.reason}
           className={`min-h-[44px] min-w-[44px] lg:min-h-[32px] lg:min-w-[32px] flex items-center justify-center rounded border transition-colors ${
             gate.allowed
               ? 'border-theme-border bg-theme-elevated text-theme-text hover:bg-theme-primary hover:text-theme-base'
@@ -94,7 +96,8 @@ const EquipControl: React.FC<{
     <button
       onClick={onAdd}
       disabled={!gate.allowed}
-      title={gate.reason}
+      title={gate.reason ?? gate.caveat}
+      aria-label={gate.allowed && gate.caveat ? `${addLabel} — ${gate.caveat}` : undefined}
       className={addClassName ?? `px-3 py-1 border rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 ${
         gate.allowed
           ? 'bg-theme-elevated hover:bg-theme-primary hover:text-theme-base text-theme-text border-theme-border'
@@ -106,6 +109,42 @@ const EquipControl: React.FC<{
     </button>
   );
 };
+
+/**
+ * What the rules say about this entry for this model, in the book's own words.
+ *
+ * Two things, and the second is the whole of RC-06. A REFUSAL quotes the
+ * sentence that forbids it — this used to appear on the armour list alone, and
+ * as a hand-written "Homunculus restriction: Shields only. Body armour
+ * prohibited." that appears in no book. A CAVEAT is the other half: a
+ * restriction whose identity clause the model satisfies and whose condition
+ * the roster cannot answer — "Janissaries & Yüzbaşı with Janissary Veteran
+ * only" against a roster that does not record who is a Veteran.
+ *
+ * The caveat is shown rather than enforced. Refusing on a condition we cannot
+ * read would make the entry unbuyable by anyone; permitting it silently is
+ * what let a Sultanate Azeb pick up the Regimental Kaşık. So the button stays
+ * live and the player is told what they are being trusted with.
+ *
+ * On screen, not in a `title`: a tooltip does not exist on the phone this app
+ * is used on.
+ */
+const GateNote: React.FC<{ gate: { allowed: boolean; reason?: string; caveat?: string } }> =
+  ({ gate }) => {
+    if (!gate.allowed) {
+      return (
+        <span className="text-xs sm:text-[10px] text-status-error block font-bold">
+          ⚠️ {gate.reason ?? 'Not available to this model.'}
+        </span>
+      );
+    }
+    if (!gate.caveat) return null;
+    return (
+      <span className="text-xs sm:text-[10px] text-theme-accent block font-bold">
+        ⚠️ {gate.caveat}
+      </span>
+    );
+  };
 
 export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   warbandId,
@@ -254,6 +293,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         roles: unit?.profileSnapshot?.category ? [unit.profileSnapshot.category] : [],
       },
       traits: traitsOf(unit),
+      taken: chosenBy(unit),
       extraLimb: hasExtraLimb(unit),
     });
   }, [dataset, factionId, carriedNow, unitProfileName, unit]);
@@ -568,7 +608,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           {tab === 'weapons' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedWeapons.map((w) => {
-                const legal = gateFor(w).allowed;
+                const gate = gateFor(w);
+                const legal = gate.allowed;
                 return (
                   <div
                     key={w.id}
@@ -607,6 +648,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           ))}
                         </div>
                       )}
+
+                      <GateNote gate={gate} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
@@ -614,7 +657,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         Mod: <strong className="text-theme-text">{typeof w.modifiers === 'string' ? w.modifiers : '-'}</strong>
                       </span>
                       <EquipControl
-                        gate={gateFor(w)}
+                        gate={gate}
                         owned={ownedIn(currentWeapons as never, w)}
                         onAdd={() => handleEquipWeapon(w)}
                         onRemove={() => {
@@ -633,7 +676,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           {tab === 'armour' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedArmour.map((a) => {
-                const legal = gateFor(a).allowed;
+                const gate = gateFor(a);
+                const legal = gate.allowed;
                 const isShield = a.category === 'Shield' || /shield|pavise|mantlet/i.test(a.name) || Boolean(a.keywords?.includes('SHIELD'));
 
                 return (
@@ -678,11 +722,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         Shields only. Body armour prohibited." — that appears
                         in no book and was shown whenever a name regex fired.
                       */}
-                      {!legal && (
-                        <span className="text-xs sm:text-[10px] text-status-error block font-bold">
-                          ⚠️ {gateFor(a).reason ?? 'Not available to this model.'}
-                        </span>
-                      )}
+                      <GateNote gate={gate} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
@@ -690,7 +730,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         Save Mod: <strong className="text-theme-primary">{a.armourModifier || a.modifier || '-'}</strong>
                       </span>
                       <EquipControl
-                        gate={gateFor(a)}
+                        gate={gate}
                         owned={ownedIn(currentArmour as never, a)}
                         onAdd={() => handleEquipArmour(a)}
                         onRemove={() => {
@@ -710,7 +750,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedEquipment.map((e) => {
                 const isFormula = e.category === 'Formula' || /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(e.name) || Boolean(e.keywords?.includes('FORMULA')) || Boolean(e.keywords?.includes('ELIXIR'));
-                const legal = gateFor(e).allowed;
+                const gate = gateFor(e);
+                const legal = gate.allowed;
 
                 return (
                   <div
@@ -761,6 +802,8 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           ))}
                         </div>
                       )}
+
+                      <GateNote gate={gate} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
@@ -768,7 +811,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         {isFormula ? 'Alchemical Infusion' : 'Gear / Relic'}
                       </span>
                       <EquipControl
-                        gate={gateFor(e)}
+                        gate={gate}
                         owned={ownedIn(currentEquipment as never, e)}
                         onAdd={() => handleEquipEquipment(e)}
                         onRemove={() => {
@@ -776,7 +819,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           if (id) removeEquipment(warbandId, unitId, id);
                         }}
                         addLabel={isFormula ? 'Infuse Formula' : 'Equip'}
-                        addClassName={isFormula && gateFor(e).allowed
+                        addClassName={isFormula && gate.allowed
                           ? 'px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 bg-theme-accent hover:bg-status-error text-white'
                           : undefined}
                       />

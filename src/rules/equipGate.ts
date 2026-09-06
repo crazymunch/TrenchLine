@@ -18,7 +18,7 @@
  * This asks the same questions the validator asks, from the same data, so a
  * greyed-out button and a legality error can never disagree. Two of them:
  *
- *   may this model take the entry at all   `satisfiesOnlyFor`, against the
+ *   may this model take the entry at all   `onlyForVerdict`, against the
  *                                          armoury row's "X only" and the
  *                                          catalogue's own `unlockedBy`
  *   would one more break a carrying limit  `battlekitBreaches`, over what the
@@ -26,13 +26,21 @@
  */
 import type { Dataset } from '@/types/catalogue';
 import { restrictionsFor, type Armoury } from './armoury';
-import { parseRestrictions, satisfiesOnlyFor } from './restrictions';
+import { parseRestrictions, onlyForVerdict } from './restrictions';
 import { battlekitBreaches, type Carried } from './battlekitLimits';
 
 export interface EquipVerdict {
   allowed: boolean;
   /** The published sentence that forbids it, for the tooltip. */
   reason?: string;
+  /**
+   * A condition in the restriction that the roster cannot answer.
+   *
+   * The button stays enabled — see `onlyForVerdict`, refusing on an unreadable
+   * condition would make a legal item unbuyable by anyone — but the player is
+   * told what they are being trusted with. Silence here is the RC-06 bug.
+   */
+  caveat?: string;
 }
 
 export interface EquipContext {
@@ -44,6 +52,14 @@ export interface EquipContext {
   unit: { name: string; keywords?: string[]; roles?: string[] };
   /** Formulae, advancements and innate abilities — see `traitsOf`. */
   traits?: string[];
+  /**
+   * What the player has CHOSEN for this model — see `chosenBy`.
+   *
+   * Separate from `traits` because `traits` carries the entry's own printed
+   * abilities, and a restriction's "with X" clause asks what was bought, not
+   * what the entry offers. See `onlyForVerdict`.
+   */
+  taken?: string[];
   extraLimb?: boolean;
 }
 
@@ -56,19 +72,22 @@ export function canEquip(
 
   /*
     "Brazen Bull only", "ELITE only". The catalogue's own `unlockedBy` is
-    consulted through `satisfiesOnlyFor`, which is what makes Gargantuan Size
+    consulted through `onlyForVerdict`, which is what makes Gargantuan Size
     open the Titan Zulfiqar without anything here knowing either name.
   */
   const catalogueEntry = ctx.dataset.weapons.find(
     (w) => (item.id && w.id === item.id) || w.name === item.name);
+  const caveats: string[] = [];
   for (const r of (ctx.armoury ? restrictionsFor(ctx.armoury, ref) : [])
     .flatMap((raw) => parseRestrictions(raw))) {
     if (r.kind !== 'onlyFor') continue;
-    const ok = satisfiesOnlyFor(r.requires, ctx.unit, {
+    const verdict = onlyForVerdict(r.requires, ctx.unit, {
       selections: ctx.traits ?? [],
       unlockedBy: catalogueEntry?.unlockedBy,
+      taken: ctx.taken,
     });
-    if (!ok) return { allowed: false, reason: r.raw };
+    if (!verdict.met) return { allowed: false, reason: r.raw };
+    if (verdict.unknown) caveats.push(`${r.raw} — ${verdict.unknown}.`);
   }
 
   /*
@@ -89,5 +108,7 @@ export function canEquip(
     return { allowed: false, reason: fresh.raw };
   }
 
-  return { allowed: true };
+  return caveats.length
+    ? { allowed: true, caveat: caveats.join(' ') }
+    : { allowed: true };
 }

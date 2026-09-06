@@ -12,7 +12,7 @@
 import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp } from '@/types/catalogue';
 import type { Roster } from './costs';
 import { budgetState, unitCost } from './costs';
-import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
+import { parseRestrictions, onlyForVerdict, type Restriction } from './restrictions';
 import { armouryFor, offersOf, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury, withinGrants, type GrantUsage } from './variantArmoury';
@@ -43,6 +43,7 @@ export interface Violation {
     | 'force-over-threshold'
     | 'force-over-field-strength'
     | 'unparsed-restriction'
+    | 'restriction-unverified'
     | 'third-party-not-allowed'
     | 'variant-locked';
   message: string;
@@ -248,14 +249,41 @@ function checkWargear(
             ...(u.traits ?? []),
           ].filter(Boolean),
           unlockedBy: (catalogueWeapon as { unlockedBy?: string[] } | undefined)?.unlockedBy,
+          /*
+            The condition half of a compound restriction, and ONLY the
+            purchased options — `traits` above carries the entry's own printed
+            abilities, and "with Janissary Veteran" asks what the player bought.
+          */
+          taken: u.options?.map((o) => o.name ?? '').filter(Boolean) ?? [],
         };
-        if (r.kind === 'onlyFor' && profile
-            && !satisfiesOnlyFor(r.requires, profile, onlyForContext)) {
-          out.push(err({
-            code: 'wargear-restricted',
-            message: `${profile.name} cannot take ${w.name} — ${r.raw}.`,
-            rule: r.raw, unitId: u.id,
-          }));
+        if (r.kind === 'onlyFor' && profile) {
+          const verdict = onlyForVerdict(r.requires, profile, onlyForContext);
+          if (!verdict.met) {
+            out.push(err({
+              code: 'wargear-restricted',
+              message: `${profile.name} cannot take ${w.name} — ${r.raw}.`,
+              rule: r.raw, unitId: u.id,
+            }));
+          } else if (verdict.unknown) {
+            /*
+              The identity half of a compound restriction is satisfied and the
+              condition half cannot be read off the roster. Warned, not refused:
+              refusing would make the entry unbuyable by anyone, which is the
+              same silence as permitting it, pointed the other way.
+
+              Before RC-06 this branch did not exist and neither did the
+              warning — "Janissaries & Yüzbaşı with Janissary Veteran" parsed
+              cleanly as `onlyFor`, so it never reached `unparsed-restriction`
+              either, and an Azeb could be handed the Regimental Kaşık with
+              nothing on screen at all.
+            */
+            out.push(warn({
+              code: 'restriction-unverified',
+              message: `${profile.name} may take ${w.name}, but "${r.raw}" `
+                     + `${verdict.unknown} — check this by hand.`,
+              rule: r.raw, unitId: u.id,
+            }));
+          }
         }
         if (r.kind === 'limit' && r.perModel != null) {
           const n = perUnit.get(item.weaponId) ?? 0;

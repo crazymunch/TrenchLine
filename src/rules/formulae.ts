@@ -91,10 +91,13 @@ export function isInventedFormula(item: { name: string }): boolean {
 }
 
 interface UnitLike {
+  equippedWeapons?: Grouped[];
+  equippedArmour?: Grouped[];
   equippedEquipment?: Grouped[];
   specialUpgrades?: { name: string; category?: string }[];
   profileSnapshot?: { innateAbilities?: { name: string; description: string }[] };
   skills?: { name: string }[];
+  advancements?: string[];
 }
 
 /**
@@ -183,4 +186,35 @@ export function hasExtraLimb(unit: UnitLike | undefined | null): boolean {
       (a) => /additional arm|extra limb/i.test(a.name) || /additional arm|extra limb/i.test(a.description),
     ),
   );
+}
+
+/**
+ * Every name on a model that the PLAYER put there.
+ *
+ * The same list as `traitsOf` with one thing left out, and the omission is the
+ * whole point: `innateAbilities` is what the model's catalogue ENTRY prints,
+ * which is not the same as what its owner bought.
+ *
+ * The Yüzbaşı Captain is the case. Its entry prints an ability called
+ * "Janissary Veteran" whose text is an offer — "You can make the Yüzbaşı a
+ * Janissary Veteran … at a cost of +5" — so every Yüzbaşı ever recruited
+ * carries that name innately while almost none of them are Veterans. The
+ * Regimental Kaşık is restricted to "Janissaries & Yüzbaşı with Janissary
+ * Veteran only", and answering that condition from `traitsOf` would wave
+ * every Yüzbaşı through without a word (docs/RULES-COVERAGE-AUDIT.md RC-06).
+ *
+ * So this answers "what did the player choose", and `onlyForVerdict` reports
+ * `unknown` where the answer is not in here — a caveat on screen rather than
+ * either a silent permit or a refusal that makes the entry unbuyable.
+ */
+export function chosenBy(unit: UnitLike | undefined | null): string[] {
+  if (!unit) return [];
+  return [
+    ...(unit.equippedWeapons ?? []).map((w) => w.name),
+    ...(unit.equippedArmour ?? []).map((a) => a.name),
+    ...(unit.equippedEquipment ?? []).map((e) => e.name),
+    ...(unit.specialUpgrades ?? []).map((u) => u.name),
+    ...(unit.skills ?? []).map((s) => s.name),
+    ...(unit.advancements ?? []),
+  ].filter(Boolean);
 }
