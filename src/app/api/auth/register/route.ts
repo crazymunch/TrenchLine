@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth';
 import { sendVerification, notifyExistingAccount } from '@/lib/accountMail';
 import { limitAccountRoute } from '@/lib/api/rateLimit';
+import { handle } from '@/lib/api/http';
+import { readJson } from '@/lib/api/parse';
 
 /**
  * Create an account.
@@ -42,12 +44,23 @@ const ACCEPTED =
   + 'Check your inbox to finish setting up the account.';
 
 export async function POST(req: NextRequest) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Expected a JSON body.' }, { status: 400 });
-  }
+  /*
+    The bounded reader, and `handle` so its refusal is a response.
+
+    These three auth routes were the last that called `req.json()` — which
+    parses before anyone can object to the size, so the only ceiling on a
+    registration body was the host's. `readJson` measures first: the
+    `content-length` header, then the text actually received, because the
+    header is a claim rather than a fact.
+
+    Wrapping in `handle` is the other half. `readJson` reports a refusal by
+    throwing an `ApiError`, and `handle` is what turns one into its response —
+    without it an oversized body would have become an unhandled 500. It also
+    retires the hand-written try/catch these routes carried, which is the
+    duplication `http.ts` exists to end.
+  */
+  return handle('auth.register', async () => {
+  const body = await readJson(req);
 
   if (typeof body !== 'object' || body === null) {
     return NextResponse.json({ error: 'Expected a JSON object.' }, { status: 400 });
@@ -149,4 +162,5 @@ export async function POST(req: NextRequest) {
     created, and in three of the four branches nothing was.
   */
   return NextResponse.json({ ok: true, message: ACCEPTED }, { status: 202 });
+  });
 }

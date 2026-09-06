@@ -29,13 +29,19 @@ const { MIN_PASSWORD_LENGTH } = await import('@/lib/auth');
 
 const GOOD = 'a-long-enough-password';
 
-/** The handler only ever calls `req.json()`. */
-const post = async (body: unknown) => {
+/**
+ * The handler reads its body as TEXT, through `readJson`.
+ *
+ * Not `json()`: the body is measured against `MAX_BODY_BYTES` before it is
+ * parsed, because `req.json()` parses first and a caller choosing the size of
+ * the work is exactly what a cap has to catch. So the fixture serialises, and
+ * the malformed case sends text that is not JSON rather than a stub that
+ * throws — which is what a malformed body actually is on the wire.
+ */
+const post = async (body: unknown, headers?: Record<string, string>) => {
   const req = {
-    json: async () => {
-      if (body === Symbol.for('malformed')) throw new SyntaxError('bad json');
-      return body;
-    },
+    text: async () => (body === Symbol.for('malformed') ? '{not json' : JSON.stringify(body)),
+    headers: new Headers(headers ?? {}),
   };
   const res = await POST(req as never);
   return { status: res.status, body: await res.json() };

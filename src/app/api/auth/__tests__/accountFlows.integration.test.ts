@@ -36,11 +36,17 @@ const { POST: reset } = await import('../reset/route');
 const { verifyCredentials } = await import('@/lib/auth');
 
 const call = async (handler: (r: never) => Promise<Response>, body: unknown) => {
-  /* Headers, as a real request has them — the routes rate-limit on the
-     caller's address, and a fixture without them would exercise a path a
-     browser never takes. */
+  /*
+    `text`, not `json`, and headers as a real request has them.
+
+    The routes rate-limit on the caller's address, so a fixture without headers
+    exercises a path a browser never takes — and since these routes went
+    through `readJson`, the body is READ AS TEXT so it can be measured before
+    it is parsed. A stub offering only `json()` makes every assertion a 500
+    that looks like a failing check and is not one.
+  */
   const res = await handler({
-    json: async () => body,
+    text: async () => JSON.stringify(body),
     headers: new Headers({ 'x-forwarded-for': '203.0.113.1' }),
   } as never);
   return { status: res.status, body: await res.json() as Record<string, unknown> };
@@ -62,6 +68,42 @@ describeDb('account flows', () => {
     resetRateLimits();
     sent.length = 0;
     await prisma.user.deleteMany({ where: { email: { endsWith: DOMAIN } } });
+  });
+
+  /*
+    The body cap, on all three.
+
+    These routes called `req.json()` until now, which parses before anyone can
+    object to the size — so the 512 KB ceiling every other write path enforces
+    did not apply to them. Field-level limits are not a substitute: they run
+    AFTER the parse, so the work of parsing a body of a caller's choosing had
+    already been done by the time one of them said no.
+
+    Asserted on all three rather than one, because the point is that no write
+    path is left outside `readJson`.
+  */
+  describe('the body cap', () => {
+    const oversized = { email: `x${DOMAIN}`, password: 'x'.repeat(600 * 1024) };
+
+    it('refuses an oversized body before parsing it', async () => {
+      const res = await call(register, oversized);
+      expect(res.status).toBe(413);
+    });
+
+    it('refuses one on the reset route too', async () => {
+      expect((await call(reset, oversized)).status).toBe(413);
+    });
+
+    it('and on verify', async () => {
+      expect((await call(verify, oversized)).status).toBe(413);
+    });
+
+    it('still accepts a body of a realistic size', async () => {
+      // The guard on the guard: a cap that refused everything would pass all
+      // three assertions above and break the application.
+      const res = await call(register, { email: `sized${DOMAIN}`, password: PASSWORD });
+      expect(res.status).toBe(202);
+    });
   });
 
   describe('registration', () => {
