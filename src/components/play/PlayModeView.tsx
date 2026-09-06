@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
+import { LiveMirrorPanel } from './LiveMirrorPanel';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
 import { useDataset } from '../../rules/useDataset';
 import { DiceRoller } from './DiceRoller';
@@ -51,14 +52,12 @@ import {
   ChevronDown,
   ChevronUp,
   Swords,
-  Check,
   Sliders,
   Play,
   CloudRain,
   Lock,
   History,
-  TrendingUp,
-  Crown
+  TrendingUp
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
@@ -412,109 +411,29 @@ export const PlayModeView: React.FC = () => {
                     : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
                 }`}
               >
-                <span>🌐 Live Multi-Device Match Link</span>
-                <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-theme-primary text-theme-base font-bold uppercase tracking-wide">
-                  Coming Soon
-                </span>
+                <span>🌐 Live Match Mirror</span>
+                {/* No "Coming Soon": it is here. */}
               </button>
             </div>
           </div>
 
           {/* MULTIPLAYER LIVE MODE: COMING SOON / ARCHITECTURE ROADMAP VIEW */}
+          {/*
+            The live match mirror (LIVE-1).
+
+            What stood here was a roadmap: a Match PIN, a QR code, alliance
+            timers, a host who deals card decks — under an "In Development"
+            badge, describing all of it in the present tense. None of it was
+            built. A screen that describes a feature it does not have is the
+            same defect as a checklist that lags the code, and worse, because
+            a player reads it as an offer.
+
+            What replaced it is narrower and real: one device is the table,
+            and everyone else in the campaign can watch. See docs/LIVE-MODE.md
+            for why that shape first.
+          */}
           {matchMode === 'multiplayer-live' ? (
-            <div className="bg-theme-surface border-2 border-theme-accent rounded-md p-6 sm:p-8 space-y-6 shadow-2xl bevel-container animate-fade-in">
-              <div className="flex items-center space-x-3 border-b border-theme-border pb-4">
-                <div className="w-10 h-10 rounded bg-theme-accent/20 border border-theme-accent flex items-center justify-center">
-                  <Users className="w-5 h-5 text-status-error" />
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <h2 className="font-gothic font-bold text-lg sm:text-xl text-theme-text">
-                      LIVE MULTI-DEVICE MATCH LINK (HOST & JOIN)
-                    </h2>
-                    <span className="text-xs sm:text-[10px] px-2 py-0.5 rounded bg-theme-primary text-theme-base font-bold uppercase">
-                      In Development
-                    </span>
-                  </div>
-                  <p className="text-xs text-theme-muted">
-                    Play across multiple phones and tablets with central cloud synchronization.
-                  </p>
-                </div>
-              </div>
-
-              {/* Architecture & Role Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Host Role */}
-                <div className="bg-theme-base border-2 border-theme-primary rounded-md p-5 space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <Crown className="w-5 h-5 text-theme-primary" />
-                    <strong className="font-gothic font-bold text-sm text-theme-text uppercase">
-                      1. Match Host (Tabletop Director)
-                    </strong>
-                  </div>
-                  <ul className="space-y-2 text-xs text-theme-muted">
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
-                      <span>Initiates match lobby & generates shareable 4-digit Match PIN (e.g. <code>TL-4091</code>) or QR Code.</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
-                      <span>Selects scenario, deployment rules, and environmental hazards.</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-theme-primary flex-shrink-0 mt-0.5" />
-                      <span>Controls global actions: advances round turns, deals 52-card All Out War decks, and starts alliance timers.</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Player Role */}
-                <div className="bg-theme-base border-2 border-theme-border rounded-md p-5 space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-5 h-5 text-status-legal" />
-                    <strong className="font-gothic font-bold text-sm text-theme-text uppercase">
-                      2. Connected Players (Commanders)
-                    </strong>
-                  </div>
-                  <ul className="space-y-2 text-xs text-theme-muted">
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
-                      <span>Join via phone or tablet from anywhere at the table using the Match PIN.</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
-                      <span>Controls only their own warband: tracks wounds, activations, and rolls attacks from their own screen.</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 text-status-legal flex-shrink-0 mt-0.5" />
-                      <span>Real-time WebSocket sync: changes appear immediately on the Host and all opponents' devices without refreshing.</span>
-                    </li>
-                  </ul>
-                </div>
-
-              </div>
-
-              {/* Status Banner */}
-              <div className="p-4 bg-theme-elevated rounded border border-theme-primary/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <strong className="text-xs uppercase text-theme-primary block font-bold">
-                    🚀 Currently in Alpha Architecture Staging
-                  </strong>
-                  <p className="text-xs sm:text-[11px] text-theme-muted">
-                    Use the fully-featured <strong>Single Device Mode (Pass & Play)</strong> below to run local matches and multiplayer games on your iPad, phone, or laptop.
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setMatchMode('single-device')}
-                  className="px-5 py-2.5 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow-lg flex-shrink-0"
-                >
-                  Return to Single Device Mode
-                </button>
-              </div>
-
-            </div>
+            <LiveMirrorPanel warband={viewingWarband ?? null} turn={playTurn} />
           ) : (
             <>
               {/* 1. Scenario Selection & Map Preview */}
