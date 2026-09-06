@@ -47,8 +47,20 @@ function inviteCode(): string {
   return `TRENCH-${out}`;
 }
 
-/** What a campaign returns to someone who is in it. */
-const FULL = { members: true, territories: true, matches: true } as const;
+/**
+ * What a campaign returns to someone who is in it.
+ *
+ * `admin` is a NAME and nothing else. A member's device needs to say who runs
+ * the campaign — the hub prints it — and `adminId` is a cuid that names
+ * nobody. Selecting the whole user would hand every member the organiser's
+ * email address, which is the leak the warband directory's `creatorName`
+ * fallback exists to avoid; the display name is what other players already
+ * see each other by.
+ */
+const FULL = {
+  members: true, territories: true, matches: true,
+  admin: { select: { name: true } },
+} as const;
 
 /**
  * What an invite code returns to someone who is not in it yet.

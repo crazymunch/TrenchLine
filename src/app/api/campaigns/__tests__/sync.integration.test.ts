@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '@prisma/client';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Campaign sync, against a real migrated Postgres.
@@ -27,12 +28,20 @@ let session: { user: { id: string; email: string } } | null = null;
 const as = (user: { id: string; email: string } | null) => { session = user ? { user } : null; };
 
 const { POST: syncPOST } = await import('../sync/route');
+const { POST: campaignsPOST } = await import('../route');
 
 let opCounter = 0;
 const opId = () => `op-${++opCounter}`;
 
 const sync = async (body: unknown) => {
   const res = await syncPOST({
+    headers: { get: () => null }, text: async () => JSON.stringify(body),
+  } as never);
+  return { status: res.status, body: await res.json() };
+};
+
+const campaigns = async (body: unknown) => {
+  const res = await campaignsPOST({
     headers: { get: () => null }, text: async () => JSON.stringify(body),
   } as never);
   return { status: res.status, body: await res.json() };
@@ -427,6 +436,83 @@ describeDb('campaign sync, against a migrated database', () => {
       });
       expect(res.body.applied).toEqual([a, b]);
       expect(res.body.conflicts).toEqual([]);
+    });
+
+    /*
+      The case nothing covered, and the one every real published campaign is.
+
+      Every test above pushes an `entityId` read straight out of the database,
+      so the lookup matched on the primary key and the other half of the
+      mechanism was never exercised. `publishCampaignToCloud` sends
+      `localId: t.id` — the id the territory has ON THE DEVICE — and the server
+      mints its own primary key, so the organiser's own `territory.perk` and
+      `territory.claim` named a string no row's `id` has ever held. Every one
+      of them came back 404, from the device that created the campaign.
+
+      `TerritoryNode.localId` was added in SYNC-2 to make exactly this join
+      possible; the lookup simply never used it.
+    */
+    it('resolves a territory by the id the DEVICE knows it by', async () => {
+      as(organiser);
+      const cloudId = randomUUID();
+      const published = await campaigns({
+        action: 'publish',
+        cloudId,
+        name: 'Published Elsewhere',
+        territories: [{
+          localId: 'cf-the-bone-mill',
+          name: 'The Bone Mill',
+          type: 'Special Zone',
+          perk: '',
+          description: 'A mill that grinds what the guns leave.',
+        }],
+      });
+      expect(published.status).toBe(201);
+
+      const row = published.body.campaign.territories[0];
+      // The premise: the two ids are different strings, so matching on the
+      // primary key alone cannot work for a device that has never seen it.
+      expect(row.localId).toBe('cf-the-bone-mill');
+      expect(row.id).not.toBe('cf-the-bone-mill');
+
+      const res = await sync({
+        campaignId: cloudId,
+        ops: [{
+          kind: 'territory.perk', opId: opId(), entityId: 'cf-the-bone-mill',
+          baseVersion: 1, data: { perk: 'Outposts here grind bone.' },
+        }],
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.applied).toHaveLength(1);
+
+      const after = await prisma.territoryNode.findUnique({ where: { id: row.id } });
+      expect(after!.perk).toBe('Outposts here grind bone.');
+      expect(after!.perkSource).toBe('campaign');
+
+      await prisma.campaign.delete({ where: { id: cloudId } });
+    });
+
+    it('still scopes a local id to its own campaign', async () => {
+      // `localId` is unique PER CAMPAIGN and not globally, so the campaign is
+      // what makes the lookup single-valued. A local id belonging to another
+      // campaign must not resolve here.
+      as(organiser);
+      const cloudId = randomUUID();
+      await campaigns({
+        action: 'publish', cloudId, name: 'Somewhere Else',
+        territories: [{ localId: 'th-elsewhere', name: 'Elsewhere', type: 'Theatre', perk: '', description: '.' }],
+      });
+
+      const res = await sync({
+        campaignId,
+        ops: [{
+          kind: 'territory.perk', opId: opId(), entityId: 'th-elsewhere',
+          baseVersion: 1, data: { perk: 'Reach' },
+        }],
+      });
+      expect(res.status).toBe(404);
+
+      await prisma.campaign.delete({ where: { id: cloudId } });
     });
 
     it('has no operation that can write membership or the invite code', async () => {

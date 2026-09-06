@@ -87,7 +87,7 @@ function queuedState(campaign: Campaign, current: CampaignSyncState): { campaign
   return count ? { campaignSync: { kind: 'pending', count } } : {};
 }
 
-export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'publishCampaignToCloud' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'publishCampaignToCloud' | 'adoptCampaignFromCloud' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -304,6 +304,60 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         campaign: published,
         campaignSync: { kind: 'synced', at: new Date().toISOString() },
       });
+    },
+
+    /**
+     * Replace this device's campaign with one the server holds.
+     *
+     * SYNC-5. Sync has been push-only, so a player who spent an invite code
+     * (SYNC-4) got a real membership and a device that never showed them the
+     * campaign. This is the other direction.
+     *
+     * ## It replaces, and the caller has to mean it
+     *
+     * The store holds ONE campaign, so adopting is destructive by
+     * construction: whatever was here is gone. That is why this is not called
+     * automatically after a join. `JoinCampaignModal` asks first, and the
+     * question it asks names what would be lost — a campaign with unpushed
+     * edits in the outbox is somebody's evening of play, and "we downloaded
+     * over it" is not something to discover afterwards.
+     *
+     * ## The outbox is not carried over
+     *
+     * Operations queued against the OLD campaign are dropped, because they
+     * name a campaign this device no longer holds. Pushing them later would
+     * apply an edit made against one campaign to whichever one happened to be
+     * loaded — the outbox is keyed by cloud id precisely so that cannot
+     * happen, and this keeps it true.
+     */
+    adoptCampaignFromCloud: async (cloudId: string) => {
+      set({ campaignSync: { kind: 'syncing' } });
+
+      const pulled = await storage.pullCampaignFromCloud(cloudId);
+      if (!pulled.ok) {
+        /*
+          Nothing is replaced on a failure. A half-adopted campaign — the id
+          swapped and the map still the old one — is the state that would be
+          hardest to notice and hardest to undo.
+        */
+        set({ campaignSync: {
+          kind: 'error', reason: pulled.reason, detail: pulled.detail, pending: 0,
+        } });
+        return false;
+      }
+
+      const previous = get().campaign.cloudId;
+      if (previous && previous !== cloudId) {
+        // `clear` takes op ids, so the queue for that campaign is read first.
+        campaignOutbox.clear(campaignOutbox.forCampaign(previous).map((o) => o.opId));
+      }
+
+      storage.saveCampaign(pulled.data);
+      set({
+        campaign: pulled.data,
+        campaignSync: { kind: 'synced', at: new Date().toISOString() },
+      });
+      return true;
     },
 
     isPostBattleOpen: false,

@@ -2,6 +2,7 @@ import { Warband } from '../types/warband';
 import { repairInventedFormulae } from './repairSavedRosters';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
+import { parseCampaign } from './campaignFromCloud';
 import { UnitProfile, WeaponProfile } from '../types/rules';
 
 const WARBANDS_KEY = 'tc_warbands_v1';
@@ -349,6 +350,31 @@ export const storage = {
       if (!c?.id) throw new Error('The server returned no campaign.');
       return { id: String(c.id), alreadyMember: Boolean(data?.alreadyMember) };
     });
+  },
+
+  /**
+   * The whole campaign, mapped into the shape this device plays.
+   *
+   * SYNC-5, and the counterpart to `publishCampaignToCloud`. Until now the
+   * only read was `fetchCampaignFromCloud` below, which takes the id and the
+   * version and discards everything else — enough to push against, and nothing
+   * a device could play. So a player who spent an invite code got a real
+   * membership and a device that never showed them the campaign.
+   *
+   * Membership is what the server checks: a campaign the caller is not in is a
+   * 404, so this cannot be used to read a campaign by guessing its id.
+   *
+   * `parseCampaign` throws on a response that is not a campaign, and `request`
+   * turns that into a `server` failure — a malformed payload becomes a message
+   * on screen rather than an empty map.
+   */
+  async pullCampaignFromCloud(campaignId: string): Promise<CloudResult<Campaign>> {
+    if (!isBrowser) return { ok: false, reason: 'offline', detail: 'not a browser' };
+    return request(
+      `/api/campaigns?id=${encodeURIComponent(campaignId)}`,
+      {},
+      (data) => parseCampaign(data?.campaign),
+    );
   },
 
   async fetchCampaignFromCloud(campaignId: string): Promise<CloudResult<{ id: string; version: number }>> {

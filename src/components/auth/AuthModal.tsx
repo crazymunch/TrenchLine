@@ -121,7 +121,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* 1. Google OAuth Button */}
+        {/*
+          1. Google OAuth, and then a form that is emphatically NOT Google's.
+
+          This modal's shape — the official multi-colour Google mark, and two
+          fields below it separated by a thin rule reading "or with commander
+          credentials" — is the shape of a Google credential-harvesting page.
+          Safe Browsing scores DOM structure and a screenshot, and that pattern
+          on a young `.app` domain (a registry Google runs and scans hard) is
+          most of why trenchline.app was flagged as a deceptive page.
+
+          Nothing here was wrong; it was ambiguous. So the ambiguity is what is
+          removed: the Google button says where it sends you, the divider names
+          the alternative rather than merely marking one, and the password
+          field says whose password it is. A reader could work all three out
+          before; a classifier reading structure could not, and neither could a
+          visitor in a hurry.
+
+          The `GoogleMark` itself stays. It is vendored, it is used correctly
+          on a real "Sign in with Google" button, and removing it to please a
+          heuristic would make the button worse for everybody.
+        */}
         <div className="space-y-2">
           <button
             onClick={handleGoogleSignIn}
@@ -129,12 +149,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             className="w-full py-2.5 px-4 bg-[#FFFFFF] hover:bg-[#F1F3F5] text-[#1F1F1F] font-bold text-xs rounded shadow flex items-center justify-center space-x-3 transition-colors"
           >
             <GoogleMark />
-            <span>Sign in with Google</span>
+            <span>Continue with Google</span>
           </button>
+          <p className="text-[11px] leading-[1.5] text-theme-muted text-center">
+            Google handles that sign-in on their own site. TrenchLine never sees
+            your Google password.
+          </p>
 
           <div className="relative flex py-2 items-center">
             <div className="flex-grow border-t border-theme-border" />
-            <span className="flex-shrink mx-3 text-theme-muted text-xs sm:text-[10px] uppercase font-bold">or with commander credentials</span>
+            <span className="flex-shrink mx-3 text-theme-muted text-xs sm:text-[10px] uppercase font-bold text-center">
+              or use a TrenchLine account
+            </span>
             <div className="flex-grow border-t border-theme-border" />
           </div>
         </div>
@@ -181,8 +207,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="space-y-1">
+            {/*
+              Whose password, said on the label itself.
+
+              "Password:" under a Google button is the field a scanner — and a
+              hurried person — reads as a Google password box. This one is a
+              TrenchLine password, stored as a bcrypt hash on this site's own
+              database and nowhere else, and the label is the cheapest place to
+              say so.
+            */}
             <label htmlFor="auth-password" className="text-xs sm:text-[10px] uppercase text-theme-muted block">
-              Password:
+              TrenchLine Account Password:
             </label>
             <div className="relative">
               <Lock className="w-3.5 h-3.5 text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" />

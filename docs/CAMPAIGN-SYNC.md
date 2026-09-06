@@ -256,13 +256,78 @@ Rate-limited on the `invite` bucket **and keyed by the caller**, because a join
 is a code guess with a side effect and must not be the cheaper way to walk 75
 bits.
 
-**What it does not do, and the client says so.** The membership is real and the
-organiser sees it. The campaign does not appear on the joiner's device: sync is
-push-only — `syncCampaignWithCloud` sends an outbox and reads back a version —
-and nothing pulls a campaign down onto a device that does not already have it.
-That is SYNC-5. `JoinCampaignModal` states it in the confirmation panel rather
-than closing on a tick and leaving the player hunting for a campaign that never
-arrives.
+Joining puts the warband in the campaign. Getting the campaign onto the device
+is the separate, asked-for step below.
+
+### Pulling one down (SYNC-5)
+
+Until this, the only read was `fetchCampaignFromCloud`, which takes the id and
+the version and discards everything else — enough to push against, nothing a
+device could play. So a player who spent an invite code got a real membership
+and a device that never showed them the campaign.
+
+`storage.pullCampaignFromCloud` reads `GET /api/campaigns?id=…` and hands the
+payload to **`parseCampaign`** in `src/services/campaignFromCloud.ts`. That is a
+pure function on purpose: the mapping is the part worth exhausting, and it needs
+no browser, no fetch and no store to test.
+
+Rule 2 governs every field in it. A response missing something *structural* —
+no id, no name, members that are not a list — **throws**, and `request` turns
+that into a `server` failure the UI shows. The only fields that get a default
+are the ones the schema itself makes optional (`framework` on campaigns saved
+before the choice existed, `houseRules` on the ones that play it straight). The
+cost of getting that wrong is a campaign that looks downloaded and quietly has
+nobody in it.
+
+Four decisions inside the mapper are worth naming:
+
+| decision | why |
+|---|---|
+| the cloud id becomes the LOCAL id too | minting a second means this copy and the organiser's disagree about what to call one campaign, in every log and every outbox key |
+| a territory takes its `localId` where it has one | the store queues `entityId: territory.id`, so this keeps two devices naming the same territory the same way — see the local-id lookup below |
+| `isAdmin` is derived from `Campaign.adminId` | `CampaignMember` has no admin column; a flag on the row would be a client trusting a payload to say who runs the campaign |
+| `chronicleLogs` starts empty | it is a JSON column no operation writes, so filling it would put a history on screen that does not match the matches beside it |
+
+`adminName` is resolved in the order that gets it right most often: the
+organiser's own membership `playerName` (the name they chose for *this*
+campaign), then the account's display name — which is why `FULL` now selects
+`admin: { name }`, a display name and nothing else, because handing every member
+the organiser's email is the leak the directory's `creatorName` fallback exists
+to avoid — then `Commander`, which is already what `createCampaign` puts on a
+local campaign.
+
+**Adopting replaces, and the caller has to mean it.** The store holds one
+campaign, so `adoptCampaignFromCloud` is destructive by construction. It is
+therefore *not* run automatically after a join: `JoinCampaignModal` names the
+campaign that would be replaced and how many unsynced changes to it would be
+lost, and the player presses the button. A failed pull changes **nothing** — a
+half-adopted campaign, the id swapped and the map still the old one, is the
+state hardest to notice and hardest to undo. The old campaign's queued
+operations are dropped, because they name a campaign this device no longer
+holds and pushing them later would apply one campaign's edit to another;
+re-adopting the *same* campaign keeps them, because that is a refresh rather
+than a replacement.
+
+### The local-id lookup that was missing
+
+`TerritoryNode.localId` was added in SYNC-2 to let a client "join a server row
+back to its own without holding a mapping" — and **nothing performed the join**.
+`sync/route.ts` matched `op.entityId` against the primary key only, while the
+store queues the id the territory has ON THE DEVICE (`wt-*`, `th-*`,
+`cf-<slug>`). For any campaign published through `action: 'publish'`, where the
+server mints its own keys, those are never the same string: every
+`territory.perk` and `territory.claim` the organiser's own device sent came back
+404.
+
+The tests did not see it because they push ops using ids read straight out of
+the database — the one case that always matched.
+
+The lookup now resolves `id` **or** `localId`, scoped to the campaign. `localId`
+is unique per campaign and not globally, so the campaign is what keeps it
+single-valued, and a local id belonging to another campaign is still not-found.
+Both cases are covered now, and the fix is sabotage-proved: reverting the lookup
+to the primary key alone fails "resolves a territory by the id the DEVICE knows
+it by".
 
 ## Authority: who owns which field
 

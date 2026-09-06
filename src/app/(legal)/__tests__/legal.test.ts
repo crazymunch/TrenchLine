@@ -36,6 +36,7 @@ const ABOUT = flat(read('src/app/(legal)/about/page.tsx'));
 const LAYOUT = flat(read('src/app/(legal)/layout.tsx'));
 const LANDING = flat(read('src/components/landing/Landing.tsx'));
 const WARBANDS = read('src/app/api/warbands/route.ts');
+const AUTH_MODAL = flat(read('src/components/auth/AuthModal.tsx'));
 
 const DOCUMENTS = { privacy: PRIVACY, terms: TERMS, about: ABOUT };
 
@@ -142,6 +143,43 @@ describe('the documents', () => {
   it('name a way to delete an account', () => {
     expect(PRIVACY).toContain('delete');
     expect(LAYOUT).toContain('request to delete your account');
+  });
+});
+
+/**
+ * The sign-in form, and the pattern that got the site flagged.
+ *
+ * The three pages answer "who runs this". This answers the other half: the
+ * modal put the official multi-colour Google mark directly above two fields
+ * whose password label read "Password:", separated by a thin rule. That is the
+ * DOM and screenshot shape of a Google credential-harvesting page, and it is
+ * most of why a young `.app` domain — a registry Google runs and scans hard —
+ * scored as deceptive.
+ *
+ * Nothing there was wrong; it was ambiguous. These pin the three sentences
+ * that removed the ambiguity, because they read like copy and would be the
+ * first thing tidied away by someone who did not know what they were for.
+ */
+describe('the sign-in form does not read as Google’s', () => {
+  it('says Google handles its own sign-in', () => {
+    expect(AUTH_MODAL).toContain('TrenchLine never sees your Google password');
+  });
+
+  it('names the alternative rather than merely marking one', () => {
+    expect(AUTH_MODAL).toContain('or use a TrenchLine account');
+  });
+
+  it('says whose password the password field takes', () => {
+    // "Password:" under a Google button is the field a scanner reads as a
+    // Google password box.
+    expect(AUTH_MODAL).toContain('TrenchLine Account Password');
+    expect(AUTH_MODAL).not.toMatch(/> Password: </);
+  });
+
+  it('keeps the autocomplete hints a password manager needs', () => {
+    // Unrelated to the flag and worth not losing in the same edit.
+    expect(AUTH_MODAL).toContain("autoComplete=\"email\"");
+    expect(AUTH_MODAL).toContain("'new-password' : 'current-password'");
   });
 });
 
