@@ -64,6 +64,68 @@ export interface Constraint {
   condition?: string;
 }
 
+/**
+ * A limit that governs a whole option group rather than one option.
+ *
+ * Every field is read off the rule's own sentence, and the sentence travels
+ * with it in `text`: a screen that refuses a purchase has to be able to show
+ * the player why, and none of this is enforceable-looking enough to state
+ * without its source.
+ */
+export interface OptionGroupRule {
+  /** The catalogue's own group name — `Strains`, `Vile Corpus`. */
+  group: string;
+  /** The base allowance. */
+  max: number;
+  /**
+   * A further allowance the rule grants on a condition.
+   *
+   * "If the total cost of all of the other models in the Warband (including
+   * their Battlekit, etc.) adds up to 1000 or higher, Grail Thralls may have an
+   * additional Strain." OTHER models: the model being checked is excluded, or
+   * an expensive Thrall would qualify itself.
+   */
+  bonus?: {
+    /** How many more, on top of `max`. */
+    max: number;
+    /** What the rest of the roster must be worth. */
+    otherModelsCostAtLeast: Cost;
+    text: string;
+  };
+  /** "Once a model has a Strain, it cannot be removed or lost for any reason." */
+  permanent?: boolean;
+  /** "each Amalgam in a Warband must have a different Vile Corpus." */
+  distinctPerRoster?: boolean;
+  /** The rule as published. */
+  text: string;
+}
+
+/**
+ * A bound a Warband can earn during a campaign, and the price of earning it.
+ *
+ * Deliberately not a variant rule or a house rule: it is a published ability on
+ * one entry, claimed once, at a stated moment, by giving something up. The
+ * claim is a historical fact — a Warband that shrinks afterwards does not lose
+ * an Amalgam it already earned — so the conditions here are checked when it is
+ * claimed and never re-checked after.
+ */
+export interface EarnedRecruitment {
+  /** The ability whose text grants it. */
+  grantedBy: string;
+  /** The bound once earned, replacing the entry's base `max`. */
+  max: number;
+  /** What the rest of the Warband must be worth to claim it. */
+  otherModelsCostAtLeast: Cost;
+  /** Models that must be removed from the roster to claim it. */
+  spends: { profileName: string; count: number };
+  /** When the rule says it may be claimed. */
+  step: string;
+  /** Whether claiming includes an immediate recruit at no cost. */
+  freeRecruit: boolean;
+  /** The rule as published. */
+  text: string;
+}
+
 /* ---------------------------------------------------------------- options */
 
 /**
@@ -292,6 +354,32 @@ export interface UnitProfile {
    * the player, who can then apply the rule the pipeline cannot.
    */
   battlekitNote?: string;
+
+  /**
+   * How many of one option GROUP this model may hold, and whether it may ever
+   * let one go.
+   *
+   * `Constraint` sits on a single option and can only say "at most one Bolgias
+   * Gut". The Black Grail's rules are about the group: "A Grail Thrall ... can
+   * have up to 1 Strain", "each Amalgam can have 1 Vile Corpus". Both were
+   * published with governing clauses the dataset had no shape for, so the four
+   * Strains and the Vile Corpus shipped as five independent toggles — a player
+   * could take all four Strains, drop one after buying it, and give two
+   * Amalgams the same Corpus (docs/RULES-COVERAGE-AUDIT.md RC-07).
+   */
+  optionGroups?: OptionGroupRule[];
+
+  /**
+   * A recruitment bound this entry can EARN, and what earning it costs.
+   *
+   * `max` on this profile is the base bound and is correct as one. The Black
+   * Grail's *Curse on Creation* raises the Amalgam limit to 0-2, but only after
+   * a condition is met and six Grail Thralls are removed — so the app had no
+   * way to tell a legal second Amalgam from an illegal one, and neither
+   * recruitment nor the wizard consumed the ability at all
+   * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  earnedRecruitment?: EarnedRecruitment;
 
   /**
    * A printed statline that is NOT a recruitable model.
@@ -1094,6 +1182,27 @@ export interface TraumaProcedure {
   duplicateInjury: { rerollUntilUsable: boolean; text: string };
 }
 
+/**
+ * Calling for Reinforcements, as the rulebook sequences it.
+ *
+ * The prose is carried because a screen about to empty a player's Arsenal and
+ * Strongbox should quote the rule rather than paraphrase it. The four booleans
+ * are the clauses a caller must ACT on, and the build fails if the sentence
+ * behind one stops saying what it says — a consumer that greps rules text for
+ * "Discard" stops working the day the wording changes.
+ */
+export interface ReinforcementsSequence {
+  steps: { step: number; text: string }[];
+  /** Step 1. The Arsenal is abandoned when you fall back. */
+  discardsArsenal: boolean;
+  /** Step 2. The Strongbox pays for favours and goes to zero. */
+  zeroesStrongbox: boolean;
+  /** Step 5. Unspent Ducats are lost; the Arsenal starts the next game empty. */
+  unspentLost: boolean;
+  /** Step 6. The one clause the app already implemented. */
+  forgoesExplorationAndQuartermaster: boolean;
+}
+
 export interface Dataset {
   factions: Faction[];
   units: UnitProfile[];
@@ -1334,6 +1443,14 @@ export interface Dataset {
      * D66". See docs/RULES-COVERAGE-AUDIT.md RC-01 and RC-05.
      */
     traumaProcedure?: TraumaProcedure;
+    /**
+     * The Reinforcements Sequence, all six published steps.
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built before
+     * this existed states nothing, and a caller must be able to tell that from
+     * "Reinforcements costs nothing". The app charged nothing for two years.
+     */
+    reinforcements?: ReinforcementsSequence;
   };
   meta: {
     rulesetId: string;

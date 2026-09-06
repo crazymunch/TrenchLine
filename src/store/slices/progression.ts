@@ -8,10 +8,121 @@ import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import type { UnitTitleRecord } from '../../types/warband';
 import { persistWarbands } from '../persist';
+import type { Dataset } from '../../types/catalogue';
+import { eligibility } from '../../rules/earnedRecruitment';
 
-export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords'>;
+export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords' | 'claimEarnedRecruitment'>;
 
 export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, _get) => ({
+    /**
+     * Claim a recruitment bound the Warband has earned in play.
+     *
+     * "If the total cost of all of the other models in the Warband ... adds up
+     * to 1000 or higher, in any Promotion Step after making all Advancement
+     * Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do
+     * so, increase the Limit of Amalgams your Warband can have to 0-2, and
+     * immediately recruit an Amalgam at no cost."
+     *
+     * Every condition is checked HERE, once, because the claim is then a
+     * historical fact the validator only reads. It is also the only place they
+     * can be checked: a Warband that shrinks next game has still paid.
+     *
+     * Returns the outcome rather than throwing. The caller is a screen and
+     * "the Warband has 5 Thralls, not 6" is a sentence to show a player
+     * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+     */
+    claimEarnedRecruitment: (warbandId: string, profileId: string, dataset: Dataset) => {
+      const state = _get();
+      const warband = state.warbands.find((w) => w.id === warbandId);
+      if (!warband) return { ok: false as const, blockers: ['No such Warband.'] };
+
+      const profile = (dataset.units ?? []).find((u) => u.id === profileId);
+      if (!profile) {
+        return { ok: false as const, blockers: ['That entry is not in this ruleset.'] };
+      }
+
+      const verdict = eligibility(dataset, profile, {
+        units: warband.units.map((u) => ({
+          id: u.id,
+          /* The snapshot's name, not `baseProfileId`: hydration re-keys the
+             catalogue, so the roster's ids are not the dataset's. */
+          profileName: u.profileSnapshot?.name ?? u.customName,
+          name: u.customName,
+          totalCost: u.totalCost ?? 0,
+        })),
+        claims: warband.earnedRecruitment,
+      });
+      if (!verdict.eligible) return { ok: false as const, blockers: verdict.blockers };
+
+      const spentIds = new Set(verdict.spendable.map((u) => u.id));
+      const spent = verdict.spendable.map((u) => u.name);
+
+      set((st) => {
+        const updated = persistWarbands(
+          st.warbands.map((w) => (w.id !== warbandId ? w : {
+            ...w,
+            /* Removed from the Roster, not marked dead: the rule gives them up
+               rather than killing them, and a dead model is still on the sheet. */
+            units: w.units.filter((u) => !spentIds.has(u.id)),
+            earnedRecruitment: [
+              ...(w.earnedRecruitment ?? []),
+              {
+                profileId,
+                grantedBy: profile.earnedRecruitment!.grantedBy,
+                claimedAt: new Date().toISOString(),
+                spent,
+              },
+            ],
+            updatedAt: new Date().toISOString(),
+          })),
+          st.warbands,
+        );
+        return { warbands: updated };
+      });
+
+      /*
+        "…and immediately recruit an Amalgam at no cost."
+
+        Through the ordinary recruit path, so the model gets its default gear,
+        its wound track and its Leader nomination like any other — then marked
+        `grantedFree`, which is what stops the roster charging for it.
+
+        `addUnitToWarband` reads the hydrated catalogue, which can be empty if
+        the dataset has not loaded. That is reported rather than passed over:
+        a claim that took six Thralls and gave nothing back is the worst
+        possible silence here.
+      */
+      let freeRecruit: 'added' | 'unavailable' | 'not-granted' = 'not-granted';
+      if (profile.earnedRecruitment!.freeRecruit) {
+        const before = new Set(
+          (_get().warbands.find((w) => w.id === warbandId)?.units ?? []).map((u) => u.id));
+        /* Recruit through the HYDRATED catalogue's id, which is not the
+           dataset's — the same re-keying `eligibility` works around. */
+        const catalogueId = _get().units.find((u) => u.name === profile.name)?.id;
+        if (catalogueId) _get().addUnitToWarband(warbandId, catalogueId, profile.name);
+        const added = (_get().warbands.find((w) => w.id === warbandId)?.units ?? [])
+          .find((u) => !before.has(u.id));
+        freeRecruit = added ? 'added' : 'unavailable';
+        if (added) {
+          set((st) => ({
+            warbands: persistWarbands(
+              st.warbands.map((w) => (w.id !== warbandId ? w : {
+                ...w,
+                units: w.units.map((u) => (u.id !== added.id ? u : {
+                  ...u,
+                  grantedFree: profile.earnedRecruitment!.grantedBy,
+                  totalCost: 0,
+                })),
+              })),
+              st.warbands,
+            ),
+          }));
+        }
+      }
+
+      return { ok: true as const, spent, freeRecruit };
+    },
+
     updateUnitAdvancement: (warbandId, unitId, xp, isElite) => {
       set((state) => {
         let updated = state.warbands.map((w) => {

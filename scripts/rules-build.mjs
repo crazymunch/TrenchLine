@@ -22,7 +22,8 @@ import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules, parseVariantEconomy } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable,
-         parseCampaignPhaseSteps, parseTraumaProcedure } from './lib/parse-campaign.mjs';
+         parseCampaignPhaseSteps, parseTraumaProcedure,
+         parseReinforcementsSequence } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
@@ -40,7 +41,7 @@ import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
-import { createProvenance, applyLayers, applyArmouryRowOps, stampBase } from './lib/layers.mjs';
+import { createProvenance, applyLayers, applyArmouryRowOps, applyVariantOps, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
 
@@ -751,6 +752,15 @@ for (const ruleset of RULESETS) {
        */
       traumaProcedure: parseTraumaProcedure(),
       /**
+       * What Calling for Reinforcements costs, in the book's six steps.
+       *
+       * The app offered the choice and applied one clause of it — the
+       * forfeiture of Exploration and the Quartermaster — while keeping the
+       * Arsenal and the Strongbox the other five say you give up. See
+       * docs/RULES-COVERAGE-AUDIT.md RC-09.
+       */
+      reinforcements: parseReinforcementsSequence(),
+      /**
        * The six Campaign Phase Steps, in the order the book states.
        *
        * The app's post-battle wizard has four, two of them named things the
@@ -944,11 +954,22 @@ for (const ruleset of RULESETS) {
     app does not have and nobody is told about, which is the failure this
     pipeline exists to prevent.
   */
+  /*
+    Two second passes, over one deferred queue.
+
+    Armoury rows and Variant amendments are both deferred for the same reason —
+    neither collection exists when the layers run — but they are applied at
+    different points, because `dataset.variants` is assembled later still. Each
+    pass ignores the other's ops, so the accounting below counts only its own.
+  */
+  const variantDeferred = deferredOps.filter((d) => d.op.target?.kind === 'variant');
+  const armouryDeferred = deferredOps.filter((d) => d.op.target?.kind !== 'variant');
+
   const armouryOps = applyArmouryRowOps(dataset, deferredOps);
   if (armouryOps.applied + armouryOps.unresolved.length + armouryOps.notes.length
-      !== deferredOps.length) {
+      !== armouryDeferred.length) {
     throw new Error(
-      `rules-build: ${deferredOps.length} layer op(s) were deferred to the armoury `
+      `rules-build: ${armouryDeferred.length} layer op(s) were deferred to the armoury `
       + `pass but only ${armouryOps.applied + armouryOps.unresolved.length
          + armouryOps.notes.length} were accounted for. An op has been lost `
       + 'between the two passes.');
@@ -1108,6 +1129,37 @@ for (const ruleset of RULESETS) {
   // armouries: `dataset.variants` is assigned wholesale just above.
   if (ruleset.layers.includes(CARCASS_FRONT)) {
     dataset.variants.push(...carcassFront.variants);
+  }
+
+  /*
+    The layer ops that amend a Variant, now that the Variants exist.
+
+    Last of the three passes, because this is the first line at which
+    `dataset.variants` is complete — the catalogue entries, the book-only ones
+    and the supplement's four. An op deferred and never applied is a published
+    rule the app does not have, so the accounting is the same as the armoury
+    pass's and the failure is just as loud.
+  */
+  const variantOps = applyVariantOps(dataset, variantDeferred);
+  if (variantOps.applied + variantOps.unresolved.length + variantOps.notes.length
+      !== variantDeferred.length) {
+    throw new Error(
+      `rules-build: ${variantDeferred.length} layer op(s) were deferred to the variant `
+      + `pass but only ${variantOps.applied + variantOps.unresolved.length
+         + variantOps.notes.length} were accounted for. An op has been lost `
+      + 'between the passes.');
+  }
+  if (variantOps.unresolved.length) {
+    for (const u of variantOps.unresolved) {
+      console.log(`    ${u.op.op} on variant/${u.op.target?.id}: ${u.why}`);
+    }
+    throw new Error(
+      `rules-build: ${variantOps.unresolved.length} variant layer op(s) did not `
+      + 'resolve — THIS FAILS THE BUILD. An errata that cannot find its target is '
+      + 'a rule the app silently does not have.');
+  }
+  if (variantOps.applied) {
+    console.log(`  variant layer ops applied: ${variantOps.applied}`);
   }
 
   /*

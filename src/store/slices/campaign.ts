@@ -371,6 +371,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       casualties,
       advancements,
       experience,
+      tookReinforcements,
       narrative,
       narrativeReport,
       mvpUnitName,
@@ -394,7 +395,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         }));
 
         if (cas) {
-          newInjuries.push(cas.outcome);
+          /*
+            A Full Recovery writes nothing. Roll 12 Captured with the ransom
+            paid says "treat this result as a Full Recovery", and recording it
+            as an injury would mark the model permanently for something it
+            recovered from — and, under the duplicate-injury rule, stop it ever
+            being captured again (RC-04).
+          */
+          if (!cas.fullRecovery) newInjuries.push(cas.outcome);
           if (cas.isDead) isDead = true;
 
           const norm = cas.outcome.toLowerCase();
@@ -509,6 +517,63 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       }
 
       const matchId = `m-${Date.now()}`;
+      /*
+        Calling for Reinforcements has a price, and the app never charged it.
+
+        The book's sequence is six steps. This slice applied one — step 6, the
+        forfeiture of Exploration and the Quartermaster, which the wizard
+        enforces by hiding those controls — and silently skipped the five that
+        take something away:
+
+          1. "Discard any Battlekit that you have in the Arsenal … It is
+             abandoned when you fall back."   The stash was kept.
+          2. "Reduce the number of Ducats in your Strongbox to zero."
+             The treasury was kept, and then the game's Ducats added to it.
+          5. "Any Ducats you do not spend on reinforcements are lost, and you
+             cannot add any Battlekit to your Warbands Arsenal (both will start
+             the next game empty)."
+
+        So the one option that is supposed to be a costly bail-out left the
+        player strictly better off than not taking it. RULES-COVERAGE-AUDIT
+        RC-09.
+
+        Steps 3 and 4 — the recruiting allowance — are not applied here. They
+        govern what may be SPENT in the Roster Step that follows, which is the
+        builder, and the wizard shows the number rather than this slice
+        enforcing it. Charging it here would double-count against the budget the
+        builder already checks.
+      */
+      /*
+        Ransoms, which leave the Strongbox for the opponent's.
+
+        "If the ransom is paid, transfer the 👑 from your Strongbox to your
+        opponent's" — one direction only; this app holds one player's warband
+        and cannot credit the other side. Capped at what is actually there
+        because a Strongbox cannot go negative; the wizard caps the input at
+        the same number, so reaching the cap here means something else changed
+        the treasury between the two.
+      */
+      const ransomsAgreed = casualties.reduce((n, c) => n + (c.ransomPaid ?? 0), 0);
+      const ransomsPaid = Math.min(ransomsAgreed, activeWb.treasuryDucats);
+
+      const reinforcementsTaken = tookReinforcements;
+      const strongboxAfter = reinforcementsTaken
+        ? 0
+        : Math.max(0, activeWb.treasuryDucats + ducatsGained - ransomsPaid);
+      const stashAfter = reinforcementsTaken ? [] : activeWb.armoryStash;
+
+      if (ransomsPaid > 0) {
+        changesSummary.push(
+          `Ransom paid: ${ransomsPaid} Ducats transferred from the Strongbox to the `
+          + 'opponent’s.');
+      }
+
+      if (reinforcementsTaken) {
+        changesSummary.push(
+          `Called for Reinforcements: Arsenal discarded (${activeWb.armoryStash?.length ?? 0} `
+          + `item(s)) and Strongbox reduced to zero (${activeWb.treasuryDucats} Ducats).`);
+      }
+
       const matchSnapshot: WarbandSnapshot = {
         id: `snap-${Date.now()}`,
         timestamp: new Date().toISOString(),
@@ -518,11 +583,16 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         scenarioName,
         outcome,
         ducatCost: updatedUnits.reduce((s, u) => s + u.totalCost, 0),
-        treasuryDucats: activeWb.treasuryDucats + ducatsGained,
+        /*
+          The snapshot records what the warband IS after the step, so a player
+          reading their history sees the Arsenal and Strongbox they actually
+          have. Computed below and referenced here.
+        */
+        treasuryDucats: strongboxAfter,
         gloryPoints: activeWb.gloryPoints + gloryGained,
         unitCount: updatedUnits.filter((u) => !u.isDead).length,
         units: JSON.parse(JSON.stringify(updatedUnits)),
-        armoryStash: JSON.parse(JSON.stringify(activeWb.armoryStash)),
+        armoryStash: JSON.parse(JSON.stringify(stashAfter)),
         changesSummary,
         notes: narrativeReport || narrative
       };
@@ -531,7 +601,8 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       const updatedWarband: Warband = {
         ...activeWb,
         gloryPoints: activeWb.gloryPoints + gloryGained,
-        treasuryDucats: activeWb.treasuryDucats + ducatsGained,
+        treasuryDucats: strongboxAfter,
+        armoryStash: stashAfter,
         units: updatedUnits,
         snapshots: [...existingSnapshots, matchSnapshot]
       };

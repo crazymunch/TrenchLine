@@ -300,6 +300,19 @@ export interface AppState {
      * common answer: a warband of Troops earns no Experience at all.
      */
     experience: XpAward[],
+    /**
+     * Whether the player Called for Reinforcements, and so pays its price.
+     *
+     * The book's sequence has six steps. This slice applied one of them — the
+     * forfeiture of Exploration and the Quartermaster, which the wizard
+     * enforces by hiding controls — and none of the five that cost anything:
+     * the Arsenal was kept, the Strongbox was kept, and unspent Ducats were
+     * never lost. See `rules/campaign.ts` and RULES-COVERAGE-AUDIT RC-09.
+     *
+     * Required rather than optional. A caller that forgets it would silently
+     * restore exactly the bug this closes.
+     */
+    tookReinforcements: boolean,
     narrative: string,
     narrativeReport?: string,
     mvpUnitName?: string,
@@ -374,6 +387,17 @@ export interface AppState {
   removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
   setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
   toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string }) => void;
+  /**
+   * Claim a recruitment bound the Warband has earned in play.
+   *
+   * The Black Grail's *Curse on Creation* trades six Grail Thralls for a
+   * second Amalgam. Returns what happened rather than throwing: the caller is
+   * a screen, and "you have five Thralls, not six" is a sentence to show
+   * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  claimEarnedRecruitment: (warbandId: string, profileId: string, dataset: Dataset)
+    => { ok: true; spent: string[]; freeRecruit: 'added' | 'unavailable' | 'not-granted' }
+     | { ok: false; blockers: string[] };
   addUnitDeed: (warbandId: string, unitId: string, deed: string) => void;
   removeUnitDeed: (warbandId: string, unitId: string, deedIndex: number) => void;
   setUnitTitles: (warbandId: string, unitId: string, titles: string[]) => void;

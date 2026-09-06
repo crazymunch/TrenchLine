@@ -765,3 +765,171 @@ body {
 .meter.accent > i {
   background: rgb(var(--color-primary));
 }
+
+/* ===========================================================================
+   PRINT
+
+   `docs/EXPORT-ARCHITECTURE-BRIEF.md` §4.2, with Codex's `EXPORT-CODEX-REVIEW.md`
+   E6. Until now the app had no print stylesheet at all — one `print:hidden` on
+   an action bar — so `window.print()` produced the screen, in screen colours,
+   paginated wherever the browser felt like it.
+
+   None of the mobile-first system carries over. `dvh` is meaningless on paper,
+   a 44px touch target is meaningless under a pen, and the theme tokens are
+   built for a lit screen. Print gets its own small sheet, in physical units,
+   on white.
+   =========================================================================== */
+
+@media print {
+  /*
+    `size: auto` rather than a named page. A4 and US Letter differ in both
+    dimensions and the sheet has to be right on the paper actually loaded, so
+    the page size comes from the printer and the margin is stated in mm.
+
+    12mm clears the unprintable edge of every common desktop printer with a
+    little to spare, and leaves the browser's own header and footer room where
+    the user has those turned on.
+  */
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+
+  /*
+    Only the sheet prints.
+
+    `visibility` rather than `display`, because the sheet is rendered inside an
+    overlay whose ancestors are positioned: hiding an ancestor with `display`
+    takes the sheet with it. This hides everything and then shows the sheet's
+    own subtree.
+  */
+  body * {
+    visibility: hidden;
+  }
+  .print-sheet,
+  .print-sheet * {
+    visibility: visible;
+  }
+  .print-sheet {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  /* Ink, not backlight. Every colour in the sheet is stated here rather than
+     inherited from a theme built for a screen. */
+  .print-sheet,
+  .print-sheet * {
+    background: transparent !important;
+    color: #000 !important;
+    border-color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Physical units. A point is a point on any paper; a rem is whatever the
+     browser's root font happens to be. */
+  .print-sheet {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 10pt;
+    line-height: 1.35;
+  }
+  .print-sheet .print-title {
+    font-size: 18pt;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0 0 1mm;
+  }
+  .print-sheet .print-sub {
+    font-size: 9pt;
+    margin: 0 0 1mm;
+  }
+  .print-sheet .print-section {
+    font-size: 11pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 4mm 0 1.5mm;
+    border-bottom: 0.4pt solid #000;
+    padding-bottom: 0.8mm;
+  }
+
+  /*
+    A model is a table, and its name is a `<thead>`.
+
+    That is the whole pagination policy, and it is deliberate. `break-inside:
+    avoid` is not a pagination algorithm — a model with long rules text can
+    exceed a page on its own, and then `avoid` either does nothing or pushes a
+    blank page. A table header repeats on every page the table continues onto,
+    which is exactly the "continuation page with the model's name repeated"
+    that E6 asks for, with no clipping and no shrinking font.
+  */
+  .print-sheet .print-model {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 3mm;
+    page-break-inside: auto;
+  }
+  .print-sheet .print-model thead {
+    display: table-header-group;
+  }
+  .print-sheet .print-model th {
+    text-align: left;
+    font-size: 11pt;
+    font-weight: 700;
+    border-bottom: 0.8pt solid #000;
+    padding: 0 0 0.8mm;
+  }
+  .print-sheet .print-model td {
+    padding: 0.8mm 0 0;
+    vertical-align: top;
+  }
+  .print-sheet .print-model tr {
+    page-break-inside: avoid;
+  }
+
+  .print-sheet .print-stats {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .print-sheet .print-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /*
+    The notes box. Stated in millimetres because the ask behind it is physical:
+    "space for handwritten notes mid game" is a box you can get a pen into, not
+    a box that looks right at the author's zoom level. 22mm is four comfortable
+    lines of handwriting.
+  */
+  .print-sheet .print-notes {
+    border: 0.4pt solid #000;
+    min-height: 22mm;
+    margin-top: 1.5mm;
+  }
+
+  /* One column on paper regardless of what the screen was doing. */
+  .print-sheet .print-plain .print-model th,
+  .print-sheet .print-plain .print-model td {
+    padding-left: 0;
+  }
+
+  /* Never on paper: it is a control. */
+  .print-hide {
+    display: none !important;
+  }
+}
+
+/* The sheet does not exist on screen. It is built for paper only, and showing
+   it would be a second, worse copy of the roster the builder already draws. */
+@media screen {
+  .print-sheet {
+    display: none;
+  }
+}

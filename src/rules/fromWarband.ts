@@ -223,7 +223,9 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
       id: u.id,
       profileId: profile.id,
       name: u.customName || profile.name,
-      cost: profile.cost,
+      /* A model a rule gave the Warband costs nothing — see `grantedFree`.
+         Its gear is still bought and still counted. */
+      cost: u.grantedFree ? { ducats: 0, glory: 0 } : profile.cost,
       items: itemsOf(u, dataset, warband.factionId, unmatched),
       /*
         The model's own upgrades — Alchemical Formulae, Strains, Sagas.
@@ -283,6 +285,7 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
     factionId: warband.factionId,
     variantId: warband.variantId,
     allowThirdParty: warband.allowThirdParty,
+    earnedRecruitment: warband.earnedRecruitment,
     units,
     stash: (warband.armoryStash ?? []).map((s) => {
       const w = dataset.weapons.find((x) => key(x.name) === key((s as { name?: string }).name ?? ''));

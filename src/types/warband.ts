@@ -1,3 +1,4 @@
+import type { EarnedClaim } from '@/rules/earnedRecruitment';
 import type { LedgerEntry } from '@/rules/campaign';
 
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rules';
@@ -39,6 +40,16 @@ export interface ActiveUnit {
   scars?: { name: string; roll?: string; effect?: string }[];
   isDead: boolean;
   totalCost: number; // calculated ducats
+
+  /**
+   * A model a rule GAVE the Warband, and the rule that gave it.
+   *
+   * "…and immediately recruit an Amalgam at no cost." The roster prices every
+   * model at its catalogue cost, so without this the free model is charged
+   * against the budget and the entitlement is worth nothing
+   * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  grantedFree?: string;
 
   // Special Faction Rules & Fireteams
   fireteam?: string;
@@ -116,6 +127,13 @@ export interface Warband {
    * those entries are `hidden="true"` until the option is taken.
    */
   allowThirdParty?: boolean;
+  /**
+   * Recruitment bounds earned in play — see `rules/earnedRecruitment.ts`.
+   *
+   * Optional because every Warband saved before this existed has claimed none,
+   * and a missing list and an empty one are the same thing here.
+   */
+  earnedRecruitment?: EarnedClaim[];
   campaignId?: string;
   creatorId?: string;
   creatorName?: string;

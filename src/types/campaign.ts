@@ -28,6 +28,23 @@ export interface CasualtyRecord {
   outcome: string; // e.g. "D66 Roll: 14 - Dead", "D66 Roll: 33 - Lost Eye"
   isDead: boolean;
   statModifierApplied?: string;
+  /**
+   * The result resolved to a Full Recovery, so nothing is written to the
+   * model's injuries.
+   *
+   * Roll 12 Captured with the ransom paid: "treat this result as a Full
+   * Recovery". Recording the capture as an injury would leave the model
+   * permanently marked for something it recovered from — and, with the
+   * duplicate-injury rule, would block a future capture from being rolled at
+   * all (docs/RULES-COVERAGE-AUDIT.md RC-04).
+   */
+  fullRecovery?: boolean;
+  /**
+   * Ducats the players agreed and the owner paid, transferred out of the
+   * Strongbox. Absent where no ransom was involved; `0` is a legal price,
+   * because the rule says the two of you *can* negotiate one.
+   */
+  ransomPaid?: number;
 }
 
 export interface MatchParticipantSummary {

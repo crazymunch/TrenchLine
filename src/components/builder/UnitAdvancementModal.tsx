@@ -7,6 +7,7 @@ import { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { 
   Sparkles, 
   Skull, 
@@ -154,6 +155,30 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   */
   const factionUpgradeGroups = Object.entries(optionGroups)
     .filter(([group]) => group !== 'Fireteams');
+
+  /*
+    The rules that govern a whole group, which the app did not have.
+
+    A Grail Thrall "can have up to 1 Strain", with a second once the OTHER
+    models are worth enough, and a Strain "cannot be removed or lost for any
+    reason". Each Amalgam has one Vile Corpus and no two may share it. All five
+    options rendered as independent toggles: take all four Strains, drop one
+    after buying it, give two Amalgams the same Corpus, and nothing said
+    anything (docs/RULES-COVERAGE-AUDIT.md RC-07).
+  */
+  const warbandUnits = useStore((st) => st.warbands.find((w) => w.id === warbandId)?.units) ?? [];
+  const othersCost = {
+    ducats: warbandUnits.filter((u) => u.id !== unit.id)
+      .reduce((n, u) => n + (u.totalCost ?? 0), 0),
+    glory: 0,
+  };
+  /** The group rule and live allowance for one group name, or `null`. */
+  const groupRuleFor = (group: string) => {
+    const rule = optionGroupsOf(catalogueUnit).find((r) => r.group === group);
+    if (!rule) return null;
+    const taken = unitUpgrades.filter((u) => u.category === group).length;
+    return { rule, taken, ...allowanceGiven(rule, othersCost) };
+  };
 
   const handleAdjustXp = (delta: number) => {
     const newXp = Math.max(0, (unit.xp || 0) + delta);
@@ -597,23 +622,56 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                       <span>{group}</span>
                     </strong>
                     <span className="text-xs sm:text-[10px] text-theme-muted">
-                      {unitUpgrades.filter(u => u.category === group).length} selected
+                      {groupRuleFor(group)
+                        ? `${groupRuleFor(group)!.taken} of ${groupRuleFor(group)!.max} taken`
+                        : `${unitUpgrades.filter(u => u.category === group).length} selected`}
                     </span>
                   </div>
+
+                  {/* The sentence that sets the allowance, where there is one. */}
+                  {groupRuleFor(group) && (
+                    <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+                      {groupRuleFor(group)!.text}
+                    </p>
+                  )}
 
                   <div className="space-y-2">
                     {opts.map((opt) => {
                       const isSelected = unitUpgrades.some(u => u.id === opt.id);
+                      const governed = groupRuleFor(group);
+                      /* Full, and this is not one of the ones already taken. */
+                      const atLimit = !!governed && !isSelected
+                        && governed.taken >= governed.max;
+                      const onToggle = () => {
+                        if (atLimit) return;
+                        /*
+                          "Once a model has a Strain, it cannot be removed or
+                          lost for any reason." The roster is the player's own
+                          record and a mis-tap is a real thing, so this asks
+                          rather than refuses — but it says the rule first,
+                          which nothing did.
+                        */
+                        if (isSelected && governed?.rule.permanent
+                          && !window.confirm(
+                            `${governed.rule.text}\n\nRemove ${opt.name} anyway? `
+                            + 'Do this only to correct a mistake.')) return;
+                        toggleUnitSpecialUpgrade(warbandId, unit.id, {
+                          id: opt.id,
+                          name: opt.name,
+                          cost: opt.cost,
+                          category: group
+                        });
+                      };
                       return (
                         <div
                           key={opt.id}
-                          onClick={() => toggleUnitSpecialUpgrade(warbandId, unit.id, {
-                            id: opt.id,
-                            name: opt.name,
-                            cost: opt.cost,
-                            category: group
-                          })}
-                          className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
+                          onClick={onToggle}
+                          aria-disabled={atLimit}
+                          className={`p-3 rounded border flex items-start justify-between gap-3 transition-all ${
+                            atLimit
+                              ? 'bg-theme-base border-theme-border/40 opacity-50 cursor-not-allowed'
+                              : 'cursor-pointer'
+                          } ${
                             isSelected
                               ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
                               : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
@@ -624,6 +682,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                               <input
                                 type="checkbox"
                                 checked={isSelected}
+                                disabled={atLimit}
                                 onChange={() => {}}
                                 className="rounded border-theme-border text-theme-primary focus:ring-0"
                               />
@@ -637,6 +696,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                             <p className="text-xs sm:text-[11px] text-theme-muted pl-6 leading-relaxed">
                               {opt.description}
                             </p>
+                            {atLimit && (
+                              <p className="pl-6 text-xs sm:text-[10px] font-bold text-status-error">
+                                {governed!.taken} of {governed!.max} already taken.
+                              </p>
+                            )}
                           </div>
                         </div>
                       );

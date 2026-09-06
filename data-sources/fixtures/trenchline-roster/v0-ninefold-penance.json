@@ -1,0 +1,1619 @@
+{
+  "id": "wb-1757000000000",
+  "name": "The Ninefold Penance",
+  "factionId": "Trench Pilgrims",
+  "ducatLimit": 1000,
+  "treasuryDucats": 85,
+  "gloryPoints": 2,
+  "campaignId": "camp-1756900000000",
+  "creatorId": "usr_8f3c2a19",
+  "creatorName": "A Player",
+  "editedAt": "2026-08-30T19:04:11.412Z",
+  "units": [
+    {
+      "id": "u-1",
+      "customName": "Mother Superior Ilse",
+      "baseProfileId": "d3bd-024c-681c-eb6c",
+      "profileSnapshot": {
+        "id": "d3bd-024c-681c-eb6c",
+        "entryId": "3d5c-4325-5a12-5010",
+        "name": "War Prophet",
+        "factionId": "Trench Pilgrims",
+        "roles": [
+          "Elite",
+          "Leader"
+        ],
+        "keywords": [
+          "PILGRIM"
+        ],
+        "stats": {
+          "movement": "6\"/Infantry",
+          "movementInches": 6,
+          "movementType": "Infantry",
+          "ranged": "+2 Dice",
+          "melee": "+2 Dice",
+          "armour": "0",
+          "base": "32mm"
+        },
+        "cost": {
+          "ducats": 80,
+          "glory": 0
+        },
+        "min": 1,
+        "max": 1,
+        "abilities": [
+          {
+            "id": "8160-6b76-eb5c-dd34",
+            "name": "Day of His Wrath",
+            "description": "A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet."
+          },
+          {
+            "id": "9ec3-b93c-1646-ccec",
+            "name": "Loudspeakers",
+            "description": "A War Prophet can take a Loudspeakers ACTION. If they do so, take a Risky Success Roll for the model and add +2 DICE to the roll. If the roll is a Failure, the War Prophet’s Activation ends immediately. If the roll is a Success or Critical Success, you can move all friendly models within 8\" of the War Prophet up to 3\". They must end the move as close as possible to the nearest enemy model that was visible to them at the start of the move. This move can be used to bring a model within 1\" of an enemy model in which case the model counts as charging. If no enemy models are visible, they can move normally."
+          },
+          {
+            "id": "f2b4-37b5-8a5a-ac9f",
+            "name": "Memento Mori",
+            "description": "The War Prophet is touched by a higher power, and the revealed truth allows them a degree of protection against premature death. The first time the War Prophet suffers an Out of Action result on the Injury Table, it is treated as a No Effect result instead. A War Prophet cannot have the TOUGH Keyword."
+          },
+          {
+            "id": "4458-54c7-2ee5-90df",
+            "name": "Laying on Hands",
+            "description": "A War Prophet can take a Laying on of Hands ACTION. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success, remove 1 BLOOD MARKER from a friendly model within 6\" of the War Prophet. If the roll is a Critical Success, remove 3 BLOOD MARKERS from a friendly model within 6\" of the War Prophet instead of only 1. The War Prophet can use this ACTION to heal themselves."
+          }
+        ],
+        "options": [
+          {
+            "id": "5d80-7b84-5e97-9b76",
+            "name": "Holy Icon Armour",
+            "group": "Armour",
+            "cost": {
+              "ducats": 30,
+              "glory": 0
+            },
+            "profileId": "0b4c-42b8-cf94-e25f",
+            "description": "-",
+            "constraints": [
+              {
+                "id": "ebbe-1087-0fa8-011c",
+                "type": "max",
+                "value": 1,
+                "scope": "parent",
+                "includeChildSelections": false
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "all": [
+                    {
+                      "type": "atLeast",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "roster",
+                      "childId": "0d88-774c-22af-e2fc",
+                      "childName": "Procession of the Sacred Affliction",
+                      "includeChildSelections": true
+                    },
+                    {
+                      "type": "instanceOf",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "model",
+                      "childId": "3de0-192c-3ec2-51be",
+                      "childName": "Elite"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "battlekit": [],
+        "constraints": [
+          {
+            "id": "8964-247e-4f1c-6eff-min",
+            "type": "min",
+            "value": 1,
+            "scope": "roster",
+            "includeChildSelections": true
+          },
+          {
+            "id": "8964-247e-4f1c-6eff-max",
+            "type": "max",
+            "value": 1,
+            "scope": "roster",
+            "includeChildSelections": true
+          }
+        ],
+        "modifiers": [
+          {
+            "op": "set",
+            "field": "hidden",
+            "value": "true",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "roster",
+              "childId": "65bd-e9b5-eea8-5f65",
+              "childName": "Children of Yggdrasil",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.melee",
+            "value": "1",
+            "origin": "profile:War Prophet",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2a4f-c258-5d70-a3c5",
+              "childName": "Melee Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.ranged",
+            "value": "1",
+            "origin": "profile:War Prophet",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "3564-70ed-8e9e-6ee8",
+              "childName": "Ranged Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "decrement",
+            "field": "stats.armour",
+            "value": "1",
+            "origin": "profile:War Prophet",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2bc5-1430-4c95-efe0",
+              "childName": "Shields",
+              "includeChildSelections": true
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-1",
+            "origin": "profile:War Prophet",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "5d80-7b84-5e97-9b76",
+                  "childName": "Holy Icon Armour",
+                  "includeChildSelections": true
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "ea8a-62b2-605f-6aa6",
+                  "childName": "Standard Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-2",
+            "origin": "profile:War Prophet",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "0e4c-78a2-26bf-6e0e",
+                  "childName": "Reinforced Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "hidden",
+            "value": "false",
+            "origin": "profile:Day of His Wrath",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "roster",
+              "childId": "8b6b-5bd4-c742-bb12",
+              "childName": "Cavalcade of the Tenth Plague",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "set",
+            "field": "hidden",
+            "value": "true",
+            "origin": "profile:Laying on Hands",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "roster",
+              "childId": "8b6b-5bd4-c742-bb12",
+              "childName": "Cavalcade of the Tenth Plague",
+              "includeChildSelections": true
+            }
+          }
+        ],
+        "sourceFile": "Trench Pilgrims.cat",
+        "category": "Trooper"
+      },
+      "equippedWeapons": [
+        {
+          "id": "34a2-3a0d-5746-c24f",
+          "entryId": "1d58-aeae-052d-6463",
+          "name": "Claimed: Flail/Scourge",
+          "type": "Battlekit",
+          "range": "",
+          "keywords": [],
+          "rules": "This model can use a Flail/Scourge as though it were from the Trench Pilgrims.",
+          "cost": 0,
+          "constraints": [
+            {
+              "id": "25d8-adba-9150-9762",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [],
+          "restrictions": [],
+          "factionId": "Court of the Seven-Headed Serpent",
+          "sourceFile": "Court of the Seven-Headed Serpent.cat",
+          "instanceId": "w-u-1"
+        }
+      ],
+      "equippedArmour": [],
+      "equippedEquipment": [],
+      "xp": 5,
+      "isElite": true,
+      "advancements": [
+        "+1 Melee"
+      ],
+      "skills": [],
+      "injuries": [
+        "D66: 33 - Lost an Eye: The model loses an eye."
+      ],
+      "scars": [],
+      "isDead": false,
+      "totalCost": 80,
+      "currentWounds": 1,
+      "maxWounds": 1,
+      "bloodMarkers": 2,
+      "blessingMarkers": 1,
+      "status": "Out of Action",
+      "hasActedThisTurn": true
+    },
+    {
+      "id": "u-2",
+      "customName": "Brother Anselm",
+      "baseProfileId": "a1dc-6afc-2a7c-d293",
+      "profileSnapshot": {
+        "id": "a1dc-6afc-2a7c-d293",
+        "entryId": "3249-993c-9f42-06ad",
+        "name": "Trench Pilgrim",
+        "factionId": "Trench Pilgrims",
+        "roles": [
+          "Troop"
+        ],
+        "keywords": [
+          "PILGRIM"
+        ],
+        "stats": {
+          "movement": "6\"/Infantry",
+          "movementInches": 6,
+          "movementType": "Infantry",
+          "ranged": "+0 Dice",
+          "melee": "+0 Dice",
+          "armour": "0",
+          "base": "25mm"
+        },
+        "cost": {
+          "ducats": 30,
+          "glory": 0
+        },
+        "min": null,
+        "max": null,
+        "abilities": [
+          {
+            "id": "87c7-8ddb-b2bb-5b27",
+            "name": "Resurrection",
+            "description": "If a Trench Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 ducats. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model"
+          }
+        ],
+        "options": [
+          {
+            "id": "5d80-7b84-5e97-9b76",
+            "name": "Holy Icon Armour",
+            "group": "Armour",
+            "cost": {
+              "ducats": 30,
+              "glory": 0
+            },
+            "profileId": "0b4c-42b8-cf94-e25f",
+            "description": "-",
+            "constraints": [
+              {
+                "id": "ebbe-1087-0fa8-011c",
+                "type": "max",
+                "value": 1,
+                "scope": "parent",
+                "includeChildSelections": false
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "all": [
+                    {
+                      "type": "atLeast",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "roster",
+                      "childId": "0d88-774c-22af-e2fc",
+                      "childName": "Procession of the Sacred Affliction",
+                      "includeChildSelections": true
+                    },
+                    {
+                      "type": "instanceOf",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "model",
+                      "childId": "3de0-192c-3ec2-51be",
+                      "childName": "Elite"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "0291-cf87-b71d-44db",
+            "name": "Giant Slayer",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 10,
+              "glory": 0
+            },
+            "profileId": "be8f-bf34-4737-dbd9",
+            "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+            "constraints": [
+              {
+                "id": "5757-ec2d-8533-a46b",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "force",
+                  "childId": "0d82-443e-9dab-c2b3",
+                  "childName": "Giant Slayer",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "cb47-e3bd-dd8e-d3c1",
+            "name": "Hold the Line",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 20,
+              "glory": 0
+            },
+            "profileId": "af44-7191-ec31-ac07",
+            "description": "This model gains the skill Hard as Nails.",
+            "constraints": [
+              {
+                "id": "54e2-caf8-e6c4-15eb",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "5c15-8811-0649-288e",
+                  "childName": "Hold the Line",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "30a8-187e-06ec-f7fb",
+            "name": "Flutterstring",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 20,
+              "glory": 0
+            },
+            "profileId": "91f8-efec-4334-de8b",
+            "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+            "constraints": [
+              {
+                "id": "f85b-7f11-9ecd-2b2e",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "895c-2afb-09b7-c606",
+                  "childName": "Flutterstring",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "8ca1-fdb1-862f-667f",
+            "name": "Headhunter",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "4ef6-94e6-2339-505e",
+            "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+            "constraints": [
+              {
+                "id": "7f84-d144-76a8-c02f",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "1d1e-67ff-4bec-460c",
+                  "childName": "Headhunter",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "c3fa-7786-fe88-5809",
+            "name": "Eternal Onslaught",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "f01a-46f8-8063-d30c",
+            "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+            "constraints": [
+              {
+                "id": "2746-95c0-d67e-950a",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "04d9-3450-dc3a-c546",
+                  "childName": "Eternal Onslaught",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "36ee-8526-0598-d8f2",
+            "name": "Old Reliable",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "48f8-fc2f-2cee-f7b2",
+            "description": "This model has a +1 DICE to the chosen action.",
+            "constraints": [
+              {
+                "id": "0fe8-0d8a-48d1-ff99",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "29f0-f033-ccb8-07eb",
+                  "childName": "Old Reliable",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "8547-f934-c787-8ae4",
+            "name": "Storied",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "6596-a39c-490e-e4ab",
+            "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+            "constraints": [
+              {
+                "id": "03eb-c982-3ca6-b8a6",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "d7b6-a96f-44d2-9ed1",
+                  "childName": "Storied",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "491e-da83-e1ba-f95c",
+            "name": "Fleet of Foot",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 10,
+              "glory": 0
+            },
+            "profileId": "8cf0-1586-6c76-19ba",
+            "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+            "constraints": [
+              {
+                "id": "7f7b-f012-ad9a-0ddf",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "7f4c-ccc9-6417-30c2",
+                  "childName": "Fleet of Foot",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          }
+        ],
+        "battlekit": [],
+        "constraints": [],
+        "modifiers": [
+          {
+            "op": "add",
+            "field": "category",
+            "value": "afcc-5f24-1c7c-63c4",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "6082-859c-8347-2a94",
+              "childName": "Zealot Strength"
+            }
+          },
+          {
+            "op": "set",
+            "field": "name",
+            "value": "Martyr-Penitent",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "replace",
+            "field": "stats.melee",
+            "value": "+1 DICE",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.melee",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2a4f-c258-5d70-a3c5",
+              "childName": "Melee Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.ranged",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "3564-70ed-8e9e-6ee8",
+              "childName": "Ranged Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.melee",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "set",
+            "field": "stats.base",
+            "value": "32mm",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "6082-859c-8347-2a94",
+                  "childName": "Zealot Strength"
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "c84b-02db-94df-7406",
+                  "childName": "Wrath of God"
+                }
+              ]
+            }
+          },
+          {
+            "op": "decrement",
+            "field": "stats.armour",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2bc5-1430-4c95-efe0",
+              "childName": "Shields",
+              "includeChildSelections": true
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "5d80-7b84-5e97-9b76",
+                  "childName": "Holy Icon Armour",
+                  "includeChildSelections": true
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "ea8a-62b2-605f-6aa6",
+                  "childName": "Standard Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-2",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "0e4c-78a2-26bf-6e0e",
+                  "childName": "Reinforced Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "hidden",
+            "value": "true",
+            "origin": "profile:Resurrection",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "52bc-6b21-136a-608d",
+                  "childName": "War Pilgrimage of Saint Methodius",
+                  "includeChildSelections": true
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "b32b-6d55-9163-8486",
+                  "childName": "Martyred"
+                }
+              ]
+            }
+          }
+        ],
+        "sourceFile": "Trench Pilgrims.cat",
+        "category": "Trooper"
+      },
+      "equippedWeapons": [
+        {
+          "id": "34a2-3a0d-5746-c24f",
+          "entryId": "1d58-aeae-052d-6463",
+          "name": "Claimed: Flail/Scourge",
+          "type": "Battlekit",
+          "range": "",
+          "keywords": [],
+          "rules": "This model can use a Flail/Scourge as though it were from the Trench Pilgrims.",
+          "cost": 0,
+          "constraints": [
+            {
+              "id": "25d8-adba-9150-9762",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [],
+          "restrictions": [],
+          "factionId": "Court of the Seven-Headed Serpent",
+          "sourceFile": "Court of the Seven-Headed Serpent.cat",
+          "instanceId": "w-u-2"
+        }
+      ],
+      "equippedArmour": [],
+      "equippedEquipment": [],
+      "xp": 0,
+      "isElite": false,
+      "advancements": [],
+      "skills": [],
+      "injuries": [],
+      "scars": [],
+      "isDead": false,
+      "totalCost": 30,
+      "currentWounds": 1,
+      "maxWounds": 1,
+      "bloodMarkers": 2,
+      "blessingMarkers": 1,
+      "status": "Downed",
+      "hasActedThisTurn": true
+    },
+    {
+      "id": "u-3",
+      "customName": "Sister Wilhelmina",
+      "baseProfileId": "a1dc-6afc-2a7c-d293",
+      "profileSnapshot": {
+        "id": "a1dc-6afc-2a7c-d293",
+        "entryId": "3249-993c-9f42-06ad",
+        "name": "Trench Pilgrim",
+        "factionId": "Trench Pilgrims",
+        "roles": [
+          "Troop"
+        ],
+        "keywords": [
+          "PILGRIM"
+        ],
+        "stats": {
+          "movement": "6\"/Infantry",
+          "movementInches": 6,
+          "movementType": "Infantry",
+          "ranged": "+0 Dice",
+          "melee": "+0 Dice",
+          "armour": "0",
+          "base": "25mm"
+        },
+        "cost": {
+          "ducats": 30,
+          "glory": 0
+        },
+        "min": null,
+        "max": null,
+        "abilities": [
+          {
+            "id": "87c7-8ddb-b2bb-5b27",
+            "name": "Resurrection",
+            "description": "If a Trench Pilgrim is killed after a game (▶ see Campaign in the Trench Crusade Digital Rulebook), they can be resurrected in the following Quartermaster Step as a Martyr Penitent with the Martyr Penitent Profile for a cost 45 ducats. Add -1 INJURY DICE to Injury Rolls for a Martyr Penitent. A Martyr Penitent keeps their Battlekit and Zealot Strength if the ability was purchased, but loses any Scars, Experience, and Advancements. Martyrdom Pills have no effect on a Martyr Penitent model"
+          }
+        ],
+        "options": [
+          {
+            "id": "5d80-7b84-5e97-9b76",
+            "name": "Holy Icon Armour",
+            "group": "Armour",
+            "cost": {
+              "ducats": 30,
+              "glory": 0
+            },
+            "profileId": "0b4c-42b8-cf94-e25f",
+            "description": "-",
+            "constraints": [
+              {
+                "id": "ebbe-1087-0fa8-011c",
+                "type": "max",
+                "value": 1,
+                "scope": "parent",
+                "includeChildSelections": false
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "all": [
+                    {
+                      "type": "atLeast",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "roster",
+                      "childId": "0d88-774c-22af-e2fc",
+                      "childName": "Procession of the Sacred Affliction",
+                      "includeChildSelections": true
+                    },
+                    {
+                      "type": "instanceOf",
+                      "value": "1",
+                      "field": "selections",
+                      "scope": "model",
+                      "childId": "3de0-192c-3ec2-51be",
+                      "childName": "Elite"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "0291-cf87-b71d-44db",
+            "name": "Giant Slayer",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 10,
+              "glory": 0
+            },
+            "profileId": "be8f-bf34-4737-dbd9",
+            "description": "This model has a +1 INJURY DICE to injure models with 50mm or larger base",
+            "constraints": [
+              {
+                "id": "5757-ec2d-8533-a46b",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "force",
+                  "childId": "0d82-443e-9dab-c2b3",
+                  "childName": "Giant Slayer",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "cb47-e3bd-dd8e-d3c1",
+            "name": "Hold the Line",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 20,
+              "glory": 0
+            },
+            "profileId": "af44-7191-ec31-ac07",
+            "description": "This model gains the skill Hard as Nails.",
+            "constraints": [
+              {
+                "id": "54e2-caf8-e6c4-15eb",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "5c15-8811-0649-288e",
+                  "childName": "Hold the Line",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "30a8-187e-06ec-f7fb",
+            "name": "Flutterstring",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 20,
+              "glory": 0
+            },
+            "profileId": "91f8-efec-4334-de8b",
+            "description": "This model gains IGNORE LONG RANGE and IGNORE COVER.",
+            "constraints": [
+              {
+                "id": "f85b-7f11-9ecd-2b2e",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "895c-2afb-09b7-c606",
+                  "childName": "Flutterstring",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "8ca1-fdb1-862f-667f",
+            "name": "Headhunter",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "4ef6-94e6-2339-505e",
+            "description": "This model gains FEAR and gains +1 DICE to hit against models with the LEADER keyword.",
+            "constraints": [
+              {
+                "id": "7f84-d144-76a8-c02f",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "1d1e-67ff-4bec-460c",
+                  "childName": "Headhunter",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "c3fa-7786-fe88-5809",
+            "name": "Eternal Onslaught",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "f01a-46f8-8063-d30c",
+            "description": "This model can neither Retreat, nor can enemy models Retreat from it. Additionally, this model gains IGNORE OFFHANDE PENALITY.",
+            "constraints": [
+              {
+                "id": "2746-95c0-d67e-950a",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "04d9-3450-dc3a-c546",
+                  "childName": "Eternal Onslaught",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "36ee-8526-0598-d8f2",
+            "name": "Old Reliable",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "48f8-fc2f-2cee-f7b2",
+            "description": "This model has a +1 DICE to the chosen action.",
+            "constraints": [
+              {
+                "id": "0fe8-0d8a-48d1-ff99",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "29f0-f033-ccb8-07eb",
+                  "childName": "Old Reliable",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "8547-f934-c787-8ae4",
+            "name": "Storied",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 15,
+              "glory": 0
+            },
+            "profileId": "6596-a39c-490e-e4ab",
+            "description": "When you are recording the Experience Points earned by the models in your Warband in the Campaign Phase, you can give each model with the ELITE Keyword that does not also have this Skill +1 extra Experience Point. You can’t pick the model with the Skill itself.",
+            "constraints": [
+              {
+                "id": "03eb-c982-3ca6-b8a6",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "d7b6-a96f-44d2-9ed1",
+                  "childName": "Storied",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "491e-da83-e1ba-f95c",
+            "name": "Fleet of Foot",
+            "group": "Sagas",
+            "cost": {
+              "ducats": 10,
+              "glory": 0
+            },
+            "profileId": "8cf0-1586-6c76-19ba",
+            "description": "This model gains a +1 DICE to its Dash ACTION, and can reroll Dangerous Terrain checks.",
+            "constraints": [
+              {
+                "id": "7f7b-f012-ad9a-0ddf",
+                "type": "max",
+                "value": 1,
+                "scope": "roster",
+                "includeChildSelections": true
+              }
+            ],
+            "modifiers": [
+              {
+                "op": "set",
+                "field": "hidden",
+                "value": "false",
+                "origin": "entry",
+                "when": {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "7f4c-ccc9-6417-30c2",
+                  "childName": "Fleet of Foot",
+                  "includeChildSelections": true
+                }
+              }
+            ]
+          }
+        ],
+        "battlekit": [],
+        "constraints": [],
+        "modifiers": [
+          {
+            "op": "add",
+            "field": "category",
+            "value": "afcc-5f24-1c7c-63c4",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "6082-859c-8347-2a94",
+              "childName": "Zealot Strength"
+            }
+          },
+          {
+            "op": "set",
+            "field": "name",
+            "value": "Martyr-Penitent",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "replace",
+            "field": "stats.melee",
+            "value": "+1 DICE",
+            "origin": "entry",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.melee",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2a4f-c258-5d70-a3c5",
+              "childName": "Melee Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.ranged",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "3564-70ed-8e9e-6ee8",
+              "childName": "Ranged Proficiency [7]",
+              "includeChildSelections": true
+            }
+          },
+          {
+            "op": "increment",
+            "field": "stats.melee",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "b32b-6d55-9163-8486",
+              "childName": "Martyred"
+            }
+          },
+          {
+            "op": "set",
+            "field": "stats.base",
+            "value": "32mm",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "6082-859c-8347-2a94",
+                  "childName": "Zealot Strength"
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "c84b-02db-94df-7406",
+                  "childName": "Wrath of God"
+                }
+              ]
+            }
+          },
+          {
+            "op": "decrement",
+            "field": "stats.armour",
+            "value": "1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "type": "atLeast",
+              "value": "1",
+              "field": "selections",
+              "scope": "self",
+              "childId": "2bc5-1430-4c95-efe0",
+              "childName": "Shields",
+              "includeChildSelections": true
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-1",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "5d80-7b84-5e97-9b76",
+                  "childName": "Holy Icon Armour",
+                  "includeChildSelections": true
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "ea8a-62b2-605f-6aa6",
+                  "childName": "Standard Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "stats.armour",
+            "value": "-2",
+            "origin": "profile:Trench Pilgrim",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "0e4c-78a2-26bf-6e0e",
+                  "childName": "Reinforced Armour",
+                  "includeChildSelections": true
+                }
+              ]
+            },
+            "comment": "armour adjustments"
+          },
+          {
+            "op": "set",
+            "field": "hidden",
+            "value": "true",
+            "origin": "profile:Resurrection",
+            "when": {
+              "any": [
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "roster",
+                  "childId": "52bc-6b21-136a-608d",
+                  "childName": "War Pilgrimage of Saint Methodius",
+                  "includeChildSelections": true
+                },
+                {
+                  "type": "atLeast",
+                  "value": "1",
+                  "field": "selections",
+                  "scope": "self",
+                  "childId": "b32b-6d55-9163-8486",
+                  "childName": "Martyred"
+                }
+              ]
+            }
+          }
+        ],
+        "sourceFile": "Trench Pilgrims.cat",
+        "category": "Trooper"
+      },
+      "equippedWeapons": [
+        {
+          "id": "34a2-3a0d-5746-c24f",
+          "entryId": "1d58-aeae-052d-6463",
+          "name": "Claimed: Flail/Scourge",
+          "type": "Battlekit",
+          "range": "",
+          "keywords": [],
+          "rules": "This model can use a Flail/Scourge as though it were from the Trench Pilgrims.",
+          "cost": 0,
+          "constraints": [
+            {
+              "id": "25d8-adba-9150-9762",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [],
+          "restrictions": [],
+          "factionId": "Court of the Seven-Headed Serpent",
+          "sourceFile": "Court of the Seven-Headed Serpent.cat",
+          "instanceId": "w-u-3"
+        }
+      ],
+      "equippedArmour": [],
+      "equippedEquipment": [],
+      "xp": 0,
+      "isElite": false,
+      "advancements": [],
+      "skills": [],
+      "injuries": [],
+      "scars": [],
+      "isDead": true,
+      "totalCost": 30,
+      "currentWounds": 1,
+      "maxWounds": 1,
+      "bloodMarkers": 2,
+      "blessingMarkers": 1,
+      "status": "Out of Action",
+      "hasActedThisTurn": true
+    }
+  ],
+  "armoryStash": [
+    {
+      "id": "s-1",
+      "name": "Gas Mask",
+      "type": "Equipment",
+      "cost": 5,
+      "quantity": 1
+    }
+  ],
+  "lore": "Nine years walking, nine wounds taken.",
+  "motto": "Per aspera ad inferos",
+  "chronicleLog": [
+    "Held the bridgehead at Ypres."
+  ],
+  "createdAt": "2026-07-02T10:11:12.000Z",
+  "updatedAt": "2026-08-30T19:04:11.412Z"
+}

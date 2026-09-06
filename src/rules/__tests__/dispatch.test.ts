@@ -76,7 +76,15 @@ describe('Trench Dispatch #1 — Mercenaries', () => {
     expect(names).not.toContain('Goetic Gaze');
     expect(names.some((n) => n.startsWith('Necrotic Gaze'))).toBe(true);
     expect(names).toContain('Disturbing Presence');
-    expect(names).toHaveLength(4);
+    /*
+      Five, not four. The fifth is `Powers`, added later for RC-14 — the
+      restriction on what a Warlock may spend to cast, which the Dispatch prints
+      under its own heading and no op had ever transcribed. The count is still
+      pinned, because the point of this test is that the replacement did not
+      leave the old spells sitting alongside the new ones.
+    */
+    expect(names).toHaveLength(5);
+    expect(names).toContain('Powers');
   });
 
   it('keeps the whole of a wrapped ability, not its first line', () => {

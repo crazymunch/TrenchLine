@@ -8,6 +8,7 @@
  *
  * Pure functions, no React: the rules engine has to be testable without a UI.
  */
+import type { EarnedClaim } from './earnedRecruitment';
 import type { Cost, UnitProfile, WeaponProfile, UnitOption } from '@/types/catalogue';
 
 export const ZERO: Cost = { ducats: 0, glory: 0 };
@@ -104,6 +105,16 @@ export interface Roster {
    * Mercenaries?" roster option. Absent is off, which is the catalogue default.
    */
   allowThirdParty?: boolean;
+  /**
+   * Recruitment bounds this Warband has EARNED during its campaign.
+   *
+   * A published ability can raise a limit once a price has been paid — the
+   * Black Grail's *Curse on Creation* trades six Grail Thralls for a second
+   * Amalgam. Recorded rather than recomputed: the conditions were true when it
+   * was claimed, and a Warband that shrinks afterwards does not lose what it
+   * already bought (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  earnedRecruitment?: EarnedClaim[];
   units: RosterUnit[];
   /** Loose wargear bought but not assigned to a model. */
   stash: RosterItem[];

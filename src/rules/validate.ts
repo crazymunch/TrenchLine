@@ -12,13 +12,15 @@
 import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp } from '@/types/catalogue';
 import type { Roster } from './costs';
 import { budgetState, unitCost } from './costs';
-import { parseRestrictions, satisfiesOnlyFor, type Restriction } from './restrictions';
+import { parseRestrictions, onlyForVerdict, type Restriction } from './restrictions';
 import { armouryFor, offersOf, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
 import { stockedAnywhere, variantArmoury, withinGrants, type GrantUsage } from './variantArmoury';
 import { thirdPartyGate } from './thirdParty';
 import { variantLocks, unlockedBy } from './variantLocks';
 import { battlekitBreaches } from './battlekitLimits';
+import { groupBreaches } from './optionGroups';
+import { boundFor, entitlementOf } from './earnedRecruitment';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -43,6 +45,9 @@ export interface Violation {
     | 'force-over-threshold'
     | 'force-over-field-strength'
     | 'unparsed-restriction'
+    | 'restriction-unverified'
+    | 'option-group-max'
+    | 'option-group-distinct'
     | 'third-party-not-allowed'
     | 'variant-locked';
   message: string;
@@ -100,13 +105,24 @@ function checkRecruitmentLimits(
     }
     // The variant moves the bound before it is checked, so the message quotes
     // the limit actually in force rather than the base one.
-    const { max } = variantLimits(p, variant);
+    const { max: variantMax } = variantLimits(p, variant);
+    /*
+      And then a bound the Warband may have EARNED. The Amalgam's base 1 is
+      correct as a base — *Curse on Creation* raises it to 2 for a Warband that
+      has paid six Grail Thralls for it, and until this existed the app had no
+      state that could tell a legal second Amalgam from an illegal one (RC-08).
+    */
+    const max = boundFor(p, roster.earnedRecruitment, variantMax);
+    const earned = entitlementOf(p);
     if (max != null && n > max) {
       out.push(err({
         code: 'unit-max',
-        message: `${p.name}: ${n} taken, limit is ${max}.`,
+        message: `${p.name}: ${n} taken, limit is ${max}.`
+          + (earned && max !== earned.max
+            ? ` ${earned.grantedBy} would raise it to ${earned.max}.` : ''),
         rule: max === p.max ? `0-${max} ${p.name}`
-                            : `${variant?.name}: 0-${max} ${p.name} (base ${p.max})`,
+              : earned && max === earned.max ? earned.text
+              : `${variant?.name}: 0-${max} ${p.name} (base ${p.max})`,
         profileId,
       }));
     }
@@ -248,14 +264,41 @@ function checkWargear(
             ...(u.traits ?? []),
           ].filter(Boolean),
           unlockedBy: (catalogueWeapon as { unlockedBy?: string[] } | undefined)?.unlockedBy,
+          /*
+            The condition half of a compound restriction, and ONLY the
+            purchased options — `traits` above carries the entry's own printed
+            abilities, and "with Janissary Veteran" asks what the player bought.
+          */
+          taken: u.options?.map((o) => o.name ?? '').filter(Boolean) ?? [],
         };
-        if (r.kind === 'onlyFor' && profile
-            && !satisfiesOnlyFor(r.requires, profile, onlyForContext)) {
-          out.push(err({
-            code: 'wargear-restricted',
-            message: `${profile.name} cannot take ${w.name} — ${r.raw}.`,
-            rule: r.raw, unitId: u.id,
-          }));
+        if (r.kind === 'onlyFor' && profile) {
+          const verdict = onlyForVerdict(r.requires, profile, onlyForContext);
+          if (!verdict.met) {
+            out.push(err({
+              code: 'wargear-restricted',
+              message: `${profile.name} cannot take ${w.name} — ${r.raw}.`,
+              rule: r.raw, unitId: u.id,
+            }));
+          } else if (verdict.unknown) {
+            /*
+              The identity half of a compound restriction is satisfied and the
+              condition half cannot be read off the roster. Warned, not refused:
+              refusing would make the entry unbuyable by anyone, which is the
+              same silence as permitting it, pointed the other way.
+
+              Before RC-06 this branch did not exist and neither did the
+              warning — "Janissaries & Yüzbaşı with Janissary Veteran" parsed
+              cleanly as `onlyFor`, so it never reached `unparsed-restriction`
+              either, and an Azeb could be handed the Regimental Kaşık with
+              nothing on screen at all.
+            */
+            out.push(warn({
+              code: 'restriction-unverified',
+              message: `${profile.name} may take ${w.name}, but "${r.raw}" `
+                     + `${verdict.unknown} — check this by hand.`,
+              rule: r.raw, unitId: u.id,
+            }));
+          }
         }
         if (r.kind === 'limit' && r.perModel != null) {
           const n = perUnit.get(item.weaponId) ?? 0;
@@ -565,6 +608,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkThirdParty(roster, profiles));
   violations.push(...checkVariantLocks(roster, dataset, variant));
   violations.push(...checkVariantGrants(roster, dataset, variant, weapons));
+  violations.push(...checkOptionGroups(roster, dataset));
 
   const errors = violations.filter((v) => v.severity === 'error');
   return {
@@ -573,6 +617,32 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     errors,
     warnings: violations.filter((v) => v.severity === 'warning'),
   };
+}
+
+/**
+ * Limits that govern an option group rather than one option.
+ *
+ * The Black Grail's Strains and Vile Corpus shipped as independent toggles with
+ * empty constraints, so a Thrall could hold all four Strains and two Amalgams
+ * could hold the same Corpus (RC-07). The counting is in `rules/optionGroups.ts`
+ * with the rules' own sentences; this turns each breach into a violation that
+ * names the sentence.
+ */
+function checkOptionGroups(roster: Roster, dataset: Dataset): Violation[] {
+  return groupBreaches(dataset, roster).map((b) => (b.kind === 'over-allowance'
+    ? err({
+      code: 'option-group-max',
+      message: `${b.unitName} has ${plural(b.held.length, b.group.replace(/s$/, ''))} `
+             + `(${b.held.join(', ')}); the limit is ${b.max}.`,
+      rule: b.rule,
+      unitId: b.unitId,
+    })
+    : err({
+      code: 'option-group-distinct',
+      message: `${b.unitName} shares its ${b.group} (${b.shared}) with another model.`,
+      rule: b.rule,
+      unitId: b.unitId,
+    })));
 }
 
 /**
