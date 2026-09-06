@@ -95,8 +95,26 @@ export const Sheet: React.FC<SheetProps> = ({
               {/* Grab handle: a phone affordance, and it says "this came from
                   the bottom edge" before anything is read. */}
               <div className="sm:hidden w-9 h-1 rounded-full bg-theme-border mx-auto mb-2 -mt-1" />
+              {/*
+                Wraps rather than truncates.
+
+                `truncate` clipped "COMMANDER AUTHENTICATION" to "COMMANDER
+                AUTHENTICA…" at 375px — on the sheet that asks for a password,
+                which is the worst place in the app to look like something
+                half-rendered. A heading is the one string a reader uses to
+                work out what they are being asked; an ellipsis there saves a
+                line of space and costs the meaning.
+
+                Unclamped on purpose. Every title in this app is a short
+                heading (the longest is 26 characters) or a small JSX span with
+                an icon, so the realistic worst case is two lines; and
+                `line-clamp` would set `display: -webkit-box` on the `h2`,
+                which breaks the icon titles' own flex layout. The body scrolls
+                and the sheet is capped at 90dvh, so a second line costs a
+                line of content, not a broken sheet.
+              */}
               {title && (
-                <h2 className="font-gothic font-bold text-lg sm:text-base text-theme-text truncate">
+                <h2 className="font-gothic font-bold text-lg sm:text-base leading-tight text-theme-text break-words">
                   {title}
                 </h2>
               )}
