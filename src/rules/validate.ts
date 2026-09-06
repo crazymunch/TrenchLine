@@ -20,6 +20,7 @@ import { thirdPartyGate } from './thirdParty';
 import { variantLocks, unlockedBy } from './variantLocks';
 import { battlekitBreaches } from './battlekitLimits';
 import { groupBreaches } from './optionGroups';
+import { boundFor, entitlementOf } from './earnedRecruitment';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -104,13 +105,24 @@ function checkRecruitmentLimits(
     }
     // The variant moves the bound before it is checked, so the message quotes
     // the limit actually in force rather than the base one.
-    const { max } = variantLimits(p, variant);
+    const { max: variantMax } = variantLimits(p, variant);
+    /*
+      And then a bound the Warband may have EARNED. The Amalgam's base 1 is
+      correct as a base — *Curse on Creation* raises it to 2 for a Warband that
+      has paid six Grail Thralls for it, and until this existed the app had no
+      state that could tell a legal second Amalgam from an illegal one (RC-08).
+    */
+    const max = boundFor(p, roster.earnedRecruitment, variantMax);
+    const earned = entitlementOf(p);
     if (max != null && n > max) {
       out.push(err({
         code: 'unit-max',
-        message: `${p.name}: ${n} taken, limit is ${max}.`,
+        message: `${p.name}: ${n} taken, limit is ${max}.`
+          + (earned && max !== earned.max
+            ? ` ${earned.grantedBy} would raise it to ${earned.max}.` : ''),
         rule: max === p.max ? `0-${max} ${p.name}`
-                            : `${variant?.name}: 0-${max} ${p.name} (base ${p.max})`,
+              : earned && max === earned.max ? earned.text
+              : `${variant?.name}: 0-${max} ${p.name} (base ${p.max})`,
         profileId,
       }));
     }

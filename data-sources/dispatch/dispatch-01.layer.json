@@ -1300,6 +1300,33 @@
       ],
       "_src": "p.7 — 'Vile Corpus Abilities' preamble (D:264-266)",
       "_note": "RC-07. Distinctness only becomes reachable once a second Amalgam is legal, which is RC-08 — a single available Corpus does not make a second copy legal, it makes distinctness relevant."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "Amalgam"
+      },
+      "field": "earnedRecruitment",
+      "value": {
+        "grantedBy": "Curse on Creation",
+        "max": 2,
+        "otherModelsCostAtLeast": {
+          "ducats": 1000,
+          "glory": 0
+        },
+        "spends": {
+          "profileName": "Thrall",
+          "count": 6
+        },
+        "step": "Promotion Step",
+        "freeRecruit": true,
+        "text": "Curse on Creation: If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have to 0-2, and immediately recruit an Amalgam at no cost."
+      },
+      "_src": "p.6 — Amalgam > Curse on Creation (D:234-237)",
+      "_costCurrencyDerived": "Same paragraph, same settled glyph as the Strains: the catalogue prices Bolgias Gut at 10 and Leech Grip at 7 DUCATS, which are the amounts this glyph prints alongside. The free recruit costs nothing in either currency, so no currency is asserted for it.",
+      "_targetNote": "The rule says \"Grail Thralls\"; the catalogue entry is named `Thrall`, which is what `spends.profileName` has to match.",
+      "_note": "RC-08. The ability text was already derived and displayed; nothing consumed it. The Amalgam's base max of 1 is correct as a BASE bound and is unchanged — raising it to 2 outright would contradict the condition."
     }
   ]
 }

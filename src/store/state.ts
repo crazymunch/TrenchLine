@@ -387,6 +387,17 @@ export interface AppState {
   removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
   setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
   toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string }) => void;
+  /**
+   * Claim a recruitment bound the Warband has earned in play.
+   *
+   * The Black Grail's *Curse on Creation* trades six Grail Thralls for a
+   * second Amalgam. Returns what happened rather than throwing: the caller is
+   * a screen, and "you have five Thralls, not six" is a sentence to show
+   * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  claimEarnedRecruitment: (warbandId: string, profileId: string, dataset: Dataset)
+    => { ok: true; spent: string[]; freeRecruit: 'added' | 'unavailable' | 'not-granted' }
+     | { ok: false; blockers: string[] };
   addUnitDeed: (warbandId: string, unitId: string, deed: string) => void;
   removeUnitDeed: (warbandId: string, unitId: string, deedIndex: number) => void;
   setUnitTitles: (warbandId: string, unitId: string, titles: string[]) => void;

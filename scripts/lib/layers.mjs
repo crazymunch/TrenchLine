@@ -233,6 +233,20 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
           if (gone.length) removals.push({ target, entity: target.name, removed: gone, op });
         }
         stamp(op.target, op.field, target);
+        /*
+          A `set` whose value is a plain OBJECT needs every leaf stamped, not
+          just the field it was written to.
+
+          `findMissingProvenance` treats an array as a leaf and recurses into
+          objects, so `optionGroups` (an array) is covered by the stamp above
+          while `earnedRecruitment.spends.count` is not — and the build
+          correctly refuses to emit a value that cannot say where it came from.
+          Mirrors the recursion in `stampLeaves`, which is what an `add` uses.
+        */
+        if (op.value && typeof op.value === 'object' && !Array.isArray(op.value)) {
+          stampLeaves(provenance, op.target.kind, target?.id ?? op.target.id,
+                      op.value, { layer: layer.id, source }, op.field);
+        }
         break;
       }
 

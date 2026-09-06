@@ -1070,7 +1070,22 @@ export const DATASET: Dataset = {
           "distinctPerRoster": true,
           "text": "Each Amalgam can have 1 Vile Corpus, which can be purchased when recruiting the model or during the Quartermaster Step at the indicated cost. Once an Amalgam has a Vile Corpus, it cannot be removed or lost for any reason. In addition, each Amalgam in a Warband must have a different Vile Corpus."
         }
-      ]
+      ],
+      "earnedRecruitment": {
+        "grantedBy": "Curse on Creation",
+        "max": 2,
+        "otherModelsCostAtLeast": {
+          "ducats": 1000,
+          "glory": 0
+        },
+        "spends": {
+          "profileName": "Thrall",
+          "count": 6
+        },
+        "step": "Promotion Step",
+        "freeRecruit": true,
+        "text": "Curse on Creation: If the total cost of all of the other models in the Warband (including their Battlekit, etc.) adds up to 1000 Ducats or higher, in any Promotion Step after making all Advancement Rolls, you can remove 6 Grail Thralls from your Warband Roster. If you do so, increase the Limit of Amalgams your Warband can have to 0-2, and immediately recruit an Amalgam at no cost."
+      }
     },
     {
       "id": "aca1-8c2f-0a00-ee49",

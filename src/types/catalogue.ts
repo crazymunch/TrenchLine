@@ -100,6 +100,32 @@ export interface OptionGroupRule {
   text: string;
 }
 
+/**
+ * A bound a Warband can earn during a campaign, and the price of earning it.
+ *
+ * Deliberately not a variant rule or a house rule: it is a published ability on
+ * one entry, claimed once, at a stated moment, by giving something up. The
+ * claim is a historical fact — a Warband that shrinks afterwards does not lose
+ * an Amalgam it already earned — so the conditions here are checked when it is
+ * claimed and never re-checked after.
+ */
+export interface EarnedRecruitment {
+  /** The ability whose text grants it. */
+  grantedBy: string;
+  /** The bound once earned, replacing the entry's base `max`. */
+  max: number;
+  /** What the rest of the Warband must be worth to claim it. */
+  otherModelsCostAtLeast: Cost;
+  /** Models that must be removed from the roster to claim it. */
+  spends: { profileName: string; count: number };
+  /** When the rule says it may be claimed. */
+  step: string;
+  /** Whether claiming includes an immediate recruit at no cost. */
+  freeRecruit: boolean;
+  /** The rule as published. */
+  text: string;
+}
+
 /* ---------------------------------------------------------------- options */
 
 /**
@@ -342,6 +368,18 @@ export interface UnitProfile {
    * Amalgams the same Corpus (docs/RULES-COVERAGE-AUDIT.md RC-07).
    */
   optionGroups?: OptionGroupRule[];
+
+  /**
+   * A recruitment bound this entry can EARN, and what earning it costs.
+   *
+   * `max` on this profile is the base bound and is correct as one. The Black
+   * Grail's *Curse on Creation* raises the Amalgam limit to 0-2, but only after
+   * a condition is met and six Grail Thralls are removed — so the app had no
+   * way to tell a legal second Amalgam from an illegal one, and neither
+   * recruitment nor the wizard consumed the ability at all
+   * (docs/RULES-COVERAGE-AUDIT.md RC-08).
+   */
+  earnedRecruitment?: EarnedRecruitment;
 
   /**
    * A printed statline that is NOT a recruitable model.

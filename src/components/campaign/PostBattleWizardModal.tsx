@@ -14,6 +14,7 @@ import {
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
 } from '../../rules/trauma';
 import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
+import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
@@ -35,6 +36,7 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
+    claimEarnedRecruitment,
   } = useStore();
 
   const warband = getActiveWarband();
@@ -133,6 +135,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     one is outstanding.
   */
   const [captures, setCaptures] = useState<Record<string, { resolution: CaptureResolution; ransom: number }>>({});
+  /** What claiming an earned recruitment bound did, once a player has. */
+  const [claimed, setClaimed] = useState<string | null>(null);
   /*
     The player's answer where the roster cannot say whether a model is ELITE.
 
@@ -337,6 +341,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       variantId: warband.variantId,
     }, nextGame)
     : null;
+
+  /*
+    Recruitment bounds this Warband could claim now, and why not where it
+    cannot. Every entry in the ruleset that states one, so a second faction
+    gaining such a rule needs no change here.
+  */
+  const earnable = (dataset?.units ?? []).flatMap((profile) => {
+    const rule = entitlementOf(profile);
+    if (!rule) return [];
+    const verdict = eligibility(dataset!, profile, {
+      units: warband.units.map((u) => ({
+        id: u.id,
+        profileName: u.profileSnapshot?.name ?? u.customName,
+        name: u.customName,
+        totalCost: u.totalCost ?? 0,
+      })),
+      claims: warband.earnedRecruitment,
+    });
+    /* Hidden entirely for a Warband that could never claim it — the rule is on
+       one faction's entry and every other roster would see a wall of
+       blockers about models it has never heard of. */
+    if (!verdict.eligible && verdict.have === 0) return [];
+    return [{ profile, rule, verdict }];
+  });
 
   const barring = xpBarringInjuries(dataset);
   const experienceFor = (unitId: string) => {
@@ -1003,6 +1031,64 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
                 promotions or official Skills from the Melee, Ranged, Stealth or
                 Wildcard trees.
               </div>
+
+              {/*
+                Recruitment bounds this Warband can EARN, claimed here because
+                this is where the rule says they are claimed: "in any Promotion
+                Step after making all Advancement Rolls".
+
+                The Black Grail's Curse on Creation trades six Grail Thralls for
+                a second Amalgam. Its text was derived and rendered on the unit
+                card and consumed by nothing, so the app had no state that could
+                tell a legal second Amalgam from an illegal one (RC-08).
+              */}
+              {dataset && earnable.map(({ profile, rule, verdict }) => (
+                <div key={profile.id} className="rounded border border-theme-accent bg-theme-base p-3 space-y-3">
+                  <p className="text-xs text-theme-text">
+                    <strong className="text-theme-accent">{rule.grantedBy}.</strong>{' '}
+                    {rule.text}
+                  </p>
+
+                  {verdict.eligible ? (
+                    <>
+                      <p className="text-xs text-theme-muted">
+                        Claiming this removes{' '}
+                        <strong className="text-theme-text">
+                          {verdict.spendable.map((u) => u.name).join(', ')}
+                        </strong>{' '}
+                        from the Roster.
+                      </p>
+                      <button
+                        onClick={() => {
+                          const res = claimEarnedRecruitment(warband.id, profile.id, dataset);
+                          setClaimed(res.ok
+                            ? `${rule.grantedBy} claimed. Gave up ${res.spent.join(', ')}.`
+                              + (res.freeRecruit === 'added'
+                                ? ` A ${profile.name} joined the Warband at no cost.`
+                                : res.freeRecruit === 'unavailable'
+                                  ? ` The free ${profile.name} could not be recruited — the`
+                                    + ' catalogue has not loaded. Add it by hand and set its cost to 0.'
+                                  : '')
+                            : res.blockers.join(' '));
+                        }}
+                        className="min-h-[44px] w-full rounded border border-theme-accent bg-theme-accent px-3 text-xs font-bold uppercase text-white transition-colors hover:bg-status-error"
+                      >
+                        Claim {rule.grantedBy}
+                      </button>
+                    </>
+                  ) : (
+                    <ul className="space-y-1 text-xs text-theme-muted">
+                      {verdict.blockers.map((b) => <li key={b}>· {b}</li>)}
+                    </ul>
+                  )}
+                </div>
+              ))}
+
+              {claimed && (
+                <p className="rounded border border-theme-border bg-theme-base p-3 text-xs text-theme-primary">
+                  {claimed}
+                </p>
+              )}
 
               <div className="space-y-3">
                 {warband.units.map((unit) => {
