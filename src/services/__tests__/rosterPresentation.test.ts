@@ -268,10 +268,35 @@ describe('the card geometry, which comes from the paper', () => {
   const css = fs.readFileSync(path.join(process.cwd(), 'src/app/globals.css'), 'utf8');
   const cardRules = css.slice(css.indexOf('.print-sheet .print-card {'));
 
+  /** The printable area of the narrower AND shorter paper, at 12mm margins. */
+  const PRINTABLE = { width: 210 - 24, height: 279.4 - 24 };
+
+  const mm = (re: RegExp) => Number(cardRules.match(re)![1]);
+
   it('is 91mm wide, so two fit both papers side by side', () => {
-    expect(cardRules).toMatch(/width:\s*91mm/);
-    // 2 x 91 + one 4mm gutter = 186mm, exactly the narrower paper's width.
-    expect(91 * 2 + 4).toBe(186);
+    const width = mm(/width:\s*([\d.]+)mm/);
+    const gutter = mm(/margin:\s*0\s+([\d.]+)mm/);
+    expect(width).toBe(91);
+    // The second card of a pair drops its right margin, so a row is w+g+w.
+    expect(cardRules).toMatch(/nth-of-type\(even\)[^}]*margin-right:\s*0/s);
+    expect(width * 2 + gutter).toBeLessThanOrEqual(PRINTABLE.width);
+  });
+
+  it('leaves two rows fitting the SHORTER paper, margins included', () => {
+    /*
+      The check that was missing, and the bug Codex found with it. A row
+      occupies its height plus its bottom margin, and that margin does not
+      collapse away at the foot of the second row — so two rows at 124+5mm
+      came to 258mm against 255.4mm available, and the sheet silently
+      delivered two cards a page while advertising four.
+
+      Asserted as arithmetic over the stylesheet rather than as the literal
+      numbers, so changing either value re-checks the constraint instead of
+      re-stating it.
+    */
+    const height = mm(/min-height:\s*([\d.]+)mm/);
+    const rowGap = mm(/margin:\s*0\s+[\d.]+mm\s+([\d.]+)mm/);
+    expect(2 * (height + rowGap)).toBeLessThanOrEqual(PRINTABLE.height);
   });
 
   it('is a minimum height, never a fixed one', () => {
@@ -287,5 +312,71 @@ describe('the card geometry, which comes from the paper', () => {
 
   it('never clips a card’s contents', () => {
     expect(cardRules.slice(0, cardRules.indexOf('}'))).not.toContain('overflow: hidden');
+  });
+});
+
+describe('two abilities that share a name', () => {
+  /*
+    Codex's P1 on #51, and it is not hypothetical: 25 ability names in the
+    shipped dataset carry more than one wording. Keying the appendix on the
+    name alone printed the first and dropped the rest, so a card pointed at a
+    rule that was not that model's.
+  */
+  const zealot = (profileName: string, description: string) => unit({
+    id: profileName,
+    customName: profileName,
+    profileSnapshot: {
+      name: profileName,
+      stats: {},
+      innateAbilities: [{ name: 'Zealot Strength', description }],
+    },
+  } as never);
+
+  const procession = () => presentRoster(warband({
+    units: [
+      zealot('Lazarist Castigator', 'A Lazarist Castigator can have the STRONG Keyword at +5.'),
+      zealot('Leper-Pilgrim', 'When you add a Leper-Pilgrim you can purchase STRONG for 5.'),
+    ],
+  }), ctx);
+
+  it('keeps both wordings, rather than the first one', () => {
+    const index = abilityIndex(procession());
+    expect(index).toHaveLength(2);
+    expect(index.map((a) => a.description)).toEqual([
+      'A Lazarist Castigator can have the STRONG Keyword at +5.',
+      'When you add a Leper-Pilgrim you can purchase STRONG for 5.',
+    ]);
+  });
+
+  it('says which model each wording belongs to', () => {
+    // Otherwise two identical headings and no way to tell them apart.
+    const index = abilityIndex(procession());
+    expect(index[0].carriers).toEqual(['Lazarist Castigator']);
+    expect(index[1].carriers).toEqual(['Leper-Pilgrim']);
+  });
+
+  it('prints both in the appendix, each with its model named', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(RosterPrintSheet, { roster: procession(), mode: 'cards' }));
+    expect(html).toContain('Zealot Strength — Lazarist Castigator');
+    expect(html).toContain('Zealot Strength — Leper-Pilgrim');
+    expect(html).toContain('at +5');
+    expect(html).toContain('purchase STRONG for 5');
+  });
+
+  it('does not name carriers when a name is unambiguous', () => {
+    // The common case stays clean: no trailing dash, no model list.
+    const index = abilityIndex(present());
+    expect(index[0].carriers).toBeUndefined();
+    expect(printed('cards')).toContain('<dt>Zealot</dt>');
+  });
+
+  it('still collapses one wording carried by many models', () => {
+    // The dedup that made the appendix worth having is unchanged.
+    const many = presentRoster(warband({
+      units: Array.from({ length: 12 }, (_, i) => unit({ id: `u${i}`, customName: `Thrall ${i}` })),
+    }), ctx);
+    expect(abilityIndex(many)).toHaveLength(1);
+    expect(abilityIndex(many)[0].carriers).toBeUndefined();
   });
 });

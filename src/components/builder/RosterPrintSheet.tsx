@@ -184,23 +184,68 @@ const Card: React.FC<{ model: PresentedModel }> = ({ model }) => (
   </div>
 );
 
+export interface IndexedAbility {
+  name: string;
+  description: string;
+  /**
+   * Which models carry THIS wording, set only where the roster holds more than
+   * one ability of the same name. Absent is the common case.
+   */
+  carriers?: string[];
+}
+
 /**
- * Every ability on the roster, once.
+ * Every ability on the roster, once per DISTINCT WORDING.
  *
  * The overflow policy, and the reason a card can have a stated size at all. A
  * Black Grail warband with twelve Grail Thralls carries Overwhelming Horde
  * twelve times; printing it twelve times would cost three pages to say one
- * thing. Keyed by name — two abilities that share a name share their text, and
- * where they somehow do not, the first is printed and that is a data bug worth
- * seeing rather than papering over.
+ * thing.
+ *
+ * Keyed by name AND text, because a name is not unique. Twenty-five ability
+ * names in the shipped dataset carry more than one wording, and the clearest
+ * is `Zealot Strength`:
+ *
+ *   Lazarist Castigator  "…can have the STRONG Keyword at a cost of +5"
+ *   Leper-Pilgrim        "When you add a Leper-Pilgrim or Martyr Penitent…"
+ *
+ * A Procession roster holds both. Keying on the name alone printed whichever
+ * came first and dropped the other, so one of those two models' cards pointed
+ * at an appendix entry stating a rule that is not theirs. An earlier comment
+ * here called that a data bug worth seeing; it is not a data bug at all — two
+ * entries may legitimately name an ability the same and word it differently —
+ * and a wrong rule on a sheet a player reads mid-game is not "worth seeing".
+ * Found by Codex reviewing #51.
+ *
+ * Where a name is ambiguous WITHIN THIS ROSTER, each wording carries the models
+ * it belongs to. Scoped to the roster because a sheet holding only Castigators
+ * needs no disambiguation.
  */
-export function abilityIndex(roster: PresentedRoster): { name: string; description: string }[] {
-  const seen = new Map<string, string>();
+export function abilityIndex(roster: PresentedRoster): IndexedAbility[] {
+  const byWording = new Map<string, { name: string; description: string; carriers: string[] }>();
   for (const m of roster.models) {
-    for (const a of m.abilities) if (!seen.has(a.name)) seen.set(a.name, a.description);
+    for (const a of m.abilities) {
+      const key = `${a.name}\u0000${a.description}`;
+      const found = byWording.get(key)
+        ?? { name: a.name, description: a.description, carriers: [] };
+      if (!found.carriers.includes(m.profileName || m.name)) {
+        found.carriers.push(m.profileName || m.name);
+      }
+      byWording.set(key, found);
+    }
   }
-  return [...seen].map(([name, description]) => ({ name, description }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const nameCount = new Map<string, number>();
+  for (const { name } of byWording.values()) {
+    nameCount.set(name, (nameCount.get(name) ?? 0) + 1);
+  }
+
+  return [...byWording.values()]
+    .map(({ name, description, carriers }) => ((nameCount.get(name) ?? 0) > 1
+      ? { name, description, carriers }
+      : { name, description }))
+    .sort((a, b) => a.name.localeCompare(b.name)
+      || (a.carriers?.join() ?? '').localeCompare(b.carriers?.join() ?? ''));
 }
 
 export const RosterPrintSheet: React.FC<{
@@ -262,8 +307,13 @@ export const RosterPrintSheet: React.FC<{
           <h2 className="print-section">Rules named on the cards</h2>
           <dl>
             {abilityIndex(roster).map((a) => (
-              <React.Fragment key={a.name}>
-                <dt>{a.name}</dt>
+              <React.Fragment key={`${a.name}\u0000${a.description}`}>
+                {/* The carrier list is how a reader tells two same-named
+                    rules apart. It appears only when there are two. */}
+                <dt>
+                  {a.name}
+                  {a.carriers ? ` — ${a.carriers.join(', ')}` : ''}
+                </dt>
                 <dd>{a.description}</dd>
               </React.Fragment>
             ))}
