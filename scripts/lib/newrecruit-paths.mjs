@@ -38,7 +38,8 @@ const parser = new XMLParser({
   attributeNamePrefix: '@_',
   trimValues: false,
   isArray: (name) =>
-    ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'catalogueLink'].includes(name),
+    ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'catalogueLink',
+     'forceEntry', 'costType'].includes(name),
 });
 
 const arr = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
@@ -70,6 +71,18 @@ export function loadCatalogues(dir) {
         name: name(root),
         revision: Number(attr(root, 'revision')),
         battleScribeVersion: String(attr(root, 'battleScribeVersion')),
+        /*
+          The force a roster hangs everything off, and the currencies it
+          totals. Both live in the game system rather than in a catalogue, and
+          a `.ros` cannot be written without either: the `<force>` element
+          quotes the forceEntry id, and every `<cost>` quotes a costType id.
+        */
+        forces: arr(root.forceEntries?.forceEntry).map((f) => ({
+          id: attr(f, 'id'), name: name(f),
+        })),
+        costTypes: arr(root.costTypes?.costType).map((c) => ({
+          id: attr(c, 'id'), name: name(c),
+        })),
       };
     } else {
       catalogues.push({

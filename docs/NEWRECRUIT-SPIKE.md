@@ -157,7 +157,14 @@ now done, and it was the one that could not be skipped:
    wrapper and the `model` inside it, so each placement carries the trail it is
    nested in as well as its own path.
 
-2. **Then the generator, behind E4's report.** Fatal on any unmapped model,
+2. ~~**Then the generator, behind E4's report.**~~ **Built, unverified.**
+   `src/services/rosterRos.ts`, documented in [`ROS-EXPORT.md`](ROS-EXPORT.md).
+   Writing it against the real `.ros` in the fixtures — rather than the JSON
+   export this spike used — showed the layer was carrying one of the four
+   attributes a selection needs; `entryGroupId`, the group name trail and
+   `from` are now emitted and all four reproduce 95 of 95.
+
+   The original text of this step follows, and still stands: Fatal on any unmapped model,
    weapon, upgrade or required option; warning on non-gameplay metadata;
    informational on preserved costs and revisions. Fatal disables the download
    and offers the TrenchLine file instead.

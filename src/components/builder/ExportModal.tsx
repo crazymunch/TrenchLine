@@ -25,6 +25,7 @@ import { Printer, Copy, Download, Check, AlertCircle } from 'lucide-react';
 import { renderPresented, type TextFlavour, type TextPreset } from '@/services/rosterText';
 import { presentRoster } from '@/services/rosterPresentation';
 import { RosterPrintSheet, type PrintMode } from './RosterPrintSheet';
+import { NewRecruitExport } from './NewRecruitExport';
 import { encodeRosterFile } from '@/services/rosterFile';
 import { useDataset } from '@/rules/useDataset';
 import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
@@ -89,9 +90,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
     the file's manifest. Read here rather than threaded in, so an export cannot
     end up describing a different ruleset from the one the builder is using.
   */
-  const { dataset } = useDataset(
-    (typeof window !== 'undefined'
-      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+  const rulesetId = (typeof window !== 'undefined'
+    && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID;
+  const { dataset } = useDataset(rulesetId);
 
   const variant = dataset?.variants?.find(
     (v) => v.id === warband.variantId || v.name === warband.variantId);
@@ -241,6 +242,21 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
             </label>
           </div>
         </div>
+
+        {/*
+          Somebody else's app, which is a different question again — not how
+          much detail, but whether the warband can be said in their vocabulary
+          at all. Its own component because it loads a 3 MB identity layer on
+          demand, and nobody pays for that until they ask.
+        */}
+        <NewRecruitExport
+          warband={warband}
+          units={(dataset?.units ?? []).map(
+            (u) => ({ id: u.id, name: u.name, entryId: u.entryId }))}
+          rulesetId={rulesetId}
+          onDownload={(contents, extension, mime) =>
+            download(contents, fileNameFor(warband.name, extension), mime)}
+        />
 
         {/*
           Print, which is a different medium and so a different choice. Plain

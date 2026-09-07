@@ -91,7 +91,21 @@ export interface UnmappedEntry {
 export interface RosterPathLayer {
   version: number;
   base: string;
-  system: { id: string; name: string; revision: number; battleScribeVersion: string };
+  system: {
+    id: string;
+    name: string;
+    revision: number;
+    battleScribeVersion: string;
+    /**
+     * The force a roster hangs everything off, and the currencies it totals.
+     *
+     * Both live in the game system rather than in a catalogue, and a `.ros`
+     * cannot be written without either: `<force>` quotes the forceEntry id and
+     * every `<cost>` quotes a costType id.
+     */
+    forces?: { id: string; name: string }[];
+    costTypes?: { id: string; name: string }[];
+  };
   catalogues: {
     id: string; name: string; revision: number;
     gameSystemId: string; gameSystemRevision: number;

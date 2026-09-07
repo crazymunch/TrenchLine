@@ -213,9 +213,14 @@ the same roster). The assertion that matters most is that the layer never
 offers a path the exported file disagrees with: a missing path is a reported
 gap, and a wrong one is a roster that opens and is quietly not the warband.
 
+## What reads it
+
+[`ROS-EXPORT.md`](ROS-EXPORT.md) — the `.ros` generator, which is the reason
+this layer exists. `npm run rules:newrecruit` also reports against it.
+
 ## What this does not do
 
-It does not write a `.ros`. The gate stays where
+It does not write a `.ros` itself. The gate stays where
 [`EXPORT-CODEX-REVIEW.md`](EXPORT-CODEX-REVIEW.md) E3 put it: **acceptance is
 not "the file opens"** — it is open in NewRecruit, check every model, loadout
 and cost, edit a selection, save, reopen, and find nothing lost or changed.
