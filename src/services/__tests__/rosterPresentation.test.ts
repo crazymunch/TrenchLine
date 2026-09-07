@@ -10,11 +10,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import fs from 'node:fs';
+import path from 'node:path';
 import React from 'react';
 
 import { presentRoster } from '../rosterPresentation';
 import { renderPresented } from '../rosterText';
-import { RosterPrintSheet } from '@/components/builder/RosterPrintSheet';
+import { RosterPrintSheet, abilityIndex } from '@/components/builder/RosterPrintSheet';
 import type { ActiveUnit, Warband } from '@/types/warband';
 
 const unit = (over: Partial<ActiveUnit> = {}): ActiveUnit => ({
@@ -54,7 +56,7 @@ const warband = (over: Partial<Warband> = {}): Warband => ({
 
 const ctx = { factionName: 'Trench Pilgrims', variantName: 'Ministry of Pain', rulesetId: 'trenchline' };
 const present = (priv = false) => presentRoster(warband(), ctx, { includePrivate: priv });
-const printed = (mode: 'plain' | 'pretty', priv = false) =>
+const printed = (mode: 'plain' | 'pretty' | 'cards', priv = false) =>
   renderToStaticMarkup(React.createElement(RosterPrintSheet, { roster: present(priv), mode }));
 
 describe('the projection', () => {
@@ -184,5 +186,197 @@ describe('the printed sheet', () => {
     const html = printed('pretty');
     expect(html).not.toContain('<canvas');
     expect(html).not.toContain('<img');
+  });
+});
+
+describe('the card sheet — one model per card, for the table', () => {
+  it('gives every model a card, and a writing box to the living', () => {
+    const html = printed('cards');
+    expect(html).toContain('class="print-card"');
+    expect(html).toContain('Brother Anselm');
+    expect(html).toContain('class="print-notes"');
+  });
+
+  it('names a model’s abilities on the card but does not print their text', () => {
+    /*
+      The overflow policy. A card cannot carry full rules text and stay a card,
+      and E6 forbids the two usual escapes — clipping it, or shrinking the font
+      until it fits.
+    */
+    const html = printed('cards');
+    const card = html.slice(html.indexOf('print-card'), html.indexOf('print-appendix'));
+    expect(card).toContain('Zealot');
+    expect(card).not.toContain('Add +1 DICE to Melee.');
+  });
+
+  it('prints each ability once in the appendix, however many models carry it', () => {
+    // Twelve Grail Thralls should not cost three pages to say one thing.
+    const many = presentRoster(warband({
+      units: Array.from({ length: 12 }, (_, i) => unit({ id: `u${i}`, customName: `Thrall ${i}` })),
+    }), ctx);
+    expect(abilityIndex(many)).toEqual([{ name: 'Zealot', description: 'Add +1 DICE to Melee.' }]);
+
+    const html = renderToStaticMarkup(
+      React.createElement(RosterPrintSheet, { roster: many, mode: 'cards' }));
+    expect(html.split('Add +1 DICE to Melee.')).toHaveLength(2);
+  });
+
+  it('sorts the appendix, so a reader can find a rule mid-game', () => {
+    const two = presentRoster(warband({
+      units: [
+        unit({ id: 'a', profileSnapshot: { name: 'A', stats: {}, innateAbilities: [
+          { name: 'Zealot', description: 'z' }] } } as never),
+        unit({ id: 'b', profileSnapshot: { name: 'B', stats: {}, innateAbilities: [
+          { name: 'Ambush', description: 'a' }] } } as never),
+      ],
+    }), ctx);
+    expect(abilityIndex(two).map((a) => a.name)).toEqual(['Ambush', 'Zealot']);
+  });
+
+  it('puts the appendix on its own page', () => {
+    // Half card and half prose is neither.
+    expect(printed('cards')).toContain('class="print-appendix"');
+  });
+
+  it('has no appendix at all when nothing on the roster has an ability', () => {
+    const plainFolk = presentRoster(warband({
+      units: [unit({ profileSnapshot: { name: 'Nobody', stats: {}, innateAbilities: [] } } as never)],
+    }), ctx);
+    expect(abilityIndex(plainFolk)).toEqual([]);
+    const html = renderToStaticMarkup(
+      React.createElement(RosterPrintSheet, { roster: plainFolk, mode: 'cards' }));
+    expect(html).not.toContain('print-appendix');
+  });
+
+  it('gives a dead model a card but no writing box', () => {
+    const gone = presentRoster(warband({ units: [unit({ isDead: true })] }), ctx);
+    const html = renderToStaticMarkup(
+      React.createElement(RosterPrintSheet, { roster: gone, mode: 'cards' }));
+    expect(html).toContain('print-card');
+    expect(html).toContain('· dead');
+    expect(html).not.toContain('print-notes');
+  });
+});
+
+describe('the card geometry, which comes from the paper', () => {
+  /*
+    Asserted against the stylesheet rather than a screenshot. The numbers are
+    the point: a card sized to A4 alone is wrong on every US printer, so the
+    size is taken from the INTERSECTION of the two — 186 x 255.4mm printable
+    with 12mm margins, two columns and two rows of it.
+  */
+  const css = fs.readFileSync(path.join(process.cwd(), 'src/app/globals.css'), 'utf8');
+  const cardRules = css.slice(css.indexOf('.print-sheet .print-card {'));
+
+  /** The printable area of the narrower AND shorter paper, at 12mm margins. */
+  const PRINTABLE = { width: 210 - 24, height: 279.4 - 24 };
+
+  const mm = (re: RegExp) => Number(cardRules.match(re)![1]);
+
+  it('is 91mm wide, so two fit both papers side by side', () => {
+    const width = mm(/width:\s*([\d.]+)mm/);
+    const gutter = mm(/margin:\s*0\s+([\d.]+)mm/);
+    expect(width).toBe(91);
+    // The second card of a pair drops its right margin, so a row is w+g+w.
+    expect(cardRules).toMatch(/nth-of-type\(even\)[^}]*margin-right:\s*0/s);
+    expect(width * 2 + gutter).toBeLessThanOrEqual(PRINTABLE.width);
+  });
+
+  it('leaves two rows fitting the SHORTER paper, margins included', () => {
+    /*
+      The check that was missing, and the bug Codex found with it. A row
+      occupies its height plus its bottom margin, and that margin does not
+      collapse away at the foot of the second row — so two rows at 124+5mm
+      came to 258mm against 255.4mm available, and the sheet silently
+      delivered two cards a page while advertising four.
+
+      Asserted as arithmetic over the stylesheet rather than as the literal
+      numbers, so changing either value re-checks the constraint instead of
+      re-stating it.
+    */
+    const height = mm(/min-height:\s*([\d.]+)mm/);
+    const rowGap = mm(/margin:\s*0\s+[\d.]+mm\s+([\d.]+)mm/);
+    expect(2 * (height + rowGap)).toBeLessThanOrEqual(PRINTABLE.height);
+  });
+
+  it('is a minimum height, never a fixed one', () => {
+    // A fixed height would clip a model with more rules than fits, or force a
+    // smaller font. Both are forbidden; growing is not.
+    expect(cardRules).toMatch(/min-height:\s*124mm/);
+    expect(cardRules).not.toMatch(/\n\s*height:\s*124mm/);
+  });
+
+  it('states the writing area in millimetres', () => {
+    expect(cardRules).toMatch(/\.print-notes\s*\{[^}]*min-height:\s*34mm/);
+  });
+
+  it('never clips a card’s contents', () => {
+    expect(cardRules.slice(0, cardRules.indexOf('}'))).not.toContain('overflow: hidden');
+  });
+});
+
+describe('two abilities that share a name', () => {
+  /*
+    Codex's P1 on #51, and it is not hypothetical: 25 ability names in the
+    shipped dataset carry more than one wording. Keying the appendix on the
+    name alone printed the first and dropped the rest, so a card pointed at a
+    rule that was not that model's.
+  */
+  const zealot = (profileName: string, description: string) => unit({
+    id: profileName,
+    customName: profileName,
+    profileSnapshot: {
+      name: profileName,
+      stats: {},
+      innateAbilities: [{ name: 'Zealot Strength', description }],
+    },
+  } as never);
+
+  const procession = () => presentRoster(warband({
+    units: [
+      zealot('Lazarist Castigator', 'A Lazarist Castigator can have the STRONG Keyword at +5.'),
+      zealot('Leper-Pilgrim', 'When you add a Leper-Pilgrim you can purchase STRONG for 5.'),
+    ],
+  }), ctx);
+
+  it('keeps both wordings, rather than the first one', () => {
+    const index = abilityIndex(procession());
+    expect(index).toHaveLength(2);
+    expect(index.map((a) => a.description)).toEqual([
+      'A Lazarist Castigator can have the STRONG Keyword at +5.',
+      'When you add a Leper-Pilgrim you can purchase STRONG for 5.',
+    ]);
+  });
+
+  it('says which model each wording belongs to', () => {
+    // Otherwise two identical headings and no way to tell them apart.
+    const index = abilityIndex(procession());
+    expect(index[0].carriers).toEqual(['Lazarist Castigator']);
+    expect(index[1].carriers).toEqual(['Leper-Pilgrim']);
+  });
+
+  it('prints both in the appendix, each with its model named', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(RosterPrintSheet, { roster: procession(), mode: 'cards' }));
+    expect(html).toContain('Zealot Strength — Lazarist Castigator');
+    expect(html).toContain('Zealot Strength — Leper-Pilgrim');
+    expect(html).toContain('at +5');
+    expect(html).toContain('purchase STRONG for 5');
+  });
+
+  it('does not name carriers when a name is unambiguous', () => {
+    // The common case stays clean: no trailing dash, no model list.
+    const index = abilityIndex(present());
+    expect(index[0].carriers).toBeUndefined();
+    expect(printed('cards')).toContain('<dt>Zealot</dt>');
+  });
+
+  it('still collapses one wording carried by many models', () => {
+    // The dedup that made the appendix worth having is unchanged.
+    const many = presentRoster(warband({
+      units: Array.from({ length: 12 }, (_, i) => unit({ id: `u${i}`, customName: `Thrall ${i}` })),
+    }), ctx);
+    expect(abilityIndex(many)).toHaveLength(1);
+    expect(abilityIndex(many)[0].carriers).toBeUndefined();
   });
 });

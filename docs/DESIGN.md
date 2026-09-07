@@ -237,6 +237,23 @@ the model's name at the top, no clipping, and no shrinking font.
 handwritten notes mid game" is a physical requirement and not a visual one. A
 box that happens to look right at the author's zoom level is not that.
 
+**A card's size comes from the paper, not the layout.** The Cards sheet is
+`91 x 124mm`, four to a page, and those numbers are two columns and two rows of
+the area **both** papers can print: A4 is 210x297mm, US Letter is 215.9x279.4mm,
+and with 12mm margins the intersection is 186 x 255.4mm. A card sized to A4
+alone is wrong on every American printer, which is not a rounding error.
+
+**The stated size is a floor.** `min-height`, never `height`. A fixed height
+has only two ways to handle a model with more rules than fits, and E6 forbids
+both: clip it, or shrink the font. A card that grows is neither.
+
+**The overflow policy is an appendix, deduplicated.** A card names its
+abilities; their text is printed once each, for the whole warband, on its own
+page after the cards. That is what lets the card have a stated size at all —
+and the deduplication is not a nicety: a Black Grail roster with twelve Grail
+Thralls would otherwise spend three pages printing *Overwhelming Horde* twelve
+times.
+
 **Not verified on paper.** Everything above is stated in physical units for
 exactly that reason, but no printer has been run. `docs/EXPORT-CODEX-REVIEW.md`
 E6 is right that browser screenshots are not a substitute, and A4 and Letter at

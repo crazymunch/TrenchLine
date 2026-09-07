@@ -36,6 +36,19 @@ interface ExportModalProps {
   onClose: () => void;
 }
 
+const PRINT_LABEL: Record<PrintMode, string> = {
+  plain: 'Plain',
+  pretty: 'Pretty',
+  cards: 'Cards',
+};
+
+const PRINT_HINT: Record<PrintMode, string> = {
+  plain: 'One column, no ornament. Reads on a mono printer.',
+  pretty: 'Statlines, Keywords, abilities and a ruled box for notes on each model.',
+  cards: 'One model per card, four to a page, sized to fit A4 and Letter alike. '
+       + 'Rules text moves to an appendix so the writing space stays put.',
+};
+
 const PRESETS: { id: TextPreset; label: string; hint: string }[] = [
   { id: 'summary', label: 'Summary', hint: 'One line per model. For a chat message.' },
   { id: 'roster', label: 'Roster', hint: 'Loadouts and costs. For a list check before a game.' },
@@ -238,7 +251,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
         <div className="space-y-1.5 print:hidden">
           <span className="eyebrow text-theme-muted">Printed sheet</span>
           <div className="flex gap-2">
-            {(['plain', 'pretty'] as PrintMode[]).map((m) => (
+            {(['plain', 'pretty', 'cards'] as PrintMode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setPrintMode(m)}
@@ -249,15 +262,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({ warband, faction, onCl
                     : 'border-theme-border bg-theme-elevated text-theme-text'
                 }`}
               >
-                {m === 'plain' ? 'Plain' : 'Pretty'}
+                {PRINT_LABEL[m]}
               </button>
             ))}
           </div>
-          <p className="text-xs text-theme-muted">
-            {printMode === 'plain'
-              ? 'One column, no ornament. Reads on a mono printer.'
-              : 'Statlines, Keywords, abilities and a ruled box for notes on each model.'}
-          </p>
+          <p className="text-xs text-theme-muted">{PRINT_HINT[printMode]}</p>
         </div>
 
         {copyFailed && (

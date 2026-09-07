@@ -8,11 +8,13 @@
  * a navigation bar, and page breaks wherever the browser landed. There was no
  * print stylesheet at all.
  *
- * Two modes, as asked:
+ * Three modes, as asked:
  *
  *   Plain    one column, no ornament, the facts. A club photocopier.
  *   Pretty   sectioned, with statlines, Keywords, abilities and campaign
  *            history, and a ruled box per model for notes taken mid-game.
+ *   Cards    one model per card at a stated physical size, four to a page,
+ *            for the table itself.
  *
  * The content is the shared presentation projection, so this and the text
  * export cannot disagree on a number (E1) — "a beautiful sheet with the wrong
@@ -26,6 +28,13 @@
  * clipping and no shrinking font. The rules for it are in `globals.css` under
  * PRINT, in millimetres and points.
  *
+ * **A card's size comes from the paper, not the layout.** 91x124mm is two
+ * columns and two rows of the area BOTH A4 and US Letter can print, so the
+ * sheet is not wrong on half the printers in the world. It is a `min-height`:
+ * a card with more in it grows rather than clipping, and the appendix keeps
+ * that rare by printing each ability's text once for the whole warband instead
+ * of once per model.
+ *
  * Not verified on paper. Everything here is stated in physical units for that
  * reason, but a printer has not been run — see `docs/EXPORT-ARCHITECTURE-BRIEF.md`.
  */
@@ -33,7 +42,7 @@ import React from 'react';
 import { formatUnitCost } from '@/rules/savedGlory';
 import type { PresentedModel, PresentedRoster } from '@/services/rosterPresentation';
 
-export type PrintMode = 'plain' | 'pretty';
+export type PrintMode = 'plain' | 'pretty' | 'cards';
 
 const Row: React.FC<{ label?: string; children: React.ReactNode }> = ({ label, children }) => (
   <tr>
@@ -120,13 +129,132 @@ const Model: React.FC<{ model: PresentedModel; mode: PrintMode }> = ({ model, mo
   </table>
 );
 
+/**
+ * One model, on a card you can hold.
+ *
+ * Everything a player needs to reach for mid-game, and nothing that would push
+ * the writing area off it: identity, cost, statline, kit, Keywords, and what
+ * the campaign has done to this model. Abilities are NAMED here and their text
+ * is in the appendix — see `abilityIndex` below.
+ *
+ * A dead model still gets a card, because a roster printed for a game is also
+ * a record, but it gets no notes box: there is nothing left to note.
+ */
+const Card: React.FC<{ model: PresentedModel }> = ({ model }) => (
+  <div className="print-card">
+    <h3>
+      {model.name}
+      {model.dead ? ' · dead' : ''}
+    </h3>
+    <p>
+      {model.profileName}
+      {model.category ? ` (${model.category})` : ''}
+      {' · '}
+      {formatUnitCost(model.ducats, model.glory)}
+      {model.grantedFree ? ` · granted by ${model.grantedFree}` : ''}
+    </p>
+
+    {model.stats && (
+      <p className="print-stats">
+        MOV {model.stats.movement} · RNG {model.stats.ranged}
+        {' · '}MELEE {model.stats.melee} · SAVE {model.stats.armour}
+      </p>
+    )}
+
+    {model.gear.length > 0 && (
+      <p><span className="print-label">Kit </span>{model.gear.join(', ')}</p>
+    )}
+    {model.keywords.length > 0 && (
+      <p><span className="print-label">Keywords </span>{model.keywords.join(', ')}</p>
+    )}
+    {model.abilities.length > 0 && (
+      <p>
+        <span className="print-label">Abilities </span>
+        {model.abilities.map((a) => a.name).join(', ')}
+      </p>
+    )}
+    {model.injuries.length > 0 && (
+      <p><span className="print-label">Injuries </span>{model.injuries.join('; ')}</p>
+    )}
+    {model.scars.length > 0 && (
+      <p><span className="print-label">Scars </span>{model.scars.join('; ')}</p>
+    )}
+
+    {!model.dead && <div className="print-notes" aria-hidden="true" />}
+  </div>
+);
+
+export interface IndexedAbility {
+  name: string;
+  description: string;
+  /**
+   * Which models carry THIS wording, set only where the roster holds more than
+   * one ability of the same name. Absent is the common case.
+   */
+  carriers?: string[];
+}
+
+/**
+ * Every ability on the roster, once per DISTINCT WORDING.
+ *
+ * The overflow policy, and the reason a card can have a stated size at all. A
+ * Black Grail warband with twelve Grail Thralls carries Overwhelming Horde
+ * twelve times; printing it twelve times would cost three pages to say one
+ * thing.
+ *
+ * Keyed by name AND text, because a name is not unique. Twenty-five ability
+ * names in the shipped dataset carry more than one wording, and the clearest
+ * is `Zealot Strength`:
+ *
+ *   Lazarist Castigator  "…can have the STRONG Keyword at a cost of +5"
+ *   Leper-Pilgrim        "When you add a Leper-Pilgrim or Martyr Penitent…"
+ *
+ * A Procession roster holds both. Keying on the name alone printed whichever
+ * came first and dropped the other, so one of those two models' cards pointed
+ * at an appendix entry stating a rule that is not theirs. An earlier comment
+ * here called that a data bug worth seeing; it is not a data bug at all — two
+ * entries may legitimately name an ability the same and word it differently —
+ * and a wrong rule on a sheet a player reads mid-game is not "worth seeing".
+ * Found by Codex reviewing #51.
+ *
+ * Where a name is ambiguous WITHIN THIS ROSTER, each wording carries the models
+ * it belongs to. Scoped to the roster because a sheet holding only Castigators
+ * needs no disambiguation.
+ */
+export function abilityIndex(roster: PresentedRoster): IndexedAbility[] {
+  const byWording = new Map<string, { name: string; description: string; carriers: string[] }>();
+  for (const m of roster.models) {
+    for (const a of m.abilities) {
+      const key = `${a.name}\u0000${a.description}`;
+      const found = byWording.get(key)
+        ?? { name: a.name, description: a.description, carriers: [] };
+      if (!found.carriers.includes(m.profileName || m.name)) {
+        found.carriers.push(m.profileName || m.name);
+      }
+      byWording.set(key, found);
+    }
+  }
+
+  const nameCount = new Map<string, number>();
+  for (const { name } of byWording.values()) {
+    nameCount.set(name, (nameCount.get(name) ?? 0) + 1);
+  }
+
+  return [...byWording.values()]
+    .map(({ name, description, carriers }) => ((nameCount.get(name) ?? 0) > 1
+      ? { name, description, carriers }
+      : { name, description }))
+    .sort((a, b) => a.name.localeCompare(b.name)
+      || (a.carriers?.join() ?? '').localeCompare(b.carriers?.join() ?? ''));
+}
+
 export const RosterPrintSheet: React.FC<{
   roster: PresentedRoster;
   mode: PrintMode;
 }> = ({ roster, mode }) => {
   const t = roster.totals;
   return (
-    <div className={`print-sheet ${mode === 'plain' ? 'print-plain' : 'print-pretty'}`}>
+    <div className={`print-sheet print-${mode}`}>
       <h1 className="print-title">{roster.name}</h1>
       <p className="print-sub">
         {roster.faction}
@@ -150,7 +278,9 @@ export const RosterPrintSheet: React.FC<{
       </p>
 
       <h2 className="print-section">Warband</h2>
-      {roster.models.map((m) => <Model key={m.id} model={m} mode={mode} />)}
+      {mode === 'cards'
+        ? roster.models.map((m) => <Card key={m.id} model={m} />)
+        : roster.models.map((m) => <Model key={m.id} model={m} mode={mode} />)}
 
       {roster.stash.length > 0 && (
         <>
@@ -165,6 +295,30 @@ export const RosterPrintSheet: React.FC<{
             </tbody>
           </table>
         </>
+      )}
+
+      {/*
+        The rules the cards refer to, printed once each. Starts a new page: the
+        cards are what goes on the table and the appendix is what sits beside
+        it, and a page that is half card and half prose is neither.
+      */}
+      {mode === 'cards' && abilityIndex(roster).length > 0 && (
+        <div className="print-appendix">
+          <h2 className="print-section">Rules named on the cards</h2>
+          <dl>
+            {abilityIndex(roster).map((a) => (
+              <React.Fragment key={`${a.name}\u0000${a.description}`}>
+                {/* The carrier list is how a reader tells two same-named
+                    rules apart. It appears only when there are two. */}
+                <dt>
+                  {a.name}
+                  {a.carriers ? ` — ${a.carriers.join(', ')}` : ''}
+                </dt>
+                <dd>{a.description}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </div>
       )}
 
       {mode === 'pretty' && roster.lore && (

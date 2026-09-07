@@ -914,6 +914,90 @@ body {
     margin-top: 1.5mm;
   }
 
+  /*
+    CARDS: one model per card, at a size chosen from the paper rather than from
+    the layout.
+
+    The printable area is the INTERSECTION of the two papers, because a sheet
+    that only fits A4 is a sheet that is wrong half the time: A4 is 210x297mm
+    and US Letter is 215.9x279.4mm, so with 12mm margins both give at least
+    186 x 255.4mm. Two columns and two rows of that, with gutters, is
+    91 x 124mm — four cards a page, and an index card you can hold. With the
+    3mm row gap below, two rows come to 254mm against the 255.4mm available.
+
+    `min-height`, not `height`. A fixed height would either clip a model with
+    more rules than fits or fall back to a smaller font, and E6 forbids both.
+    So the stated size is a FLOOR that guarantees the writing space, a card
+    with more in it grows, and the appendix below keeps that rare.
+  */
+  .print-sheet .print-card {
+    display: inline-block;
+    vertical-align: top;
+    width: 91mm;
+    min-height: 124mm;
+    /*
+      3mm below, not 5mm, and the arithmetic is the reason.
+
+      A row occupies its height PLUS its bottom margin, and the last row's
+      margin does not collapse away in this flow. Two rows at 124+5 is 258mm
+      against 255.4mm of printable height, so the second row was pushed to the
+      next page and the sheet delivered two cards a page while advertising
+      four. At 3mm it is 254mm and both rows fit.
+
+      The width has the same shape and got it right by luck: 91+4+91 = 186,
+      because the second card of a pair drops its right margin below. The
+      height had no equivalent rule and no test — see `newrecruitPaths`'s
+      neighbour in `rosterPresentation.test.ts`, which now checks both.
+    */
+    margin: 0 4mm 3mm 0;
+    padding: 3mm;
+    border: 0.6pt solid #000;
+    page-break-inside: avoid;
+  }
+  /* Second of the pair: no gutter, so two fit the 186mm exactly. */
+  .print-sheet .print-card:nth-of-type(even) {
+    margin-right: 0;
+  }
+  .print-sheet .print-card h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 0 0 1mm;
+    border-bottom: 0.6pt solid #000;
+    padding-bottom: 0.8mm;
+  }
+  .print-sheet .print-card p {
+    margin: 0 0 1.2mm;
+    font-size: 9pt;
+  }
+  /*
+    The writing area, and the reason the card has a stated size at all. 34mm is
+    six lines of handwriting at the size a person actually writes on a card
+    beside a table.
+  */
+  .print-sheet .print-card .print-notes {
+    min-height: 34mm;
+  }
+
+  /*
+    The appendix is the overflow policy.
+
+    A card cannot carry a model's full rules text and stay a card, and E6 is
+    right that clipping and shrinking are both wrong. So the card NAMES its
+    abilities and their text is printed once, here, for the whole warband —
+    deduplicated, because a Black Grail roster with twelve Thralls should not
+    print Overwhelming Horde twelve times.
+  */
+  .print-sheet .print-appendix {
+    page-break-before: always;
+  }
+  .print-sheet .print-appendix dt {
+    font-weight: 700;
+    margin-top: 2mm;
+  }
+  .print-sheet .print-appendix dd {
+    margin: 0;
+  }
+
   /* One column on paper regardless of what the screen was doing. */
   .print-sheet .print-plain .print-model th,
   .print-sheet .print-plain .print-model td {
