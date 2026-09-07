@@ -8,13 +8,18 @@
  * appended. The same weapon under a different model is a different string.
  *
  * These tests pin that rule against a roster NewRecruit actually exported, not
- * against my reading of a schema. If the rule is wrong the percentage moves,
- * and the percentage is the deliverable.
+ * against my reading of a schema. It reproduces all ninety-five of that
+ * roster's selections; if the rule stops holding, that number is what moves.
+ *
+ * The layer this feeds — `src/data/generated/*.rosterpaths.json` — is checked
+ * against the same fixture in `src/services/__tests__/rosterPaths.test.ts`.
  */
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 
-import { buildPathIndex, loadCatalogues, MAX_DEPTH } from '../lib/newrecruit-paths.mjs';
+import { buildPathIndex, loadCatalogues, walkRoots, MAX_DEPTH }
+  from '../lib/newrecruit-paths.mjs';
+import { DATASET } from '../../src/data/generated/trenchline.generated';
 
 const CAT = 'data-sources/battlescribe';
 const FIXTURE = 'data-sources/fixtures/al-qarn-rihla/04-august-1320d-CURRENT.json';
@@ -55,15 +60,20 @@ describe('the path rule, against a roster NewRecruit exported', () => {
     expect(sels.length).toBeGreaterThan(50);
   });
 
-  it('reproduces at least 96% of its selection paths', () => {
+  it('reproduces every one of its selection paths', () => {
     /*
-      A floor, not an equality: the catalogues are refreshed by
-      `npm run rules:fetch` and a new revision may add or move entries. A drop
-      below this means the rule stopped holding, which is the thing worth
+      All ninety-five, where the first pass of this spike reproduced 92. The
+      three it could not reach were `Assigned Sword` and two `Alchemical
+      Ammuntion (Loaded)`, and the spike recorded the cause as not established.
+      The cause is the second half of the path rule — see below.
+
+      Kept as an equality rather than a floor now that there is no residue to
+      excuse: `npm run rules:fetch` may add or move entries, and if it drops
+      one of these the walk has stopped holding, which is the thing worth
       failing a build over.
     */
-    const hit = sels.filter((s) => index.paths.has(s.entryId)).length;
-    expect(hit / sels.length).toBeGreaterThanOrEqual(0.96);
+    const missed = sels.filter((s) => !index.paths.has(s.entryId));
+    expect(missed.map((s) => `${s.name} ${s.entryId}`)).toEqual([]);
   });
 
   it('reproduces the deepest gear path in the roster, exactly', () => {
@@ -114,12 +124,37 @@ describe('the path rule, against a roster NewRecruit exported', () => {
     expect(child.entryId.startsWith(`${link}::`)).toBe(true);
   });
 
-  it('names the selections it cannot reach rather than rounding them away', () => {
-    const missed = sels.filter((s) => !index.paths.has(s.entryId));
-    expect(missed.length).toBeLessThanOrEqual(4);
-    // All in one catalogue, and not a depth problem — 10 and 12 reproduce
-    // exactly what 8 does. Listed in docs/NEWRECRUIT-SPIKE.md.
-    for (const s of missed) expect(s.name).toMatch(/Alchemical Ammuntion|Assigned Sword|Anti-Tank/);
+  it('does NOT carry a link\u2019s id into what the link element itself writes', () => {
+    /*
+      The second half of the rule, and the reason three selections used to be
+      unreachable.
+
+      A BattleScribe `entryLink` may carry its own `selectionEntries` —
+      options that exist only at that placement. `Mamluk Faris` is a `unit`
+      entry whose only child is a link to the `model`, and the link writes an
+      `Assigned Sword` inside itself. That sword's path is its own id ALONE:
+      the link id that prefixes everything under the entry it points at does
+      not prefix what the link itself declares, because a per-placement option
+      is already unique and has nothing to disambiguate.
+
+      Nested under the model in the roster all the same, which is why the walk
+      keeps it in the parent trail and drops it from the prefix.
+    */
+    const faris = sels.find((s) => s.type === 'model' && s.name === 'Mamluk Faris');
+    const link = faris.entryId.split('::')[0];
+    const sword = sels.find((s) => s.name === 'Assigned Sword');
+    expect(sword.entryId).toBe('80f0-b0dc-e20d-7ce0');
+    expect(sword.entryId).not.toContain(link);
+    expect(index.paths.has(sword.entryId)).toBe(true);
+  });
+
+  it('reaches the ammunition a weapon link declares, at the weapon\u2019s own prefix', () => {
+    // The same rule again, one level down: the `Siege Jezzail` link writes its
+    // ammunition options, so their paths stop at the group above the weapon
+    // and the weapon link's own id is absent.
+    const ammo = sels.filter((s) => s.name === 'Alchemical Ammuntion (Loaded)');
+    expect(ammo.length).toBeGreaterThan(0);
+    for (const a of ammo) expect(index.paths.has(a.entryId)).toBe(true);
   });
 });
 
@@ -139,5 +174,58 @@ describe('the walk itself', () => {
     */
     const { entries } = loadCatalogues(CAT);
     expect(index.paths.size).toBeGreaterThan(entries.size * 10);
+  });
+});
+
+describe('the parent trail, which is not the path', () => {
+  const cat = loadCatalogues(CAT);
+  const roots = walkRoots(cat);
+  const all = roots.flatMap((r) => r.found);
+
+  it('nests the Mamluk Faris model inside the unit entry that wraps it', () => {
+    /*
+      Two selections for one model, and a generator that writes only the inner
+      one produces a file no importer reads back the same way. The wrapper is
+      not in the model's PATH — it is a `selectionEntry`, and entry ids do not
+      prefix — so the only place it can be recorded is the trail.
+    */
+    const model = all.find((f) => f.path === '4314-a55d-a783-18e3::22b8-dc59-428d-87cd');
+    expect(model.type).toBe('model');
+    expect(model.parents.map((p) => `${p.type} ${p.path}`))
+      .toEqual(['unit 95cf-1de7-a93e-b165']);
+  });
+
+  it('never nests one RECRUITABLE model inside another, in these catalogues', () => {
+    /*
+      Pinned because the emitter has to choose an owner for each item, and it
+      chooses the innermost recruitable model in the trail. Today that choice
+      is never exercised — nothing here has two — so innermost and outermost
+      agree everywhere and the branch is untested by data.
+
+      "Recruitable" is doing real work: at the catalogue level models DO nest,
+      because `Mamluk Faris` is a `unit` entry wrapping the `model` that carries
+      the profile. The dataset recruits only the inner one, so only the inner
+      one can own an item. Reading the dataset's own entry ids here rather than
+      the catalogue's `type` is the difference between a true statement and a
+      false one, and getting it wrong is how the first draft of this test read.
+
+      If a future revision nests two recruitable models, this fails and the
+      choice becomes real — which is the point of writing it down.
+    */
+    const recruitable = new Set(DATASET.units.map((u) => u.entryId).filter(Boolean));
+    expect(recruitable.size).toBeGreaterThan(80);
+
+    const owners = new Set(all.filter((f) => recruitable.has(f.id)).map((f) => f.path));
+    const nested = all.filter((f) => f.parents.filter((p) => owners.has(p.path)).length > 1);
+    expect(nested.map((f) => `${f.name} ${f.path}`)).toEqual([]);
+  });
+
+  it('keeps a link-owned option under the model, though not under the link', () => {
+    // `Assigned Sword` is written inside the link to the model. The roster
+    // nests it under the model; its path does not mention the link.
+    const sword = all.find((f) => f.path === '80f0-b0dc-e20d-7ce0');
+    expect(sword.name).toBe('Assigned Sword');
+    expect(sword.parents.map((p) => p.path)).toContain(
+      '4314-a55d-a783-18e3::22b8-dc59-428d-87cd');
   });
 });

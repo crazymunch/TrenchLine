@@ -21,6 +21,7 @@ no design documentation at all.
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`NEWRECRUIT-SPIKE.md`](NEWRECRUIT-SPIKE.md) | Whether a BattleScribe/NewRecruit `.ros` export is possible, measured against a real exported roster rather than assumed. |
+| [`ROSTER-PATHS.md`](ROSTER-PATHS.md) | The roster-path layer the build emits: what a BattleScribe roster calls each model, each thing it can carry and each Warband Variant, and what has no identity at all. |
 | [`ROSTER-FILE.md`](ROSTER-FILE.md) | The roster file TrenchLine writes and reads: the envelope, the field inventory, the round-trip promise and the compatibility policy. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |

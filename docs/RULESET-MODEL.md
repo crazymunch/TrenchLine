@@ -444,6 +444,7 @@ data-sources/                          scripts/                    src/data/
 │   └── MANIFEST.json         │      2. parse     │
 ├── rulebook/                 ├───►  3. layer     ├──►  *.generated.ts
 │   ├── *.pdf                 │      4. verify    │     + provenance.json
+│                             │                   │     + rosterpaths.json
 │   └── extracted/*.txt       │      5. emit     ─┘
 └── dispatch/               ──┘
     ├── *.txt  (extracted)
@@ -456,7 +457,7 @@ data-sources/                          scripts/                    src/data/
 | 2 | `rules:parse` | BattleScribe XML → normalised entities. Resolves `sharedSelectionEntries`, category links, cost types, constraints. |
 | 3 | `rules:layer` | Applies each ruleset's layers in order. Every write stamps `{ layer, sourceRef }` onto the field. |
 | 4 | `rules:verify` | Cross-checks against extracted rulebook text; writes `reports/crosscheck.md`; **exits non-zero on an unresolved conflict or a field with no provenance**. |
-| 5 | `rules:build` | Emits `src/data/*.generated.ts` + `provenance.json`. Runs 1–4 first. |
+| 5 | `rules:build` | Emits `src/data/*.generated.ts` + `provenance.json` + `rosterpaths.json` ([`ROSTER-PATHS.md`](ROSTER-PATHS.md)). Runs 1–4 first. |
 
 `npm run rules:build` runs in CI on every PR. A drifted or unverified dataset
 fails the build.

@@ -41,6 +41,7 @@ import { parseScenarioGenerator } from './lib/parse-cf-generator.mjs';
 import { parseCarcassFrontMap } from './lib/parse-cf-map.mjs';
 import { buildCarcassFrontLayer, crossCheckReprints, applyMercenaryDelegation,
          LAYER_ID as CARCASS_FRONT } from './lib/carcass-front-layer.mjs';
+import { buildRosterPaths } from './lib/newrecruit-paths.mjs';
 import { createProvenance, applyLayers, applyArmouryRowOps, applyVariantOps, stampBase } from './lib/layers.mjs';
 import { verify, applyResolutions, findMissingProvenance, loadResolutions, nameKey } from './lib/verify.mjs';
 import { RULESETS } from './lib/rulesets.mjs';
@@ -1527,6 +1528,65 @@ for (const ruleset of RULESETS) {
     missingProv.slice(0, 10).forEach((m) => console.log(`    ${m}`));
   }
 
+  /*
+    The roster-path layer: what a BattleScribe `.ros` calls each of these
+    things.
+
+    Derived from the catalogues by a walk, not from the dataset — see
+    `scripts/lib/newrecruit-paths.mjs` and `docs/NEWRECRUIT-SPIKE.md`. It is
+    emitted as its own file rather than folded into the dataset because only an
+    exporter or an importer reads it, and the app ships to phones.
+
+    `carryable` is the dataset's OWN vocabulary of what a model can be given,
+    handed in so this file decides what an item is and the walk decides only
+    where it sits. Ids first: the dataset holds Alchemical Formulae, Homunculus
+    body parts and every other per-model choice as `unit.options`, which carry
+    catalogue ids, and matching those by name alone left all of them without a
+    path. Names are the fallback for the handful the catalogues do not carry —
+    the six weapons with no `entryId`, both bundles, and the Battlekit chapter.
+  */
+  const rosterPaths = buildRosterPaths(CAT_DIR, {
+    units: dataset.units,
+    variants: dataset.variants,
+    carryable: {
+      ids: [
+        ...dataset.weapons.map((w) => w.entryId),
+        ...dataset.units.flatMap((u) => (u.options ?? []).map((o) => o.id)),
+      ].filter(Boolean),
+      names: [
+        ...dataset.weapons.filter((w) => !w.entryId).map((w) => w.name),
+        ...(dataset.bundles ?? []).map((b) => b.name),
+        ...(dataset.battlekit ?? []).map((b) => b.name),
+        ...dataset.armouries.flatMap((a) => a.rows.map((r) => r.name)),
+      ].filter(Boolean),
+    },
+  });
+
+  /*
+    A unit with no roster identity is stated, not skipped.
+
+    The sixteen are the two Carcass Front factions, whose entry ids the
+    supplement layer mints because no community catalogue carries them. If that
+    number moves, a model that used to be exportable has stopped being one, and
+    that is worth a line on the console rather than a silent shrink.
+  */
+  console.log(`  roster paths: ${rosterPaths.units.length} unit(s) and `
+    + `${rosterPaths.variants.length} variant(s) mapped, ${rosterPaths.unmapped.length} `
+    + 'without a BattleScribe identity');
+  const noCatalogue = rosterPaths.unmapped.filter((u) => /^cf-/.test(String(u.entryId ?? '')));
+  if (noCatalogue.length !== rosterPaths.unmapped.length) {
+    for (const u of rosterPaths.unmapped) {
+      if (!/^cf-/.test(String(u.entryId ?? ''))) {
+        console.log(`    ${u.name} [${u.factionId}]: ${u.why}`);
+      }
+    }
+    throw new Error(
+      `rules-build: ${rosterPaths.unmapped.length - noCatalogue.length} entr(ies) carry a `
+      + 'BattleScribe entry id that no catalogue root can reach. Either the catalogues moved '
+      + 'under `npm run rules:fetch`, or the walk in scripts/lib/newrecruit-paths.mjs has '
+      + 'stopped holding. Both are findings; neither is something to ship past.');
+  }
+
   // 4. emit
   if (!checkOnly && !v.conflicts.length && !missingProv.length && !reprintConflicts.length) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -1547,6 +1607,21 @@ for (const ruleset of RULESETS) {
 
     fs.writeFileSync(path.join(OUT_DIR, `${ruleset.id}.provenance.json`),
       JSON.stringify(provenance.map, null, 2) + '\n');
+
+    /*
+      Indented, but with each path on ONE line.
+
+      A path is an array of small integers into `segments`, and the default
+      indenter puts every integer on a line of its own — which took the file
+      from 0.6 MB to 2.3 MB of mostly punctuation, four times the dataset's own
+      diff for no added legibility. Collapsed, a changed path reads as a
+      changed line, which is what a review of this file is for.
+    */
+    const rosterPathsJson = JSON.stringify(
+      { base: `${manifest.repo}@${manifest.commit}`, ...rosterPaths }, null, 2)
+      .replace(/\[\s*\n\s*((?:\d+,\s*\n\s*)*\d+)\n\s*\]/g,
+        (_, body) => `[${body.replace(/\s+/g, ' ')}]`);
+    fs.writeFileSync(path.join(OUT_DIR, `${ruleset.id}.rosterpaths.json`), rosterPathsJson + '\n');
 
     console.log(`  wrote ${file}`);
   }
