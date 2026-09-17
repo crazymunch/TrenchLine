@@ -27,6 +27,7 @@ no design documentation at all.
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |
+| [`GEMINI-AUDIT-REVIEW.md`](GEMINI-AUDIT-REVIEW.md) | The 17 September external audit, re-tested claim by claim: what holds, what does not, the remedy that would have deleted a production row, and the finding it missed. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version
