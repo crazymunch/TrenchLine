@@ -25,15 +25,29 @@
 /** A path, stored as indices into `segments`. */
 export type EncodedPath = number[];
 
-export interface PathParent {
+/**
+ * Everything a roster needs to write one `<selection>` except its quantity and
+ * its cost.
+ *
+ * `groupPath` and `group` are absent together, and their absence is what a
+ * roster records as `from="entry"` — the selection was taken from an entry
+ * directly rather than out of one of its groups. Where they are present the
+ * roster writes `from="group"`, `entryGroupId` and the group's name trail.
+ *
+ * `type` is omitted for `upgrade`, which is almost everything.
+ */
+export interface Selection {
   path: EncodedPath;
-  name: string;
-  type: string;
+  groupPath?: EncodedPath;
+  /** Index into the layer's `groupNames`. */
+  group?: number;
+  type?: string;
 }
 
-export interface Placement {
+export type PathParent = Selection & { name: string };
+
+export interface Placement extends Selection {
   catalogueId: string;
-  path: EncodedPath;
   /**
    * The selections a roster nests this one inside, outermost first.
    *
@@ -42,8 +56,8 @@ export interface Placement {
    * emits only the model produces a file no importer reads back the same way.
    */
   parents: PathParent[];
-  /** Item name -> every path it is reachable by under THIS placement. */
-  carries: Record<string, EncodedPath[]>;
+  /** Item name -> every way it is reachable under THIS placement. */
+  carries: Record<string, Selection[]>;
 }
 
 export interface UnitPaths {
@@ -53,20 +67,17 @@ export interface UnitPaths {
   placements: Placement[];
 }
 
-export interface ContainerPaths {
+export interface ContainerPaths extends Selection {
   name: string;
-  type: string;
   catalogueId: string;
-  path: EncodedPath;
-  carries: Record<string, EncodedPath[]>;
+  carries: Record<string, Selection[]>;
 }
 
-export interface VariantPath {
+export interface VariantPath extends Selection {
   id: string;
   entryId: string;
   name: string;
   catalogueId: string;
-  path: EncodedPath;
 }
 
 export interface UnmappedEntry {
@@ -80,12 +91,28 @@ export interface UnmappedEntry {
 export interface RosterPathLayer {
   version: number;
   base: string;
-  system: { id: string; name: string; revision: number; battleScribeVersion: string };
+  system: {
+    id: string;
+    name: string;
+    revision: number;
+    battleScribeVersion: string;
+    /**
+     * The force a roster hangs everything off, and the currencies it totals.
+     *
+     * Both live in the game system rather than in a catalogue, and a `.ros`
+     * cannot be written without either: `<force>` quotes the forceEntry id and
+     * every `<cost>` quotes a costType id.
+     */
+    forces?: { id: string; name: string }[];
+    costTypes?: { id: string; name: string }[];
+  };
   catalogues: {
     id: string; name: string; revision: number;
     gameSystemId: string; gameSystemRevision: number;
   }[];
   segments: string[];
+  /** The group name trails a roster writes verbatim in its `group` attribute. */
+  groupNames: string[];
   units: UnitPaths[];
   containers: ContainerPaths[];
   variants: VariantPath[];
@@ -151,17 +178,50 @@ export function variantPath(layer: RosterPathLayer, variantId: string): VariantP
 export function itemPaths(
   layer: RosterPathLayer, placement: Placement, itemName: string
 ): string[] {
-  return (placement.carries[itemName] ?? []).map((p) => decodePath(layer, p));
+  return (placement.carries[itemName] ?? []).map((s) => decodePath(layer, s.path));
+}
+
+/** The same list, as the selections a generator writes rather than bare paths. */
+export function itemSelections(
+  placement: Placement | ContainerPaths, itemName: string
+): Selection[] {
+  return placement.carries[itemName] ?? [];
+}
+
+/** One selection, with its ids decoded and its group named. */
+export interface ResolvedSelection {
+  entryId: string;
+  entryGroupId?: string;
+  group?: string;
+  from: 'entry' | 'group';
+  type: string;
+}
+
+export function resolveSelection(layer: RosterPathLayer, sel: Selection): ResolvedSelection {
+  const grouped = sel.groupPath !== undefined;
+  return {
+    entryId: decodePath(layer, sel.path),
+    ...(grouped ? {
+      entryGroupId: decodePath(layer, sel.groupPath!),
+      group: sel.group === undefined ? undefined : layer.groupNames[sel.group],
+    } : {}),
+    /* A roster states where a selection came from, and the two are not
+       interchangeable: an importer reading `from="group"` looks for the group
+       named in `entryGroupId`. Derived from whether there is a group at all,
+       so the two can never disagree. */
+    from: grouped ? 'group' : 'entry',
+    type: sel.type ?? 'upgrade',
+  };
 }
 
 /** One model as a roster would record it, and whatever could not be resolved. */
 export interface ModelIdentity {
-  /** The model's own selection path. */
-  path: string;
+  /** The model's own selection, as a roster writes it. */
+  self: ResolvedSelection;
   /** The selections it is nested inside, outermost first. */
-  parents: { path: string; name: string; type: string }[];
+  parents: (ResolvedSelection & { name: string })[];
   catalogueId: string;
-  items: { name: string; paths: string[] }[];
+  items: { name: string; selections: ResolvedSelection[] }[];
   /** Items this placement has no identity for. Never guessed at. */
   missing: string[];
 }
@@ -186,23 +246,26 @@ export function modelIdentity(
   if (!unit || !unit.placements.length) return null;
 
   const scored = unit.placements.map((placement) => {
-    const items = itemNames.map((name) => ({ name, paths: itemPaths(layer, placement, name) }));
+    const items = itemNames.map((name) => ({
+      name,
+      selections: itemSelections(placement, name).map((s) => resolveSelection(layer, s)),
+    }));
     return {
       placement,
       items,
-      resolved: items.filter((i) => i.paths.length).length,
+      resolved: items.filter((i) => i.selections.length).length,
     };
   });
   const best = scored.reduce((a, b) => (b.resolved > a.resolved ? b : a));
 
   return {
-    path: decodePath(layer, best.placement.path),
+    self: resolveSelection(layer, best.placement),
     parents: best.placement.parents.map((p) => ({
-      path: decodePath(layer, p.path), name: p.name, type: p.type,
+      ...resolveSelection(layer, p), name: p.name,
     })),
     catalogueId: best.placement.catalogueId,
-    items: best.items.filter((i) => i.paths.length),
-    missing: best.items.filter((i) => !i.paths.length).map((i) => i.name),
+    items: best.items.filter((i) => i.selections.length),
+    missing: best.items.filter((i) => !i.selections.length).map((i) => i.name),
   };
 }
 

@@ -38,7 +38,8 @@ const parser = new XMLParser({
   attributeNamePrefix: '@_',
   trimValues: false,
   isArray: (name) =>
-    ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'catalogueLink'].includes(name),
+    ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'catalogueLink',
+     'forceEntry', 'costType'].includes(name),
 });
 
 const arr = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
@@ -70,6 +71,18 @@ export function loadCatalogues(dir) {
         name: name(root),
         revision: Number(attr(root, 'revision')),
         battleScribeVersion: String(attr(root, 'battleScribeVersion')),
+        /*
+          The force a roster hangs everything off, and the currencies it
+          totals. Both live in the game system rather than in a catalogue, and
+          a `.ros` cannot be written without either: the `<force>` element
+          quotes the forceEntry id, and every `<cost>` quotes a costType id.
+        */
+        forces: arr(root.forceEntries?.forceEntry).map((f) => ({
+          id: attr(f, 'id'), name: name(f),
+        })),
+        costTypes: arr(root.costTypes?.costType).map((c) => ({
+          id: attr(c, 'id'), name: name(c),
+        })),
       };
     } else {
       catalogues.push({
@@ -147,9 +160,18 @@ export function reachableFrom(cat, node, linkPrefix, opts = {}) {
   const visit = (n, prefix, groupTrail, depth, seen, trail) => {
     if (depth > maxDepth) { truncated.push(prefix.join('::')); return; }
 
-    /* Written inline: contributes a path, but no segment to its children. */
+    /*
+      Written inline: contributes a path, but no segment to its children.
+
+      A GROUP is identified the same way an entry is — the prefix in force
+      where it sits, plus its own id — because a roster records `entryGroupId`
+      as a path too, not as a bare id. `groupTrail` therefore carries both: the
+      names a roster writes in `group`, and the id path it writes in
+      `entryGroupId`.
+    */
     for (const g of arr(n.selectionEntryGroups?.selectionEntryGroup)) {
-      visit(g, prefix, [...groupTrail, name(g)], depth + 1, seen, trail);
+      visit(g, prefix, [...groupTrail, { name: name(g), path: [...prefix, attr(g, 'id')] }],
+            depth + 1, seen, trail);
     }
     for (const e of arr(n.selectionEntries?.selectionEntry)) {
       const rec = {
@@ -170,10 +192,24 @@ export function reachableFrom(cat, node, linkPrefix, opts = {}) {
           top level would still be a file no importer reads back the same way.
         */
         parents: trail,
-        group: groupTrail.join('::') || null,
+        group: groupTrail.map((g) => g.name).join('::') || null,
+        /* The innermost group it was taken from — what a roster writes as
+           `entryGroupId`. Null where it was taken from an entry directly. */
+        groupPath: groupTrail.length ? groupTrail[groupTrail.length - 1].path.join('::') : null,
+        from: groupTrail.length ? 'group' : 'entry',
       };
       found.push(rec);
-      visit(e, prefix, groupTrail, depth + 1, seen, [...trail, rec]);
+      /*
+        An EMPTY group trail, not this one.
+
+        A group nests inside an entry and resets at every entry boundary: the
+        options a model offers are in the model's own groups, never in the
+        group the model itself was taken from. Carrying the trail down leaked
+        the parent's group into every child — a real export writes the
+        Alchemist's rifle as `Weapon Collections::New Antioch::…`, and the walk
+        was producing `Variant Selection::Weapon Collections::New Antioch::…`.
+      */
+      visit(e, prefix, [], depth + 1, seen, [...trail, rec]);
     }
 
     /* Links: the only thing that lengthens a path. */
@@ -187,9 +223,10 @@ export function reachableFrom(cat, node, linkPrefix, opts = {}) {
 
       const next = new Set([...seen, linkId]);
       if (isGroup) {
-        visit(target, [...prefix, linkId], [...groupTrail, name(l)], depth + 1, next, trail);
+        const asGroup = { name: name(l) || name(target), path: [...prefix, linkId, targetId] };
+        visit(target, [...prefix, linkId], [...groupTrail, asGroup], depth + 1, next, trail);
         /* See below: what the link ITSELF writes keeps this prefix. */
-        visitOwn(l, prefix, [...groupTrail, name(l)], depth + 1, next, trail);
+        visitOwn(l, prefix, [...groupTrail, asGroup], depth + 1, next, trail);
       } else {
         const rec = {
           name: name(l) || name(target), type: attr(target, 'type'), id: targetId,
@@ -198,10 +235,12 @@ export function reachableFrom(cat, node, linkPrefix, opts = {}) {
              and the target's own id does not. */
           childPrefix: [...prefix, linkId],
           parents: trail,
-          group: groupTrail.join('::') || null,
+          group: groupTrail.map((g) => g.name).join('::') || null,
+          groupPath: groupTrail.length ? groupTrail[groupTrail.length - 1].path.join('::') : null,
+          from: groupTrail.length ? 'group' : 'entry',
         };
         found.push(rec);
-        visit(target, [...prefix, linkId], groupTrail, depth + 1, next, [...trail, rec]);
+        visit(target, [...prefix, linkId], [], depth + 1, next, [...trail, rec]);
         /*
           And what the LINK ELEMENT itself writes — which is not the same
           thing, and this is the second half of the rule.
@@ -222,7 +261,7 @@ export function reachableFrom(cat, node, linkPrefix, opts = {}) {
           These three selections are what `docs/NEWRECRUIT-SPIKE.md` recorded
           as unreachable with the cause not established. This is the cause.
         */
-        visitOwn(l, prefix, groupTrail, depth + 1, next, [...trail, rec]);
+        visitOwn(l, prefix, [], depth + 1, next, [...trail, rec]);
       }
     }
   };
@@ -309,6 +348,7 @@ export function walkRoots(cat) {
       const self = {
         id: attr(e, 'id'), name: name(e), type: attr(e, 'type'),
         path: attr(e, 'id'), childPrefix: [], parents: [],
+        group: null, groupPath: null, from: 'entry',
       };
       out.push({ ...meta, root: self, found: [self, ...reachableFrom(cat, e, [], { trail: [self] }).found] });
     }
@@ -324,6 +364,7 @@ export function walkRoots(cat) {
         type: isGroup ? 'group' : attr(target, 'type'),
         path: isGroup ? linkId : `${linkId}::${targetId}`,
         childPrefix: [linkId], parents: [],
+        group: null, groupPath: null, from: 'entry',
       };
       const trail = isGroup ? [] : [self];
       const { found } = reachableFrom(cat, target, [linkId], { trail });
@@ -382,6 +423,30 @@ export function buildRosterPaths(dir, { units, variants = [], carryable }) {
   };
   const asPath = (p) => String(p).split('::').map(intern);
 
+  /* Group NAMES are their own table: a roster writes them verbatim in the
+     `group` attribute, and `Weapons::Melee Weapons::Melee (One-Handed)`
+     repeats across most of the warband. */
+  const groupNames = [];
+  const groupNameIndex = new Map();
+  const internGroup = (g) => {
+    if (g == null) return undefined;
+    let i = groupNameIndex.get(g);
+    if (i === undefined) { i = groupNames.push(g) - 1; groupNameIndex.set(g, i); }
+    return i;
+  };
+
+  /*
+    Everything a roster needs to write one selection except its quantity and
+    its cost: where it is (`path`), which group it was taken from (`groupPath`
+    and `group`, absent when taken from an entry directly), and what kind of
+    selection it is.
+  */
+  const asSelection = (f) => ({
+    path: asPath(f.path),
+    ...(f.groupPath ? { groupPath: asPath(f.groupPath), group: internGroup(f.group) } : {}),
+    ...(f.type && f.type !== 'upgrade' ? { type: f.type } : {}),
+  });
+
   /* path -> the placement object it belongs to, so the second pass can attach
      an item to the model that carries it without searching. */
   const placements = new Map();
@@ -399,15 +464,27 @@ export function buildRosterPaths(dir, { units, variants = [], carryable }) {
 
   for (const { catalogueId, root, found } of walkRoots(cat)) {
     for (const f of found) {
-      if (variantIds.has(f.id) && !variantPaths.has(f.id)) {
-        variantPaths.set(f.id, { catalogueId, path: asPath(f.path) });
+      if (variantIds.has(f.id)) {
+        /*
+          Prefer an occurrence that names its group.
+
+          A roster records the Warband Variant as `from="group"` inside
+          `Variant Selection`, and a Variant is reachable both there and — for
+          some catalogues — directly. First-wins picked the ungrouped route and
+          emitted a Variant a generator would have written as `from="entry"`,
+          which is not what the file says.
+        */
+        const held = variantPaths.get(f.id);
+        if (!held || (held.groupPath === undefined && f.groupPath)) {
+          variantPaths.set(f.id, { catalogueId, ...asSelection(f) });
+        }
       }
       if (!unitIds.has(f.id)) continue;
       place(placements, f.path, {
         entryId: f.id,
         catalogueId,
-        path: asPath(f.path),
-        parents: (f.parents ?? []).map((q) => ({ path: asPath(q.path), name: q.name, type: q.type })),
+        ...asSelection(f),
+        parents: (f.parents ?? []).map((q) => ({ ...asSelection(q), name: q.name })),
       });
     }
 
@@ -420,12 +497,12 @@ export function buildRosterPaths(dir, { units, variants = [], carryable }) {
       const into = owner
         ? placements.get(owner.path)
         : place(containers, root.path, {
-          name: root.name, type: root.type, catalogueId, path: asPath(root.path),
+          name: root.name, catalogueId, ...asSelection(root),
         });
-      const path = asPath(f.path);
-      const key = path.join(',');
+      const sel = asSelection(f);
+      const key = sel.path.join(',');
       const list = into.carries[f.name] ?? (into.carries[f.name] = []);
-      if (!list.some((x) => x.join(',') === key)) list.push(path);
+      if (!list.some((x) => x.path.join(',') === key)) list.push(sel);
     }
   }
 
@@ -467,6 +544,7 @@ export function buildRosterPaths(dir, { units, variants = [], carryable }) {
       gameSystemId: c.gameSystemId, gameSystemRevision: c.gameSystemRevision,
     })),
     segments,
+    groupNames,
     units: emitted,
     containers: [...containers.values()],
     variants: variants

@@ -8,11 +8,14 @@
 import type { Warband } from '../types/warband';
 import type { Campaign } from '../types/campaign';
 import type { UnitProfile, WeaponProfile, RulesetVersion } from '../types/rules';
+import type { PlaceholderOpponent } from '../types/opponent';
 import { storage } from '../services/storage';
 import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign } from './seed';
 
 export interface InitialState {
   warbands: Warband[];
+  /** Opponents with no roster in this app. Their own list, never `warbands`. */
+  opponents: PlaceholderOpponent[];
   activeWarbandId: string | null;
   customUnits: UnitProfile[];
   customWeapons: WeaponProfile[];
@@ -39,6 +42,7 @@ export interface InitialState {
 export function emptyInitialState(): InitialState {
   return {
     warbands: [],
+    opponents: [],
     activeWarbandId: null,
     customUnits: [],
     customWeapons: [],
@@ -91,6 +95,7 @@ export function readInitialState(): InitialState {
 
   return {
     warbands,
+    opponents: storage.getOpponents(),
     activeWarbandId,
     customUnits,
     customWeapons,

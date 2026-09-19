@@ -21,11 +21,15 @@ no design documentation at all.
 | [`RESTRUCTURE-PLAN.md`](RESTRUCTURE-PLAN.md) | Phased delivery plan with acceptance criteria. |
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`NEWRECRUIT-SPIKE.md`](NEWRECRUIT-SPIKE.md) | Whether a BattleScribe/NewRecruit `.ros` export is possible, measured against a real exported roster rather than assumed. |
+| [`NEWRECRUIT-IMPORT.md`](NEWRECRUIT-IMPORT.md) | Importing a NewRecruit roster: why a line is resolved by `entryId` and not by its name, and the fallback chain that turned a total XML failure into a plausible-looking success. |
+| [`ROS-EXPORT.md`](ROS-EXPORT.md) | Writing a warband as a BattleScribe `.ros`: the fatal/warning/informational report, the decisions in the file, what it deliberately leaves out, and the acceptance gate nobody has cleared. |
 | [`ROSTER-PATHS.md`](ROSTER-PATHS.md) | The roster-path layer the build emits: what a BattleScribe roster calls each model, each thing it can carry and each Warband Variant, and what has no identity at all. |
 | [`ROSTER-FILE.md`](ROSTER-FILE.md) | The roster file TrenchLine writes and reads: the envelope, the field inventory, the round-trip promise and the compatibility policy. |
+| [`PLACEHOLDER-OPPONENTS.md`](PLACEHOLDER-OPPONENTS.md) | Playing somebody whose warband is not in the app: what a placeholder carries, why it lives in its own list, and why it is a side you score rather than one you run. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |
+| [`GEMINI-AUDIT-REVIEW.md`](GEMINI-AUDIT-REVIEW.md) | The 17 September external audit, re-tested claim by claim: what holds, what does not, the remedy that would have deleted a production row, and the finding it missed. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version

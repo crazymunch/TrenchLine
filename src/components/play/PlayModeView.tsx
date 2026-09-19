@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { LiveMirrorPanel } from './LiveMirrorPanel';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
@@ -61,10 +61,14 @@ import {
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
+import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
+import { OpponentPicker } from './OpponentPicker';
 
 export const PlayModeView: React.FC = () => {
   const { 
     warbands,
+    opponents,
+    factions,
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
@@ -91,8 +95,30 @@ export const PlayModeView: React.FC = () => {
   );
   const [activePlayerIndex, setActivePlayerIndex] = useState<number>(0);
 
-  // Active viewing warband
-  const currentViewingWarbandId = matchWarbandIds[activePlayerIndex] || primaryWarband?.id || '';
+  /*
+    Every side in the match, whether or not this app holds its roster.
+
+    A match id may name one of the player's warbands or a placeholder opponent
+    (`rules/matchSides.ts`). Resolved once here so the twenty-odd read sites
+    below ask for a side rather than each learning about two lists.
+  */
+  const side = useMemo(
+    () => matchSides(warbands, opponents, (id) => factions.find((f) => f.id === id)?.name),
+    [warbands, opponents, factions],
+  );
+
+  /*
+    The side being CONTROLLED, which is never a placeholder.
+
+    The activation list, wounds and markers all read `units`, and a placeholder
+    has none — so viewing one is a screen of nothing with no way back. The
+    switcher skips them and the viewed side falls through to the first the
+    player can actually play.
+  */
+  const rawViewingId = matchWarbandIds[activePlayerIndex] || primaryWarband?.id || '';
+  const currentViewingWarbandId = isControllable(side(rawViewingId))
+    ? rawViewingId
+    : (firstControllableId(matchWarbandIds, side) ?? primaryWarband?.id ?? '');
   const viewingWarband = warbands.find((w) => w.id === currentViewingWarbandId) || primaryWarband;
 
   // Scenario & Scoring State
@@ -187,6 +213,24 @@ export const PlayModeView: React.FC = () => {
     Boolean(isMapLightboxOpen && selectedScenario?.mapImage),
     () => setIsMapLightboxOpen(false),
   );
+
+  /*
+    Put the player's own warband in the match once the store has it.
+
+    `matchWarbandIds` is seeded by `useState`, which runs on the FIRST render —
+    and the store is deliberately empty then, because `hydrateStore()` reads
+    `localStorage` from a mount effect to avoid a hydration mismatch (see
+    `store/init.ts`). So the seed was always `[]`, and Play Mode opened saying
+    "0 Warbands Linked" with a roster sitting in storage.
+
+    Only ever fills an EMPTY match: removing a side cannot drop below one, so
+    this can never fight the player for control of the list.
+  */
+  useEffect(() => {
+    if (matchWarbandIds.length === 0 && primaryWarband) {
+      setMatchWarbandIds([primaryWarband.id]);
+    }
+  }, [matchWarbandIds.length, primaryWarband]);
 
   if (!viewingWarband) {
     return (
@@ -335,6 +379,7 @@ export const PlayModeView: React.FC = () => {
       [viewingWarband.id]: viewingWarband.units.map((u) => u.id)
     }));
   };
+
 
   const handleAddPlayerWarband = (wbId: string) => {
     if (matchWarbandIds.length >= 4 || matchWarbandIds.includes(wbId)) return;
@@ -587,7 +632,7 @@ export const PlayModeView: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {matchWarbandIds.map((wbId, idx) => {
-                const wb = warbands.find((w) => w.id === wbId);
+                const wb = side(wbId);
                 const depIds = deployedUnitIds[wbId] || wb?.units.map((u) => u.id) || [];
                 const depCost = wb?.units.filter((u) => depIds.includes(u.id)).reduce((s, u) => s + u.totalCost, 0) || 0;
 
@@ -595,7 +640,10 @@ export const PlayModeView: React.FC = () => {
                   <div key={wbId} className="p-4 bg-theme-base border-2 border-theme-primary rounded-md space-y-3 relative">
                     <div className="flex items-center justify-between">
                       <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-primary">
-                        PLAYER {idx + 1} {idx === 0 ? '(YOU)' : ''}
+                        {/* "(YOU)" is the side you are running, which is not
+                            simply the first in the list: an opponent added to
+                            an empty match would otherwise be labelled as you. */}
+                        PLAYER {idx + 1} {wbId === currentViewingWarbandId ? '(YOU)' : ''}
                       </span>
                       {idx > 0 && (
                         <button
@@ -613,7 +661,7 @@ export const PlayModeView: React.FC = () => {
                         <h3 className="font-gothic font-bold text-base text-theme-text truncate">{wb?.name}</h3>
                         {/* The code, so it can be read out to whoever is adding you. */}
                         <span className="text-xs sm:text-[10px] font-mono text-theme-primary tracking-widest flex-shrink-0">
-                          {wb && warbandCode(wb.id)}
+                          {wb && !wb.isPlaceholder && warbandCode(wb.id)}
                         </span>
                       </div>
                       <span className="text-xs sm:text-[10px] text-theme-muted block">
@@ -621,27 +669,49 @@ export const PlayModeView: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="p-2.5 bg-theme-surface rounded border border-theme-border text-xs space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-theme-muted">Deployed Models:</span>
-                        <strong className="text-theme-text">{depIds.length} / {wb?.units.length}</strong>
+                    {/*
+                      A placeholder has no roster here, so a deployment panel
+                      would read `0 / 0` and a Select Squad button would open
+                      an empty list. Saying what it is beats showing zeroes
+                      that look like a warband nobody mustered.
+                    */}
+                    {wb?.isPlaceholder ? (
+                      <div className="p-2.5 bg-theme-surface rounded border border-dashed border-theme-border text-xs space-y-1">
+                        <span className="block font-bold uppercase text-theme-muted">
+                          No roster in the app
+                        </span>
+                        <span className="block text-theme-muted">
+                          {wb.fieldStrength
+                            ? `They field ${wb.fieldStrength} models.`
+                            : 'Model count not given.'}
+                          {' '}Scored and recorded like any other side.
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-theme-muted">Deployed Rating:</span>
-                        <strong className="text-theme-primary">{depCost} D</strong>
-                      </div>
-                    </div>
+                    ) : (
+                      <>
+                        <div className="p-2.5 bg-theme-surface rounded border border-theme-border text-xs space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-theme-muted">Deployed Models:</span>
+                            <strong className="text-theme-text">{depIds.length} / {wb?.units.length}</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-theme-muted">Deployed Rating:</span>
+                            <strong className="text-theme-primary">{depCost} D</strong>
+                          </div>
+                        </div>
 
-                    <button
-                      onClick={() => {
-                        setActivePlayerIndex(idx);
-                        setIsSquadSelectOpen(true);
-                      }}
-                      className="w-full py-1.5 bg-theme-elevated hover:bg-theme-border border border-theme-border text-theme-text text-xs font-bold uppercase rounded flex items-center justify-center space-x-1.5 transition-colors"
-                    >
-                      <Users className="w-3.5 h-3.5 text-theme-primary" />
-                      <span>Select Squad ({depIds.length})</span>
-                    </button>
+                        <button
+                          onClick={() => {
+                            setActivePlayerIndex(idx);
+                            setIsSquadSelectOpen(true);
+                          }}
+                          className="w-full py-1.5 bg-theme-elevated hover:bg-theme-border border border-theme-border text-theme-text text-xs font-bold uppercase rounded flex items-center justify-center space-x-1.5 transition-colors"
+                        >
+                          <Users className="w-3.5 h-3.5 text-theme-primary" />
+                          <span>Select Squad ({depIds.length})</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 );
               })}
@@ -661,13 +731,22 @@ export const PlayModeView: React.FC = () => {
                     roster you can already name — so: type the name, the
                     faction, or the five-character code.
                   */}
-                  <div className="w-full min-w-0">
+                  <div className="w-full min-w-0 space-y-2">
                     <WarbandCombobox
                       label="Add a warband to the match"
                       placeholder="+ Add warband — name or code"
                       warbands={warbands.filter((w) => !matchWarbandIds.includes(w.id))}
                       onSelect={(w) => handleAddPlayerWarband(w.id)}
                       secondary={(w) => `${w.factionId} · ${w.units.length} models`}
+                    />
+                    {/*
+                      And the other case: somebody turned up with their list on
+                      paper. A placeholder is scored and recorded like any
+                      other side; it simply has no models to activate.
+                    */}
+                    <OpponentPicker
+                      usedIds={matchWarbandIds}
+                      onSelect={handleAddPlayerWarband}
                     />
                   </div>
                 </div>
@@ -736,7 +815,7 @@ export const PlayModeView: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {weatherRolls.map((r) => {
-                      const wb = warbands.find((w) => w.id === matchWarbandIds[r.player]);
+                      const wb = side(matchWarbandIds[r.player]);
                       const chosen = activeWeather?.name === r.event.name;
                       return (
                         <button
@@ -927,13 +1006,19 @@ export const PlayModeView: React.FC = () => {
                 {matchWarbandIds.length > 1 && (
                   <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
                     {matchWarbandIds.map((wbId, pIdx) => {
-                      const wb = warbands.find((w) => w.id === wbId);
+                      const wb = side(wbId);
                       const isSel = pIdx === activePlayerIndex;
                       const pScore = warbandScores[wbId]?.vp || 0;
+                      /* A placeholder is scored, never controlled: it has no
+                         models, so switching to it shows an empty tracker. */
+                      const selectable = isControllable(wb);
                       return (
                         <button
                           key={wbId}
-                          onClick={() => setActivePlayerIndex(pIdx)}
+                          disabled={!selectable}
+                          title={selectable ? undefined
+                            : `${wb?.name ?? 'This side'} has no roster in the app — score only`}
+                          onClick={() => { if (selectable) setActivePlayerIndex(pIdx); }}
                           className={`px-3 py-1 rounded text-xs font-mono font-bold uppercase transition-all flex items-center space-x-1.5 ${
                             isSel
                               ? 'bg-theme-primary text-theme-base shadow'
@@ -1147,7 +1232,7 @@ export const PlayModeView: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {matchWarbandIds.map((wbId, _pIdx) => {
-                    const wb = warbands.find((w) => w.id === wbId);
+                    const wb = side(wbId);
                     const scores = warbandScores[wbId] || { vp: 0, completedDeeds: {}, turnScores: {} };
                     const turns = [1, 2, 3, 4, 5];
 
@@ -1230,7 +1315,7 @@ export const PlayModeView: React.FC = () => {
                       // side cannot score it. See handleToggleDeed.
                       const holderId = deedClaimedBy(deed.title);
                       const takenBy = holderId && holderId !== viewingWarband.id
-                        ? warbands.find((w) => w.id === holderId)
+                        ? side(holderId)
                         : undefined;
 
                       return (

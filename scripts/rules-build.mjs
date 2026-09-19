@@ -1609,19 +1609,35 @@ for (const ruleset of RULESETS) {
       JSON.stringify(provenance.map, null, 2) + '\n');
 
     /*
-      Indented, but with each path on ONE line.
+      Indented, but with every leaf on ONE line.
 
-      A path is an array of small integers into `segments`, and the default
-      indenter puts every integer on a line of its own — which took the file
-      from 0.6 MB to 2.3 MB of mostly punctuation, four times the dataset's own
-      diff for no added legibility. Collapsed, a changed path reads as a
-      changed line, which is what a review of this file is for.
+      A path is an array of small integers into `segments`, and a selection is
+      a two- or three-key object of those. The default indenter puts each
+      integer on a line of its own, which took this file from 0.6 MB to 3 MB of
+      mostly punctuation — larger than the dataset it accompanies, for no added
+      legibility. Collapsed, a changed path reads as a changed line, which is
+      what a review of this file is for.
+
+      Innermost-first and repeated until it stops moving, so an array of
+      selections collapses only after the selections themselves have.
     */
-    const rosterPathsJson = JSON.stringify(
-      { base: `${manifest.repo}@${manifest.commit}`, ...rosterPaths }, null, 2)
-      .replace(/\[\s*\n\s*((?:\d+,\s*\n\s*)*\d+)\n\s*\]/g,
-        (_, body) => `[${body.replace(/\s+/g, ' ')}]`);
-    fs.writeFileSync(path.join(OUT_DIR, `${ruleset.id}.rosterpaths.json`), rosterPathsJson + '\n');
+    const collapseLeaves = (json) => {
+      const leaf = /[[{]\s*\n\s*((?:[^[\]{}]|\n)*?)\n\s*([\]}])/g;
+      for (let pass = 0; pass < 8; pass += 1) {
+        const next = json.replace(leaf, (whole, body) => {
+          const open = whole[0];
+          const flat = body.replace(/\s*\n\s*/g, ' ').trim();
+          return open === '{' ? `{ ${flat} }` : `[${flat}]`;
+        });
+        if (next === json) return json;
+        json = next;
+      }
+      return json;
+    };
+
+    fs.writeFileSync(path.join(OUT_DIR, `${ruleset.id}.rosterpaths.json`),
+      collapseLeaves(JSON.stringify(
+        { base: `${manifest.repo}@${manifest.commit}`, ...rosterPaths }, null, 2)) + '\n');
 
     console.log(`  wrote ${file}`);
   }

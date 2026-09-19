@@ -17,23 +17,25 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import LAYER from '@/data/generated/trenchline.rosterpaths.json';
 import {
   decodePath, unitPaths, variantPath, itemPaths, modelIdentity, exportGaps,
-  type RosterPathLayer,
+  resolveSelection,
+  type RosterPathLayer, type Selection,
 } from '../rosterPaths';
 
 const layer = LAYER as unknown as RosterPathLayer;
 const FIXTURE = 'data-sources/fixtures/al-qarn-rihla/04-august-1320d-CURRENT.json';
 
-interface Selection {
+/** The shape a NewRecruit JSON export uses for one selection. */
+interface RosterSelection {
   name: string;
   type?: string;
   entryId?: string;
-  selections?: Selection[];
+  selections?: RosterSelection[];
 }
 
-const fixtureSelections = (): Selection[] => {
+const fixtureSelections = (): RosterSelection[] => {
   const roster = JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).roster;
-  const out: Selection[] = [];
-  const walk = (xs?: Selection[]) => { for (const s of xs ?? []) { out.push(s); walk(s.selections); } };
+  const out: RosterSelection[] = [];
+  const walk = (xs?: RosterSelection[]) => { for (const s of xs ?? []) { out.push(s); walk(s.selections); } };
   for (const f of roster.forces ?? []) walk(f.selections);
   return out;
 };
@@ -80,7 +82,7 @@ describe('what the layer says it is', () => {
 
 describe('against the roster NewRecruit exported', () => {
   const sels = fixtureSelections();
-  const byPath = new Map<string, { name: string; carries: Record<string, number[][]> }>();
+  const byPath = new Map<string, { name: string; carries: Record<string, Selection[]> }>();
   for (const u of layer.units) {
     for (const p of u.placements) byPath.set(decodePath(layer, p.path), { name: u.name, carries: p.carries });
   }
@@ -106,12 +108,12 @@ describe('against the roster NewRecruit exported', () => {
     */
     const wrong: string[] = [];
     let checked = 0;
-    const walk = (xs: Selection[] | undefined, holder?: { name: string; carries: Record<string, number[][]> }) => {
+    const walk = (xs: RosterSelection[] | undefined, holder?: { name: string; carries: Record<string, Selection[]> }) => {
       for (const s of xs ?? []) {
         const found = byPath.get(s.entryId ?? '');
         if (found) { walk(s.selections, found); continue; }
         if (holder) {
-          const paths = (holder.carries[s.name] ?? []).map((p) => decodePath(layer, p));
+          const paths = (holder.carries[s.name] ?? []).map((sel) => decodePath(layer, sel.path));
           if (paths.length) {
             checked += 1;
             if (!paths.includes(s.entryId ?? '')) {
@@ -169,9 +171,9 @@ describe('one weapon, many identities', () => {
     const seen = new Map<string, Set<string>>();
     for (const u of layer.units) {
       for (const p of u.placements) {
-        for (const [name, paths] of Object.entries(p.carries)) {
+        for (const [name, sels] of Object.entries(p.carries)) {
           const set = seen.get(name) ?? new Set<string>();
-          for (const path of paths) set.add(decodePath(layer, path));
+          for (const sel of sels) set.add(decodePath(layer, sel.path));
           seen.set(name, set);
         }
       }
@@ -188,7 +190,7 @@ describe('one weapon, many identities', () => {
       subtly not the warband — so the choice is handed up.
     */
     const many = layer.units.flatMap((u) => u.placements.flatMap((p) =>
-      Object.entries(p.carries).filter(([, paths]) => paths.length > 1)));
+      Object.entries(p.carries).filter(([, sels]) => sels.length > 1)));
     expect(many.length).toBeGreaterThan(0);
     const [name, paths] = many[0];
     const placement = layer.units.flatMap((u) => u.placements)
@@ -204,9 +206,13 @@ describe('resolving a model the way an exporter would', () => {
   it('resolves the model and the gear it can carry', () => {
     const id = modelIdentity(layer, alchemist.entryId!, ['Automatic Rifle', 'Trench Knife']);
     expect(id).not.toBeNull();
-    expect(id!.path).toBe('7c17-5f75-6fd9-73cf');
+    expect(id!.self.entryId).toBe('7c17-5f75-6fd9-73cf');
+    expect(id!.self.from).toBe('entry');
     expect(id!.missing).toEqual([]);
-    expect(id!.items.find((i) => i.name === 'Automatic Rifle')!.paths[0]).toContain('::');
+    const rifle = id!.items.find((i) => i.name === 'Automatic Rifle')!.selections[0];
+    expect(rifle.entryId).toContain('::');
+    expect(rifle.from).toBe('group');
+    expect(rifle.group).toMatch(/Ranged/);
   });
 
   it('reports gear it has no path for instead of inventing one', () => {
@@ -290,5 +296,132 @@ describe('a layer and the code reading it coming apart', () => {
 
   it('has no identity for an entry id that is not in the layer', () => {
     expect(unitPaths(layer, 'nope-nope-nope-nope')).toBeUndefined();
+  });
+});
+
+describe('against the .ros NewRecruit actually wrote', () => {
+  /*
+    The JSON export above is convenient; this is the format. A `.ros` selection
+    carries four things that decide its identity, and getting any of them wrong
+    produces a file that opens and is quietly not the warband:
+
+      entryId       where the thing is
+      entryGroupId  which group it was taken from
+      group         that group's name trail, written verbatim
+      from          "entry" or "group", and an importer branches on it
+
+    The layer is checked against all four, for every selection in a real
+    thirteen-model campaign warband.
+  */
+  const ROS = 'data-sources/fixtures/newrecruit/al-qarn-rihla-august.ros';
+
+  interface RosSelection {
+    entryId: string;
+    entryGroupId?: string;
+    group?: string;
+    from: string;
+    name: string;
+    type: string;
+  }
+
+  const rosSelections = (): RosSelection[] => {
+    const xml = fs.readFileSync(ROS, 'utf8');
+    const out: RosSelection[] = [];
+    for (const m of xml.matchAll(/<selection\s([^>]*?)\/?>/g)) {
+      const at = (k: string) => m[1].match(new RegExp(`(?:^|\\s)${k}="([^"]*)"`))?.[1];
+      const entryId = at('entryId');
+      if (!entryId) continue;
+      out.push({
+        entryId,
+        entryGroupId: at('entryGroupId'),
+        group: at('group'),
+        from: at('from') ?? '',
+        name: at('name') ?? '',
+        type: at('type') ?? '',
+      });
+    }
+    return out;
+  };
+
+  /* Every selection the layer names, wherever it sits. */
+  const known = new Map<string, ReturnType<typeof resolveSelection>>();
+  const remember = (sel: Selection) => {
+    const r = resolveSelection(layer, sel);
+    if (!known.has(r.entryId)) known.set(r.entryId, r);
+  };
+  for (const u of layer.units) {
+    for (const p of u.placements) {
+      remember(p);
+      for (const parent of p.parents) remember(parent);
+      for (const list of Object.values(p.carries)) list.forEach(remember);
+    }
+  }
+  for (const c of layer.containers) {
+    remember(c);
+    for (const list of Object.values(c.carries)) list.forEach(remember);
+  }
+  for (const v of layer.variants) remember(v);
+
+  const sels = rosSelections();
+
+  it('parsed the real file', () => {
+    expect(sels.length).toBe(95);
+    expect(sels.filter((s) => s.entryGroupId).length).toBeGreaterThan(60);
+  });
+
+  it('never disagrees with the file on entryGroupId, group or from', () => {
+    /*
+      Only the selections the layer claims to know. What it does not carry —
+      campaign state, BattleScribe bookkeeping — is listed in
+      `docs/ROSTER-PATHS.md` and is a separate question from whether what it
+      does carry is right.
+    */
+    const wrong: string[] = [];
+    let checked = 0;
+    for (const s of sels) {
+      const ours = known.get(s.entryId);
+      if (!ours) continue;
+      checked += 1;
+      if ((ours.entryGroupId ?? undefined) !== (s.entryGroupId ?? undefined)) {
+        wrong.push(`${s.name}: entryGroupId file=${s.entryGroupId} layer=${ours.entryGroupId}`);
+      }
+      if ((ours.group ?? undefined) !== (s.group ?? undefined)) {
+        wrong.push(`${s.name}: group file=${s.group} layer=${ours.group}`);
+      }
+      if (ours.from !== s.from) {
+        wrong.push(`${s.name}: from file=${s.from} layer=${ours.from}`);
+      }
+    }
+    expect(wrong).toEqual([]);
+    expect(checked).toBeGreaterThanOrEqual(75);
+  });
+
+  it('writes a group name trail that is shallower than its id path', () => {
+    /*
+      Not a bug, and worth pinning because it looks like one. A group reached
+      by a link contributes TWO ids — the link and the group it targets — and
+      one name. `Weapons::Ranged Weapons::Ranged (Two-Handed)` is three names
+      and four ids.
+    */
+    const rifle = sels.find((s) => s.name === 'Automatic Rifle' && s.group?.startsWith('Weapons'))!;
+    expect(rifle.group!.split('::')).toHaveLength(3);
+    expect(rifle.entryGroupId!.split('::')).toHaveLength(4);
+    expect(known.get(rifle.entryId)!.group).toBe(rifle.group);
+  });
+
+  it('resets the group trail at every entry boundary', () => {
+    /*
+      A model's own options are in the model's own groups, never in the group
+      the model was taken from. Carrying the trail down leaked the parent's
+      group into every child — the walk produced
+      `Variant Selection::Weapon Collections::…` where the file says
+      `Weapon Collections::…`.
+    */
+    const nested = sels.filter((s) => s.group?.startsWith('Weapon Collections'));
+    expect(nested.length).toBeGreaterThan(0);
+    for (const s of nested) {
+      const ours = known.get(s.entryId);
+      if (ours) expect(ours.group).toBe(s.group);
+    }
   });
 });
