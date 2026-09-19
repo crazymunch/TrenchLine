@@ -263,6 +263,8 @@ export interface AppState {
   // Tabletop Play Mode
   playTurn: number;
   incrementTurn: () => void;
+  /** Set the turn directly, for a match restored from storage. */
+  setPlayTurn: (turn: number) => void;
   resetMatchState: () => void;
   updateUnitWounds: (warbandId: string, unitId: string, delta: number) => void;
   updateUnitBloodMarkers: (warbandId: string, unitId: string, delta: number) => void;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useStore } from '../../store/useStore';
 import { LiveMirrorPanel } from './LiveMirrorPanel';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
@@ -57,11 +57,14 @@ import {
   CloudRain,
   Lock,
   History,
+  X,
   TrendingUp
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
+import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch } from '@/rules/matchState';
+import { storage } from '@/services/storage';
 import { OpponentPicker } from './OpponentPicker';
 
 export const PlayModeView: React.FC = () => {
@@ -72,6 +75,7 @@ export const PlayModeView: React.FC = () => {
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
+    setPlayTurn,
     resetMatchState,
     updateUnitWounds, 
     updateUnitBloodMarkers, 
@@ -215,6 +219,76 @@ export const PlayModeView: React.FC = () => {
   );
 
   /*
+    Restore a match in progress, then keep saving it.
+
+    None of this state reached `localStorage` before, so a reload — or a phone
+    evicting a backgrounded tab, which they do routinely — lost every Victory
+    Point, every claimed Deed and the list of who was in the match. Over a
+    three-hour game that is the whole scorecard.
+
+    Two guards stop the save from destroying what the restore is about to
+    read, and only one of them currently does the work.
+
+    The save effect runs on mount too, when this state is still its empty
+    initial value. What actually prevents the clobber today is the
+    `matchWarbandIds.length === 0` check below: on that first pass the list IS
+    empty, so nothing is written. Sabotaging `restored` alone does not break
+    the test, and saying otherwise here would be a comment claiming a guard it
+    does not earn.
+
+    `restored` is kept as the second lock, because the first one holds only
+    while the restore effect is declared ABOVE the seeding effect that fills
+    that list. Reorder them and the empty check stops protecting anything;
+    this one does not care about order.
+  */
+  const restored = useRef(false);
+  const [resumedFrom, setResumedFrom] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = storage.getMatch();
+    if (isRestorable(saved)) {
+      setIsMatchActive(saved.isMatchActive);
+      setMatchMode(saved.matchMode);
+      setMatchWarbandIds(saved.matchWarbandIds);
+      setActivePlayerIndex(saved.activePlayerIndex);
+      setSelectedScenarioId(saved.selectedScenarioId);
+      setWarbandScores(saved.scores);
+      setDeployedUnitIds(saved.deployedUnitIds);
+      setEnvironmentalHazard(saved.environmentalHazard);
+      setWeatherRolls(saved.weatherRolls);
+      setActiveWeather(saved.activeWeather);
+      setPlayTurn(saved.playTurn);
+      /* Said out loud rather than resumed silently: a match from last week
+         coming back looking like tonight's is its own kind of wrong. */
+      if (saved.isMatchActive) setResumedFrom(savedAgo(saved));
+    }
+    restored.current = true;
+    // Once, on mount. Re-running would fight the player for their own state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!restored.current) return;
+    /* An empty match is not worth a write, and writing one is how a saved
+       match gets lost — see the guard above. */
+    if (matchWarbandIds.length === 0) return;
+    const match: SavedMatch = {
+      version: MATCH_VERSION,
+      savedAt: new Date().toISOString(),
+      isMatchActive, matchMode, matchWarbandIds, activePlayerIndex,
+      selectedScenarioId, playTurn,
+      scores: warbandScores,
+      deployedUnitIds,
+      environmentalHazard,
+      weatherRolls, activeWeather,
+    };
+    storage.saveMatch(match);
+  }, [
+    isMatchActive, matchMode, matchWarbandIds, activePlayerIndex, selectedScenarioId,
+    playTurn, warbandScores, deployedUnitIds, environmentalHazard, weatherRolls, activeWeather,
+  ]);
+
+  /*
     Put the player's own warband in the match once the store has it.
 
     `matchWarbandIds` is seeded by `useState`, which runs on the FIRST render —
@@ -278,6 +352,11 @@ export const PlayModeView: React.FC = () => {
   const handleAbortMatch = () => {
     soundEffects.playDiceRoll();
     resetMatchState();
+    /* Abort is the one thing that ends a match, so it is the one thing that
+       throws the saved scorecard away. A reload must not bring it back. */
+    storage.clearMatch();
+    setWarbandScores({});
+    setResumedFrom(null);
     setIsMatchActive(false);
     setIsAbortConfirmOpen(false);
   };
@@ -989,6 +1068,35 @@ export const PlayModeView: React.FC = () => {
               <span className="truncate">End</span>
             </button>
           </div>
+
+          {/*
+            A resumed match says so, and says how old it is.
+
+            Restoring silently is its own kind of wrong: a match from last week
+            comes back looking exactly like tonight's, and the first thing a
+            player does is add points to the wrong game. Dismissible, because
+            once you have read it you are resuming deliberately.
+          */}
+          {resumedFrom && (
+            <div className="flex items-start gap-2 rounded border border-theme-primary/50 bg-theme-elevated p-3">
+              <History className="mt-0.5 h-4 w-4 shrink-0 text-theme-primary" />
+              <div className="min-w-0 flex-1 text-xs">
+                <span className="block font-bold text-theme-text">
+                  Resumed a match saved {resumedFrom}
+                </span>
+                <span className="block text-theme-muted">
+                  Scores and claimed Deeds are as you left them. Abort Match starts over.
+                </span>
+              </div>
+              <button
+                onClick={() => setResumedFrom(null)}
+                aria-label="Dismiss"
+                className="flex h-11 w-11 shrink-0 items-center justify-center text-theme-muted hover:text-theme-text"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           {/* Active Combat HUD — the full set, scrolling with the page. */}
           <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-3 sm:p-4 shadow-2xl space-y-3 bevel-container">

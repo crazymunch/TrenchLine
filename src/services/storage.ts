@@ -4,6 +4,7 @@ import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { parseCampaign } from './campaignFromCloud';
 import type { PlaceholderOpponent } from '../types/opponent';
+import { parseSavedMatch, type SavedMatch } from '../rules/matchState';
 import { UnitProfile, WeaponProfile } from '../types/rules';
 
 const WARBANDS_KEY = 'tc_warbands_v1';
@@ -19,6 +20,15 @@ const CUSTOM_WEAPONS_KEY = 'tc_custom_weapons_v1';
   pushed by cloud sync, all of which follow from simply not being in that list.
 */
 const OPPONENTS_KEY = 'tc_opponents_v1';
+/*
+  The match in progress.
+
+  Its own key rather than a field on the warband: a match spans several
+  warbands and two coalitions, and it is the one piece of state here that is
+  deliberately THROWN AWAY when the game ends. Keeping it beside the rosters
+  would make ending a match a roster write.
+*/
+const MATCH_KEY = 'tc_match_v1';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -553,6 +563,36 @@ export const storage = {
     }
   },
 
+  getMatch(): SavedMatch | null {
+    if (!isBrowser) return null;
+    try {
+      const data = localStorage.getItem(MATCH_KEY);
+      return data ? parseSavedMatch(JSON.parse(data)) : null;
+    } catch {
+      // A corrupt match is no match. Resuming half of a scorecard is worse
+      // than starting one, because only the second is obvious.
+      return null;
+    }
+  },
+
+  saveMatch(match: SavedMatch): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem(MATCH_KEY, JSON.stringify(match));
+    } catch (e) {
+      console.warn('Match save failed:', e);
+    }
+  },
+
+  clearMatch(): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.removeItem(MATCH_KEY);
+    } catch (e) {
+      console.warn('Match clear failed:', e);
+    }
+  },
+
   getCustomWeapons(): WeaponProfile[] {
     if (!isBrowser) return [];
     try {
@@ -581,6 +621,7 @@ export const storage = {
       localStorage.removeItem(CUSTOM_UNITS_KEY);
       localStorage.removeItem(CUSTOM_WEAPONS_KEY);
       localStorage.removeItem(OPPONENTS_KEY);
+      localStorage.removeItem(MATCH_KEY);
       localStorage.removeItem('tc_theme_id');
     } catch (e) {
       console.warn('Clear data failed:', e);

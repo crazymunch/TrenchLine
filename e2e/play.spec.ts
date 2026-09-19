@@ -100,3 +100,36 @@ test('a cold load of Play Mode has the warband in the match', async ({ page }) =
   // in a select, and this is about the MATCH having it.
   await expect(page.getByRole('heading', { name: 'E2E Test Warband' })).toBeVisible();
 });
+
+/**
+ * A match survives a reload.
+ *
+ * This is the one that matters at a table. Victory Points, claimed Glorious
+ * Deeds and the list of who is even in the match were all component-local
+ * `useState` and reached storage nowhere, so a reload — or a phone evicting a
+ * backgrounded tab, which they do routinely — lost the entire scorecard of a
+ * three-hour game. Only wounds and markers survived, and only because those
+ * are written into the warband.
+ */
+test('victory points survive a reload', async ({ page }) => {
+  await seedWarband(page);
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /ENTER TABLETOP COMBAT/ }).click();
+  await page.waitForTimeout(1200);
+
+  // Score three points, the way a player does: the + beside their own total.
+  const plus = page.getByRole('button', { name: '+' }).first();
+  for (let i = 0; i < 3; i += 1) { await plus.click(); await page.waitForTimeout(150); }
+  await expect(page.getByText('3 VP').first()).toBeVisible();
+
+  // The eviction, as the browser would do it.
+  await page.reload();
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(1200);
+
+  // Still three, still in the match, and told that it was resumed.
+  await expect(page.getByText('3 VP').first()).toBeVisible();
+  await expect(page.getByText(/Resumed a match saved/i)).toBeVisible();
+});
