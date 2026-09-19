@@ -64,6 +64,10 @@ import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
 import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch } from '@/rules/matchState';
+import {
+  COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
+  pruneCoalitions, suggestCoalitions, type CoalitionMap,
+} from '@/rules/coalitions';
 import { storage } from '@/services/storage';
 import { OpponentPicker } from './OpponentPicker';
 
@@ -136,6 +140,9 @@ export const PlayModeView: React.FC = () => {
   }>>({});
   
   // Squad / Sub-list Deployment Filter
+  /* Which side fights for which coalition. Empty in a free-for-all, which is
+     most matches — so nothing below assumes a match HAS teams. */
+  const [coalitions, setCoalitions] = useState<CoalitionMap>({});
   const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
   const [isSquadSelectOpen, setIsSquadSelectOpen] = useState(false);
   const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
@@ -257,6 +264,7 @@ export const PlayModeView: React.FC = () => {
       setEnvironmentalHazard(saved.environmentalHazard);
       setWeatherRolls(saved.weatherRolls);
       setActiveWeather(saved.activeWeather);
+      setCoalitions(saved.coalitions);
       setPlayTurn(saved.playTurn);
       /* Said out loud rather than resumed silently: a match from last week
          coming back looking like tonight's is its own kind of wrong. */
@@ -281,11 +289,13 @@ export const PlayModeView: React.FC = () => {
       deployedUnitIds,
       environmentalHazard,
       weatherRolls, activeWeather,
+      coalitions,
     };
     storage.saveMatch(match);
   }, [
     isMatchActive, matchMode, matchWarbandIds, activePlayerIndex, selectedScenarioId,
     playTurn, warbandScores, deployedUnitIds, environmentalHazard, weatherRolls, activeWeather,
+    coalitions,
   ]);
 
   /*
@@ -356,6 +366,7 @@ export const PlayModeView: React.FC = () => {
        throws the saved scorecard away. A reload must not bring it back. */
     storage.clearMatch();
     setWarbandScores({});
+    setCoalitions({});
     setResumedFrom(null);
     setIsMatchActive(false);
     setIsAbortConfirmOpen(false);
@@ -468,6 +479,8 @@ export const PlayModeView: React.FC = () => {
   const handleRemovePlayerWarband = (wbId: string) => {
     if (matchWarbandIds.length <= 1) return;
     setMatchWarbandIds((prev) => prev.filter((id) => id !== wbId));
+    // Its tag goes with it, so a re-added side does not inherit an old team.
+    setCoalitions((prev) => pruneCoalitions(matchWarbandIds.filter((id) => id !== wbId), prev));
     setActivePlayerIndex(0);
   };
 
@@ -704,9 +717,21 @@ export const PlayModeView: React.FC = () => {
                   2. WARBAND INTEGRATION & SQUAD MUSTER (1 TO 4 PLAYERS)
                 </h2>
               </div>
-              <span className="text-xs text-theme-muted">
-                {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-theme-muted">
+                  {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
+                </span>
+                {/* A starting pair-off for a four-way, since that is how
+                    players sit down. Every tag stays editable. */}
+                {matchWarbandIds.length > 2 && !hasCoalitions(matchWarbandIds, coalitions) && (
+                  <button
+                    onClick={() => setCoalitions(suggestCoalitions(matchWarbandIds))}
+                    className="min-h-[44px] rounded border border-theme-border px-2.5 text-xs font-bold uppercase text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary"
+                  >
+                    Pair into coalitions
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -747,6 +772,36 @@ export const PlayModeView: React.FC = () => {
                         Faction: {wb?.factionId}
                       </span>
                     </div>
+
+                    {/*
+                      Who this side fights for.
+
+                      Only offered once there are enough sides for it to mean
+                      anything — a coalition in a duel is a word for "you".
+                    */}
+                    {matchWarbandIds.length > 2 && (
+                      <div className="flex gap-1.5">
+                        {COALITIONS.map((c) => {
+                          const on = coalitions[wbId] === c;
+                          return (
+                            <button
+                              key={c}
+                              onClick={() => setCoalitions((prev) => ({
+                                ...prev, [wbId]: on ? undefined : c,
+                              }))}
+                              aria-pressed={on}
+                              className={`min-h-[44px] flex-1 rounded border px-2 text-xs font-bold uppercase transition-colors ${
+                                on
+                                  ? 'border-theme-primary bg-theme-primary/15 text-theme-primary'
+                                  : 'border-theme-border text-theme-muted hover:text-theme-text'
+                              }`}
+                            >
+                              {COALITION_NAME[c]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/*
                       A placeholder has no roster here, so a deployment panel
@@ -1110,9 +1165,17 @@ export const PlayModeView: React.FC = () => {
                   <span className="font-gothic font-bold text-lg text-theme-primary">{playTurn}</span>
                 </div>
 
-                {/* Player Selector Tabs (if multiplayer) */}
+                {/*
+                  Player selector tabs, which SCROLL rather than overflow.
+
+                  Four sides at 375px does not fit on one line, and the fourth
+                  was being clipped at the right edge — in a 2v2 that is a
+                  whole player you cannot select. Horizontal scroll on this
+                  strip only; the page itself still must never scroll sideways
+                  (docs/MOBILE.md §6).
+                */}
                 {matchWarbandIds.length > 1 && (
-                  <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
+                  <div className="flex max-w-full items-center space-x-1 overflow-x-auto rounded border border-theme-border bg-theme-base p-1">
                     {matchWarbandIds.map((wbId, pIdx) => {
                       const wb = side(wbId);
                       const isSel = pIdx === activePlayerIndex;
@@ -1127,7 +1190,7 @@ export const PlayModeView: React.FC = () => {
                           title={selectable ? undefined
                             : `${wb?.name ?? 'This side'} has no roster in the app — score only`}
                           onClick={() => { if (selectable) setActivePlayerIndex(pIdx); }}
-                          className={`px-3 py-1 rounded text-xs font-mono font-bold uppercase transition-all flex items-center space-x-1.5 ${
+                          className={`flex shrink-0 items-center space-x-1.5 rounded px-3 py-1 text-xs font-mono font-bold uppercase transition-all ${
                             isSel
                               ? 'bg-theme-primary text-theme-base shadow'
                               : 'text-theme-muted hover:text-theme-text'
@@ -1151,6 +1214,51 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               {/* Middle: Live Multi-Player VP Meters */}
+              {/*
+                Coalition totals, above the per-side ones and never instead of
+                them. Each warband still scores individually — that is the
+                number a campaign record wants and the one a player asks about
+                afterwards — so this is their sum, shown alongside.
+              */}
+              {hasCoalitions(matchWarbandIds, coalitions) && (
+                <div className="mb-2 flex w-full flex-wrap gap-2">
+                  {COALITIONS.map((c) => {
+                    const total = coalitionScore(
+                      matchWarbandIds, coalitions, c, (id) => warbandScores[id]?.vp || 0);
+                    const ahead = leader(
+                      matchWarbandIds, coalitions, (id) => warbandScores[id]?.vp || 0) === c;
+                    return (
+                      <div
+                        key={c}
+                        className={`flex min-w-0 flex-1 items-center justify-between gap-2 rounded border px-3 py-2 ${
+                          ahead
+                            ? 'border-theme-primary bg-theme-primary/10'
+                            : 'border-theme-border bg-theme-base'
+                        }`}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-xs sm:text-[10px] font-bold uppercase text-theme-muted">
+                            {COALITION_NAME[c]}
+                          </span>
+                          {/* Wraps rather than truncating: "Bayt al-Nahas +
+                              Iro…" hides which ally it is, which is the one
+                              thing this line exists to say. */}
+                          <span className="block text-[10px] leading-tight text-theme-muted">
+                            {matchWarbandIds
+                              .filter((id) => coalitions[id] === c)
+                              .map((id) => side(id)?.name ?? '—')
+                              .join(' + ')}
+                          </span>
+                        </span>
+                        <span className="font-gothic text-lg font-bold text-theme-primary">
+                          {total}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               <div className="flex flex-wrap items-center gap-2">
                 {matchWarbandIds.map((wbId, pIdx) => {
                   const pScore = warbandScores[wbId]?.vp || 0;

@@ -15,6 +15,7 @@
  */
 
 import type { WeatherRoll } from './weather';
+import type { CoalitionMap, CoalitionId } from './coalitions';
 import type { WeatherEvent } from '@/types/catalogue';
 
 /** A side's running score. Keyed by warband or placeholder-opponent id. */
@@ -51,6 +52,13 @@ export interface SavedMatch {
   environmentalHazard: string;
   weatherRolls: WeatherRoll[];
   activeWeather: WeatherEvent | null;
+  /**
+   * Which side fights for which coalition, where the match is a team game.
+   *
+   * Empty for a straight free-for-all, which is most matches — so its absence
+   * is the normal case rather than missing data.
+   */
+  coalitions: CoalitionMap;
 }
 
 export const MATCH_VERSION = 1 as const;
@@ -64,6 +72,17 @@ const strings = (v: unknown): string[] =>
 const isWeatherEvent = (v: unknown): v is WeatherEvent =>
   isRecord(v) && typeof v.roll === 'number' && typeof v.name === 'string'
   && typeof v.flavour === 'string' && typeof v.effect === 'string';
+
+/* Only 'A' and 'B' survive. A tag of 'C' would put a side in a coalition
+   nothing totals, so it is dropped rather than carried as a third team the
+   scoreboard does not know about. */
+const coalitionMap = (v: Record<string, unknown>): CoalitionMap => {
+  const out: CoalitionMap = {};
+  for (const [id, tag] of Object.entries(v)) {
+    if (tag === 'A' || tag === 'B') out[id] = tag as CoalitionId;
+  }
+  return out;
+};
 
 const score = (v: unknown): SideScore => {
   const r = isRecord(v) ? v : {};
@@ -129,6 +148,7 @@ export function parseSavedMatch(raw: unknown): SavedMatch | null {
           && typeof w.total === 'number' && isWeatherEvent(w.event))
       : [],
     activeWeather: isWeatherEvent(raw.activeWeather) ? raw.activeWeather : null,
+    coalitions: isRecord(raw.coalitions) ? coalitionMap(raw.coalitions) : {},
   };
 }
 
