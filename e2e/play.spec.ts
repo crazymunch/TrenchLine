@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goTo, openApp } from './helpers';
+import { goTo, openApp, seedWarband } from './helpers';
 
 /**
  * Play Mode on a phone (Phase 3.6).
@@ -69,4 +69,34 @@ test('the All Out War console is offered for the pack, and only for it', async (
 
   await picker.selectOption('claim-no-mans-land');
   await expect(console_, 'the console is offered for a rulebook scenario').toHaveCount(0);
+});
+
+/**
+ * Opening `/play` cold puts your own warband in the match.
+ *
+ * The bug this guards was invisible to every other test here, and the reason
+ * is the shape of those tests: they call `openApp` (which lands on `/roster`)
+ * and then navigate CLIENT-SIDE to Play, by which time the store is warm. On a
+ * cold load of `/play` it is not — `hydrateStore()` reads `localStorage` from a
+ * mount effect, deliberately, so the first render sees an empty store — and
+ * `matchWarbandIds` was seeded by `useState` on exactly that render. So the
+ * lobby opened saying "0 Warbands Linked" with a roster sitting in storage.
+ *
+ * A cold load is not a corner case here: it is opening the PWA from the home
+ * screen, and it is reloading the page at the table.
+ */
+test('a cold load of Play Mode has the warband in the match', async ({ page }) => {
+  await seedWarband(page);
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+
+  // The count the bug got wrong, read from the lobby's own heading.
+  await expect(page.getByText(/1 Warband Linked/i)).toBeVisible({ timeout: 20_000 });
+
+  // And the side is the player's own, labelled as theirs rather than by
+  // position — "(YOU)" used to mark whatever was first in the list.
+  await expect(page.getByText(/PLAYER 1 \(YOU\)/i)).toBeVisible();
+  // The lobby card's own heading — the name also appears in the top bar and
+  // in a select, and this is about the MATCH having it.
+  await expect(page.getByRole('heading', { name: 'E2E Test Warband' })).toBeVisible();
 });
