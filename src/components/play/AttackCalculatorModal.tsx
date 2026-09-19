@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { readRange, canFight, canShoot } from '@/rules/weaponRange';
 import { Sheet } from '../ui/Sheet';
 import { ActiveUnit, EquippedWeapon } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -118,9 +119,18 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
     lines: string[];
   } | null>(null);
 
-  const isMelee = weapon?.type === 'Melee' || weapon?.range === 'Melee'
-    || Boolean(weapon?.range?.startsWith('Melee'));
-  const kind: 'ranged' | 'melee' = isMelee ? 'melee' : 'ranged';
+  /*
+    Read from the profile's `range`, not its `type`.
+
+    `type` describes how a thing is carried and bought — `1-Handed`, `Shield`,
+    `Battlekit` — and matches 'Melee' on exactly 1 of 658 catalogue entries.
+    This also caught only `Melee...`-prefixed values, so `Melee/24"` worked but
+    `24"/Melee` did not. See `rules/weaponRange.ts`, and the live-game report
+    of a Fire Shield being given a range.
+  */
+  const weaponRange = readRange(weapon?.range);
+  const kind: 'ranged' | 'melee' = canFight(weaponRange) && !canShoot(weaponRange)
+    ? 'melee' : 'ranged';
   const cover = coverDice(weather);
   const available = useMemo(
     () => modifiers(cover).filter((m) => m.on === kind), [cover, kind]);
