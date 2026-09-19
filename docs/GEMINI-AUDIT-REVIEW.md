@@ -136,7 +136,9 @@ const prisma = new PrismaClient({ datasources: { db: { url: url ?? 'postgresql:/
 ```
 
 `DATABASE_URL` in the working environment points at **production Neon**
-(`ep-lucky-boat-…neon.tech/neondb`) — see [`DATABASE.md`](DATABASE.md). Adding
+(the `*.neon.tech` endpoint named in `DATABASE_URL`; the host is deliberately
+not written here, because this repository is public) — see
+[`DATABASE.md`](DATABASE.md). Adding
 that address to a `beforeEach` delete means every local test run removes a real
 production user, and `User` cascades to warbands, campaigns, campaign
 memberships and custom-rule overrides. That account is the one the six warbands
@@ -310,7 +312,10 @@ does not catch that on a seeded database; the replacement must.
 **Priority:** high. **Blocks:** nothing, but do it before TEST-02 so the
 ownership work is done under the guard.
 
-1. `src/test/integrationDb.ts` as sketched above. Throw on a non-local host;
+1. An `integrationDb` helper, as sketched above, beside the suites it serves.
+   The path is deliberately not written as one: the file does not exist yet,
+   and `scripts/__tests__/docPaths.test.mjs` requires every repository path a
+   document names to be real. Throw on a non-local host;
    return null when unset.
 2. Move all nine suites onto it. They stop reading `process.env.DATABASE_URL`.
 3. `.github/workflows/ci.yml` sets `TRENCHLINE_TEST_DATABASE_URL` to the same

@@ -135,11 +135,18 @@ it, TrenchLine holds it somewhere else, and nobody has asked for it yet.
 other: every selection this exporter emits must agree with NewRecruit's on
 `entryId`, `entryGroupId`, `group` and `from`.
 
-It rebuilds rather than using `importNewRecruitRoster`, and the reason is a
-finding in itself — the importer matches models by NAME, and a roster's name is
-not the catalogue's, so three of eleven models come back unresolvable while
-`unmatched` stays empty. Running this exporter over that import is what found
-it. The test file records the detail.
+It rebuilds rather than using `importNewRecruitRoster`, and the reason was a
+finding in itself: the importer matched models by NAME, and a roster's name is
+not the catalogue's, so three of eleven models came back unresolvable while
+`unmatched` stayed empty. Running this exporter over that import is what found
+it.
+
+**Both halves of that are now fixed** — see
+[`NEWRECRUIT-IMPORT.md`](NEWRECRUIT-IMPORT.md). The importer resolves by
+`entryId`, and the fixture imports eleven models with nothing unmatched. The
+test still rebuilds rather than importing, because an exporter checked through
+the importer tests the pair rather than the exporter: a shared misreading of
+the format would agree with itself and pass.
 
 ## Acceptance
 

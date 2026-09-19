@@ -102,6 +102,20 @@ interface NrProfile {
 interface NrSelection {
   name?: string;
   customName?: string;
+  /**
+   * What the CATALOGUE calls this line, as a path.
+   *
+   * The identity the importer resolves on, and the reason this field exists:
+   * `name` is what modifiers made of the entry, not what the catalogue calls
+   * it. The Iron Sultanate's `Azeb` is written into a roster as `Kavass`, and
+   * a promoted one as `Favoured Kavass` — all three are entry
+   * `0e7e-9167-f044-9493`. Matching on the name resolved none of them.
+   *
+   * A path rather than a bare id: `da5c-…::2f82-…` is the chain of `entryLink`
+   * ids by which the entry was reached, with its own id last. See
+   * `docs/ROSTER-PATHS.md`.
+   */
+  entryId?: string;
   type?: string;
   number?: number;
   group?: string;
@@ -152,6 +166,8 @@ interface XmlProfile {
 interface XmlSelection {
   '@_name'?: string;
   '@_customName'?: string;
+  /** The catalogue path this line selects. See `NrSelection.entryId`. */
+  '@_entryId'?: string;
   '@_type'?: string;
   '@_number'?: string | number;
   '@_group'?: string;
@@ -172,6 +188,66 @@ interface XmlRoster {
   costs?: { cost?: XmlCost | XmlCost[] };
   forces?: { force?: XmlForce | XmlForce[] };
   selections?: { selection?: XmlSelection | XmlSelection[] };
+}
+
+/**
+ * The catalogue entry a roster line selects, or `undefined`.
+ *
+ * A roster's `entryId` is a PATH — the chain of `entryLink` ids traversed to
+ * reach the entry, with the entry's own id last (`docs/ROSTER-PATHS.md`). The
+ * store keys a unit by that last segment: `recruitable` sets
+ * `UnitProfile.id` to the dataset's `entryId`, so this is a direct lookup and
+ * not a search.
+ *
+ * Unambiguous, which is the whole point. Five factions field a `Homunculus`
+ * and each is a DIFFERENT entry — Iron Sultanate's is `2f82-e47f-c162-9152`,
+ * Trench Pilgrims' is `3eda-5baa-29d3-d617` — so an id names one of them and
+ * a name names all five. No two units in the ruleset share an entry id.
+ */
+function unitByEntryId(
+  allUnits: UnitProfile[], entryId: string | undefined
+): UnitProfile | undefined {
+  if (!entryId) return undefined;
+  const own = entryId.split('::').pop();
+  return own ? allUnits.find((u) => u.id === own) : undefined;
+}
+
+/**
+ * The same line, resolved by name, for a roster that carries no `entryId`.
+ *
+ * Kept only as that fallback. It is wrong often enough that it must never run
+ * ahead of an id: `"kavass".includes("azeb")` is false, so a renamed entry
+ * resolves to nothing; and `"favoured homunculus".includes("homunculus")`
+ * matches whichever faction's Homunculus is first in the list, which is a
+ * silently wrong model rather than an unresolved one.
+ */
+function unitByName(
+  allUnits: UnitProfile[], selName: string
+): UnitProfile | undefined {
+  return allUnits.find(
+    (p) => p.name.toLowerCase() === selName || selName.includes(p.name.toLowerCase())
+  );
+}
+
+/**
+ * A `unit` wrapper's inner model, where that is what the roster wrote.
+ *
+ * `Mamluk Faris` is a `unit` entry whose only child is a link to the `model`
+ * carrying the profile, and a real export writes both — the wrapper holding
+ * the player's `customName` and the child holding the identity and the
+ * statline. Treating the wrapper as the model imports a nameless line with no
+ * profile; ignoring it loses the name the player typed. So the child is the
+ * model and the wrapper contributes its name.
+ *
+ * Only when the wrapper has no Unit profile of its own: a `unit` entry that
+ * carries one is a model in its own right.
+ */
+function innerModel(sel: NrSelection): NrSelection | undefined {
+  if (sel.type !== 'unit') return undefined;
+  if (sel.profiles?.some((p) => p.typeName === 'Unit')) return undefined;
+  const models = (sel.selections ?? []).filter((c) => c.type === 'model');
+  if (models.length !== 1) return undefined;
+  return { ...models[0], customName: sel.customName ?? models[0].customName };
 }
 
 function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportResult {
@@ -201,7 +277,14 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
   /** Named by the export's Warband Variant node; matched by id or name. */
   let variantId: string | undefined;
 
-  rawSelections.forEach((sel, idx) => {
+  rawSelections.forEach((raw, idx) => {
+    /*
+      A `unit` wrapper is structure, not a model. Unwrap it first so everything
+      below reads the line that actually carries the profile — and so the
+      wrapper is never reported as unmatched, which it would be on every
+      Mamluk Faris in every Sultanate roster.
+    */
+    const sel = innerModel(raw) ?? raw;
     const isConfig = (sel.categories || []).some((c) => c.name === 'Configuration');
     const isPileOfStuff = sel.name === 'Pile of Stuff' || sel.customName === 'Pile of Stuff';
 
@@ -492,13 +575,23 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
                     advancements.some(a => a.toLowerCase().includes('tough'));
     const maxHp = isTough ? 2 : 1;
 
-    // Find or create profile snapshot
-    const matchedProfile = allUnits.find(
-      (p) => p.name.toLowerCase() === selName || selName.includes(p.name.toLowerCase())
-    );
+    /*
+      Identity first, name second.
 
-    const baseProfileName = unitProfile?.name || selectionName;
-    const baseProfileId = (matchedProfile?.id || baseProfileName.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+      The roster states which catalogue entry each line is, and that is the
+      only thing in the file that survives a modifier renaming it. Name
+      matching stays for a roster that carries no id at all — a plain-text
+      paste, or an export old enough to predate the attribute.
+    */
+    const matchedProfile = unitByEntryId(allUnits, sel.entryId)
+      ?? (sel.entryId ? undefined : unitByName(allUnits, selName));
+
+    /*
+      The catalogue's name for the entry, not the roster's rendered one, so a
+      `Kavass` and a `Favoured Kavass` are both recognisably the `Azeb` they
+      are. The player's own name is already kept in `customName`.
+    */
+    const baseProfileName = matchedProfile?.name || unitProfile?.name || selectionName;
 
     /*
       Every characteristic must come from the export or from a matched profile.
@@ -521,6 +614,22 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
     }
     const resolvedStats = stats as { movement: string; ranged: string; melee: string; armour: string };
 
+    /*
+      A model no catalogue entry claims is reported, not invented.
+
+      It used to be imported under a slug of the roster's own name —
+      `baseProfileId: 'kavass'` — which is an id no entry has and nothing can
+      resolve later. The statline came from the export so the import looked
+      complete, and `unmatched` stayed empty while three of eleven models were
+      untraceable. An export carrying characteristics is still the player's
+      roster, but it is not a line this app can reason about, so it is named.
+    */
+    if (!matchedProfile) {
+      unmatched.push(sel.customName || selectionName);
+      return;
+    }
+    const baseProfileId = matchedProfile.id;
+
     units.push({
       id: `u-imp-${Date.now()}-${idx}`,
       customName: sel.customName || selectionName,
@@ -530,7 +639,16 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
         name: baseProfileName,
         factionId,
         category,
-        baseCost: totalUnitCost,
+        /*
+          The ENTRY's cost, not this model's total.
+
+          `totalUnitCost` includes every weapon, upgrade and injury on the
+          line, so two Jabirean Alchemists off the same profile came in at 194
+          and 130. `UnitProfile.baseCost` is read as the entry's own price by
+          the recruit sheet and by the validator, both of which then add gear
+          on top — so a total here is counted twice.
+        */
+        baseCost: matchedProfile.baseCost,
         stats: { ...resolvedStats, keywords: catNames },
         innateAbilities: (sel.profiles || [])
           .filter((p) => p.typeName === 'Ability' && Boolean(p.name))
@@ -610,6 +728,7 @@ function xmlSelectionToJson(node: XmlSelection): NrSelection {
   return {
     name: node['@_name'],
     customName: node['@_customName'],
+    entryId: node['@_entryId'],
     type: node['@_type'],
     number: node['@_number'] != null ? Number(node['@_number']) : undefined,
     /*
@@ -629,7 +748,24 @@ function xmlSelectionToJson(node: XmlSelection): NrSelection {
       typeName: pr['@_typeName'],
       characteristics: arr(pr.characteristics?.characteristic).map((ch) => ({
         name: ch['@_name'],
-        $text: ch['#text'] ?? '',
+        /*
+          `String(...)`, and it is load-bearing.
+
+          fast-xml-parser coerces text content that looks numeric, so a
+          characteristic reading `2` arrives as the NUMBER 2 while
+          `NrCharacteristic.$text` is declared `string`. `XMLParser` returns
+          `any`, so the cast at the top of `parseNewRecruitXml` let that
+          through unchecked — and the first `.toLowerCase()` on a statline
+          threw inside `parseNewRecruitJson`.
+
+          Which was silent, and total: `importNewRecruitRoster` catches that
+          throw and falls through to the PLAIN-TEXT parser, which scans the
+          raw XML for anything spelled like a unit name. Every `.ros` import
+          produced a warband assembled out of catalogue names — twenty-two
+          models for a thirteen-model roster, none with the player's own
+          names, including four factions' entries the roster never had.
+        */
+        $text: String(ch['#text'] ?? ''),
       })),
     })),
     selections: arr(node.selections?.selection).map(xmlSelectionToJson),
