@@ -56,12 +56,20 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
       silently resolves to nothing.
     */
     const parsed = Number.parseInt(fieldStrength, 10);
-    saveOpponent({
+    const id = saveOpponent({
       name,
       factionId,
       // Blank stays blank. "They did not say" is not "they field none".
       ...(Number.isFinite(parsed) && parsed > 0 ? { fieldStrength: parsed } : {}),
     });
+    /*
+      Straight into the match, not just into the list.
+
+      Saving and then waiting to be picked was two steps for one intention:
+      you have just said who is playing, and the app filed them away instead
+      of seating them. They are still saved, so next week they are one tap.
+    */
+    onSelect(id);
     reset();
   };
 
@@ -79,7 +87,18 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
               <li key={o.id} className="flex items-stretch gap-1.5">
                 <button
                   onClick={() => pick(o)}
-                  className="flex min-h-[44px] flex-1 items-center justify-between gap-2 rounded border border-theme-border bg-theme-base px-3 text-left transition-colors hover:border-theme-primary"
+                  /*
+                    `min-w-0` is load bearing. `flex-1` is `flex: 1 1 0%` and
+                    does NOT set a min-width, so this button's min-width stayed
+                    `auto` — its min-content width — and a long opponent name
+                    made it wider than the column it sits in. Measured at 347px
+                    inside a 179px row: the `+` rendered 138px outside the card
+                    and the delete button 200px, both on top of the next
+                    player's panel. Clickable by a test, unfindable by a
+                    person. The truncating spans inside cannot help while the
+                    flex item itself refuses to shrink.
+                  */
+                  className="flex min-h-[44px] min-w-0 flex-1 items-center justify-between gap-2 rounded border border-theme-border bg-theme-base px-3 text-left transition-colors hover:border-theme-primary"
                 >
                   <span className="min-w-0">
                     <span className="block truncate text-xs font-bold text-theme-text">
