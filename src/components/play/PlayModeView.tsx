@@ -64,6 +64,7 @@ import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
 import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch } from '@/rules/matchState';
+import { battleFromMatch } from '@/rules/battleFromMatch';
 import {
   COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
   pruneCoalitions, suggestCoalitions, type CoalitionMap,
@@ -357,6 +358,44 @@ export const PlayModeView: React.FC = () => {
   const handleStartCombat = () => {
     soundEffects.playDiceRoll();
     setIsMatchActive(true);
+  };
+
+  /*
+    Keep the battle, then hand over to the post-battle wizard.
+
+    Everything the tracker collected — every side's Victory Points, which turn
+    each was scored on, who claimed each Glorious Deed, the weather, who was
+    even on the table — was discarded here. The campaign's `MatchRecord` kept
+    a date, a scenario, a narrative and exactly ONE participant: the player's
+    own warband. Three of four sides in tonight's game would have left no
+    trace.
+
+    Written before the wizard opens rather than inside it, because the wizard
+    is campaign-only: a one-off game recorded nothing at all before, and the
+    battle happened either way.
+  */
+  const handleEndMatch = () => {
+    const battle = battleFromMatch({
+      matchWarbandIds,
+      sideInfo: (id) => {
+        const sd = side(id);
+        return sd && {
+          id: sd.id, name: sd.name, factionId: sd.factionId,
+          isPlaceholder: sd.isPlaceholder,
+        };
+      },
+      scores: warbandScores,
+      coalitions,
+      scenarioId: selectedScenarioId,
+      scenarioName: selectedScenario?.name ?? 'Unrecorded scenario',
+      scenarioDeeds: scenarioDeeds.map((d) => ({ title: d.title, description: d.desc })),
+      playTurn,
+      weather: activeWeather
+        ? { name: activeWeather.name, effect: activeWeather.effect }
+        : null,
+    });
+    if (battle) storage.addBattle(battle);
+    setIsPostBattleOpen(true);
   };
 
   const handleAbortMatch = () => {
@@ -1116,7 +1155,7 @@ export const PlayModeView: React.FC = () => {
               <span className="truncate">Turn</span>
             </button>
             <button
-              onClick={() => setIsPostBattleOpen(true)}
+              onClick={handleEndMatch}
               className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-accent text-white rounded font-mono text-xs font-bold uppercase"
             >
               <Skull className="w-3.5 h-3.5 flex-shrink-0" />
@@ -1345,7 +1384,7 @@ export const PlayModeView: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => setIsPostBattleOpen(true)}
+                  onClick={handleEndMatch}
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-accent hover:bg-status-error text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-theme-accent/40"
                 >
                   <Skull className="w-4 h-4" />

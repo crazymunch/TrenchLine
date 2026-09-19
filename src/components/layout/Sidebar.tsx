@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
+  ScrollText,
   Sparkles
 } from 'lucide-react';
 import { sessionIsAdmin } from '../../lib/session';
@@ -73,6 +74,7 @@ export const Sidebar: React.FC = () => {
     { id: 'builder', label: 'Warband Roster', icon: <Shield className="w-5 h-5" /> },
     { id: 'play', label: 'Tabletop Combat', icon: <Swords className="w-5 h-5" /> },
     { id: 'campaign', label: 'Crusade Campaign', icon: <Flag className="w-5 h-5" /> },
+    { id: 'chronicle', label: 'Chronicle of Battles', icon: <ScrollText className="w-5 h-5" /> },
     { id: 'directory', label: 'Roster Directory', icon: <Users className="w-5 h-5" /> },
     { id: 'codex', label: 'Rules Codex', icon: <BookOpen className="w-5 h-5" /> },
     ...(isAdmin ? [{ id: 'customizer' as AppView, label: 'Rules Customizer', icon: <SlidersHorizontal className="w-5 h-5" /> }] : [])

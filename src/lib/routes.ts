@@ -11,6 +11,7 @@ const SEGMENT: Record<AppView, string> = {
   builder: 'roster',
   play: 'play',
   campaign: 'campaign',
+  chronicle: 'chronicle',
   directory: 'directory',
   codex: 'codex',
   customizer: 'customizer',

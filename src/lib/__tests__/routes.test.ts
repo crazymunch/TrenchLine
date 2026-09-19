@@ -16,7 +16,7 @@ describe('routes', () => {
 
   it('covers every view in AppView, so a new one cannot be forgotten', () => {
     expect([...ALL_VIEWS].sort()).toEqual(
-      ['builder', 'campaign', 'codex', 'customizer', 'directory', 'play'].sort());
+      ['builder', 'campaign', 'chronicle', 'codex', 'customizer', 'directory', 'play'].sort());
   });
 
   it('puts a roster id in the path', () => {

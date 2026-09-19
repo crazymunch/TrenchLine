@@ -24,7 +24,7 @@ import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
-export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
+export type AppView = 'builder' | 'play' | 'campaign' | 'chronicle' | 'codex' | 'customizer' | 'directory';
 
 /**
  * How the store asks for a navigation.

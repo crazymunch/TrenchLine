@@ -133,3 +133,38 @@ test('victory points survive a reload', async ({ page }) => {
   await expect(page.getByText('3 VP').first()).toBeVisible();
   await expect(page.getByText(/Resumed a match saved/i)).toBeVisible();
 });
+
+/**
+ * A finished match is written into the Chronicle.
+ *
+ * Everything the tracker collected used to be discarded when a match ended.
+ * The campaign's `MatchRecord` kept a date, a scenario, a narrative and
+ * exactly ONE participant — the player's own warband — so in a four-side game
+ * three of them left no trace at all.
+ */
+test('ending a match records it in the Chronicle', async ({ page }) => {
+  await seedWarband(page);
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /ENTER TABLETOP COMBAT/ }).click();
+  await page.waitForTimeout(1200);
+
+  const plus = page.getByRole('button', { name: '+' }).first();
+  for (let i = 0; i < 2; i += 1) { await plus.click(); await page.waitForTimeout(150); }
+
+  await page.getByRole('button', { name: /END MATCH/i }).first().click();
+  await page.waitForTimeout(1200);
+
+  await page.goto('/chronicle');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(800);
+
+  // The battle is there, with the side and its score — not just a date.
+  await expect(page.getByRole('heading', { name: /Chronicle of Battles/i })).toBeVisible();
+  // Scoped to the battle card: the app shell has a warband <select> whose
+  // hidden <option> carries the same name and comes first in the DOM.
+  const card = page.locator('article').first();
+  await expect(card.getByText('E2E Test Warband')).toBeVisible();
+  await expect(card.getByText('2 VP')).toBeVisible();
+});
