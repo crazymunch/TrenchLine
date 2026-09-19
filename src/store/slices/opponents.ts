@@ -34,8 +34,12 @@ export const createOpponentsSlice = (
    * the wrong list and silently vanish.
    */
   saveOpponent: (opponent) => {
+    /* Minted here rather than inside `set`, so it can be returned. The caller
+       needs it to seat the opponent it has just created; `set`'s updater
+       returns state, not a value. */
+    const id = opponent.id
+      ?? `${PLACEHOLDER_ID_PREFIX}${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     set((state) => {
-      const id = opponent.id ?? `${PLACEHOLDER_ID_PREFIX}${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       const saved: PlaceholderOpponent = {
         id,
         name: opponent.name.trim(),
@@ -53,6 +57,7 @@ export const createOpponentsSlice = (
       storage.saveOpponents(next);
       return { opponents: next };
     });
+    return id;
   },
 
   /**

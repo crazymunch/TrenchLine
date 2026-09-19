@@ -426,10 +426,17 @@ export interface AppState {
   // Customizer & Overrides
   customArmour: ArmourProfile[];
   customEquipment: EquipmentItem[];
-  /** Add or replace a placeholder opponent. Omit `id` to create one. */
+  /**
+   * Add or replace a placeholder opponent. Omit `id` to create one.
+   *
+   * Returns the id it saved under, so a caller that has just created an
+   * opponent can put them straight into the match. Without that the picker had
+   * to save, wait for the list to re-render, and ask the player to click the
+   * same opponent a second time — which read as the app ignoring them.
+   */
   saveOpponent: (opponent: {
     id?: string; name: string; factionId: string; fieldStrength?: number;
-  }) => void;
+  }) => string;
   deleteOpponent: (id: string) => void;
   saveCustomUnit: (unit: UnitProfile) => void;
   deleteCustomUnit: (id: string) => void;
